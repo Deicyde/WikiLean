@@ -1,0 +1,659 @@
+{
+  "slug": "Correlation",
+  "wikipedia_title": "Correlation",
+  "display_title": "Correlation",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Correlation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "correlation is a type of statistical relationship between two random variables"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.covariance",
+        "module": "Mathlib.Probability.Moments.Covariance",
+        "match_kind": null
+      },
+      "note": "Covariance of two real random variables is defined, but the normalized correlation coefficient itself is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Association",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "an arbitrary relationship between variables is called an association"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The informal notion of statistical association has no formal counterpart in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Correlation does not imply causation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The presence of a correlation is not sufficient to infer the presence of a causal relationship"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a methodological/philosophical claim, not a formalizable mathematical statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Independence implies uncorrelated (not conversely)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "if two variables are independent, then they are uncorrelated, but the opposite is not necessarily true"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.IndepFun.covariance_eq_zero",
+        "module": "Mathlib.Probability.Moments.Covariance",
+        "match_kind": "special_case"
+      },
+      "note": "`IndepFun.covariance_eq_zero` proves independence implies covariance (hence correlation) zero; the converse counterexample is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pearson product-moment correlation coefficient",
+      "anchor": {
+        "section": "Pearson's product-moment coefficient",
+        "snippet": "The most familiar measure of dependence between two quantities is the Pearson product-moment correlation coefficient"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.covariance",
+        "module": "Mathlib.Probability.Moments.Covariance",
+        "match_kind": null
+      },
+      "note": "Covariance and variance are defined but the Pearson coefficient ρ = cov/(σ_Xσ_Y) is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Population correlation coefficient",
+      "anchor": {
+        "section": "Pearson's product-moment coefficient",
+        "snippet": "with expected values"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.covariance",
+        "module": "Mathlib.Probability.Moments.Covariance",
+        "match_kind": null
+      },
+      "note": "The population covariance is defined but its normalization into the correlation coefficient is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Alternative moment formula for Pearson correlation",
+      "anchor": {
+        "section": "Pearson's product-moment coefficient",
+        "snippet": "An alternative formula purely in terms of moments is:"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.covariance_eq_sub",
+        "module": "Mathlib.Probability.Moments.Covariance",
+        "match_kind": null
+      },
+      "note": "`covariance_eq_sub` gives the numerator E[XY]−E[X]E[Y], but the full correlation moment formula is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Correlation coefficient bounded by 1 (Cauchy–Schwarz)",
+      "anchor": {
+        "section": "Correlation and independence",
+        "snippet": "It is a corollary of the Cauchy–Schwarz inequality that the absolute value of the Pearson correlation coefficient is not bigger than 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No covariance Cauchy–Schwarz bound (|cov| ≤ √(VarX·VarY)) nor correlation-coefficient bound exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Independence implies zero correlation",
+      "anchor": {
+        "section": "Correlation and independence",
+        "snippet": "If the variables are independent , Pearson's correlation coefficient is 0"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.IndepFun.covariance_eq_zero",
+        "module": "Mathlib.Probability.Moments.Covariance",
+        "match_kind": "special_case"
+      },
+      "note": "`IndepFun.covariance_eq_zero` shows independent variables have zero covariance, hence zero correlation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Dependent variables with zero correlation",
+      "anchor": {
+        "section": "Correlation and independence",
+        "snippet": "perfectly dependent, but their correlation is zero"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit counterexample of a dependent pair with zero correlation is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Jointly normal: uncorrelated equals independent",
+      "anchor": {
+        "section": "Correlation and independence",
+        "snippet": "uncorrelatedness is equivalent to independence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.HasGaussianLaw.indepFun_of_covariance_eq_zero",
+        "module": "Mathlib.Probability.Distributions.Gaussian.HasGaussianLaw.Independence",
+        "match_kind": "exact"
+      },
+      "note": "`HasGaussianLaw.indepFun_of_covariance_eq_zero` proves zero covariance implies independence for jointly Gaussian variables (converse given by `IndepFun.covariance_eq_zero`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Independence test via mutual information",
+      "anchor": {
+        "section": "Correlation and independence",
+        "snippet": "one can check if random variables are independent if their mutual information is 0"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mutual information is not defined in Mathlib, so this independence test is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sample correlation coefficient",
+      "anchor": {
+        "section": "Sample correlation coefficient",
+        "snippet": "the sample correlation coefficient can be used to estimate the population Pearson correlation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The sample correlation coefficient and sample-based estimators are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalent expressions for sample correlation",
+      "anchor": {
+        "section": "Sample correlation coefficient",
+        "snippet": "Equivalent expressions for"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Since the sample correlation coefficient is absent, its algebraic reformulations are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Measurement error narrows correlation limits",
+      "anchor": {
+        "section": "Sample correlation coefficient",
+        "snippet": "the realistic limits on the correlation coefficient are not −1 to +1 but a smaller range"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Attenuation of correlation due to measurement error is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Coefficient of determination as square of r",
+      "anchor": {
+        "section": "Sample correlation coefficient",
+        "snippet": "the coefficient of determination (R squared) is the square of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the correlation coefficient nor the coefficient of determination R² is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Joint distribution of X and Y",
+      "anchor": {
+        "section": "Example",
+        "snippet": "Consider the joint probability distribution of X and Y given in the table below."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This concrete worked example with a specific joint distribution table is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rank correlation coefficients",
+      "anchor": {
+        "section": "Rank correlation coefficients",
+        "snippet": "Rank correlation coefficients, such as Spearman's rank correlation coefficient and Kendall's rank correlation coefficient"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Spearman's and Kendall's rank correlation coefficients are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Four pairs illustrating rank vs linear correlation",
+      "anchor": {
+        "section": "Rank correlation coefficients",
+        "snippet": "To illustrate the nature of rank correlation, and its difference from linear correlation, consider the following four pairs of numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This illustrative numeric example contrasting rank and linear correlation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Correlation does not establish causation",
+      "anchor": {
+        "section": "Correlation and causality",
+        "snippet": "correlation cannot be used by itself to infer a causal relationship between the variables"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a methodological statement about causal inference, not a formalizable theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pearson coefficient does not fully characterize relationship",
+      "anchor": {
+        "section": "Simple linear correlations",
+        "snippet": "its value generally does not completely characterize their relationship"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This informal observation about the limitations of the Pearson coefficient is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Anscombe's quartet",
+      "anchor": {
+        "section": "Simple linear correlations",
+        "snippet": "The adjacent image shows scatter plots of Anscombe's quartet"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Anscombe's quartet is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Full characterization iff multivariate normal",
+      "anchor": {
+        "section": "Simple linear correlations",
+        "snippet": "the Pearson correlation coefficient fully characterizes the relationship between variables if and only if the data are drawn from a multivariate normal distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This characterization theorem is not formalized; only the uncorrelated-implies-independent direction for Gaussians exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Independent stochastic processes are uncorrelated",
+      "anchor": {
+        "section": "Uncorrelatedness and independence of stochastic processes",
+        "snippet": "If they are independent, then they are uncorrelated"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.IndepFun.covariance_eq_zero",
+        "module": "Mathlib.Probability.Moments.Covariance",
+        "match_kind": "special_case"
+      },
+      "note": "`IndepFun.covariance_eq_zero` covers independent random variables, but cross-covariance functions of stochastic processes are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Invariance under affine transformation",
+      "anchor": {
+        "section": "Sensitivity to the data distribution",
+        "snippet": "most correlation measures are unaffected by transforming"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Affine invariance of the correlation coefficient is not formalized (covariance is not affine-invariant, only bilinear).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rank correlation invariant under monotone transforms",
+      "anchor": {
+        "section": "Sensitivity to the data distribution",
+        "snippet": "Some correlation statistics, such as the rank correlation coefficient, are also invariant to monotone transformations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Rank correlation coefficients and their monotone invariance are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sensitivity to sampling range",
+      "anchor": {
+        "section": "Sensitivity to the data distribution",
+        "snippet": "Most correlation measures are sensitive to the manner in which X and Y are sampled"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This empirical observation about range restriction in sampling is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Correlation measures may be undefined",
+      "anchor": {
+        "section": "Sensitivity to the data distribution",
+        "snippet": "Various correlation measures in use may be undefined for certain joint distributions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This remark about undefinedness of correlation measures is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Correlation matrix",
+      "anchor": {
+        "section": "Correlation matrices",
+        "snippet": "The correlation matrix of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.covarianceBilin",
+        "module": "Mathlib.Probability.Moments.CovarianceBilin",
+        "match_kind": null
+      },
+      "note": "The covariance bilinear form/operator is defined, but the normalized correlation matrix is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Diagonal entries equal one",
+      "anchor": {
+        "section": "Correlation matrices",
+        "snippet": "Thus the diagonal entries are all identically one"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without the correlation matrix defined, the unit-diagonal property is not formalized (the covariance analog gives variances, not ones).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Correlation matrix is positive-semidefinite",
+      "anchor": {
+        "section": "Correlation matrices",
+        "snippet": "each is necessarily a positive-semidefinite matrix"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.isPosSemidef_covarianceBilin",
+        "module": "Mathlib.Probability.Moments.CovarianceBilin",
+        "match_kind": null
+      },
+      "note": "`isPosSemidef_covarianceBilin` proves the covariance bilinear form is positive-semidefinite; the correlation matrix is its normalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Correlation matrix is symmetric",
+      "anchor": {
+        "section": "Correlation matrices",
+        "snippet": "The correlation matrix is symmetric because the correlation between"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.covarianceBilin_comm",
+        "module": "Mathlib.Probability.Moments.CovarianceBilin",
+        "match_kind": null
+      },
+      "note": "`covarianceBilin_comm` (and `covariance_comm`) give symmetry of covariance, which underlies correlation-matrix symmetry.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exchangeable correlation structure",
+      "anchor": {
+        "section": "Correlation matrices",
+        "snippet": "in an exchangeable correlation matrix, all pairs of variables are modeled as having the same correlation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Exchangeable correlation structures are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Higham's nearest correlation matrix",
+      "anchor": {
+        "section": "Nearest valid correlation matrix",
+        "snippet": "formalized the notion of nearness using the Frobenius norm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Higham's nearest correlation matrix problem and its Frobenius-norm solution are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bivariate normal conditional means are linear",
+      "anchor": {
+        "section": "Bivariate normal distribution",
+        "snippet": "of random variables follows a bivariate normal distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Conditional means/regression lines of the bivariate normal distribution are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Distribution estimate for correlation",
+      "anchor": {
+        "section": "Bivariate normal distribution",
+        "snippet": "A distribution estimate for"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The sampling distribution of the estimated correlation coefficient is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Bivariate normal distribution",
+          "snippet": "A distribution estimate for"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\pi (\\rho \\mid r)={\\frac {\\ \\Gamma (N)\\ }{\\ {\\sqrt {2\\pi \\ }}\\cdot \\Gamma (N-{\\tfrac {\\ 1\\ }{2}})\\ }}\\cdot {\\bigl (}1-r^{2}{\\bigr )}^{\\frac {\\ N\\ -2\\ }{2}}\\cdot {\\bigl (}1-\\rho ^{2}{\\bigr )}^{\\frac {\\ N-3\\ }{2}}\\cdot {\\bigl (}1-r\\rho {\\bigr )}^{-N+{\\frac {\\ 3\\ }{2}}}\\cdot F_{\\mathsf {Hyp}}\\left(\\ {\\tfrac {\\ 3\\ }{2}},-{\\tfrac {\\ 1\\ }{2}};N-{\\tfrac {\\ 1\\ }{2}};{\\frac {\\ 1+r\\rho \\ }{2}}\\ \\right)\\ }"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Correlation coefficient insufficient for dependence structure",
+      "anchor": {
+        "section": "Other measures of association among random variables",
+        "snippet": "The information given by a correlation coefficient is not enough to define the dependence structure between random variables"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This statement about copulas/dependence structure is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero value implies independence for alternative measures",
+      "anchor": {
+        "section": "Other measures of association among random variables",
+        "snippet": "They all share the important property that a value of zero implies independence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The alternative dependence measures whose vanishing characterizes independence are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Odds ratio for binary variables",
+      "anchor": {
+        "section": "Other measures of association among random variables",
+        "snippet": "For two binary variables , the odds ratio measures their dependence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The odds ratio for binary variables is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Other measures detecting general dependencies",
+      "anchor": {
+        "section": "Other measures of association among random variables",
+        "snippet": "The correlation ratio , entropy -based mutual information , total correlation , dual total correlation and polychoric correlation are all also capable of detecting more general dependencies"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Correlation ratio, mutual information, total correlation, and polychoric correlation are not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

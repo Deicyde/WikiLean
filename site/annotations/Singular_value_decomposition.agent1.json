@@ -1,0 +1,620 @@
+{
+  "slug": "Singular_value_decomposition",
+  "wikipedia_title": "Singular value decomposition",
+  "display_title": "Singular value decomposition",
+  "schema_version": 3,
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Singular value decomposition",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a factorization of a real or complex matrix into a rotation"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Formal SVD factorization",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a factorization of the form"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Existence of SVD",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Such decompositions always exist for any complex matrix"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Singular values",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "are known as the singular values of"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of nonzero singular values equals rank",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The number of non-zero singular values is equal to the rank of"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Left- and right-singular vectors",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "are called left-singular vectors and right-singular vectors"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Singular values orderable, Sigma uniquely determined",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "it is always possible to choose the decomposition such that the singular values"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Compact SVD",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "sometimes refers to the compact SVD"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "SVD as composition of three geometric transformations",
+      "anchor": {
+        "section": "Rotation, coordinate scaling, and reflection",
+        "snippet": "into a composition of three geometrical transformations"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reflections determined by sign of determinant",
+      "anchor": {
+        "section": "Rotation, coordinate scaling, and reflection",
+        "snippet": "has a positive determinant, then"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Singular values as ellipse/ellipsoid semiaxes",
+      "anchor": {
+        "section": "Singular values as semiaxes of an ellipse or ellipsoid",
+        "snippet": "can be interpreted as the magnitude of the semiaxes of an ellipse"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Columns of U and V form orthonormal bases",
+      "anchor": {
+        "section": "The columns of U and V are orthonormal bases",
+        "snippet": "the columns of each of them form a set of orthonormal vectors"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Positive-semidefinite Hermitian case",
+      "anchor": {
+        "section": "The columns of U and V are orthonormal bases",
+        "snippet": "are both equal to the unitary matrix used to diagonalize"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "First columns of U span the column space",
+      "anchor": {
+        "section": "Relation to the four fundamental subspaces",
+        "snippet": "are a basis of the column space"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Last columns of U span the cokernel",
+      "anchor": {
+        "section": "Relation to the four fundamental subspaces",
+        "snippet": "are a basis of the null space"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "First columns of V span the row space",
+      "anchor": {
+        "section": "Relation to the four fundamental subspaces",
+        "snippet": "the row space of"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Last columns of V span the null space",
+      "anchor": {
+        "section": "Relation to the four fundamental subspaces",
+        "snippet": "are a basis of the null space"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Geometric content of the SVD theorem",
+      "anchor": {
+        "section": "Geometric meaning",
+        "snippet": "The geometric content of the SVD theorem can thus be summarized as follows"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Worked SVD of a 4x5 matrix",
+      "anchor": {
+        "section": "Example",
+        "snippet": "A singular value decomposition of this matrix is given by"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Non-uniqueness of the SVD",
+      "anchor": {
+        "section": "Example",
+        "snippet": "This particular singular value decomposition is not unique"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Compact SVD of the example matrix",
+      "anchor": {
+        "section": "Example",
+        "snippet": "eliminates these superfluous rows, columns, and singular values"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Singular value characterization",
+      "anchor": {
+        "section": "Singular values, singular vectors, and their relation to the SVD",
+        "snippet": "is a singular value for"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Left- and right-singular vectors",
+      "anchor": {
+        "section": "Singular values, singular vectors, and their relation to the SVD",
+        "snippet": "are called left-singular and right-singular vectors for"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Diagonal entries equal singular values",
+      "anchor": {
+        "section": "Singular values, singular vectors, and their relation to the SVD",
+        "snippet": "are equal to the singular values of"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Degenerate singular value",
+      "anchor": {
+        "section": "Singular values, singular vectors, and their relation to the SVD",
+        "snippet": "is called degenerate"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Singular vectors of singular value zero",
+      "anchor": {
+        "section": "Singular values, singular vectors, and their relation to the SVD",
+        "snippet": "comprise all unit vectors in the cokernel and kernel"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness for non-degenerate singular values",
+      "anchor": {
+        "section": "Singular values, singular vectors, and their relation to the SVD",
+        "snippet": "Non-degenerate singular values always have unique"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "SVD relations to eigendecomposition",
+      "anchor": {
+        "section": "Relation to eigenvalue decomposition",
+        "snippet": "the following two relations hold"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Normal matrix case via spectral theorem",
+      "anchor": {
+        "section": "Relation to eigenvalue decomposition",
+        "snippet": "ensures that it can be unitarily diagonalized using a basis of eigenvectors"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Connection via polar decomposition theorem",
+      "anchor": {
+        "section": "Relation to eigenvalue decomposition",
+        "snippet": "is through the polar decomposition theorem"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every matrix has an SVD",
+      "anchor": {
+        "section": "Relation to eigenvalue decomposition",
+        "snippet": "While only non-defective square matrices have an eigenvalue decomposition"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Pseudoinverse via SVD",
+      "anchor": {
+        "section": "Pseudoinverse",
+        "snippet": "The pseudoinverse of the matrix"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Null vector as right-singular vector for zero singular value",
+      "anchor": {
+        "section": "Solving homogeneous linear equations",
+        "snippet": "can be characterized as a right-singular vector corresponding to a singular value"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Left null vector",
+      "anchor": {
+        "section": "Solving homogeneous linear equations",
+        "snippet": "is called a left null vector of"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Total least squares solution",
+      "anchor": {
+        "section": "Total least squares minimization",
+        "snippet": "The solution turns out to be the right-singular vector"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Singular vectors span null space and range",
+      "anchor": {
+        "section": "Range, null space and rank",
+        "snippet": "span the null space of"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rank equals number of nonzero singular values",
+      "anchor": {
+        "section": "Range, null space and rank",
+        "snippet": "equals the number of non-zero singular values"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Eckart–Young theorem",
+      "anchor": {
+        "section": "Low-rank matrix approximation",
+        "snippet": "This is known as the Eckart–Young theorem"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "SVD image compression",
+      "anchor": {
+        "section": "Image compression",
+        "snippet": "gives an image with the best 2-norm error out of all rank k approximations"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Separable matrix",
+      "anchor": {
+        "section": "Separable models",
+        "snippet": "can be written as an outer product of two vectors"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Index of separability",
+      "anchor": {
+        "section": "Separable models",
+        "snippet": "One may then define an index of separability"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Nearest orthogonal matrix via SVD",
+      "anchor": {
+        "section": "Nearest orthogonal matrix",
+        "snippet": "to determine the orthogonal matrix"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Orthogonal Procrustes problem",
+      "anchor": {
+        "section": "Nearest orthogonal matrix",
+        "snippet": "the orthogonal Procrustes problem"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Kabsch algorithm",
+      "anchor": {
+        "section": "The Kabsch algorithm",
+        "snippet": "uses SVD to compute the optimal rotation"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Principal components from SVD",
+      "anchor": {
+        "section": "Principal Component Analysis",
+        "snippet": "to construct the principal components"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Condition number",
+      "anchor": {
+        "section": "Other examples",
+        "snippet": "characterizes the regularity or singularity of a problem"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Entanglement criterion via Schmidt decomposition",
+      "anchor": {
+        "section": "Other examples",
+        "snippet": "a necessary and sufficient condition for them to be entangled"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Largest eigenvalue as maximum of Rayleigh quotient",
+      "anchor": {
+        "section": "Proof of existence",
+        "snippet": "this continuous function attains a maximum"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Spectral theorem yields unitary diagonalization",
+      "anchor": {
+        "section": "Based on the spectral theorem",
+        "snippet": "by the spectral theorem , there exists an"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Singular values as maxima over subspaces",
+      "anchor": {
+        "section": "Based on variational characterization",
+        "snippet": "can also be characterized as the maxima of"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Left and right-singular vectors statement",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Statement — ⁠ [MATH] ⁠ and ⁠ [MATH] ⁠ ar"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "One-sided Jacobi algorithm",
+      "anchor": {
+        "section": "One-sided Jacobi algorithm",
+        "snippet": "One-sided Jacobi algorithm is an iterative algorithm"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Two-sided Jacobi algorithm",
+      "anchor": {
+        "section": "Two-sided Jacobi algorithm",
+        "snippet": "is an iterative algorithm where a square matrix"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Singular vectors as eigenvectors of M*M and MM*",
+      "anchor": {
+        "section": "Numerical approach",
+        "snippet": "are a set of orthonormal eigenvectors of"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Analytic 2x2 SVD",
+      "anchor": {
+        "section": "Analytic result of 2 × 2 SVD",
+        "snippet": "can be found analytically"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Thin SVD",
+      "anchor": {
+        "section": "Thin SVD",
+        "snippet": "The thin, or economy-sized, SVD of a matrix"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Compact SVD",
+      "anchor": {
+        "section": "Compact SVD",
+        "snippet": "The compact SVD of a matrix"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Truncated SVD",
+      "anchor": {
+        "section": "Truncated SVD",
+        "snippet": "The truncated SVD is no longer an exact decomposition"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Ky Fan k-norm",
+      "anchor": {
+        "section": "Ky Fan norms",
+        "snippet": "is a matrix norm , the Ky Fan"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ky Fan 1-norm equals operator norm",
+      "anchor": {
+        "section": "Ky Fan norms",
+        "snippet": "is the same as the operator norm of"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Trace (nuclear) norm",
+      "anchor": {
+        "section": "Ky Fan norms",
+        "snippet": "is the trace norm"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Hilbert–Schmidt inner product",
+      "anchor": {
+        "section": "Hilbert–Schmidt norm",
+        "snippet": "Consider the Hilbert–Schmidt inner product on the"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Frobenius norm",
+      "anchor": {
+        "section": "Hilbert–Schmidt norm",
+        "snippet": "This is called the Frobenius norm"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Invariance of singular values under unitary transforms",
+      "anchor": {
+        "section": "Scale-invariant SVD",
+        "snippet": "are uniquely defined and are invariant with respect to"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Scale-invariant SVD",
+      "anchor": {
+        "section": "Scale-invariant SVD",
+        "snippet": "is analogous to the conventional SVD except that"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "SVD for bounded operators on Hilbert spaces",
+      "anchor": {
+        "section": "Bounded operators on Hilbert spaces",
+        "snippet": "can be extended to a bounded operator"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Singular values of compact operators",
+      "anchor": {
+        "section": "Singular values and compact operators",
+        "snippet": "can be extended to compact operator on Hilbert space"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Compactness equivalence theorem",
+      "anchor": {
+        "section": "Singular values and compact operators",
+        "snippet": "is compact if and only if"
+      },
+      "provenance": "ai-agent1"
+    }
+  ]
+}

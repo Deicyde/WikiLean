@@ -1,0 +1,599 @@
+{
+  "slug": "Triangle_inequality",
+  "wikipedia_title": "Triangle inequality",
+  "display_title": "Triangle inequality",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Triangle inequality (lengths)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the sum of the lengths of any two sides must be greater than or equal to the length of the remaining side"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dist_triangle",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "The geometric triangle inequality on side lengths is the metric-space inequality dist x z ≤ dist x y + dist y z, which holds in any (pseudo)metric space including Euclidean point sets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Triangle inequality for norms",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the triangle inequality is a theorem about vectors and vector lengths"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "norm_add_le",
+        "module": "Mathlib.Analysis.Normed.Group.Basic",
+        "match_kind": "exact"
+      },
+      "note": "norm_add_le states ‖a + b‖ ≤ ‖a‖ + ‖b‖, the triangle inequality for vector norms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Shortest distance is a straight line",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the shortest distance between two points is a straight line"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "dist_le_range_sum_dist",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Basic",
+        "match_kind": null
+      },
+      "note": "dist_le_range_sum_dist shows the straight-line distance is a lower bound for any polygonal path, but the general curve-minimization statement is only partially captured.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Triangle inequality in spherical geometry",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the triangle inequality holds provided the restriction is made"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No spherical-geometry triangle inequality (for arc lengths/angles of spherical triangles) was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euclid's Elements I.20",
+      "anchor": {
+        "section": "Euclidean geometry",
+        "snippet": "the sum of any two sides is greater than the remaining one"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dist_triangle",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Euclid I.20 is the triangle inequality on distances, formalized generally as dist_triangle for metric spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Three inequalities form",
+      "anchor": {
+        "section": "Mathematical expression of the constraint on the sides of a triangle",
+        "snippet": "literally translates into three inequalities"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "dist_triangle",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": null
+      },
+      "note": "The three side inequalities a+b>c, b+c>a, c+a>b are just three applications of dist_triangle; no dedicated decl encodes this triple form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Succinct form of inequality system",
+      "anchor": {
+        "section": "Mathematical expression of the constraint on the sides of a triangle",
+        "snippet": "A more succinct form of this inequality system can be shown to be"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "norm_sub_norm_le",
+        "module": "Mathlib.Analysis.Normed.Group.Basic",
+        "match_kind": null
+      },
+      "note": "The compact |a−b| < c < a+b form combines the triangle inequality (norm_add_le) and reverse triangle inequality (norm_sub_norm_le), but no single decl states it for triangle sides.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Longest side less than semiperimeter",
+      "anchor": {
+        "section": "Mathematical expression of the constraint on the sides of a triangle",
+        "snippet": "the longest side length is less than the semiperimeter"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib declaration states that the longest side of a triangle is less than the semiperimeter.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Area positivity (Heron's formula)",
+      "anchor": {
+        "section": "Mathematical expression of the constraint on the sides of a triangle",
+        "snippet": "the area of a triangle with sides a , b , c must be a real number greater than zero"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Heron's formula appears only in Archive/Wiedijk100Theorems/HeronsFormula.lean, not in Mathlib/, and the area-positivity criterion is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Golden ratio constraints",
+      "anchor": {
+        "section": "Mathematical expression of the constraint on the sides of a triangle",
+        "snippet": "The triangle inequality provides two more interesting constraints for triangles whose sides are a , b , c"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The golden-ratio bounds on geometric-progression triangle sides are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Right triangle specialization",
+      "anchor": {
+        "section": "Right triangle",
+        "snippet": "the hypotenuse is greater than either of the two sides and less than their sum"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated decl states the hypotenuse-versus-leg inequalities for right triangles, though they follow from dist_triangle and Pythagoras.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sharpening by Pythagoras",
+      "anchor": {
+        "section": "Right triangle",
+        "snippet": "is sharpened by Pythagoras' theorem to the equality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.dist_sq_eq_dist_sq_add_dist_sq_iff_angle_eq_pi_div_two",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.RightAngle",
+        "match_kind": "generalization"
+      },
+      "note": "The Pythagorean theorem is formalized as an iff characterizing the right-angle case, of which the article's equality c²=a²+b² is one direction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Arithmetic progression triangle",
+      "anchor": {
+        "section": "Examples of use",
+        "snippet": "Consider a triangle whose sides are in an arithmetic progression"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This worked example about arithmetic-progression triangle sides is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Geometric progression triangle",
+      "anchor": {
+        "section": "Examples of use",
+        "snippet": "Now consider a triangle whose sides are in a geometric progression"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This worked example about geometric-progression triangle sides is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Polygon inequality",
+      "anchor": {
+        "section": "Generalization to any polygon",
+        "snippet": "the total length of such a path is no less than the length of the straight line between its endpoints"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dist_le_range_sum_dist",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "dist_le_range_sum_dist gives dist (f 0) (f n) ≤ ∑ dist (f i) (f (i+1)), the polygon/path inequality for any number of intermediate points in a metric space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Geometric progression quadrilateral",
+      "anchor": {
+        "section": "Example of the generalized polygon inequality for a quadrilateral",
+        "snippet": "Consider a quadrilateral whose sides are in a geometric progression"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This worked quadrilateral example is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Shortest curve is a straight line",
+      "anchor": {
+        "section": "Relationship with shortest paths",
+        "snippet": "the shortest curve between two points in Euclidean geometry is a straight line"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "riemannianEDist_le_pathELength",
+        "module": "Mathlib.Geometry.Manifold.Riemannian.PathELength",
+        "match_kind": "generalization"
+      },
+      "note": "riemannianEDist_le_pathELength shows the geodesic (Riemannian) distance lower-bounds any C¹ path length, capturing the curve-minimization idea but not the specific Euclidean straight-line characterization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Converse of triangle inequality",
+      "anchor": {
+        "section": "Converse",
+        "snippet": "if three real numbers are such that each is less than the sum of the others, then there exists a triangle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib decl establishes existence of a triangle (or its embedding in the plane) from three lengths satisfying the strict inequalities.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Tetrahedron face inequality",
+      "anchor": {
+        "section": "Generalization to higher dimensions",
+        "snippet": "The area of a triangular face of a tetrahedron is less than or equal to the sum of the areas of the other three triangular faces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The tetrahedral face-area inequality is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Polytope facet inequality",
+      "anchor": {
+        "section": "Generalization to higher dimensions",
+        "snippet": "the inequality for a simplex of any dimension generalizes to a polytope of any dimension"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The general facet-measure inequality for simplices/polytopes is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Tetrahedral inequality strength",
+      "anchor": {
+        "section": "Generalization to higher dimensions",
+        "snippet": "the tetrahedral inequality is stronger than several applications of the triangle inequality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This comparative remark about tetrahedral versus triangle inequalities is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Norm triangle inequality",
+      "anchor": {
+        "section": "Normed vector space",
+        "snippet": "one of the defining properties of the norm is the triangle inequality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "norm_add_le",
+        "module": "Mathlib.Analysis.Normed.Group.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The norm's subadditivity axiom is provided as norm_add_le : ‖a + b‖ ≤ ‖a‖ + ‖b‖.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equality in strictly convex spaces",
+      "anchor": {
+        "section": "Normed vector space",
+        "snippet": "the triangle formed by u , v , and u + v , is degenerate"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "sameRay_iff_norm_add",
+        "module": "Mathlib.Analysis.Convex.StrictConvexSpace",
+        "match_kind": "exact"
+      },
+      "note": "sameRay_iff_norm_add states ‖u+v‖ = ‖u‖+‖v‖ holds iff u and v are on the same ray (the degenerate case) in a strictly convex space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Absolute value norm",
+      "anchor": {
+        "section": "Example norms",
+        "snippet": "The absolute value is a norm for the real line"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.norm_eq_abs",
+        "module": "Mathlib.Analysis.Normed.Group.Real",
+        "match_kind": "exact"
+      },
+      "note": "Real.norm_eq_abs : ‖r‖ = |r| confirms the absolute value is the norm on ℝ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Taxicab norm",
+      "anchor": {
+        "section": "Example norms",
+        "snippet": "The taxicab norm or 1-norm is one generalization absolute value to higher dimensions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PiLp.norm_eq_sum",
+        "module": "Mathlib.Analysis.Normed.Lp.PiLp",
+        "match_kind": "special_case"
+      },
+      "note": "The taxicab/1-norm is the PiLp p=1 instance, whose value PiLp.norm_eq_sum gives as the sum of coordinate norms.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Example norms",
+          "snippet": "The taxicab norm or 1-norm is one generalization absolute value to higher dimensions"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|v\\|_{1}=|v_{1}|+|v_{2}|+\\dotsb +|v_{n}|.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Euclidean norm",
+      "anchor": {
+        "section": "Example norms",
+        "snippet": "The Euclidean norm or 2-norm defines the length of translation vectors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.norm_eq",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "special_case"
+      },
+      "note": "EuclideanSpace.norm_eq gives the 2-norm as the square root of the sum of squared coordinate norms.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Example norms",
+          "snippet": "The Euclidean norm or 2-norm defines the length of translation vectors"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|v\\|_{2}={\\sqrt {|v_{1}|^{2}+|v_{2}|^{2}+\\dotsb +|v_{n}|^{2}}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Triangle inequality from Cauchy–Schwarz",
+      "anchor": {
+        "section": "Example norms",
+        "snippet": "The triangle inequality follows from the Cauchy–Schwarz inequality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "norm_add_le",
+        "module": "Mathlib.Analysis.Normed.Group.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib derives the inner-product-space norm's triangle inequality (norm_add_le) precisely from Cauchy–Schwarz (norm_inner_le_norm).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cauchy–Schwarz equality condition",
+      "anchor": {
+        "section": "Example norms",
+        "snippet": "The Cauchy–Schwarz inequality turns into an equality if and only if u and v are linearly dependent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "norm_inner_eq_norm_iff",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "norm_inner_eq_norm_iff states ‖⟪x,y⟫‖ = ‖x‖‖y‖ iff y is a nonzero scalar multiple of x, i.e. the vectors are linearly dependent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Minkowski's inequality (p-norm)",
+      "anchor": {
+        "section": "Example norms",
+        "snippet": "The triangle inequality for general values of p is called Minkowski's inequality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.Lp_add_le",
+        "module": "Mathlib.Analysis.MeanInequalities",
+        "match_kind": "exact"
+      },
+      "note": "Real.Lp_add_le is Minkowski's inequality: (∑|f+g|^p)^(1/p) ≤ (∑|f|^p)^(1/p) + (∑|g|^p)^(1/p) for p ≥ 1.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Example norms",
+          "snippet": "The triangle inequality for general values of p is called Minkowski's inequality"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|u+v\\|_{p}\\leq \\|u\\|_{p}+\\|v\\|_{p}\\ .}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Metric triangle inequality",
+      "anchor": {
+        "section": "Metric space",
+        "snippet": "the triangle inequality is a requirement upon distance"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dist_triangle",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "exact"
+      },
+      "note": "dist_triangle : dist x z ≤ dist x y + dist y z is the metric-space triangle-inequality axiom.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convergent sequences are Cauchy",
+      "anchor": {
+        "section": "Metric space",
+        "snippet": "any convergent sequence in a metric space is a Cauchy sequence is a direct consequence of the triangle inequality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.Tendsto.cauchySeq",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "generalization"
+      },
+      "note": "Filter.Tendsto.cauchySeq shows a sequence tending to a limit is a Cauchy sequence (in any uniform space, generalizing the metric case).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Reverse triangle inequality",
+      "anchor": {
+        "section": "Reverse triangle inequality",
+        "snippet": "Any side of a triangle is greater than or equal to the difference between the other two sides"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "abs_norm_sub_norm_le",
+        "module": "Mathlib.Analysis.Normed.Group.Basic",
+        "match_kind": "exact"
+      },
+      "note": "abs_norm_sub_norm_le : |‖a‖ − ‖b‖| ≤ ‖a − b‖ is the reverse triangle inequality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lipschitz continuity of the norm",
+      "anchor": {
+        "section": "Reverse triangle inequality",
+        "snippet": "are Lipschitz continuous with Lipschitz constant 1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lipschitzWith_one_norm",
+        "module": "Mathlib.Analysis.Normed.Group.Uniform",
+        "match_kind": "exact"
+      },
+      "note": "lipschitzWith_one_norm states the norm map is LipschitzWith 1, a direct consequence of the reverse triangle inequality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cosine similarity triangle inequality",
+      "anchor": {
+        "section": "Triangle inequality for cosine similarity",
+        "snippet": "By applying the cosine function to the triangle inequality and reverse triangle inequality for arc lengths"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The triangle inequality for cosine similarity is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Reversed inequality in Minkowski space",
+      "anchor": {
+        "section": "Reversal in Minkowski space",
+        "snippet": "if u and v are both timelike vectors lying in the future light cone , the triangle inequality is reversed"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The reversed triangle inequality for timelike vectors in Minkowski space is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

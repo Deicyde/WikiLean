@@ -1,0 +1,775 @@
+{
+  "slug": "Lie_group",
+  "wikipedia_title": "Lie group",
+  "display_title": "Lie group",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Lie group",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a Lie group (pronounced / l iː / Lee ) is a group that is also a differentiable manifold"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieGroup",
+        "module": "Mathlib.Geometry.Manifold.Algebra.LieGroup",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `LieGroup I n G` defines a group that is also a `C^n` manifold with smooth multiplication and inversion, generalizing the standard Lie group notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Real Lie group",
+      "anchor": {
+        "section": "Definitions and examples",
+        "snippet": "A real Lie group is a group that is also a finite-dimensional real smooth manifold"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LieGroup",
+        "module": "Mathlib.Geometry.Manifold.Algebra.LieGroup",
+        "match_kind": "generalization"
+      },
+      "note": "`LieGroup` covers Lie groups over any `NontriviallyNormedField` and is not restricted to finite-dimensional real manifolds, so the specifically real finite-dimensional notion is only a special case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "General linear group GL(2,R)",
+      "anchor": {
+        "section": "First examples",
+        "snippet": "The 2×2 real invertible matrices form a group under multiplication, called general linear group of degree 2"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.GeneralLinearGroup",
+        "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Matrix.GeneralLinearGroup n R` (notation `GL n R`) defines the group of invertible matrices for any `n` and ring `R`, of which GL(2,ℝ) is an instance.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "First examples",
+          "snippet": "The 2×2 real invertible matrices form a group under multiplication, called general linear group of degree 2"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {GL} (2,\\mathbb {R} )=\\left\\{A={\\begin{pmatrix}a&amp;b\\\\c&amp;d\\end{pmatrix}}:\\det A=ad-bc\\neq 0\\right\\}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Rotation group SO(2)",
+      "anchor": {
+        "section": "First examples",
+        "snippet": "The rotation matrices form a subgroup"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.specialOrthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "generalization"
+      },
+      "note": "`Matrix.specialOrthogonalGroup n R` is defined, with a specialization `mem_specialOrthogonalGroup_fin_two_iff` for SO(2).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "First examples",
+          "snippet": "The rotation matrices form a subgroup"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {SO} (2,\\mathbb {R} )=\\left\\{{\\begin{pmatrix}\\cos \\varphi &amp;-\\sin \\varphi \\\\\\sin \\varphi &amp;\\cos \\varphi \\end{pmatrix}}:\\varphi \\in \\mathbb {R} \\ /\\ 2\\pi \\mathbb {Z} \\right\\}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Affine group of one dimension",
+      "anchor": {
+        "section": "First examples",
+        "snippet": "The affine group of one dimension is a two-dimensional matrix Lie group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `AffineGroup` definition was found in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "First examples",
+          "snippet": "The affine group of one dimension is a two-dimensional matrix Lie group"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A=\\left({\\begin{array}{cc}a&amp;b\\\\0&amp;1\\end{array}}\\right),\\quad a&gt;0,\\,b\\in \\mathbb {R} .}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Irrational winding on the torus (non-Lie subgroup)",
+      "anchor": {
+        "section": "Non-example",
+        "snippet": "We now present an example of a group with an uncountable number of elements that is not a Lie group under a certain topology"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the irrational winding/dense line on the torus as a non-Lie subgroup was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Matrix Lie group",
+      "anchor": {
+        "section": "Matrix Lie groups",
+        "snippet": "Lie groups of this sort are called matrix Lie groups"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.GeneralLinearGroup",
+        "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs",
+        "match_kind": null
+      },
+      "note": "Mathlib has matrix groups (GL, SL, unitary, orthogonal, symplectic) but no abstract notion of `MatrixLieGroup` as a closed subgroup of GL_n(ℂ).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Special linear groups SL(n,R), SL(n,C)",
+      "anchor": {
+        "section": "Matrix Lie groups",
+        "snippet": "The special linear groups over"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.SpecialLinearGroup",
+        "module": "Mathlib.LinearAlgebra.Matrix.SpecialLinearGroup",
+        "match_kind": "generalization"
+      },
+      "note": "`Matrix.SpecialLinearGroup n R` is the group of `n × n` matrices with determinant 1 over a ring `R`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Unitary and special unitary groups",
+      "anchor": {
+        "section": "Matrix Lie groups",
+        "snippet": "The unitary groups and special unitary groups"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.unitaryGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.unitaryGroup` and `Matrix.specialUnitaryGroup` are defined as submonoids of matrices over a star ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Orthogonal and special orthogonal groups",
+      "anchor": {
+        "section": "Matrix Lie groups",
+        "snippet": "The orthogonal groups and special orthogonal groups"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.orthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.orthogonalGroup n R` and `Matrix.specialOrthogonalGroup n R` are defined as abbreviations for the corresponding unitary groups under the commutative-star instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complex Lie group",
+      "anchor": {
+        "section": "Related concepts",
+        "snippet": "A complex Lie group is defined in the same way using complex manifolds rather than real ones"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LieGroup",
+        "module": "Mathlib.Geometry.Manifold.Algebra.LieGroup",
+        "match_kind": "generalization"
+      },
+      "note": "`LieGroup` is defined over any `NontriviallyNormedField` including ℂ, but there is no separate `ComplexLieGroup` class requiring a holomorphic atlas.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "p-adic Lie group",
+      "anchor": {
+        "section": "Related concepts",
+        "snippet": "one can define a p -adic Lie group over the p -adic numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LieGroup",
+        "module": "Mathlib.Geometry.Manifold.Algebra.LieGroup",
+        "match_kind": "generalization"
+      },
+      "note": "`LieGroup` is generic over a nontrivially normed field so the definition applies to ℚ_p, but no specific p-adic Lie group theory is developed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gleason–Montgomery–Zippin (Hilbert's fifth problem)",
+      "anchor": {
+        "section": "Related concepts",
+        "snippet": "in 1952, Gleason , Montgomery and Zippin showed that if G is a topological manifold with continuous group operations, then there exists exactly one analytic structure"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hilbert's fifth problem / Gleason–Montgomery–Zippin theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Categorical definition of Lie group",
+      "anchor": {
+        "section": "Related concepts",
+        "snippet": "a Lie group is a group object in the category of smooth manifolds"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of Lie groups as group objects in the category of smooth manifolds was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Topological definition of Lie group",
+      "anchor": {
+        "section": "Topological definition",
+        "snippet": "A Lie group can be defined as a ( Hausdorff ) topological group that, near the identity element, looks like a transformation group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The topological characterization of Lie groups via local transformation groups is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Classification of one-dimensional connected Lie groups",
+      "anchor": {
+        "section": "Dimensions one and two",
+        "snippet": "The only connected Lie groups with dimension one are the real line"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classification of one-dimensional connected Lie groups as ℝ or S¹ is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Two-dimensional simply connected Lie groups",
+      "anchor": {
+        "section": "Dimensions one and two",
+        "snippet": "In two dimensions, if we restrict attention to simply connected groups, then they are classified by their Lie algebras"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classification of two-dimensional simply connected Lie groups is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "SU(2)",
+      "anchor": {
+        "section": "Additional examples",
+        "snippet": "The group SU(2) is the group of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.specialUnitaryGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "generalization"
+      },
+      "note": "SU(2) is `Matrix.specialUnitaryGroup (Fin 2) ℂ`, an instance of the general definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Heisenberg group",
+      "anchor": {
+        "section": "Additional examples",
+        "snippet": "The Heisenberg group is a connected nilpotent Lie group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `HeisenbergGroup` definition was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Lorentz group",
+      "anchor": {
+        "section": "Additional examples",
+        "snippet": "The Lorentz group is a 6-dimensional Lie group of linear isometries of the Minkowski space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Lorentz group is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Poincaré group",
+      "anchor": {
+        "section": "Additional examples",
+        "snippet": "The Poincaré group is a 10-dimensional Lie group of affine isometries of the Minkowski space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Poincaré group is defined in Mathlib (the `PoincareConjecture` file is unrelated).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Exceptional Lie groups",
+      "anchor": {
+        "section": "Additional examples",
+        "snippet": "The exceptional Lie groups of types G 2 , F 4 , E 6 , E 7 , E 8 have dimensions 14, 52, 78, 133, and 248"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The exceptional Lie groups G₂, F₄, E₆, E₇, E₈ are not formalized as groups in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Symplectic group",
+      "anchor": {
+        "section": "Additional examples",
+        "snippet": "The symplectic group [MATH] consists of all"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.symplecticGroup",
+        "module": "Mathlib.LinearAlgebra.SymplecticGroup",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.symplecticGroup` is defined as matrices preserving the canonical symplectic form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lie algebra of a Lie group",
+      "anchor": {
+        "section": "The Lie algebra associated with a Lie group",
+        "snippet": "To every Lie group we can associate a Lie algebra whose underlying vector space is the tangent space of the Lie group at the identity element"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GroupLieAlgebra",
+        "module": "Mathlib.Geometry.Manifold.GroupLieAlgebra",
+        "match_kind": "exact"
+      },
+      "note": "`GroupLieAlgebra I G` is defined as the tangent space at the identity, equipped with a Lie bracket via left-invariant vector fields.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lie group homomorphism",
+      "anchor": {
+        "section": "Homomorphisms and isomorphisms",
+        "snippet": "If G and H are Lie groups, then a Lie group homomorphism f : G → H is a smooth group homomorphism"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No bundled `LieGroupHom` type was found; one must combine `MonoidHom` with `ContMDiff` ad hoc.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Continuous homomorphisms are analytic",
+      "anchor": {
+        "section": "Homomorphisms and isomorphisms",
+        "snippet": "every continuous homomorphism between real Lie groups turns out to be (real) analytic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The theorem that continuous group homomorphisms between real Lie groups are real analytic is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isomorphism of Lie groups",
+      "anchor": {
+        "section": "Homomorphisms and isomorphisms",
+        "snippet": "Two Lie groups are called isomorphic if there exists a bijective homomorphism between them whose inverse is also a Lie group homomorphism"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No bundled notion of Lie group isomorphism was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lie's third theorem",
+      "anchor": {
+        "section": "Lie group versus Lie algebra isomorphisms",
+        "snippet": "Lie's third theorem , which states that every finite-dimensional, real Lie algebra is the Lie algebra of some (linear) Lie group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lie's third theorem (integration of finite-dim Lie algebras) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Ado's theorem",
+      "anchor": {
+        "section": "Lie group versus Lie algebra isomorphisms",
+        "snippet": "Ado's theorem , which says every finite-dimensional real Lie algebra is isomorphic to a matrix Lie algebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ado's theorem on faithful representations of finite-dim Lie algebras is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Simply connected Lie groups determined by Lie algebra",
+      "anchor": {
+        "section": "Lie group versus Lie algebra isomorphisms",
+        "snippet": "two simply connected Lie groups with isomorphic Lie algebras are isomorphic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Lie correspondence for simply connected Lie groups is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Simply connected Lie group",
+      "anchor": {
+        "section": "Simply connected Lie groups",
+        "snippet": "A Lie group [MATH] is said to be simply connected if every loop in"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SimplyConnectedSpace",
+        "module": "Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected",
+        "match_kind": null
+      },
+      "note": "Mathlib has the general `SimplyConnectedSpace` typeclass but no specific `SimplyConnectedLieGroup` notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lifting Lie algebra homomorphisms to simply connected groups",
+      "anchor": {
+        "section": "Simply connected Lie groups",
+        "snippet": "Suppose [MATH] and [MATH] are Lie groups with Lie algebras"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The lifting of Lie algebra homomorphisms to Lie group homomorphisms from a simply connected group is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exponential map (matrix case)",
+      "anchor": {
+        "section": "Exponential map",
+        "snippet": "The exponential map from the Lie algebra [MATH] of the general linear group [MATH] to [MATH] is defined by the matrix exponential"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedSpace.exp",
+        "module": "Mathlib.Analysis.Normed.Algebra.MatrixExponential",
+        "match_kind": "invocation"
+      },
+      "note": "The matrix exponential is `NormedSpace.exp` applied to matrices, with dedicated lemmas like `Matrix.exp_add_of_commute`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exponential map (general Lie group)",
+      "anchor": {
+        "section": "Exponential map",
+        "snippet": "This is called the exponential map , and it maps the Lie algebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general Lie group exponential map (via one-parameter subgroups) is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Baker–Campbell–Hausdorff formula",
+      "anchor": {
+        "section": "Exponential map",
+        "snippet": "the Baker–Campbell–Hausdorff formula : there exists a neighborhood"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Baker–Campbell–Hausdorff formula is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Non-surjectivity of exp for SL(2,R)",
+      "anchor": {
+        "section": "Exponential map",
+        "snippet": "the exponential map of SL(2, R ) is not surjective"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Non-surjectivity of the matrix exponential on SL(2,ℝ) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lie subgroup",
+      "anchor": {
+        "section": "Lie subgroup",
+        "snippet": "A Lie subgroup [MATH] of a Lie group [MATH] is a Lie group that is a subset of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `LieSubgroup` notion was found; only general `Subgroup` and `ClosedSubgroup` exist.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cartan's closed subgroup theorem",
+      "anchor": {
+        "section": "Lie subgroup",
+        "snippet": "According to Cartan's theorem , a closed subgroup of [MATH] admits a unique smooth structure"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cartan's closed subgroup theorem (closed subgroup of a Lie group is a Lie subgroup) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Correspondence between Lie subalgebras and connected Lie subgroups",
+      "anchor": {
+        "section": "Lie subgroup",
+        "snippet": "The exponential map gives a one-to-one correspondence between the connected Lie subgroups of a connected Lie group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Lie subalgebra ↔ connected Lie subgroup correspondence is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Levi decomposition",
+      "anchor": {
+        "section": "Classification",
+        "snippet": "the Levi decomposition , which says that every simply connected Lie group is the semidirect product of a solvable normal subgroup and a semisimple subgroup"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Levi decomposition is not formalized for Lie groups in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Classification of connected compact Lie groups",
+      "anchor": {
+        "section": "Classification",
+        "snippet": "Connected compact Lie groups are all known: they are finite central quotients of a product of copies of the circle group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classification of compact connected Lie groups is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Simply connected solvable Lie groups embed in upper triangular matrices",
+      "anchor": {
+        "section": "Classification",
+        "snippet": "Any simply connected solvable Lie group is isomorphic to a closed subgroup of the group of invertible upper triangular matrices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Embedding of simply connected solvable Lie groups into upper triangular matrices is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Simply connected nilpotent Lie groups embed in unipotent upper triangular matrices",
+      "anchor": {
+        "section": "Classification",
+        "snippet": "Any simply connected nilpotent Lie group is isomorphic to a closed subgroup of the group of invertible upper triangular matrices with 1s on the diagonal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Embedding of simply connected nilpotent Lie groups into unipotent upper triangular matrices is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Simple Lie group",
+      "anchor": {
+        "section": "Classification",
+        "snippet": "Simple Lie groups are sometimes defined to be those that are simple as abstract groups"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LieAlgebra.IsSimple",
+        "module": "Mathlib.Algebra.Lie.Semisimple.Defs",
+        "match_kind": null
+      },
+      "note": "Simplicity is defined for Lie algebras (`LieAlgebra.IsSimple`), but not for Lie groups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Semisimple Lie group",
+      "anchor": {
+        "section": "Classification",
+        "snippet": "Semisimple Lie groups are Lie groups whose Lie algebra is a product of simple Lie algebras"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LieAlgebra.IsSemisimple",
+        "module": "Mathlib.Algebra.Lie.Semisimple.Defs",
+        "match_kind": null
+      },
+      "note": "`LieAlgebra.IsSemisimple` exists for Lie algebras, but semisimple Lie groups are not separately defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every Lie group is parallelizable",
+      "anchor": {
+        "section": "Classification",
+        "snippet": "Every Lie group is parallelizable , and hence an orientable manifold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The statement that every Lie group is parallelizable (trivial tangent bundle) is not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

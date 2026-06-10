@@ -1,0 +1,313 @@
+{
+  "slug": "Invariant_theory",
+  "wikipedia_title": "Invariant theory",
+  "display_title": "Invariant theory",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "example",
+      "label": "Determinant as SL_n invariant",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "if we consider the action of the special linear group"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.SpecialLinearGroup.det_coe",
+        "module": "Mathlib.LinearAlgebra.Matrix.SpecialLinearGroup",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has `SL_n` and `det_coe : det A = 1`, but does not state the invariance of `det` as a polynomial function under the SL action on matrices.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Representation and induced action on polynomials",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "A representation of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Representation",
+        "module": "Mathlib.RepresentationTheory.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Group representations exist as `Representation k G V`, but the induced action on the polynomial ring/symmetric algebra of `V` is not packaged as a single named declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ring of invariant polynomials",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "With this action it is natural to consider the subspace of all polynomial functions which are invariant"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FixedPoints.subalgebra",
+        "module": "Mathlib.Algebra.Algebra.Subalgebra.Operations",
+        "match_kind": "generalization"
+      },
+      "note": "`FixedPoints.subalgebra` gives the fixed subalgebra under any `MulSemiringAction`, which specializes to the ring of invariant polynomials, but no Mathlib decl names this specialization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "First problem of invariant theory",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "First problem of invariant theory"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an informal/open meta-question (finding generators of the invariant ring) and is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Invariants of square matrices under left multiplication",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "the space of square matrices, and the action"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No grep hit for a description of the invariant ring of `n×n` matrices under left GL-multiplication in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Finite generation for finite groups in characteristic zero",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "answered in the affirmative in a wide generality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Finite generation of the invariant ring `k[V]^G` for finite `G` in characteristic 0 is not stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Finite generation of syzygies via Hilbert's basis theorem",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "is the module of polynomial relations between the basis elements"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.isNoetherianRing",
+        "module": "Mathlib.RingTheory.Polynomial.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Hilbert's basis theorem is `Polynomial.isNoetherianRing`, but its application to finite generation of the syzygy module of invariants is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Main theorem on symmetric functions",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "main theorem on the symmetric functions that described the invariants"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MvPolynomial.esymmAlgHom_bijective",
+        "module": "Mathlib.RingTheory.MvPolynomial.Symmetric.FundamentalTheorem",
+        "match_kind": "exact"
+      },
+      "note": "The fundamental theorem of symmetric polynomials is formalized via the `esymmAlgHom` algebra isomorphism in `Mathlib.RingTheory.MvPolynomial.Symmetric.FundamentalTheorem`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Chevalley–Shephard–Todd theorem",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "Chevalley–Shephard–Todd theorem characterizes finite groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Chevalley–Shephard–Todd or pseudo-reflection development found in Mathlib (only a 1000-theorems entry).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Invariant monomials from a group action",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Simple examples of invariant theory come from computing the invariant monomials"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib computation of invariant monomials for the standard small examples (e.g. `ℤ/n` acting diagonally) was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Subalgebra of invariants of n-ary r-ics",
+      "anchor": {
+        "section": "The nineteenth-century origins",
+        "snippet": "The point is then to define the subalgebra of invariants"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classical invariants of `n`-ary `r`-ic forms under `GL_n` are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Klein's invariant rings of binary polyhedral groups",
+      "anchor": {
+        "section": "The nineteenth-century origins",
+        "snippet": "Felix Klein in computing the invariant rings of finite group actions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Klein's invariant rings of binary polyhedral groups (Du Val singularities) are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hilbert's finite generation theorem",
+      "anchor": {
+        "section": "Hilbert's theorems",
+        "snippet": "proved that if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hilbert's theorem on finite generation of invariant rings under `GL_n` (or reductive groups) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Reynolds operator properties",
+      "anchor": {
+        "section": "Hilbert's theorems",
+        "snippet": "His proof used the Reynolds operator"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Representation.averageMap",
+        "module": "Mathlib.RepresentationTheory.Invariants",
+        "match_kind": "special_case"
+      },
+      "note": "For finite groups (with invertible order) `Representation.averageMap` is the Reynolds operator, with projection and module-map properties proved (`averageMap_invariant`, `averageMap_id`, `isProj_averageMap`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Construction of Reynolds operator",
+      "anchor": {
+        "section": "Hilbert's theorems",
+        "snippet": "Hilbert constructed the Reynolds operator explicitly using Cayley's omega process"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cayley's Ω-process construction of the Reynolds operator for `SL_n` is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Proof of Hilbert's theorem via Reynolds operator",
+      "anchor": {
+        "section": "Hilbert's theorems",
+        "snippet": "Given the Reynolds operator, Hilbert's theorem is proved as follows"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Reynolds-operator-based proof of finite generation of the invariant ring is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hilbert-Nagata theorem",
+      "anchor": {
+        "section": "Hilbert-Nagata theorem",
+        "snippet": "Then the ring of invariants"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `NoetherNormalization` and mentions Nagata in references, but the Hilbert–Nagata theorem on finite generation of invariants of geometrically reductive groups is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite generation for finite groups of order prime to characteristic",
+      "anchor": {
+        "section": "Hilbert-Nagata theorem",
+        "snippet": "This theorem implies that if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This corollary of Hilbert–Nagata to finite groups with `|G|` invertible is not stated as a Mathlib theorem about the invariant ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite generation for reductive groups in characteristic zero",
+      "anchor": {
+        "section": "Hilbert-Nagata theorem",
+        "snippet": "Another corollary is that if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Finite generation of the invariant ring under reductive groups in characteristic zero is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

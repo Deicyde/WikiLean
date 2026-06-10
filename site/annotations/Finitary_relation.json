@@ -1,0 +1,409 @@
+{
+  "slug": "Finitary_relation",
+  "wikipedia_title": "Finitary relation",
+  "display_title": "Finitary relation",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Finitary relation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a finitary relation over a sequence of sets"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SetRel",
+        "module": "Mathlib.Data.Rel",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has the binary case via `SetRel α β := Set (α × β)`, but no general n-ary relation type over an arbitrary sequence of sets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Arity of a relation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is called the arity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of arity attached to a relation appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Graph of a relation",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "called the graph of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Function.graph",
+        "module": "Mathlib.Data.Rel",
+        "match_kind": "special_case"
+      },
+      "note": "`Function.graph` gives the graph of a function as a `SetRel`; the more general 'graph of a relation' (the underlying set in the n-ary case) is not separately formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "R-related notation",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "is read \" x 1 , ..., x n are R -related\""
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SetRel",
+        "module": "Mathlib.Data.Rel",
+        "match_kind": "special_case"
+      },
+      "note": "For the binary case Mathlib provides the scoped notation `a ~[R] b` for `(a,b) ∈ R`; no n-ary analogue exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "ith domain of R",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "is called the i th domain of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of the i-th domain of an n-ary relation in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Nonsimple domain",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "is called a nonsimple domain of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The 'nonsimple domain' terminology is database-theoretic and not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "ith domain of definition (active domain)",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "is called the i th domain of definition or active domain of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SetRel.dom",
+        "module": "Mathlib.Data.Rel",
+        "match_kind": "special_case"
+      },
+      "note": "For binary relations, `SetRel.dom`/`SetRel.cod` give the active domain/codomain (projections of the support); no n-ary version exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Total on ith domain",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "is said to be total on its i th domain"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Relator.LeftTotal",
+        "module": "Mathlib.Logic.Relator",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib defines `Relator.LeftTotal` and `Relator.RightTotal` for binary relations; no general 'total on i-th domain' for n-ary.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Left-total / serial / right-total / surjective",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "it is also said to be left-total"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Relator.LeftTotal",
+        "module": "Mathlib.Logic.Relator",
+        "match_kind": "exact"
+      },
+      "note": "`Relator.LeftTotal` (`∀ a, ∃ b, R a b`) and `Relator.RightTotal` (`∀ b, ∃ a, R a b`) match the binary notions exactly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unique on a set; primary key",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "is said to be unique on"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The relational 'unique on a set'/primary-key terminology is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Left-unique (injective) / univalent (right-unique)",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "it is also said to be left-unique or injective"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Relator.LeftUnique",
+        "module": "Mathlib.Logic.Relator",
+        "match_kind": "exact"
+      },
+      "note": "`Relator.LeftUnique` and `Relator.RightUnique` match the binary left-/right-unique definitions exactly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homogeneous vs heterogeneous relation",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "called a homogeneous relation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SetRel",
+        "module": "Mathlib.Data.Rel",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib distinguishes `SetRel α α` from `SetRel α β` implicitly through types, but does not name the homogeneous/heterogeneous dichotomy.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Empty relation over empty domain",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "the only relation over such a sequence of domains is the empty relation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific declaration about the empty n-ary relation over an empty sequence of domains.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Characteristic function of R",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "The characteristic function of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Set.indicator",
+        "module": "Mathlib.Algebra.Indicator",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib treats relations as `Prop`-valued functions natively; `Set.indicator` provides general characteristic functions but not as a notion tied to relations specifically.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "n-ary predicate",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "it is common to refer to a Boolean-valued function as an"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib uses `α → β → ... → Prop` directly as n-ary predicates; there is no named 'n-ary predicate' wrapper.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Definition of n-ary relation (theorem box)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Definition — An n -ary relation R on set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No bundled n-ary relation type indexed by `Fin n → Type*` carrying a subset of the product is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Nullary relations",
+      "anchor": {
+        "section": "Nullary",
+        "snippet": "Nullary (0-ary) relations count only two members"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Nullary relations as a distinguished concept are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unary relations",
+      "anchor": {
+        "section": "Unary",
+        "snippet": "Unary (1-ary) relations can be viewed as a collection of members"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Set",
+        "module": "Mathlib.Data.Set.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Unary relations correspond to `Set α` (or `α → Prop`), which Mathlib uses throughout, but they are not labelled 'unary relations'.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Nullary function is a unary relation",
+      "anchor": {
+        "section": "Unary",
+        "snippet": "Every nullary function is a unary relation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This informal observation is not stated as a lemma in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Binary relations",
+      "anchor": {
+        "section": "Binary",
+        "snippet": "Binary (2-ary) relations are the most commonly studied form"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SetRel",
+        "module": "Mathlib.Data.Rel",
+        "match_kind": "exact"
+      },
+      "note": "`SetRel α β := Set (α × β)` formalizes binary relations exactly, with extensive supporting API.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Equality and inequality",
+      "anchor": {
+        "section": "Binary",
+        "snippet": "Equality and inequality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Eq",
+        "module": "Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "Equality `Eq` (and inequality `Ne`) are pervasive core/Mathlib binary relations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Divisibility",
+      "anchor": {
+        "section": "Binary",
+        "snippet": "Divisibility , denoted by the sign"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Dvd.dvd",
+        "module": "Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "The `Dvd` typeclass and its `∣` notation provide the divisibility relation throughout Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Set membership",
+      "anchor": {
+        "section": "Binary",
+        "snippet": "Set membership , denoted by the sign"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Membership.mem",
+        "module": "Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "The `Membership` typeclass with `∈` notation provides set membership as a binary relation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ternary relations",
+      "anchor": {
+        "section": "Ternary",
+        "snippet": "Ternary (3-ary) relations include"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ternary relations are written ad hoc as `α → β → γ → Prop`; no dedicated 'ternary relation' definition exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ternary relation 'x thinks that y likes z'",
+      "anchor": {
+        "section": "Example",
+        "snippet": "Consider the ternary relation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This illustrative example is not present in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

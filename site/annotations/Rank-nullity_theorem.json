@@ -1,0 +1,409 @@
+{
+  "slug": "Rank-nullity_theorem",
+  "wikipedia_title": "Rank–nullity theorem",
+  "display_title": "Rank–nullity theorem",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "theorem",
+      "label": "Rank–nullity theorem (statement)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the number of columns of a matrix"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.finrank_range_add_finrank_ker",
+        "module": "Mathlib.LinearAlgebra.FiniteDimensional.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "Direct finrank-form statement that range and kernel dimensions add to the domain dimension.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Injectivity/surjectivity implies bijectivity",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "either injectivity or surjectivity implies bijectivity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.injective_iff_surjective_of_finrank_eq_finrank",
+        "module": "Mathlib.LinearAlgebra.FiniteDimensional.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "States that for finite-dimensional spaces of equal dimension, injectivity equals surjectivity for a linear map.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Rank–nullity for linear transformations",
+      "anchor": {
+        "section": "Linear transformations",
+        "snippet": "is the rank of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.rank_range_add_rank_ker",
+        "module": "Mathlib.LinearAlgebra.Dimension.RankNullity",
+        "match_kind": "exact"
+      },
+      "note": "Direct cardinal-valued rank-nullity for a linear map under HasRankNullity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Refinement via splitting lemma (isomorphism form)",
+      "anchor": {
+        "section": "Linear transformations",
+        "snippet": "This theorem can be refined via the splitting lemma"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.quotKerEquivRange",
+        "module": "Mathlib.LinearAlgebra.Isomorphisms",
+        "match_kind": "exact"
+      },
+      "note": "First isomorphism theorem giving the explicit linear equivalence M/ker f ≃ₗ range f.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Rank–nullity for matrices",
+      "anchor": {
+        "section": "Matrices",
+        "snippet": "the rank–nullity theorem for an"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.finrank_range_add_finrank_ker",
+        "module": "Mathlib.LinearAlgebra.FiniteDimensional.Lemmas",
+        "match_kind": "generalization"
+      },
+      "note": "No dedicated Matrix-level rank-nullity statement; it follows by applying the linear-map version to Matrix.mulVecLin (used internally in Matrix/Rank.lean).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "First proof (general case via linear maps)",
+      "anchor": {
+        "section": "Proofs",
+        "snippet": "The first"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.rank_range_add_rank_ker",
+        "module": "Mathlib.LinearAlgebra.Dimension.RankNullity",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib's proof in Dimension/RankNullity follows the abstract argument extending a kernel basis.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Second proof (homogeneous system)",
+      "anchor": {
+        "section": "Proofs",
+        "snippet": "The second proof"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The article's specific homogeneous-system proof via a null-space basis matrix N is not present as a separate proof.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Codomain need not be finite-dimensional",
+      "anchor": {
+        "section": "Proofs",
+        "snippet": "there is no such assumption on the codomain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.rank_range_add_rank_ker",
+        "module": "Mathlib.LinearAlgebra.Dimension.RankNullity",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's statement requires no finiteness on the codomain M₁, matching this remark.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Extension of kernel basis to full basis",
+      "anchor": {
+        "section": "First proof",
+        "snippet": "by the Steinitz exchange lemma"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Basis.extend",
+        "module": "Mathlib.LinearAlgebra.Basis.VectorSpace",
+        "match_kind": "exact"
+      },
+      "note": "Extends a linearly independent set (e.g., a kernel basis) to a basis of the whole space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Images of extension vectors form a basis of image",
+      "anchor": {
+        "section": "First proof",
+        "snippet": "We now claim that"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.rank_range_add_rank_ker",
+        "module": "Mathlib.LinearAlgebra.Dimension.RankNullity",
+        "match_kind": "invocation"
+      },
+      "note": "No named lemma for the basis-of-range claim, but it appears implicitly in the rank-nullity proof.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linear independence of image vectors",
+      "anchor": {
+        "section": "First proof",
+        "snippet": "This shows that"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No standalone Mathlib lemma; this independence sub-step appears only inside the rank-nullity proof.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence of n−r linearly independent null-space solutions",
+      "anchor": {
+        "section": "Second proof",
+        "snippet": "There exists a set of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.finrank_range_add_finrank_ker",
+        "module": "Mathlib.LinearAlgebra.FiniteDimensional.Lemmas",
+        "match_kind": "invocation"
+      },
+      "note": "A basis of LinearMap.ker exists with cardinality n−r by combining finrank-rank-nullity with Module.finBasisOfFinrankEq; no single named statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every solution is a linear combination of these solutions",
+      "anchor": {
+        "section": "Second proof",
+        "snippet": "That every other solution is a linear combination"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is just the spanning property of a kernel basis; no specific named lemma stating it as in the article.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Construction of null-space basis matrix N",
+      "anchor": {
+        "section": "Second proof",
+        "snippet": "whose columns form a basis of the null space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib decl constructs an explicit null-space basis matrix N for a given matrix A.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rank factorization of dependent columns",
+      "anchor": {
+        "section": "Second proof",
+        "snippet": "see rank factorization"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No 'rank factorization' decomposition A = CF appears in Mathlib's Matrix.Rank library.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Columns of N are particular solutions",
+      "anchor": {
+        "section": "Second proof",
+        "snippet": "are particular solutions of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No matrix-level statement that the columns of a null-space basis matrix satisfy AN = 0.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Columns of N are linearly independent",
+      "anchor": {
+        "section": "Second proof",
+        "snippet": "are linearly independent because"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No named lemma asserts the column independence of a null-space basis matrix N.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cokernel of a linear transformation",
+      "anchor": {
+        "section": "A third fundamental subspace",
+        "snippet": "the cokernel of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.Presentation.cokernel",
+        "module": "Mathlib.Algebra.Module.Presentation.Cokernel",
+        "match_kind": "special_case"
+      },
+      "note": "Cokernel is represented as the quotient M₂ ⧸ LinearMap.range f; no top-level `LinearMap.cokernel` definition in linear algebra, only via category-theoretic ModuleCat or presentations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of linear algebra",
+      "anchor": {
+        "section": "A third fundamental subspace",
+        "snippet": "fundamental theorem of linear algebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No single named decl bundling the four-subspace dimension identities for a matrix as Strang's fundamental theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence with first isomorphism theorem",
+      "anchor": {
+        "section": "Reformulations and generalizations",
+        "snippet": "first isomorphism theorem of algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.quotKerEquivRange",
+        "module": "Mathlib.LinearAlgebra.Isomorphisms",
+        "match_kind": "exact"
+      },
+      "note": "First isomorphism theorem for modules is provided as a linear equivalence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Short exact sequences of vector spaces split",
+      "anchor": {
+        "section": "Reformulations and generalizations",
+        "snippet": "each short exact sequence of vector spaces splits"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ModuleCat.Basis.ofShortExact",
+        "module": "Mathlib.Algebra.Category.ModuleCat.Free",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib provides a basis construction from a short exact sequence of free modules; vector-space-specific splitting isn't a single named theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Alternating sum of dimensions in an exact sequence",
+      "anchor": {
+        "section": "Reformulations and generalizations",
+        "snippet": "this formulation is susceptible to a generalization"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ModuleCat.free_shortExact_finrank_add",
+        "module": "Mathlib.Algebra.Category.ModuleCat.Free",
+        "match_kind": "special_case"
+      },
+      "note": "Only the 3-term short-exact case is formalized; no general alternating-sum statement over an arbitrary-length exact sequence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Index of a linear map",
+      "anchor": {
+        "section": "Reformulations and generalizations",
+        "snippet": "The index of a linear map"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `LinearMap.index` or Fredholm-index definition is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Rank–nullity as index identity",
+      "anchor": {
+        "section": "Reformulations and generalizations",
+        "snippet": "is equivalent to the statement"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without an index definition, the index-form of rank-nullity (index = dim T − dim S) is not stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Atiyah–Singer index theorem",
+      "anchor": {
+        "section": "Reformulations and generalizations",
+        "snippet": "Atiyah–Singer index theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Atiyah–Singer index theorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

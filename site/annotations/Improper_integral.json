@@ -1,0 +1,553 @@
+{
+  "slug": "Improper_integral",
+  "wikipedia_title": "Improper integral",
+  "display_title": "Improper integral",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Improper integral",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "an improper integral is an extension of the notion of a definite integral"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.AECover",
+        "module": "Mathlib.MeasureTheory.Integral.IntegralEqImproper",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has no top-level `ImproperIntegral` definition; the AECover framework and `intervalIntegral_tendsto_integral_Ioi` provide the underlying machinery.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "First, second, and third kind",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The first three forms are improper because the integrals are taken over an unbounded interval"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize the textbook three-kind classification of improper integrals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Improper integral as a limit (case 1)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the improper integral must be rewritten using one or more limits"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.intervalIntegral_tendsto_integral_Ioi",
+        "module": "Mathlib.MeasureTheory.Integral.IntegralEqImproper",
+        "match_kind": "exact"
+      },
+      "note": "`intervalIntegral_tendsto_integral_Ioi` (and the `Iic` version) expresses the integral on `Ioi a` as the limit of definite integrals, exactly the improper-integral-as-limit definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Improper integral with interior discontinuity",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Here both limits must converge to a finite value for the improper integral to be said to converge"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.AECover",
+        "module": "Mathlib.MeasureTheory.Integral.IntegralEqImproper",
+        "match_kind": "generalization"
+      },
+      "note": "Splitting at an interior singularity is not a named concept, but the AECover formalism can express such two-sided limits.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Improper integral with discontinuity at endpoint",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "with a discontinuity of any kind"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.intervalIntegral_tendsto_integral_Ioi",
+        "module": "Mathlib.MeasureTheory.Integral.IntegralEqImproper",
+        "match_kind": "generalization"
+      },
+      "note": "Endpoint singularities are handled implicitly through the AECover/Ioi-limit framework rather than as a dedicated definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Integral of 1/x^2 on [1,∞)",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the Riemann integral can often be extended by continuity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "integral_Ioi_rpow_of_lt",
+        "module": "Mathlib.Analysis.SpecialFunctions.ImproperIntegrals",
+        "match_kind": "generalization"
+      },
+      "note": "`integral_Ioi_rpow_of_lt` evaluates `∫ x in Ioi c, x^a` for `a < -1`, which covers `a = -2`, `c = 1`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Integral with unbounded integrand on [0,1]",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The problem here is that the integrand is unbounded in the domain of integration"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "integrableOn_Ioi_rpow_iff",
+        "module": "Mathlib.Analysis.SpecialFunctions.ImproperIntegrals",
+        "match_kind": "generalization"
+      },
+      "note": "The specific `∫₀¹ x^{-1/2}` example is not stated, but `integrableOn_Ioi_rpow_iff` and related lemmas cover its convergence behavior.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Doubly improper integral of 1/((x+1)√x)",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Thus this is a doubly improper integral"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific doubly improper example is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Divergent improper integrals of 1/x and 1/√x",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "a limit might fail to exist, or might be infinite"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "not_integrableOn_Ioi_rpow",
+        "module": "Mathlib.Analysis.SpecialFunctions.ImproperIntegrals",
+        "match_kind": "generalization"
+      },
+      "note": "`not_integrableOn_Ioi_rpow` shows `x^s` is never integrable on `Ioi 0`, capturing the divergence of `1/x` and `1/√x`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Splitting at an interior singularity",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "an integrand is unbounded near an interior point, in which case the integral must be split at that point"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.AECover",
+        "module": "Mathlib.MeasureTheory.Integral.IntegralEqImproper",
+        "match_kind": "generalization"
+      },
+      "note": "Interval-additivity of integrals lets one split at an interior point, but the improper-splitting protocol is not a named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convergence of an improper integral",
+      "anchor": {
+        "section": "Convergence of the integral",
+        "snippet": "An improper integral converges if the limit defining it exists"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integrableOn_Ioi_of_intervalIntegral_norm_bounded",
+        "module": "Mathlib.MeasureTheory.Integral.IntegralEqImproper",
+        "match_kind": "generalization"
+      },
+      "note": "Convergence is captured via integrability on `Ioi a` together with `intervalIntegral_tendsto_integral_Ioi`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Divergence to infinity",
+      "anchor": {
+        "section": "Convergence of the integral",
+        "snippet": "It is also possible for an improper integral to diverge to infinity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not have a named concept of an improper integral diverging to `+∞`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Divergence by oscillation",
+      "anchor": {
+        "section": "Convergence of the integral",
+        "snippet": "This is called divergence by oscillation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no `divergence by oscillation` concept in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Improper integral with two infinite endpoints",
+      "anchor": {
+        "section": "Convergence of the integral",
+        "snippet": "can be defined by taking two separate limits"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.AECover",
+        "module": "Mathlib.MeasureTheory.Integral.IntegralEqImproper",
+        "match_kind": "generalization"
+      },
+      "note": "AECover supports two-sided limit definitions (e.g. via `Ioc (-n) n`) but the textbook two-limit definition is not a named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Gaussian integral and infinite example",
+      "anchor": {
+        "section": "Convergence of the integral",
+        "snippet": "An example of an improper integral where both endpoints are infinite is the Gaussian integral"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "integral_gaussian",
+        "module": "Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral",
+        "match_kind": "exact"
+      },
+      "note": "`integral_gaussian` proves `∫ x : ℝ, exp (-b * x^2) = √(π / b)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cauchy principal value (two infinite endpoints)",
+      "anchor": {
+        "section": "Convergence of the integral",
+        "snippet": "one can however define an improper integral in the sense of Cauchy principal value"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cauchy principal value is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Riemann improper vs Lebesgue improper",
+      "anchor": {
+        "section": "Types of integrals",
+        "snippet": "often an integral which only exists as an improper Riemann integral will exist as a (proper) Lebesgue integral"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib uses the Bochner/Lebesgue integral throughout; the comparison theorem itself is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Henstock–Kurzweil avoids improper integration",
+      "anchor": {
+        "section": "Types of integrals",
+        "snippet": "For the Henstock–Kurzweil integral , improper integration is not necessary"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Although `BoxIntegral.IntegrationParams.Henstock` is defined, the principle that HK eliminates improper integration is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Apostol Theorem 10.33",
+      "anchor": {
+        "section": "Improper Riemann integrals and Lebesgue integrals",
+        "snippet": "If a function f is Riemann integrable on"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Apostol's exact statement comparing Riemann integrability on compact subintervals with Lebesgue integrability is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Properly improper integral",
+      "anchor": {
+        "section": "Improper Riemann integrals and Lebesgue integrals",
+        "snippet": "Such cases are \"properly improper\" integrals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of `properly improper` integrals is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Singularities of an improper integral",
+      "anchor": {
+        "section": "Singularities",
+        "snippet": "One can speak of the singularities of an improper integral"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No singularity catalog for improper integrals exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cauchy principal value",
+      "anchor": {
+        "section": "Cauchy principal value",
+        "snippet": "The former is the Cauchy principal value of the otherwise ill-defined expression"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cauchy principal value is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Summability methods",
+      "anchor": {
+        "section": "Summability",
+        "snippet": "These are called summability methods"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "General summability methods for integrals are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cesàro (C, α) summability of an integral",
+      "anchor": {
+        "section": "Summability",
+        "snippet": "is Cesàro summable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cesàro summability for integrals is not formalized; only a Cesàro-type asymptotic for sequences appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "(C,0) summability equals improper convergence",
+      "anchor": {
+        "section": "Summability",
+        "snippet": "An integral is (C, 0) summable precisely when it exists as an improper integral"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This equivalence is not in Mathlib since (C, α) summability of integrals is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Grandi's series integral",
+      "anchor": {
+        "section": "Summability",
+        "snippet": "This is an integral version of Grandi's series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Grandi-series integral example is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multivariable improper integral",
+      "anchor": {
+        "section": "Multivariable improper integrals",
+        "snippet": "The improper integral can also be defined for functions of several variables"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.AECover",
+        "module": "Mathlib.MeasureTheory.Integral.IntegralEqImproper",
+        "match_kind": "generalization"
+      },
+      "note": "AECover is stated in arbitrary measure spaces, but the multivariable Riemann improper integral as such is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Improper integral over R^n via cubes",
+      "anchor": {
+        "section": "Improper integrals over arbitrary domains",
+        "snippet": "is a non-negative function that is Riemann integrable over every compact cube"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib uses the Bochner integral; the multivariable Riemann-on-cubes construction is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Extension by zero outside A",
+      "anchor": {
+        "section": "Improper integrals over arbitrary domains",
+        "snippet": "is extended to a function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integrable_indicator_iff",
+        "module": "Mathlib.MeasureTheory.Integral.IntegrableOn",
+        "match_kind": "exact"
+      },
+      "note": "`integrable_indicator_iff` characterizes integrability of the zero-extension via the indicator function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Riemann integral over a bounded domain",
+      "anchor": {
+        "section": "Improper integrals over arbitrary domains",
+        "snippet": "The Riemann integral of a function over a bounded domain"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "BoxIntegral.integral",
+        "module": "Mathlib.Analysis.BoxIntegral.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`BoxIntegral` provides multivariable Riemann-style integrals over boxes, but the textbook 'integrate the zero-extension over a containing box' presentation is not given.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Improper Riemann integral over arbitrary unbounded domain",
+      "anchor": {
+        "section": "Improper integrals over arbitrary domains",
+        "snippet": "if A is unbounded, then the improper Riemann integral over an arbitrary domain"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Riemann improper integral over an arbitrary unbounded domain via exhaustion by cubes is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Improper integral via truncation at M",
+      "anchor": {
+        "section": "Improper integrals with singularities",
+        "snippet": "the improper integral of f is defined by truncating f at some cutoff"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The truncate-at-cutoff-then-take-limit definition is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Positive and negative part decomposition",
+      "anchor": {
+        "section": "Functions with both positive and negative values",
+        "snippet": "A more general function f can be decomposed as a difference of its positive part"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.SimpleFunc.posPart_sub_negPart",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.L1",
+        "match_kind": "exact"
+      },
+      "note": "`posPart_sub_negPart` formalizes `f = f⁺ - f⁻`; `posPart`/`negPart` are defined throughout the order/Lp library.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Absolute convergence of improper Riemann integral",
+      "anchor": {
+        "section": "Functions with both positive and negative values",
+        "snippet": "the improper integral necessarily converges absolutely"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.integrable_norm_iff",
+        "module": "Mathlib.MeasureTheory.Function.L1Space.Integrable",
+        "match_kind": "generalization"
+      },
+      "note": "`integrable_norm_iff` shows Bochner integrability is equivalent to integrability of `‖f‖`, but the Riemann-improper version of the article's claim is not stated.",
+      "provenance": "ai"
+    }
+  ]
+}

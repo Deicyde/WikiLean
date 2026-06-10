@@ -1,0 +1,505 @@
+{
+  "slug": "Equation_solving",
+  "wikipedia_title": "Equation solving",
+  "display_title": "Equation solving",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Solution of an equation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A solution is an assignment of values to the unknown variables that makes the equality in the equation true"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Set.preimage",
+        "module": "Mathlib.Data.Set.Image",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has no generic notion of 'solution of an equation'; the closest abstraction is `Set.preimage`, capturing solutions of `f x = c` as `f ⁻¹' {c}`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Root of an equation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A solution of an equation is often called a root of the equation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.IsRoot",
+        "module": "Mathlib.Algebra.Polynomial.Eval.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Polynomial roots are captured by `Polynomial.IsRoot p x`, the standard Mathlib analogue of being a solution of `p = 0`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Solution set",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The set of all solutions of an equation is its solution set"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.rootSet",
+        "module": "Mathlib.Algebra.Polynomial.Roots",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes the solution set of `p = 0` as `Polynomial.rootSet`, but has no general 'solution set' construct beyond `Set.preimage`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Numerical vs symbolic solving",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Solving an equation numerically means that only numbers are admitted as solutions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a meta-distinction about solving strategies, not a mathematical object expressible in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Solving x + y = 2x − 1",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the equation x + y = 2 x – 1 is solved for the unknown x by the expression"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an illustrative manipulation, not a theorem to be formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Parameters vs unknowns convention",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "it is common to reserve x , y , z , ... to denote the unknowns, and to use a , b , c , ... to denote the known variables"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a notational convention with no formal content.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "General form of an equation",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "where f is a function , x 1 , ..., x n are the unknowns, and c is a constant"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Set.preimage",
+        "module": "Mathlib.Data.Set.Image",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has no single 'equation' type; the abstract form `f(x₁,...,xₙ) = c` is implicit in `Set.preimage f {c}`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Solutions as inverse image",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "Its solutions are the elements of the inverse image"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.preimage",
+        "module": "Mathlib.Data.Set.Image",
+        "match_kind": "exact"
+      },
+      "note": "The preimage of a set under a function is exactly `Set.preimage`, written `f ⁻¹' s`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Plane of solutions in three-space",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "There is a unique plane in three-dimensional space which passes through the three points with these coordinates"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a geometric illustration rather than a theorem, and the specific affine-plane-through-three-points uniqueness is not stated in this concrete form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Solution set of equations or inequalities",
+      "anchor": {
+        "section": "Solution sets",
+        "snippet": "The solution set of a given set of equations or inequalities is the set of all its solutions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Set.preimage",
+        "module": "Mathlib.Data.Set.Image",
+        "match_kind": "generalization"
+      },
+      "note": "No specific 'solution set' construct exists; arbitrary intersections of preimages capture the general notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Diophantine vs real solutions of x² = 2",
+      "anchor": {
+        "section": "Solution sets",
+        "snippet": "This equation can be viewed as a Diophantine equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The contrast between integer and real solutions of `x² = 2` is illustrative; Mathlib has `Irrational.sqrt_two` but not this comparison as a single statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Parametrization of solution sets",
+      "anchor": {
+        "section": "Solution sets",
+        "snippet": "a parametrization is often useful, which consists of expressing the solutions in terms of some of the unknowns or auxiliary variables"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a heuristic concept with no single Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Solution sets as geometric shapes",
+      "anchor": {
+        "section": "Solution sets",
+        "snippet": "Such infinite solution sets can naturally be interpreted as geometric shapes such as lines"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an informal interpretive remark, not a stated theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence of unsolvable problems",
+      "anchor": {
+        "section": "Methods of solution",
+        "snippet": "some problems are known to be unsolvable by an algorithm, such as Hilbert's tenth problem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Dioph",
+        "module": "Mathlib.NumberTheory.Dioph",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `Dioph` and develops Diophantine sets, but the full MRDP theorem / undecidability of Hilbert's tenth problem is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Brute force method",
+      "anchor": {
+        "section": "Brute force, trial and error, inspired guess",
+        "snippet": "the solution set can be found by brute force , that is, by testing each of the possible values"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an informal solution strategy with no mathematical statement to formalize.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Trial and error",
+      "anchor": {
+        "section": "Brute force, trial and error, inspired guess",
+        "snippet": "trial and error may sometimes yield a solution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a heuristic, not a formalizable concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Elementary algebra for linear/rational equations",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "Equations involving linear or simple rational functions of a single real-valued unknown"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a meta-statement about applicability of techniques, not a single theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linear algebra for systems",
+      "anchor": {
+        "section": "Systems of linear equations",
+        "snippet": "For solving larger systems, algorithms are used that are based on linear algebra"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.cramer",
+        "module": "Mathlib.LinearAlgebra.Matrix.Adjugate",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib formalizes algorithms like Cramer's rule (`Matrix.cramer`) but not a global statement about linear-algebra-based solvability of systems.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Solvability of polynomial equations by degree",
+      "anchor": {
+        "section": "Polynomial equations",
+        "snippet": "Polynomial equations of degree up to four can be solved exactly using algebraic methods"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.not_solvable_by_rad",
+        "module": "Mathlib.FieldTheory.AbelRuffini",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the Abel–Ruffini direction (insolvability for degree ≥ 5) via `solvableByRad` and `AbelRuffini`, but no explicit formula theorems through degree 4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Substitution reducing to quadratic",
+      "anchor": {
+        "section": "Polynomial equations",
+        "snippet": "by using the substitution x = z 1 ⁄ 3 , which simplifies this to a quadratic equation in z"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An illustrative substitution trick, not a theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Diophantine equations",
+      "anchor": {
+        "section": "Diophantine equations",
+        "snippet": "In Diophantine equations the solutions are required to be integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Dioph",
+        "module": "Mathlib.NumberTheory.Dioph",
+        "match_kind": "exact"
+      },
+      "note": "`Dioph` defines Diophantine sets of ℕ-valued tuples, matching the article's concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Diophantine restriction of rational solutions",
+      "anchor": {
+        "section": "Diophantine equations",
+        "snippet": "has as rational solutions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An illustrative example contrasting rational and integer solutions, not a Mathlib theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inverse function",
+      "anchor": {
+        "section": "Inverse functions",
+        "snippet": "Given a function h : A → B , the inverse function, denoted h −1 and defined as h −1 : B → A , is a function such that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.invFun",
+        "module": "Mathlib.Logic.Function.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Function.invFun` is the standard inverse of a function, with `Function.LeftInverse`/`RightInverse` capturing the defining equations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Solving via inverse function",
+      "anchor": {
+        "section": "Inverse functions",
+        "snippet": "if we apply the inverse function to both sides of h ( x ) = c"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Function.LeftInverse",
+        "module": "Mathlib.Logic.Function.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The technique of applying an inverse to both sides corresponds to `Function.LeftInverse`/`invFun_eq`, but the article's general statement is not packaged as a single lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Pre-inverse of projection π₁",
+      "anchor": {
+        "section": "Inverse functions",
+        "snippet": "the projection π 1 : R 2 → R defined by π 1 ( x , y ) = x has no post-inverse, but it has a pre-inverse"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Illustrative example, not a stated theorem in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Examples of inverse functions",
+      "anchor": {
+        "section": "Inverse functions",
+        "snippet": "Examples of inverse functions include the n th root"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "While individual inverse functions like `Real.rpow`/`Real.log` exist, the article's enumeration isn't itself a theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Factorization of equations",
+      "anchor": {
+        "section": "Factorization",
+        "snippet": "If the left-hand side expression of an equation P = 0 can be factorized as P = QR , the solution set of the original solution consists of the union of the solution sets of the two equations Q = 0 and R = 0"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "mul_eq_zero",
+        "module": "Mathlib.Algebra.Ring.Regular",
+        "match_kind": "invocation"
+      },
+      "note": "Over a domain, `mul_eq_zero` gives `Q·R = 0 ↔ Q = 0 ∨ R = 0`, which is the algebraic content of the factorization principle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Factorization using tan x cot x = 1",
+      "anchor": {
+        "section": "Factorization",
+        "snippet": "can be rewritten, using the identity tan x cot x = 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Worked trigonometric example, not a Mathlib theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Newton–Raphson for numerical roots",
+      "anchor": {
+        "section": "Numerical methods",
+        "snippet": "root-finding algorithms like the Newton–Raphson method can be used to find a numerical solution to an equation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.newtonMap",
+        "module": "Mathlib.Dynamics.Newton",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib formalizes the Newton iteration via `Polynomial.newtonMap` and proves fixed-point characterizations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linear algebra for matrix equations",
+      "anchor": {
+        "section": "Matrix equations",
+        "snippet": "Equations involving matrices and vectors of real numbers can often be solved by using methods from linear algebra"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.cramer",
+        "module": "Mathlib.LinearAlgebra.Matrix.Adjugate",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib's matrix theory (`Matrix.cramer`, `Matrix.inv`) supports solving `Ax = b`, but the article's broad claim isn't a single theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Implicit vs explicit solutions of ODEs",
+      "anchor": {
+        "section": "Differential equations",
+        "snippet": "Solutions of differential equations can be implicit or explicit"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ODE_solution_unique",
+        "module": "Mathlib.Analysis.ODE.PicardLindelof",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes ODE solutions (Picard–Lindelöf, Grönwall) but doesn't distinguish implicit vs. explicit solution forms.",
+      "provenance": "ai"
+    }
+  ]
+}

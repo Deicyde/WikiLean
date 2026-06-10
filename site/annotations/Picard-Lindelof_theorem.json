@@ -1,0 +1,371 @@
+{
+  "slug": "Picard-Lindelof_theorem",
+  "wikipedia_title": "Picard–Lindelöf theorem",
+  "display_title": "Picard–Lindelöf theorem",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "last_ai_run": "2026-05-26T19:33:34+00:00",
+  "annotations": [
+    {
+      "kind": "proposition",
+      "label": "Picard–Lindelöf theorem (local existence and uniqueness)",
+      "anchor": {
+        "section": "Theorem",
+        "snippet": "Then there exists some"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsPicardLindelof.exists_eq_forall_mem_Icc_hasDerivWithinAt",
+        "module": "Mathlib.Analysis.ODE.PicardLindelof",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib bundles the rectangle/Lipschitz/continuity hypotheses into `IsPicardLindelof` and concludes existence of a solution α with HasDerivWithinAt on `Icc tmin tmax`. Uniqueness is the companion theorem `ODE_solution_unique` in `Mathlib.Analysis.ODE.Gronwall`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Theorem",
+          "snippet": "Then there exists some"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle y'(t)=f(t,y(t)),\\qquad y(t_{0})=y_{0}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Initial value problem (IVP)",
+      "anchor": {
+        "section": "Theorem",
+        "snippet": "the initial value problem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HasDerivWithinAt",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has no dedicated `IVP` structure; an IVP is expressed via the pattern `α t₀ = y₀ ∧ ∀ t, HasDerivAt α (f t (α t)) t` (as in the conclusion of `exists_eq_forall_mem_Icc_hasDerivWithinAt`).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Theorem",
+          "snippet": "the initial value problem"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle y'(t)=f(t,y(t)),\\qquad y(t_{0})=y_{0}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Solutions of the ODE satisfy the integral equation",
+      "anchors": [
+        {
+          "section": "Proof sketch",
+          "snippet": "any solution to the differential equation must also satisfy"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle y(t)-y(t_{0})=\\int _{t_{0}}^{t}f(s,y(s))\\,ds.}"
+        }
+      ],
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsPicardLindelof.picard_eq_of_hasDerivAt",
+        "module": "Mathlib.Analysis.ODE.PicardLindelof",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `picard_eq_of_hasDerivAt` proves exactly this implication: if α has the right derivative on [t₀, t], then `picard f t₀ (α t₀) α t = α t` (i.e. α equals its own Picard image). The converse is `hasDerivWithinAt_picard_Icc`, and `IsPicardLindelof.FunSpace.isFixedPt_next_iff` states the iff directly via fixed-point form.",
+      "provenance": "human"
+    },
+    {
+      "kind": "definition",
+      "label": "Picard operator Γ",
+      "anchors": [
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\varphi _{k+1}(t)=y_{0}+\\int _{t_{0}}^{t}f(s,\\varphi _{k}(s))\\,ds.}"
+        },
+        {
+          "type": "prose_range",
+          "section": "Detailed proof",
+          "from": "The Picard operator",
+          "to_math": "{\\displaystyle \\Gamma \\varphi (t)=y_{0}+\\int _{t_{0}}^{t}f(s,\\varphi (s))\\,ds\\quad \\forall t\\in I_{a}(t_{0}).}"
+        }
+      ],
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ODE.picard",
+        "module": "Mathlib.Analysis.ODE.PicardLindelof",
+        "match_kind": "exact"
+      },
+      "note": "`ODE.picard f t₀ x₀ α t = x₀ + ∫ τ in t₀..t, f τ (α τ)` is exactly this operator — Mathlib's `picard` evaluates Γα at time t given α : ℝ → E. (The Proof-sketch formula is the recurrence φ_{k+1} = Γφ_k; the Detailed-proof formula is the operator definition Γφ.) The 'Picard iteration' wikilink in the prose above refers to the more general fixed-point-iteration method.",
+      "provenance": "human"
+    },
+    {
+      "kind": "proposition",
+      "label": "Picard iterates converge to a solution of the IVP",
+      "anchors": [
+        {
+          "type": "prose_range",
+          "section": "Proof sketch",
+          "from": "It follows from the Banach fixed-point theorem that the sequence",
+          "to_math": "{\\displaystyle \\lim _{k\\to \\infty }\\varphi _{k}(t)=y(t)}"
+        }
+      ],
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContractingWith.tendsto_iterate_fixedPoint",
+        "module": "Mathlib.Topology.MetricSpace.Contracting",
+        "match_kind": "generalization"
+      },
+      "note": "`ContractingWith.tendsto_iterate_fixedPoint` gives the abstract statement: iterates of a contraction map on a complete metric space converge to its unique fixed point. Combined with `IsPicardLindelof.FunSpace.isFixedPt_next_iff` (which equates fixed points of the Picard operator with solutions to the integral equation), this yields the article's claim: lim_{k→∞} Γᵏφ₀ = a solution of the IVP. Mathlib's `IsPicardLindelof.exists_eq_forall_mem_Icc_hasDerivWithinAt` uses this internally to produce the solution.",
+      "provenance": "human"
+    },
+    {
+      "kind": "proposition",
+      "label": "Banach fixed-point theorem (contraction mapping theorem)",
+      "anchor": {
+        "section": "Proof sketch",
+        "snippet": "Banach fixed-point theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContractingWith.exists_fixedPoint",
+        "module": "Mathlib.Topology.MetricSpace.Contracting",
+        "match_kind": "exact"
+      },
+      "note": "The named-decl `ContractingWith.fixedPoint` returns the unique fixed point; `ContractingWith.exists_fixedPoint` and `ContractingWith.fixedPoint_unique` provide existence/uniqueness. Mathlib's statement is on an `EMetricSpace`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Picard operator is a contraction (after restricting the interval)",
+      "anchor": {
+        "section": "Detailed proof",
+        "snippet": "Now let us prove that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsPicardLindelof.FunSpace.exists_contractingWith_iterate_next",
+        "module": "Mathlib.Analysis.ODE.PicardLindelof",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves that some iterate `(next hf hx)^[n]` is a `ContractingWith C`, which suffices to apply Banach fixed-point and is strictly more general than directly contracting Γ.",
+      "proof_note": "Article first shrinks the interval so that aL<1 to make Γ itself a contraction; Mathlib instead shows that some iterate Γⁿ is a contraction (matching the article's `Optimization of the solution's interval` step) and applies the iterate-corollary.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Detailed proof",
+          "snippet": "Now let us prove that"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left\\|\\Gamma \\varphi _{1}-\\Gamma \\varphi _{2}\\right\\|_{\\infty }\\leq q\\left\\|\\varphi _{1}-\\varphi _{2}\\right\\|_{\\infty }}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Iterate bound for the Picard operator (Γᵐ)",
+      "anchor": {
+        "section": "Optimization of the solution's interval",
+        "snippet": "for all"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsPicardLindelof.FunSpace.dist_iterate_next_apply_le",
+        "module": "Mathlib.Analysis.ODE.PicardLindelof",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves `dist ((next)^[n] α t) ((next)^[n] β t) ≤ (K·|t−t₀|)ⁿ / n! · dist α β`, which is the article's lemma `‖Γᵐφ₁(t)−Γᵐφ₂(t)‖ ≤ Lᵐ|t−t₀|ᵐ/m! · ‖φ₁−φ₂‖`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Iterate corollary of Banach fixed-point (Tⁿ contraction ⇒ T has unique fixed point)",
+      "anchor": {
+        "section": "Optimization of the solution's interval",
+        "snippet": "if an operator"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContractingWith.isFixedPt_fixedPoint_iterate",
+        "module": "Mathlib.Topology.MetricSpace.Contracting",
+        "match_kind": "exact"
+      },
+      "note": "Used in Mathlib's Picard-Lindelöf proof at `FunSpace.exists_isFixedPt_next` to turn a contracting iterate into a fixed point of the original map.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Picard–Lindelöf for C¹ vector fields (existence of integral curve)",
+      "anchor": {
+        "section": "Theorem",
+        "snippet": "Lipschitz continuous in"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContDiffAt.exists_forall_mem_closedBall_exists_eq_forall_mem_Ioo_hasDerivAt",
+        "module": "Mathlib.Analysis.ODE.PicardLindelof",
+        "match_kind": "special_case"
+      },
+      "note": "A `C¹` (hence locally Lipschitz) vector field on a Banach space admits a local solution to the IVP on an open interval `Ioo (t₀−ε) (t₀+ε)`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Theorem",
+          "snippet": "Lipschitz continuous in"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle y'(t)=f(t,y(t)),\\qquad y(t_{0})=y_{0}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Peano existence theorem",
+      "anchor": {
+        "section": "Other existence theorems",
+        "snippet": "Peano existence theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Existence (without uniqueness) for an IVP whose right-hand side is only continuous in y (not Lipschitz). No Mathlib decl for Peano existence was located.",
+      "provenance": "human"
+    },
+    {
+      "kind": "example",
+      "label": "Counter-example: dy/dt = y^{1/3} (continuous but not Lipschitz) has three solutions",
+      "anchors": [
+        {
+          "type": "prose_range",
+          "section": "Other existence theorems",
+          "from": "For example, the right-hand side",
+          "to": "at least three solutions"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle y(t)=0,\\qquad y(t)=\\pm \\left({\\tfrac {2}{3}}t\\right)^{\\frac {3}{2}}}"
+        }
+      ],
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The IVP dy/dt = y^{1/3}, y(0)=0 has continuous but not Lipschitz right-hand side. Three explicit solutions exist: y(t)=0 and y(t)=±(2t/3)^{3/2}, illustrating that the Lipschitz hypothesis of Picard–Lindelöf is needed for uniqueness. Mathlib has no formalization of this counter-example.",
+      "provenance": "human"
+    },
+    {
+      "kind": "proposition",
+      "label": "Carathéodory's existence theorem",
+      "anchor": {
+        "section": "Other existence theorems",
+        "snippet": "Carathéodory's existence theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Existence under weaker conditions on f (measurable in t, continuous in y). No Mathlib formalization was located.",
+      "provenance": "human"
+    },
+    {
+      "kind": "proposition",
+      "label": "Okamura's theorem (necessary & sufficient uniqueness criterion)",
+      "anchor": {
+        "section": "Other existence theorems",
+        "snippet": "Okamura"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gives necessary and sufficient conditions for uniqueness of IVP solutions. Not in Mathlib.",
+      "provenance": "human"
+    },
+    {
+      "kind": "proposition",
+      "label": "Global existence for globally Lipschitz vector fields",
+      "anchor": {
+        "section": "Global existence of solution",
+        "snippet": "if {{math|&thinsp;''f''&thinsp;}} is globally Lipschitz"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's ODE files give only local existence (`IsPicardLindelof.exists_eq_forall_mem_Icc_hasDerivWithinAt`); no theorem stating that a global Lipschitz bound yields a solution on all of ℝ was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Counter-example: locally Lipschitz dy/dt = y² blows up in finite time",
+      "anchor": {
+        "type": "prose_range",
+        "section": "Global existence of solution",
+        "from": "If f is only locally Lipschitz",
+        "to": "not defined at t = 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Shows that local Lipschitz (or even smoothness) is not enough for global existence: the IVP dy/dt = y², y(0)=1 has solution y(t)=1/(1−t), undefined at t=1. Mathlib has the local existence theorems but no formalisation of this specific blow-up counter-example.",
+      "provenance": "human"
+    },
+    {
+      "kind": "proposition",
+      "label": "Integral curves on a compact manifold exist for all time",
+      "anchor": {
+        "type": "prose_range",
+        "section": "Global existence of solution",
+        "from": "Nevertheless, if f is",
+        "to": "exist for all time"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "exists_isMIntegralCurveAt_of_contMDiffAt",
+        "module": "Mathlib.Geometry.Manifold.IntegralCurve.ExistUnique",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes LOCAL existence and uniqueness of integral curves of a `C^∞` vector field on a manifold (`exists_isMIntegralCurveAt_of_contMDiffAt`), but the global statement specific to compact manifolds — that every trajectory of a smooth vector field on a compact manifold exists for all time — was not located in Mathlib.",
+      "provenance": "human"
+    },
+    {
+      "kind": "example",
+      "label": "Counter-example: non-uniqueness when Lipschitz fails (dy/dt = a·y^{2/3})",
+      "anchor": {
+        "type": "prose_range",
+        "section": "Example of non-uniqueness",
+        "from": "By contrast for an equation",
+        "to_math": "{\\displaystyle y(t)={\\begin{cases}\\left({\\tfrac {at}{3}}\\right)^{3}&t<0\\\\\\ \\ \\ \\ 0&t\\geq 0,\\end{cases}}}"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The IVP dy/dt = a·y^{2/3}, y(0)=0 admits two distinct solutions (y(t)=0 and y(t)=(at/3)^3), showing that the Lipschitz hypothesis of Picard–Lindelöf is necessary for uniqueness. Mathlib formalizes the positive direction (Picard–Lindelöf, ContractingWith etc.) but has no counter-examples for the failure case — this specific non-uniqueness instance has not been formalized.",
+      "provenance": "human"
+    }
+  ]
+}

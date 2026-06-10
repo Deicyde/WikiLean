@@ -1,0 +1,233 @@
+{
+  "slug": "2",
+  "wikipedia_title": "2",
+  "display_title": "2",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Construction of naturals by succession",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "constructed by succession"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.succ",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "The naturals are the inductive type `Nat` built from zero and the successor constructor `Nat.succ`, defined in Lean core and used ubiquitously in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "2 is the only even prime",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "the smallest and the only even prime number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Prime.even_iff",
+        "module": "Mathlib.Data.Nat.Prime.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Prime.even_iff` states that a prime `p` is even iff `p = 2`, exactly capturing that 2 is the unique even prime.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "2 is the first superior highly composite number",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "the first superior highly composite number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of superior highly composite numbers, so this fact is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Even integer",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "divisible by two"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "even_iff_two_dvd",
+        "module": "Mathlib.Algebra.Group.Even",
+        "match_kind": "exact"
+      },
+      "note": "`even_iff_two_dvd` proves `Even a ↔ 2 ∣ a`, equating evenness with divisibility by two.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Last digit of multiples of 2 in base 10",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "all multiples of 2 will end in"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration characterizes the base-10 last digit of even numbers, though base-b digits exist via `Nat.digits`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Binary number system",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "Binary is a number system with a base of two"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.bits",
+        "module": "Mathlib.Data.Nat.Bits",
+        "match_kind": null
+      },
+      "note": "Binary representation is available via `Nat.bits`/`Nat.binaryRec` and `Nat.digits 2`, but there is no abstract definition of the binary number system itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Digon",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "A digon is a polygon with two sides"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no general definition of polygon or digon.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Digons are degenerate in Euclidean space",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "digons are degenerate"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "With no notion of digon, this degeneracy statement is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-degenerate digons in spherical geometry",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "non-degenerate digons can exist"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize spherical lunes/digons.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Two points determine a line",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "Two distinct points in a plane are always sufficient to define a unique line"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Configuration.HasLines",
+        "module": "Mathlib.Combinatorics.Configuration",
+        "match_kind": null
+      },
+      "note": "Abstract incidence geometry provides `Configuration.HasLines.mkLine` (a line through any two points) plus a `Nondegenerate` axiom of at most one such line, but there is no Euclidean-plane theorem stating two points determine a unique line.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Field with two elements",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "The integers modulo 2 form the finite field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.instField",
+        "module": "Mathlib.Algebra.Field.ZMod",
+        "match_kind": "generalization"
+      },
+      "note": "`ZMod.instField` gives a `Field (ZMod p)` instance for prime `p`; the case `p = 2` is the field with two elements.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reduction modulo 2 records parity",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "reduction modulo 2 records the parity of an integer"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.intCast_zmod_eq_zero_iff_dvd",
+        "module": "Mathlib.Data.ZMod.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`ZMod.intCast_zmod_eq_zero_iff_dvd a b` gives `(a : ZMod b) = 0 ↔ (b:ℤ) ∣ a`; specialized to `b = 2` this says the reduction is zero exactly for even integers, recording parity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Characteristic 2 structures",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "structures of characteristic 2 have special behavior"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CharTwo.add_self_eq_zero",
+        "module": "Mathlib.Algebra.CharP.Two",
+        "match_kind": null
+      },
+      "note": "Mathlib has a dedicated `CharTwo` namespace for `CharP R 2` rings with special lemmas such as `add_self_eq_zero`, `neg_eq`, and `sub_eq_add`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Involution",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "A symmetry of order two is called an involution"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Involutive",
+        "module": "Mathlib.Logic.Function.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Function.Involutive f` is defined as `∀ x, f (f x) = x`, exactly a self-inverse map of order two.",
+      "provenance": "ai"
+    }
+  ]
+}

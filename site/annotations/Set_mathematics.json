@@ -1,0 +1,1303 @@
+{
+  "slug": "Set_mathematics",
+  "wikipedia_title": "Set (mathematics)",
+  "display_title": "Set (mathematics)",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Set",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a set is a collection of different things"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Set α := α → Prop` defines a set as a collection of elements of type `α`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Element / membership",
+      "anchor": {
+        "section": "Basic notions",
+        "snippet": "is an element of a set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.Mem",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Set.Mem` together with the `Membership α (Set α)` instance gives the `a ∈ s` predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Axiom of extensionality",
+      "anchor": {
+        "section": "Basic notions",
+        "snippet": "The axiom of extensionality states that two sets are equal if and only if they have the same elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.ext",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Set.ext` proves equality of sets from `∀ x, x ∈ a ↔ x ∈ b`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Empty set",
+      "anchor": {
+        "section": "Basic notions",
+        "snippet": "It is called the empty set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.instEmptyCollection",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The `EmptyCollection (Set α)` instance defines `∅ : Set α` as `fun _ ↦ False`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Singleton",
+      "anchor": {
+        "section": "Basic notions",
+        "snippet": "A singleton is a set with exactly one element"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.singleton",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Set.singleton a = {b | b = a}` with `Singleton α (Set α)` instance giving `{a}` notation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Finite set",
+      "anchor": {
+        "section": "Basic notions",
+        "snippet": "A set is finite if there exists a natural number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.Finite",
+        "module": "Mathlib.Data.Set.Finite.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Set.Finite s` expresses that `s : Set α` is a finite subset.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Infinite set",
+      "anchor": {
+        "section": "Basic notions",
+        "snippet": "A set is infinite if such an"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.Infinite",
+        "module": "Mathlib.Data.Set.Finite.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Set.Infinite s` is defined as `¬ s.Finite`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Natural numbers form an infinite set",
+      "anchor": {
+        "section": "Basic notions",
+        "snippet": "The natural numbers form an infinite set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.instInfinite",
+        "module": "Mathlib.Data.Nat.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib provides an `Infinite ℕ` instance, equivalent to `(Set.univ : Set ℕ).Infinite`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Roster notation",
+      "anchor": {
+        "section": "Roster notation",
+        "snippet": "Roster or enumeration notation is a notation introduced by Ernst Zermelo"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Set.insert",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib supports `{a, b, c}` via the `Insert`/`Singleton` instances rather than a distinct \"roster notation\" definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Set-builder notation",
+      "anchor": {
+        "section": "Set-builder notation",
+        "snippet": "Set-builder notation specifies a set as being the set of all elements that satisfy some logical formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Mathlib.Meta.setBuilder",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The `{x | p x}` syntax is implemented by `setOf` together with the `setBuilder` term elaborator.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Set-builder notation",
+          "snippet": "Set-builder notation specifies a set as being the set of all elements that satisfy some logical formula"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\{x\\mid P(x)\\}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\{x:P(x)\\}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F=\\{n\\mid n{\\text{ is an integer, and }}0\\leq n\\leq 19\\}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Subset",
+      "anchor": {
+        "section": "Subsets",
+        "snippet": "A subset of a set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.Subset",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Set.Subset s₁ s₂ := ∀ ⦃a⦄, a ∈ s₁ → a ∈ s₂` provides the `⊆` relation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Proper subset",
+      "anchor": {
+        "section": "Subsets",
+        "snippet": "is a proper subset of a set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.instHasSSubset",
+        "module": "Mathlib.Data.Set.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Proper subset `⊂` on `Set α` is provided via the `HasSSubset` instance derived from the partial order.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Humans are a proper subset of mammals",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The set of all humans is a proper subset of the set of all mammals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal real-world illustration with no Mathlib analogue.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equality via mutual containment",
+      "anchor": {
+        "section": "Properties of containment",
+        "snippet": "Two sets are equal if and only if they contain each other"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.Subset.antisymm_iff",
+        "module": "Mathlib.Data.Set.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Set.Subset.antisymm_iff` gives `a = b ↔ a ⊆ b ∧ b ⊆ a`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Empty set is a subset of every set",
+      "anchor": {
+        "section": "Properties of containment",
+        "snippet": "The empty set is a subset of every set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.empty_subset",
+        "module": "Mathlib.Data.Set.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Set.empty_subset (s : Set α) : ∅ ⊆ s`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Intersection of two sets",
+      "anchor": {
+        "section": "Intersection",
+        "snippet": "The intersection of two sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.inter",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Set.inter s₁ s₂ = {a | a ∈ s₁ ∧ a ∈ s₂}`, providing the `∩` notation via `Inter (Set α)`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Intersection",
+          "snippet": "The intersection of two sets"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A\\cap B=\\{x\\mid x\\in A\\land x\\in B\\},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Intersection is associative and commutative",
+      "anchor": {
+        "section": "Intersection",
+        "snippet": "Intersection is associative and commutative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.inter_assoc",
+        "module": "Mathlib.Data.Set.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Set.inter_assoc` and `Set.inter_comm` formalize associativity and commutativity of intersection.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Intersection of a family of sets",
+      "anchor": {
+        "section": "Intersection",
+        "snippet": "is a nonempty set of sets, its intersection"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.sInter",
+        "module": "Mathlib.Data.Set.Lattice",
+        "match_kind": "exact"
+      },
+      "note": "`Set.sInter` (`⋂₀`) and `Set.iInter` (`⋂ i, …`) define arbitrary intersections.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Intersection",
+          "snippet": "is a nonempty set of sets, its intersection"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\bigcap _{A\\in {\\mathcal {S}}}A=\\{x\\mid (\\forall A\\in {\\mathcal {S}})\\;x\\in A\\}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Union of two sets",
+      "anchor": {
+        "section": "Union",
+        "snippet": "The union of two sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.union",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Set.union s₁ s₂ = {a | a ∈ s₁ ∨ a ∈ s₂}`, providing `∪` via `Union (Set α)`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Union",
+          "snippet": "The union of two sets"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A\\cup B=\\{x\\mid x\\in A\\lor x\\in B\\},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Union is associative and commutative",
+      "anchor": {
+        "section": "Union",
+        "snippet": "Union is associative and commutative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.union_assoc",
+        "module": "Mathlib.Data.Set.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Set.union_assoc` and `Set.union_comm` formalize associativity and commutativity of union.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Union of a family of sets",
+      "anchor": {
+        "section": "Union",
+        "snippet": "is a set of sets, its union"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.sUnion",
+        "module": "Mathlib.Data.Set.Lattice",
+        "match_kind": "exact"
+      },
+      "note": "`Set.sUnion` (`⋃₀`) and `Set.iUnion` define arbitrary unions.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Union",
+          "snippet": "is a set of sets, its union"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\bigcup _{A\\in {\\mathcal {S}}}A=\\{x\\mid (\\exists A\\in {\\mathcal {S}})\\;x\\in A\\}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Set difference",
+      "anchor": {
+        "section": "Set difference",
+        "snippet": "The set difference of two sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.diff",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Set.diff s t = {a ∈ s | a ∉ t}` providing `\\` via the `SDiff` instance.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Set difference",
+          "snippet": "The set difference of two sets"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A\\setminus B=\\{x\\mid x\\in A\\land x\\not \\in B\\},}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Complement / absolute complement",
+      "anchor": {
+        "section": "Set difference",
+        "snippet": "the difference"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.compl",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Set.compl s = {a | a ∉ s}` provides `sᶜ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetric difference",
+      "anchor": {
+        "section": "Set difference",
+        "snippet": "The symmetric difference of two sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "symmDiff",
+        "module": "Mathlib.Order.SymmDiff",
+        "match_kind": "generalization"
+      },
+      "note": "`symmDiff` on any `GeneralizedBooleanAlgebra` specializes to symmetric difference on `Set α`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Set difference",
+          "snippet": "The symmetric difference of two sets"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A\\,\\Delta \\,B=(A\\setminus B)\\cup (B\\setminus A).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Powerset",
+      "anchor": {
+        "section": "Algebra of subsets",
+        "snippet": "The set of all subsets of a set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.powerset",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Set.powerset s = {t | t ⊆ s}` with notation `𝒫 s`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Powerset is a Boolean ring",
+      "anchor": {
+        "section": "Algebra of subsets",
+        "snippet": "The powerset is a Boolean ring that has symmetric difference as addition"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AsBoolRing",
+        "module": "Mathlib.Algebra.Ring.BooleanRing",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib provides `AsBoolRing` converting any `BooleanAlgebra` (including `Set α`) to a `BooleanRing`, but no direct `BooleanRing (Set α)` instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Powerset is a Boolean algebra",
+      "anchor": {
+        "section": "Algebra of subsets",
+        "snippet": "The powerset is also a Boolean algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.instBooleanAlgebra",
+        "module": "Mathlib.Order.BooleanAlgebra.Set",
+        "match_kind": "exact"
+      },
+      "note": "`Set α` is endowed with a `BooleanAlgebra` instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Powerset is a complete lattice",
+      "anchor": {
+        "section": "Algebra of subsets",
+        "snippet": "the powerset is also a partially ordered set for set inclusion"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.instCompleteAtomicBooleanAlgebra",
+        "module": "Mathlib.Data.Set.BooleanAlgebra",
+        "match_kind": "generalization"
+      },
+      "note": "`Set α` carries a `CompleteAtomicBooleanAlgebra` instance, which in particular makes it a complete lattice.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Function",
+      "anchor": {
+        "section": "Functions",
+        "snippet": "is a rule that assigns to each element"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function",
+        "module": "Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "Functions `α → β` are a primitive notion in Lean's type theory used throughout Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Value, image, domain, codomain",
+      "anchor": {
+        "section": "Functions",
+        "snippet": "it is called the value of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.image",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Domain/codomain are intrinsic to the function type `α → β`, and `Set.image f s = {f a | a ∈ s}` provides the image.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Graph of a function",
+      "anchor": {
+        "section": "Functions",
+        "snippet": "The graph of a function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.graph",
+        "module": "Mathlib.Data.Set.Operations",
+        "match_kind": "exact"
+      },
+      "note": "`Function.graph f` defines the graph `{(x, f x) | x}` of `f : α → β`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Formal definition of function as a triple",
+      "anchor": {
+        "section": "Functions",
+        "snippet": "This point of view allows one to formally define"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib uses Lean's intrinsic function type rather than encoding functions as (domain, codomain, graph) triples.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Indexed family",
+      "anchor": {
+        "section": "Indexed families",
+        "snippet": "an indexed family is a function that has the index set as its domain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function",
+        "module": "Init.Prelude",
+        "match_kind": "invocation"
+      },
+      "note": "Indexed families are represented as ordinary functions `ι → X` in Lean; no separate definition is needed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ordered pair, tuple, sequence as indexed families",
+      "anchor": {
+        "section": "Indexed families",
+        "snippet": "an indexed family is called an ordered pair"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Prod",
+        "module": "Init.Prelude",
+        "match_kind": "generalization"
+      },
+      "note": "Lean provides `Prod`, `Tuple/Fin n → α`, and sequences `ℕ → α` directly, but not as instances of one shared \"indexed family\" definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cartesian product of two sets",
+      "anchor": {
+        "section": "Cartesian product",
+        "snippet": "their Cartesian product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.prod",
+        "module": "Mathlib.Data.Set.Prod",
+        "match_kind": "exact"
+      },
+      "note": "`Set.prod s t = s ×ˢ t : Set (α × β)`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Cartesian product",
+          "snippet": "their Cartesian product"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A\\times B=\\{(a,b)\\mid a\\in A{\\text{ and }}b\\in B\\}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Cartesian product of an indexed family",
+      "anchor": {
+        "section": "Cartesian product",
+        "snippet": "Given any indexed family of sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.pi",
+        "module": "Mathlib.Data.Set.Prod",
+        "match_kind": "exact"
+      },
+      "note": "`Set.pi s t` defines the dependent product of an indexed family of sets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product of nonempty sets is nonempty",
+      "anchor": {
+        "section": "Cartesian product",
+        "snippet": "The axiom of choice implies that any product of nonempty sets is nonempty"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Classical.axiomOfChoice",
+        "module": "Init.Classical",
+        "match_kind": "exact"
+      },
+      "note": "Lean's `Classical.axiomOfChoice` is exactly the statement that a Π-type of nonempty types is nonempty.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Set exponentiation",
+      "anchor": {
+        "section": "Set exponentiation",
+        "snippet": "the set exponentiation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Pi",
+        "module": "Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "`E^F` is represented by the function type `F → E` in Lean.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Power set",
+      "anchor": {
+        "section": "Power set",
+        "snippet": "The power set of a set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.powerset",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Same as above: `Set.powerset s` with notation `𝒫 s`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Power set",
+          "snippet": "The power set of a set"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathcal {P}}(\\{1,2,3\\})=\\{\\emptyset ,\\{1\\},\\{2\\},\\{3\\},\\{1,2\\},\\{1,3\\},\\{2,3\\},\\{1,2,3\\}\\}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Bijection between subsets and indicator functions",
+      "anchor": {
+        "section": "Power set",
+        "snippet": "There is a natural one-to-one correspondence"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Set.indicator",
+        "module": "Mathlib.Algebra.Group.Indicator",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has `Set.indicator` and `mk_set : #(Set α) = 2 ^ #α`, expressing the bijection cardinally, but no single `Equiv (Set α) (α → Bool)` declaration that I located.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Power set",
+          "snippet": "There is a natural one-to-one correspondence"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathcal {P}}(E)=\\{0,1\\}^{E}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathcal {P}}(E)=2^{E}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Cardinality of the power set",
+      "anchor": {
+        "section": "Power set",
+        "snippet": "In particular, if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.mk_powerset",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.mk_powerset : #(↥(𝒫 s)) = 2 ^ #(↥s)`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Power set",
+          "snippet": "In particular, if"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathcal {P}}(E)=\\{0,1\\}^{E}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathcal {P}}(E)=2^{E}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Disjoint union of two sets",
+      "anchor": {
+        "section": "Disjoint union",
+        "snippet": "The disjoint union of two sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Sum",
+        "module": "Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "The disjoint union of two types is the `Sum` type `α ⊕ β`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Disjoint union",
+          "snippet": "The disjoint union of two sets"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A\\sqcup B=\\{(a,i)\\mid (i=1\\land a\\in A)\\lor (i=2\\land a\\in B\\}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Disjoint union of an indexed family",
+      "anchor": {
+        "section": "Disjoint union",
+        "snippet": "The disjoint union of two sets is a particular case of the disjoint union of an indexed family"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Sigma",
+        "module": "Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "The disjoint union of an indexed family is the sigma type `Σ i, X i`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Disjoint union",
+          "snippet": "The disjoint union of two sets is a particular case of the disjoint union of an indexed family"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\bigsqcup _{i\\in {\\mathcal {I}}}=\\{(a,i)\\mid i\\in {\\mathcal {I}}\\land a\\in A_{i}\\}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Disjoint union is the coproduct in Set",
+      "anchor": {
+        "section": "Disjoint union",
+        "snippet": "The disjoint union is the coproduct in the category of sets"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Types.binaryCoproductColimit",
+        "module": "Mathlib.CategoryTheory.Limits.Types",
+        "match_kind": "generalization"
+      },
+      "note": "Category theory in Mathlib has coproduct constructions in `Type`/`Set`, but I did not locate a single named theorem matching the article's wording.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Disjoint union",
+          "snippet": "The disjoint union is the coproduct in the category of sets"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\coprod _{i\\in {\\mathcal {I}}}=\\{(a,i)\\mid i\\in {\\mathcal {I}}\\land a\\in A_{i}\\}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Forgetting-indices map is bijective iff pairwise disjoint",
+      "anchor": {
+        "section": "Internal disjoint union",
+        "snippet": "This map is always surjective"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Set.iUnion_eq_sigma_of_disjoint",
+        "module": "Mathlib.Data.Set.Lattice",
+        "match_kind": "generalization"
+      },
+      "note": "Lemmas like the sigma-to-iUnion projection being injective under pairwise disjointness exist (e.g. via `Set.PairwiseDisjoint`), but I could not locate a single theorem stating the equivalence verbatim.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Partition",
+      "anchor": {
+        "section": "Internal disjoint union",
+        "snippet": "If a set is the disjoint union of a family of subsets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Setoid.IsPartition",
+        "module": "Mathlib.Data.Setoid.Partition",
+        "match_kind": "exact"
+      },
+      "note": "`Setoid.IsPartition` formalizes a partition of a set into nonempty disjoint blocks.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cardinality",
+      "anchor": {
+        "section": "Cardinality",
+        "snippet": "the cardinality of a set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.mk",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.mk α` (notation `#α`) is the cardinality of `α`, with `#s` for `s : Set α` via the subtype.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Same cardinality",
+      "anchor": {
+        "section": "Infinite cardinalities",
+        "snippet": "have the same cardinality if there exists a one-to-one correspondence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.eq",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.eq : #α = #β ↔ Nonempty (α ≃ β)` formalizes equinumerosity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Naturals and even naturals have same cardinality",
+      "anchor": {
+        "section": "Infinite cardinalities",
+        "snippet": "the natural numbers and the even natural numbers have the same cardinality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "I did not locate a named lemma stating that `ℕ` and the even naturals are equinumerous, although it is trivially provable from existing API.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Characterization of infinite sets",
+      "anchor": {
+        "section": "Infinite cardinalities",
+        "snippet": "a set is infinite if and only if it has the same cardinality as one of its proper subsets"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Infinite",
+        "module": "Mathlib.Data.Set.Finite.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has both `Set.Infinite` and Dedekind-style results (e.g. `Infinite.exists_subset_card_eq`), but I did not locate a single `infinite_iff` matching this Dedekind characterization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cardinality inequality",
+      "anchor": {
+        "section": "Infinite cardinalities",
+        "snippet": "has a cardinality smaller than or equal to the cardinality of another set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.instLE",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`≤` on `Cardinal` is defined via existence of an injection between representatives.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Schröder–Bernstein theorem",
+      "anchor": {
+        "section": "Infinite cardinalities",
+        "snippet": "Schröder–Bernstein theorem implies"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Embedding.schroeder_bernstein",
+        "module": "Mathlib.SetTheory.Cardinal.SchroederBernstein",
+        "match_kind": "exact"
+      },
+      "note": "`Function.Embedding.schroeder_bernstein` gives a bijection from mutually injective maps.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cardinality inequality is a total order",
+      "anchor": {
+        "section": "Infinite cardinalities",
+        "snippet": "inequality of cardinalities is a total order"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.linearOrder",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.linearOrder` is the `LinearOrder Cardinal` instance, proved using AC.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Countable and uncountable sets",
+      "anchor": {
+        "section": "Infinite cardinalities",
+        "snippet": "are called countable sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.Countable",
+        "module": "Mathlib.Data.Set.Countable",
+        "match_kind": "exact"
+      },
+      "note": "`Set.Countable s` and the negation `¬ s.Countable` formalize countable/uncountable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cantor's diagonal argument",
+      "anchor": {
+        "section": "Infinite cardinalities",
+        "snippet": "Cantor's diagonal argument shows that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.cantor_surjective",
+        "module": "Mathlib.Logic.Function.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Function.cantor_surjective` (and `Cardinal.cantor : a < 2 ^ a`) formalize Cantor's diagonal argument.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Infinite cardinalities",
+          "snippet": "Cantor's diagonal argument shows that"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle |S|&lt;\\left|2^{S}\\right|.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Cardinality of the continuum",
+      "anchor": {
+        "section": "Cardinality of the real numbers",
+        "snippet": "The cardinality of set of the real numbers is called the cardinality of the continuum"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.continuum",
+        "module": "Mathlib.SetTheory.Cardinal.Continuum",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.continuum := 2 ^ ℵ₀`, with notation `𝔠`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Subsets containing an open interval have cardinality c",
+      "anchor": {
+        "section": "Cardinality of the real numbers",
+        "snippet": "every subset of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.mk_Ioo_real",
+        "module": "Mathlib.Analysis.Real.Cardinality",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves `Cardinal.mk_Ioo_real : #(Ioo a b) = 𝔠` and `mk_set_le`, from which the article's statement follows but is not packaged as a single theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cardinality of reals equals power set of naturals",
+      "anchor": {
+        "section": "Cardinality of the real numbers",
+        "snippet": "meaning that the cardinality of the real numbers equals the cardinality of the power set of the natural numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.mk_real",
+        "module": "Mathlib.Analysis.Real.Cardinality",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.mk_real : #ℝ = 𝔠 = 2 ^ ℵ₀`, equivalently `#(Set ℕ)`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Cardinality of the real numbers",
+          "snippet": "meaning that the cardinality of the real numbers equals the cardinality of the power set of the natural numbers"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathfrak {c}}=2^{\\aleph _{0}},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathfrak {c}}&gt;\\aleph _{0}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Cardinality of Euclidean space",
+      "anchor": {
+        "section": "Cardinality of the real numbers",
+        "snippet": "is also the cardinality of the entire plane"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.mk_complex",
+        "module": "Mathlib.Analysis.Complex.Cardinality",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.mk_complex : #ℂ = 𝔠` formalizes that the plane has cardinality continuum.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Continuum hypothesis",
+      "anchor": {
+        "section": "Cardinality of the real numbers",
+        "snippet": "The continuum hypothesis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "I found no `ContinuumHypothesis` or analogous statement in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cohen's independence of CH",
+      "anchor": {
+        "section": "Cardinality of the real numbers",
+        "snippet": "Paul Cohen proved that the continuum hypothesis is independent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Independence of CH is a metatheorem about ZFC and is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Axiom of choice",
+      "anchor": {
+        "section": "Axiom of choice",
+        "snippet": "A more formal statement of the axiom of choice"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Classical.axiomOfChoice",
+        "module": "Init.Classical",
+        "match_kind": "exact"
+      },
+      "note": "`Classical.axiomOfChoice` (and `Classical.choice`) provides AC, foundational to Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Chain in a partial order",
+      "anchor": {
+        "section": "Zorn's lemma",
+        "snippet": "A chain in"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsChain",
+        "module": "Mathlib.Order.Chain",
+        "match_kind": "exact"
+      },
+      "note": "`IsChain r s` expresses that `s` is totally ordered by relation `r`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Zorn's lemma",
+      "anchor": {
+        "section": "Zorn's lemma",
+        "snippet": "Zorn's lemma states that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "zorn_le",
+        "module": "Mathlib.Order.Zorn",
+        "match_kind": "exact"
+      },
+      "note": "`zorn_le` (and `exists_maximal_of_chains_bounded`) is Mathlib's statement of Zorn's lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Every vector space has a basis",
+      "anchor": {
+        "section": "Zorn's lemma",
+        "snippet": "the proof that every vector space has a basis"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Basis.ofVectorSpace",
+        "module": "Mathlib.LinearAlgebra.Basis.VectorSpace",
+        "match_kind": "exact"
+      },
+      "note": "`Basis.ofVectorSpace K V` produces a basis of any vector space over a division ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Every proper ideal is contained in a maximal ideal",
+      "anchor": {
+        "section": "Zorn's lemma",
+        "snippet": "the proof that every proper ideal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.exists_le_maximal",
+        "module": "Mathlib.RingTheory.PrincipalIdealDomain",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal.exists_le_maximal` states every proper ideal sits inside some maximal ideal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Well-ordering theorem",
+      "anchor": {
+        "section": "Transfinite induction",
+        "snippet": "The axiom of choice is equivalent with the fact that a well-order can be defined on every set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WellOrderingRel",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "`WellOrderingRel` defines a well-order on any type, with `WellOrderingRel.isWellOrder` providing the `IsWellOrder` instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Examples of well-ordered sets",
+      "anchor": {
+        "section": "Transfinite induction",
+        "snippet": "Simple examples of well-ordered sets are the natural numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.lt_wfRel",
+        "module": "Init.WFTactics",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has `IsWellOrder` instances for `ℕ` and ordinals (via `Ordinal`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Transfinite induction",
+      "anchor": {
+        "section": "Transfinite induction",
+        "snippet": "Well-orders allow a generalization of mathematical induction"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ordinal.induction",
+        "module": "Mathlib.SetTheory.Ordinal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Ordinal.induction` and `WellFounded.induction` provide transfinite induction principles.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Transfinite induction",
+          "snippet": "Well-orders allow a generalization of mathematical induction"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (m&lt;n\\implies P(m))\\implies P(n).}"
+        }
+      ]
+    }
+  ]
+}

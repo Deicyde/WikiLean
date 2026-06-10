@@ -1,0 +1,1033 @@
+{
+  "slug": "Heyting_algebra",
+  "wikipedia_title": "Heyting algebra",
+  "display_title": "Heyting algebra",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Heyting algebra (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a bounded lattice (with join and meet operations written"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HeytingAlgebra",
+        "module": "Mathlib.Order.Heyting.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`HeytingAlgebra α` is a bounded lattice with a Heyting implication `⇨` right adjoint to `⊓`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Heyting algebras are distributive lattices",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Heyting algebras are distributive lattices"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GeneralizedHeytingAlgebra.toDistribLattice",
+        "module": "Mathlib.Order.Heyting.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Every (generalized) Heyting algebra is a `DistribLattice` via this instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Boolean algebra as Heyting algebra",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Every Boolean algebra is a Heyting algebra when"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BooleanAlgebra.toBiheytingAlgebra",
+        "module": "Mathlib.Order.BooleanAlgebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Every `BooleanAlgebra` gives a `BiheytingAlgebra` (hence `HeytingAlgebra`) with `a ⇨ b = b ⊔ aᶜ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-contradiction and double negation in Heyting algebras",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The definition implies that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "inf_compl_self",
+        "module": "Mathlib.Order.Heyting.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`inf_compl_self : a ⊓ aᶜ = ⊥` and `le_compl_compl : a ≤ aᶜᶜ` are proved in `HeytingAlgebra`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Boolean algebras as Heyting algebras with excluded middle",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Boolean algebras are precisely the Heyting algebras satisfying"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "BooleanAlgebra.ofRegular",
+        "module": "Mathlib.Order.Heyting.Regular",
+        "match_kind": "special_case"
+      },
+      "note": "`BooleanAlgebra.ofRegular` builds a Boolean algebra from a Heyting algebra where every `a ⊔ aᶜ` is regular, but the full equivalence is not packaged.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Open sets form a complete Heyting algebra",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The open sets of any topological space form a complete Heyting algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace.Opens.instFrame",
+        "module": "Mathlib.Topology.Sets.Opens",
+        "match_kind": "exact"
+      },
+      "note": "`Opens α` carries an `Order.Frame` (= complete Heyting algebra) instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Subdirectly irreducible Heyting algebras",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Every Heyting algebra whose set of non-greatest elements has a greatest element"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No subdirect-irreducibility result for Heyting algebras appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Heyting algebra (formal)",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "A Heyting algebra H is a bounded lattice such that for all"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HeytingAlgebra",
+        "module": "Mathlib.Order.Heyting.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The class `HeytingAlgebra` axiomatizes `le_himp_iff : a ≤ b ⇨ c ↔ a ⊓ b ≤ c`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pseudo-complement",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "In any Heyting algebra, one defines the pseudo-complement"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HeytingAlgebra.himp_bot",
+        "module": "Mathlib.Order.Heyting.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Compl` on a `HeytingAlgebra` satisfies `a ⇨ ⊥ = aᶜ` by `himp_bot`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complete Heyting algebra",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "A complete Heyting algebra is a Heyting algebra that is a complete lattice"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Order.Frame",
+        "module": "Mathlib.Order.CompleteBooleanAlgebra",
+        "match_kind": "exact"
+      },
+      "note": "`Order.Frame` extends `CompleteLattice` and `HeytingAlgebra`, i.e. a frame/complete Heyting algebra.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Subalgebra of a Heyting algebra",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "A subalgebra of a Heyting algebra H is a subset"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `BooleanSubalgebra` but no Heyting-algebra subalgebra type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Heyting algebra (category-theoretic)",
+      "anchor": {
+        "section": "Category-theoretic definition",
+        "snippet": "is a bounded lattice that has all exponential objects"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HeytingAlgebra",
+        "module": "Mathlib.Order.Heyting.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines a Heyting algebra via the right adjoint condition, not via categorical exponentials in the poset category.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Heyting implication as exponential",
+      "anchor": {
+        "section": "Category-theoretic definition",
+        "snippet": "A Heyting implication (often written using"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HImp",
+        "module": "Mathlib.Order.Heyting.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the operation `HImp.himp` (`⇨`) but does not identify it with a categorical exponential object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Heyting algebra via Galois connection",
+      "anchor": {
+        "section": "Lattice-theoretic definitions",
+        "snippet": "A bounded lattice H is a Heyting algebra if and only if every mapping"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "GeneralizedHeytingAlgebra.le_himp_iff",
+        "module": "Mathlib.Order.Heyting.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`le_himp_iff` packages the adjunction `(a ⊓ ·) ⊣ (a ⇨ ·)`, but no iff with existence of all such adjoints is stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Heyting algebra as residuated lattice",
+      "anchor": {
+        "section": "Lattice-theoretic definitions",
+        "snippet": "Yet another definition is as a residuated lattice whose monoid operation is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no general residuated-lattice class connecting to Heyting algebras.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equational characterization with implication",
+      "anchor": {
+        "section": "Bounded lattice with an implication operation",
+        "snippet": "these together form a Heyting algebra if and only if the following hold"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HeytingAlgebra.ofHImp",
+        "module": "Mathlib.Order.Heyting.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`HeytingAlgebra.ofHImp` builds a Heyting algebra from a distributive lattice plus `le_himp_iff`, but the equational identities aren't presented as the official characterization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Characterization via intuitionistic logic axioms",
+      "anchor": {
+        "section": "Characterization using the axioms of intuitionistic logic",
+        "snippet": "then A is a Heyting algebra for these operations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No characterization of Heyting algebras through intuitionistic-logic Hilbert axioms is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Boolean algebra as Heyting algebra",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Every Boolean algebra is a Heyting algebra, with"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BooleanAlgebra.toBiheytingAlgebra",
+        "module": "Mathlib.Order.BooleanAlgebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Every `BooleanAlgebra` is a `BiheytingAlgebra` (hence Heyting) with `a ⇨ b = b ⊔ aᶜ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Totally ordered set as Heyting algebra",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Every totally ordered set that has a least element 0 and a greatest element 1 is a Heyting algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearOrder.toBiheytingAlgebra",
+        "module": "Mathlib.Order.Heyting.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Any bounded `LinearOrder` is a `BiheytingAlgebra` with `a ⇨ b = ⊤` if `a ≤ b`, else `b`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Three-element Heyting algebra {0,1/2,1}",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The simplest Heyting algebra that is not already a Boolean algebra"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearOrder.toBiheytingAlgebra",
+        "module": "Mathlib.Order.Heyting.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`Fin 3` inherits a Heyting algebra structure via `LinearOrder.toBiheytingAlgebra`, but the specific three-element example is not singled out.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Topology yields complete Heyting algebra",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Every topology provides a complete Heyting algebra in the form of its open set lattice"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace.Opens.instFrame",
+        "module": "Mathlib.Topology.Sets.Opens",
+        "match_kind": "exact"
+      },
+      "note": "`Opens α` is given an `Order.Frame` instance, i.e. complete Heyting algebra.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Interior algebra yields Heyting algebra",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Every interior algebra provides a Heyting algebra in the form of its lattice of open elements"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not have interior algebras.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Lindenbaum algebra of intuitionistic logic",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The Lindenbaum algebra of propositional intuitionistic logic is a Heyting algebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize the Lindenbaum algebra of intuitionistic propositional logic.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Subobject classifier of an elementary topos",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The global elements of the subobject classifier"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.HasSubobjectClassifier",
+        "module": "Mathlib.CategoryTheory.Subobject.Classifier.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has subobject classifiers in categories but does not prove their global elements form a Heyting algebra.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Łukasiewicz–Moisil algebras",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "are also Heyting algebras for any"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Łukasiewicz–Moisil algebras are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Order recovered from implication",
+      "anchor": {
+        "section": "General properties",
+        "snippet": "can be recovered from the operation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "himp_eq_top_iff",
+        "module": "Mathlib.Order.Heyting.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`himp_eq_top_iff : a ⇨ b = ⊤ ↔ a ≤ b` recovers the order from `⇨`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fixed point of negation implies trivial",
+      "anchor": {
+        "section": "General properties",
+        "snippet": "if negation has a fixed point"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ne_compl_self",
+        "module": "Mathlib.Order.Heyting.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`ne_compl_self [Nontrivial α] : a ≠ aᶜ` is the contrapositive of the no-fixed-point statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Provability equivalent to identity = 1",
+      "anchor": {
+        "section": "Provable identities",
+        "snippet": "it is a fact, proved early on in any study of Heyting algebras, that the following two conditions are equivalent"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "himp_eq_top_iff",
+        "module": "Mathlib.Order.Heyting.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The meta-theorem about provability matches `himp_eq_top_iff` at the algebraic level but isn't stated as a metalogical equivalence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Deduction theorem for Heyting algebras",
+      "anchor": {
+        "section": "Provable identities",
+        "snippet": "in practice it becomes necessary to prove as a lemma a version of the deduction theorem valid for Heyting algebras"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "himp_eq_top_iff",
+        "module": "Mathlib.Order.Heyting.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Tagged as the \"deduction theorem in the Heyting algebra model of intuitionistic logic\" in the file.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Distributivity of Heyting algebras",
+      "anchor": {
+        "section": "Distributivity",
+        "snippet": "Heyting algebras are always distributive"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GeneralizedHeytingAlgebra.toDistribLattice",
+        "module": "Mathlib.Order.Heyting.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Provides the `DistribLattice` instance for any generalized Heyting algebra.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Infinite distributive law",
+      "anchor": {
+        "section": "Distributivity",
+        "snippet": "the following infinite distributive law holds in any complete Heyting algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "inf_iSup_eq",
+        "module": "Mathlib.Order.CompleteBooleanAlgebra",
+        "match_kind": "exact"
+      },
+      "note": "`inf_iSup_eq : a ⊓ ⨆ i, f i = ⨆ i, a ⊓ f i` holds in any `Order.Frame`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Regular element",
+      "anchor": {
+        "section": "Regular and complemented elements",
+        "snippet": "is called regular if either of the following equivalent conditions hold"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Heyting.IsRegular",
+        "module": "Mathlib.Order.Heyting.Regular",
+        "match_kind": "exact"
+      },
+      "note": "`Heyting.IsRegular a := aᶜᶜ = a`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complemented elements",
+      "anchor": {
+        "section": "Regular and complemented elements",
+        "snippet": "are called complements to each other if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompl",
+        "module": "Mathlib.Order.BooleanAlgebra.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsCompl a b` (defined in `Mathlib.Order.Disjoint`) captures complementarity by `Disjoint` and `Codisjoint`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Complemented implies regular",
+      "anchor": {
+        "section": "Regular and complemented elements",
+        "snippet": "Any complemented element of a Heyting algebra is regular"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsCompl.compl_eq",
+        "module": "Mathlib.Order.Heyting.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "From `IsCompl.compl_eq` and `IsCompl.symm` one gets `aᶜᶜ = a` for complemented `a`, but no `IsCompl → IsRegular` lemma is stated directly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Characterization of Boolean Heyting algebras",
+      "anchor": {
+        "section": "Regular and complemented elements",
+        "snippet": "the following conditions are equivalent"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "BooleanAlgebra.ofRegular",
+        "module": "Mathlib.Order.Heyting.Regular",
+        "match_kind": "special_case"
+      },
+      "note": "One direction (`∀ a, IsRegular (a ⊔ aᶜ) → BooleanAlgebra`) is `BooleanAlgebra.ofRegular`; full equivalence is not packaged.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Regular and complemented elements form Boolean algebras",
+      "anchor": {
+        "section": "Regular and complemented elements",
+        "snippet": "The regular (respectively complemented) elements of any Heyting algebra"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Heyting.Regular.instBooleanAlgebra",
+        "module": "Mathlib.Order.Heyting.Regular",
+        "match_kind": "special_case"
+      },
+      "note": "`Regular α` is shown to be a Boolean algebra; the analogous statement for complemented elements is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "One De Morgan law in Heyting algebras",
+      "anchor": {
+        "section": "The De Morgan laws in a Heyting algebra",
+        "snippet": "One of the two De Morgan laws is satisfied in every Heyting algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "compl_sup_distrib",
+        "module": "Mathlib.Order.Heyting.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`compl_sup_distrib : (a ⊔ b)ᶜ = aᶜ ⊓ bᶜ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Weak De Morgan law",
+      "anchor": {
+        "section": "The De Morgan laws in a Heyting algebra",
+        "snippet": "We have instead a weak de Morgan law"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "compl_sup_compl_le",
+        "module": "Mathlib.Order.Heyting.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`compl_sup_compl_le : aᶜ ⊔ bᶜ ≤ (a ⊓ b)ᶜ` is the weak (inequality) De Morgan.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Equivalent conditions for both De Morgan laws",
+      "anchor": {
+        "section": "The De Morgan laws in a Heyting algebra",
+        "snippet": "The following statements are equivalent for all Heyting algebras"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib lacks the equivalence characterizing Heyting algebras satisfying the second De Morgan law.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Morphism of Heyting algebras",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "we say that ƒ is a morphism of Heyting algebras if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HeytingHom",
+        "module": "Mathlib.Order.Heyting.Hom",
+        "match_kind": "exact"
+      },
+      "note": "`HeytingHom α β` is the type of Heyting-algebra homomorphisms, with `HeytingHomClass`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Morphisms are increasing",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "It follows from any of the last three conditions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HeytingHomClass.toBoundedLatticeHomClass",
+        "module": "Mathlib.Order.Heyting.Hom",
+        "match_kind": "invocation"
+      },
+      "note": "Heyting homs are bounded-lattice homs, hence order homs.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Surjective image is Heyting algebra",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Then if H 1 is a Heyting algebra, so too is H 2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Function.Surjective` push-forward of `HeytingAlgebra` structure is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Heyting algebras form a category",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Hence Heyting algebras form a category"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No bundled `HeytAlg` category of Heyting algebras is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Inclusion as morphism",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "the inclusion mapping"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Heyting-subalgebra inclusion morphism is constructed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Double negation morphism",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "the map x ↦ ¬¬ x defines a morphism"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Heyting.Regular.toRegular",
+        "module": "Mathlib.Order.Heyting.Regular",
+        "match_kind": "invocation"
+      },
+      "note": "`toRegular : α →o Regular α` sends `a ↦ aᶜᶜ`, but it's not packaged as a Heyting-algebra morphism into the Boolean algebra of regular elements.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Filter on a Heyting algebra",
+      "anchor": {
+        "section": "Quotients",
+        "snippet": "We call F a filter on H if it satisfies the following properties"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lattice-theoretic filter on a Heyting algebra is defined in Mathlib's order library.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Filter generated by a subset",
+      "anchor": {
+        "section": "Quotients",
+        "snippet": "The intersection of any set of filters on H is again a filter"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized in the Heyting-algebra setting.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Quotient Heyting algebra construction",
+      "anchor": {
+        "section": "Quotients",
+        "snippet": "There is a unique Heyting algebra structure on"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No quotient-by-filter construction for Heyting algebras is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Kernel of a Heyting algebra morphism",
+      "anchor": {
+        "section": "Quotients",
+        "snippet": "The kernel of f , written ker f , is the set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define the kernel of a `HeytingHom` as a filter.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Heyting algebra of formulas in n variables",
+      "anchor": {
+        "section": "Heyting algebra of propositional formulas in n variables up to intuitionist equivalence",
+        "snippet": "is proved by showing that the result of the following construction is itself a Heyting algebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No intuitionistic-formula Heyting algebra construction in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Free Heyting algebra on generators",
+      "anchor": {
+        "section": "Free Heyting algebra on an arbitrary set of generators",
+        "snippet": "One obtains in this way the free Heyting algebra on the variables"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Free Heyting algebras are not constructed in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Heyting algebra H_T relative to a theory",
+      "anchor": {
+        "section": "Heyting algebra of formulas equivalent with respect to a theory T",
+        "snippet": "Let us denote by H T the Heyting algebra so obtained"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Every Heyting algebra is isomorphic to some H_T",
+      "anchor": {
+        "section": "Heyting algebra of formulas equivalent with respect to a theory T",
+        "snippet": "Every Heyting algebra is isomorphic to one of the form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lindenbaum algebra as H_T extension",
+      "anchor": {
+        "section": "Comparison to Lindenbaum algebras",
+        "snippet": "The Lindenbaum algebra B T in the variables"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Soundness of intuitionistic logic in Heyting algebras",
+      "anchor": {
+        "section": "Heyting algebras as applied to intuitionistic logic",
+        "snippet": "if a formula is deducible from the laws of intuitionistic logic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Soundness of intuitionistic propositional logic w.r.t. Heyting algebras isn't formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Peirce's law fails in three-element algebra",
+      "anchor": {
+        "section": "Heyting algebras as applied to intuitionistic logic",
+        "snippet": "However one can construct a Heyting algebra in which the value of Peirce's law is not always 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No counterexample to Peirce's law in a specific Heyting algebra is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Completeness of intuitionistic logic",
+      "anchor": {
+        "section": "Heyting algebras as applied to intuitionistic logic",
+        "snippet": "if a formula always has the value 1, then it is deducible from the laws of intuitionistic logic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Algebraic completeness of intuitionistic propositional logic isn't in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Decidability of equational theory (Kripke)",
+      "anchor": {
+        "section": "Decision problems",
+        "snippet": "The problem of whether a given equation holds in every Heyting algebra was shown to be decidable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Kripke's decidability result is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "PSPACE-completeness (Statman)",
+      "anchor": {
+        "section": "Decision problems",
+        "snippet": "The precise computational complexity of the problem was established by Richard Statman"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Statman's PSPACE-completeness is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "First-order theory is undecidable",
+      "anchor": {
+        "section": "Decision problems",
+        "snippet": "The elementary or first-order theory of Heyting algebras is undecidable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Undecidability of the first-order theory of Heyting algebras isn't formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Heyting algebras are not locally finite",
+      "anchor": {
+        "section": "Decision problems",
+        "snippet": "it is known that Heyting algebras are not locally finite"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Topological representation of Heyting algebras",
+      "anchor": {
+        "section": "Topological representation and duality theory",
+        "snippet": "Every Heyting algebra H is naturally isomorphic to a bounded sublattice"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Stone-style representation theorem for Heyting algebras is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Duality with Heyting spaces",
+      "anchor": {
+        "section": "Topological representation and duality theory",
+        "snippet": "the category of Heyting algebras is dually equivalent to the category of Heyting spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Heyting duality isn't formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Esakia duality",
+      "anchor": {
+        "section": "Topological representation and duality theory",
+        "snippet": "the category of Heyting algebras is dually equivalent to the category of Esakia spaces"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EsakiaHom",
+        "module": "Mathlib.Topology.Order.Hom.Esakia",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib defines `EsakiaHom` (Esakia morphisms) but does not state or prove the duality.",
+      "provenance": "ai"
+    }
+  ]
+}

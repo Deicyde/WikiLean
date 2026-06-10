@@ -1,0 +1,969 @@
+{
+  "slug": "Discrete_calculus",
+  "wikipedia_title": "Discrete calculus",
+  "display_title": "Discrete calculus",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Discrete calculus",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is the mathematical study of incremental change"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An overarching discipline name, not a formalizable mathematical statement, though its core operator fwdDiff exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Discrete differential calculus",
+      "anchor": {
+        "section": "Two initial constructions",
+        "snippet": "is the study of the definition, properties, and applications of the difference quotient"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A meta-description of a sub-field rather than a definition Mathlib would state.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Difference quotient",
+      "anchor": {
+        "section": "Two initial constructions",
+        "snippet": "is the rate of change of the function over one of the intervals"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "slope",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Slope",
+        "match_kind": "exact"
+      },
+      "note": "`slope f a b = (f b - f a) / (b - a)` is exactly the difference quotient over the interval [a,b].",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Difference quotient as velocity",
+      "anchor": {
+        "section": "Two initial constructions",
+        "snippet": "the difference quotient represents change with respect to time"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A physical interpretation/example, not a formal statement in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Slope of a linear function",
+      "anchor": {
+        "section": "Two initial constructions",
+        "snippet": "If a function is linear (that is, if the points of the graph of the function lie on a straight line)"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "slope",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Slope",
+        "match_kind": null
+      },
+      "note": "The `slope` operator is defined but I found no dedicated lemma asserting it is constant for an affine/linear function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Slope of the line between two points",
+      "anchor": {
+        "section": "Two initial constructions",
+        "snippet": "The slope of the line between these two points"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "slope",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Slope",
+        "match_kind": "exact"
+      },
+      "note": "`slope f a b` is precisely the slope of the line through (a, f a) and (b, f b).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Difference quotient of the squaring function",
+      "anchor": {
+        "section": "Two initial constructions",
+        "snippet": "Here is a particular example, the difference quotient of the squaring function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A worked example computation, not a named declaration; `fwdDiff` of x^2 is derivable but not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Second difference quotient",
+      "anchor": {
+        "section": "Two initial constructions",
+        "snippet": "is called the second difference quotient"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "fwdDiff",
+        "module": "Mathlib.Algebra.Group.ForwardDiff",
+        "match_kind": null
+      },
+      "note": "Iterated forward differences `Δ_[h]^[2]` exist, but not the divided second difference quotient as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Discrete integral calculus",
+      "anchor": {
+        "section": "Two initial constructions",
+        "snippet": "is the study of the definitions, properties, and applications of the Riemann sums"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A meta-description of a sub-field rather than a formal definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Distance traveled in a given time",
+      "anchor": {
+        "section": "Two initial constructions",
+        "snippet": "A motivating example is the distances traveled in a given time"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A motivating physical example, not a formal statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Riemann sum",
+      "anchor": {
+        "section": "Two initial constructions",
+        "snippet": "in sigma notation is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BoxIntegral.integralSum",
+        "module": "Mathlib.Analysis.BoxIntegral.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`integralSum` is the Riemann sum over a tagged (pre)partition, generalized to n-dimensional boxes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of calculus (statement)",
+      "anchor": {
+        "section": "Two initial constructions",
+        "snippet": "states that differentiation and integration are inverse operations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "intervalIntegral.integral_eq_sub_of_hasDerivAt",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus",
+        "match_kind": "exact"
+      },
+      "note": "The classical continuous FTC (integral of a derivative equals the difference of endpoint values) is fully formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of discrete calculus",
+      "anchor": {
+        "section": "Two initial constructions",
+        "snippet": "is defined on a partition of the interval"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.sum_range_sub",
+        "module": "Mathlib.Algebra.BigOperators.Group.Finset.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`sum_range_sub` is the telescoping identity ∑ (f(i+1) - f i) = f n - f 0, the discrete analogue of the FTC.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Difference equation",
+      "anchor": {
+        "section": "Two initial constructions",
+        "snippet": "Difference equations relate an unknown function to its difference or difference quotient"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearRecurrence",
+        "module": "Mathlib.Algebra.LinearRecurrence",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes linear recurrences (a special case of difference equations) but not general difference equations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Difference (coboundary) operator",
+      "anchor": {
+        "section": "Calculus of differences and sums",
+        "snippet": "The difference (or the exterior derivative , or the coboundary operator) of the function is given by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fwdDiff",
+        "module": "Mathlib.Algebra.Group.ForwardDiff",
+        "match_kind": "exact"
+      },
+      "note": "`fwdDiff h f n = f (n + h) - f n` is exactly the forward difference operator Δ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sum of a cochain",
+      "anchor": {
+        "section": "Calculus of differences and sums",
+        "snippet": "Then its sum is a function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Summation is available via `Finset.sum`, but there is no dedicated antidifference operator defined as the inverse of `fwdDiff`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Constant rule (differences/sums)",
+      "anchor": {
+        "section": "Calculus of differences and sums",
+        "snippet": "These are their properties: Constant rule"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fwdDiff_const",
+        "module": "Mathlib.Algebra.Group.ForwardDiff",
+        "match_kind": "exact"
+      },
+      "note": "`fwdDiff_const` states Δ of a constant function is zero.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linearity (differences/sums)",
+      "anchor": {
+        "section": "Calculus of differences and sums",
+        "snippet": "Linearity : if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fwdDiff_add",
+        "module": "Mathlib.Algebra.Group.ForwardDiff",
+        "match_kind": "exact"
+      },
+      "note": "`fwdDiff_add` and `fwdDiff_const_smul` give additivity and scalar-linearity of Δ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product rule (differences/sums)",
+      "anchor": {
+        "section": "Calculus of differences and sums",
+        "snippet": "Product rule :"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fwdDiff_smul",
+        "module": "Mathlib.Algebra.Group.ForwardDiff",
+        "match_kind": "exact"
+      },
+      "note": "`fwdDiff_smul` is the discrete Leibniz rule Δ(f•g) = Δf•g + f•Δg + Δf•Δg.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of calculus I (differences/sums)",
+      "anchor": {
+        "section": "Calculus of differences and sums",
+        "snippet": "Fundamental theorem of calculus I :"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.sum_range_sub",
+        "module": "Mathlib.Algebra.BigOperators.Group.Finset.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Summing a forward difference telescopes to the difference of endpoint values via `sum_range_sub`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of calculus II (differences/sums)",
+      "anchor": {
+        "section": "Calculus of differences and sums",
+        "snippet": "Fundamental theorem of calculus II :"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Finset.sum_range_sub",
+        "module": "Mathlib.Algebra.BigOperators.Group.Finset.Basic",
+        "match_kind": null
+      },
+      "note": "The inverse direction (Δ of a partial-sum function recovers the summand) is derivable from telescoping but not stated as a named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exterior derivative on a graph",
+      "anchor": {
+        "section": "Calculus of differences and sums",
+        "snippet": "then its exterior derivative (or the differential) is the difference"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has only the unsigned `SimpleGraph.incMatrix`, not the signed edge differential df(e)=f(head)-f(tail).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Path integral of a cochain on a graph",
+      "anchor": {
+        "section": "Calculus of differences and sums",
+        "snippet": "then its integral over a sequence of edges"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Walks/paths exist in `SimpleGraph`, but there is no integral of an edge cochain along a path.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Constant rule (graphs)",
+      "anchor": {
+        "section": "Calculus of differences and sums",
+        "snippet": "These are the properties: Constant rule"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No graph exterior-derivative operator is formalized, so its constant rule is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linearity (graphs)",
+      "anchor": {
+        "section": "Calculus of differences and sums",
+        "snippet": "Linearity : if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No graph exterior-derivative operator is formalized, so its linearity is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product rule (graphs)",
+      "anchor": {
+        "section": "Calculus of differences and sums",
+        "snippet": "Product rule :"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No graph exterior-derivative operator is formalized, so its product rule is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of calculus I (graphs)",
+      "anchor": {
+        "section": "Calculus of differences and sums",
+        "snippet": "consists of the edges"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The path-integral version of the FTC on graphs is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of calculus II (graphs)",
+      "anchor": {
+        "section": "Calculus of differences and sums",
+        "snippet": "if the graph is a tree"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The tree/exactness version of the graph FTC is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Simplicial complex",
+      "anchor": {
+        "section": "Chains of simplices and cubes",
+        "snippet": "is a set of simplices that satisfies the following conditions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Geometry.SimplicialComplex",
+        "module": "Mathlib.Analysis.Convex.SimplicialComplex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Geometry.SimplicialComplex` (and an abstract version in AlgebraicTopology) formalizes simplicial complexes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orientation of a simplex",
+      "anchor": {
+        "section": "Chains of simplices and cubes",
+        "snippet": "an orientation of a k -simplex is given by an ordering of the vertices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's simplicial complexes carry no orientation/vertex-ordering equivalence-class structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Simplicial k-chain",
+      "anchor": {
+        "section": "Chains of simplices and cubes",
+        "snippet": "A simplicial k -chain is a finite formal sum"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicTopology.AlternatingFaceMapComplex",
+        "module": "Mathlib.AlgebraicTopology.AlternatingFaceMapComplex",
+        "match_kind": "generalization"
+      },
+      "note": "Chain groups of simplicial objects exist via the alternating face map complex, but not formal sums of faces of a geometric simplicial complex.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vector space of k-chains",
+      "anchor": {
+        "section": "Chains of simplices and cubes",
+        "snippet": "The vector space of k -chains on"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicTopology.AlternatingFaceMapComplex",
+        "module": "Mathlib.AlgebraicTopology.AlternatingFaceMapComplex",
+        "match_kind": "generalization"
+      },
+      "note": "The degree-k object of a (singular/simplicial) chain complex realizes this, but not as the free module on geometric k-simplices.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Boundary operator",
+      "anchor": {
+        "section": "Chains of simplices and cubes",
+        "snippet": "is the linear operator defined by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgebraicTopology.AlternatingFaceMapComplex.objD",
+        "module": "Mathlib.AlgebraicTopology.AlternatingFaceMapComplex",
+        "match_kind": "generalization"
+      },
+      "note": "`objD` is the simplicial boundary ∂ = Σ(-1)^i dᵢ; the general differential is `HomologicalComplex.d`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cycles and boundaries",
+      "anchor": {
+        "section": "Chains of simplices and cubes",
+        "snippet": "are referred to as cycles , and the subgroup"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HomologicalComplex.cycles",
+        "module": "Mathlib.Algebra.Homology.HomologicalComplex",
+        "match_kind": "generalization"
+      },
+      "note": "Cycles (ker ∂) and boundaries (im ∂) are formalized for arbitrary homological complexes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Boundary of a boundary is zero",
+      "anchor": {
+        "section": "Chains of simplices and cubes",
+        "snippet": "this says that the boundary of anything has no boundary"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HomologicalComplex.d_comp_d",
+        "module": "Mathlib.Algebra.Homology.HomologicalComplex",
+        "match_kind": "generalization"
+      },
+      "note": "`d_comp_d` proves ∂∘∂ = 0 generally; `AlternatingFaceMapComplex.d_squared` gives the simplicial case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Elementary interval",
+      "anchor": {
+        "section": "Chains of simplices and cubes",
+        "snippet": "An elementary interval is a subset"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cubical complexes and their elementary intervals are not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Elementary cube",
+      "anchor": {
+        "section": "Chains of simplices and cubes",
+        "snippet": "is the finite product of elementary intervals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Elementary cubes (products of elementary intervals) are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cubical complex",
+      "anchor": {
+        "section": "Chains of simplices and cubes",
+        "snippet": "is a cubical complex if it can be written as a union of elementary cubes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no cubical complex structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Chain complex",
+      "anchor": {
+        "section": "Chains of simplices and cubes",
+        "snippet": "connected by linear operators (called boundary operators )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ChainComplex",
+        "module": "Mathlib.Algebra.Homology.HomologicalComplex",
+        "match_kind": "generalization"
+      },
+      "note": "`ChainComplex` (a `HomologicalComplex` with the descending complex shape) is fully formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Simplicial map",
+      "anchor": {
+        "section": "Chains of simplices and cubes",
+        "snippet": "A simplicial map is a map between simplicial complexes"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Geometry.PreAbstractSimplicialComplex.map",
+        "module": "Mathlib.AlgebraicTopology.SimplicialComplex.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`PreAbstractSimplicialComplex.map` pushes faces forward along a vertex map, but a bundled simplicial-map type is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Chain map",
+      "anchor": {
+        "section": "Chains of simplices and cubes",
+        "snippet": "between two chain complexes"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HomologicalComplex.Hom",
+        "module": "Mathlib.Algebra.Homology.HomologicalComplex",
+        "match_kind": "generalization"
+      },
+      "note": "Morphisms of homological/chain complexes (commuting with differentials) are formalized as `HomologicalComplex.Hom`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chain map preserves cycles and boundaries",
+      "anchor": {
+        "section": "Chains of simplices and cubes",
+        "snippet": "A chain map sends cycles to cycles and boundaries to boundaries"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HomologicalComplex.cycles",
+        "module": "Mathlib.Algebra.Homology.HomologicalComplex",
+        "match_kind": "generalization"
+      },
+      "note": "Functoriality is realized by induced maps on cycles/homology (e.g. `cyclesMap`), implementing that chain maps respect cycles and boundaries.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dual (coboundary) operator",
+      "anchor": {
+        "section": "Discrete differential forms: cochains",
+        "snippet": "we consider its dual space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CochainComplex",
+        "module": "Mathlib.Algebra.Homology.HomologicalComplex",
+        "match_kind": "generalization"
+      },
+      "note": "The coboundary appears as the differential of a `CochainComplex` (e.g. dual of a chain complex), though not packaged as an explicit transpose of ∂ here.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cochain complex",
+      "anchor": {
+        "section": "Discrete differential forms: cochains",
+        "snippet": "is the dual notion to a chain complex"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CochainComplex",
+        "module": "Mathlib.Algebra.Homology.HomologicalComplex",
+        "match_kind": "generalization"
+      },
+      "note": "`CochainComplex` (ascending-index `HomologicalComplex`) is fully formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Degree (dimension)",
+      "anchor": {
+        "section": "Discrete differential forms: cochains",
+        "snippet": "is referred to as the degree (or dimension )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The grading index of a complex exists, but 'degree/dimension' of a cochain is not a separately named notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cochains, cocycles, coboundaries",
+      "anchor": {
+        "section": "Discrete differential forms: cochains",
+        "snippet": "are called cochains"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "groupCohomology.cocycles",
+        "module": "Mathlib.RepresentationTheory.Homological.GroupCohomology.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Cochains, cocycles, and coboundaries are formalized abstractly (`HomologicalComplex.cycles`) and concretely in group cohomology.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Poincaré lemma",
+      "anchor": {
+        "section": "Discrete differential forms: cochains",
+        "snippet": "The Poincaré lemma states that if"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.MeasureTheory.Integral.CurveIntegral.Poincare",
+        "match_kind": null
+      },
+      "note": "Mathlib proves the continuous Poincaré lemma for closed 1-forms on convex sets, not the discrete cochain/contractible-complex version.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Discrete exterior derivative on forms",
+      "anchor": {
+        "section": "Discrete differential forms: cochains",
+        "snippet": "When we refer to cochains as discrete (differential) forms"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CochainComplex",
+        "module": "Mathlib.Algebra.Homology.HomologicalComplex",
+        "match_kind": "generalization"
+      },
+      "note": "The discrete exterior derivative is the cochain coboundary (a `CochainComplex` differential), but it is not packaged under a 'discrete differential form' interface.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Stokes' theorem",
+      "anchor": {
+        "section": "Discrete differential forms: cochains",
+        "snippet": "Stokes' theorem is a statement about the discrete differential forms on manifolds"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.Analysis.BoxIntegral.DivergenceTheorem",
+        "match_kind": null
+      },
+      "note": "Mathlib has the continuous divergence (Stokes-type) theorem, but not the discrete duality ⟨dω, c⟩ = ⟨ω, ∂c⟩ for cochains.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Wedge product",
+      "anchor": {
+        "section": "The wedge product of forms",
+        "snippet": "this is a construction that creates from forms higher order forms"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ExteriorAlgebra",
+        "module": "Mathlib.LinearAlgebra.ExteriorAlgebra.Basic",
+        "match_kind": null
+      },
+      "note": "The algebraic wedge product exists on exterior algebras/powers and alternating maps, but not for discrete differential forms (cochains).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Wedge product on cubical complexes",
+      "anchor": {
+        "section": "The wedge product of forms",
+        "snippet": "For cubical complexes , the wedge product is defined on every cube"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cubical complexes are absent from Mathlib, so the cube-wise wedge product is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cup product",
+      "anchor": {
+        "section": "The wedge product of forms",
+        "snippet": "the wedge product is implemented as the cup product"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No cup product on cochains/cohomology is currently defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Coboundary of a cup product (Leibniz rule)",
+      "anchor": {
+        "section": "The wedge product of forms",
+        "snippet": "The coboundary of the cup product of cochains"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a cup product, its Leibniz/coboundary identity is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cup product of cocycles",
+      "anchor": {
+        "section": "The wedge product of forms",
+        "snippet": "The cup product of two cocycles is again a cocycle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No cup product exists, so this closure property is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Graded-commutativity of the cup product",
+      "anchor": {
+        "section": "The wedge product of forms",
+        "snippet": "The cup product operation satisfies the identity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No cup product exists, so its graded-commutativity is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Laplace operator (informal)",
+      "anchor": {
+        "section": "Laplace operator",
+        "snippet": "is (up to a factor) the rate at which the average value"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SimpleGraph.lapMatrix",
+        "module": "Mathlib.Combinatorics.SimpleGraph.LapMatrix",
+        "match_kind": null
+      },
+      "note": "The discrete graph Laplacian (degree minus adjacency, comparing a value to its neighbors' average) is formalized as `lapMatrix`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Codifferential",
+      "anchor": {
+        "section": "Laplace operator",
+        "snippet": "is an operator defined on"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No codifferential δ (adjoint of the exterior derivative) is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Codifferential is adjoint of exterior derivative",
+      "anchor": {
+        "section": "Laplace operator",
+        "snippet": "The codifferential is the adjoint of the exterior derivative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a codifferential, this adjointness statement is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Codifferential squared is zero",
+      "anchor": {
+        "section": "Laplace operator",
+        "snippet": "the codifferential has the corresponding property"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a codifferential, δ∘δ = 0 is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Laplace operator (definition)",
+      "anchor": {
+        "section": "Laplace operator",
+        "snippet": "The Laplace operator is defined by"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SimpleGraph.lapMatrix",
+        "module": "Mathlib.Combinatorics.SimpleGraph.LapMatrix",
+        "match_kind": "special_case"
+      },
+      "note": "The graph Laplacian L = D - A is formalized as `lapMatrix`, but the Hodge Laplacian dδ + δd on cochains is not.",
+      "provenance": "ai"
+    }
+  ]
+}

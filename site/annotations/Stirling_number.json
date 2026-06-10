@@ -1,0 +1,457 @@
+{
+  "slug": "Stirling_number",
+  "wikipedia_title": "Stirling number",
+  "display_title": "Stirling number",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Signed Stirling numbers of the first kind",
+      "anchor": {
+        "section": "Notation",
+        "snippet": "Ordinary (signed) Stirling numbers of the first kind are commonly denoted by"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.stirlingFirst",
+        "module": "Mathlib.Combinatorics.Enumerative.Stirling",
+        "match_kind": null
+      },
+      "note": "Mathlib defines only the unsigned Stirling numbers of the first kind (Nat.stirlingFirst); the signed version (-1)^(n-k)·c(n,k) is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unsigned Stirling numbers of the first kind",
+      "anchor": {
+        "section": "Notation",
+        "snippet": "which count the number of permutations of n elements with k disjoint cycles"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.stirlingFirst",
+        "module": "Mathlib.Combinatorics.Enumerative.Stirling",
+        "match_kind": "exact"
+      },
+      "note": "Nat.stirlingFirst is the unsigned Stirling number of the first kind, defined by the standard recurrence and documented as counting permutations with k disjoint cycles.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Stirling numbers of the second kind",
+      "anchor": {
+        "section": "Notation",
+        "snippet": "which count the number of ways to partition a set of n elements into k nonempty subsets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.stirlingSecond",
+        "module": "Mathlib.Combinatorics.Enumerative.Stirling",
+        "match_kind": "exact"
+      },
+      "note": "Nat.stirlingSecond is the Stirling number of the second kind, defined by the standard recurrence and documented as counting partitions into k nonempty subsets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Falling factorial expansion",
+      "anchor": {
+        "section": "Expansions of falling and rising factorials",
+        "snippet": "the falling factorial , defined as"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "descPochhammer",
+        "module": "Mathlib.RingTheory.Polynomial.Pochhammer",
+        "match_kind": null
+      },
+      "note": "The falling factorial is formalized as descPochhammer (and Nat.descFactorial), but its expansion as a sum of signed Stirling numbers of the first kind times powers is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Empty product convention",
+      "anchor": {
+        "section": "Expansions of falling and rising factorials",
+        "snippet": "by convention, because it is an empty product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "descPochhammer_zero",
+        "module": "Mathlib.RingTheory.Polynomial.Pochhammer",
+        "match_kind": "exact"
+      },
+      "note": "descPochhammer_zero (and ascPochhammer_zero / Nat.descFactorial_zero) state the empty-product convention that the 0th falling/rising factorial equals 1.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rising factorial expansion",
+      "anchor": {
+        "section": "Expansions of falling and rising factorials",
+        "snippet": "the rising factorial , defined as"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ascPochhammer",
+        "module": "Mathlib.RingTheory.Polynomial.Pochhammer",
+        "match_kind": null
+      },
+      "note": "The rising factorial is formalized as ascPochhammer (and Nat.ascFactorial), but its expansion via unsigned Stirling numbers of the first kind is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reverse relations via second-kind numbers",
+      "anchor": {
+        "section": "Expansions of falling and rising factorials",
+        "snippet": "Stirling numbers of the second kind express the reverse relations:"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.stirlingSecond",
+        "module": "Mathlib.Combinatorics.Enumerative.Stirling",
+        "match_kind": null
+      },
+      "note": "Both stirlingSecond and descPochhammer exist, but the identity expressing x^n as a sum of second-kind numbers times falling factorials is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Polynomial sequences form bases",
+      "anchor": {
+        "section": "As change of basis coefficients",
+        "snippet": "is a basis"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.basisMonomials",
+        "module": "Mathlib.Algebra.Polynomial.Basis",
+        "match_kind": null
+      },
+      "note": "Polynomial.basisMonomials formalizes that the monomials form a basis of R[X], but that the falling/rising factorial families are bases is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Falling factorials and binomial coefficients",
+      "anchor": {
+        "section": "As change of basis coefficients",
+        "snippet": "Falling factorials define, up to scaling, the same polynomials as binomial coefficients"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ring.descPochhammer_eq_factorial_smul_choose",
+        "module": "Mathlib.RingTheory.Binomial",
+        "match_kind": "exact"
+      },
+      "note": "Ring.descPochhammer_eq_factorial_smul_choose proves (x)_n = n! • C(x,n) over binomial rings (and Nat.descFactorial_eq_factorial_mul_choose over ℕ), exactly the claimed scaling relation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum of falling factorials",
+      "anchor": {
+        "section": "Example",
+        "snippet": "the sum of falling factorials with fixed k can be expressed as another falling factorial"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.sum_Icc_choose",
+        "module": "Mathlib.Data.Nat.Choose.Sum",
+        "match_kind": null
+      },
+      "note": "The equivalent hockey-stick identity Nat.sum_Icc_choose for binomial coefficients is formalized, but the telescoping sum of falling factorials is not stated in that form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sum of fourth powers",
+      "anchor": {
+        "section": "Example",
+        "snippet": "the sum of fourth powers of integers up to n (this time with n included), is:"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Finset.sum_range_pow",
+        "module": "Mathlib.NumberTheory.Bernoulli",
+        "match_kind": null
+      },
+      "note": "The general Faulhaber theorem Finset.sum_range_pow (via Bernoulli numbers) is formalized, but the specific closed-form polynomial for the sum of fourth powers is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "First and second kind are matrix inverses",
+      "anchor": {
+        "section": "As inverse matrices",
+        "snippet": "The Stirling numbers of the first and second kinds can be considered inverses of one another:"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.stirlingFirst",
+        "module": "Mathlib.Combinatorics.Enumerative.Stirling",
+        "match_kind": null
+      },
+      "note": "Both kinds are defined, but their orthogonality/matrix-inverse relation (sum of products equals Kronecker delta) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lah numbers (third kind)",
+      "anchor": {
+        "section": "Lah numbers",
+        "snippet": "are sometimes called Stirling numbers of the third kind"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lah numbers (Stirling numbers of the third kind) are not defined anywhere in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lah numbers as change of basis",
+      "anchor": {
+        "section": "Lah numbers",
+        "snippet": "These numbers are coefficients expressing falling factorials in terms of rising factorials and vice versa:"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lah numbers and their role as change-of-basis coefficients between falling and rising factorials are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Composition of changes of basis",
+      "anchor": {
+        "section": "Lah numbers",
+        "snippet": "gives the change of basis directly from"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The composition of change-of-basis maps yielding Lah numbers is not formalized since Lah numbers are absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lah matrices are inverse",
+      "anchor": {
+        "section": "Lah numbers",
+        "snippet": "then one is the inverse of the other"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The mutual-inverse property of the signed/unsigned Lah matrices is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product of Stirling matrices gives Lah numbers",
+      "anchor": {
+        "section": "Lah numbers",
+        "snippet": "Composing the matrix of unsigned Stirling numbers of the first kind with the matrix of Stirling numbers of the second kind gives the Lah numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The matrix product of first- and second-kind Stirling numbers equaling Lah numbers is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Enumerative definition of the three kinds",
+      "anchor": {
+        "section": "Lah numbers",
+        "snippet": "can be defined as the number of partitions of n elements into k non-empty unlabeled subsets, where each subset is endowed with no order, a cyclic order , or a linear order, respectively"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.stirlingSecond",
+        "module": "Mathlib.Combinatorics.Enumerative.Stirling",
+        "match_kind": null
+      },
+      "note": "The first and second kinds are defined (by recurrence, not enumeratively), but the unified enumerative definition and the Lah/third kind are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inequalities among the three kinds",
+      "anchor": {
+        "section": "Lah numbers",
+        "snippet": "In particular, this implies the inequalities:"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The inequalities L(n,k) ≥ c(n,k) ≥ S(n,k) among the three kinds are not formalized (and Lah numbers are absent).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Stirling inversion formula",
+      "anchor": {
+        "section": "Inversion relations and the Stirling transform",
+        "snippet": "related by a finite sum Stirling number formula given by"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.stirlingSecond",
+        "module": "Mathlib.Combinatorics.Enumerative.Stirling",
+        "match_kind": null
+      },
+      "note": "Both kinds are defined, but the Stirling inversion formula relating two sequences via the two kinds is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Stirling transform of generating functions",
+      "anchor": {
+        "section": "Inversion relations and the Stirling transform",
+        "snippet": "translate into functional equations between the sequence exponential generating functions given by the Stirling (generating function) transform"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Stirling transform expressed as functional equations between exponential generating functions is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Differential operator relations",
+      "anchor": {
+        "section": "Inversion relations and the Stirling transform",
+        "snippet": "are related by the following formulas for all integers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identities expressing (xD)^n and x^n D^n via Stirling numbers of the second/first kind are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Forward differences and derivatives inversion",
+      "anchor": {
+        "section": "Inversion relations and the Stirling transform",
+        "snippet": "relate the forward differences and the ordinary"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "fwdDiff",
+        "module": "Mathlib.Algebra.Group.ForwardDiff",
+        "match_kind": null
+      },
+      "note": "The forward difference operator fwdDiff is formalized, but its Stirling-number relation to ordinary derivatives is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Symmetric formulae relating both kinds",
+      "anchor": {
+        "section": "Symmetric formulae",
+        "snippet": "Abramowitz and Stegun give the following symmetric formulae that relate the Stirling numbers of the first and second kind."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Abramowitz–Stegun symmetric formulae relating the two kinds of Stirling numbers are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Connection relation for negative values",
+      "anchor": {
+        "section": "Stirling numbers with negative integral values",
+        "snippet": "Stirling numbers of first and second kind are connected by the relations:"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Stirling numbers are defined only on ℕ in Mathlib, so the negative-index connection relations between the two kinds are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Knuth's general Stirling numbers",
+      "anchor": {
+        "section": "Stirling numbers with negative integral values",
+        "snippet": "defined the more general Stirling numbers by extending a recurrence relation to all integers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Knuth's extension of Stirling numbers to all integer indices is not formalized; Mathlib's definitions take ℕ arguments only.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Branson's extended recurrence",
+      "anchor": {
+        "section": "Stirling numbers with negative integral values",
+        "snippet": "one has the following extension of the recurrence relation of the Stirling numbers of the first kind:"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Branson's extended recurrence for Stirling numbers of the first kind is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Negative Bell numbers",
+      "anchor": {
+        "section": "Stirling numbers with negative integral values",
+        "snippet": "one may define the negative Bell numbers by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Standard Bell numbers (Nat.bell) exist, but the negative Bell numbers defined via negative-index Stirling numbers are not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

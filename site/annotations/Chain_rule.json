@@ -1,0 +1,537 @@
+{
+  "slug": "Chain_rule",
+  "wikipedia_title": "Chain rule",
+  "display_title": "Chain rule",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Chain rule (Lagrange notation)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the chain rule is a formula that expresses the derivative of the composition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasDerivAt.comp",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Comp",
+        "match_kind": "exact"
+      },
+      "note": "The one-variable chain rule (f∘g)' = f'(g)·g' is `HasDerivAt.comp` in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Chain rule (Leibniz notation)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The chain rule may also be expressed in Leibniz's notation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "deriv_comp",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Comp",
+        "match_kind": "exact"
+      },
+      "note": "Same content as the Lagrange-notation chain rule; `deriv_comp` gives the functional form dz/dx = (dz/dy)(dy/dx).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Intuitive product-of-rates statement",
+      "anchor": {
+        "section": "Intuitive explanation",
+        "snippet": "the chain rule states that knowing the instantaneous rate of change"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasDerivAt.comp",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Comp",
+        "match_kind": "exact"
+      },
+      "note": "The informal product-of-rates statement is the same theorem as `HasDerivAt.comp`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Car, bicycle, walking man",
+      "anchor": {
+        "section": "Intuitive explanation",
+        "snippet": "If a car travels twice as fast as a bicycle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal narrative example with no mathematical statement to formalize.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Chain rule (one variable)",
+      "anchor": {
+        "section": "Statement",
+        "snippet": "if g is a function that is differentiable at a point c"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasDerivAt.comp",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Comp",
+        "match_kind": "exact"
+      },
+      "note": "The one-variable chain rule at a point is `HasDerivAt.comp`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Chain rule for n-fold composition",
+      "anchor": {
+        "section": "Statement",
+        "snippet": "Carrying the same reasoning further, given n functions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HasDerivAt.comp",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Comp",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the binary chain rule; the n-fold version follows by iteration but is not stated as a separate lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chain rule for composites of more than two functions",
+      "anchor": {
+        "section": "Composites of more than two functions",
+        "snippet": "The chain rule states that to compute the derivative of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HasDerivAt.comp",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Comp",
+        "match_kind": "generalization"
+      },
+      "note": "Same as the n-fold case: obtained by iterating `HasDerivAt.comp` without a dedicated multi-composite lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Decomposition into three functions",
+      "anchor": {
+        "section": "Composites of more than two functions",
+        "snippet": "For concreteness, consider the function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A concrete worked example with no separate Mathlib statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Arbitrarily long composition chain rule",
+      "anchor": {
+        "section": "Composites of more than two functions",
+        "snippet": "it is necessary to differentiate an arbitrarily long composition"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HasDerivAt.comp",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Comp",
+        "match_kind": "generalization"
+      },
+      "note": "Iterating `HasDerivAt.comp` covers arbitrarily long chains but no explicit `List`/`Finset`-indexed lemma exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quotient rule from chain rule",
+      "anchor": {
+        "section": "Quotient rule",
+        "snippet": "the quotient rule is a consequence of the chain rule and the product rule"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasDerivAt.div",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Inv",
+        "match_kind": "exact"
+      },
+      "note": "The quotient rule is stated in Mathlib as `HasDerivAt.div` / `deriv_div`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Derivative of inverse function",
+      "anchor": {
+        "section": "Derivatives of inverse functions",
+        "snippet": "There is a formula for the derivative of f in terms of the derivative of g"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasDerivAt.of_local_left_inverse",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Inverse",
+        "match_kind": "exact"
+      },
+      "note": "The inverse-function derivative formula is `HasDerivAt.of_local_left_inverse`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Inverse of exponential is logarithm",
+      "anchor": {
+        "section": "Derivatives of inverse functions",
+        "snippet": "consider the function g ( x ) = e x"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.hasDerivAt_log",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Deriv",
+        "match_kind": "exact"
+      },
+      "note": "The derivative `log x = 1/x` obtained as inverse of exp is `Real.hasDerivAt_log`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Failure of inverse formula at cube root",
+      "anchor": {
+        "section": "Derivatives of inverse functions",
+        "snippet": "This formula can fail when one of these conditions is not true"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific Mathlib lemma about the failure of the inverse derivative at the cube-root example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chain rule and backpropagation",
+      "anchor": {
+        "section": "Backpropagation",
+        "snippet": "The chain rule forms the basis of the backpropagation algorithm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Backpropagation as an algorithm is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Faà di Bruno's formula",
+      "anchor": {
+        "section": "Higher derivatives",
+        "snippet": "Faà di Bruno's formula generalizes the chain rule to higher derivatives"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasFTaylorSeriesUpToOn.comp",
+        "module": "Mathlib.Analysis.Calculus.ContDiff.FaaDiBruno",
+        "match_kind": "exact"
+      },
+      "note": "Faà di Bruno is `HasFTaylorSeriesUpToOn.comp` via `FormalMultilinearSeries.taylorComp`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "First proof of chain rule",
+      "anchor": {
+        "section": "First proof",
+        "snippet": "One proof of the chain rule begins by defining the derivative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasDerivAt.comp",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Comp",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves the same chain-rule statement (`HasDerivAt.comp`); the article's specific proof presentation is not separately recorded.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalent definition of differentiability",
+      "anchor": {
+        "section": "Second proof",
+        "snippet": "the following equivalent definition of differentiability at a point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasFDerivAt",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The little-o form of differentiability is the very definition `HasFDerivAt`/`HasDerivAt` uses.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Second proof of chain rule",
+      "anchor": {
+        "section": "Second proof",
+        "snippet": "Another way of proving the chain rule is to measure the error"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasFDerivAt.comp",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Comp",
+        "match_kind": "exact"
+      },
+      "note": "The error-term proof corresponds to Mathlib's proof of `HasFDerivAt.comp`, which is the chain rule itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Carathéodory differentiability",
+      "anchor": {
+        "section": "Third proof",
+        "snippet": "Under this definition, a function f is differentiable at a point a"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Carathéodory's continuous-factor formulation of the derivative is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Third proof of chain rule (Carathéodory)",
+      "anchor": {
+        "section": "Third proof",
+        "snippet": "alternative definition of the differentiability of a function can be used to give an elegant proof"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HasDerivAt.comp",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Comp",
+        "match_kind": "generalization"
+      },
+      "note": "Statement is the chain rule (formalized), but the specific Carathéodory-style proof is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Chain rule for scalar-valued multivariate functions",
+      "anchor": {
+        "section": "Case of scalar-valued multivariate functions",
+        "snippet": "With this notation, the chain rule is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasFDerivAt.comp",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Comp",
+        "match_kind": "exact"
+      },
+      "note": "The multivariate scalar chain rule is the specialization of `HasFDerivAt.comp` / `fderiv_comp`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Chain rule for addition",
+      "anchor": {
+        "section": "Example: arithmetic operations",
+        "snippet": "If the function f is addition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasDerivAt.add",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Add",
+        "match_kind": "exact"
+      },
+      "note": "The sum rule (f+g)' = f'+g' is `HasDerivAt.add` (and `HasFDerivAt.add`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Chain rule for multiplication",
+      "anchor": {
+        "section": "Example: arithmetic operations",
+        "snippet": "For multiplication"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasDerivAt.mul",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Mul",
+        "match_kind": "exact"
+      },
+      "note": "The product rule is Mathlib's `HasDerivAt.mul`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Chain rule for exponentiation",
+      "anchor": {
+        "section": "Example: arithmetic operations",
+        "snippet": "The case of exponentiation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.hasDerivAt_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.ExpDeriv",
+        "match_kind": "exact"
+      },
+      "note": "The chain rule applied to exp is captured via `Real.hasDerivAt_exp` composed using `HasDerivAt.comp`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Chain rule for total derivatives",
+      "anchor": {
+        "section": "General rule: Vector-valued multivariate functions",
+        "snippet": "The chain rule for total derivatives is that their composite is the total derivative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasFDerivAt.comp",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Comp",
+        "match_kind": "exact"
+      },
+      "note": "The total-derivative chain rule is exactly `HasFDerivAt.comp`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Jacobian of composite is product of Jacobians",
+      "anchor": {
+        "section": "General rule: Vector-valued multivariate functions",
+        "snippet": "the Jacobian of a composite function is the product of the Jacobians"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fderiv_comp",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Comp",
+        "match_kind": "exact"
+      },
+      "note": "`fderiv_comp` expresses the Fréchet derivative of a composite as the composition of the linear maps (Jacobians).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chain rule for partial derivatives",
+      "anchor": {
+        "section": "General rule: Vector-valued multivariate functions",
+        "snippet": "The chain rule for total derivatives implies a chain rule for partial derivatives"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "fderiv_comp",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Comp",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib gives the total-derivative chain rule; partial-derivative form follows but isn't stated as a single explicit lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Partial derivatives via chain rule",
+      "anchor": {
+        "section": "Example",
+        "snippet": "determine the value of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A worked numerical example with no corresponding Mathlib statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Faà di Bruno in multivariable case",
+      "anchor": {
+        "section": "Higher derivatives of multivariable functions",
+        "snippet": "Faà di Bruno's formula for higher-order derivatives of single-variable functions generalizes"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasFTaylorSeriesUpToOn.comp",
+        "module": "Mathlib.Analysis.Calculus.ContDiff.FaaDiBruno",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's Faà di Bruno is proven in the general Banach-space setting, covering the multivariate case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chain rule on manifolds",
+      "anchor": {
+        "section": "Further generalizations",
+        "snippet": "One generalization is to manifolds"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasMFDerivAt.comp",
+        "module": "Mathlib.Geometry.Manifold.MFDeriv.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The manifold chain rule is `HasMFDerivAt.comp` / `mfderiv_comp`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chain rule for Fréchet derivatives",
+      "anchor": {
+        "section": "Further generalizations",
+        "snippet": "The chain rule is also valid for Fréchet derivatives in Banach spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasFDerivAt.comp",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Comp",
+        "match_kind": "exact"
+      },
+      "note": "`HasFDerivAt.comp` is stated for Fréchet derivatives between normed/Banach spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chain rule for Kähler differentials",
+      "anchor": {
+        "section": "Further generalizations",
+        "snippet": "In differential algebra , the derivative is interpreted as a morphism of modules"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "KaehlerDifferential.map",
+        "module": "Mathlib.RingTheory.Kaehler.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has `KaehlerDifferential.D` (the universal derivation) and `KaehlerDifferential.map` realizing functoriality, encoding the Kähler chain rule.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Itō's lemma",
+      "anchor": {
+        "section": "Further generalizations",
+        "snippet": "Itō's lemma , expresses the composite of an Itō process"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Itô calculus and Itô's lemma are not present in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,633 @@
+{
+  "slug": "Coxeter_group",
+  "wikipedia_title": "Coxeter group",
+  "display_title": "Coxeter group",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Coxeter group (presentation)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Formally, a Coxeter group can be defined as a group with the presentation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CoxeterMatrix.Group",
+        "module": "Mathlib.GroupTheory.Coxeter.Basic",
+        "match_kind": "exact"
+      },
+      "note": "CoxeterMatrix.Group is defined as PresentedGroup M.relationsSet with relations (s_i s_{i'})^{M i i'}, exactly the Coxeter presentation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coxeter system",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is called a Coxeter system"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CoxeterSystem",
+        "module": "Mathlib.GroupTheory.Coxeter.Basic",
+        "match_kind": "exact"
+      },
+      "note": "CoxeterSystem M W records a group isomorphism between W and the Coxeter group of M, the standard notion of a Coxeter system.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Generators are involutions",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "as such the generators are involutions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CoxeterSystem.simple_mul_simple_self",
+        "module": "Mathlib.GroupTheory.Coxeter.Basic",
+        "match_kind": "exact"
+      },
+      "note": "simple_mul_simple_self proves s i * s i = 1 (and simple_sq gives (s i)^2 = 1), exactly that each generator is an involution.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Commuting generators",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "then the generators"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CoxeterSystem.simple_mul_simple_pow",
+        "module": "Mathlib.GroupTheory.Coxeter.Basic",
+        "match_kind": null
+      },
+      "note": "simple_mul_simple_pow gives (s i * s i')^{M i i'} = 1 (so commuting when M=2), but there is no explicit Commute lemma stated for that case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coxeter matrix",
+      "anchor": {
+        "section": "Coxeter matrix and Schläfli matrix",
+        "snippet": "symmetric matrix with entries"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CoxeterMatrix",
+        "module": "Mathlib.GroupTheory.Coxeter.Matrix",
+        "match_kind": "exact"
+      },
+      "note": "CoxeterMatrix is a symmetric ℕ-matrix with diagonal 1 and off-diagonal ≠ 1, matching the article (using 0 in place of ∞).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coxeter diagram",
+      "anchor": {
+        "section": "Coxeter matrix and Schläfli matrix",
+        "snippet": "can be conveniently encoded by a Coxeter diagram"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib draws specific Coxeter–Dynkin diagrams only in docstrings; there is no general Coxeter diagram graph object defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Commute iff no edge",
+      "anchor": {
+        "section": "Coxeter matrix and Schläfli matrix",
+        "snippet": "two generators commute if and only if they are not joined by an edge"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Coxeter diagram is defined and there is no iff lemma relating commuting of generators to absence of an edge.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Schläfli matrix",
+      "anchor": {
+        "section": "Coxeter matrix and Schläfli matrix",
+        "snippet": "but the elements are modified, being proportional to the dot product of the pairwise generators"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The cosine/Schläfli matrix -2cos(π/m_{ij}) and the geometric representation are only mentioned as a TODO in Coxeter/Basic, not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Eigenvalues determine type",
+      "anchor": {
+        "section": "Coxeter matrix and Schläfli matrix",
+        "snippet": "its eigenvalues determine whether the Coxeter group is of finite type"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Schläfli matrix or finite-type criterion via eigenvalues exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Symmetric group as Coxeter group",
+      "anchor": {
+        "section": "An example",
+        "snippet": "are placed in a row with each vertex joined by an unlabelled edge to its immediate neighbors"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CoxeterMatrix.A",
+        "module": "Mathlib.GroupTheory.Coxeter.Matrix",
+        "match_kind": null
+      },
+      "note": "The type-A Coxeter matrix is defined, but no isomorphism between Equiv.Perm and its Coxeter group is proven (noted as a TODO).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reflection groups are Coxeter groups",
+      "anchor": {
+        "section": "Abstraction of reflection groups",
+        "snippet": "every reflection group may be presented as a Coxeter group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No construction presenting a reflection group as a Coxeter group exists (the geometric representation is only a TODO).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Finite Coxeter groups are reflection groups",
+      "anchor": {
+        "section": "Abstraction of reflection groups",
+        "snippet": "every finite Coxeter group admits a faithful representation as a finite reflection group of some Euclidean space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No faithful Euclidean reflection representation of finite Coxeter groups is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Classification by Coxeter diagrams",
+      "anchor": {
+        "section": "Classification",
+        "snippet": "Finite Coxeter groups are classified in terms of their Coxeter diagrams"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CoxeterMatrix.A",
+        "module": "Mathlib.GroupTheory.Coxeter.Matrix",
+        "match_kind": null
+      },
+      "note": "The finite-type Coxeter matrices (A,B,D,I,E₆,E₇,E₈,F₄,G₂,H₃,H₄) are defined, but the classification theorem is explicitly stated as unproven in the docstring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Finite irreducible Coxeter group families",
+      "anchor": {
+        "section": "Classification",
+        "snippet": "The finite Coxeter groups with connected Coxeter diagrams consist of three one-parameter families of increasing dimension"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CoxeterMatrix.A",
+        "module": "Mathlib.GroupTheory.Coxeter.Matrix",
+        "match_kind": null
+      },
+      "note": "The families CoxeterMatrix.A/B/D and exceptional matrices are defined, but the enumeration theorem of finite irreducible types is not proven.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Weyl groups are Coxeter groups",
+      "anchor": {
+        "section": "Weyl groups",
+        "snippet": "every Weyl group can be realized as a Coxeter group"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "RootPairing.weylGroup",
+        "module": "Mathlib.LinearAlgebra.RootSystem.WeylGroup",
+        "match_kind": null
+      },
+      "note": "RootPairing.weylGroup is defined, but no result realizing it as a Coxeter group is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Coxeter groups are automatic",
+      "anchor": {
+        "section": "Weyl groups",
+        "snippet": "every finitely generated Coxeter group is an automatic group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Automatic groups are not defined anywhere in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "B_n and C_n share Weyl group",
+      "anchor": {
+        "section": "Weyl groups",
+        "snippet": "give rise to the same Weyl group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement comparing the Weyl groups of types B_n and C_n is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Regular polytope symmetry is finite Coxeter group",
+      "anchor": {
+        "section": "Symmetry groups of regular polytopes",
+        "snippet": "The symmetry group of every regular polytope is a finite Coxeter group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theory of regular polytopes or their symmetry groups as Coxeter groups exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Simplex symmetry group (type A_n)",
+      "anchor": {
+        "section": "Symmetry groups of regular polytopes",
+        "snippet": "The symmetry group of a regular n -simplex is the symmetric group S n +1"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CoxeterMatrix.A",
+        "module": "Mathlib.GroupTheory.Coxeter.Matrix",
+        "match_kind": null
+      },
+      "note": "CoxeterMatrix.A is documented as the simplex symmetry group of type A_n, but no proof identifying it with the symmetric group S_{n+1} exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hyperoctahedral group (type B_n)",
+      "anchor": {
+        "section": "Symmetry groups of regular polytopes",
+        "snippet": "is known as the hyperoctahedral group"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CoxeterMatrix.B",
+        "module": "Mathlib.GroupTheory.Coxeter.Matrix",
+        "match_kind": null
+      },
+      "note": "CoxeterMatrix.B is defined (hypercube/orthoplex symmetry), but the hyperoctahedral group is not separately defined or identified with it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Dihedral groups I_2(p)",
+      "anchor": {
+        "section": "Symmetry groups of regular polytopes",
+        "snippet": "the dihedral groups , which are the symmetry groups of regular polygons , form the series I 2 ( p ), for p ≥ 3"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CoxeterMatrix.I",
+        "module": "Mathlib.GroupTheory.Coxeter.Matrix",
+        "match_kind": null
+      },
+      "note": "CoxeterMatrix.I (type I₂(m)) and DihedralGroup both exist, but no proven isomorphism connects the dihedral group to its Coxeter group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Semiregular polytope symmetry groups",
+      "anchor": {
+        "section": "Symmetry groups of regular polytopes",
+        "snippet": "are the symmetry groups of certain semiregular polytopes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Semiregular polytopes and their symmetry groups (types D, E) are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Affine Coxeter group structure",
+      "anchor": {
+        "section": "Affine Coxeter groups",
+        "snippet": "each contains a normal abelian subgroup such that the corresponding quotient group is finite"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Affine Coxeter groups and their normal abelian (translation) subgroup structure are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Stiefel diagram and affine Coxeter group",
+      "anchor": {
+        "section": "Affine Coxeter groups",
+        "snippet": "one can construct the associated Stiefel diagram"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Stiefel diagram or affine Coxeter group construction exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Free transitive action on alcoves",
+      "anchor": {
+        "section": "Affine Coxeter groups",
+        "snippet": "the affine Coxeter group acts freely and transitively on the alcoves"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Alcoves and the simply transitive action of affine Coxeter groups are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Affine Coxeter generators via roots",
+      "anchor": {
+        "section": "Affine Coxeter groups",
+        "snippet": "the affine Coxeter group is generated by the ordinary (linear) reflections about the hyperplanes perpendicular to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no formalization of affine Coxeter groups generated by reflections in root hyperplanes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Infinitely many hyperbolic Coxeter groups",
+      "anchor": {
+        "section": "Hyperbolic Coxeter groups",
+        "snippet": "There are infinitely many hyperbolic Coxeter groups describing reflection groups in hyperbolic space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hyperbolic Coxeter groups and reflection groups in hyperbolic space are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Irreducible Coxeter group",
+      "anchor": {
+        "section": "Irreducible Coxeter groups",
+        "snippet": "A Coxeter group is said to be irreducible if its Coxeter–Dynkin diagram is connected"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Irreducibility of Coxeter groups (via diagram connectedness) is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Direct product decomposition",
+      "anchor": {
+        "section": "Irreducible Coxeter groups",
+        "snippet": "Every Coxeter group is the direct product of the irreducible groups that correspond to the components of its Coxeter–Dynkin diagram"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The direct-product decomposition of a Coxeter group into irreducible components is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Length function",
+      "anchor": {
+        "section": "Partial orders",
+        "snippet": "gives rise to a length function ℓ on a Coxeter group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CoxeterSystem.length",
+        "module": "Mathlib.GroupTheory.Coxeter.Length",
+        "match_kind": "exact"
+      },
+      "note": "CoxeterSystem.length is the minimal number of simple reflections whose product is w, the standard length function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Reduced word",
+      "anchor": {
+        "section": "Partial orders",
+        "snippet": "An expression for v using ℓ ( v ) generators is a reduced word"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CoxeterSystem.IsReduced",
+        "module": "Mathlib.GroupTheory.Coxeter.Length",
+        "match_kind": "exact"
+      },
+      "note": "CoxeterSystem.IsReduced ω holds iff ℓ(π ω) = ω.length, exactly the notion of a reduced word.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Reduced words of (13) in S_3",
+      "anchor": {
+        "section": "Partial orders",
+        "snippet": "the permutation (13) in S 3 has two reduced words"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "S_3 is not set up as a Coxeter system, so this specific enumeration of reduced words is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sign map generalization",
+      "anchor": {
+        "section": "Partial orders",
+        "snippet": "generalizing the sign map for the symmetric group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CoxeterSystem.lengthParity",
+        "module": "Mathlib.GroupTheory.Coxeter.Length",
+        "match_kind": "exact"
+      },
+      "note": "CoxeterSystem.lengthParity : W →* Multiplicative (ZMod 2) is the homomorphism w ↦ (-1)^{ℓ(w)}, generalizing the symmetric-group sign map.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Three partial orders",
+      "anchor": {
+        "section": "Partial orders",
+        "snippet": "Using reduced words one may define three partial orders on the Coxeter group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither Bruhat order nor the left/right weak orders on a Coxeter group are defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bruhat order",
+      "anchor": {
+        "section": "Partial orders",
+        "snippet": "An element v exceeds an element u in the Bruhat order if some"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Bruhat order on a Coxeter group is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Weak order",
+      "anchor": {
+        "section": "Partial orders",
+        "snippet": "In the weak order, v ≥ u if some reduced word for v contains a reduced word for u as an initial segment"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The weak (left/right) order on a Coxeter group is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Reduced word of (1 2 3) in S_3",
+      "anchor": {
+        "section": "Partial orders",
+        "snippet": "the permutation (1 2 3) in S 3 has only one reduced word"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "S_3 is not realized as a Coxeter system, so this specific reduced-word example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Abelianization is elementary abelian 2-group",
+      "anchor": {
+        "section": "Homology",
+        "snippet": "its abelianization is an elementary abelian 2-group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no result that the abelianization of a Coxeter group is an elementary abelian 2-group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Schur multiplier is elementary abelian 2-group",
+      "anchor": {
+        "section": "Homology",
+        "snippet": "the Schur multiplier is also an elementary abelian 2-group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Schur multiplier of a Coxeter group is not computed or even referenced in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

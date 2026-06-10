@@ -1,0 +1,329 @@
+{
+  "slug": "Radian",
+  "wikipedia_title": "Radian",
+  "display_title": "Radian",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Radian",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is the unit of angle in the International System of Units"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.Angle",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Angle",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes angles as the quotient ℝ/2πℤ via `Real.Angle`, but does not treat the radian as a named SI unit.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Radian (geometric definition)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "One radian is defined as the angle at the center of a circle in a plane that is subtended by an arc whose length equals the radius"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No geometric arc-length-based definition of the radian appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Angle as ratio of arc length to radius",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "the magnitude in radians of a subtended angle is equal to the ratio of the arc length to the radius"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no arc-length-based characterization of angle magnitude.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Full revolution equals 2π radians",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The angle corresponding to one complete revolution is the length of the circumference divided by the radius"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.Angle.coe_two_pi",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Angle",
+        "match_kind": "exact"
+      },
+      "note": "`Real.Angle.coe_two_pi` states `↑(2 * π) = (0 : Real.Angle)`, encoding that 2π radians is a full revolution.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Radian is dimensionless",
+      "anchor": {
+        "section": "Dimensional analysis",
+        "snippet": "The key fact is that the radian is a dimensionless unit equal to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no dimensional-analysis framework for SI units.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Pulley rise example",
+      "anchor": {
+        "section": "Dimensional analysis",
+        "snippet": "an object hanging by a string from a pulley will rise or drop by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No physics worked-example concerning a pulley is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Angular velocity of rolling wheel",
+      "anchor": {
+        "section": "Dimensional analysis",
+        "snippet": "Similarly in the formula for the angular velocity of a rolling wheel"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize physical angular-velocity formulas.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Capitalized Sin function (complete form)",
+      "anchor": {
+        "section": "Dimensional analysis",
+        "snippet": "The capitalized function Sin is the \"complete\" function that takes an argument with a dimension of angle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `Real.sin` takes a dimensionless real; no dimensioned-input variant is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Converting radians to degrees",
+      "anchor": {
+        "section": "Between degrees",
+        "snippet": "to convert from radians to degrees, multiply by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of degrees and so no radians-to-degrees conversion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Converting degrees to radians",
+      "anchor": {
+        "section": "Between degrees",
+        "snippet": "Conversely, to convert from degrees to radians, multiply by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No degree unit exists in Mathlib, so this conversion is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Converting radians to turns",
+      "anchor": {
+        "section": "Between degrees",
+        "snippet": "Radians can be converted to turns"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no `turn` unit or conversion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Converting between radians and gradians",
+      "anchor": {
+        "section": "Between gradians",
+        "snippet": "To convert from radians to gradians multiply by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gradians are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Limit of sin(x)/x in radians",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "the use of radians leads to the simple limit formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.isEquivalent_sin",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv",
+        "match_kind": "exact"
+      },
+      "note": "`isEquivalent_sin : sin ~[𝓝 0] id` expresses sin x ∼ x as x → 0, equivalent to sin(x)/x → 1.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Taylor series for sin x in radians",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "when x is the angle expressed in radians, the Taylor series for sin x becomes"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.sin_eq_tsum",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Series",
+        "match_kind": "exact"
+      },
+      "note": "`Real.sin_eq_tsum` (and `Real.hasSum_sin`) give the Taylor series for sin on ℝ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Taylor series for sin in degrees",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "If y were the angle x but expressed in degrees"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no degree-valued sine and so no degree Taylor series.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Angular velocity in rad/s",
+      "anchor": {
+        "section": "Physics",
+        "snippet": "angular velocity is typically expressed in the unit radian per second"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define angular velocity or SI units.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "In phase / antiphase",
+      "anchor": {
+        "section": "Physics",
+        "snippet": "if the phase angle difference of two waves is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Phase-relation terminology for waves is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Milliradian",
+      "anchor": {
+        "section": "Prefixes and variants",
+        "snippet": "A milliradian (mrad) is a thousandth of a radian"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No SI-prefix-based angle units appear in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Angular mil",
+      "anchor": {
+        "section": "Prefixes and variants",
+        "snippet": "The angular mil is an approximation of the milliradian"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The angular mil is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Arc second",
+      "anchor": {
+        "section": "Prefixes and variants",
+        "snippet": "More common is the arc second"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Arcseconds are not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,883 @@
+{
+  "slug": "Sphere",
+  "wikipedia_title": "Sphere",
+  "display_title": "Sphere",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Sphere (set of equidistant points)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a sphere is the set of points that are all at the same distance"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.sphere",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Metric.sphere x ε := { y | dist y x = ε }` is the set of equidistant points in any (pseudo)metric space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Center and radius",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "That given point is the center of the sphere, and the distance"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.Sphere",
+        "module": "Mathlib.Geometry.Euclidean.Sphere.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The structure `EuclideanGeometry.Sphere` bundles fields `center : P` and `radius : ℝ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Radius (line segment)",
+      "anchor": {
+        "section": "Basic terminology",
+        "snippet": "any line from the center to a point on the sphere is also called a radius"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib treats radius only as a scalar in `Sphere.radius`, not as a line segment from center to surface.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Diameter and antipodal points",
+      "anchor": {
+        "section": "Basic terminology",
+        "snippet": "If a radius is extended through the center to the opposite side of the sphere, it creates a diameter"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "contMDiffNegSphere",
+        "module": "Mathlib.Geometry.Manifold.Instances.Sphere",
+        "match_kind": null
+      },
+      "note": "Antipodal map on the unit sphere is formalized via negation, but diameter as a chord/segment is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unit sphere",
+      "anchor": {
+        "section": "Basic terminology",
+        "snippet": "A unit sphere is a sphere with unit radius"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.sphere",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "The unit sphere is denoted `Metric.sphere (0 : E) 1` throughout Mathlib (e.g. in `Mathlib.Geometry.Manifold.Instances.Sphere`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Great circle and hemispheres",
+      "anchor": {
+        "section": "Basic terminology",
+        "snippet": "A great circle on the sphere has the same center and radius as the sphere"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of great circle or hemisphere on a sphere appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Axis, poles, equator, meridians, parallels",
+      "anchor": {
+        "section": "Basic terminology",
+        "snippet": "A particular line passing through its center defines an axis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formal notions of axis, pole, equator, meridian, or parallel on a sphere.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ball vs sphere",
+      "anchor": {
+        "section": "Basic terminology",
+        "snippet": "They draw a distinction between a sphere and a ball"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.sphere",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib distinguishes `Metric.ball`, `Metric.closedBall` and `Metric.sphere` as separate notions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Open and closed ball",
+      "anchor": {
+        "section": "Basic terminology",
+        "snippet": "An open ball excludes the sphere itself, while a closed ball includes the sphere"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.closedBall",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Metric.ball` and `Metric.closedBall` are defined with the expected strict/non-strict distance inequalities.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sphere in analytic geometry",
+      "anchor": {
+        "section": "Equations",
+        "snippet": "a sphere with center"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.sphere",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Solutions of `dist y x = ε` in `EuclideanSpace` give exactly the analytic-geometry sphere equation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sphere is a quadric surface",
+      "anchor": {
+        "section": "Equations",
+        "snippet": "Since it can be expressed as a quadratic polynomial, a sphere is a quadric surface"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of quadric surfaces, so the sphere is not classified as one.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Imaginary sphere, point sphere, real sphere classification",
+      "anchor": {
+        "section": "Equations",
+        "snippet": "has no real points as solutions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Metric.sphere_eq_empty_of_neg",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": null
+      },
+      "note": "Emptiness for negative radius is captured by `sphere_eq_empty_of_neg`, but the imaginary/point/real trichotomy is not named.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Plane as a sphere of infinite radius",
+      "anchor": {
+        "section": "Equations",
+        "snippet": "Thus, a plane may be thought of as a sphere of infinite radius"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not treat planes as limiting spheres of infinite radius.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Parametric equation for the sphere",
+      "anchor": {
+        "section": "Parametric",
+        "snippet": "A parametric equation for the sphere with radius"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The trigonometric latitude/longitude parametrization is not present; only stereographic charts are formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Parametric",
+          "snippet": "A parametric equation for the sphere with radius"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}x&amp;=x_{0}+r\\sin \\theta \\;\\cos \\varphi \\\\y&amp;=y_{0}+r\\sin \\theta \\;\\sin \\varphi \\\\z&amp;=z_{0}+r\\cos \\theta \\,\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Volume of a ball",
+      "anchor": {
+        "section": "Enclosed volume",
+        "snippet": "the volume inside a sphere (that is, the volume of a ball, but classically referred to as the volume of a sphere) is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.volume_ball",
+        "module": "Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls",
+        "match_kind": "generalization"
+      },
+      "note": "`EuclideanSpace.volume_ball` gives the general n-dimensional formula using `Γ`, which specializes to `(4/3)πr³` in dimension 3.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sphere inscribed in a cube (52.4% volume)",
+      "anchor": {
+        "section": "Enclosed volume",
+        "snippet": "the volume inside a sphere inscribed in a cube can be approximated as 52.4% of the volume of the cube"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement comparing the ball volume to its bounding cube is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Surface area of a sphere",
+      "anchor": {
+        "section": "Surface area",
+        "snippet": "The surface area of a sphere of radius"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formula `4πr²` for the surface measure of the 2-sphere.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Isoperimetric property of the sphere",
+      "anchor": {
+        "section": "Surface area",
+        "snippet": "The sphere has the smallest surface area of all surfaces that enclose a given volume"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classical isoperimetric inequality is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Specific surface area",
+      "anchor": {
+        "section": "Surface area",
+        "snippet": "The surface area relative to the mass of a ball is called the specific surface area"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific surface area is a physical quantity not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sphere as surface of revolution of a circle",
+      "anchor": {
+        "section": "Other geometric properties",
+        "snippet": "A sphere can be constructed as the surface formed by rotating a circle one half revolution about any of its diameters"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no surface-of-revolution construction generating the sphere.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sphere determined by four non-coplanar points",
+      "anchor": {
+        "section": "Other geometric properties",
+        "snippet": "A sphere is uniquely determined by four points that are not coplanar"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Affine.Simplex.circumcenter",
+        "module": "Mathlib.Geometry.Euclidean.Circumcenter",
+        "match_kind": null
+      },
+      "note": "The circumcenter of an affinely independent 3-simplex gives the unique circumsphere through its four vertices.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sphere through a circle and a point",
+      "anchor": {
+        "section": "Other geometric properties",
+        "snippet": "a sphere is uniquely determined by (that is, passes through) a circle and a point not in the plane of that circle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not state existence/uniqueness of a sphere through a given circle and external point.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Two spheres intersect in a circle (radical plane)",
+      "anchor": {
+        "section": "Other geometric properties",
+        "snippet": "two spheres intersect in a circle and the plane containing that circle is called the radical plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no result describing intersections of two spheres or a radical plane.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Angle between two spheres",
+      "anchor": {
+        "section": "Other geometric properties",
+        "snippet": "The angle between two spheres at a real point of intersection is the dihedral angle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define the dihedral angle between two intersecting spheres.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orthogonality condition for two spheres",
+      "anchor": {
+        "section": "Other geometric properties",
+        "snippet": "They intersect at right angles (are orthogonal) if and only if the square of the distance between their centers is equal to the sum of the squares of their radii"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Pythagorean orthogonality criterion d² = r₁²+r₂² is not formalized for spheres.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pencil of spheres",
+      "anchor": {
+        "section": "Pencil of spheres",
+        "snippet": "The set of all spheres satisfying this equation is called a pencil of spheres"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of a pencil of spheres is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hilbert–Cohn-Vossen properties of the sphere",
+      "anchor": {
+        "section": "Properties of the sphere",
+        "snippet": "David Hilbert and Stephan Cohn-Vossen describe eleven properties of the sphere"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The collected Hilbert–Cohn-Vossen list is not present as a theorem in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Geodesic as great circle on the sphere",
+      "anchor": {
+        "section": "Spherical geometry",
+        "snippet": "The analogue of the \"line\" is the geodesic, which is a great circle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no geodesic theory identifying great circles as geodesics on the sphere.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Shortest path on sphere is great-circle arc",
+      "anchor": {
+        "section": "Spherical geometry",
+        "snippet": "Measuring by arc length shows that the shortest path between two points lying on the sphere is the shorter segment of the great circle that includes the points"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Shortest-path/Riemannian-distance on the sphere is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Spherical triangle angle sum exceeds 180°",
+      "anchor": {
+        "section": "Spherical geometry",
+        "snippet": "the sum of the interior angles of a spherical triangle always exceeds 180 degrees"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no spherical triangle theory or angle-excess theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Similar spherical triangles are congruent",
+      "anchor": {
+        "section": "Spherical geometry",
+        "snippet": "any two similar spherical triangles are congruent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of similar/congruent spherical triangles is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Antipodal points on the sphere",
+      "anchor": {
+        "section": "Spherical geometry",
+        "snippet": "Any pair of points on a sphere that lie on a straight line through the sphere's center"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "contMDiffNegSphere",
+        "module": "Mathlib.Geometry.Manifold.Instances.Sphere",
+        "match_kind": null
+      },
+      "note": "The antipodal map on the unit sphere is realized as negation `x ↦ -x` and shown to be smooth, but antipodal pairs are not packaged as a relation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gaussian curvature of the sphere",
+      "anchor": {
+        "section": "Differential geometry",
+        "snippet": "The sphere is a smooth surface with constant Gaussian curvature at each point equal to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Gaussian curvature, so the constant-curvature property of the sphere is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sphere cannot be mapped to a plane preserving area and angle",
+      "anchor": {
+        "section": "Differential geometry",
+        "snippet": "a sphere cannot be mapped to a plane while maintaining both areas and angles"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No non-existence theorem for area- and angle-preserving sphere-to-plane maps is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Area element of a sphere",
+      "anchor": {
+        "section": "Differential geometry",
+        "snippet": "A sphere of radius"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The spherical area element `r² sin θ dθ dφ` is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sphere as integral surface of a differential form",
+      "anchor": {
+        "section": "Differential geometry",
+        "snippet": "A sphere of any radius centered at zero is an integral surface of the following differential form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not describe spheres as integral surfaces of a differential 1-form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Filling area conjecture",
+      "anchor": {
+        "section": "Differential geometry",
+        "snippet": "the filling area conjecture states that the hemisphere is the optimal (least area) isometric filling of the Riemannian circle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The filling area conjecture is not stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sphere eversion",
+      "anchor": {
+        "section": "Topology",
+        "snippet": "it is possible to turn an ordinary sphere inside out in a three-dimensional space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Smale's sphere eversion is not in Mathlib (it lives in a separate Lean project).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Real projective plane as antipodal quotient",
+      "anchor": {
+        "section": "Topology",
+        "snippet": "The antipodal quotient of the sphere is the surface called the real projective plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "RP² as the antipodal quotient of S² is not constructed in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Intersection of a sphere and a plane",
+      "anchor": {
+        "section": "Circles",
+        "snippet": "The intersection of a sphere and a plane is a circle, a point, or empty"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No classification of plane-sphere intersections as circle/point/empty is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Great and small circles",
+      "anchor": {
+        "section": "Circles",
+        "snippet": "Great circles are the intersection of the sphere with a plane passing through the center of a sphere"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines neither great circles nor small circles on a sphere.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sphere–cylinder intersection",
+      "anchor": {
+        "section": "Circles",
+        "snippet": "the diagram to the right shows the intersection of a sphere and a cylinder, which consists of two circles"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Sphere–cylinder intersection geometry is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Loxodrome (rhumb line)",
+      "anchor": {
+        "section": "Loxodrome",
+        "snippet": "a loxodrome or rhumb line is a path whose bearing"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Loxodromes/rhumb lines are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Clelia curve",
+      "anchor": {
+        "section": "Clelia curves",
+        "snippet": "Another kind of spherical spiral is the Clelia curve"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Clelia curves are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Viviani's curve as Clelia curve",
+      "anchor": {
+        "section": "Clelia curves",
+        "snippet": "Viviani's curve"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Viviani's curve does not appear in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Spherical conic",
+      "anchor": {
+        "section": "Spherical conics",
+        "snippet": "The analog of a conic section on the sphere is a spherical conic, a quartic curve"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Spherical conics are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sphere–cylinder system intersection",
+      "anchor": {
+        "section": "Intersection of a sphere with a more general surface",
+        "snippet": "The intersection of the sphere with equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific sphere-with-surface intersection example is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ellipsoid",
+      "anchor": {
+        "section": "Ellipsoids",
+        "snippet": "An ellipsoid is a sphere that has been stretched or compressed in one or more directions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no `Ellipsoid` definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "n-sphere",
+      "anchor": {
+        "section": "Dimensionality",
+        "snippet": "an n-sphere, often denoted"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.sphere",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib uses `Metric.sphere (0 : EuclideanSpace ℝ (Fin (n+1))) 1` as the n-sphere, as in `Mathlib.Geometry.Manifold.Instances.Sphere`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "n-sphere is a compact topological manifold",
+      "anchor": {
+        "section": "Dimensionality",
+        "snippet": "the n-sphere is an example of a compact topological manifold without boundary"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.instChartedSpaceSphere",
+        "module": "Mathlib.Geometry.Manifold.Instances.Sphere",
+        "match_kind": "exact"
+      },
+      "note": "The unit sphere in `EuclideanSpace ℝ (Fin (n+1))` is given a `ChartedSpace` instance over `EuclideanSpace ℝ (Fin n)` and is compact via `isCompact_sphere`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "n-sphere is compact (Heine–Borel)",
+      "anchor": {
+        "section": "Dimensionality",
+        "snippet": "The sphere is the inverse image of a one-point set under the continuous function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isCompact_sphere",
+        "module": "Mathlib.Topology.MetricSpace.ProperSpace",
+        "match_kind": "generalization"
+      },
+      "note": "`isCompact_sphere` proves any sphere is compact in a proper metric space, which includes finite-dimensional Euclidean space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sphere in a metric space",
+      "anchor": {
+        "section": "Metric spaces",
+        "snippet": "in a metric space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.sphere",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Metric.sphere x ε` is defined directly for any pseudometric space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sphere in Z^n may be empty",
+      "anchor": {
+        "section": "Metric spaces",
+        "snippet": "in Z"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Metric.sphere_eq_empty_of_subsingleton",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": null
+      },
+      "note": "Mathlib has emptiness lemmas like `sphere_eq_empty_of_subsingleton` and `sphere_eq_empty_of_neg`, but no specific example computing spheres in `ℤⁿ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Octahedron as taxicab sphere; cube as Chebyshev sphere",
+      "anchor": {
+        "section": "Metric spaces",
+        "snippet": "An octahedron is a sphere in taxicab geometry, and a cube is a sphere in geometry using the Chebyshev distance"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not identify the L¹ unit sphere with an octahedron or the L∞ unit sphere with a cube.",
+      "provenance": "ai"
+    }
+  ]
+}

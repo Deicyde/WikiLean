@@ -1,0 +1,583 @@
+{
+  "slug": "Fundamental_theorem_of_algebra",
+  "wikipedia_title": "Fundamental theorem of algebra",
+  "display_title": "Fundamental theorem of algebra",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of algebra",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "every non- constant single-variable polynomial with complex coefficients has at least one complex root"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exists_root",
+        "module": "Mathlib.Analysis.Complex.Polynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Direct statement: every complex polynomial of positive degree has a root.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Algebraic closure of C (equivalent form)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the field of complex numbers is algebraically closed"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.isAlgClosed",
+        "module": "Mathlib.Analysis.Complex.Polynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The instance `Complex.isAlgClosed : IsAlgClosed ℂ` states exactly this.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Counting roots with multiplicity",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "every non-zero, single-variable, degree n polynomial with complex coefficients has, counted with multiplicity , exactly n complex roots"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Splits.natDegree_eq_card_roots",
+        "module": "Mathlib.Algebra.Polynomial.Splits",
+        "match_kind": "invocation"
+      },
+      "note": "Combined with `IsAlgClosed.splits`, this gives that a complex polynomial's `roots` multiset has cardinality equal to its degree.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Real-coefficient FTA equivalent",
+      "anchor": {
+        "section": "Equivalent statements",
+        "snippet": "Every univariate polynomial of positive degree with real coefficients has at least one complex root"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsAlgClosed.exists_aeval_eq_zero",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Specialising `IsAlgClosed.exists_aeval_eq_zero` to `ℂ` with a real polynomial yields a complex root.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Complex-coefficient FTA equivalent",
+      "anchor": {
+        "section": "Equivalent statements",
+        "snippet": "Every univariate polynomial of positive degree with complex coefficients has at least one complex root"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exists_root",
+        "module": "Mathlib.Analysis.Complex.Polynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Same as the lead statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linear factorization over C",
+      "anchor": {
+        "section": "Equivalent statements",
+        "snippet": "Every univariate polynomial of positive degree n with complex coefficients can be factorized"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Splits.eq_prod_roots",
+        "module": "Mathlib.Algebra.Polynomial.Splits",
+        "match_kind": "invocation"
+      },
+      "note": "Together with `IsAlgClosed.splits` for ℂ, this gives the product-of-linear-factors decomposition.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Equivalent statements",
+          "snippet": "Every univariate polynomial of positive degree n with complex coefficients can be factorized"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c(x-r_{1})\\cdots (x-r_{n}),}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Multiplicity of a root",
+      "anchor": {
+        "section": "Equivalent statements",
+        "snippet": "the number of its occurrences is, by definition, the multiplicity of the root"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.rootMultiplicity",
+        "module": "Mathlib.Algebra.Polynomial.Div",
+        "match_kind": "exact"
+      },
+      "note": "Defined as the multiplicity of `X - C a` dividing `p`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Equivalent statements",
+          "snippet": "the number of its occurrences is, by definition, the multiplicity of the root"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c(x-r_{1})\\cdots (x-r_{n}),}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Real quadratic factor exists",
+      "anchor": {
+        "section": "Equivalent statements",
+        "snippet": "Every univariate polynomial with real coefficients of degree larger than two has a factor of degree two with real coefficients"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Irreducible.degree_le_two",
+        "module": "Mathlib.Analysis.Complex.Polynomial.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib proves irreducible real polynomials have degree ≤ 2 but does not package the corollary that a higher-degree polynomial has a real quadratic divisor.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Factorization into linear and quadratic real factors",
+      "anchor": {
+        "section": "Equivalent statements",
+        "snippet": "Every univariate polynomial with real coefficients of positive degree can be factored"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Irreducible.degree_le_two",
+        "module": "Mathlib.Analysis.Complex.Polynomial.Basic",
+        "match_kind": null
+      },
+      "note": "The irreducible-factor classification is there, but the explicit ∏ linear · ∏ quadratic factorization theorem for ℝ[X] is not packaged.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Equivalent statements",
+          "snippet": "Every univariate polynomial with real coefficients of positive degree can be factored"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle cp_{1}\\cdots p_{k},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Growth lemma for polynomials",
+      "anchor": {
+        "section": "Proofs",
+        "snippet": "a polynomial function p ( z ) of degree n whose dominant coefficient is 1 behaves like z n when | z | is large enough"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.tendsto_norm_atTop",
+        "module": "Mathlib.Topology.Algebra.Polynomial",
+        "match_kind": "exact"
+      },
+      "note": "States `‖eval z p‖ → ∞` as `‖z‖ → ∞` for `0 < degree p`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Real-analytic divisibility by quadratic",
+      "anchor": {
+        "section": "Real-analytic proofs",
+        "snippet": "a real-valued polynomial p ( x ): p (0) ≠ 0 of degree n > 2 can always be divided by some quadratic polynomial with real coefficients"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.quadratic_dvd_of_aeval_eq_zero_im_ne_zero",
+        "module": "Mathlib.Analysis.Complex.Polynomial.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib has divisibility by a real quadratic given a non-real complex root, but not the article's standalone divisibility statement under `p(0) ≠ 0`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Axler's proof via De Moivre and EVT",
+      "anchor": {
+        "section": "Real-analytic proofs",
+        "snippet": "Sheldon Axler has a proof of the fundamental theorem of algebra using De Moivre's formula and extreme value theorem on a compact set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `Complex.exists_root` is proved via Liouville, not Axler's EVT/De-Moivre argument.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Proof via maximum modulus principle",
+      "anchor": {
+        "section": "Complex-analytic proofs",
+        "snippet": "The maximum modulus principle applied to 1/ p ( z ) implies that p ( z 0 ) = 0"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's FTA proof does not go via the maximum modulus principle applied to 1/p.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Proof via Liouville's theorem",
+      "anchor": {
+        "section": "Complex-analytic proofs",
+        "snippet": "Applying Liouville's theorem , which states that a bounded entire function must be constant"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Differentiable.apply_eq_apply_of_bounded",
+        "module": "Mathlib.Analysis.Complex.Liouville",
+        "match_kind": "invocation"
+      },
+      "note": "This is exactly the proof of `Complex.exists_root`, invoking Liouville's theorem on 1/p.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Proof via argument principle",
+      "anchor": {
+        "section": "Complex-analytic proofs",
+        "snippet": "Yet another analytic proof uses the argument principle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The argument principle is not in Mathlib, so this proof is unavailable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence with eigenvalue existence",
+      "anchor": {
+        "section": "Complex-analytic proofs",
+        "snippet": "it suffices to show that every complex square matrix of size n > 0 has a (complex) eigenvalue"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.End.exists_eigenvalue",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Triangularizable",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib's existence of an eigenvalue over `IsAlgClosed K` specialises to ℂ, giving the matrix-eigenvalue equivalent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Proof via Rouché's theorem",
+      "anchor": {
+        "section": "Complex-analytic proofs",
+        "snippet": "Rouché's theorem gives perhaps the shortest proof of the theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Rouché's theorem is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Topological proof via minimum of |p|",
+      "anchor": {
+        "section": "Topological proofs",
+        "snippet": "Suppose the minimum of | p ( z )| on the whole complex plane is achieved at z 0"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not contain this topological proof of FTA.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Topological proof via winding number",
+      "anchor": {
+        "section": "Topological proofs",
+        "snippet": "For another topological proof by contradiction, suppose that the polynomial p ( z ) has no roots"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Winding numbers are not formalised in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Analytic facts used in algebraic proofs",
+      "anchor": {
+        "section": "Algebraic proofs",
+        "snippet": "every polynomial with an odd degree and real coefficients has some real root"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsRealClosed.exists_isRoot_of_odd_natDegree",
+        "module": "Mathlib.FieldTheory.IsRealClosed.Basic",
+        "match_kind": null
+      },
+      "note": "The abstract real-closed-field axiom is stated, but no `IsRealClosed ℝ` instance is registered to specialise it to ℝ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Real-closed field extension is algebraically closed",
+      "anchor": {
+        "section": "Algebraic proofs",
+        "snippet": "if R is any real-closed field , then its extension C = R ( √ −1 ) is algebraically closed"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines `IsRealClosed` but does not prove `IsAlgClosed (R[√-1])` from it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Algebraic proof by induction on 2-adic valuation",
+      "anchor": {
+        "section": "By induction",
+        "snippet": "This statement can be proved by induction on the greatest non-negative integer k such that 2 k divides the degree n"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not contain the 2-adic-valuation algebraic proof of FTA.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Shipman's improvement (prime degree suffices)",
+      "anchor": {
+        "section": "By induction",
+        "snippet": "any field in which polynomials of prime degree have roots is algebraically closed"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Shipman's prime-degree-suffices theorem is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Galois-theoretic proof",
+      "anchor": {
+        "section": "From Galois theory",
+        "snippet": "Another algebraic proof of the fundamental theorem can be given using Galois theory"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `Complex.isAlgClosed` is proved via Liouville, not via Galois theory.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Flat Riemannian surface",
+      "anchor": {
+        "section": "Geometric proofs",
+        "snippet": "A Riemannian surface ( M , g ) is said to be flat if its Gaussian curvature"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gaussian curvature and flat Riemannian surfaces are not formalised in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Geometric proof via Gauss-Bonnet",
+      "anchor": {
+        "section": "Geometric proofs",
+        "snippet": "the existence of a non-constant polynomial p ( z ) without zeros implies the existence of a flat Riemannian metric over the sphere"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Gauss-Bonnet theorem and this geometric proof of FTA are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "C is the algebraic closure of R",
+      "anchor": {
+        "section": "Corollaries",
+        "snippet": "The field of complex numbers is the algebraic closure of the field of real numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.isAlgClosed",
+        "module": "Mathlib.Analysis.Complex.Polynomial.Basic",
+        "match_kind": null
+      },
+      "note": "The two ingredients (`Complex.isAlgClosed` and `finrank_real_complex` giving algebraicity) exist, but no explicit `IsAlgClosure ℝ ℂ` instance was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Complex linear factorization corollary",
+      "anchor": {
+        "section": "Corollaries",
+        "snippet": "Every polynomial in one variable z with complex coefficients is the product of a complex constant and polynomials of the form z + a with a complex"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Splits.eq_prod_roots",
+        "module": "Mathlib.Algebra.Polynomial.Splits",
+        "match_kind": "invocation"
+      },
+      "note": "Combined with `IsAlgClosed.splits` at ℂ, this gives the constant-times-product-of-linear-factors decomposition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Real factorization into linear and irreducible quadratic factors",
+      "anchor": {
+        "section": "Corollaries",
+        "snippet": "Every polynomial in one variable x with real coefficients can be uniquely written as the product of a constant"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Irreducible.degree_le_two",
+        "module": "Mathlib.Analysis.Complex.Polynomial.Basic",
+        "match_kind": null
+      },
+      "note": "Irreducible real polynomials are known to have degree ≤ 2, but the explicit unique-factorization statement into linear and irreducible quadratic factors is not packaged.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Partial fraction decomposition over R",
+      "anchor": {
+        "section": "Corollaries",
+        "snippet": "Every rational function in one variable x , with real coefficients, can be written as the sum of a polynomial function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Partial-fraction decomposition over ℝ does not appear in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Elementary primitive of rational functions",
+      "anchor": {
+        "section": "Corollaries",
+        "snippet": "every rational function in one variable and real coefficients has an elementary primitive"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of elementary primitives of rational functions is not formalised.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Algebraic extensions of R",
+      "anchor": {
+        "section": "Corollaries",
+        "snippet": "Every algebraic extension of the real field is isomorphic either to the real field or to the complex field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.nonempty_algEquiv_or",
+        "module": "Mathlib.Analysis.Complex.Polynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Exactly states that an algebraic ℝ-extension is `ℝ`-isomorphic to either ℝ or ℂ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "A priori modulus bound on zeros",
+      "anchor": {
+        "section": "Bounds on the zeros of a polynomial",
+        "snippet": "all zeros ζ of a monic polynomial"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.IsRoot.norm_lt_cauchyBound",
+        "module": "Mathlib.Analysis.Polynomial.CauchyBound",
+        "match_kind": "exact"
+      },
+      "note": "Cauchy's bound (1 + max |a_i|/|a_n|) is formalised as `cauchyBound` and bounds the norm of any root.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "p-norm bound on zeros",
+      "anchor": {
+        "section": "Bounds on the zeros of a polynomial",
+        "snippet": "a bound can be given directly in terms of any p-norm of the n -vector of coefficients"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Only the Cauchy bound is formalised; no p-norm-based root bound was found.",
+      "provenance": "ai"
+    }
+  ]
+}

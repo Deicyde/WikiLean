@@ -1,0 +1,1295 @@
+{
+  "slug": "Fibonacci_sequence",
+  "wikipedia_title": "Fibonacci sequence",
+  "display_title": "Fibonacci sequence",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Fibonacci sequence",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the Fibonacci sequence is a sequence in which each element is the sum of the two elements that precede it"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.fib",
+        "module": "Mathlib.Data.Nat.Fib.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.fib` defines the Fibonacci stream with `fib 0 = 0`, `fib 1 = 1`, and `fib (n+2) = fib n + fib (n+1)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fibonacci recurrence relation",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The Fibonacci numbers may be defined by the recurrence relation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.fib_add_two",
+        "module": "Mathlib.Data.Nat.Fib.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.fib_add_two : fib (n + 2) = fib n + fib (n + 1)` states the recurrence exactly.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "The Fibonacci numbers may be defined by the recurrence relation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F_{0}=0,\\quad F_{1}=1,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F_{n}=F_{n-1}+F_{n-2}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Negative-index extension",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The Fibonacci sequence can be extended to negative integer indices by following the same recurrence relation in the negative direction"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.fib",
+        "module": "Mathlib.Data.Int.Fib.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Int.fib` extends `Nat.fib` to all integers and `Int.fib_add_two` verifies the recurrence continues to hold.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "The Fibonacci sequence can be extended to negative integer indices by following the same recurrence relation in the negative direction"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F_{-n}=(-1)^{n+1}F_{n}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Sanskrit prosody pattern count",
+      "anchor": {
+        "section": "India",
+        "snippet": "the number of patterns of duration m units is F m +1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib decl was found counting Sanskrit prosody (or composition into 1s and 2s) patterns by Fibonacci numbers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fibonacci's rabbit problem",
+      "anchor": {
+        "section": "Europe",
+        "snippet": "Fibonacci posed the rabbit math problem : how many pairs will there be in one year?"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize Fibonacci's classical rabbit-pair word problem as a stated proposition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Binet's formula",
+      "anchor": {
+        "section": "Closed-form expression",
+        "snippet": "It has become known as Binet's formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.coe_fib_eq",
+        "module": "Mathlib.NumberTheory.Real.GoldenRatio",
+        "match_kind": "exact"
+      },
+      "note": "`Real.coe_fib_eq` states `(Nat.fib n : ℝ) = (φ^n - ψ^n) / √5`, i.e. Binet's formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fibonacci by rounding",
+      "anchor": {
+        "section": "Computation by rounding",
+        "snippet": "the number F n is the closest integer to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Binet-rounding identity `fib n = round (φ^n / √5)` is not stated in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Computation by rounding",
+          "snippet": "the number F n is the closest integer to"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F_{n}=\\left\\lfloor {\\frac {\\varphi ^{n}}{\\sqrt {5}}}\\right\\rceil ,\\ n\\geq 0.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Floor-function index formula",
+      "anchor": {
+        "section": "Computation by rounding",
+        "snippet": "Instead using the floor function gives the largest index of a Fibonacci number that is not greater than F"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.greatestFib",
+        "module": "Mathlib.Data.Nat.Fib.Zeckendorf",
+        "match_kind": "invocation"
+      },
+      "note": "`Nat.greatestFib` returns the greatest index of a Fibonacci number ≤ n, but the floor/log-φ closed form is not established.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Computation by rounding",
+          "snippet": "Instead using the floor function gives the largest index of a Fibonacci number that is not greater than F"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle n_{\\mathrm {largest} }(F)=\\left\\lfloor \\log _{\\varphi }{\\sqrt {5}}(F+1/2)\\right\\rfloor ,\\ F\\geq 0,}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Digit count of F_n",
+      "anchor": {
+        "section": "Magnitude",
+        "snippet": "the number of digits in F n is asymptotic to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no asymptotic statement about the digit length of `Nat.fib n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "4 or 5 Fibonacci numbers per digit length",
+      "anchor": {
+        "section": "Magnitude",
+        "snippet": "for every integer d > 1 there are either 4 or 5 Fibonacci numbers with d decimal digits"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib statement about the count of Fibonacci numbers per decimal digit length was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Convergence of consecutive ratios to golden ratio",
+      "anchor": {
+        "section": "Limit of consecutive quotients",
+        "snippet": "the ratio of consecutive Fibonacci numbers converges"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendsto_fib_succ_div_fib_atTop",
+        "module": "Mathlib.Analysis.SpecificLimits.Fibonacci",
+        "match_kind": "exact"
+      },
+      "note": "`tendsto_fib_succ_div_fib_atTop` shows `fib (n+1)/fib n → φ` as `n → ∞`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Limit of consecutive quotients",
+          "snippet": "the ratio of consecutive Fibonacci numbers converges"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{n\\to \\infty }{\\frac {F_{n+1}}{F_{n}}}=\\varphi .}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Decomposition of powers of phi",
+      "anchor": {
+        "section": "Decomposition of powers",
+        "snippet": "The resulting recurrence relationships yield Fibonacci numbers as the linear coefficients"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.goldenRatio_mul_fib_succ_add_fib",
+        "module": "Mathlib.NumberTheory.Real.GoldenRatio",
+        "match_kind": "exact"
+      },
+      "note": "`goldenRatio_mul_fib_succ_add_fib` proves `φ^(n+1) = φ · fib(n+1) + fib n`, expressing powers of φ as linear combinations with Fibonacci coefficients.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Decomposition of powers",
+          "snippet": "The resulting recurrence relationships yield Fibonacci numbers as the linear coefficients"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\varphi ^{n}=F_{n}\\varphi +F_{n-1}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\varphi ^{n+1}&amp;=(F_{n}\\varphi +F_{n-1})\\varphi =F_{n}\\varphi ^{2}+F_{n-1}\\varphi \\\\&amp;=F_{n}(\\varphi +1)+F_{n-1}\\varphi =(F_{n}+F_{n-1})\\varphi +F_{n}=F_{n+1}\\varphi +F_{n}.\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\psi ^{n}=F_{n}\\psi +F_{n-1}.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Perfect-square identification of Fibonacci numbers",
+      "anchor": {
+        "section": "Identification",
+        "snippet": "a positive integer x is a Fibonacci number if and only if at least one of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The square-test characterization (`5x² ± 4` is a perfect square) of Fibonacci numbers is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Matrix form of Fibonacci",
+      "anchor": {
+        "section": "Matrix form",
+        "snippet": "A 2-dimensional system of linear difference equations that describes the Fibonacci sequence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No matrix representation of the Fibonacci recurrence (e.g., `[[1,1],[1,0]]^n`) was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cassini's identity (via determinant)",
+      "anchor": {
+        "section": "Matrix form",
+        "snippet": "Taking the determinant of both sides of this equation yields Cassini's identity"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Int.fib_succ_mul_fib_pred_sub_fib_sq",
+        "module": "Mathlib.Data.Int.Fib.Lemmas",
+        "match_kind": "special_case"
+      },
+      "note": "Cassini's identity itself is formalized for `Int.fib`, but the proof via the matrix-power determinant is not given since no Fibonacci matrix form exists.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Matrix form",
+          "snippet": "Taking the determinant of both sides of this equation yields Cassini's identity"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (-1)^{n}=F_{n+1}F_{n-1}-{F_{n}}^{2}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Combinatorial interpretation of F_n",
+      "anchor": {
+        "section": "Combinatorial proofs",
+        "snippet": "can be interpreted as the number of (possibly empty) sequences of 1s and 2s whose sum is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No combinatorial interpretation of `fib n` as compositions of `n-1` into 1s and 2s appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum of first n Fibonacci numbers",
+      "anchor": {
+        "section": "Combinatorial proofs",
+        "snippet": "the sum of the first Fibonacci numbers up to the n -th is equal to the ( n + 2) -th Fibonacci number minus 1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.fib_succ_eq_succ_sum",
+        "module": "Mathlib.Data.Nat.Fib.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.fib_succ_eq_succ_sum` proves `fib (n+1) = (∑ k ∈ range n, fib k) + 1`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Combinatorial proofs",
+          "snippet": "the sum of the first Fibonacci numbers up to the n -th is equal to the ( n + 2) -th Fibonacci number minus 1"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{i=1}^{n}F_{i}=F_{n+2}-1}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Sums by odd/even index",
+      "anchor": {
+        "section": "Combinatorial proofs",
+        "snippet": "the sum of the first Fibonacci numbers with odd index up to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not state the partial sums of Fibonacci numbers restricted to odd or even indices.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Combinatorial proofs",
+          "snippet": "the sum of the first Fibonacci numbers with odd index up to"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{i=0}^{n-1}F_{2i+1}=F_{2n}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{i=1}^{n}F_{2i}=F_{2n+1}-1.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum of squares identity",
+      "anchor": {
+        "section": "Combinatorial proofs",
+        "snippet": "the sum of the squares of the first Fibonacci numbers up to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identity `∑ k≤n, fib k ^ 2 = fib n · fib (n+1)` is not present in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Combinatorial proofs",
+          "snippet": "the sum of the squares of the first Fibonacci numbers up to"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{i=1}^{n}F_{i}^{2}=F_{n}F_{n+1}}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Cassini's identity",
+      "anchor": {
+        "section": "Cassini's and Catalan's identities",
+        "snippet": "Cassini's identity states that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.fib_succ_mul_fib_pred_sub_fib_sq",
+        "module": "Mathlib.Data.Int.Fib.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "`Int.fib_succ_mul_fib_pred_sub_fib_sq` proves `fib (n+1) · fib (n-1) - fib n ^ 2 = (-1)^|n|`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Cassini's and Catalan's identities",
+          "snippet": "Cassini's identity states that"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F_{n}^{2}-F_{n+1}F_{n-1}=(-1)^{n-1}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F_{n}^{2}-F_{n+r}F_{n-r}=(-1)^{n-r}F_{r}^{2}}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Catalan's identity",
+      "anchor": {
+        "section": "Cassini's and Catalan's identities",
+        "snippet": "Catalan's identity is a generalization"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.fib_add_sq_sub_fib_mul_fib_add_two_mul",
+        "module": "Mathlib.Data.Int.Fib.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "`Int.fib_add_sq_sub_fib_mul_fib_add_two_mul` states Catalan's identity for integer indices.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Cassini's and Catalan's identities",
+          "snippet": "Catalan's identity is a generalization"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F_{n}^{2}-F_{n+1}F_{n-1}=(-1)^{n-1}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F_{n}^{2}-F_{n+r}F_{n-r}=(-1)^{n-r}F_{r}^{2}}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "d'Ocagne's identity",
+      "anchor": {
+        "section": "d'Ocagne's identity",
+        "snippet": "where L n is the n -th Lucas number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Lucas numbers and does not state d'Ocagne's identity.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "d'Ocagne's identity",
+          "snippet": "where L n is the n -th Lucas number"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F_{m}F_{n+1}-F_{m+1}F_{n}=(-1)^{n}F_{m-n}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F_{2n}=F_{n+1}^{2}-F_{n-1}^{2}=F_{n}\\left(F_{n+1}+F_{n-1}\\right)=F_{n}L_{n}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F_{3n}=2F_{n}^{3}+3F_{n}F_{n+1}F_{n-1}=5F_{n}^{3}+3(-1)^{n}F_{n}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Ordinary generating function",
+      "anchor": {
+        "section": "Ordinary",
+        "snippet": "The ordinary generating function of the Fibonacci sequence is the power series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not state the ordinary generating function `∑ fib n · x^n = x/(1-x-x²)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponential generating function",
+      "anchor": {
+        "section": "Exponential",
+        "snippet": "The exponential generating function of the Fibonacci sequence may also be derived from the recurrence relation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not give the exponential generating function of the Fibonacci sequence.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Exponential",
+          "snippet": "The exponential generating function of the Fibonacci sequence may also be derived from the recurrence relation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\sum _{k=0}^{\\infty }F_{k+2}{\\frac {x^{k}}{k!}}={}&amp;\\sum _{k=0}^{\\infty }F_{k+1}{\\frac {x^{k}}{k!}}+\\sum _{k=0}^{\\infty }F_{k}{\\frac {x^{k}}{k!}}\\\\F^{\\prime \\prime }(x)={}&amp;F^{\\prime }(x)+F(x)\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F(x)={\\frac {e^{\\varphi x}-e^{\\psi x}}{\\sqrt {5}}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F^{(n)}(0)=F_{n}={\\frac {\\varphi ^{n}-\\psi ^{n}}{\\sqrt {5}}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum of odd-indexed reciprocals",
+      "anchor": {
+        "section": "Reciprocal sums",
+        "snippet": "the sum of every odd-indexed reciprocal Fibonacci number can be written as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the closed form for the sum of odd-indexed reciprocal Fibonacci numbers is in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Reciprocal sums",
+          "snippet": "the sum of every odd-indexed reciprocal Fibonacci number can be written as"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{k=1}^{\\infty }{\\frac {1}{F_{2k-1}}}={\\frac {\\sqrt {5}}{4}}\\;\\vartheta _{2}\\!\\left(0,{\\frac {3-{\\sqrt {5}}}{2}}\\right)^{2},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum of squared reciprocals",
+      "anchor": {
+        "section": "Reciprocal sums",
+        "snippet": "the sum of squared reciprocal Fibonacci numbers as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The closed form for `∑ 1/fib n^2` is not present in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Reciprocal sums",
+          "snippet": "the sum of squared reciprocal Fibonacci numbers as"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{k=1}^{\\infty }{\\frac {1}{{F_{k}}^{2}}}={\\frac {5}{24}}\\!\\left(\\vartheta _{2}\\!\\left(0,{\\frac {3-{\\sqrt {5}}}{2}}\\right)^{4}-\\vartheta _{4}\\!\\left(0,{\\frac {3-{\\sqrt {5}}}{2}}\\right)^{4}+1\\right).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum of even-indexed reciprocals",
+      "anchor": {
+        "section": "Reciprocal sums",
+        "snippet": "The sum of all even-indexed reciprocal Fibonacci numbers is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formula for `∑ 1/fib (2n)` is in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Reciprocal sums",
+          "snippet": "The sum of all even-indexed reciprocal Fibonacci numbers is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{k=1}^{\\infty }{\\frac {1}{F_{2k}}}={\\sqrt {5}}\\left(L(\\psi ^{2})-L(\\psi ^{4})\\right)}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Irrationality of reciprocal Fibonacci constant",
+      "anchor": {
+        "section": "Reciprocal sums",
+        "snippet": "this number has been proved irrational by Richard André-Jeannin"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "André-Jeannin's irrationality of `∑ 1/fib n` is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Millin's series",
+      "anchor": {
+        "section": "Reciprocal sums",
+        "snippet": "Millin's series gives the identity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Millin's series identity for `∑ 1/fib (2^n)` is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Reciprocal sums",
+          "snippet": "Millin's series gives the identity"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{k=0}^{\\infty }{\\frac {1}{F_{2^{k}}}}={\\frac {7-{\\sqrt {5}}}{2}},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{k=0}^{N}{\\frac {1}{F_{2^{k}}}}=3-{\\frac {F_{2^{N}-1}}{F_{2^{N}}}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "GCD divisibility property",
+      "anchor": {
+        "section": "Divisibility properties",
+        "snippet": "the Fibonacci sequence satisfies the stronger divisibility property"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.fib_gcd",
+        "module": "Mathlib.Data.Nat.Fib.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.fib_gcd` proves `fib (gcd m n) = gcd (fib m) (fib n)`, the strong divisibility property.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Divisibility properties",
+          "snippet": "the Fibonacci sequence satisfies the stronger divisibility property"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\gcd(F_{a},F_{b},F_{c},\\ldots )=F_{\\gcd(a,b,c,\\ldots )}\\,}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Consecutive Fibonacci numbers are coprime",
+      "anchor": {
+        "section": "Divisibility properties",
+        "snippet": "any three consecutive Fibonacci numbers are pairwise coprime"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.fib_coprime_fib_succ",
+        "module": "Mathlib.Data.Nat.Fib.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`Nat.fib_coprime_fib_succ` establishes that two consecutive Fibonacci numbers are coprime; the explicit pairwise coprimality of any three consecutive is not stated.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Divisibility properties",
+          "snippet": "any three consecutive Fibonacci numbers are pairwise coprime"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\gcd(F_{n},F_{n+1})=\\gcd(F_{n},F_{n+2})=\\gcd(F_{n+1},F_{n+2})=1}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Prime divisibility by Legendre symbol mod 5",
+      "anchor": {
+        "section": "Divisibility properties",
+        "snippet": "Every prime number p divides a Fibonacci number that can be determined by the value of p modulo 5"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The rank-of-apparition theorem expressed via the Legendre symbol mod 5 is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fibonacci pseudoprime",
+      "anchor": {
+        "section": "Primality testing",
+        "snippet": "If n is composite and satisfies the formula, then n is a Fibonacci pseudoprime"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no definition of Fibonacci pseudoprime.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Primality testing",
+          "snippet": "If n is composite and satisfies the formula, then n is a Fibonacci pseudoprime"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle n\\mid F_{n\\,-~\\!\\left({\\frac {5}{n}}\\right)},}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Fibonacci prime",
+      "anchor": {
+        "section": "Fibonacci primes",
+        "snippet": "A Fibonacci prime is a Fibonacci number that is prime"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define `Fibonacci prime` as a named notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Prime-index requirement for Fibonacci primes",
+      "anchor": {
+        "section": "Fibonacci primes",
+        "snippet": "any Fibonacci prime must have a prime index"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.fib_dvd",
+        "module": "Mathlib.Data.Nat.Fib.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "`Nat.fib_dvd` gives `m ∣ n → fib m ∣ fib n`, from which prime-index-of-prime-fib follows, but the conclusion itself is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fibonacci near a prime bound",
+      "anchor": {
+        "section": "Fibonacci primes",
+        "snippet": "No Fibonacci number greater than F 6 = 8 is one greater or one less than a prime number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib statement about Fibonacci numbers being one off from primes was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Only nontrivial square Fibonacci is 144",
+      "anchor": {
+        "section": "Fibonacci primes",
+        "snippet": "The only nontrivial square Fibonacci number is 144"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cohn's theorem that 144 is the unique nontrivial square Fibonacci number is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Finitely many perfect-power Fibonacci numbers",
+      "anchor": {
+        "section": "Fibonacci primes",
+        "snippet": "Attila Pethő proved in 2001 that there is only a finite number of perfect power Fibonacci numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pethő's finiteness result for perfect-power Fibonacci numbers is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Only perfect-power Fibonacci numbers are 8 and 144",
+      "anchor": {
+        "section": "Fibonacci primes",
+        "snippet": "Bugeaud, M. Mignotte, and S. Siksek proved that 8 and 144 are the only such non-trivial perfect powers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Bugeaud–Mignotte–Siksek theorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Triangular Fibonacci numbers",
+      "anchor": {
+        "section": "Fibonacci primes",
+        "snippet": "The only triangular Fibonacci numbers are 1, 3, 21, and 55"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classification of triangular Fibonacci numbers is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "No Fibonacci is perfect",
+      "anchor": {
+        "section": "Fibonacci primes",
+        "snippet": "No Fibonacci number can be a perfect number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib statement proves that no Fibonacci number is a perfect number.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Carmichael's theorem for Fibonacci",
+      "anchor": {
+        "section": "Prime divisors",
+        "snippet": "every Fibonacci number has a prime factor that is not a factor of any smaller Fibonacci number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Carmichael's primitive-divisor theorem for Fibonacci numbers is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Wall–Sun–Sun prime",
+      "anchor": {
+        "section": "Prime divisors",
+        "snippet": "Such primes (if there are any) would be called Wall–Sun–Sun primes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define Wall–Sun–Sun primes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Odd prime divisors of F_n for odd n",
+      "anchor": {
+        "section": "Prime divisors",
+        "snippet": "all odd prime divisors of F n are congruent to 1 modulo 4"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement about the mod-4 residue of odd prime divisors of `fib n` is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pisano period",
+      "anchor": {
+        "section": "Periodicity modulo n",
+        "snippet": "the resulting sequence is periodic with period at most 6 n"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of the Pisano period of Fibonacci modulo `n` was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fibonacci in Pascal's triangle",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "The Fibonacci numbers occur as the sums of binomial coefficients in the \"shallow\" diagonals of Pascal's triangle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.fib_succ_eq_sum_choose",
+        "module": "Mathlib.Data.Nat.Fib.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.fib_succ_eq_sum_choose` writes `fib (n+1)` as a sum of binomial coefficients along the antidiagonal — the shallow-diagonal Pascal identity.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Mathematics",
+          "snippet": "The Fibonacci numbers occur as the sums of binomial coefficients in the \"shallow\" diagonals of Pascal's triangle"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F_{n}=\\sum _{k=0}^{\\left\\lfloor {\\frac {n-1}{2}}\\right\\rfloor }{\\binom {n-k-1}{k}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {x}{1-x-x^{2}}}=x+x^{2}(1+x)+x^{3}(1+x)^{2}+\\dots +x^{k+1}(1+x)^{k}+\\dots =\\sum \\limits _{n=0}^{\\infty }F_{n}x^{n}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Compositions and domino tilings count",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "counting the number of ways of writing a given number n as an ordered sum of 1s and 2s"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not state the bijection between compositions/domino tilings and Fibonacci numbers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Binary strings without consecutive 1s",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "The number of binary strings of length n without consecutive 1 s is the Fibonacci number F n +2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib enumeration of binary strings without consecutive 1s by `fib (n+2)` was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Binary strings without odd-run of 1s",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "The number of binary strings of length n without an odd number of consecutive 1 s is the Fibonacci number F n +1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Binary strings without even-runs",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "The number of binary strings of length n without an even number of consecutive 0 s or 1 s is 2 F n"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Diophantine definition of Fibonacci",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "the Fibonacci numbers can be defined by a Diophantine equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Diophantine characterization of Fibonacci numbers (e.g., Jones's polynomial) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fibonacci is a complete sequence",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "The Fibonacci numbers are also an example of a complete sequence"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.zeckendorfEquiv",
+        "module": "Mathlib.Data.Nat.Fib.Zeckendorf",
+        "match_kind": "invocation"
+      },
+      "note": "Zeckendorf's representation (`Nat.zeckendorfEquiv`) implicitly entails completeness of the Fibonacci sequence, but no separate `IsComplete`-style decl is stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Zeckendorf's theorem",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "This is known as Zeckendorf's theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.zeckendorfEquiv",
+        "module": "Mathlib.Data.Nat.Fib.Zeckendorf",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.zeckendorfEquiv` states Zeckendorf's theorem as an equivalence between naturals and Zeckendorf representations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pythagorean triples from Fibonacci",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "every second Fibonacci number is the length of the hypotenuse of a right triangle with integer sides"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No construction of Pythagorean triples from Fibonacci numbers is in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Mathematics",
+          "snippet": "every second Fibonacci number is the length of the hypotenuse of a right triangle with integer sides"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (F_{n}F_{n+3})^{2}+(2F_{n+1}F_{n+2})^{2}={F_{2n+3}}^{2}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Ring lemma involvement",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "Fibonacci numbers appear in the ring lemma"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The ring lemma of disk-packing geometry is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Worst case of Euclid's algorithm",
+      "anchor": {
+        "section": "Computer science",
+        "snippet": "the worst case input for this algorithm is a pair of consecutive Fibonacci numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "GenContFract.fib_le_of_continuantsAux_b",
+        "module": "Mathlib.Algebra.ContinuedFractions.Computation.Approximations",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib bounds continued-fraction denominators below by `Nat.fib`, which underlies the worst-case analysis, but does not explicitly state the Lamé worst-case theorem for the Euclidean algorithm.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fibonacci tree",
+      "anchor": {
+        "section": "Computer science",
+        "snippet": "A Fibonacci tree is a binary tree whose child trees (recursively) differ in height by exactly 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define Fibonacci trees.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Vogel sunflower floret model",
+      "anchor": {
+        "section": "Nature",
+        "snippet": "A model for the pattern of florets in the head of a sunflower was proposed by Helmut Vogel"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Vogel's sunflower model is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Bee ancestry Fibonacci",
+      "anchor": {
+        "section": "Nature",
+        "snippet": "Fibonacci numbers also appear in the ancestral pedigrees of bees"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "X chromosome ancestry",
+      "anchor": {
+        "section": "Nature",
+        "snippet": "the number of possible ancestors on the human X chromosome inheritance line at a given ancestral generation also follows the Fibonacci sequence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Light reflection paths in plates",
+      "anchor": {
+        "section": "Other",
+        "snippet": "The number of different beam paths that have k reflections, for k > 1 , is the k -th Fibonacci number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Miles-to-kilometers conversion",
+      "anchor": {
+        "section": "Other",
+        "snippet": "the decomposition of distance in miles into a sum of Fibonacci numbers becomes nearly the kilometer sum"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Infinite resistor chain",
+      "anchor": {
+        "section": "Other",
+        "snippet": "The measured values of voltages and currents in the infinite resistor chain circuit"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

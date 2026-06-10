@@ -1,0 +1,905 @@
+{
+  "slug": "Logistic_function",
+  "wikipedia_title": "Logistic function",
+  "display_title": "Logistic function",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Logistic function (definition)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A logistic function or logistic curve is a common S-shaped curve"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.sigmoid",
+        "module": "Mathlib.Analysis.SpecialFunctions.Sigmoid",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib defines only the standard logistic (sigmoid) `(1 + exp(-x))⁻¹`; the general three-parameter L/k/x₀ logistic is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Carrying capacity parameter",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is the carrying capacity , the supremum of the values of the function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No parametrized logistic is defined in Mathlib, so no `L` (carrying capacity) parameter is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Logistic growth rate parameter",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is the logistic growth rate, the steepness of the curve"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `Real.sigmoid` has no `k` parameter for the growth rate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Midpoint parameter",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "value of the function's midpoint"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `Real.sigmoid` has no `x₀` midpoint parameter.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Domain and limits of logistic function",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The logistic function has domain the real numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.tendsto_sigmoid_atTop",
+        "module": "Mathlib.Analysis.SpecialFunctions.Sigmoid",
+        "match_kind": "exact"
+      },
+      "note": "Limits at ±∞ are proved by `Real.tendsto_sigmoid_atTop` (→ 1) and `Real.tendsto_sigmoid_atBot` (→ 0), with the function defined on all of ℝ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Standard logistic / sigmoid function",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is used to define the standard logistic function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.sigmoid",
+        "module": "Mathlib.Analysis.SpecialFunctions.Sigmoid",
+        "match_kind": "exact"
+      },
+      "note": "`Real.sigmoid x := (1 + exp (-x))⁻¹` is exactly the standard logistic function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Standard logistic function",
+      "anchor": {
+        "section": "Mathematical properties",
+        "snippet": "The standard logistic function is the logistic function with parameters"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.sigmoid",
+        "module": "Mathlib.Analysis.SpecialFunctions.Sigmoid",
+        "match_kind": "exact"
+      },
+      "note": "Same `Real.sigmoid` definition serves as the standard logistic.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Symmetry property of logistic function",
+      "anchor": {
+        "section": "Symmetries",
+        "snippet": "The logistic function has the symmetry property that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.sigmoid_neg",
+        "module": "Mathlib.Analysis.SpecialFunctions.Sigmoid",
+        "match_kind": "exact"
+      },
+      "note": "`Real.sigmoid_neg`: `sigmoid (-x) = 1 - sigmoid x` is the Wikipedia symmetry property.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Odd function property",
+      "anchor": {
+        "section": "Symmetries",
+        "snippet": "is an odd function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.sigmoid_neg",
+        "module": "Mathlib.Analysis.SpecialFunctions.Sigmoid",
+        "match_kind": "invocation"
+      },
+      "note": "Oddness of `sigmoid(x) - 1/2` is not stated as such, but follows immediately from `Real.sigmoid_neg`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rotational symmetry about (0, 1/2)",
+      "anchor": {
+        "section": "Symmetries",
+        "snippet": "The logistic function is thus rotationally symmetrical about the point"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.sigmoid_neg",
+        "module": "Mathlib.Analysis.SpecialFunctions.Sigmoid",
+        "match_kind": "invocation"
+      },
+      "note": "The geometric rotational-symmetry statement is not formalized, though `Real.sigmoid_neg` encodes its algebraic content.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverse is the logit function",
+      "anchor": {
+        "section": "Inverse function",
+        "snippet": "The logistic function is the inverse of the natural logit function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The logit function is not defined in Mathlib and no inverse-of-sigmoid statement appears.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Logistic as offset/scaled tanh",
+      "anchor": {
+        "section": "Hyperbolic tangent",
+        "snippet": "The logistic function is an offset and scaled hyperbolic tangent function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identity `sigmoid x = 1/2 + 1/2 · tanh(x/2)` is not proved in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Derivative via tanh form",
+      "anchor": {
+        "section": "Hyperbolic tangent",
+        "snippet": "The hyperbolic-tangent relationship leads to another form for the logistic function's derivative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No tanh-based form of the sigmoid derivative is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hyperbolic angle interpretation",
+      "anchor": {
+        "section": "Hyperbolic tangent",
+        "snippet": "the hyperbolic tangent function is the hyperbolic angle on the unit hyperbola"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `tanh` but does not formalize the hyperbolic-angle interpretation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Parametrization of hyperbolas",
+      "anchor": {
+        "section": "Hyperbolic tangent",
+        "snippet": "Parametrically, hyperbolic cosine and hyperbolic sine give coordinates on the unit hyperbola"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.cosh_sq_sub_sinh_sq",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "invocation"
+      },
+      "note": "`cosh² - sinh² = 1` is proved, which is the algebraic content of the unit-hyperbola parametrization, but no explicit hyperbola parametrization API exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Derivative of standard logistic function",
+      "anchor": {
+        "section": "Derivative",
+        "snippet": "The standard logistic function has an easily calculated derivative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.hasDerivAt_sigmoid",
+        "module": "Mathlib.Analysis.SpecialFunctions.Sigmoid",
+        "match_kind": "exact"
+      },
+      "note": "`Real.hasDerivAt_sigmoid` gives `deriv sigmoid x = sigmoid x · (1 - sigmoid x)`, matching the Wikipedia formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Logistic distribution as location–scale family",
+      "anchor": {
+        "section": "Derivative",
+        "snippet": "The logistic distribution is a location–scale family"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The logistic distribution is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Antiderivative of logistic function",
+      "anchor": {
+        "section": "Integral",
+        "snippet": "its antiderivative can be computed by the substitution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No antiderivative of the sigmoid (softplus identity) is proved in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Softplus function",
+      "anchor": {
+        "section": "Integral",
+        "snippet": "this is known as the softplus function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A grep for `softplus` in Mathlib returns no hits.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Analyticity of standard logistic function",
+      "anchor": {
+        "section": "Taylor series",
+        "snippet": "The standard logistic function is analytic on the whole real line"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "analyticAt_sigmoid",
+        "module": "Mathlib.Analysis.SpecialFunctions.Sigmoid",
+        "match_kind": "exact"
+      },
+      "note": "`analyticAt_sigmoid` (and `analyticOnNhd_sigmoid` on `Set.univ`) prove sigmoid is real-analytic everywhere.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "n-th derivative formula",
+      "anchor": {
+        "section": "Taylor series",
+        "snippet": "A formula for the n th derivative of the standard logistic function is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No closed-form n-th derivative of sigmoid is provided in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Taylor series of logistic function",
+      "anchor": {
+        "section": "Taylor series",
+        "snippet": "therefore its Taylor series about the point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit Taylor series for sigmoid is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Logistic differential equation",
+      "anchor": {
+        "section": "Logistic differential equation",
+        "snippet": "The unique standard logistic function is the solution of the simple first-order non-linear ordinary differential equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The logistic ODE and its characterization of sigmoid is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Phase line / equilibria behavior",
+      "anchor": {
+        "section": "Logistic differential equation",
+        "snippet": "The qualitative behavior is easily understood in terms of the phase line"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Phase-line analysis of the logistic ODE is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bernoulli special case and solution",
+      "anchor": {
+        "section": "Logistic differential equation",
+        "snippet": "The logistic equation is a special case of the Bernoulli differential equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Bernoulli ODE is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Growth behavior of logistic curve",
+      "anchor": {
+        "section": "Logistic differential equation",
+        "snippet": "the logistic curve shows early exponential growth for negative argument"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No exponential-vs-saturation growth statement for the logistic ODE solution is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Generalized differential equation form",
+      "anchor": {
+        "section": "Logistic differential equation",
+        "snippet": "The differential equation derived above is a special case of a general differential equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No generalized logistic ODE is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Probabilistic interpretation of logistic",
+      "anchor": {
+        "section": "Probabilistic interpretation",
+        "snippet": "the value of the logistic function is in the range"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "unitInterval.sigmoid",
+        "module": "Mathlib.Analysis.SpecialFunctions.Sigmoid",
+        "match_kind": "invocation"
+      },
+      "note": "`unitInterval.sigmoid` and `Real.sigmoid_pos`/`sigmoid_lt_one` show the output lies in (0,1), but no Bernoulli-probability semantics is attached.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Log-odds interpretation",
+      "anchor": {
+        "section": "Probabilistic interpretation",
+        "snippet": "In this interpretation the input x is the log-odds for the first alternative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Log-odds / logit is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Softmax function",
+      "anchor": {
+        "section": "Probabilistic interpretation",
+        "snippet": "This form immediately generalizes to more alternatives as the softmax function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `softmax` returns no matches in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Softmax invariance under constant shift",
+      "anchor": {
+        "section": "Probabilistic interpretation",
+        "snippet": "the softmax function is invariant under adding a constant to all the logits"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a softmax definition, the invariance property is also absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Generalizations in growth modeling",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "In growth modeling, numerous generalizations exist"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No generalized growth-model logistic variants are formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Verhulst population growth equation",
+      "anchor": {
+        "section": "In ecology: modeling population growth",
+        "snippet": "this model is formalized by the differential equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Verhulst` in Mathlib returns nothing.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Solution of Verhulst equation",
+      "anchor": {
+        "section": "In ecology: modeling population growth",
+        "snippet": "The solution to the equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Solution to the Verhulst ODE is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Carrying capacity asymptotic behavior",
+      "anchor": {
+        "section": "In ecology: modeling population growth",
+        "snippet": "The carrying capacity is asymptotically reached independently of the initial value"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No asymptotic-to-carrying-capacity statement is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Dimensionless form of logistic equation",
+      "anchor": {
+        "section": "In ecology: modeling population growth",
+        "snippet": "gives the dimensionless differential equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dimensionless logistic ODE rescaling is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Antiderivative of ecological form",
+      "anchor": {
+        "section": "Integral (2)",
+        "snippet": "The antiderivative of the ecological form of the logistic function can be computed by the substitution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No antiderivative for the ecological-form logistic appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Time-varying carrying capacity model",
+      "anchor": {
+        "section": "Time-varying carrying capacity",
+        "snippet": "as a consequence it can be time-varying"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Time-varying carrying capacity ODE is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Periodic carrying capacity yields periodic solution",
+      "anchor": {
+        "section": "Time-varying carrying capacity",
+        "snippet": "It can be shown"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Periodicity of solutions under periodic K(t) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Logistic delay equation behavior",
+      "anchor": {
+        "section": "Time-varying carrying capacity",
+        "snippet": "This leads to a logistic delay equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Delay differential equations are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Logistic regression model",
+      "anchor": {
+        "section": "Logistic regression",
+        "snippet": "Logistic functions are used in logistic regression to model how the probability"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `logistic` reveals no logistic regression formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Rasch model application",
+      "anchor": {
+        "section": "Logistic regression",
+        "snippet": "Another application of the logistic function is in the Rasch model"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Rasch model in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Activation function in neural networks",
+      "anchor": {
+        "section": "Neural networks",
+        "snippet": "A common choice for the activation or"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neural-network activation functions as such are not formalized; `Real.sigmoid` exists but its use as an activation is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Tumor growth model",
+      "anchor": {
+        "section": "In medicine: modeling of growth of tumors",
+        "snippet": "the logistic differential equation can be used to model the growth of tumors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Tumor growth modeling is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Chemotherapy log-kill revision",
+      "anchor": {
+        "section": "In medicine: modeling of growth of tumors",
+        "snippet": "If a course of chemotherapy is started with a log-kill effect"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Log-kill chemotherapy model is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Eradication condition",
+      "anchor": {
+        "section": "In medicine: modeling of growth of tumors",
+        "snippet": "if the average therapy-induced death rate is greater than the baseline proliferation rate"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No eradication-criterion theorem for the chemotherapy model is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Generalized logistic / Richards growth curve for COVID-19",
+      "anchor": {
+        "section": "Modeling early COVID-19 cases",
+        "snippet": "also called the Richards growth curve, has been applied to model the early phase"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep shows no Richards growth curve in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reduction to logistic and Gompertz",
+      "anchor": {
+        "section": "Modeling early COVID-19 cases",
+        "snippet": "The flexibility of the curve"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Gompertz curve or Richards-reduction theorem in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Autocatalytic reaction concentration",
+      "anchor": {
+        "section": "In chemistry: reaction models",
+        "snippet": "The concentration of reactants and products in autocatalytic reactions follow the logistic function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Autocatalytic reaction kinetics is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fermi–Dirac distribution",
+      "anchor": {
+        "section": "In physics: Fermi–Dirac distribution",
+        "snippet": "The logistic function determines the statistical distribution of fermions over the energy states"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Fermi` / `FermiDirac` shows no Mathlib formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Mirage modelling",
+      "anchor": {
+        "section": "In optics: mirage",
+        "snippet": "The logistic function also finds applications in optics"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mirage modeling is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Language change model",
+      "anchor": {
+        "section": "In linguistics: language change",
+        "snippet": "the logistic function can be used to model language change"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Linguistic language-change models are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Crop response S-curve",
+      "anchor": {
+        "section": "In agriculture: modeling crop response",
+        "snippet": "The logistic S-curve can be used for modeling the crop response"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Agricultural crop-response models are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Diffusion of innovations",
+      "anchor": {
+        "section": "In economics and sociology: diffusion of innovations",
+        "snippet": "The logistic function can be used to illustrate the progress of the diffusion of an innovation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Diffusion-of-innovations modeling is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Inflection point determination",
+      "anchor": {
+        "section": "Inflection Point Determination in Logistic Growth Regression",
+        "snippet": "Logistic growth regressions carry significant uncertainty"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Inflection-point estimation for logistic regression is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sequential analysis logistic probability",
+      "anchor": {
+        "section": "Sequential analysis",
+        "snippet": "derives the probability of first equaling or exceeding the positive boundary"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Sequential analysis / boundary-crossing probability with logistic is not in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

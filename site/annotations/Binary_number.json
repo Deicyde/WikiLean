@@ -1,0 +1,921 @@
+{
+  "slug": "Binary_number",
+  "wikipedia_title": "Binary number",
+  "display_title": "Binary number",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Binary number",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A binary number is a number expressed in the base-2 numeral system"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.digits",
+        "module": "Mathlib.Data.Nat.Digits.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "No dedicated 'binary number' type, but `Nat.digits 2 n` gives a natural number's base-2 representation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Binary number as dyadic rational",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A binary number may also refer to a rational number that has a finite representation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no dyadic-rational structure (the only 'dyadic' references are topological partitions in Urysohn's lemma).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Base-2 numeral system",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The base-2 numeral system is a positional notation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.ofDigits",
+        "module": "Mathlib.Data.Nat.Digits.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "`Nat.ofDigits`/`Nat.digits` formalize positional notation for any base, of which base 2 is a special case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bit",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Each digit is referred to as a bit"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.bits",
+        "module": "Mathlib.Data.Nat.Bits",
+        "match_kind": "special_case"
+      },
+      "note": "`Nat.bits : ℕ → List Bool` represents the binary digits as Booleans, with `Nat.testBit` giving the bit at a position.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Numbers representable by bit sequences",
+      "anchor": {
+        "section": "Representation",
+        "snippet": "Any number can be represented by a sequence of bits"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.ofDigits_digits",
+        "module": "Mathlib.Data.Nat.Digits.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "`ofDigits b (digits b n) = n` at base 2 expresses that every natural number is recovered from its bit sequence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Equivalent binary notations",
+      "anchor": {
+        "section": "Representation",
+        "snippet": "The following notations are equivalent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Purely notational equivalence (subscripts/prefixes), not a mathematical statement formalizable in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Reading binary digit-by-digit",
+      "anchor": {
+        "section": "Representation",
+        "snippet": "the binary numeral 100 is pronounced one zero zero"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Concerns pronunciation conventions, which carry no formalizable content.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Decimal counting symbols",
+      "anchor": {
+        "section": "Decimal counting",
+        "snippet": "Decimal counting uses the ten symbols 0 through 9"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal statement about decimal symbols; only the related bound `Nat.digits_lt_base` exists, not this claim.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Binary counting procedure",
+      "anchor": {
+        "section": "Binary counting",
+        "snippet": "Binary counting follows the exact same procedure"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The incrementing/counting procedure on digit strings is not formalized as such (only `Nat.succ` on the numbers).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Binary place value as powers of 2",
+      "anchor": {
+        "section": "Binary counting",
+        "snippet": "each bit represents an increasing power of 2"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.ofDigits_eq_sum_mapIdx",
+        "module": "Mathlib.Data.Nat.Digits.Lemmas",
+        "match_kind": "special_case"
+      },
+      "note": "`ofDigits b L = Σ aᵢ·bⁱ` is exactly place value as powers of the base, specializing to 2ⁱ at base 2.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Convert 100101 to decimal",
+      "anchor": {
+        "section": "Binary counting",
+        "snippet": "the binary number 100101 is converted to decimal form as follows"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.ofDigits",
+        "module": "Mathlib.Data.Nat.Digits.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "This specific conversion is an invocation of `Nat.ofDigits 2`, computable but not a stored declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Binary addition of single digits",
+      "anchor": {
+        "section": "Addition",
+        "snippet": "Adding two single-digit binary numbers is relatively simple"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.bodd_add",
+        "module": "Mathlib.Data.Nat.Bits",
+        "match_kind": "generalization"
+      },
+      "note": "Addition itself is fully formalized; `bodd (m+n) = bxor (bodd m) (bodd n)` captures the single-bit sum rule, but the carry table is not a named result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Carrying in addition",
+      "anchor": {
+        "section": "Addition",
+        "snippet": "This is known as carrying"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Carry is implicit in `Nat.add` but not defined as a standalone concept in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Adding 01101 and 10111",
+      "anchor": {
+        "section": "Addition",
+        "snippet": "In this example, two numerals are being added together"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A worked hand-addition-with-carries example; the carrying algorithm on digit strings is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "XOR addition rule",
+      "anchor": {
+        "section": "Addition",
+        "snippet": "When computers must add two numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.bodd_add",
+        "module": "Mathlib.Data.Nat.Bits",
+        "match_kind": "special_case"
+      },
+      "note": "`bodd (m+n) = bxor (bodd m) (bodd n)` formalizes the sum bit as XOR, though the carry-as-AND half-adder rule is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Long carry method",
+      "anchor": {
+        "section": "Long carry method",
+        "snippet": "Brookhouse Method of Binary Addition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This human addition shortcut for long carry runs is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Long carry addition example",
+      "anchor": {
+        "section": "Long carry method",
+        "snippet": "In the following example, two numerals are being added together"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A worked example of the long-carry method, which is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Addition table vs disjunction",
+      "anchor": {
+        "section": "Addition table",
+        "snippet": "The binary addition table is similar to, but not the same as, the truth table of the logical disjunction operation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The observation that bit addition (XOR with carry) differs from logical OR is not stated as a Mathlib result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Binary subtraction of single digits",
+      "anchor": {
+        "section": "Subtraction",
+        "snippet": "Subtraction works in much the same way"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Subtraction is formalized as `Nat.sub`/integer subtraction, but the single-digit borrow table is not a named declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Borrowing in subtraction",
+      "anchor": {
+        "section": "Subtraction",
+        "snippet": "This is known as borrowing"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Borrowing is not formalized as a defined concept in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Two's complement subtraction formula",
+      "anchor": {
+        "section": "Subtraction",
+        "snippet": "subtraction can be summarized by the following formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no two's-complement representation or this subtraction formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Binary multiplication by partial products",
+      "anchor": {
+        "section": "Multiplication",
+        "snippet": "Multiplication in binary is similar to its decimal counterpart"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.mul_ofDigits",
+        "module": "Mathlib.Data.Nat.Digits.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`n * ofDigits b l = ofDigits b (l.map (n*·))` captures distributing a multiplier over digits, the core of the partial-products idea.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Partial product outcomes",
+      "anchor": {
+        "section": "Multiplication",
+        "snippet": "there are only two possible outcomes of each partial multiplication"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The observation that multiplying by a bit yields 0 or the multiplicand is not stated as a Mathlib lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Multiply 1011 by 1010",
+      "anchor": {
+        "section": "Multiplication",
+        "snippet": "the binary numbers 1011 and 1010 are multiplied as follows"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A worked hand-multiplication example; the digit-wise partial-products algorithm is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multiplication table vs conjunction",
+      "anchor": {
+        "section": "Multiplication table",
+        "snippet": "The binary multiplication table is the same as the truth table of the logical conjunction operation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration states a·b = a∧b for single bits; only the related `Nat.and_two_pow` exists for bitwise AND.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Binary long division",
+      "anchor": {
+        "section": "Division",
+        "snippet": "Long division in binary is again similar to its decimal counterpart"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.self_div_pow_eq_ofDigits_drop",
+        "module": "Mathlib.Data.Nat.Digits.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Division is formalized (`Nat.div`); dividing by a power of the base equals dropping low digits, but the long-division algorithm itself is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Divide 11011 by 101",
+      "anchor": {
+        "section": "Division",
+        "snippet": "In the example below, the divisor is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A worked binary long-division example; the algorithm is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Binary square root algorithm",
+      "anchor": {
+        "section": "Square root",
+        "snippet": "The process of taking a binary square root digit by digit"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.sqrt",
+        "module": "Mathlib.Data.Nat.Sqrt",
+        "match_kind": "generalization"
+      },
+      "note": "`Nat.sqrt` computes the integer square root but uses a different (non digit-by-digit) algorithm.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Terminating binary fraction condition",
+      "anchor": {
+        "section": "Fractions",
+        "snippet": "the binary expansion of a fraction terminates only if the denominator is a power of 2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib theorem characterizes terminating base-2 expansions via power-of-2 denominators.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "1/10 has no finite binary form",
+      "anchor": {
+        "section": "Fractions",
+        "snippet": "1/10 does not have a finite binary representation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific non-terminating instance is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Binary expansion of 1/3",
+      "anchor": {
+        "section": "Fractions",
+        "snippet": "the binary expansion of 1/3 is .010101"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The repeating binary expansion of 1/3 is not formalized as a stored result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bitwise operation",
+      "anchor": {
+        "section": "Bitwise operations",
+        "snippet": "it is called a bitwise operation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.bitwise",
+        "module": "Mathlib.Data.Nat.Bitwise",
+        "match_kind": "generalization"
+      },
+      "note": "`Nat.bitwise (f : Bool → Bool → Bool)` applies an operation bit-by-bit; `Nat.land`/`Nat.lor`/`Nat.xor` are concrete instances.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Arithmetic shift left as multiplication",
+      "anchor": {
+        "section": "Bitwise operations",
+        "snippet": "an arithmetic shift left of a binary number is the equivalent of multiplication"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.shiftLeft_eq_mul_pow",
+        "module": "Mathlib.Data.Nat.Size",
+        "match_kind": "exact"
+      },
+      "note": "`m <<< n = m * 2 ^ n` is exactly shift-left equals multiplication by a power of two.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Decimal to binary by division",
+      "anchor": {
+        "section": "Decimal to binary",
+        "snippet": "the number is divided by two"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.digits_def'",
+        "module": "Mathlib.Data.Nat.Digits.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "`digits b n = n % b :: digits b (n / b)` is precisely the repeated-division-with-remainder algorithm, at base 2.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Convert 357 to binary",
+      "anchor": {
+        "section": "Decimal to binary",
+        "snippet": "is expressed as"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.digits",
+        "module": "Mathlib.Data.Nat.Digits.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "A specific conversion computable via `Nat.digits 2 357`, not a stored declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Binary to decimal algorithm",
+      "anchor": {
+        "section": "Binary to decimal",
+        "snippet": "Conversion from base-2 to base-10 simply inverts the preceding algorithm"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.ofDigits_digits",
+        "module": "Mathlib.Data.Nat.Digits.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "`ofDigits b (digits b n) = n` formalizes that `ofDigits` inverts `digits`, specializing to base 2.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Convert 10010101101 to decimal",
+      "anchor": {
+        "section": "Binary to decimal",
+        "snippet": "to convert 10010101101"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.ofDigits",
+        "module": "Mathlib.Data.Nat.Digits.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "A specific conversion that is an invocation of `Nat.ofDigits 2`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Horner scheme application",
+      "anchor": {
+        "section": "Binary to decimal",
+        "snippet": "This method is an application of the Horner scheme"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.ofDigits_eq_foldr",
+        "module": "Mathlib.Data.Nat.Digits.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`ofDigits b L = foldr (fun x y => x + b*y) 0 L` is the Horner-form evaluation, though it is not labeled as Horner's scheme.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fractional conversion by doubling",
+      "anchor": {
+        "section": "Binary to decimal",
+        "snippet": "Repeatedly double the number to be converted"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.digits",
+        "module": "Mathlib.Analysis.Real.OfDigits",
+        "match_kind": "generalization"
+      },
+      "note": "`Real.digits` extracts digits of a real in [0,1) via floors, but the repeated-doubling algorithm is not itself a theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Repeating fraction 0.3 in binary",
+      "anchor": {
+        "section": "Binary to decimal",
+        "snippet": "Thus the repeating decimal fraction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific repeating binary fraction is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "0.1 in binary",
+      "anchor": {
+        "section": "Binary to decimal",
+        "snippet": "Or for example, 0.1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The binary expansion of 0.1 is not formalized as a stored result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Form of terminating binary fractions",
+      "anchor": {
+        "section": "Binary to decimal",
+        "snippet": "the only binary fractions with terminating expansions are of the form of an integer divided by a power of 2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem characterizes terminating binary fractions as integer/2ᵏ (dyadic rationals).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Divide-and-conquer conversion",
+      "anchor": {
+        "section": "Binary to decimal",
+        "snippet": "A simple divide-and-conquer algorithm is more effective asymptotically"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The asymptotically faster divide-and-conquer base-conversion algorithm is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Four bits per hex digit",
+      "anchor": {
+        "section": "Hexadecimal",
+        "snippet": "so it takes four digits of binary to represent one digit of hexadecimal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma relates base-b^k digits to groups of k base-b digits (here 16 = 2⁴).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hexadecimal to binary",
+      "anchor": {
+        "section": "Hexadecimal",
+        "snippet": "simply substitute the corresponding binary digits"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The digit-substitution grouping between hex and binary is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Binary to hexadecimal",
+      "anchor": {
+        "section": "Hexadecimal",
+        "snippet": "divide it into groups of four bits"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grouping bits into hex digits is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hexadecimal to decimal",
+      "anchor": {
+        "section": "Hexadecimal",
+        "snippet": "multiply the decimal equivalent of each hexadecimal digit"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.ofDigits",
+        "module": "Mathlib.Data.Nat.Digits.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "A specific conversion that is an invocation of `Nat.ofDigits 16`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Three bits per octal digit",
+      "anchor": {
+        "section": "Octal",
+        "snippet": "octal uses a radix of 8, which is a power of two"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma relates base-8 digits to groups of three bits (8 = 2³).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Octal to binary",
+      "anchor": {
+        "section": "Octal",
+        "snippet": "Converting from octal to binary proceeds in the same fashion"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The octal-to-binary digit-grouping substitution is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Octal to decimal",
+      "anchor": {
+        "section": "Octal",
+        "snippet": "And from octal to decimal"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.ofDigits",
+        "module": "Mathlib.Data.Nat.Digits.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "A specific conversion that is an invocation of `Nat.ofDigits 8`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Representing non-integers with radix point",
+      "anchor": {
+        "section": "Representing real numbers",
+        "snippet": "Non-integers can be represented by using negative powers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.ofDigits",
+        "module": "Mathlib.Analysis.Real.OfDigits",
+        "match_kind": "generalization"
+      },
+      "note": "`Real.ofDigits` represents reals in [0,1) as Σ dᵢ·b^{-(i+1)}, i.e. via negative powers of the base.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Binary 11.01 equals 3.25",
+      "anchor": {
+        "section": "Representing real numbers",
+        "snippet": "the binary number 11.01"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.ofDigits",
+        "module": "Mathlib.Analysis.Real.OfDigits",
+        "match_kind": "invocation"
+      },
+      "note": "The fractional part .01₂ = 1/4 is an invocation of `Real.ofDigits`; the combined integer-plus-fraction value is not a stored result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Dyadic rationals terminate",
+      "anchor": {
+        "section": "Representing real numbers",
+        "snippet": "have a terminating binary numeral"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem states that dyadic rationals have terminating binary expansions (no dyadic-rational structure exists).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Other rationals recur",
+      "anchor": {
+        "section": "Representing real numbers",
+        "snippet": "Other rational numbers have binary representation, but instead of terminating, they recur"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Eventual periodicity of base-b expansions of rationals is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Non-terminating non-recurring are irrational",
+      "anchor": {
+        "section": "Representing real numbers",
+        "snippet": "Binary numerals that neither terminate nor recur represent irrational numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The characterization linking non-eventually-periodic expansions to irrationality is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Patterned irrational binary number",
+      "anchor": {
+        "section": "Representing real numbers",
+        "snippet": "does have a pattern, but it is not a fixed-length recurring pattern"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific patterned-but-irrational example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Binary representation of sqrt 2",
+      "anchor": {
+        "section": "Representing real numbers",
+        "snippet": "the square root of 2"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "irrational_sqrt_two",
+        "module": "Mathlib.NumberTheory.Real.Irrational",
+        "match_kind": "invocation"
+      },
+      "note": "The example's content (√2 is irrational, hence non-terminating/non-recurring) is `irrational_sqrt_two`, though its binary digits are not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

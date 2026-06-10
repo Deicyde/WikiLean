@@ -1,0 +1,537 @@
+{
+  "slug": "Regular_language",
+  "wikipedia_title": "Regular language",
+  "display_title": "Regular language",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Regular language (via regular expression)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a formal language that can be defined by a regular expression"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "RegularExpression.matches'",
+        "module": "Mathlib.Computability.RegularExpressions",
+        "match_kind": null
+      },
+      "note": "Regular expressions and their matched languages are defined, but Mathlib does not define language regularity via regex nor link it to the automaton-based `IsRegular`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Regular language (via finite automaton)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a regular language can be defined as a language recognised by a finite automaton"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Language.IsRegular",
+        "module": "Mathlib.Computability.DFA",
+        "match_kind": "exact"
+      },
+      "note": "`Language.IsRegular L` is defined exactly as existence of a finite-state DFA whose accepted language is `L`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Kleene's theorem",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The equivalence of regular expressions and finite automata is known as Kleene's theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The RegularExpressions file explicitly notes that equivalence of regular expressions and DFAs/NFAs is not yet shown in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Recursive definition of regular languages",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "is defined recursively as follows"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "RegularExpression",
+        "module": "Mathlib.Computability.RegularExpressions",
+        "match_kind": null
+      },
+      "note": "The inductive `RegularExpression` (zero, epsilon, char, plus, comp, star) with `matches'` encodes this recursive construction, but it is not tied to a recursive `IsRegular` predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Finite languages are regular",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "All finite languages are regular"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma stating that singleton/finite languages are regular exists, despite the `IsRegular` framework.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Even number of a's / a's then b's",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Other typical examples include the language consisting of all strings"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "These specific example languages are not constructed or shown regular in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "a^n b^n is not regular",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "A simple example of a language that is not regular"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "DFA.pumping_lemma",
+        "module": "Mathlib.Computability.DFA",
+        "match_kind": null
+      },
+      "note": "The pumping lemma (`DFA.pumping_lemma`, also `NFA.pumping_lemma`) — the standard tool to prove non-regularity — is formalized, but this specific non-regularity result is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Equivalent characterizations of regular languages",
+      "anchor": {
+        "section": "Equivalent formalisms",
+        "snippet": "satisfies the following equivalent properties"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Language.isRegular_iff_finite_range_leftQuotient",
+        "module": "Mathlib.Computability.MyhillNerode",
+        "match_kind": null
+      },
+      "note": "DFA/NFA equivalence (`NFA.toDFA_correct`, `DFA.toNFA_correct`) and the Myhill–Nerode characterization are formalized, but other equivalences (regex, MSO logic, regular grammars) are not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Closure under Boolean, regular, and trio operations",
+      "anchor": {
+        "section": "Closure properties",
+        "snippet": "are closed under various operations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Language.IsRegular.compl",
+        "module": "Mathlib.Computability.DFA",
+        "match_kind": null
+      },
+      "note": "Closure under complement, union (`.add`), intersection (`.inf`) and reversal (`.reverse`) is proven, but closure under concatenation, Kleene star, and homomorphisms is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closure under quotient with arbitrary language",
+      "anchor": {
+        "section": "Closure properties",
+        "snippet": "closed under quotients with arbitrary languages"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Language.leftQuotient",
+        "module": "Mathlib.Computability.MyhillNerode",
+        "match_kind": null
+      },
+      "note": "`Language.leftQuotient` (quotient by a word) exists and underlies Myhill–Nerode, but closure of regular languages under quotient by an arbitrary language is not proven.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reverse automaton construction",
+      "anchor": {
+        "section": "Closure properties",
+        "snippet": "can be obtained by reversing all transitions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NFA.reverse",
+        "module": "Mathlib.Computability.NFA",
+        "match_kind": "exact"
+      },
+      "note": "`NFA.reverse` builds the automaton by reversing all transitions and swapping start/accept, with `NFA.mem_accepts_reverse` proving it accepts the reversed language.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Equivalence of two DFAs is decidable",
+      "anchor": {
+        "section": "Decidability properties",
+        "snippet": "it is decidable whether they accept the same language"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No decidability result for equivalence of DFAs/regular languages is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Containment, disjointness, emptiness, universality, membership decidable",
+      "anchor": {
+        "section": "Decidability properties",
+        "snippet": "the following problems are also decidable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "RegularExpression.rmatch",
+        "module": "Mathlib.Computability.RegularExpressions",
+        "match_kind": null
+      },
+      "note": "Membership is decidable via `RegularExpression.rmatch` (with a `DecidablePred (· ∈ P.matches')` instance), but emptiness, universality, containment and disjointness decidability are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Universality NP-complete for singleton alphabet",
+      "anchor": {
+        "section": "Decidability properties",
+        "snippet": "the universality problem is NP-complete already for a singleton alphabet"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No complexity-theoretic results about the universality problem are formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Universality PSPACE-complete for larger alphabets",
+      "anchor": {
+        "section": "Decidability properties",
+        "snippet": "that problem is PSPACE-complete"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "PSPACE-completeness of the universality problem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Universality with squaring has exponential space lower bound",
+      "anchor": {
+        "section": "Decidability properties",
+        "snippet": "the universality problem has an exponential space lower bound"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Exponential space lower bounds for regular-expression universality are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Regular languages as minimal elementary substructure",
+      "anchor": {
+        "section": "Decidability properties",
+        "snippet": "its minimal elementary substructure consists precisely of regular languages"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This model-theoretic characterization of regular languages is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "REGULAR equals DSPACE(O(1))",
+      "anchor": {
+        "section": "Complexity results",
+        "snippet": "the decision problems that can be solved in constant space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No space-complexity class characterization of REGULAR is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "REGULAR ≠ AC^0",
+      "anchor": {
+        "section": "Complexity results",
+        "snippet": "contains the parity problem of determining whether the number of 1 bits"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Circuit-complexity separations involving AC^0 and parity are not formalized in this context.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "REGULAR does not contain AC^0",
+      "anchor": {
+        "section": "Complexity results",
+        "snippet": "REGULAR does not contain AC"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The non-containment of AC^0 in REGULAR is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Space lower bound for non-regular languages",
+      "anchor": {
+        "section": "Complexity results",
+        "snippet": "it requires a machine with at least"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Space lower bounds for recognizing non-regular languages are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "DSPACE(o(log log n)) equals regular languages",
+      "anchor": {
+        "section": "Complexity results",
+        "snippet": "equals the class of regular languages"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The DSPACE(o(log log n)) = REGULAR collapse result is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every regular language is context-free",
+      "anchor": {
+        "section": "Location in the Chomsky hierarchy",
+        "snippet": "every regular language is context-free"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Language.IsContextFree",
+        "module": "Mathlib.Computability.ContextFreeGrammar",
+        "match_kind": null
+      },
+      "note": "Both `Language.IsRegular` and `Language.IsContextFree` are defined, but the inclusion of regular languages into context-free languages is not proven.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Equal number of a's and b's is context-free but not regular",
+      "anchor": {
+        "section": "Location in the Chomsky hierarchy",
+        "snippet": "is context-free but not regular"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific separating example between context-free and regular languages is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Finite languages subclass",
+      "anchor": {
+        "section": "Location in the Chomsky hierarchy",
+        "snippet": "Finite languages, those containing only a finite number of words"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no defined subclass of finite languages within the formal-language hierarchy in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Star-free languages",
+      "anchor": {
+        "section": "Location in the Chomsky hierarchy",
+        "snippet": "Star-free languages , those that can be described by a regular expression constructed from the empty symbol"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Star-free languages are not defined in Mathlib (no `StarFree` notion exists).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ordinary generating function of a language",
+      "anchor": {
+        "section": "Number of words in a regular language",
+        "snippet": "The ordinary generating function for L is the formal power series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The generating function counting words of each length in a language is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Generating function of a regular language is rational",
+      "anchor": {
+        "section": "Number of words in a regular language",
+        "snippet": "is a rational function if L is regular"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Rationality of the generating function of a regular language is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Word-count sequence is constant-recursive",
+      "anchor": {
+        "section": "Number of words in a regular language",
+        "snippet": "is constant-recursive"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No result that the word-count sequence of a regular language satisfies a linear (constant-recursive) recurrence is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Dyck language non-regularity via Catalan numbers",
+      "anchor": {
+        "section": "Number of words in a regular language",
+        "snippet": "witnessing the non-regularity of the Dyck language"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Catalan numbers and `DyckWord` exist in Mathlib, but the non-regularity of the Dyck language is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Asymptotic word count for regular languages",
+      "anchor": {
+        "section": "Number of words in a regular language",
+        "snippet": "In general, for every regular language there exists a constant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Asymptotic growth bounds on the number of words in a regular language are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zeta function of a language",
+      "anchor": {
+        "section": "Number of words in a regular language",
+        "snippet": "The zeta function of a language L is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The zeta function of a formal language is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zeta function of regular language not generally rational",
+      "anchor": {
+        "section": "Number of words in a regular language",
+        "snippet": "is not in general rational, but that of an arbitrary cyclic language is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Results about rationality of zeta functions of regular or cyclic languages are not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

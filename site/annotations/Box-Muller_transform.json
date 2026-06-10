@@ -1,0 +1,233 @@
+{
+  "slug": "Box-Muller_transform",
+  "wikipedia_title": "Box–Muller transform",
+  "display_title": "Box–Muller transform",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Box–Muller transform",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a random number sampling method for generating pairs of independent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Box–Muller transform construction exists in Mathlib; grepping `Mathlib` for `Box.?Muller` returns no files.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Basic form setup",
+      "anchor": {
+        "section": "Basic form",
+        "snippet": "Suppose U 1 and U 2 are independent samples chosen from the uniform distribution on the unit interval"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.pdf.IsUniform",
+        "module": "Mathlib.Probability.Distributions.Uniform",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has uniform distributions and independence of random variables, but does not formalize this specific Box–Muller setup.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Z0 and Z1 are independent standard normal",
+      "anchor": {
+        "section": "Basic form",
+        "snippet": "Then Z 0 and Z 1 are independent random variables with a standard normal distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Box–Muller output theorem is absent from Mathlib, although `gaussianReal` (in `Mathlib.Probability.Distributions.Gaussian.Real`) defines the standard normal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Polar coordinate derivation",
+      "anchor": {
+        "section": "Basic form",
+        "snippet": "the random variables for R 2 and Θ (shown above) in the corresponding polar coordinates are also independent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement about polar-coordinate transformation of a 2D Gaussian giving independent radial-squared and angular components is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "R^2 chi-squared / exponential",
+      "anchor": {
+        "section": "Basic form",
+        "snippet": "Because R 2 is the square of the norm of the standard bivariate normal variable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.exponentialPDF",
+        "module": "Mathlib.Probability.Distributions.Exponential",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `exponentialPDF`/`expMeasure` but has no chi-squared distribution and no theorem identifying the squared norm of a 2D standard Gaussian with an exponential law.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Polar form construction",
+      "anchor": {
+        "section": "Polar form",
+        "snippet": "Given u and v , independent and uniformly distributed in the closed interval"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Marsaglia polar-form rejection construction is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "s uniformly distributed on (0,1)",
+      "anchor": {
+        "section": "Polar form",
+        "snippet": "the values of s will be uniformly distributed in the open interval"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the polar-form claim that s = u² + v² conditioned on the unit disk is uniform on (0,1).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Angle θ uniform and independent of s",
+      "anchor": {
+        "section": "Polar form",
+        "snippet": "Equally so, the angle θ divided by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The independence of the angle and radius for the polar-form rejection sample is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Polar form produces standard normal deviates",
+      "anchor": {
+        "section": "Polar form",
+        "snippet": "Just as the basic form produces two standard normal deviates, so does this alternate calculation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The polar-form algorithm and its correctness theorem are absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Polar method rejection rate",
+      "anchor": {
+        "section": "Contrasting the two forms",
+        "snippet": "It discards 1 − π /4 ≈ 21.46% of the total input uniformly distributed random number pairs generated"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The numeric rejection-rate fact 1 − π/4 for the polar form is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cost of basic form",
+      "anchor": {
+        "section": "Contrasting the two forms",
+        "snippet": "The basic form requires two multiplications, 1/2 logarithm , 1/2 square root , and one trigonometric function for each normal variate"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Operation-count complexity claims about the basic Box–Muller form are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cost of polar form",
+      "anchor": {
+        "section": "Contrasting the two forms",
+        "snippet": "The polar form requires 3/2 multiplications, 1/2 logarithm, 1/2 square root, and 1/2 division for each normal variate"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Operation-count complexity claims about the polar form are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tail truncation bound",
+      "anchor": {
+        "section": "Tails truncation",
+        "snippet": "This means that the algorithm will not produce random variables more than 6.660 standard deviations from the mean"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Finite-precision tail-truncation bounds for Box–Muller are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "C++ generation with mean μ and variance σ²",
+      "anchor": {
+        "section": "C++",
+        "snippet": "The implementation below in standard C++ generates values from any normal distribution with mean"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib contains no executable C++ code; this implementation example is out of scope.",
+      "provenance": "ai"
+    }
+  ]
+}

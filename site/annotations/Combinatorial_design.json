@@ -1,0 +1,889 @@
+{
+  "slug": "Combinatorial_design",
+  "wikipedia_title": "Combinatorial design",
+  "display_title": "Combinatorial design",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "example",
+      "label": "People-and-sets incidence puzzle",
+      "anchor": {
+        "section": "Example",
+        "snippet": "Given a certain number n of people, is it possible to assign them to sets"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This informal motivating incidence puzzle has no formal counterpart in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bruck–Ryser theorem",
+      "anchor": {
+        "section": "Example",
+        "snippet": "This last result, the Bruck–Ryser theorem , is proved by a combination of constructive methods based on finite fields"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Bruck–Ryser nonexistence theorem for projective planes appears in Mathlib (only a title in docs/1000.yaml).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Finite projective plane",
+      "anchor": {
+        "section": "Example",
+        "snippet": "When such a structure does exist, it is called a finite projective plane"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Configuration.ProjectivePlane",
+        "module": "Mathlib.Combinatorics.Configuration",
+        "match_kind": "exact"
+      },
+      "note": "Configuration.ProjectivePlane is an abstract finite projective plane (nondegenerate config with intersection points, lines through points, and three points in general position).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Balanced incomplete block design (BIBD)",
+      "anchor": {
+        "section": "Fundamental combinatorial designs",
+        "snippet": "A balanced incomplete block design or BIBD (usually called for short a block design ) is a collection"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no block-design or 2-design structure capturing the balance/replication conditions of a BIBD.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetric BIBD (SBIBD)",
+      "anchor": {
+        "section": "Fundamental combinatorial designs",
+        "snippet": "A symmetric balanced incomplete block design or SBIBD is a BIBD in which"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No symmetric block design (v = b BIBD) is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Resolvable BIBD",
+      "anchor": {
+        "section": "Fundamental combinatorial designs",
+        "snippet": "A resolvable BIBD is a BIBD whose blocks can be partitioned into sets"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of resolvable design (parallel classes of blocks) exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Latin rectangle and Latin square",
+      "anchor": {
+        "section": "Fundamental combinatorial designs",
+        "snippet": "A Latin rectangle is an r × n matrix that has the numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no definition of Latin square or Latin rectangle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Completing a Latin rectangle to a Latin square",
+      "anchor": {
+        "section": "Fundamental combinatorial designs",
+        "snippet": "then it is possible to append n − r rows to an r × n Latin rectangle to form a Latin square"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Although Hall's marriage theorem (the standard tool) is in Mathlib, the Latin-rectangle completion statement itself is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orthogonal Latin squares",
+      "anchor": {
+        "section": "Fundamental combinatorial designs",
+        "snippet": "Two Latin squares of order n are said to be orthogonal if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Latin squares or orthogonality of them are defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Mutually orthogonal Latin squares (MOLS)",
+      "anchor": {
+        "section": "Fundamental combinatorial designs",
+        "snippet": "forms a set of mutually orthogonal Latin squares (MOLS) if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define mutually orthogonal Latin squares.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Maximum number of MOLS",
+      "anchor": {
+        "section": "Fundamental combinatorial designs",
+        "snippet": "There can be at most n − 1 squares in a set of MOLS of order n"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The n−1 bound on MOLS is absent since MOLS are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "MOLS construct a projective plane",
+      "anchor": {
+        "section": "Fundamental combinatorial designs",
+        "snippet": "A set of n − 1 MOLS of order n can be used to construct a projective plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The MOLS-to-projective-plane construction is not in Mathlib, although ProjectivePlane itself is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Difference set",
+      "anchor": {
+        "section": "Fundamental combinatorial designs",
+        "snippet": "A ( v , k , λ) difference set is a subset D of a group G such that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No (v,k,λ) difference set notion is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Development of a difference set is an SBIBD",
+      "anchor": {
+        "section": "Fundamental combinatorial designs",
+        "snippet": "The set of all translates of a difference set D forms a symmetric BIBD"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither difference sets nor symmetric designs exist in Mathlib, so this development result is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Difference set with λ = 1 yields a projective plane",
+      "anchor": {
+        "section": "Fundamental combinatorial designs",
+        "snippet": "then the difference set gives rise to a projective plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This construction is not formalized since difference sets are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "(7,3,1) difference set giving the Fano plane",
+      "anchor": {
+        "section": "Fundamental combinatorial designs",
+        "snippet": "An example of a (7,3,1) difference set in the group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No (7,3,1) difference set or Fano plane example is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bruck–Ryser–Chowla theorem",
+      "anchor": {
+        "section": "Fundamental combinatorial designs",
+        "snippet": "the parameter set must satisfy the Bruck–Ryser–Chowla theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Bruck–Ryser–Chowla necessary conditions for symmetric designs are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hadamard matrix",
+      "anchor": {
+        "section": "Fundamental combinatorial designs",
+        "snippet": "An Hadamard matrix of order m is an m × m matrix H whose entries are ±1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's Matrix.hadamard is the Hadamard (entrywise) product of matrices, not the ±1 Hadamard matrix design object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Order of a Hadamard matrix is a multiple of 4",
+      "anchor": {
+        "section": "Fundamental combinatorial designs",
+        "snippet": "then m must be a multiple of 4"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The order-divisible-by-4 result is absent since Hadamard matrices are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hadamard 2-design",
+      "anchor": {
+        "section": "Fundamental combinatorial designs",
+        "snippet": "The resulting 0–1 matrix M is the incidence matrix of a symmetric"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hadamard 2-design construction is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pairwise balanced design (PBD)",
+      "anchor": {
+        "section": "Fundamental combinatorial designs",
+        "snippet": "A pairwise balanced design (or PBD) is a set X together with a family of subsets"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No pairwise balanced design structure is defined in Mathlib (the index-1 case resembles a HasLines configuration but PBDs proper are not formalized).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fisher's inequality for PBDs",
+      "anchor": {
+        "section": "Fundamental combinatorial designs",
+        "snippet": "Fisher's inequality holds for PBDs"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Configuration.HasLines.card_le",
+        "module": "Mathlib.Combinatorics.Configuration",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves the index-1 (linear-space) case |P| ≤ |L| as Configuration.HasLines.card_le, but not Fisher's inequality for general PBDs.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Erdős–De Bruijn theorem",
+      "anchor": {
+        "section": "Fundamental combinatorial designs",
+        "snippet": "This result also generalizes the famous Erdős–De Bruijn theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Configuration.HasLines.card_le",
+        "module": "Mathlib.Combinatorics.Configuration",
+        "match_kind": "exact"
+      },
+      "note": "Configuration.HasLines.card_le states that a nondegenerate configuration with a unique line through any two points has |P| ≤ |L|, which is the De Bruijn–Erdős incidence-geometry theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Balanced ternary design (BTD)",
+      "anchor": {
+        "section": "Other combinatorial designs",
+        "snippet": "A balanced ternary design BTD( V , B ; ρ 1 , ρ 2 , R ; K , Λ) is an arrangement of V elements into B multisets"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Balanced ternary designs are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "BTD(4,8;2,3,8;4,6)",
+      "anchor": {
+        "section": "Other combinatorial designs",
+        "snippet": "For example, one of the only two nonisomorphic BTD(4,8;2,3,8;4,6)s"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific BTD example is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Balanced tournament design",
+      "anchor": {
+        "section": "Other combinatorial designs",
+        "snippet": "A balanced tournament design of order n (a BTD( n )) is an arrangement of all the distinct unordered pairs"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Balanced tournament designs are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "BTD(3)",
+      "anchor": {
+        "section": "Other combinatorial designs",
+        "snippet": "An example of a BTD(3) is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This BTD(3) example is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Columns of a BTD give a 1-factorization",
+      "anchor": {
+        "section": "Other combinatorial designs",
+        "snippet": "The columns of a BTD( n ) provide a 1-factorization of the complete graph"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither balanced tournament designs nor 1-factorizations of complete graphs are formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Frequency square (F-square)",
+      "anchor": {
+        "section": "Other combinatorial designs",
+        "snippet": "A frequency square ( F -square) is a higher order generalization of a Latin square"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Frequency squares are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orthogonal frequency squares",
+      "anchor": {
+        "section": "Other combinatorial designs",
+        "snippet": "are orthogonal if every ordered pair"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Orthogonality of frequency squares is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hall triple system (HTS)",
+      "anchor": {
+        "section": "Other combinatorial designs",
+        "snippet": "Hall triple systems (HTSs) are Steiner triple systems (STSs) (but the blocks are called lines )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither Steiner triple systems nor Hall triple systems are defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Affine space AG(n,3) as an HTS",
+      "anchor": {
+        "section": "Other combinatorial designs",
+        "snippet": "Any affine space AG( n ,3) gives an example of an HTS."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has general affine space theory but not the HTS structure on AG(n,3).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of points of an HTS",
+      "anchor": {
+        "section": "Other combinatorial designs",
+        "snippet": "The number of points of an HTS is 3 m for some integer m ≥ 2."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This 3^m point count for HTSs is absent since HTSs are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Steiner triple systems and Steiner quasigroups",
+      "anchor": {
+        "section": "Other combinatorial designs",
+        "snippet": "Every Steiner triple system is equivalent to a Steiner quasigroup"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither Steiner triple systems nor quasigroups are defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Howell design",
+      "anchor": {
+        "section": "Other combinatorial designs",
+        "snippet": "A Howell design , H( s ,2 n ) (on symbol set S ) is an s × s array such that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Howell designs are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "H(4,6)",
+      "anchor": {
+        "section": "Other combinatorial designs",
+        "snippet": "An example of an H (4,6) is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This H(4,6) example is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Howell designs generalize Room squares",
+      "anchor": {
+        "section": "Other combinatorial designs",
+        "snippet": "is a Room square of side 2 n − 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither Howell designs nor Room squares are formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lotto design",
+      "anchor": {
+        "section": "Other combinatorial designs",
+        "snippet": "An ( n , k , p , t )-lotto design is an n -set V of elements together with a set β"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lotto designs are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hungarian Lottery lotto design values",
+      "anchor": {
+        "section": "Other combinatorial designs",
+        "snippet": "The Hungarian Lottery is a (90,5,5, t )-lotto design"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This lottery example is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Mendelsohn design",
+      "anchor": {
+        "section": "Other combinatorial designs",
+        "snippet": "Mendelsohn design , or MD( v , k , λ ), is a v -set V and a collection β"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mendelsohn designs are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "MTS(4,1)",
+      "anchor": {
+        "section": "Other combinatorial designs",
+        "snippet": "An example of an MTS(4,1) on V = {0,1,2,3} is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This Mendelsohn triple system example is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Idempotent semisymmetric quasigroup gives an MTS",
+      "anchor": {
+        "section": "Other combinatorial designs",
+        "snippet": "If ( Q ,∗) is an idempotent semisymmetric quasigroup"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither quasigroups nor Mendelsohn triple systems are formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quasi-3 design",
+      "anchor": {
+        "section": "Other combinatorial designs",
+        "snippet": "A quasi-3 design is a symmetric design (SBIBD) in which each triple of blocks intersect"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quasi-3 designs are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quasi-symmetric design",
+      "anchor": {
+        "section": "Other combinatorial designs",
+        "snippet": "design D is quasi-symmetric with intersection numbers x and y"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quasi-symmetric designs are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quasisymmetric designs give strongly regular graphs",
+      "anchor": {
+        "section": "Other combinatorial designs",
+        "snippet": "Every quasisymmetric block design gives rise to a strongly regular graph"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines strongly regular graphs (SimpleGraph.IsSRGWith) but not quasisymmetric designs nor this construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Self-orthogonal code from a quasisymmetric design",
+      "anchor": {
+        "section": "Other combinatorial designs",
+        "snippet": "generates a binary self-orthogonal code"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This self-orthogonal code construction from quasisymmetric designs is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Spherical design",
+      "anchor": {
+        "section": "Other combinatorial designs",
+        "snippet": "A spherical design is a finite set X of points in a ( d − 1)-dimensional sphere"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Spherical designs are not defined in Mathlib (sphere geometry exists but not the averaging/design condition).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tuscan-k rectangle",
+      "anchor": {
+        "section": "Other combinatorial designs",
+        "snippet": "An r × n tuscan- k rectangle on n symbols has r rows and n columns such that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Tuscan-k rectangles are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tuscan, Florentine, Roman and Vatican squares",
+      "anchor": {
+        "section": "Other combinatorial designs",
+        "snippet": "these are referred to as Tuscan squares"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "These row-complete-square variants are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tuscan squares and Hamiltonian path decompositions",
+      "anchor": {
+        "section": "Other combinatorial designs",
+        "snippet": "A tuscan square on n symbols is equivalent to a decomposition of the complete graph"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Tuscan-square/Hamiltonian-path-decomposition equivalence is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "t-wise balanced design (tBD)",
+      "anchor": {
+        "section": "Other combinatorial designs",
+        "snippet": "A t-wise balanced design (or t BD) of type t − ( v ,K, λ ) is a v -set X"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "t-wise balanced designs are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "3-(12,{4,6},1) design",
+      "anchor": {
+        "section": "Other combinatorial designs",
+        "snippet": "Notice that in the following example of a 3-{12,{4,6},1) design based on the set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This tBD example is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Weighing matrix",
+      "anchor": {
+        "section": "Other combinatorial designs",
+        "snippet": "Weighing matrices , A generalization of Hadamard matrices that allows zero entries"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Weighing matrices are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Youden square",
+      "anchor": {
+        "section": "Other combinatorial designs",
+        "snippet": "A Youden square is a k × v rectangular array"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Youden squares are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "4×7 Youden square (order 2 biplane)",
+      "anchor": {
+        "section": "Other combinatorial designs",
+        "snippet": "An example of a 4 × 7 Youden square is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This Youden square example is not present in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

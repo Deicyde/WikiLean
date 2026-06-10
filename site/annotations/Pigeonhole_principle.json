@@ -1,0 +1,563 @@
+{
+  "slug": "Pigeonhole_principle",
+  "wikipedia_title": "Pigeonhole principle",
+  "display_title": "Pigeonhole principle",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "theorem",
+      "label": "Pigeonhole principle (basic statement)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "at least one container must contain more than one item"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fintype.exists_ne_map_eq_of_card_lt",
+        "module": "Mathlib.Data.Fintype.Pigeonhole",
+        "match_kind": "exact"
+      },
+      "note": "Verified: states that if card β < card α then any f : α → β has two distinct inputs with equal output.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Three gloves handedness",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "at least two must be right-handed or at least two must be left-handed"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Fintype.exists_ne_map_eq_of_card_lt",
+        "module": "Mathlib.Data.Fintype.Pigeonhole",
+        "match_kind": "invocation"
+      },
+      "note": "This specific worked example is not formalized, but it is a direct invocation of the finite pigeonhole principle (3 gloves, 2 handednesses).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Two Londoners with same hair count",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "there must be at least two people in London who have the same number of hairs on their heads"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Fintype.exists_ne_map_eq_of_card_lt",
+        "module": "Mathlib.Data.Fintype.Pigeonhole",
+        "match_kind": "invocation"
+      },
+      "note": "Illustrative example not separately formalized; it is an application of the finite pigeonhole principle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quantified pigeonhole principle",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "at least one of the sets will contain at least k + 1 objects"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fintype.exists_lt_card_fiber_of_mul_lt_card",
+        "module": "Mathlib.Combinatorics.Pigeonhole",
+        "match_kind": "exact"
+      },
+      "note": "Verified: if card β * n < card α then some fiber has more than n elements, i.e. ≥ k+1 when count exceeds kn.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Formal statement (injective function)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "there does not exist an injective function whose codomain is smaller than its domain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Embedding.isEmpty_of_card_lt",
+        "module": "Mathlib.Data.Fintype.Pigeonhole",
+        "match_kind": "exact"
+      },
+      "note": "Verified: if card β < card α then α ↪ β is empty; equivalently Fintype.card_le_of_injective gives the contrapositive.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Leurechon hairs statement",
+      "anchor": {
+        "section": "History",
+        "snippet": "It is necessary that two men have the same number of hairs"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Fintype.exists_ne_map_eq_of_card_lt",
+        "module": "Mathlib.Data.Fintype.Pigeonhole",
+        "match_kind": "invocation"
+      },
+      "note": "Historical illustrative statement not formalized as such; it is an instance of the finite pigeonhole principle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sock picking",
+      "anchor": {
+        "section": "Sock picking",
+        "snippet": "the minimum number of pulled socks required to guarantee a pair of the same color"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Fintype.exists_ne_map_eq_of_card_lt",
+        "module": "Mathlib.Data.Fintype.Pigeonhole",
+        "match_kind": "invocation"
+      },
+      "note": "The worst-case sock-count example is not formalized; it is a direct application of the pigeonhole principle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Handshake degree pair",
+      "anchor": {
+        "section": "Hand shaking",
+        "snippet": "there is always a pair of people who will shake hands with the same number of people"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Fintype.exists_ne_map_eq_of_card_lt",
+        "module": "Mathlib.Data.Fintype.Pigeonhole",
+        "match_kind": null
+      },
+      "note": "The graph-theoretic corollary (two vertices of equal degree) is not formalized in Mathlib's SimpleGraph; only the underlying pigeonhole infrastructure exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Graph vertices share degree",
+      "anchor": {
+        "section": "Hand shaking",
+        "snippet": "there is at least one pair of vertices that share the same degree"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Fintype.exists_ne_map_eq_of_card_lt",
+        "module": "Mathlib.Data.Fintype.Pigeonhole",
+        "match_kind": null
+      },
+      "note": "No Mathlib theorem states that a finite graph with ≥2 vertices has two equal-degree vertices; only the pigeonhole principle it relies on is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hair counting in London",
+      "anchor": {
+        "section": "Hair counting",
+        "snippet": "there must be at least two people in London with the same number of hairs on their heads"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Fintype.exists_ne_map_eq_of_card_lt",
+        "module": "Mathlib.Data.Fintype.Pigeonhole",
+        "match_kind": "invocation"
+      },
+      "note": "Illustrative example not separately formalized; it is an application of the finite pigeonhole principle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Birthday problem (367 people)",
+      "anchor": {
+        "section": "The birthday problem",
+        "snippet": "among 367 people, there is at least one pair of people who share the same birthday with 100% probability"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Function.Embedding.isEmpty_of_card_lt",
+        "module": "Mathlib.Data.Fintype.Pigeonhole",
+        "match_kind": "invocation"
+      },
+      "note": "The deterministic 367-people statement is a pigeonhole invocation (366 possible birthdays); the probabilistic 23/365 birthday problem is separately in Archive/Wiedijk100Theorems/BirthdayProblem.lean.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Team tournament",
+      "anchor": {
+        "section": "Team tournament",
+        "snippet": "there must be at least one team featuring at least two of the seven players"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Fintype.exists_ne_map_eq_of_card_lt",
+        "module": "Mathlib.Data.Fintype.Pigeonhole",
+        "match_kind": "invocation"
+      },
+      "note": "Specific tournament example not formalized; it is a direct application of the pigeonhole principle.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Team tournament",
+          "snippet": "there must be at least one team featuring at least two of the seven players"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left\\lfloor {\\frac {n-1}{m}}\\right\\rfloor +1=\\left\\lfloor {\\frac {7-1}{4}}\\right\\rfloor +1=\\left\\lfloor {\\frac {6}{4}}\\right\\rfloor +1=1+1=2}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Subset sum to 10",
+      "anchor": {
+        "section": "Subset sum",
+        "snippet": "must contain two elements whose sum is 10"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Finset.exists_ne_map_eq_of_card_lt_of_maps_to",
+        "module": "Mathlib.Data.Finset.Card",
+        "match_kind": "invocation"
+      },
+      "note": "This combinatorial example is not formalized; it is an application of the Finset pigeonhole principle to the pairing partition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hashing collisions",
+      "anchor": {
+        "section": "Hashing",
+        "snippet": "hashing those objects is no guarantee of uniqueness"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Fintype.exists_ne_map_eq_of_card_lt",
+        "module": "Mathlib.Data.Fintype.Pigeonhole",
+        "match_kind": "invocation"
+      },
+      "note": "The hashing-collision observation is not formalized; it is an informal application of the pigeonhole principle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lossless compression bound",
+      "anchor": {
+        "section": "Uses and applications",
+        "snippet": "will also make some other inputs larger"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Function.Embedding.isEmpty_of_card_lt",
+        "module": "Mathlib.Data.Fintype.Pigeonhole",
+        "match_kind": "invocation"
+      },
+      "note": "The counting argument that lossless compression cannot shrink all inputs is not formalized; it follows from non-existence of injections into a smaller finite set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Density of fractional parts",
+      "anchor": {
+        "section": "Uses and applications",
+        "snippet": "of fractional parts is dense in"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AddCircle.denseRange_zsmul_coe_iff",
+        "module": "Mathlib.Topology.Instances.AddCircle.DenseSubgroup",
+        "match_kind": "generalization"
+      },
+      "note": "Verified: the multiples of a are dense on the circle ℝ/pℤ iff a/p is irrational, generalizing density of fractional parts {nα}.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pumping lemma version (infinite/finite)",
+      "anchor": {
+        "section": "Uses and applications",
+        "snippet": "then two objects share a box"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finite.exists_ne_map_eq_of_infinite",
+        "module": "Mathlib.Data.Fintype.Pigeonhole",
+        "match_kind": "exact"
+      },
+      "note": "Verified: infinitely many pigeons in finitely many holes forces two distinct pigeons into the same hole.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fisk's converse",
+      "anchor": {
+        "section": "Uses and applications",
+        "snippet": "then there is a box containing at most"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fintype.exists_card_fiber_le_of_card_le_mul",
+        "module": "Mathlib.Combinatorics.Pigeonhole",
+        "match_kind": "generalization"
+      },
+      "note": "Verified: dual pigeonhole giving a box with at most the floor of the average (card α ≤ card β * n ⟹ some fiber ≤ n).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Formulation 1 (at least two objects)",
+      "anchor": {
+        "section": "Alternative formulations",
+        "snippet": "then some place receives at least two objects"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.exists_ne_map_eq_of_card_lt_of_maps_to",
+        "module": "Mathlib.Data.Finset.Card",
+        "match_kind": "exact"
+      },
+      "note": "Verified: if #t < #s and f maps s into t then two distinct elements of s collide, i.e. some box gets ≥2.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Formulation 2 (exactly one each)",
+      "anchor": {
+        "section": "Alternative formulations",
+        "snippet": "no place receives more than one object"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fintype.card_le_of_injective",
+        "module": "Mathlib.Data.Fintype.Card",
+        "match_kind": "exact"
+      },
+      "note": "Verified: an injective placement (no box receives more than one) requires card α ≤ card β.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Formulation 3 (no injective function)",
+      "anchor": {
+        "section": "Alternative formulations",
+        "snippet": "then there is no injective function from S to T"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Embedding.isEmpty_of_card_lt",
+        "module": "Mathlib.Data.Fintype.Pigeonhole",
+        "match_kind": "exact"
+      },
+      "note": "Verified: if card β < card α there is no embedding (injective map) α ↪ β.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Formulation 4 (some place empty)",
+      "anchor": {
+        "section": "Alternative formulations",
+        "snippet": "then some place receives no object"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fintype.card_le_of_surjective",
+        "module": "Mathlib.Data.Fintype.Card",
+        "match_kind": "generalization"
+      },
+      "note": "Verified via contrapositive: a surjective placement needs card β ≤ card α, so with fewer objects than places the map is not surjective (some place empty).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Formulation 5 (no empty place)",
+      "anchor": {
+        "section": "Alternative formulations",
+        "snippet": "no place receives no object"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fintype.card_le_of_surjective",
+        "module": "Mathlib.Data.Fintype.Card",
+        "match_kind": "exact"
+      },
+      "note": "Verified: a surjective placement (no place left empty) requires card β ≤ card α.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Formulation 6 (no surjective function)",
+      "anchor": {
+        "section": "Alternative formulations",
+        "snippet": "then there is no surjective function from S to T"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fintype.card_le_of_surjective",
+        "module": "Mathlib.Data.Fintype.Card",
+        "match_kind": "generalization"
+      },
+      "note": "Verified via contrapositive: if card S < card T no surjection S → T exists since surjectivity forces card T ≤ card S.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Strong form of pigeonhole principle",
+      "anchor": {
+        "section": "Strong form",
+        "snippet": "either the first box contains at least q 1 objects"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Fintype.exists_lt_card_fiber_of_mul_lt_card",
+        "module": "Mathlib.Combinatorics.Pigeonhole",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes the uniform-threshold strong form; the general version with distinct thresholds q₁,…,qₙ is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quantified version (r or more objects)",
+      "anchor": {
+        "section": "Strong form",
+        "snippet": "then at least one of the boxes contains r or more of the objects"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fintype.exists_le_card_fiber_of_mul_le_card",
+        "module": "Mathlib.Combinatorics.Pigeonhole",
+        "match_kind": "generalization"
+      },
+      "note": "Verified: if card β * n ≤ card α then some fiber has at least n elements.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ceiling lower bound restatement",
+      "anchor": {
+        "section": "Strong form",
+        "snippet": "then at least one container must hold at least"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fintype.exists_lt_card_fiber_of_mul_lt_card",
+        "module": "Mathlib.Combinatorics.Pigeonhole",
+        "match_kind": "generalization"
+      },
+      "note": "Verified: docstring states this gives a pigeonhole with at least the ceiling of the average number of pigeons.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Floor upper bound restatement",
+      "anchor": {
+        "section": "Strong form",
+        "snippet": "at least one container must hold no more than"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fintype.exists_card_fiber_lt_of_card_lt_mul",
+        "module": "Mathlib.Combinatorics.Pigeonhole",
+        "match_kind": "generalization"
+      },
+      "note": "Verified: gives a pigeonhole with at most the floor of the average number of pigeons (the minimum-is-at-most-the-mean form).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Probabilistic generalization",
+      "anchor": {
+        "section": "Generalizations of the pigeonhole principle",
+        "snippet": "at least one pigeonhole will hold more than one pigeon with probability"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.exists_nonempty_inter_of_measure_univ_lt_sum_measure",
+        "module": "Mathlib.MeasureTheory.Measure.MeasureSpace",
+        "match_kind": null
+      },
+      "note": "Mathlib has a measure-space pigeonhole (overlapping sets when measures exceed the whole), but the explicit collision-probability formula is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mean-based generalization",
+      "anchor": {
+        "section": "Generalizations of the pigeonhole principle",
+        "snippet": "the probability is nonzero that X is greater than or equal to"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Fintype.exists_le_card_fiber_of_mul_le_card",
+        "module": "Mathlib.Combinatorics.Pigeonhole",
+        "match_kind": null
+      },
+      "note": "The deterministic 'maximum is at least the mean' pigeonhole is formalized, but the probabilistic phrasing (P(X ≥ mean) > 0) is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Infinite cardinal injection",
+      "anchor": {
+        "section": "Infinite sets",
+        "snippet": "then there is no injection from A to B"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.le_def",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "generalization"
+      },
+      "note": "Verified: #α ≤ #β ↔ Nonempty (α ↪ β), whose contrapositive gives no injection A → B when #A > #B.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dedekind finite phrasing",
+      "anchor": {
+        "section": "Infinite sets",
+        "snippet": "then no surjection from A to B is injective"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Fintype.injective_iff_surjective_of_equiv",
+        "module": "Mathlib.Data.Fintype.Card",
+        "match_kind": null
+      },
+      "note": "Mathlib has the finite injective-iff-surjective equivalences capturing Dedekind-finiteness, but not this exact compound phrasing about non-injective surjections.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uncountable pigeonhole principle",
+      "anchor": {
+        "section": "Infinite sets",
+        "snippet": "there will exist at least one pigeonhole having uncountably many pigeons stuffed into it"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.exists_uncountable_fiber",
+        "module": "Mathlib.SetTheory.Cardinal.Pigeonhole",
+        "match_kind": "exact"
+      },
+      "note": "Verified: for f with uncountable domain whose cardinality exceeds the codomain's, some fiber is uncountable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Technical infinite restatement",
+      "anchor": {
+        "section": "Infinite sets",
+        "snippet": "then there exists an element b of B such that there exists a bijection between the preimage of b and A"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.infinite_pigeonhole",
+        "module": "Mathlib.SetTheory.Cardinal.Pigeonhole",
+        "match_kind": "exact"
+      },
+      "note": "Verified: under the cofinality hypothesis there exists a : α with #(f ⁻¹' {a}) = #β, i.e. the fiber is equinumerous with the domain.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,577 @@
+{
+  "slug": "Slide_rule",
+  "wikipedia_title": "Slide rule",
+  "display_title": "Slide rule",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Slide rule",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A slide rule is a hand-operated mechanical calculator consisting of slidable rulers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A physical mechanical-calculator device, not a mathematical object Mathlib formalizes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Scales as lookup tables",
+      "anchor": {
+        "section": "Basic concepts",
+        "snippet": "Each ruler's scale has graduations labeled with precomputed outputs of various mathematical functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Describes engraved physical graduations of function values, with no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multiplication by summing logarithms",
+      "anchor": {
+        "section": "Basic concepts",
+        "snippet": "a number to be multiplied on one logarithmic-scale ruler can be aligned with the start of another such ruler to sum their logarithms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.log_mul",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The principle that adding logarithm positions multiplies the numbers is exactly log (x*y) = log x + log y (Real.log_mul).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Parts of a slide rule",
+      "anchor": {
+        "section": "Components",
+        "snippet": "Most slide rules consist of three parts"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A physical component description (stock, slide, cursor) with no mathematical formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Decade",
+      "anchor": {
+        "section": "Decades",
+        "snippet": "Scales may be grouped in decades , where each decade corresponds to a range of numbers that spans a ratio of 10"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A naming convention for a factor-of-ten scale range, not a formalized definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Logarithmic identities for multiplication and division",
+      "anchor": {
+        "section": "Logarithmic scales",
+        "snippet": "The following logarithmic identities transform the operations of multiplication and division to addition and subtraction"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.log_mul",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "match_kind": "exact"
+      },
+      "note": "These are exactly Real.log_mul (log(x*y)=log x+log y) and Real.log_div (log(x/y)=log x-log y) in the same module.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multiplication procedure",
+      "anchor": {
+        "section": "Multiplication",
+        "snippet": "corresponds to shifting the top logarithmic scale by a distance of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.log_mul",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The shifting procedure relies on Real.log_mul, but the physical sliding operation itself is not a formalized statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Multiplication 3×2=6",
+      "anchor": {
+        "section": "Multiplication",
+        "snippet": "the result of the multiplication 3×2=6 can then be read on the bottom scale under the top scale's"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A concrete arithmetic example (provable by norm_num) with no dedicated named declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Multiplication 7×2=14",
+      "anchor": {
+        "section": "Multiplication",
+        "snippet": "the answer to 7×2=14 is found by first positioning the top scale to start above the 2 of the bottom scale"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A concrete arithmetic worked example with no specific Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Multiplication 88×20",
+      "anchor": {
+        "section": "Multiplication",
+        "snippet": "to multiply 88×20 , the top scale is again positioned to start at the 2 on the bottom scale"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A concrete arithmetic worked example with no specific Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "General multiplication rule",
+      "anchor": {
+        "section": "Multiplication",
+        "snippet": "In general, the 1 on the top is moved to a factor on the bottom, and the answer is read off the bottom where the other factor is on the top"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.log_mul",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The underlying additivity of logarithms is Real.log_mul, but the slide-rule positioning procedure is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Division 5.5/2",
+      "anchor": {
+        "section": "Division",
+        "snippet": "The 2 on the top scale is placed over the 5.5 on the bottom scale"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A concrete division worked example with no specific Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Alternating multiplication and division",
+      "anchor": {
+        "section": "Division",
+        "snippet": "movement of the scales can be minimized by alternating divisions and multiplications"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A practical procedural optimization for slide-rule use, not a mathematical statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Aligned numbers form constant ratios",
+      "anchor": {
+        "section": "Solving proportions",
+        "snippet": "pairs of numbers that are aligned on the logarithmic scales form constant ratios"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.log_div",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Constant offset in log positions equals constant ratio follows from Real.log_div, but the proportion statement is not formalized directly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Solving proportions example",
+      "anchor": {
+        "section": "Solving proportions",
+        "snippet": "setting 7.5 on one scale over 10 on the other scale"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A concrete proportion worked example with no specific Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Auxiliary scales",
+      "anchor": {
+        "section": "Other scales",
+        "snippet": "some slide rules have other mathematical functions encoded on other auxiliary scales"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Describes physical engraving of extra function scales, with no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Squaring via D and A scales",
+      "anchor": {
+        "section": "Roots and powers",
+        "snippet": "locate x on the D scale and read its square on the A scale"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.log_pow",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The A-vs-D squaring relation rests on log(x^n)=n*log x (Real.log_pow), but the scale-reading procedure is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Powers via LL scales",
+      "anchor": {
+        "section": "Roots and powers",
+        "snippet": "When several LL scales are present, use the one with x on it"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.log_rpow",
+        "module": "Mathlib.Analysis.SpecialFunctions.Pow.Real",
+        "match_kind": "invocation"
+      },
+      "note": "LL-scale exponentiation depends on log(x^y)=y*log x (Real.log_rpow), but the multi-scale procedure is not a formalized statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cube root extraction",
+      "anchor": {
+        "section": "Roots and powers",
+        "snippet": "To extract a cube root using a slide rule with only C/D and A/B scales"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.log_rpow",
+        "module": "Mathlib.Analysis.SpecialFunctions.Pow.Real",
+        "match_kind": "invocation"
+      },
+      "note": "The cube-root technique relies on logarithm-power scaling (Real.log_rpow), but the manual extraction procedure is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Roots of quadratic equations",
+      "anchor": {
+        "section": "Roots of quadratic equations",
+        "snippet": "Quadratic equations of the form"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "quadratic_eq_zero_iff",
+        "module": "Mathlib.Algebra.QuadraticDiscriminant",
+        "match_kind": "exact"
+      },
+      "note": "The roots of a*x^2+b*x+c=0 are characterized exactly by quadratic_eq_zero_iff via the discriminant.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Future value via LLN scales",
+      "anchor": {
+        "section": "Future value of money",
+        "snippet": "The LLN scales can be used to compute and compare the cost or return on a fixed rate loan or investment"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The compound-interest/future-value finance application is not formalized in Mathlib (only the underlying power function exists).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Trig scales S, T, ST",
+      "anchor": {
+        "section": "Trigonometry",
+        "snippet": "The S, T, and ST scales are used for trig functions and multiples of trig functions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.sin",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "invocation"
+      },
+      "note": "The trig functions themselves (Real.sin, Real.tan) are defined, but the S/T/ST scale encodings are device features, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Computing sines",
+      "anchor": {
+        "section": "Trigonometry",
+        "snippet": "sines are found by comparing the S scale with C (or D) scale"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.sin",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "invocation"
+      },
+      "note": "Real.sin is fully formalized, but the scale-comparison procedure for reading sines is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Computing tangents",
+      "anchor": {
+        "section": "Trigonometry",
+        "snippet": "Tangents are found by comparing the T scale with the C (or D) scale for angles less than 45 degrees"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.tan",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "invocation"
+      },
+      "note": "Real.tan is formalized, but the T-vs-C scale-reading procedure for tangents is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Small-angle approximation",
+      "anchor": {
+        "section": "Trigonometry",
+        "snippet": "For angles below 5.7 degrees, sines, tangents, and radians are approximately equal"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.sin_lt",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has the bounds Real.sin_lt (sin x < x) and Real.lt_tan (x < tan x), but not the informal small-angle 'approximately equal' statement itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Base-10 logarithms via L scale",
+      "anchor": {
+        "section": "Logarithms and exponentials",
+        "snippet": "Base-10 logarithms and exponentials are found using the L scale, which is linear"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.logb",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Base",
+        "match_kind": "special_case"
+      },
+      "note": "Base-10 logarithm is the special case Real.logb 10, but the linear L-scale reading procedure is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Logarithms to any base",
+      "anchor": {
+        "section": "Logarithms and exponentials",
+        "snippet": "Logarithms to any other base can be calculated by reversing the procedure for calculating powers of a number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.logb",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Base",
+        "match_kind": "exact"
+      },
+      "note": "Arbitrary-base logarithm is Real.logb (log x / log b), and its inverse-of-power character is Real.rpow_logb/Real.logb_rpow.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Addition/subtraction via division identity",
+      "anchor": {
+        "section": "Addition and subtraction",
+        "snippet": "Exploits the identity that the quotient of two variables plus (or minus) one times the divisor equals their sum (or difference)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "div_add_one",
+        "module": "Mathlib.Algebra.Field.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The identity (a/b + 1)·b = a + b is div_add_one (a/b+1=(a+b)/b), with the subtractive form div_sub_one.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Addition and subtraction",
+          "snippet": "Exploits the identity that the quotient of two variables plus (or minus) one times the divisor equals their sum (or difference)"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\left({\\frac {x}{y}}+1\\right)y&amp;=x+y\\,{\\text{ (addition)}},\\\\\\left({\\frac {x}{y}}-1\\right)y&amp;=x-y\\,{\\text{ (subtraction)}}.\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Addition/subtraction via linear L scale",
+      "anchor": {
+        "section": "Addition and subtraction",
+        "snippet": "After sliding the cursor right (for addition) or left (for subtraction) and returning the slide to 0, the result can be read"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A purely mechanical cursor-sliding procedure on a linear scale, not a formalized mathematical statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Calculations with monotonic scales",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "Using (almost) any strictly monotonic scales , other calculations can also be made with one movement"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "StrictMono",
+        "module": "Mathlib.Order.Monotone.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The notion of strictly monotonic functions (StrictMono) is formalized, but the slide-rule generalization claim is not a Mathlib theorem.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Generalizations",
+          "snippet": "Using (almost) any strictly monotonic scales , other calculations can also be made with one movement"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {1}{x}}+{\\frac {1}{y}}={\\frac {1}{z}},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Quadratic scales (Pythagorean)",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "quadratic scales can be used to solve"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.sqrt",
+        "module": "Mathlib.Data.Real.Sqrt",
+        "match_kind": "invocation"
+      },
+      "note": "The √(x²±y²) Pythagorean computation uses Real.sqrt, which is formalized, but the quadratic-scale construction itself is not.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Generalizations",
+          "snippet": "quadratic scales can be used to solve"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {1}{x}}+{\\frac {1}{y}}={\\frac {1}{z}},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Reciprocal scales",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "Reciprocal scales can be used for the equality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Although reciprocal/inverse operations exist in Mathlib, the unspecified reciprocal-scale equality is a device feature with no matching formalized statement.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Generalizations",
+          "snippet": "Reciprocal scales can be used for the equality"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {1}{x}}+{\\frac {1}{y}}={\\frac {1}{z}},}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Order of magnitude example",
+      "anchor": {
+        "section": "Comparison to electronic digital calculators",
+        "snippet": "1.5 × 30 (which equals 45) will show the same result as 1 500 000 × 0.03"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An observation that slide rules ignore decimal magnitude (mantissa identity), illustrative rather than a formalized theorem.",
+      "provenance": "ai"
+    }
+  ]
+}

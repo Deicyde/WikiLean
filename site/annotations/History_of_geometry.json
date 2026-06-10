@@ -1,0 +1,425 @@
+{
+  "slug": "History_of_geometry",
+  "wikipedia_title": "History of geometry",
+  "display_title": "History of geometry",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "proposition",
+      "label": "Egyptian approximation for area of a circle",
+      "anchor": {
+        "section": "Egyptian geometry",
+        "snippet": "approximate the area of a circle"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "volume_ball_fin_two",
+        "module": "Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls",
+        "match_kind": null
+      },
+      "note": "The exact area πr² of a 2D ball is formalized (volume_ball_fin_two), but the specific Egyptian approximation (8d/9)² is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Volume of a frustum of a pyramid (Moscow Papyrus)",
+      "anchor": {
+        "section": "Egyptian geometry",
+        "snippet": "the volume of a frustum of a pyramid"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No frustum (truncated pyramid) volume formula V=(h/3)(a²+ab+b²) is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Babylonian area of a circle",
+      "anchor": {
+        "section": "Babylonian geometry",
+        "snippet": "the area as one-twelfth the square of the circumference"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "volume_ball_fin_two",
+        "module": "Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes the exact disc area πr², but not the Babylonian approximation of area as one-twelfth the squared circumference.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Babylonian volume of a cylinder",
+      "anchor": {
+        "section": "Babylonian geometry",
+        "snippet": "The volume of a cylinder was taken as the product of the base and the height"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no geometric 'volume of a cylinder = base × height' result (its 'cylinder' notions are measure-theoretic/homotopical, unrelated).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Babylonian volume of a frustum",
+      "anchor": {
+        "section": "Babylonian geometry",
+        "snippet": "the volume of the frustum of a cone or a square pyramid was incorrectly taken"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No frustum volume formula (correct or the Babylonian incorrect one) appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Primitive Pythagorean triple (13500, 12709, 18541)",
+      "anchor": {
+        "section": "Vedic India geometry",
+        "snippet": "which is a primitive triple"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PythagoreanTriple.isPrimitiveClassified_of_coprime",
+        "module": "Mathlib.NumberTheory.PythagoreanTriples",
+        "match_kind": "special_case"
+      },
+      "note": "The general notion and classification of primitive Pythagorean triples is formalized, of which this specific numeric triple would be an instance, but the example itself is not a declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Three classical construction problems",
+      "anchor": {
+        "section": "Plato",
+        "snippet": "three classic construction problems"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no compass-and-straightedge constructibility theory (its 'constructible' decls concern constructible sets in topology/algebraic geometry), so squaring the circle/doubling the cube/angle trisection are absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euclid's first postulate",
+      "anchor": {
+        "section": "Euclid",
+        "snippet": "Any two points can be joined by a straight line"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "affineSpan",
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib builds analytic, not synthetic axiomatic, geometry; the line through two points exists via affineSpan, but Euclid's postulate is not stated as an axiom.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euclid's second postulate",
+      "anchor": {
+        "section": "Euclid",
+        "snippet": "Any finite straight line can be extended in a straight line"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize Euclid's synthetic axioms; there is no 'segment extension' postulate (lines in affine space are simply unbounded by construction).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euclid's third postulate",
+      "anchor": {
+        "section": "Euclid",
+        "snippet": "A circle can be drawn with any center and any radius"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.Sphere",
+        "module": "Mathlib.Geometry.Euclidean.Sphere.Basic",
+        "match_kind": null
+      },
+      "note": "The Sphere structure bundles an arbitrary center and radius, realizing the postulate's content, but it is not stated as an axiom of synthetic geometry.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euclid's fourth postulate",
+      "anchor": {
+        "section": "Euclid",
+        "snippet": "All right angles are equal to each other"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no synthetic-axiom statement that all right angles are equal (right angles are simply the real number π/2, so the claim is not stated as a postulate).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euclid's parallel postulate",
+      "anchor": {
+        "section": "Euclid",
+        "snippet": "the two lines extended will intersect"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The parallel postulate is not formalized as an axiom/theorem in Mathlib's analytic Euclidean geometry.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Brahmagupta's theorem (cyclic quadrilateral diagonals)",
+      "anchor": {
+        "section": "Classical Indian geometry",
+        "snippet": "the perpendicular line drawn from the point of intersection of the diagonals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib lacks a cyclic-quadrilateral concept (noted explicitly in the Ptolemy file's TODO), so Brahmagupta's diagonal-perpendicular theorem is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Brahmagupta's formula (area of cyclic quadrilateral)",
+      "anchor": {
+        "section": "Classical Indian geometry",
+        "snippet": "The area, A , of a cyclic quadrilateral with sides of lengths"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither Heron's formula nor its Brahmagupta generalization for cyclic quadrilateral area is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Brahmagupta's theorem on rational triangles",
+      "anchor": {
+        "section": "Classical Indian geometry",
+        "snippet": "A triangle with rational sides"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No result on parameterizing triangles with rational sides, area, and diagonals appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Parameshvara's circumradius of a cyclic quadrilateral",
+      "anchor": {
+        "section": "Classical Indian geometry",
+        "snippet": "the radius R of the circumscribed circle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has circumradius for simplices (Simplex.circumradius) but no cyclic-quadrilateral circumradius formula like Parameshvara's.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Mo Jing definition of a point",
+      "anchor": {
+        "section": "Chinese geometry",
+        "snippet": "definition of the geometric point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Points are merely elements of a space in Mathlib; the Mo Jing's notion of an indivisible point is not formalized as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Mo Jing definitions of length comparison and parallels",
+      "anchor": {
+        "section": "Chinese geometry",
+        "snippet": "definitions for the comparison of lengths and for parallels"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineSubspace.Parallel",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Basic",
+        "match_kind": null
+      },
+      "note": "Parallelism of affine subspaces (AffineSubspace.Parallel) and length comparison via dist are formalized, though not as the Mo Jing's definitions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Mo Jing definitions of circumference, diameter, radius",
+      "anchor": {
+        "section": "Chinese geometry",
+        "snippet": "definitions for circumference, diameter, and radius"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.Sphere",
+        "module": "Mathlib.Geometry.Euclidean.Sphere.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib's Sphere has a center and radius field (and Metric.diam gives diameter), capturing radius/diameter concepts but not the Mo Jing definitions verbatim.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Nine Chapters geometrical area and volume formulas",
+      "anchor": {
+        "section": "The Nine Chapters on the Mathematical Art",
+        "snippet": "listed the following geometrical formulas"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "volume_ball_fin_two",
+        "module": "Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls",
+        "match_kind": null
+      },
+      "note": "Some individual formulas (e.g., the disc area πr²) are formalized via volume measures, but the collected list of area/volume formulas is not a single Mathlib result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Pythagorean theorem",
+      "anchor": {
+        "section": "Islamic Golden Age",
+        "snippet": "two different general proofs of the Pythagorean theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.dist_sq_eq_dist_sq_add_dist_sq_iff_angle_eq_pi_div_two",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.RightAngle",
+        "match_kind": "exact"
+      },
+      "note": "The Pythagorean theorem is formalized in both vector and angle-at-point forms (the latter as dist_sq = dist_sq + dist_sq iff the angle is π/2).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Analytic geometry",
+      "anchor": {
+        "section": "The 17th century",
+        "snippet": "geometry with coordinates and equations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "'Analytic geometry' is an entire field rather than a single definition; Mathlib uses coordinate spaces throughout but has no decl defining the discipline.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective geometry",
+      "anchor": {
+        "section": "The 17th century",
+        "snippet": "the study of geometry without measurement"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Projectivization",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib defines projective space (Projectivization) and its subspaces, but 'projective geometry' as a discipline is not a single definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hilbert's axioms",
+      "anchor": {
+        "section": "Introduction of mathematical rigor",
+        "snippet": "now known as Hilbert's axioms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize Hilbert's (or any synthetic) axiom system for geometry.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Regular convex polytopes in higher dimensions (Schläfli)",
+      "anchor": {
+        "section": "Geometry of more than 3 dimensions",
+        "snippet": "there are exactly six such regular convex polytopes in dimension four"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no classification of regular convex polytopes (no notion of regular 4-polytope), so Schläfli's enumeration is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Finite geometry",
+      "anchor": {
+        "section": "The 20th century",
+        "snippet": "the study of spaces with only finitely many points"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Configuration.ProjectivePlane",
+        "module": "Mathlib.Combinatorics.Configuration",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes finite incidence structures such as projective planes (Configuration.ProjectivePlane with an order), an instance of finite geometry, but not 'finite geometry' as a general definition.",
+      "provenance": "ai"
+    }
+  ]
+}

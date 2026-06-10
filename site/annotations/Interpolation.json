@@ -1,0 +1,569 @@
+{
+  "slug": "Interpolation",
+  "wikipedia_title": "Interpolation",
+  "display_title": "Interpolation",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Interpolation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "interpolation is a type of estimation , a method of constructing (finding) new data points"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Lagrange.interpolate",
+        "module": "Mathlib.LinearAlgebra.Lagrange",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has the specific polynomial interpolation construction Lagrange.interpolate but no general definition of the interpolation problem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Function approximation problem",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A closely related problem is the approximation of a complicated function by a simple function."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "polynomialFunctions_closure_eq_top",
+        "module": "Mathlib.Topology.ContinuousMap.Weierstrass",
+        "match_kind": null
+      },
+      "note": "Weierstrass approximation provides density of polynomials in continuous functions, but no general 'function approximation problem' is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Running example points",
+      "anchor": {
+        "section": "Example",
+        "snippet": "As an example we will use points from the equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a concrete numerical data table, not a formalizable mathematical statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Piecewise constant interpolation",
+      "anchor": {
+        "section": "Piecewise constant interpolation",
+        "snippet": "The simplest interpolation method is to locate the nearest data value, and assign the same value."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Nearest-neighbor / piecewise constant interpolation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear interpolation",
+      "anchor": {
+        "section": "Linear interpolation",
+        "snippet": "One of the simplest methods is linear interpolation (sometimes known as lerp)."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineMap.lineMap",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineMap",
+        "match_kind": "generalization"
+      },
+      "note": "AffineMap.lineMap with lineMap_apply_module gives (1-c)•p₀ + c•p₁, i.e. lerp generalized to affine spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Linear interpolation of f(2.5)",
+      "anchor": {
+        "section": "Linear interpolation",
+        "snippet": "Since 2.5 is midway between 2 and 3, it is reasonable to take f (2.5) midway between"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a concrete worked numerical example, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear interpolant formula",
+      "anchor": {
+        "section": "Linear interpolation",
+        "snippet": "Generally, linear interpolation takes two data points, say ( x a , y a ) and ( x b , y b ), and the interpolant is given by:"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineMap.lineMap_apply_ring",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineMap",
+        "match_kind": "generalization"
+      },
+      "note": "lineMap_apply_ring gives c*(b-a)+a, the linear interpolant formula reparametrized by c=(x-xa)/(xb-xa).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equal slopes property",
+      "anchor": {
+        "section": "Linear interpolation",
+        "snippet": "This previous equation states that the slope of the new line between"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The equal-slopes geometric property of linear interpolation is not stated as a lemma in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Linear interpolation error estimate",
+      "anchor": {
+        "section": "Linear interpolation",
+        "snippet": "Then the linear interpolation error is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The second-derivative error bound for linear interpolation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Polynomial interpolation",
+      "anchor": {
+        "section": "Polynomial interpolation",
+        "snippet": "Polynomial interpolation is a generalization of linear interpolation."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Lagrange.interpolate",
+        "module": "Mathlib.LinearAlgebra.Lagrange",
+        "match_kind": "exact"
+      },
+      "note": "Lagrange.interpolate is exactly the polynomial interpolant through given nodes and values.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sixth degree interpolating polynomial",
+      "anchor": {
+        "section": "Polynomial interpolation",
+        "snippet": "The following sixth degree polynomial goes through all the seven points:"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a concrete numerical instance, not a general formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Uniqueness of interpolating polynomial",
+      "anchor": {
+        "section": "Polynomial interpolation",
+        "snippet": "Generally, if we have n data points, there is exactly one polynomial of degree at most n −1 going through all the data points."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Lagrange.eq_interpolate_iff",
+        "module": "Mathlib.LinearAlgebra.Lagrange",
+        "match_kind": "exact"
+      },
+      "note": "Lagrange.eq_interpolate_iff (and funEquivDegreeLT) establishes the interpolant is the unique polynomial of degree < #s matching the data.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Local maxima of interpolant",
+      "anchor": {
+        "section": "Polynomial interpolation",
+        "snippet": "the interpolant above has a local maximum at x ≈ 1.566"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A numerical observation about a specific interpolant, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Spline interpolation",
+      "anchor": {
+        "section": "Spline interpolation",
+        "snippet": "Spline interpolation uses low-degree polynomials in each of the intervals, and chooses the polynomial pieces such that they fit smoothly together."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Spline interpolation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Natural cubic spline",
+      "anchor": {
+        "section": "Spline interpolation",
+        "snippet": "the natural cubic spline is piecewise cubic and twice continuously differentiable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Natural cubic splines are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Natural cubic spline for the table",
+      "anchor": {
+        "section": "Spline interpolation",
+        "snippet": "The natural cubic spline interpolating the points in the table above is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A concrete computed spline for a specific table, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Mimetic interpolation",
+      "anchor": {
+        "section": "Mimetic interpolation",
+        "snippet": "mimetic interpolation evaluates the integral of fields on target lines, areas or volumes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mimetic interpolation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mimetic interpolation preserves vector calculus identities",
+      "anchor": {
+        "section": "Mimetic interpolation",
+        "snippet": "A key feature of mimetic interpolation is that vector calculus identities are satisfied"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This property of mimetic interpolation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Theory of Functional Connections",
+      "anchor": {
+        "section": "Functional interpolation",
+        "snippet": "The Theory of Functional Connections (TFC) is a mathematical framework specifically developed for functional interpolation ."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Theory of Functional Connections is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Interpolant for function approximation",
+      "anchor": {
+        "section": "Function approximation",
+        "snippet": "Interpolation is a common way to approximate functions."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Lagrange.interpolate",
+        "module": "Mathlib.LinearAlgebra.Lagrange",
+        "match_kind": null
+      },
+      "note": "The interpolation construction exists (Lagrange.interpolate), but its use as a function-approximation method with error analysis is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cubic spline error bound",
+      "anchor": {
+        "section": "Function approximation",
+        "snippet": "then cubic spline interpolation has an error bound given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The cubic spline error bound is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Gaussian process interpolation",
+      "anchor": {
+        "section": "Via Gaussian processes",
+        "snippet": "Gaussian process is a powerful non-linear interpolation tool."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gaussian process interpolation (kriging) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inverse Distance Weighting",
+      "anchor": {
+        "section": "Inverse Distance Weighting",
+        "snippet": "Inverse Distance Weighting (IDW) is a spatial interpolation method that estimates values based on nearby data points"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Inverse Distance Weighting is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rational interpolation",
+      "anchor": {
+        "section": "Other forms",
+        "snippet": "rational interpolation is interpolation by rational functions using Padé approximant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither rational interpolation nor Padé approximants are formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Trigonometric interpolation",
+      "anchor": {
+        "section": "Other forms",
+        "snippet": "trigonometric interpolation is interpolation by trigonometric polynomials using Fourier series"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "fourierCoeff",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": null
+      },
+      "note": "Fourier series infrastructure (fourierCoeff) exists, but trigonometric interpolation as a method is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Whittaker–Shannon interpolation formula",
+      "anchor": {
+        "section": "Other forms",
+        "snippet": "The Whittaker–Shannon interpolation formula can be used if the number of data points is infinite"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Whittaker–Shannon (sinc) interpolation formula is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hermite interpolation",
+      "anchor": {
+        "section": "Other forms",
+        "snippet": "This leads to Hermite interpolation problems."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Hermite polynomials but not Hermite interpolation (matching values and derivatives).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Displacement interpolation",
+      "anchor": {
+        "section": "Other forms",
+        "snippet": "This idea leads to the displacement interpolation problem used in transportation theory ."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Displacement interpolation from optimal transport is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multivariate interpolation",
+      "anchor": {
+        "section": "In higher dimensions",
+        "snippet": "Multivariate interpolation is the interpolation of functions of more than one variable."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Multivariate interpolation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Interpolation in digital signal processing",
+      "anchor": {
+        "section": "In digital signal processing",
+        "snippet": "the term interpolation refers to the process of converting a sampled digital signal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Digital signal processing interpolation (upsampling) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Extrapolation",
+      "anchor": {
+        "section": "Related concepts",
+        "snippet": "The term extrapolation is used to find data points outside the range of known data points."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Extrapolation is not formalized as a concept in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Curve fitting",
+      "anchor": {
+        "section": "Related concepts",
+        "snippet": "In curve fitting problems, the constraint that the interpolant has to go exactly through the data points is relaxed."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Curve fitting (e.g. least-squares regression) is not formalized as a definition in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Approximation theory",
+      "anchor": {
+        "section": "Related concepts",
+        "snippet": "Approximation theory studies how to find the best approximation to a given function by another function from some predetermined class"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "polynomialFunctions_closure_eq_top",
+        "module": "Mathlib.Topology.ContinuousMap.Weierstrass",
+        "match_kind": null
+      },
+      "note": "Density/approximation results like Weierstrass exist, but a general 'best approximation' theory is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Interpolation of operators",
+      "anchor": {
+        "section": "Generalization",
+        "snippet": "then the problem is treated as \"interpolation of operators\""
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Interpolation of operators (interpolation spaces) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Classical interpolation of operators theorems",
+      "anchor": {
+        "section": "Generalization",
+        "snippet": "The classical results about interpolation of operators are the Riesz–Thorin theorem and the Marcinkiewicz theorem ."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the Riesz–Thorin nor the Marcinkiewicz interpolation theorem is formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

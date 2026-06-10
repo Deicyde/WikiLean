@@ -1,0 +1,463 @@
+{
+  "slug": "Representation_theory",
+  "wikipedia_title": "Representation theory",
+  "display_title": "Representation theory",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Representation (via action)",
+      "anchor": {
+        "section": "Action",
+        "snippet": "A representation of a group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction",
+        "module": "Mathlib.Algebra.Group.Action.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The action-style definition is `MulAction G V`, which is the standard Mathlib formulation of a group acting on a type.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Action",
+          "snippet": "A representation of a group"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Phi \\colon G\\times V\\to V\\quad {\\text{or}}\\quad \\Phi \\colon A\\times V\\to V}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Representation (via homomorphism)",
+      "anchor": {
+        "section": "Mapping",
+        "snippet": "The second way to define a representation focuses on the map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation",
+        "module": "Mathlib.RepresentationTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Representation k G V` is defined as the monoid hom `G →* (V →ₗ[k] V)`, exactly the homomorphism viewpoint.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Representation space and dimension",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "The vector space V is called the representation space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Rep.V",
+        "module": "Mathlib.RepresentationTheory.Rep.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The underlying module of an object of `Rep k G` is the projection `Rep.V`; its dimension is `Module.finrank k V` (used e.g. in `FDRep.char_one`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Faithful representation",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "An effective or faithful representation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FaithfulSMul",
+        "module": "Mathlib.Algebra.Group.Action.Faithful",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has `FaithfulSMul` for actions, but there is no dedicated `Representation.IsFaithful` predicate spelling out injectivity of `ρ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivariant map",
+      "anchor": {
+        "section": "Equivariant maps and isomorphisms",
+        "snippet": "then an equivariant map from"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation.IntertwiningMap",
+        "module": "Mathlib.RepresentationTheory.Intertwining",
+        "match_kind": "exact"
+      },
+      "note": "`IntertwiningMap ρ σ` bundles a linear map commuting with the group action, i.e. an equivariant/`G`-linear map.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Equivariant maps and isomorphisms",
+          "snippet": "then an equivariant map from"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\alpha (g\\cdot v)=g\\cdot \\alpha (v)}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\alpha \\circ \\varphi (g)=\\psi (g)\\circ \\alpha }"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Isomorphism of representations",
+      "anchor": {
+        "section": "Equivariant maps and isomorphisms",
+        "snippet": "are isomorphic representations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation.Equiv",
+        "module": "Mathlib.RepresentationTheory.Intertwining",
+        "match_kind": "exact"
+      },
+      "note": "`Representation.Equiv ρ σ` is a linear equivalence that is also an intertwining map, i.e. an isomorphism of representations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Subrepresentation",
+      "anchor": {
+        "section": "Subrepresentations, quotients, and irreducible representations",
+        "snippet": "is called a subrepresentation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subrepresentation",
+        "module": "Mathlib.RepresentationTheory.Subrepresentation",
+        "match_kind": "exact"
+      },
+      "note": "`Subrepresentation ρ` is a `Submodule` of `V` stable under every `ρ g`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Subrepresentations, quotients, and irreducible representations",
+          "snippet": "is called a subrepresentation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\phi :G\\to {\\text{Aut}}(W)}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Irreducible and reducible representation",
+      "anchor": {
+        "section": "Subrepresentations, quotients, and irreducible representations",
+        "snippet": "the representation is said to be irreducible"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation.IsIrreducible",
+        "module": "Mathlib.RepresentationTheory.Irreducible",
+        "match_kind": "exact"
+      },
+      "note": "`Representation.IsIrreducible ρ` is `IsSimpleOrder (Subrepresentation ρ)`, the standard formalization of irreducibility.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Subrepresentations, quotients, and irreducible representations",
+          "snippet": "the representation is said to be irreducible"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\phi :G\\to {\\text{Aut}}(W)}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Schur's lemma",
+      "anchor": {
+        "section": "Subrepresentations, quotients, and irreducible representations",
+        "snippet": "The definition of an irreducible representation implies Schur's lemma"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FDRep.finrank_hom_simple_simple",
+        "module": "Mathlib.RepresentationTheory.FDRep",
+        "match_kind": "exact"
+      },
+      "note": "Schur's lemma appears as `FDRep.finrank_hom_simple_simple` and `IsIrreducible.bijective_or_eq_zero` in `Mathlib.RepresentationTheory.Irreducible`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Subrepresentations, quotients, and irreducible representations",
+          "snippet": "The definition of an irreducible representation implies Schur's lemma"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\alpha :(V,\\psi )\\to (V',\\psi ')}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Direct sum of representations",
+      "anchor": {
+        "section": "Direct sums and indecomposable representations",
+        "snippet": "the direct sum of V and W is a representation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation.directSum",
+        "module": "Mathlib.RepresentationTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Representation.directSum` builds a representation on `⨁ i, V i` from a family of representations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Decomposable and indecomposable representation",
+      "anchor": {
+        "section": "Direct sums and indecomposable representations",
+        "snippet": "Otherwise, it is said to be indecomposable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Indecomposable` predicate for representations exists in `Mathlib/RepresentationTheory`; the only `Indecomposable` files concern categories and monoids.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Semisimple representation",
+      "anchor": {
+        "section": "Complete reducibility",
+        "snippet": "such representations are said to be semisimple"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation.IsSemisimpleRepresentation",
+        "module": "Mathlib.RepresentationTheory.Semisimple",
+        "match_kind": "exact"
+      },
+      "note": "`Representation.IsSemisimpleRepresentation ρ` is defined and shown equivalent to `IsSemisimpleModule k[G] ρ.asModule`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tensor product of representations",
+      "anchor": {
+        "section": "Tensor products of representations",
+        "snippet": "Then we can form a representation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation.tprod",
+        "module": "Mathlib.RepresentationTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Representation.tprod ρV ρW` is the representation on `V ⊗[k] W` via `TensorProduct.map (ρV g) (ρW g)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Clebsch–Gordan decomposition for SU(2)",
+      "anchor": {
+        "section": "Tensor products of representations",
+        "snippet": "In the case of the representation theory of the group SU(2)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Clebsch–Gordan decomposition or SU(2) representation theory appears anywhere under `Mathlib/`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Maschke's theorem",
+      "anchor": {
+        "section": "Finite groups",
+        "snippet": "This is a consequence of Maschke's theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MonoidAlgebra.Submodule.exists_isCompl",
+        "module": "Mathlib.RepresentationTheory.Maschke",
+        "match_kind": "exact"
+      },
+      "note": "Maschke's theorem is `MonoidAlgebra.Submodule.exists_isCompl` with the immediate instance `IsSemisimpleModule k[G] V` in `Mathlib.RepresentationTheory.Maschke`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Character of a representation",
+      "anchor": {
+        "section": "Finite groups",
+        "snippet": "the character of a representation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FDRep.character",
+        "module": "Mathlib.RepresentationTheory.Character",
+        "match_kind": "exact"
+      },
+      "note": "`FDRep.character V g = trace (ρ V g)` and `Representation.character` give the character of a finite-dimensional representation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Modular representation",
+      "anchor": {
+        "section": "Modular representations",
+        "snippet": "Modular representations of a finite group G are representations over a field"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Representation",
+        "module": "Mathlib.RepresentationTheory.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `Representation k G V` covers any field `k` including positive characteristic, but there is no dedicated `ModularRepresentation` notion or modular-representation-specific theory.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unitary representation",
+      "anchor": {
+        "section": "Unitary representations",
+        "snippet": "A unitary representation of a group G is a linear representation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `UnitaryRepresentation` (or analogous Hilbert-space representation) is defined in `Mathlib/RepresentationTheory`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lie group",
+      "anchor": {
+        "section": "Lie groups",
+        "snippet": "A Lie group is a group that is also a smooth manifold"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieGroup",
+        "module": "Mathlib.Geometry.Manifold.Algebra.LieGroup",
+        "match_kind": "exact"
+      },
+      "note": "`LieGroup I n G` requires a group structure on a manifold with `C^n` multiplication and inversion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lie algebra",
+      "anchor": {
+        "section": "Lie algebras",
+        "snippet": "A Lie algebra over a field F is a vector space over F equipped with a skew-symmetric bilinear operation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieAlgebra",
+        "module": "Mathlib.Algebra.Lie.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`LieAlgebra R L` is the standard typeclass extending `LieRing L` with `Module R L` compatibility.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lie superalgebra",
+      "anchor": {
+        "section": "Lie superalgebras",
+        "snippet": "Lie superalgebras are generalizations of Lie algebras"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `LieSuper`/`SuperLie` under `Mathlib/` returns no results; Lie superalgebras are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear algebraic group",
+      "anchor": {
+        "section": "Linear algebraic groups",
+        "snippet": "Linear algebraic groups (or more generally, affine group schemes ) are analogues"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `LinearAlgebraicGroup` or `AffineGroupScheme` declaration exists in `Mathlib/`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Automorphic form",
+      "anchor": {
+        "section": "Automorphic forms and number theory",
+        "snippet": "Automorphic forms are a generalization of modular forms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep finds no `AutomorphicForm`/`automorphic` notion in Mathlib (modular forms exist, but automorphic forms do not).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Set-theoretic representation",
+      "anchor": {
+        "section": "Set-theoretic representations",
+        "snippet": "A set-theoretic representation (also known as a group action or permutation representation )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction",
+        "module": "Mathlib.Algebra.Group.Action.Defs",
+        "match_kind": "exact"
+      },
+      "note": "A set-theoretic / permutation representation is exactly a `MulAction G X` in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Representation of a group in a category",
+      "anchor": {
+        "section": "Representations in other categories",
+        "snippet": "a representation of G in C is a functor from G to C"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Action",
+        "module": "Mathlib.CategoryTheory.Action.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Action V G` bundles an object of `V` with `ρ : G →* Aut(V)`, equivalent to the functor `SingleObj G ⥤ V` as documented in the file header.",
+      "provenance": "ai"
+    }
+  ]
+}

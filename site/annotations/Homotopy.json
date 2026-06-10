@@ -1,0 +1,713 @@
+{
+  "slug": "Homotopy",
+  "wikipedia_title": "Homotopy",
+  "display_title": "Homotopy",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Homotopic functions",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "two continuous functions from one topological space to another are called homotopic"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.Homotopic",
+        "module": "Mathlib.Topology.Homotopy.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ContinuousMap.Homotopic f₀ f₁` is defined as `Nonempty (ContinuousMap.Homotopy f₀ f₁)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homotopy (formal)",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "Formally, a homotopy between two continuous functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.Homotopy",
+        "module": "Mathlib.Topology.Homotopy.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ContinuousMap.Homotopy f₀ f₁` is a continuous map `I × X → Y` agreeing with `f₀` at 0 and `f₁` at 1.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homotopy as family of maps",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "An alternative notation is to say that a homotopy between two continuous functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.Homotopy.curry",
+        "module": "Mathlib.Topology.Homotopy.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Homotopy.curry` realises a homotopy as a continuous map `C(I, C(X, Y))`, the family-of-maps viewpoint.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Torus to coffee mug homotopy",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "The animation that is looped above right provides an example of a homotopy between two embeddings"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of this specific torus/mug ambient isotopy was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Homotopy is an equivalence relation",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Being homotopic is an equivalence relation on the set of all continuous functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.Homotopic.equivalence",
+        "module": "Mathlib.Topology.Homotopy.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Homotopic.equivalence` packages reflexivity, symmetry and transitivity into an `Equivalence`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compatibility with composition",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "This homotopy relation is compatible with function composition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.Homotopic.comp",
+        "module": "Mathlib.Topology.Homotopy.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Homotopic.comp` shows that homotopic pairs compose to homotopic composites.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Simple homotopy between two maps",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is a homotopy between them"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The article's bespoke worked example was not found as a named example in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Linear (straight-line) homotopy",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "then there is a linear homotopy"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.Homotopy.affine",
+        "module": "Mathlib.Topology.Homotopy.Affine",
+        "match_kind": "exact"
+      },
+      "note": "`Homotopy.affine f g` constructs the straight-line homotopy `(t, x) ↦ AffineMap.lineMap (f x) (g x) t`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Identity to constant on n-disk",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "be the identity function on the unit"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Convex.contractibleSpace",
+        "module": "Mathlib.Analysis.Convex.Contractible",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves any convex set (so the closed unit disk) is contractible, which implies the disk's identity is homotopic to a constant, but the specific n-disk example is not isolated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homotopy equivalence",
+      "anchor": {
+        "section": "Homotopy equivalence",
+        "snippet": "a homotopy equivalence between X and Y is a pair of continuous maps"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.HomotopyEquiv",
+        "module": "Mathlib.Topology.Homotopy.Equiv",
+        "match_kind": "exact"
+      },
+      "note": "`ContinuousMap.HomotopyEquiv X Y` records maps `f, g` with `g ∘ f` and `f ∘ g` homotopic to identities.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Contractible space",
+      "anchor": {
+        "section": "Homotopy equivalence",
+        "snippet": "Spaces that are homotopy equivalent to a point are called contractible"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContractibleSpace",
+        "module": "Mathlib.Topology.Homotopy.Contractible",
+        "match_kind": "exact"
+      },
+      "note": "`ContractibleSpace X` is defined as `Nonempty (X ≃ₕ Unit)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Homeomorphism implies homotopy equivalence",
+      "anchor": {
+        "section": "Homotopy equivalence vs. homeomorphism",
+        "snippet": "A homeomorphism is a special case of a homotopy equivalence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Homeomorph.toHomotopyEquiv",
+        "module": "Mathlib.Topology.Homotopy.Equiv",
+        "match_kind": "exact"
+      },
+      "note": "`Homeomorph.toHomotopyEquiv` upgrades any homeomorphism to a homotopy equivalence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Disk homotopy equivalent to point",
+      "anchor": {
+        "section": "Homotopy equivalence vs. homeomorphism",
+        "snippet": "A solid disk is homotopy equivalent to a single point"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Convex.contractibleSpace",
+        "module": "Mathlib.Analysis.Convex.Contractible",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib shows any (nonempty) convex set is contractible, giving the disk case as an instance, but no specific 'solid disk ≃ point' statement is recorded.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Möbius strip and untwisted strip",
+      "anchor": {
+        "section": "Homotopy equivalence vs. homeomorphism",
+        "snippet": "The Möbius strip and an untwisted (closed) strip are homotopy equivalent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Möbius-strip homotopy-equivalence result was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Euclidean space contractible to point",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "The first example of a homotopy equivalence is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RealTopologicalVectorSpace.contractibleSpace",
+        "module": "Mathlib.Analysis.Convex.Contractible",
+        "match_kind": "generalization"
+      },
+      "note": "Every real topological vector space (in particular ℝⁿ) is contractible via this instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Homotopy equivalence for 1-sphere",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "There is a homotopy equivalence between"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement that, e.g., the punctured plane is homotopy equivalent to S¹ was located.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fiber bundle with contractible fiber",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "Any fiber bundle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No result that a fiber bundle with contractible fiber is a homotopy equivalence was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vector bundles are fiber bundles",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "Every vector bundle is a fiber bundle with a fiber homotopy equivalent to a point"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "VectorBundle",
+        "module": "Mathlib.Topology.VectorBundle.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib defines `VectorBundle` extending the fiber-bundle structure, but does not record the homotopy-theoretic fact that its fiber (a real vector space) is contractible as part of the bundle theory.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Contractible subcomplex quotient",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "If a subcomplex"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No CW-complex statement about quotienting by a contractible subcomplex was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Deformation retraction is homotopy equivalence",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "A deformation retraction is a homotopy equivalence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of deformation retract; a grep for `DeformationRetract` returns nothing.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Null-homotopic",
+      "anchor": {
+        "section": "Null-homotopy",
+        "snippet": "is said to be null-homotopic if it is homotopic to a constant function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.Nullhomotopic",
+        "module": "Mathlib.Topology.Homotopy.Contractible",
+        "match_kind": "exact"
+      },
+      "note": "`Nullhomotopic f` is defined as the existence of `y` with `f` homotopic to the constant map at `y`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Null-homotopic circle maps extend to disk",
+      "anchor": {
+        "section": "Null-homotopy",
+        "snippet": "is null-homotopic precisely when it can be continuously extended"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The 'null-homotopic ↔ extends to the disk' characterisation was not found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Contractibility via null-homotopic identity",
+      "anchor": {
+        "section": "Null-homotopy",
+        "snippet": "is contractible if and only if the identity map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "contractible_iff_id_nullhomotopic",
+        "module": "Mathlib.Topology.Homotopy.Contractible",
+        "match_kind": "exact"
+      },
+      "note": "`contractible_iff_id_nullhomotopic` states `ContractibleSpace X ↔ (id : X → X).Nullhomotopic`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Homotopy invariants of equivalent spaces",
+      "anchor": {
+        "section": "Invariance",
+        "snippet": "if X and Y are homotopy equivalent spaces, then"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousMap.HomotopyEquiv.simplyConnectedSpace",
+        "module": "Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib transports specific invariants (e.g. simple connectedness) across `≃ₕ`, but does not state a general 'homotopy invariants agree' meta-theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Compactly supported homology is not invariant",
+      "anchor": {
+        "section": "Invariance",
+        "snippet": "An example of an algebraic invariant of topological spaces which is not homotopy invariant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Compactly supported homology and this counterexample are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homotopy relative to a subspace",
+      "anchor": {
+        "section": "Relative homotopy",
+        "snippet": "we say that f and g are homotopic relative to K"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.HomotopicRel",
+        "module": "Mathlib.Topology.Homotopy.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`HomotopyRel`/`HomotopicRel f₀ f₁ S` define homotopies that are stationary on `S`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Strong deformation retract",
+      "anchor": {
+        "section": "Relative homotopy",
+        "snippet": "this is known as a strong deformation retract"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no `(Strong)DeformationRetract` definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pointed homotopy",
+      "anchor": {
+        "section": "Relative homotopy",
+        "snippet": "When K is a point, the term pointed homotopy is used"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousMap.HomotopicRel",
+        "module": "Mathlib.Topology.Homotopy.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Pointed homotopies arise as `HomotopicRel _ _ {x₀}`, but Mathlib does not introduce a dedicated 'pointed homotopy' abbreviation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isotopy",
+      "anchor": {
+        "section": "Isotopy",
+        "snippet": "This gives rise to the concept of isotopy"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Isotopy` (homotopy through embeddings/homeomorphisms) is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Reflection is homotopic but not isotopic to identity",
+      "anchor": {
+        "section": "Isotopy",
+        "snippet": "the map from the interval [−1, 1] into the real numbers defined by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without an `Isotopy` notion in Mathlib this counterexample is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Alexander's trick",
+      "anchor": {
+        "section": "Isotopy",
+        "snippet": "Two homeomorphisms (which are special cases of embeddings) of the unit ball which agree on the boundary can be shown to be isotopic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Alexander's trick is not formalized; no relevant declaration was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Knot equivalence via ambient isotopy",
+      "anchor": {
+        "section": "Isotopy",
+        "snippet": "Knots K 1 and K 2 are considered equivalent when there is a continuous"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Knot theory and ambient isotopy of knots are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Smooth isotopy",
+      "anchor": {
+        "section": "Isotopy",
+        "snippet": "a path between two smooth embeddings is a smooth isotopy"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of smooth isotopy of embeddings.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Timelike homotopy",
+      "anchor": {
+        "section": "Timelike homotopy",
+        "snippet": "A timelike homotopy between two timelike curves is a homotopy such that the curve remains timelike"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lorentzian geometry and timelike homotopies are not part of Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "CTCs not null timelike homotopic",
+      "anchor": {
+        "section": "Timelike homotopy",
+        "snippet": "No closed timelike curve (CTC) on a Lorentzian manifold is timelike homotopic to a point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No CTC / Lorentzian-manifold theory in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Homotopy lifting property",
+      "anchor": {
+        "section": "Lifting and extension properties",
+        "snippet": "then we can lift all"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsCoveringMap.liftHomotopy",
+        "module": "Mathlib.Topology.Homotopy.Lifting",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves the homotopy-lifting property for covering maps via `IsCoveringMap.liftHomotopy`, but does not introduce a general `HomotopyLiftingProperty`/fibration notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homotopy extension property",
+      "anchor": {
+        "section": "Lifting and extension properties",
+        "snippet": "Another useful property involving homotopy is the homotopy extension property"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `HomotopyExtensionProperty`/cofibration definition is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homotopy groups",
+      "anchor": {
+        "section": "Groups",
+        "snippet": "These groups are called the homotopy groups"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HomotopyGroup",
+        "module": "Mathlib.Topology.Homotopy.HomotopyGroup",
+        "match_kind": "exact"
+      },
+      "note": "`HomotopyGroup N X x` (with the `π_ n` abbreviation) is defined as the quotient of generalised loops by homotopy.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fundamental group",
+      "anchor": {
+        "section": "Groups",
+        "snippet": "it is also called the fundamental group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FundamentalGroup",
+        "module": "Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup",
+        "match_kind": "exact"
+      },
+      "note": "`FundamentalGroup X x` is defined as `End (FundamentalGroupoid.mk x)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homotopy category",
+      "anchor": {
+        "section": "Homotopy category",
+        "snippet": "The homotopy category is the category whose objects are topological spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `HomotopyCategory` for chain complexes but not the topological homotopy category hTop.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Isomorphism in homotopy category",
+      "anchor": {
+        "section": "Homotopy category",
+        "snippet": "Two topological spaces X and Y are isomorphic in this category if and only if they are homotopy equivalent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a topological homotopy category in Mathlib, this characterisation is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Homology as functorial homotopy invariant",
+      "anchor": {
+        "section": "Homotopy category",
+        "snippet": "homology groups are a functorial homotopy invariant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Singular homology as a functor on the topological homotopy category is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Eilenberg–MacLane representability",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "of based homotopy classes of based maps from X to the Eilenberg–MacLane space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Eilenberg–MacLane spaces and the representability of cohomology by them are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hopf–Whitney theorem",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "homotopy classes between a CW complex and a multiply connected space can be calculated using cohomology as described by the Hopf–Whitney theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hopf–Whitney theorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

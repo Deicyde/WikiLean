@@ -1,0 +1,1241 @@
+{
+  "slug": "Connected_space",
+  "wikipedia_title": "Connected space",
+  "display_title": "Connected space",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Connected space",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a connected space is a topological space that cannot be represented as the union of two or more disjoint non-empty open subsets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ConnectedSpace",
+        "module": "Mathlib.Topology.Connected.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ConnectedSpace` is defined as a nonempty `PreconnectedSpace`, matching the article's definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Connected subset",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A subset of a topological space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsConnected",
+        "module": "Mathlib.Topology.Connected.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsConnected s` formalizes a connected subset as a nonempty preconnected subset.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Disconnected / connected space",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is said to be disconnected if it is the union of two disjoint non-empty open sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ConnectedSpace",
+        "module": "Mathlib.Topology.Connected.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Connected/disconnected dichotomy is encoded via `ConnectedSpace`/`PreconnectedSpace` and `IsPreconnected`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Connectedness equivalence relation",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Connectedness defines an equivalence relation in the following sense"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "connectedComponentSetoid",
+        "module": "Mathlib.Topology.Connected.Clopen",
+        "match_kind": "exact"
+      },
+      "note": "`connectedComponentSetoid` is the equivalence relation \"belongs to the same connected component\".",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalent conditions for connectedness",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Proposition"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "isPreconnected_iff_subset_of_disjoint",
+        "module": "Mathlib.Topology.Connected.Clopen",
+        "match_kind": "generalization"
+      },
+      "note": "Several characterizations exist (`isPreconnected_iff_subset_of_disjoint`, clopen forms, `preconnectedSpace_iff_clopen`), but not collected as one bundled proposition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Union of connected sets containing a common point is connected",
+      "anchor": {
+        "section": "Connected components",
+        "snippet": "the union of any collection of connected subsets such that each contains"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isPreconnected_sUnion",
+        "module": "Mathlib.Topology.Connected.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`isPreconnected_sUnion` shows a family of preconnected sets sharing a common point has preconnected union.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Connected component of a point",
+      "anchor": {
+        "section": "Connected components",
+        "snippet": "The connected component of a point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "connectedComponent",
+        "module": "Mathlib.Topology.Connected.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`connectedComponent x` is the union of all preconnected sets containing `x`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Connected components of a space",
+      "anchor": {
+        "section": "Connected components",
+        "snippet": "The maximal connected subsets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ConnectedComponents",
+        "module": "Mathlib.Topology.Connected.Clopen",
+        "match_kind": "exact"
+      },
+      "note": "`ConnectedComponents α` is the quotient by `connectedComponentSetoid`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Components form a partition",
+      "anchor": {
+        "section": "Connected components",
+        "snippet": "The components of a topological space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "connectedComponent_disjoint",
+        "module": "Mathlib.Topology.Connected.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Disjointness of distinct components and covering by `mem_connectedComponent` give the partition; expressed as the quotient `ConnectedComponents`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every component is closed",
+      "anchor": {
+        "section": "Connected components",
+        "snippet": "Every component is a closed subset of the original space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isClosed_connectedComponent",
+        "module": "Mathlib.Topology.Connected.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`isClosed_connectedComponent` proves `IsClosed (connectedComponent x)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Components of the rationals are singletons",
+      "anchor": {
+        "section": "Connected components",
+        "snippet": "the connected components of the set of the rational numbers are the one-point sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Rat.instTotallyDisconnectedSpace",
+        "module": "Mathlib.Topology.Instances.RatLemmas",
+        "match_kind": "exact"
+      },
+      "note": "`ℚ` is shown to be a `TotallyDisconnectedSpace`, i.e. all components are singletons.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quasi-component contains component",
+      "anchor": {
+        "section": "Connected components",
+        "snippet": "be the intersection of all clopen sets containing"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "connectedComponent_subset_iInter_isClopen",
+        "module": "Mathlib.Topology.Connected.Clopen",
+        "match_kind": "exact"
+      },
+      "note": "The connected component is contained in the intersection of all clopen neighborhoods (the quasi-component).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Totally disconnected space",
+      "anchor": {
+        "section": "Disconnected spaces",
+        "snippet": "A space in which all components are one-point sets is called totally disconnected"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TotallyDisconnectedSpace",
+        "module": "Mathlib.Topology.Connected.TotallyDisconnected",
+        "match_kind": "exact"
+      },
+      "note": "`TotallyDisconnectedSpace` matches the Wikipedia definition (only singletons are preconnected).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Totally separated space",
+      "anchor": {
+        "section": "Disconnected spaces",
+        "snippet": "is called totally separated if, for any two distinct elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TotallySeparatedSpace",
+        "module": "Mathlib.Topology.Connected.TotallyDisconnected",
+        "match_kind": "exact"
+      },
+      "note": "`TotallySeparatedSpace` is defined via `IsTotallySeparated` on the universe.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Totally separated implies totally disconnected",
+      "anchor": {
+        "section": "Disconnected spaces",
+        "snippet": "Clearly, any totally separated space is totally disconnected, but the converse does not hold"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TotallySeparatedSpace.totallyDisconnectedSpace",
+        "module": "Mathlib.Topology.Connected.TotallyDisconnected",
+        "match_kind": "exact"
+      },
+      "note": "Instance promoting `TotallySeparatedSpace` to `TotallyDisconnectedSpace`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Two copies of rationals glued away from zero",
+      "anchor": {
+        "section": "Disconnected spaces",
+        "snippet": "take two copies of the rational numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No grep hits for this particular gluing construction in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Closed interval is connected",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The closed interval"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isConnected_Icc",
+        "module": "Mathlib.Topology.Order.IntermediateValue",
+        "match_kind": "exact"
+      },
+      "note": "`isConnected_Icc` (and `isPreconnected_Icc`) prove `Icc a b` is connected.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Union of two disjoint open intervals is disconnected",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The union of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not stated as a standalone example/lemma in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Indiscrete topology is connected",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "with the indiscrete topology is connected"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific `ConnectedSpace` instance for the indiscrete (top) topology found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Subspace not connected",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The subspace"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific subspace example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Convex subset of Euclidean space is connected",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "A convex subset of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Convex.isConnected",
+        "module": "Mathlib.Analysis.Convex.PathConnected",
+        "match_kind": "exact"
+      },
+      "note": "`Convex.isConnected` shows any nonempty convex set in a real TVS is connected.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Euclidean plane minus origin",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "A Euclidean plane excluding the origin"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isPathConnected_compl_singleton_of_one_lt_rank",
+        "module": "Mathlib.Analysis.Normed.Module.Connected",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves that in a real normed space of rank > 1 the complement of any point is path connected, generalizing the plane-minus-origin example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Plane with a line removed",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "A Euclidean plane with a straight line removed is not connected"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific lemma about plane-minus-line being disconnected found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Real line is connected",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the space of real numbers with the usual topology, is connected"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.instPathConnectedSpace",
+        "module": "Mathlib.Topology.Connected.PathConnected",
+        "match_kind": "exact"
+      },
+      "note": "`Real.instPathConnectedSpace` plus the `PathConnectedSpace.connectedSpace` instance give connectedness of `ℝ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sorgenfrey line is disconnected",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The Sorgenfrey line is disconnected"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Sorgenfrey line is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Removing points from Euclidean space",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "If even a single point is removed from"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isPathConnected_compl_singleton_of_one_lt_rank",
+        "module": "Mathlib.Analysis.Normed.Module.Connected",
+        "match_kind": "generalization"
+      },
+      "note": "In normed spaces of rank > 1, removing a point still leaves a path-connected (hence connected) space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Topological vector space is simply connected",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Any topological vector space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsTopologicalAddGroup.pathConnectedSpace",
+        "module": "Mathlib.Analysis.Convex.PathConnected",
+        "match_kind": "special_case"
+      },
+      "note": "Path-connectedness of a TVS is formalized; simple connectedness of a generic TVS is not given as a single instance though contractibility of star-shaped/convex sets is.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Discrete space with two elements is disconnected",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Every discrete topological space with at least two elements is disconnected"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TotallySeparatedSpace.of_discrete",
+        "module": "Mathlib.Topology.Connected.TotallyDisconnected",
+        "match_kind": "generalization"
+      },
+      "note": "Discrete spaces are totally separated; the specific \"nontrivial discrete is disconnected\" statement isn't isolated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Spectrum of discrete valuation ring",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the spectrum of a discrete valuation ring consists of two points and is connected"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific lemma about Spec of a DVR being a connected two-point space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cantor set is totally disconnected",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The Cantor set is totally disconnected"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`Mathlib.Topology.Instances.CantorSet` proves compactness/closedness but not total disconnectedness.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Homotopy equivalence preserves connectedness",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is homotopy equivalent to a connected space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousMap.HomotopyEquiv.simplyConnectedSpace_iff",
+        "module": "Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected",
+        "match_kind": "special_case"
+      },
+      "note": "Homotopy equivalence preservation is proved for simple connectedness, but a direct version for plain connectedness isn't stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Topologist's sine curve",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The topologist's sine curve is an example of a set that is connected but is neither path connected nor locally connected"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Topologist's sine curve is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "General linear group components",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The general linear group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement on connected components of `GL_n` found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalent conditions for connected spectrum",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The spectra of commutative local ring and integral domains are connected"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific lemma about connectedness of `Spec` of local rings / integral domains found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Plane with infinite line deleted",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "An example of a space that is not connected is a plane with an infinite line deleted from it"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized as a worked example in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Path in a topological space",
+      "anchor": {
+        "section": "Path connectedness",
+        "snippet": "A path from a point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Path",
+        "module": "Mathlib.Topology.Path",
+        "match_kind": "exact"
+      },
+      "note": "`Path x y` is a structure extending `C(I, X)` with endpoints `x` and `y`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Path-component and path-connected space",
+      "anchor": {
+        "section": "Path connectedness",
+        "snippet": "A path-component of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PathConnectedSpace",
+        "module": "Mathlib.Topology.Connected.PathConnected",
+        "match_kind": "exact"
+      },
+      "note": "`pathComponent` and `PathConnectedSpace` define path-components and path-connected spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Path-component is maximal path-connected subset",
+      "anchor": {
+        "section": "Path connectedness",
+        "snippet": "Equivalently, a path-component of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsPathConnected.subset_pathComponent",
+        "module": "Mathlib.Topology.Connected.PathConnected",
+        "match_kind": "exact"
+      },
+      "note": "`IsPathConnected.subset_pathComponent` together with `isPathConnected_pathComponent` give maximality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Path-connected implies connected",
+      "anchor": {
+        "section": "Path connectedness",
+        "snippet": "Every path-connected space is connected"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PathConnectedSpace.connectedSpace",
+        "module": "Mathlib.Topology.Connected.PathConnected",
+        "match_kind": "exact"
+      },
+      "note": "`PathConnectedSpace.connectedSpace` is a (priority 100) instance from path-connected to connected.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Connected subsets of real line are intervals",
+      "anchor": {
+        "section": "Path connectedness",
+        "snippet": "Subsets of the real line"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isPreconnected_iff_ordConnected",
+        "module": "Mathlib.Topology.Order.IntermediateValue",
+        "match_kind": "exact"
+      },
+      "note": "`isPreconnected_iff_ordConnected` characterizes preconnected subsets of a conditionally complete linear order as the order-connected (interval) sets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Arc-connected space",
+      "anchor": {
+        "section": "Arc connectedness",
+        "snippet": "is said to be arc-connected or arcwise connected if any two topologically distinguishable points can be joined by an arc"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Arc-connectedness (joining by an embedded arc) is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Arc-component",
+      "anchor": {
+        "section": "Arc connectedness",
+        "snippet": "An arc-component of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No arc-component definition in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hausdorff path-connected implies arc-connected",
+      "anchor": {
+        "section": "Arc connectedness",
+        "snippet": "Every Hausdorff space that is path-connected is also arc-connected"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized since arc-connectedness is absent in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Line with two origins is path-connected but not arc-connected",
+      "anchor": {
+        "section": "Arc connectedness",
+        "snippet": "An example of a space which is path-connected but not arc-connected is given by the line with two origins"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Line with two origins is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Locally connected at a point",
+      "anchor": {
+        "section": "Local connectedness",
+        "snippet": "is said to be locally connected at a point"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LocallyConnectedSpace",
+        "module": "Mathlib.Topology.Connected.LocallyConnected",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the global notion `LocallyConnectedSpace`; pointwise local connectedness isn't a separate definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Characterization of locally connected",
+      "anchor": {
+        "section": "Local connectedness",
+        "snippet": "if and only if every component of every open set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "locallyConnectedSpace_iff_connectedComponentIn_open",
+        "module": "Mathlib.Topology.Connected.LocallyConnected",
+        "match_kind": "exact"
+      },
+      "note": "`locallyConnectedSpace_iff_connectedComponentIn_open` characterizes local connectedness via components of open sets being open.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Locally path-connected",
+      "anchor": {
+        "section": "Local connectedness",
+        "snippet": "is said to be locally path-connected if it has a base of path-connected sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LocPathConnectedSpace",
+        "module": "Mathlib.Topology.Connected.LocPathConnected",
+        "match_kind": "exact"
+      },
+      "note": "`LocPathConnectedSpace` defines locally path-connected spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Open subset of locally path-connected: connected iff path-connected",
+      "anchor": {
+        "section": "Local connectedness",
+        "snippet": "An open subset of a locally path-connected space is connected if and only if it is path-connected"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsOpen.isConnected_iff_isPathConnected",
+        "module": "Mathlib.Topology.Connected.LocPathConnected",
+        "match_kind": "exact"
+      },
+      "note": "`IsOpen.isConnected_iff_isPathConnected` is the exact statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Locally connected but not connected",
+      "anchor": {
+        "section": "Local connectedness",
+        "snippet": "A simple example of a locally connected (and locally path-connected) space that is not connected"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated example formalizing this counterexample.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Topologist's sine curve not locally connected",
+      "anchor": {
+        "section": "Local connectedness",
+        "snippet": "A classic example of a connected space that is not locally connected is the so-called topologist's sine curve"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Topologist's sine curve is absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Intersection of connected sets need not be connected",
+      "anchor": {
+        "section": "Set operations",
+        "snippet": "The intersection of connected sets is not necessarily connected"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a non-implication/counterexample remark not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Union of connected sets need not be connected",
+      "anchor": {
+        "section": "Set operations",
+        "snippet": "The union of connected sets is not necessarily connected"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Counterexample-style statement not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conditions under which union of connected sets is connected",
+      "anchor": {
+        "section": "Set operations",
+        "snippet": "This means that, if the union"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsPreconnected.union",
+        "module": "Mathlib.Topology.Connected.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsPreconnected.union`/`IsConnected.union` give the union-with-common-point case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Set difference and connectedness",
+      "anchor": {
+        "section": "Set operations",
+        "snippet": "The set difference of connected sets is not necessarily connected"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Non-implication remark, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Main theorem of connectedness",
+      "anchor": {
+        "section": "Theorems",
+        "snippet": "Main theorem of connectedness"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsConnected.image",
+        "module": "Mathlib.Topology.Connected.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsConnected.image`/`IsPreconnected.image` formalize that the continuous image of a connected set is connected.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Path-connected implies connected",
+      "anchor": {
+        "section": "Theorems",
+        "snippet": "Every path-connected space is connected"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PathConnectedSpace.connectedSpace",
+        "module": "Mathlib.Topology.Connected.PathConnected",
+        "match_kind": "exact"
+      },
+      "note": "Instance promoting `PathConnectedSpace` to `ConnectedSpace`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Open connected sets in locally path-connected spaces are path-connected",
+      "anchor": {
+        "section": "Theorems",
+        "snippet": "In a locally path-connected space, every open connected set is path-connected"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsOpen.isConnected_iff_isPathConnected",
+        "module": "Mathlib.Topology.Connected.LocPathConnected",
+        "match_kind": "exact"
+      },
+      "note": "`IsOpen.isConnected_iff_isPathConnected` directly states this equivalence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Locally path-connected implies locally connected",
+      "anchor": {
+        "section": "Theorems",
+        "snippet": "Every locally path-connected space is locally connected"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LocPathConnectedSpace.toLocallyConnectedSpace",
+        "module": "Mathlib.Topology.Connected.LocPathConnected",
+        "match_kind": "exact"
+      },
+      "note": "Anonymous `instance : LocallyConnectedSpace X` at LocPathConnected.lean:170 derives local connectedness from local path-connectedness.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Locally path-connected: path-connected iff connected",
+      "anchor": {
+        "section": "Theorems",
+        "snippet": "A locally path-connected space is path-connected if and only if it is connected"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "pathConnectedSpace_iff_connectedSpace",
+        "module": "Mathlib.Topology.Connected.LocPathConnected",
+        "match_kind": "exact"
+      },
+      "note": "`pathConnectedSpace_iff_connectedSpace` for `LocPathConnectedSpace` is the stated equivalence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Closure of connected set is connected",
+      "anchor": {
+        "section": "Theorems",
+        "snippet": "The closure of a connected subset is connected"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsConnected.closure",
+        "module": "Mathlib.Topology.Connected.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsConnected.closure`/`IsPreconnected.closure` formalize closure preservation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Connected components are closed",
+      "anchor": {
+        "section": "Theorems",
+        "snippet": "The connected components are always closed"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isClosed_connectedComponent",
+        "module": "Mathlib.Topology.Connected.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`isClosed_connectedComponent` proves each component is closed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Components of locally connected space are open",
+      "anchor": {
+        "section": "Theorems",
+        "snippet": "The connected components of a locally connected space are also open"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isOpen_connectedComponent",
+        "module": "Mathlib.Topology.Connected.LocallyConnected",
+        "match_kind": "exact"
+      },
+      "note": "`isOpen_connectedComponent` (and `isClopen_connectedComponent`) under `[LocallyConnectedSpace α]`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Components are disjoint unions of path-components",
+      "anchor": {
+        "section": "Theorems",
+        "snippet": "The connected components of a space are disjoint unions of the path-connected components"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "biUnion_connectedComponent_pathComponent_eq",
+        "module": "Mathlib.Topology.Connected.PathConnected",
+        "match_kind": "exact"
+      },
+      "note": "`biUnion_connectedComponent_pathComponent_eq` expresses each connected component as a union of path-components.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Quotient preserves connectedness",
+      "anchor": {
+        "section": "Theorems",
+        "snippet": "Every quotient of a connected"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Quotient.instConnectedSpace",
+        "module": "Mathlib.Topology.Connected.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Quotient.instConnectedSpace` (and `Surjective.connectedSpace` for continuous surjections) covers this.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Product of connected spaces is connected",
+      "anchor": {
+        "section": "Theorems",
+        "snippet": "Every product of a family of connected"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Pi.connectedSpace",
+        "module": "Mathlib.Topology.Connected.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Instances at Basic.lean:710,714 prove `ConnectedSpace (∀ i, X i)` and `ConnectedSpace (α × β)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Open subset of locally connected is locally connected",
+      "anchor": {
+        "section": "Theorems",
+        "snippet": "Every open subset of a locally connected"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsOpen.locallyConnectedSpace",
+        "module": "Mathlib.Topology.Connected.LocallyConnected",
+        "match_kind": "exact"
+      },
+      "note": "`IsOpen.locallyConnectedSpace` shows open subspaces inherit local connectedness.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Manifolds are locally path-connected",
+      "anchor": {
+        "section": "Theorems",
+        "snippet": "Every manifold is locally path-connected"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ChartedSpace.locPathConnectedSpace",
+        "module": "Mathlib.Geometry.Manifold.ChartedSpace",
+        "match_kind": "generalization"
+      },
+      "note": "`ChartedSpace.locPathConnectedSpace` derives local path-connectedness for charted spaces whose model is locally path-connected.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Arc-wise connected implies path-connected",
+      "anchor": {
+        "section": "Theorems",
+        "snippet": "Arc-wise connected space is path connected"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Arc-connectedness isn't formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Continuous image of arc-wise connected is arc-wise connected",
+      "anchor": {
+        "section": "Theorems",
+        "snippet": "Continuous image of arc-wise connected set is arc-wise connected"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Arc-connectedness is absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "5-cycle graph",
+      "anchor": {
+        "section": "Graphs",
+        "snippet": "The 5-cycle graph"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SimpleGraph.cycleGraph",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Circulant",
+        "match_kind": "generalization"
+      },
+      "note": "`cycleGraph n` is defined; specific connectedness of `cycleGraph 5` is not stated as a named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Connective spaces",
+      "anchor": {
+        "section": "Graphs",
+        "snippet": "there is a category of connective spaces consisting of sets with collections of connected subsets satisfying connectivity axioms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Connective spaces (Muscat–Buhagiar) are not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Graph connectedness via topology",
+      "anchor": {
+        "section": "Graphs",
+        "snippet": "every graph can be canonically made into a topological space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The canonical topology on a graph linking graph- and topological-connectedness isn't formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hyperconnected implies connected",
+      "anchor": {
+        "section": "Stronger forms of connectedness",
+        "snippet": "If there exist no two disjoint non-empty open sets in a topological space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PreirreducibleSpace.preconnectedSpace",
+        "module": "Mathlib.Topology.Connected.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Hyperconnected = irreducible; Mathlib's `PreirreducibleSpace.preconnectedSpace` instance gives the implication.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Simply connected implies connected",
+      "anchor": {
+        "section": "Stronger forms of connectedness",
+        "snippet": "Since a simply connected space is, by definition, also required to be path connected"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimplyConnectedSpace.instPathConnectedSpace",
+        "module": "Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected",
+        "match_kind": "exact"
+      },
+      "note": "An anonymous priority-100 instance `SimplyConnectedSpace X → PathConnectedSpace X` (SimplyConnected.lean:68) composes with `PathConnectedSpace.connectedSpace`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Contractible implies path connected",
+      "anchor": {
+        "section": "Stronger forms of connectedness",
+        "snippet": "Every contractible space is path connected and thus also connected"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContractibleSpace.toPathConnectedSpace",
+        "module": "Mathlib.Topology.Homotopy.Contractible",
+        "match_kind": "exact"
+      },
+      "note": "Anonymous priority-100 instance at Contractible.lean:108 turns `ContractibleSpace` into `PathConnectedSpace`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Deleted comb space",
+      "anchor": {
+        "section": "Stronger forms of connectedness",
+        "snippet": "The deleted comb space furnishes such an example"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Deleted comb space isn't in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Well-chained space",
+      "anchor": {
+        "section": "Weaker forms",
+        "snippet": "A well-chained space is a metric space in which two arbitrary points can be connected by a chain of points that are arbitrarily close"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Well-chained spaces (epsilon-chained metric spaces) aren't formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

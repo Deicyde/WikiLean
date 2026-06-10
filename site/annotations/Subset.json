@@ -1,0 +1,489 @@
+{
+  "slug": "Subset",
+  "wikipedia_title": "Subset",
+  "display_title": "Subset",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Subset and superset",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a set A is a subset of a set B if and only if all elements of A are also elements of B"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.Subset",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Set.Subset defines `s ⊆ t` as `∀ ⦃a⦄, a ∈ s → a ∈ t`, exactly the subset relation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Proper subset",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "if they are unequal, then A is a proper subset of B"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.ssubset_def",
+        "module": "Mathlib.Data.Set.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Set's `⊂` (HasSSubset, characterized by ssubset_def) is proper subset: `s ⊆ t ∧ ¬t ⊆ s`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "k-subset",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A k -subset is a subset with k elements."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.powersetCard",
+        "module": "Mathlib.Data.Set.PowersetCard",
+        "match_kind": "exact"
+      },
+      "note": "Set.powersetCard n is the set of finite subsets of cardinality n, i.e. the k-subsets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Element argument proof technique",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a proof technique known as the element argument"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A proof methodology, not a mathematical statement, so it has no Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Subset / superset (formal)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "If A and B are sets and every element of A is also an element of B"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.subset_def",
+        "module": "Mathlib.Data.Set.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Set.subset_def states `s ⊆ t` equals `∀ x, x ∈ s → x ∈ t`, the formal definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Proper (strict) subset (formal)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "If A is a subset of B , but A is not equal to B"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.ssubset_iff_subset_ne",
+        "module": "Mathlib.Data.Set.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Set.ssubset_iff_subset_ne states `s ⊂ t ↔ s ⊆ t ∧ s ≠ t`, the strict-subset definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Empty set is a subset of any set",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "has no elements, and therefore is vacuously a subset of any set X ."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.empty_subset",
+        "module": "Mathlib.Data.Set.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Set.empty_subset proves `∅ ⊆ s` for any set s.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reflexivity of inclusion",
+      "anchor": {
+        "section": "Basic properties",
+        "snippet": "Reflexivity : Given any set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.Subset.refl",
+        "module": "Mathlib.Data.Set.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Set.Subset.refl proves `a ⊆ a` for any set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Transitivity of inclusion",
+      "anchor": {
+        "section": "Basic properties",
+        "snippet": "Transitivity : If"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.Subset.trans",
+        "module": "Mathlib.Data.Set.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Set.Subset.trans proves `a ⊆ b → b ⊆ c → a ⊆ c`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Antisymmetry of inclusion",
+      "anchor": {
+        "section": "Basic properties",
+        "snippet": "Antisymmetry : If"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.Subset.antisymm",
+        "module": "Mathlib.Data.Set.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Set.Subset.antisymm proves `a ⊆ b → b ⊆ a → a = b`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Irreflexivity of proper subset",
+      "anchor": {
+        "section": "Proper subset",
+        "snippet": "Irreflexivity : Given any set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lt_irrefl",
+        "module": "Mathlib.Order.Defs.PartialOrder",
+        "match_kind": "generalization"
+      },
+      "note": "Set's `⊂` is `<`, so lt_irrefl `¬ a < a` gives irreflexivity as a special case of any preorder.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Transitivity of proper subset",
+      "anchor": {
+        "section": "Proper subset",
+        "snippet": "Transitivity : If"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lt_trans",
+        "module": "Mathlib.Order.Defs.PartialOrder",
+        "match_kind": "generalization"
+      },
+      "note": "Set's `⊂` is `<`, so lt_trans gives transitivity of proper subset as a preorder instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Asymmetry of proper subset",
+      "anchor": {
+        "section": "Proper subset",
+        "snippet": "Asymmetry : If"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lt_asymm",
+        "module": "Mathlib.Order.Defs.PartialOrder",
+        "match_kind": "generalization"
+      },
+      "note": "Set's `⊂` is `<`, so lt_asymm `a < b → ¬ b < a` gives asymmetry as a preorder instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "⊂ / ⊃ as subset / superset",
+      "anchor": {
+        "section": "⊂ and ⊃ symbols",
+        "snippet": "Some authors use the symbols"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not adopt the convention of `⊂`/`⊃` meaning non-strict subset/superset (it reserves `⊆`/`⊇`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "⊂ / ⊃ as proper subset / superset",
+      "anchor": {
+        "section": "⊂ and ⊃ symbols",
+        "snippet": "Other authors prefer to use the symbols"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.instHasSSubset",
+        "module": "Mathlib.Data.Set.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib follows this convention: `⊂` (Set.instHasSSubset) denotes proper subset, defined as `<`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "{1,2} proper subset of {1,2,3}",
+      "anchor": {
+        "section": "Examples of subsets",
+        "snippet": "The set A = {1, 2} is a proper subset of B = {1, 2, 3}"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An illustrative numeric example with no dedicated Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "{1,2,3} subset but not proper of {1,2,3}",
+      "anchor": {
+        "section": "Examples of subsets",
+        "snippet": "The set D = {1, 2, 3} is a subset (but not a proper subset) of E = {1, 2, 3}"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An illustrative numeric example with no dedicated Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Primes >10 proper subset of odds >10",
+      "anchor": {
+        "section": "Examples of subsets",
+        "snippet": "The set { x : x is a prime number greater than 10} is a proper subset"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An illustrative example with no dedicated Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Naturals proper subset of rationals",
+      "anchor": {
+        "section": "Examples of subsets",
+        "snippet": "The set of natural numbers is a proper subset of the set of rational numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No named declaration states ℕ as a proper subset of ℚ (Mathlib uses coercions/embeddings rather than set inclusion here).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Rationals proper subset of reals",
+      "anchor": {
+        "section": "Examples of subsets",
+        "snippet": "The set of rational numbers is a proper subset of the set of real numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No named declaration states ℚ as a proper subset of ℝ (Mathlib uses the Rat.cast ring hom rather than set inclusion).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Euler diagram example",
+      "anchor": {
+        "section": "Examples of subsets",
+        "snippet": "Another example in an Euler diagram : A is a proper subset of B."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A diagram-based illustrative example with no Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Power set",
+      "anchor": {
+        "section": "Power set",
+        "snippet": "is called its power set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.powerset",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Set.powerset (`𝒫 s`) is defined as `{t | t ⊆ s}`, the set of all subsets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inclusion is a partial order on the power set",
+      "anchor": {
+        "section": "Power set",
+        "snippet": "is a partial order on the set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.instBooleanAlgebra",
+        "module": "Mathlib.Order.BooleanAlgebra.Set",
+        "match_kind": "generalization"
+      },
+      "note": "Set α is a BooleanAlgebra whose underlying `≤`/`⊆` is the inclusion partial order, generalizing the partial order on a power set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Power set order isomorphic to Cartesian product",
+      "anchor": {
+        "section": "Power set",
+        "snippet": "the inclusion partial order is—up to an order isomorphism —the Cartesian product"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Equiv.Set.powerset",
+        "module": "Mathlib.Logic.Equiv.Set",
+        "match_kind": null
+      },
+      "note": "Equiv.Set.powerset gives a bijection `𝒫 S ≃ Set S` but Mathlib has no stated order isomorphism to a Cartesian product of two-element orders.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Notation for k-subsets",
+      "anchor": {
+        "section": "Power set",
+        "snippet": "in analogue with the notation for binomial coefficients"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Set.powersetCard",
+        "module": "Mathlib.Data.Set.PowersetCard",
+        "match_kind": null
+      },
+      "note": "The object (k-subsets) is Set.powersetCard, but the binomial-coefficient-style notation is not introduced in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Subset iff intersection equals A",
+      "anchor": {
+        "section": "Other properties of inclusion",
+        "snippet": "A set A is a subset of B if and only if their intersection is equal to A."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.inter_eq_left",
+        "module": "Mathlib.Data.Set.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Set.inter_eq_left states `s ∩ t = s ↔ s ⊆ t`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Subset iff union equals B",
+      "anchor": {
+        "section": "Other properties of inclusion",
+        "snippet": "A set A is a subset of B if and only if their union is equal to B."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.union_eq_right",
+        "module": "Mathlib.Data.Set.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Set.union_eq_right states `s ∪ t = t ↔ s ⊆ t`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite subset iff cardinality of intersection equals A",
+      "anchor": {
+        "section": "Other properties of inclusion",
+        "snippet": "A finite set A is a subset of B , if and only if the cardinality of their intersection is equal to the cardinality of A."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Finset.eq_of_subset_of_card_le",
+        "module": "Mathlib.Data.Finset.Card",
+        "match_kind": null
+      },
+      "note": "Cardinality/subset infrastructure (e.g. Finset.eq_of_subset_of_card_le and Set.inter_eq_left) exists, but the exact `#(A ∩ B) = #A ↔ A ⊆ B` iff is not stated as a single lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Subset relation forms a Boolean algebra",
+      "anchor": {
+        "section": "Other properties of inclusion",
+        "snippet": "The subset relation defines a partial order on sets."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.instBooleanAlgebra",
+        "module": "Mathlib.Order.BooleanAlgebra.Set",
+        "match_kind": "exact"
+      },
+      "note": "Set.instBooleanAlgebra proves `Set α` is a Boolean algebra under inclusion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inclusion is the canonical partial order",
+      "anchor": {
+        "section": "Other properties of inclusion",
+        "snippet": "Inclusion is the canonical partial order"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.instBooleanAlgebra",
+        "module": "Mathlib.Order.BooleanAlgebra.Set",
+        "match_kind": "generalization"
+      },
+      "note": "The canonical `≤` on `Set α` is inclusion (Set.le_eq_subset), provided by its BooleanAlgebra/partial-order structure.",
+      "provenance": "ai"
+    }
+  ]
+}

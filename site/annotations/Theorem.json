@@ -1,0 +1,537 @@
+{
+  "slug": "Theorem",
+  "wikipedia_title": "Theorem",
+  "display_title": "Theorem",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Theorem",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a theorem is a statement that has been proven"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A meta-mathematical definition of 'theorem' itself, not a mathematical object Mathlib formalizes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Proof of a theorem",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The proof of a theorem is a logical argument"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The informal notion of a proof is not a formalized declaration in Mathlib (proofs are Lean terms, not a library object).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conjecture",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A conjecture is a tentative proposition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A meta-mathematical concept with no corresponding Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gödel's incompleteness theorems",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Gödel's incompleteness theorems show that every consistent theory"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.beta",
+        "module": "Mathlib.Logic.Godel.GodelBetaFunction",
+        "match_kind": null
+      },
+      "note": "Only arithmetization infrastructure (the Gödel beta function, explicitly noted as 'needed for the proof of the First Incompleteness Theorem') exists; the incompleteness theorems themselves are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Euclid: angles of a triangle sum to 180°",
+      "anchor": {
+        "section": "Theoremhood and truth",
+        "snippet": "Euclid proved from a few axioms and postulates"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.angle_add_angle_add_angle_eq_pi",
+        "module": "Mathlib.Geometry.Euclidean.Triangle",
+        "match_kind": "exact"
+      },
+      "note": "The three interior angles of a triangle sum to π is proved as `angle_add_angle_add_angle_eq_pi`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sum of angles in Euclidean geometry",
+      "anchor": {
+        "section": "Theoremhood and truth",
+        "snippet": "Under the axioms and inference rules of Euclidean geometry"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.angle_add_angle_add_angle_eq_pi",
+        "module": "Mathlib.Geometry.Euclidean.Triangle",
+        "match_kind": "exact"
+      },
+      "note": "The angle-sum result `∠p₁p₂p₃ + ∠p₂p₃p₁ + ∠p₃p₁p₂ = π` holds in any real inner product space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Goodstein's theorem",
+      "anchor": {
+        "section": "Theoremhood and truth",
+        "snippet": "which can be stated in Peano arithmetic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Goodstein sequence or theorem appears anywhere in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fermat's Last Theorem (deep theorem)",
+      "anchor": {
+        "section": "Epistemological considerations",
+        "snippet": "Fermat's Last Theorem is a particularly well-known example"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FermatLastTheorem",
+        "module": "Mathlib.NumberTheory.FLT.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The statement `FermatLastTheorem := ∀ n ≥ 3, FermatLastTheoremFor n` is defined exactly (with special cases n=3,4 proved), though the general theorem is not proved in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Indicative conditional form of a theorem",
+      "anchor": {
+        "section": "Informal account of theorems",
+        "snippet": "many theorems are of the form of an indicative conditional"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A meta-level remark about theorem shape (hypothesis ⇒ conclusion), not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Even n implies n/2 is natural",
+      "anchor": {
+        "section": "Informal account of theorems",
+        "snippet": "is a typical example in which the hypothesis"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "even_iff_two_dvd",
+        "module": "Mathlib.Algebra.Ring.Parity",
+        "match_kind": "generalization"
+      },
+      "note": "The content 'n even ⇒ n divisible by 2' is `even_iff_two_dvd : Even a ↔ 2 ∣ a`, stated generally over a monoid/semiring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Four color theorem and Kepler conjecture",
+      "anchor": {
+        "section": "Informal account of theorems",
+        "snippet": "The most prominent examples are the four color theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the four color theorem nor the Kepler conjecture is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Collatz conjecture and Riemann hypothesis",
+      "anchor": {
+        "section": "Relation with scientific theories",
+        "snippet": "both the Collatz conjecture and the Riemann hypothesis are well-known unsolved problems"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "RiemannHypothesis",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": null
+      },
+      "note": "The Riemann hypothesis statement is defined as `RiemannHypothesis`, but the Collatz conjecture has no Mathlib declaration and neither is proved.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Mertens conjecture",
+      "anchor": {
+        "section": "Relation with scientific theories",
+        "snippet": "the Mertens conjecture is a statement about natural numbers that is now known to be false"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Mertens conjecture (the only Mathlib 'Mertens' hit is the unrelated Dedekind–Mertens lemma) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Axiom or postulate",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "An axiom or postulate is a fundamental assumption"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A meta-mathematical term with no dedicated Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Definition",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "which gives the meaning of a word or a phrase"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A meta-mathematical term, not a formalizable mathematical statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conjecture",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "A conjecture is an unproved statement"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A meta-mathematical term with no corresponding Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Theorem",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "A theorem is a statement that has been proven to be true based on axioms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A meta-mathematical definition of 'theorem', not a Mathlib object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Proposition",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "A proposition is a theorem of lesser importance"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A terminological distinction with no formal Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lemma",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "a proposition with little applicability outside its use in a particular proof"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A terminological category, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Corollary",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "A corollary is a proposition that follows immediately"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A terminological category with no Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generalization",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "A generalization of a theorem is a theorem with a similar statement"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A meta-mathematical relation between theorems, not itself a formalized statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Identity",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "An identity is a theorem stating an equality between two expressions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A terminological category for equalities, not a specific formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rule",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "A rule is a theorem that establishes a useful formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A terminological category with no Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Law or principle",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "A law or principle is a theorem with wide applicability"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A terminological category, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Formal theory",
+      "anchor": {
+        "section": "Theorems in logic",
+        "snippet": "a formal theory is a set of sentences within a formal language"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory",
+        "module": "Mathlib.ModelTheory.Syntax",
+        "match_kind": "exact"
+      },
+      "note": "`Theory` is defined exactly as `Set L.Sentence`, a set of sentences of a language.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sentence",
+      "anchor": {
+        "section": "Theorems in logic",
+        "snippet": "A sentence is a well-formed formula with no free variables"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Sentence",
+        "module": "Mathlib.ModelTheory.Syntax",
+        "match_kind": "exact"
+      },
+      "note": "`Sentence` is defined as `L.Formula Empty`, i.e. a formula with no free variables.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Theorem (member of a theory)",
+      "anchor": {
+        "section": "Theorems in logic",
+        "snippet": "A sentence that is a member of a theory is one of its theorems"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.models_sentence_of_mem",
+        "module": "Mathlib.ModelTheory.Semantics",
+        "match_kind": null
+      },
+      "note": "Mathlib captures membership/consequence semantically (`models_sentence_of_mem`, `⊨ᵇ`) rather than via a syntactic deductive-closure notion of 'theorem'.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inconsistent theory has all sentences as theorems",
+      "anchor": {
+        "section": "Theorems in logic",
+        "snippet": "A theory that is inconsistent has all sentences as theorems"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.models_iff_not_satisfiable",
+        "module": "Mathlib.ModelTheory.Satisfiability",
+        "match_kind": null
+      },
+      "note": "Explosion holds vacuously in Mathlib's semantics (an unsatisfiable theory has no models so `⊨ᵇ φ` for all φ), but there is no dedicated named lemma stating it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Metatheorem",
+      "anchor": {
+        "section": "Theorems in logic",
+        "snippet": "is called a metatheorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A meta-level concept with no Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Important theorems in mathematical logic",
+      "anchor": {
+        "section": "Theorems in logic",
+        "snippet": "Some important theorems in mathematical logic are"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.isSatisfiable_iff_isFinitelySatisfiable",
+        "module": "Mathlib.ModelTheory.Satisfiability",
+        "match_kind": null
+      },
+      "note": "Some of these (e.g. the compactness theorem, formalized as `isSatisfiable_iff_isFinitelySatisfiable`) are in Mathlib, but this is a vague list rather than a single statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Validity",
+      "anchor": {
+        "section": "Syntax and semantics",
+        "snippet": "A validity is a formula that is true under any possible interpretation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Sentence.Realize",
+        "module": "Mathlib.ModelTheory.Semantics",
+        "match_kind": null
+      },
+      "note": "Truth under an interpretation is `Sentence.Realize`, and validity is expressible as truth in all models (`∅ ⊨ᵇ φ`), but there is no dedicated `Valid` predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Soundness",
+      "anchor": {
+        "section": "Syntax and semantics",
+        "snippet": "The soundness of a formal system depends on whether or not all of its theorems are also validities"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's ModelTheory is purely semantic with no syntactic deduction calculus, so no soundness theorem is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Semantic completeness",
+      "anchor": {
+        "section": "Syntax and semantics",
+        "snippet": "A formal system is considered semantically complete"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gödel-style completeness of a proof system is absent (Mathlib lacks a derivation calculus); the unrelated `Theory.IsComplete` denotes a theory deciding every sentence, a different notion.",
+      "provenance": "ai"
+    }
+  ]
+}

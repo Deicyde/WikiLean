@@ -1,0 +1,489 @@
+{
+  "slug": "Combination",
+  "wikipedia_title": "Combination",
+  "display_title": "Combination",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Combination",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a combination is a selection of items from a set that has distinct members"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Finset",
+        "module": "Mathlib.Data.Finset.Defs",
+        "match_kind": null
+      },
+      "note": "A combination (selection of distinct members) is exactly a finite subset, formalized as `Finset`, though no declaration is named \"combination\".",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "k-combination",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a k -combination of a set S is a subset of k distinct elements of S"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.powersetCard",
+        "module": "Mathlib.Data.Finset.Powerset",
+        "match_kind": "exact"
+      },
+      "note": "`Finset.powersetCard n s` is the finset of all k-element subsets, and `mem_powersetCard` characterizes a k-combination as `s ⊆ t ∧ card s = n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equality of combinations",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "two combinations are identical if and only if each combination has the same members"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.ext_iff",
+        "module": "Mathlib.Data.Finset.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Finset.ext`/`Finset.ext_iff` states two finsets are equal iff they have the same members.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of k-combinations is binomial coefficient",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is equal to the binomial coefficient"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.card_powersetCard",
+        "module": "Mathlib.Data.Finset.Powerset",
+        "match_kind": "exact"
+      },
+      "note": "`Finset.card_powersetCard` proves `card (powersetCard n s) = Nat.choose (card s) n`, exactly the count of k-combinations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Factorial formula for k-combinations",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "which using factorial notation can be compactly expressed as"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.choose_eq_factorial_div_factorial",
+        "module": "Mathlib.Data.Nat.Choose.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.choose_eq_factorial_div_factorial` gives `choose n k = n! / (k! * (n-k)!)` for `k ≤ n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Combination without repetition",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A combination is a selection of n things taken k at a time without repetition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.powersetCard",
+        "module": "Mathlib.Data.Finset.Powerset",
+        "match_kind": "exact"
+      },
+      "note": "Selection without repetition is a k-element subset, captured by `Finset.powersetCard`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Combination with repetition",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the terms k -combination with repetition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Sym",
+        "module": "Mathlib.Data.Sym.Basic",
+        "match_kind": "exact"
+      },
+      "note": "A combination with repetition (multiset of fixed size) is formalized as the type `Sym α k`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Poker hand as 5-combination",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a poker hand can be described as a 5-combination"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an illustrative example with no corresponding Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Binomial coefficient via defining relation",
+      "anchor": {
+        "section": "Number of k -combinations",
+        "snippet": "for all natural numbers k at once by the relation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "add_pow",
+        "module": "Mathlib.Data.Nat.Choose.Sum",
+        "match_kind": "exact"
+      },
+      "note": "The generating relation `(x+y)^n = ∑ choose n k * ...` is the binomial theorem `add_pow`, though Mathlib defines `choose` inductively rather than by this relation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Coefficients count k-combinations",
+      "anchor": {
+        "section": "Number of k -combinations",
+        "snippet": "To see that these coefficients count k -combinations from S"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Finset.card_powersetCard",
+        "module": "Mathlib.Data.Finset.Powerset",
+        "match_kind": null
+      },
+      "note": "That choose counts k-subsets is `Finset.card_powersetCard`, but the specific generating-function-coefficient bridge is not a single named declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pascal's recursion relation",
+      "anchor": {
+        "section": "Number of k -combinations",
+        "snippet": "one can use (in addition to the basic cases already given) the recursion relation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.choose_succ_succ",
+        "module": "Mathlib.Data.Nat.Choose.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.choose_succ_succ` gives `choose (n+1) (k+1) = choose n k + choose n (k+1)`, Pascal's recursion (also `Nat.choose_eq_choose_pred_add`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Formula for individual binomial coefficient",
+      "anchor": {
+        "section": "Number of k -combinations",
+        "snippet": "it is more practical to use the formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.choose_eq_descFactorial_div_factorial",
+        "module": "Mathlib.Data.Nat.Choose.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.choose_eq_descFactorial_div_factorial` gives `choose n k = descFactorial n k / k!`, the falling-product-over-k! formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Symmetry of binomial coefficients",
+      "anchor": {
+        "section": "Number of k -combinations",
+        "snippet": "canceling them out gives the relation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.choose_symm",
+        "module": "Mathlib.Data.Nat.Choose.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.choose_symm` proves `choose n (n-k) = choose n k` for `k ≤ n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Symmetric factorial formula",
+      "anchor": {
+        "section": "Number of k -combinations",
+        "snippet": "Finally there is a formula which exhibits this symmetry directly"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.choose_mul_factorial_mul_factorial",
+        "module": "Mathlib.Data.Nat.Choose.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.choose_mul_factorial_mul_factorial` gives the symmetric identity `choose n k * k! * (n-k)! = n!`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Adjacent relations in Pascal's triangle",
+      "anchor": {
+        "section": "Number of k -combinations",
+        "snippet": "follow relations between adjacent numbers in Pascal's triangle in all three directions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.succ_mul_choose_eq",
+        "module": "Mathlib.Data.Nat.Choose.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Adjacency relations are formalized, e.g. `Nat.succ_mul_choose_eq` and `Nat.choose_succ_right_eq`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Counting five-card hands",
+      "anchor": {
+        "section": "Example of counting combinations",
+        "snippet": "one can compute the number of five-card hands possible from a standard fifty-two card deck"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific numeric computation `choose 52 5 = 2598960` is not present as a declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Combinatorial number system bijection",
+      "anchor": {
+        "section": "Enumerating k -combinations",
+        "snippet": "which establishes a bijection from an interval"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Finset.Colex",
+        "module": "Mathlib.Combinatorics.Colex",
+        "match_kind": null
+      },
+      "note": "Mathlib has colex ordering of finsets (`Finset.Colex`, `orderIsoColex` for all subsets) but not the explicit combinadic bijection from `[0, choose n k)` to k-combinations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Enumeration algorithm for k-combinations",
+      "anchor": {
+        "section": "Enumerating k -combinations",
+        "snippet": "One way is to track k index numbers of the elements selected"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This describes an enumeration algorithm with no corresponding formalized procedure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "k-combination with repetition (multisubset)",
+      "anchor": {
+        "section": "Number of combinations with repetition",
+        "snippet": "A k - combination with repetitions , or k - multicombination , or multisubset of size k from a set S"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Sym",
+        "module": "Mathlib.Data.Sym.Basic",
+        "match_kind": "exact"
+      },
+      "note": "A multisubset of size k from S is exactly `Sym α k`, the type of multisets of cardinality k over α.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multisubsets count Diophantine solutions",
+      "anchor": {
+        "section": "Number of combinations with repetition",
+        "snippet": "The number of multisubsets of size k is then the number of nonnegative integer"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Sym.card_sym_eq_multichoose",
+        "module": "Mathlib.Data.Sym.Card",
+        "match_kind": null
+      },
+      "note": "The multisubset count is formalized via `Sym.card_sym_eq_multichoose`, but the explicit equality with the number of nonnegative integer solutions of `x₁+...+xₙ=k` is not a named declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "n multichoose k notation",
+      "anchor": {
+        "section": "Number of combinations with repetition",
+        "snippet": "the number of such k -multisubsets is denoted by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.multichoose",
+        "module": "Mathlib.Data.Nat.Choose.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.multichoose n k` is defined as the number of size-k multisets from an n-element type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multichoose in terms of binomial coefficients",
+      "anchor": {
+        "section": "Number of combinations with repetition",
+        "snippet": "can also be given in terms of binomial coefficients"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.multichoose_eq",
+        "module": "Mathlib.Data.Nat.Choose.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.multichoose_eq` proves `multichoose n k = (n + k - 1).choose k`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Stars and bars proof",
+      "anchor": {
+        "section": "Number of combinations with repetition",
+        "snippet": "This relationship can be easily proved using a representation known as stars and bars"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Sym.card_sym_eq_choose",
+        "module": "Mathlib.Data.Sym.Card",
+        "match_kind": "exact"
+      },
+      "note": "`Sym.card_sym_eq_choose` proves `card (Sym α k) = choose (card α + k - 1) k`, the stars-and-bars result, though the stars-and-bars argument itself is not a separate object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multichoose identity",
+      "anchor": {
+        "section": "Number of combinations with repetition",
+        "snippet": "there are several relationships between these multichoose expressions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.multichoose_eq",
+        "module": "Mathlib.Data.Nat.Choose.Basic",
+        "match_kind": null
+      },
+      "note": "Various multichoose lemmas exist (`multichoose_eq`, `multichoose_succ_succ`, etc.) but the specific cited multichoose identities are not individually named.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Counting donut multisubsets",
+      "anchor": {
+        "section": "Example of counting multisubsets",
+        "snippet": "if you have four types of donuts"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a worked numeric example with no corresponding declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Total number of subsets is 2^n",
+      "anchor": {
+        "section": "Number of k -combinations for all k",
+        "snippet": "The number of k -combinations for all k is the number of subsets of a set of n elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.card_powerset",
+        "module": "Mathlib.Data.Finset.Powerset",
+        "match_kind": "exact"
+      },
+      "note": "`Finset.card_powerset` gives `card (powerset s) = 2 ^ card s`, and `Nat.sum_range_choose` proves `∑ choose n k = 2^n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Eight subsets of three cards",
+      "anchor": {
+        "section": "Number of k -combinations for all k",
+        "snippet": "Given 3 cards numbered 1 to 3, there are 8 distinct combinations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a concrete enumeration example with no corresponding declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sampling a random combination",
+      "anchor": {
+        "section": "Probability: sampling a random combination",
+        "snippet": "One way to select a k -combination efficiently from a population of size n"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This describes a sampling algorithm with no corresponding formalized procedure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Objects into bins is multinomial coefficient",
+      "anchor": {
+        "section": "Number of ways to put objects into bins",
+        "snippet": "The number of ways to put objects into bins is given by the multinomial coefficient"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.multinomial",
+        "module": "Mathlib.Data.Nat.Choose.Multinomial",
+        "match_kind": null
+      },
+      "note": "`Nat.multinomial` defines the coefficient (documented as counting arrangements), but no theorem proves the bijective \"ways to put objects into bins\" count.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Binomial coefficient as two-bin special case",
+      "anchor": {
+        "section": "Number of ways to put objects into bins",
+        "snippet": "The binomial coefficient is the special case where k items go into the chosen bin"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.binomial_eq_choose",
+        "module": "Mathlib.Data.Nat.Choose.Multinomial",
+        "match_kind": "special_case"
+      },
+      "note": "`Nat.binomial_eq_choose` proves `multinomial {a,b} f = (f a + f b).choose (f a)`, the two-bin special case.",
+      "provenance": "ai"
+    }
+  ]
+}

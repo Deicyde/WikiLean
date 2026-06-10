@@ -1,0 +1,201 @@
+{
+  "slug": "Commutative_algebra",
+  "wikipedia_title": "Commutative algebra",
+  "display_title": "Commutative algebra",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Noetherian ring",
+      "anchor": {
+        "section": "Noetherian rings",
+        "snippet": "is a ring in which every ideal is finitely generated"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsNoetherianRing",
+        "module": "Mathlib.RingTheory.Noetherian.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsNoetherianRing R` is defined via `IsNoetherian R R`, i.e. every ideal is finitely generated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hilbert's basis theorem",
+      "anchor": {
+        "section": "Noetherian rings",
+        "snippet": "The fact that polynomial rings over a field are Noetherian is called Hilbert's basis theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.isNoetherianRing",
+        "module": "Mathlib.RingTheory.Polynomial.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves Hilbert's basis theorem in the stronger form: any polynomial ring over a Noetherian ring is Noetherian.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Noetherian property preserved by constructions",
+      "anchor": {
+        "section": "Noetherian rings",
+        "snippet": "if a commutative ring R is Noetherian, the same is true for every polynomial ring over it"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.isNoetherianRing",
+        "module": "Mathlib.RingTheory.Polynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Stability under polynomial extensions is `Polynomial.isNoetherianRing`; quotients and finite products also carry `IsNoetherianRing` instances.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Noetherian local rings have finite Krull dimension",
+      "anchor": {
+        "section": "Noetherian rings",
+        "snippet": "if a ring is Noetherian, then it satisfies the descending chain condition on prime ideals"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ideal.height_le_spanRank_toENat",
+        "module": "Mathlib.RingTheory.Ideal.KrullsHeightTheorem",
+        "match_kind": "invocation"
+      },
+      "note": "Krull's height theorem is formalized and bounds heights by generator count, but I did not find an instance directly deriving `FiniteRingKrullDim` from `IsLocalRing` + `IsNoetherianRing`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Primary ideal",
+      "anchor": {
+        "section": "Primary decomposition",
+        "snippet": "is said to be primary if Q is proper and whenever"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.IsPrimary",
+        "module": "Mathlib.RingTheory.Ideal.IsPrimary",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal.IsPrimary I` is the standard definition: `I ≠ ⊤` and `xy ∈ I → x ∈ I ∨ y ∈ I.radical`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Primary ideals in Z",
+      "anchor": {
+        "section": "Primary decomposition",
+        "snippet": "In Z , the primary ideals are precisely the ideals of the form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "I found no Mathlib lemma classifying primary ideals of ℤ as `(0)` or `(p^n)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lasker–Noether theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Lasker-Noether Theorem — Let R be a comm"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.isLasker",
+        "module": "Mathlib.RingTheory.Lasker",
+        "match_kind": "generalization"
+      },
+      "note": "`Submodule.isLasker` shows every submodule of a Noetherian module admits a primary decomposition, generalizing the classical ring statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Radicals of primary decomposition form the assassinator",
+      "anchor": {
+        "section": "Primary decomposition",
+        "snippet": "the set of all radicals, that is, the set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.IsMinimalPrimaryDecomposition.radical_eq_associatedPrimes",
+        "module": "Mathlib.RingTheory.Lasker",
+        "match_kind": "exact"
+      },
+      "note": "Lasker.lean shows the radicals of a minimal primary decomposition equal `N.associatedPrimes` (the assassinator).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Localization of a ring",
+      "anchor": {
+        "section": "Localization",
+        "snippet": "The localization is a formal way to introduce the \"denominators\" to a given ring or a module"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLocalization",
+        "module": "Mathlib.RingTheory.Localization.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsLocalization M S` is the predicate characterising the localization of `R` at a submonoid `M`; the concrete construction is `Localization M`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Rationals as localization of integers",
+      "anchor": {
+        "section": "Localization",
+        "snippet": "The archetypal example is the construction of the ring Q of rational numbers from the ring Z of integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Rat.isFractionRing",
+        "module": "Mathlib.RingTheory.Localization.FractionRing",
+        "match_kind": "exact"
+      },
+      "note": "`Rat.isFractionRing` is an instance witnessing that ℚ is the localization of ℤ at the nonzero divisors.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Completion",
+      "anchor": {
+        "section": "Completion",
+        "snippet": "A completion is any of several related functors on rings and modules that result in complete topological rings and modules"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AdicCompletion",
+        "module": "Mathlib.RingTheory.AdicCompletion.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`AdicCompletion I M` formalizes the I-adic completion of a module; the general topological completion is `UniformSpace.Completion`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zariski topology on the spectrum",
+      "anchor": {
+        "section": "Zariski topology on prime ideals",
+        "snippet": "The Zariski topology defines a topology on the spectrum of a ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PrimeSpectrum.zariskiTopology",
+        "module": "Mathlib.RingTheory.Spectrum.Prime.Topology",
+        "match_kind": "exact"
+      },
+      "note": "`PrimeSpectrum.zariskiTopology` is the topology on `PrimeSpectrum R` whose closed sets are zero loci of subsets of `R`.",
+      "provenance": "ai"
+    }
+  ]
+}

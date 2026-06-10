@@ -1,0 +1,729 @@
+{
+  "slug": "C-algebra",
+  "wikipedia_title": "C*-algebra",
+  "display_title": "C*-algebra",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "C*-algebra (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a Banach algebra together with an involution satisfying the properties of the adjoint"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CStarAlgebra",
+        "module": "Mathlib.Analysis.CStarAlgebra.Classes",
+        "match_kind": "exact"
+      },
+      "note": "`CStarAlgebra` is a complex Banach algebra with isometric involution satisfying the C⋆-identity, exactly the informal notion (with `NonUnitalCStarAlgebra` for the non-unital case).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Continuous functions vanishing at infinity",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Another important class of non-Hilbert C*-algebras includes the algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZeroAtInftyContinuousMap.instNonUnitalCommCStarAlgebra",
+        "module": "Mathlib.Analysis.CStarAlgebra.ContinuousMap",
+        "match_kind": "special_case"
+      },
+      "note": "An instance makes `C₀(α, A)` a `NonUnitalCommCStarAlgebra`, giving the vanishing-at-infinity functions as a (non-unital, commutative) C⋆-algebra.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "C*-algebra (abstract)",
+      "anchor": {
+        "section": "Abstract characterization",
+        "snippet": "is a Banach algebra over the field of complex numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CStarAlgebra",
+        "module": "Mathlib.Analysis.CStarAlgebra.Classes",
+        "match_kind": "exact"
+      },
+      "note": "`CStarAlgebra` is precisely a complex Banach ⋆-algebra with the C⋆-identity, matching the abstract characterization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "C* identity",
+      "anchor": {
+        "section": "Abstract characterization",
+        "snippet": "The last identity is called the C* identity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CStarRing.norm_star_mul_self",
+        "module": "Mathlib.Analysis.CStarAlgebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`CStarRing.norm_star_mul_self : ‖x⋆ * x‖ = ‖x‖ * ‖x‖` is exactly the C⋆-identity (the `CStarRing` class encodes the defining inequality).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "C*-norm uniquely determined",
+      "anchor": {
+        "section": "Abstract characterization",
+        "snippet": "it implies that the C*-norm is uniquely determined by the algebraic structure"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "NonUnitalStarAlgHom.norm_map",
+        "module": "Mathlib.Analysis.CStarAlgebra.Hom",
+        "match_kind": null
+      },
+      "note": "The fact that injective ⋆-homomorphisms are isometric (`NonUnitalStarAlgHom.norm_map`) implies uniqueness of the C⋆-norm, but the uniqueness statement itself is not separately stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "*-homomorphism",
+      "anchor": {
+        "section": "Abstract characterization",
+        "snippet": "is called a *-homomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "StarAlgHom",
+        "module": "Mathlib.Algebra.Star.StarAlgHom",
+        "match_kind": "exact"
+      },
+      "note": "`StarAlgHom` (and `NonUnitalStarAlgHom`) are algebra homomorphisms intertwining the involution, i.e. ⋆-homomorphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "*-homomorphisms are contractive/isometric",
+      "anchor": {
+        "section": "Abstract characterization",
+        "snippet": "any *-homomorphism π between C*-algebras is contractive"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NonUnitalStarAlgHom.norm_apply_le",
+        "module": "Mathlib.Analysis.CStarAlgebra.Spectrum",
+        "match_kind": "exact"
+      },
+      "note": "`NonUnitalStarAlgHom.norm_apply_le` shows ⋆-homs are contractive and `NonUnitalStarAlgHom.norm_map` shows injective ones are isometric.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "C*-isomorphism",
+      "anchor": {
+        "section": "Abstract characterization",
+        "snippet": "is called a C*-isomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "StarAlgEquiv",
+        "module": "Mathlib.Algebra.Star.StarAlgHom",
+        "match_kind": "exact"
+      },
+      "note": "`StarAlgEquiv` is a bijective ⋆-algebra homomorphism, i.e. a C⋆-isomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "B*-algebra",
+      "anchor": {
+        "section": "History: B*-algebras and C*-algebras",
+        "snippet": "to describe Banach *-algebras that satisfy the condition"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CStarRing",
+        "module": "Mathlib.Analysis.CStarAlgebra.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib only formalizes the C⋆-axiom (`CStarRing`); the equivalent B*-condition `‖x⋆ x‖ = ‖x⋆‖‖x‖` is not defined as a class (it is an explicit TODO in the file).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "B*-condition equivalent to C*-condition",
+      "anchor": {
+        "section": "History: B*-algebras and C*-algebras",
+        "snippet": "This condition automatically implies that the *-involution is isometric"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CStarRing.norm_star_mul_self'",
+        "module": "Mathlib.Analysis.CStarAlgebra.Basic",
+        "match_kind": null
+      },
+      "note": "`CStarRing.norm_star_mul_self'` and `norm_star` give the B*-form and isometry of `star` within a `CStarRing`, but the equivalence of the B*- and C*-conditions is explicitly listed as a TODO.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "C*-algebra (Segal)",
+      "anchor": {
+        "section": "History: B*-algebras and C*-algebras",
+        "snippet": "to describe norm-closed subalgebras of B"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "StarSubalgebra.cstarAlgebra",
+        "module": "Mathlib.Analysis.CStarAlgebra.Classes",
+        "match_kind": "special_case"
+      },
+      "note": "`StarSubalgebra.cstarAlgebra` shows a norm-closed ⋆-subalgebra of a C⋆-algebra is a C⋆-algebra, which applied to `B(H)` gives Segal's concrete definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Self-adjoint elements",
+      "anchor": {
+        "section": "Self-adjoint elements",
+        "snippet": "Self-adjoint elements are those of the form"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsSelfAdjoint",
+        "module": "Mathlib.Algebra.Star.SelfAdjoint",
+        "match_kind": "exact"
+      },
+      "note": "`IsSelfAdjoint x ↔ star x = x` (and the subgroup `selfAdjoint`) formalizes self-adjoint elements.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Positive elements form a closed convex cone",
+      "anchor": {
+        "section": "Self-adjoint elements",
+        "snippet": "forms a closed convex cone"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CStarAlgebra.isClosed_nonneg",
+        "module": "Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Order",
+        "match_kind": null
+      },
+      "note": "`CStarAlgebra.isClosed_nonneg` proves the nonnegative set is closed and the `StarOrderedRing` structure gives the cone/convexity, but no single `ConvexCone` object packages this.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Non-negative elements",
+      "anchor": {
+        "section": "Self-adjoint elements",
+        "snippet": "Elements of this cone are called non-negative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "nonneg_iff_isSelfAdjoint_and_quasispectrumRestricts",
+        "module": "Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Instances",
+        "match_kind": "exact"
+      },
+      "note": "Nonnegativity `0 ≤ a` is defined via the spectral `StarOrderedRing` order and characterized by `nonneg_iff_isSelfAdjoint_and_quasispectrumRestricts`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Partial ordering of self-adjoint elements",
+      "anchor": {
+        "section": "Self-adjoint elements",
+        "snippet": "naturally has the structure of a partially ordered vector space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CStarAlgebra.spectralOrder",
+        "module": "Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Basic",
+        "match_kind": null
+      },
+      "note": "`CStarAlgebra.spectralOrder`/`spectralOrderedRing` give the partial order on the whole algebra, but the ordered-vector-space structure on `selfAdjoint A` is not packaged separately.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Characterization of positivity",
+      "anchor": {
+        "section": "Self-adjoint elements",
+        "snippet": "if and only if the spectrum of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "nonneg_iff_isSelfAdjoint_and_quasispectrumRestricts",
+        "module": "Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Instances",
+        "match_kind": "exact"
+      },
+      "note": "This lemma states `0 ≤ a` iff `a` is self-adjoint with nonnegative spectrum, exactly the spectral characterization of positivity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence of approximate identity",
+      "anchor": {
+        "section": "Quotients and approximate identities",
+        "snippet": "Any C*-algebra A has an approximate identity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CStarAlgebra.increasingApproximateUnit",
+        "module": "Mathlib.Analysis.CStarAlgebra.ApproximateUnit",
+        "match_kind": "exact"
+      },
+      "note": "`CStarAlgebra.increasingApproximateUnit` proves every C⋆-algebra has an increasing approximate unit (`CStarAlgebra.approximateUnit`), formulated via filters.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sequential approximate identity",
+      "anchor": {
+        "section": "Quotients and approximate identities",
+        "snippet": "In case A is separable, A has a sequential approximate identity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's approximate unit is filter-based and there is no result deriving a countable/sequential approximate identity for separable C⋆-algebras.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quotient by closed ideal is a C*-algebra",
+      "anchor": {
+        "section": "Quotients and approximate identities",
+        "snippet": "the algebraic quotient of a C*-algebra by a closed proper two-sided ideal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No C⋆-algebra (or even Banach-algebra) instance is provided for quotients of C⋆-algebras by closed two-sided ideals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closed ideal is a C*-algebra",
+      "anchor": {
+        "section": "Quotients and approximate identities",
+        "snippet": "a closed two-sided ideal of a C*-algebra is itself a C*-algebra"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "NonUnitalStarSubalgebra.nonUnitalCStarAlgebra",
+        "module": "Mathlib.Analysis.CStarAlgebra.Classes",
+        "match_kind": null
+      },
+      "note": "Closed non-unital ⋆-subalgebras are shown to be `NonUnitalCStarAlgebra`, but it is not proven that a closed two-sided ideal is automatically ⋆-closed and hence a C⋆-algebra.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Matrix algebra M(n,C)",
+      "anchor": {
+        "section": "Finite-dimensional C*-algebras",
+        "snippet": "becomes a C*-algebra if we consider matrices as operators"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.instCStarRing",
+        "module": "Mathlib.Analysis.CStarAlgebra.Matrix",
+        "match_kind": "special_case"
+      },
+      "note": "`Matrix.instCStarRing` makes `Matrix n n 𝕜` a `CStarRing` under the L²-operator norm, realizing matrices as operators.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite-dimensional C*-algebras are direct sums of matrix algebras",
+      "anchor": {
+        "section": "Finite-dimensional C*-algebras",
+        "snippet": "all C*-algebras that are finite dimensional as vector spaces are of this form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classification of finite-dimensional C⋆-algebras as direct sums of matrix algebras is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Artin–Wedderburn type theorem",
+      "anchor": {
+        "section": "Finite-dimensional C*-algebras",
+        "snippet": "A finite-dimensional C*-algebra, A , is canonically isomorphic to a finite direct sum"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The structure theorem giving the canonical decomposition of a finite-dimensional C⋆-algebra into matrix blocks is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dimension vector",
+      "anchor": {
+        "section": "Finite-dimensional C*-algebras",
+        "snippet": "is called the dimension vector of A"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The dimension vector of a finite-dimensional C⋆-algebra is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "†-algebra",
+      "anchor": {
+        "section": "Finite-dimensional C*-algebras",
+        "snippet": "is the name occasionally used in physics"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The physics term †-algebra (finite-dimensional C⋆-algebra) has no dedicated formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Bounded operators B(H)",
+      "anchor": {
+        "section": "C*-algebras of operators",
+        "snippet": "The prototypical example of a C*-algebra is the algebra B(H)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.instCStarAlgebra",
+        "module": "Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap",
+        "match_kind": "special_case"
+      },
+      "note": "An instance gives `CStarAlgebra (E →L[ℂ] E)` for a Hilbert space `E`, i.e. `B(H)` is a C⋆-algebra.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gelfand–Naimark theorem",
+      "anchor": {
+        "section": "C*-algebras of operators",
+        "snippet": "every C*-algebra, A , is *-isomorphic to a norm-closed adjoint closed subalgebra"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PositiveLinearMap.gnsStarAlgHom",
+        "module": "Mathlib.Analysis.CStarAlgebra.GelfandNaimarkSegal",
+        "match_kind": null
+      },
+      "note": "The GNS construction (`gnsStarAlgHom`) produces ⋆-representations on Hilbert space, but the universal faithful representation embedding every C⋆-algebra into `B(H)` is not assembled.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Compact operators K(H)",
+      "anchor": {
+        "section": "C*-algebras of compact operators",
+        "snippet": "The algebra K ( H ) of compact operators on H is a norm closed subalgebra"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsCompactOperator",
+        "module": "Mathlib.Analysis.Normed.Operator.Compact.Basic",
+        "match_kind": null
+      },
+      "note": "Compact operators exist only as the predicate `IsCompactOperator`; `K(H)` as a norm-closed C⋆-subalgebra of `B(H)` is not constructed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Characterization of C*-subalgebras of K(H)",
+      "anchor": {
+        "section": "C*-algebras of compact operators",
+        "snippet": "If A is a C*-subalgebra of K"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The structural classification of C⋆-subalgebras of `K(H)` is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Approximate identity for K(H)",
+      "anchor": {
+        "section": "C*-algebras of compact operators",
+        "snippet": "a sequential approximate identity for K"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The sequential approximate identity for `K(H)` (increasing finite-rank projections) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "K(H) is the unique ideal of B(H)",
+      "anchor": {
+        "section": "C*-algebras of compact operators",
+        "snippet": "is a two-sided closed ideal of B"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The fact that `K(H)` is the unique nontrivial closed two-sided ideal of `B(H)` is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Calkin algebra",
+      "anchor": {
+        "section": "C*-algebras of compact operators",
+        "snippet": "is the Calkin algebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Calkin algebra `B(H)/K(H)` is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Commutative C*-algebra C0(X)",
+      "anchor": {
+        "section": "Commutative C*-algebras",
+        "snippet": "forms a commutative C*-algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZeroAtInftyContinuousMap.instNonUnitalCommCStarAlgebra",
+        "module": "Mathlib.Analysis.CStarAlgebra.ContinuousMap",
+        "match_kind": "special_case"
+      },
+      "note": "`C₀(α, ℂ)` is a `NonUnitalCommCStarAlgebra` (and `C(α, ℂ)` a `CommCStarAlgebra` for compact `α`), the commutative C⋆-algebra of functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unit exists iff X compact",
+      "anchor": {
+        "section": "Commutative C*-algebras",
+        "snippet": "has a multiplicative unit element if and only if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no theorem stating `C₀(X)` is unital iff `X` is compact.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gelfand representation",
+      "anchor": {
+        "section": "Commutative C*-algebras",
+        "snippet": "every commutative C*-algebra is *-isomorphic to the algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "gelfandStarTransform",
+        "module": "Mathlib.Analysis.CStarAlgebra.GelfandDuality",
+        "match_kind": "special_case"
+      },
+      "note": "`gelfandStarTransform` is a `StarAlgEquiv` between a unital commutative C⋆-algebra and `C(characterSpace ℂ A, ℂ)`, formalizing the Gelfand representation in the unital case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Universal enveloping C*-algebra",
+      "anchor": {
+        "section": "C*-enveloping algebra",
+        "snippet": "there is a unique (up to C*-isomorphism) C*-algebra E ( A ) and *-morphism"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The universal enveloping C⋆-algebra of a Banach ⋆-algebra is not constructed in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "C*-enveloping algebra",
+      "anchor": {
+        "section": "C*-enveloping algebra",
+        "snippet": "is called the C*-enveloping algebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The C⋆-enveloping algebra is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "C*-algebra of a locally compact group",
+      "anchor": {
+        "section": "C*-enveloping algebra",
+        "snippet": "This is defined as the enveloping C*-algebra of the group algebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The group C⋆-algebra is not formalized (no enveloping C⋆-algebra of the group algebra exists).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Von Neumann algebra",
+      "anchor": {
+        "section": "Von Neumann algebras",
+        "snippet": "are a special kind of C*-algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "VonNeumannAlgebra",
+        "module": "Mathlib.Analysis.VonNeumannAlgebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`VonNeumannAlgebra H` (double-commutant ⋆-subalgebra of `B(H)`) and the abstract `WStarAlgebra` formalize von Neumann/W*-algebras.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sherman–Takeda theorem",
+      "anchor": {
+        "section": "Von Neumann algebras",
+        "snippet": "any C*-algebra has a universal enveloping W*-algebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Sherman–Takeda theorem (universal enveloping W*-algebra as the bidual) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Type I C*-algebra",
+      "anchor": {
+        "section": "Type for C*-algebras",
+        "snippet": "A C*-algebra A is of type I if and only if for all non-degenerate representations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Type I C⋆-algebras are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Type I locally compact group",
+      "anchor": {
+        "section": "Type for C*-algebras",
+        "snippet": "A locally compact group is said to be of type I if and only if its group C*-algebra is type I"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Type I locally compact groups are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Glimm's dichotomy",
+      "anchor": {
+        "section": "Type for C*-algebras",
+        "snippet": "it also has representations of type II and type III"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Glimm's dichotomy for non-type-I C⋆-algebras is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Observables",
+      "anchor": {
+        "section": "C*-algebras and quantum field theory",
+        "snippet": "are thought of as the observables"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The physical notion of observables (self-adjoint elements as measurements) has no dedicated formalization, though `IsSelfAdjoint` exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "State of the system",
+      "anchor": {
+        "section": "C*-algebras and quantum field theory",
+        "snippet": "A state of the system is defined as a positive functional on A"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PositiveLinearMap",
+        "module": "Mathlib.Algebra.Order.Module.PositiveLinearMap",
+        "match_kind": null
+      },
+      "note": "Positive linear functionals `A →ₚ[ℂ] ℂ` are formalized (`PositiveLinearMap`), but a normalized `State` (positive functional of norm one) is not defined as such.",
+      "provenance": "ai"
+    }
+  ]
+}

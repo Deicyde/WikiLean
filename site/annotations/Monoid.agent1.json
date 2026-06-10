@@ -1,0 +1,602 @@
+{
+  "slug": "Monoid",
+  "wikipedia_title": "Monoid",
+  "display_title": "Monoid",
+  "schema_version": 3,
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Monoid",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is a monoid if it satisfies the following two axioms"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Group as special monoid",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A group is a special case of a monoid where every element has an inverse"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Submonoid",
+      "anchor": {
+        "section": "Submonoids",
+        "snippet": "A submonoid of a monoid"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closed subset need not be a submonoid",
+      "anchor": {
+        "section": "Submonoids",
+        "snippet": "is not always a submonoid"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Generating set / finitely generated monoid",
+      "anchor": {
+        "section": "Generators",
+        "snippet": "is said to generate"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Commutative monoid",
+      "anchor": {
+        "section": "Commutative monoid",
+        "snippet": "is called a commutative monoid"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic preordering",
+      "anchor": {
+        "section": "Commutative monoid",
+        "snippet": "endowed with its algebraic preordering"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Order-unit",
+      "anchor": {
+        "section": "Commutative monoid",
+        "snippet": "An order-unit of a commutative monoid"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Trace monoid",
+      "anchor": {
+        "section": "Partially commutative monoid",
+        "snippet": "is a trace monoid"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Boolean operator monoids",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "These four each make the set {False, True} a commutative monoid"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Natural numbers monoid",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The set of natural numbers"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Positive integers under multiplication",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The set of positive integers"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Subsets under intersection",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is a commutative monoid under intersection"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Subsets under union",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is a commutative monoid under union"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Bounded semilattice monoid",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "every bounded semilattice is an idempotent commutative monoid"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Trivial monoid",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "forms the trivial (one-element) monoid"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Groups as monoids",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Every group is a monoid and every abelian group a commutative monoid"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Adjoining an identity to a semigroup",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Any semigroup S may be turned into a monoid simply by adjoining an element e not in S"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Underlying set of a ring",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The underlying set of any ring"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Matrices under addition/multiplication",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The set of all n by n matrices over a given ring"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Free monoid of strings",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The set of all finite strings over some fixed alphabet"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Opposite monoid",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the opposite monoid M op has the same carrier set and identity element as M"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Direct product of monoids",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "called the direct product"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Functions into a monoid",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The set of all functions from a given set to M is also a monoid"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Power set monoid",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "consider its power set"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Full transformation monoid",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the full transformation monoid"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Endomorphism monoid",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "forms a monoid under composition of morphisms"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Monoid of compact surfaces under connected sum",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The set of homeomorphism classes of compact surfaces with the connected sum"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Cyclic monoid",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Let ⟨ f ⟩ be a cyclic monoid of order n"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Cyclic group from cyclic monoid (k = 0)",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "then the function f is a permutation"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness of the identity element",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "the identity element e is unique"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Product of a sequence",
+      "anchor": {
+        "section": "Products and powers",
+        "snippet": "one can define the product"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Nonnegative integer powers",
+      "anchor": {
+        "section": "Products and powers",
+        "snippet": "one can define nonnegative integer powers of an element"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Invertible element",
+      "anchor": {
+        "section": "Invertible elements",
+        "snippet": "An element x is called invertible if there exists an element y"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness of inverses",
+      "anchor": {
+        "section": "Invertible elements",
+        "snippet": "Inverses, if they exist, are unique"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Negative powers",
+      "anchor": {
+        "section": "Invertible elements",
+        "snippet": "one can define negative powers of x"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Invertible elements form a group",
+      "anchor": {
+        "section": "Invertible elements",
+        "snippet": "The set of all invertible elements in a monoid"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Not every monoid embeds in a group",
+      "anchor": {
+        "section": "Grothendieck group",
+        "snippet": "Not every monoid sits inside a group"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Cancellation property",
+      "anchor": {
+        "section": "Grothendieck group",
+        "snippet": "has the cancellation property (or is cancellative)"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Grothendieck group embedding",
+      "anchor": {
+        "section": "Grothendieck group",
+        "snippet": "can always be embedded in a group via the Grothendieck group construction"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Finite cancellative monoid is a group",
+      "anchor": {
+        "section": "Grothendieck group",
+        "snippet": "If a monoid has the cancellation property and is finite , then it is in fact a group"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cancellative elements form a submonoid",
+      "anchor": {
+        "section": "Grothendieck group",
+        "snippet": "The right- and left-cancellative elements of a monoid each in turn form a submonoid"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Commutativity suffices for Grothendieck construction",
+      "anchor": {
+        "section": "Grothendieck group",
+        "snippet": "commutativity is sufficient"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Inverse monoid",
+      "anchor": {
+        "section": "Types of monoids",
+        "snippet": "An inverse monoid is a monoid where for every a in M"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cancellative inverse monoid is a group",
+      "anchor": {
+        "section": "Types of monoids",
+        "snippet": "If an inverse monoid is cancellative, then it is a group"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Zerosumfree monoid",
+      "anchor": {
+        "section": "Types of monoids",
+        "snippet": "a zerosumfree monoid is an additively written monoid"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "M-act",
+      "anchor": {
+        "section": "Acts and operator monoids",
+        "snippet": "a (left) M -act (or left act over M )"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Operator monoid",
+      "anchor": {
+        "section": "Acts and operator monoids",
+        "snippet": "is also known as an operator monoid"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Monoid homomorphism",
+      "anchor": {
+        "section": "Monoid homomorphisms",
+        "snippet": "A homomorphism between two monoids"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Semigroup homomorphism need not be a monoid homomorphism",
+      "anchor": {
+        "section": "Monoid homomorphisms",
+        "snippet": "Not every semigroup homomorphism between monoids is a monoid homomorphism"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Semigroup homomorphism between groups is a group homomorphism",
+      "anchor": {
+        "section": "Monoid homomorphisms",
+        "snippet": "a semigroup homomorphism between groups is always a group homomorphism"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Monoid isomorphism",
+      "anchor": {
+        "section": "Monoid homomorphisms",
+        "snippet": "A bijective monoid homomorphism is called a monoid isomorphism"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Monoid presentation",
+      "anchor": {
+        "section": "Equational presentation",
+        "snippet": "Monoids may be given a presentation"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetric closure of a relation",
+      "anchor": {
+        "section": "Equational presentation",
+        "snippet": "one defines its symmetric closure as"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Bicyclic monoid",
+      "anchor": {
+        "section": "Equational presentation",
+        "snippet": "is the equational presentation for the bicyclic monoid"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Plactic monoid of degree 2",
+      "anchor": {
+        "section": "Equational presentation",
+        "snippet": "is the plactic monoid of degree 2"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Monoid as one-object category",
+      "anchor": {
+        "section": "Relation to category theory",
+        "snippet": "A monoid is, essentially, the same thing as a category with a single object"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Category construction from a monoid",
+      "anchor": {
+        "section": "Relation to category theory",
+        "snippet": "one can construct a small category with only one object"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Monoid homomorphisms as functors",
+      "anchor": {
+        "section": "Relation to category theory",
+        "snippet": "monoid homomorphisms are just functors between single object categories"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Category of monoids Mon",
+      "anchor": {
+        "section": "Relation to category theory",
+        "snippet": "also form their own category"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Monoid object",
+      "anchor": {
+        "section": "Relation to category theory",
+        "snippet": "There is also a notion of monoid object"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Fold operation",
+      "anchor": {
+        "section": "Monoids in computer science",
+        "snippet": "the fold operation is defined as follows"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Complete monoid",
+      "anchor": {
+        "section": "Complete monoids",
+        "snippet": "A complete monoid is a commutative monoid equipped with an infinitary sum operation"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Ordered commutative monoid",
+      "anchor": {
+        "section": "Complete monoids",
+        "snippet": "An ordered commutative monoid is a commutative monoid M together with a partial ordering"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Continuous monoid",
+      "anchor": {
+        "section": "Complete monoids",
+        "snippet": "A continuous monoid is an ordered commutative monoid"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuous monoid is complete",
+      "anchor": {
+        "section": "Complete monoids",
+        "snippet": "If ( M , ≤) is a continuous monoid, then for any index set I"
+      },
+      "provenance": "ai-agent1"
+    }
+  ]
+}

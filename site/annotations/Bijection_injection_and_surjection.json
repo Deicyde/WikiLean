@@ -1,0 +1,393 @@
+{
+  "slug": "Bijection_injection_and_surjection",
+  "wikipedia_title": "Bijection, injection and surjection",
+  "display_title": "Bijection, injection and surjection",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Injective function (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The function is injective , or one-to-one , if each element of the codomain is mapped to by at most one element of the domain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Injective",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Function.Injective (f a = f b → a = b) is the Lean-core definition used throughout Mathlib; Mathlib.Logic.Function.Defs builds on it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Surjective function (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The function is surjective , or onto , if each element of the codomain is mapped to by at least one element of the domain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Surjective",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Function.Surjective (∀ b, ∃ a, f a = b) is the Lean-core definition used throughout Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bijective function (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The function is bijective ( one-to-one and onto , one-to-one correspondence , or invertible ) if each element of the codomain is mapped to by exactly one element of the domain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Bijective",
+        "module": "Mathlib.Logic.Function.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Function.Bijective is defined as Injective f ∧ Surjective f in Mathlib.Logic.Function.Defs.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Relation holding for any function",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "In any case (for any function), the following holds:"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a vague meta-statement with no single corresponding declaration to formalize.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Injection",
+      "anchor": {
+        "section": "Injection",
+        "snippet": "A function is injective ( one-to-one ) if each possible element of the codomain is mapped to by at most one argument."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Injective",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Same Function.Injective definition (Lean core), matching the formal Injection section verbatim.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Injective iff left-invertible",
+      "anchor": {
+        "section": "Injection",
+        "snippet": "is left- invertible"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.injective_iff_hasLeftInverse",
+        "module": "Mathlib.Logic.Function.Basic",
+        "match_kind": "exact"
+      },
+      "note": "injective_iff_hasLeftInverse states Injective f ↔ HasLeftInverse f, verified in Mathlib.Logic.Function.Basic.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Injection induces bijection onto image",
+      "anchor": {
+        "section": "Injection",
+        "snippet": "every injection induces a bijection onto its image"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.ofInjective",
+        "module": "Mathlib.Logic.Equiv.Set",
+        "match_kind": "exact"
+      },
+      "note": "Equiv.ofInjective builds α ≃ range f from an injective f, the bijection onto the image.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Composition of injections is injective",
+      "anchor": {
+        "section": "Injection",
+        "snippet": "The composition of two injections is again an injection"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Injective.comp",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Function.Injective.comp (Lean core, used in Mathlib.Logic.Function.Defs) gives Injective g → Injective f → Injective (g ∘ f).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every embedding is injective",
+      "anchor": {
+        "section": "Injection",
+        "snippet": "Every embedding is injective."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Embedding.injective",
+        "module": "Mathlib.Logic.Embedding.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Function.Embedding.injective extracts injectivity from the bundled embedding type in Mathlib.Logic.Embedding.Basic.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Surjection",
+      "anchor": {
+        "section": "Surjection",
+        "snippet": "A function is surjective or onto if each element of the codomain is mapped to by at least one element of the domain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Surjective",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Same Function.Surjective definition (Lean core) matching the formal Surjection section.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Surjective iff right-invertible",
+      "anchor": {
+        "section": "Surjection",
+        "snippet": "is surjective if and only if it is right-invertible"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.surjective_iff_hasRightInverse",
+        "module": "Mathlib.Logic.Function.Basic",
+        "match_kind": "exact"
+      },
+      "note": "surjective_iff_hasRightInverse states Surjective f ↔ HasRightInverse f, verified in Mathlib.Logic.Function.Basic.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Surjection induces bijection from quotient",
+      "anchor": {
+        "section": "Surjection",
+        "snippet": "every surjection induces a bijection from a quotient set of its domain to its codomain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Setoid.quotientKerEquivOfSurjective",
+        "module": "Mathlib.Data.Setoid.Basic",
+        "match_kind": "exact"
+      },
+      "note": "quotientKerEquivOfSurjective gives Quotient (ker f) ≃ β from a surjection, i.e. a bijection from the quotient by the kernel relation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Composition of surjections is surjective",
+      "anchor": {
+        "section": "Surjection",
+        "snippet": "The composition of two surjections is again a surjection"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Surjective.comp",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Function.Surjective.comp (Lean core, used in Mathlib.Logic.Function.Defs) gives surjectivity of g ∘ f.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bijection",
+      "anchor": {
+        "section": "Bijection",
+        "snippet": "A function is bijective if it is both injective and surjective."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Bijective",
+        "module": "Mathlib.Logic.Function.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Function.Bijective := Injective f ∧ Surjective f matches this definition verbatim.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bijective iff invertible",
+      "anchor": {
+        "section": "Bijection",
+        "snippet": "is bijective if and only if it is invertible"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.bijective_iff_has_inverse",
+        "module": "Mathlib.Logic.Function.Basic",
+        "match_kind": "exact"
+      },
+      "note": "bijective_iff_has_inverse states Bijective f ↔ ∃ g, LeftInverse g f ∧ RightInverse g f.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Composition of bijections is bijective",
+      "anchor": {
+        "section": "Bijection",
+        "snippet": "The composition of two bijections is again a bijection"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Bijective.comp",
+        "module": "Mathlib.Logic.Function.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Function.Bijective.comp proves Bijective g → Bijective f → Bijective (g ∘ f) in Mathlib.Logic.Function.Defs.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bijections form the symmetric group",
+      "anchor": {
+        "section": "Bijection",
+        "snippet": "form a group under composition, called the symmetric group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.permGroup",
+        "module": "Mathlib.Algebra.Group.End",
+        "match_kind": "exact"
+      },
+      "note": "Equiv.Perm.permGroup is the Group instance on self-bijections Equiv.Perm α, i.e. the symmetric group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Same cardinality",
+      "anchor": {
+        "section": "Cardinality",
+        "snippet": "the two sets are said to have the same cardinality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.eq",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Cardinal.eq states #α = #β ↔ Nonempty (α ≃ β), i.e. equal cardinality iff a bijection exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fewer or equal cardinality via injection",
+      "anchor": {
+        "section": "Cardinality",
+        "snippet": "has fewer than or the same number of elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.le_def",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "Cardinal.le_def states #α ≤ #β ↔ Nonempty (α ↪ β), capturing ≤ cardinality via an injection/embedding.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Identity function",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The identity function id X for every non-empty set X"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.bijective_id",
+        "module": "Mathlib.Logic.Function.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Function.bijective_id proves the identity function is bijective (Mathlib drops the non-emptiness hypothesis).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Exponential restricted to image and logarithm",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the exponential function with its codomain restricted to its image"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.expOrderIso",
+        "module": "Mathlib.Analysis.SpecialFunctions.Exp",
+        "match_kind": "special_case"
+      },
+      "note": "Real.expOrderIso : ℝ ≃o Ioi (0:ℝ) is exp with codomain restricted to its image (positive reals), a bijection whose inverse is the logarithm.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Image and preimage inclusions",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "One has always"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.image_preimage_subset",
+        "module": "Mathlib.Data.Set.Image",
+        "match_kind": "exact"
+      },
+      "note": "Set.image_preimage_subset (f '' f ⁻¹' s ⊆ s) and Set.subset_preimage_image (s ⊆ f ⁻¹' f '' s) give both always-holding inclusions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Surjection-injection decomposition",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "This decomposition as the composition of a surjection and an injection is unique up to an isomorphism"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Limits.IsImage.isoExt",
+        "module": "Mathlib.CategoryTheory.Limits.Shapes.Images",
+        "match_kind": "generalization"
+      },
+      "note": "IsImage.isoExt gives uniqueness-up-to-iso of (mono) image factorisations categorically, but the concrete Set-level surjection-then-injection factorization statement is not directly stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Correspondence with mono/epi/iso",
+      "anchor": {
+        "section": "Category theory",
+        "snippet": "correspond precisely to monomorphisms , epimorphisms , and isomorphisms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Types.mono_iff_injective",
+        "module": "Mathlib.CategoryTheory.Types.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Types.mono_iff_injective, Types.epi_iff_surjective, and Types.isIso_iff_bijective establish the correspondence in the category of types.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,1001 @@
+{
+  "slug": "Cayley-Hamilton_theorem",
+  "wikipedia_title": "Cayley–Hamilton theorem",
+  "display_title": "Cayley–Hamilton theorem",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "theorem",
+      "label": "Cayley–Hamilton theorem",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "satisfies its own characteristic equation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.aeval_self_charpoly",
+        "module": "Mathlib.LinearAlgebra.Matrix.Charpoly.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.aeval_self_charpoly` states `aeval M M.charpoly = 0`, exactly the Cayley–Hamilton theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Characteristic polynomial",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The characteristic polynomial of an"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.charpoly",
+        "module": "Mathlib.LinearAlgebra.Matrix.Charpoly.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.charpoly` is defined as `det (charmatrix M)`, the characteristic polynomial of a square matrix.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "(Lead)",
+          "snippet": "The characteristic polynomial of an"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle p_{A}(\\lambda )=\\lambda ^{n}+c_{n-1}\\lambda ^{n-1}+\\cdots +c_{1}\\lambda +c_{0}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle p_{A}(A)=A^{n}+c_{n-1}A^{n-1}+\\cdots +c_{1}A+c_{0}I_{n}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Aⁿ as linear combination of lower powers",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "it allows A n to be expressed as a linear combination of the lower matrix powers of A"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.pow_eq_aeval_mod_charpoly",
+        "module": "Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff",
+        "match_kind": "generalization"
+      },
+      "note": "`Matrix.pow_eq_aeval_mod_charpoly` writes `M^k = aeval M (X^k %ₘ charpoly)`, a polynomial of degree `< n`, covering `A^n` as a combination of lower powers.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "(Lead)",
+          "snippet": "it allows A n to be expressed as a linear combination of the lower matrix powers of A"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A^{n}=-c_{n-1}A^{n-1}-\\cdots -c_{1}A-c_{0}I_{n}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Minimal polynomial divides characteristic polynomial",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the minimal polynomial of a square matrix divides its characteristic polynomial"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.minpoly_dvd_charpoly",
+        "module": "Mathlib.LinearAlgebra.Matrix.Charpoly.Minpoly",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.minpoly_dvd_charpoly` states `minpoly K M ∣ M.charpoly` over a field.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "(Lead)",
+          "snippet": "the minimal polynomial of a square matrix divides its characteristic polynomial"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A^{n}=-c_{n-1}A^{n-1}-\\cdots -c_{1}A-c_{0}I_{n}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "1×1 matrix case",
+      "anchor": {
+        "section": "1 × 1 matrices",
+        "snippet": "the characteristic polynomial is given by p ( λ ) = λ − a"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.charpoly_diagonal",
+        "module": "Mathlib.LinearAlgebra.Matrix.Charpoly.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "No dedicated `Fin 1` lemma, but the value `X - C a` is a special case of `Matrix.charpoly_diagonal`/`charpoly_of_upperTriangular`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Concrete 2×2 verification",
+      "anchor": {
+        "section": "2 × 2 matrices",
+        "snippet": "As a concrete example, let"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A specific numeric worked example, not a named theorem in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "2 × 2 matrices",
+          "snippet": "As a concrete example, let"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A={\\begin{pmatrix}1&amp;2\\\\3&amp;4\\end{pmatrix}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}p(\\lambda )&amp;=\\det(\\lambda I_{2}-A)=\\det \\!{\\begin{pmatrix}\\lambda -1&amp;-2\\\\-3&amp;\\lambda -4\\end{pmatrix}}\\\\&amp;=(\\lambda -1)(\\lambda -4)-(-2)(-3)=\\lambda ^{2}-5\\lambda -2.\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Generic 2×2 matrix",
+      "anchor": {
+        "section": "2 × 2 matrices",
+        "snippet": "the characteristic polynomial is given by p ( λ ) = λ 2 − ( a + d ) λ + ( ad − bc )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.charpoly_fin_two",
+        "module": "Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.charpoly_fin_two` gives `charpoly = X^2 - C(trace)·X + C(det)`, matching the generic 2×2 formula.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "2 × 2 matrices",
+          "snippet": "the characteristic polynomial is given by p ( λ ) = λ 2 − ( a + d ) λ + ( ad − bc )"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle p(A)=A^{2}-(a+d)A+(ad-bc)I_{2}={\\begin{pmatrix}0&amp;0\\\\0&amp;0\\end{pmatrix}};}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverse as polynomial in A",
+      "anchor": {
+        "section": "Determinant and inverse matrix",
+        "snippet": "one with nonzero determinant"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.mul_adjugate",
+        "module": "Mathlib.LinearAlgebra.Matrix.Adjugate",
+        "match_kind": null
+      },
+      "note": "`Matrix.mul_adjugate` (`A·adj A = det·1`) plus `nonsing_inv` give the inverse via the adjugate, but its explicit form as a polynomial in `A` is not a separate lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Coefficients as elementary symmetric polynomials of eigenvalues",
+      "anchor": {
+        "section": "Determinant and inverse matrix",
+        "snippet": "are given by the elementary symmetric polynomials of the eigenvalues of A"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.det_eq_prod_roots_charpoly",
+        "module": "Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs",
+        "match_kind": "special_case"
+      },
+      "note": "Only the extreme symmetric functions are formalized — `det_eq_prod_roots_charpoly` and `trace_eq_sum_roots_charpoly` — not the general esymm-of-eigenvalues identity for every coefficient.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Determinant and inverse matrix",
+          "snippet": "are given by the elementary symmetric polynomials of the eigenvalues of A"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle s_{k}=\\sum _{i=1}^{n}\\lambda _{i}^{k}=\\operatorname {tr} (A^{k}),}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Coefficients via Bell polynomials",
+      "anchor": {
+        "section": "Determinant and inverse matrix",
+        "snippet": "is given in terms of complete exponential Bell polynomials"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `Bell` is the set-partition Bell number, not the complete exponential Bell-polynomial formula for charpoly coefficients.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Determinant and inverse matrix",
+          "snippet": "is given in terms of complete exponential Bell polynomials"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c_{n-k}={\\frac {(-1)^{k}}{k!}}B_{k}(s_{1},-1!s_{2},2!s_{3},\\ldots ,(-1)^{k-1}(k-1)!s_{k}).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Determinant trace identity",
+      "anchor": {
+        "section": "Determinant and inverse matrix",
+        "snippet": "the determinant can be written as the trace identity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Newton/Faddeev-style trace identity for the determinant is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Determinant and inverse matrix",
+          "snippet": "the determinant can be written as the trace identity"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\det(A)={\\frac {1}{n!}}B_{n}(s_{1},-1!s_{2},2!s_{3},\\ldots ,(-1)^{n-1}(n-1)!s_{n}).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverse trace identity",
+      "anchor": {
+        "section": "Determinant and inverse matrix",
+        "snippet": "one is led to an expression for the inverse of A as a trace identity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The trace-identity expression for the matrix inverse is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Determinant and inverse matrix",
+          "snippet": "one is led to an expression for the inverse of A as a trace identity"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle -(-1)^{n}\\det(A)I_{n}=A(A^{n-1}+c_{n-1}A^{n-2}+\\cdots +c_{1}I_{n}),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}A^{-1}&amp;={\\frac {(-1)^{n-1}}{\\det A}}(A^{n-1}+c_{n-1}A^{n-2}+\\cdots +c_{1}I_{n}),\\\\[5pt]&amp;={\\frac {1}{\\det A}}\\sum _{k=0}^{n-1}(-1)^{n+k-1}{\\frac {A^{n-k-1}}{k!}}B_{k}(s_{1},-1!s_{2},2!s_{3},\\ldots ,(-1)^{k-1}(k-1)!s_{k}).\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Coefficients via Mercator series of the determinant",
+      "anchor": {
+        "section": "Determinant and inverse matrix",
+        "snippet": "relies on the following alternative expression for the determinant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Mercator-series (det = exp tr log) expression for charpoly coefficients is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Determinant and inverse matrix",
+          "snippet": "relies on the following alternative expression for the determinant"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle p(\\lambda )=\\det(\\lambda I_{n}-A)=\\lambda ^{n}\\exp(\\operatorname {tr} (\\log(I_{n}-A/\\lambda ))).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle p(\\lambda )=\\lambda ^{n}\\exp \\left(-\\operatorname {tr} \\sum _{m=1}^{\\infty }{({A \\over \\lambda })^{m} \\over m}\\right),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c_{n-m}={\\frac {(-1)^{m}}{m!}}{\\begin{vmatrix}\\operatorname {tr} A&amp;m-1&amp;0&amp;\\cdots \\\\\\operatorname {tr} A^{2}&amp;\\operatorname {tr} A&amp;m-2&amp;\\cdots \\\\\\vdots &amp;\\vdots &amp;&amp;&amp;\\vdots \\\\\\operatorname {tr} A^{m-1}&amp;\\operatorname {tr} A^{m-2}&amp;\\cdots &amp;\\cdots &amp;1\\\\\\operatorname {tr} A^{m}&amp;\\operatorname {tr} A^{m-1}&amp;\\cdots &amp;\\cdots &amp;\\operatorname {tr} A\\end{vmatrix}}~.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "First few Bell polynomials",
+      "anchor": {
+        "section": "Determinant and inverse matrix",
+        "snippet": "the first few Bell polynomials are"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Complete exponential Bell polynomials are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "3×3 coefficients via Bell polynomials",
+      "anchor": {
+        "section": "Determinant and inverse matrix",
+        "snippet": "Using these to specify the coefficients c i of the characteristic polynomial"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A worked 3×3 Bell-polynomial coefficient example with no corresponding Mathlib formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Formulas for c_{n−1} and c_{n−2}",
+      "anchor": {
+        "section": "Determinant and inverse matrix",
+        "snippet": "always give the coefficients c n −1 of λ n −1 and c n −2 of λ n −2"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.trace_eq_neg_charpoly_nextCoeff",
+        "module": "Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff",
+        "match_kind": "special_case"
+      },
+      "note": "`trace_eq_neg_charpoly_nextCoeff` gives `c_{n-1} = -trace`, but the `c_{n-2}` (principal-minor) formula is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Determinant and inverse matrix",
+          "snippet": "always give the coefficients c n −1 of λ n −1 and c n −2 of λ n −2"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A^{3}-(\\operatorname {tr} A)A^{2}+{\\frac {1}{2}}\\left((\\operatorname {tr} A)^{2}-\\operatorname {tr} (A^{2})\\right)A-\\det(A)I_{3}=O,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\det(A)&amp;={\\frac {1}{3!}}B_{3}(s_{1},-1!s_{2},2!s_{3})={\\frac {1}{6}}(s_{1}^{3}+3s_{1}(-s_{2})+2s_{3})\\\\[5pt]&amp;={\\frac {1}{6}}\\left[(\\operatorname {tr} A)^{3}-3\\operatorname {tr} (A^{2})(\\operatorname {tr} A)+2\\operatorname {tr} (A^{3})\\right].\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Relationship among powers of A",
+      "anchor": {
+        "section": "n -th power of matrix",
+        "snippet": "always provides a relationship between the powers of A"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.pow_eq_aeval_mod_charpoly",
+        "module": "Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.pow_eq_aeval_mod_charpoly` reduces every power `M^k` modulo the charpoly, giving the relation among powers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Computing A⁴",
+      "anchor": {
+        "section": "n -th power of matrix",
+        "snippet": "Then, to calculate A 4 , observe"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A specific numeric computation of `A^4`, not a Mathlib theorem.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "n -th power of matrix",
+          "snippet": "Then, to calculate A 4 , observe"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}A^{3}&amp;=(5A+2I_{2})A=5A^{2}+2A=5(5A+2I_{2})+2A=27A+10I_{2},\\\\[1ex]A^{4}&amp;=A^{3}A=(27A+10I_{2})A=27A^{2}+10A=27(5A+2I_{2})+10A=145A+54I_{2}\\,.\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}A^{-1}&amp;={\\frac {1}{2}}\\left(A-5I_{2}\\right)~.\\\\[1ex]A^{-2}&amp;=A^{-1}A^{-1}={\\frac {1}{4}}\\left(A^{2}-10A+25I_{2}\\right)={\\frac {1}{4}}\\left((5A+2I_{2})-10A+25I_{2}\\right)={\\frac {1}{4}}\\left(-5A+27I_{2}\\right)~.\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Matrix power as polynomial of degree ≤ n−1",
+      "anchor": {
+        "section": "n -th power of matrix",
+        "snippet": "matrix power of any order k can be written as a matrix polynomial of degree at most"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.pow_eq_aeval_mod_charpoly",
+        "module": "Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.pow_eq_aeval_mod_charpoly` expresses `M^k` as `aeval M (X^k %ₘ charpoly)`, a polynomial of degree `< n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Analytic function via long division",
+      "anchor": {
+        "section": "Matrix functions",
+        "snippet": "the function can be expressed using long division as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Reducing an analytic function via long division by the charpoly is not formalized (only the polynomial `modByMonic` case exists).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Matrix functions",
+          "snippet": "the function can be expressed using long division as"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)=\\sum _{k=0}^{\\infty }a_{k}x^{k}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)=q(x)p(x)+r(x),}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Matrix function as polynomial of degree < n",
+      "anchor": {
+        "section": "Matrix functions",
+        "snippet": "can be expressed as a matrix polynomial of degree less than"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.aeval_eq_aeval_mod_charpoly",
+        "module": "Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff",
+        "match_kind": "special_case"
+      },
+      "note": "`Matrix.aeval_eq_aeval_mod_charpoly` formalizes the polynomial-function case `f(M) = (f %ₘ charpoly)(M)`, but not general analytic matrix functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Solving coefficients at the eigenvalues",
+      "anchor": {
+        "section": "Matrix functions",
+        "snippet": "evaluating the function f ( x ) at the n eigenvalues of A yields"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Determining the interpolating polynomial coefficients by evaluation at eigenvalues is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Matrix functions",
+          "snippet": "evaluating the function f ( x ) at the n eigenvalues of A yields"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle r(x)=c_{0}+c_{1}x+\\cdots +c_{n-1}x^{n-1}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(\\lambda _{i})=r(\\lambda _{i})=c_{0}+c_{1}\\lambda _{i}+\\cdots +c_{n-1}\\lambda _{i}^{n-1},\\qquad {\\text{for }}i=1,2,...,n.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(A)=\\sum _{k=0}^{n-1}c_{k}A^{k}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Repeated eigenvalues: derivative conditions",
+      "anchor": {
+        "section": "Matrix functions",
+        "snippet": "the first m − 1 derivatives of p ( x ) vanish at the eigenvalue"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hermite-style derivative matching conditions at repeated eigenvalues are not formalized for matrix functions.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Matrix functions",
+          "snippet": "the first m − 1 derivatives of p ( x ) vanish at the eigenvalue"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left.{\\frac {\\mathrm {d} ^{k}f(x)}{\\mathrm {d} x^{k}}}\\right|_{x=\\lambda }=\\left.{\\frac {\\mathrm {d} ^{k}r(x)}{\\mathrm {d} x^{k}}}\\right|_{x=\\lambda }\\qquad {\\text{for }}k=1,2,\\ldots ,m-1,}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Interpolation and Sylvester's formula",
+      "anchor": {
+        "section": "Matrix functions",
+        "snippet": "is essentially an interpolation problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Sylvester's matrix-function interpolation formula is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Computing e^{At}",
+      "anchor": {
+        "section": "Matrix functions",
+        "snippet": "For example, suppose the task is to find the polynomial representation of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A worked example computing `e^{At}` via Cayley–Hamilton, not a Mathlib theorem.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Matrix functions",
+          "snippet": "For example, suppose the task is to find the polynomial representation of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(A)=e^{At}\\qquad \\mathrm {where} \\qquad A={\\begin{pmatrix}1&amp;2\\\\0&amp;3\\end{pmatrix}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Rotation matrix from matrix exponential",
+      "anchor": {
+        "section": "Matrix functions",
+        "snippet": "As a further example, when considering"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Deriving a rotation matrix from a matrix exponential via Cayley–Hamilton is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Matrix functions",
+          "snippet": "As a further example, when considering"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(A)=e^{At}\\qquad \\mathrm {where} \\qquad A={\\begin{pmatrix}0&amp;1\\\\-1&amp;0\\end{pmatrix}},}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Exponential map and Rodrigues' formula",
+      "anchor": {
+        "section": "Matrix functions",
+        "snippet": "Standard examples of such usage is the exponential map"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Rodrigues' rotation formula via the exponential map is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Matrix functions",
+          "snippet": "Standard examples of such usage is the exponential map"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\exp :{\\mathfrak {g}}\\rightarrow G;\\qquad tX\\mapsto e^{tX}=\\sum _{n=0}^{\\infty }{\\frac {t^{n}X^{n}}{n!}}=I+tX+{\\frac {t^{2}X^{2}}{2}}+\\cdots ,t\\in \\mathbb {R} ,X\\in {\\mathfrak {g}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e^{i(\\theta /2)({\\hat {\\mathbf {n} }}\\cdot \\sigma )}=I_{2}\\cos {\\frac {\\theta }{2}}+i({\\hat {\\mathbf {n} }}\\cdot \\sigma )\\sin {\\frac {\\theta }{2}},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e^{i\\theta ({\\hat {\\mathbf {n} }}\\cdot \\mathbf {J} )}=I_{3}+i({\\hat {\\mathbf {n} }}\\cdot \\mathbf {J} )\\sin \\theta +({\\hat {\\mathbf {n} }}\\cdot \\mathbf {J} )^{2}(\\cos \\theta -1),}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Minimal polynomial of algebraic integers",
+      "anchor": {
+        "section": "Algebraic number theory",
+        "snippet": "an effective tool for computing the minimal polynomial of algebraic integers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Algebra.aeval_self_charpoly_lmul",
+        "module": "Mathlib.LinearAlgebra.Charpoly.Basic",
+        "match_kind": null
+      },
+      "note": "`minpoly` is defined and `Algebra.aeval_self_charpoly_lmul` annihilates an element by its multiplication-map charpoly, but the algebraic-integer computation method itself is not a formalized result.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Algebraic number theory",
+          "snippet": "an effective tool for computing the minimal polynomial of algebraic integers"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\cdot \\alpha :\\mathbb {Q} [\\alpha _{1},\\ldots ,\\alpha _{k}]\\to \\mathbb {Q} [\\alpha _{1},\\ldots ,\\alpha _{k}]}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Consequence of Jordan normal form",
+      "anchor": {
+        "section": "Proofs",
+        "snippet": "is an immediate consequence of the existence of the Jordan normal form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Jordan normal form is not formalized in Mathlib, so this proof route is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Theorem holds for diagonalizable matrices",
+      "anchor": {
+        "section": "Preliminaries",
+        "snippet": "if A is diagonalizable , then the Cayley–Hamilton theorem must hold for A"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.aeval_self_charpoly",
+        "module": "Mathlib.LinearAlgebra.Matrix.Charpoly.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves Cayley–Hamilton directly over any commutative ring, so the diagonalizable case is subsumed but not stated separately (no diagonalizable-matrix predicate).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Preliminaries",
+          "snippet": "if A is diagonalizable , then the Cayley–Hamilton theorem must hold for A"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}p(A)\\cdot v&amp;=A^{n}\\cdot v+c_{n-1}A^{n-1}\\cdot v+\\cdots +c_{1}A\\cdot v+c_{0}I_{n}\\cdot v\\\\[6pt]&amp;=\\lambda ^{n}v+c_{n-1}\\lambda ^{n-1}v+\\cdots +c_{1}\\lambda v+c_{0}v=p(\\lambda )v,\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A=XDX^{-1},\\quad D=\\operatorname {diag} (\\lambda _{i}),\\quad i=1,2,...,n}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle p_{A}(\\lambda )=|\\lambda I-A|=\\prod _{i=1}^{n}(\\lambda -\\lambda _{i})\\equiv \\sum _{k=0}^{n}c_{k}\\lambda ^{k}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle p_{A}(A)=\\sum c_{k}A^{k}=Xp_{A}(D)X^{-1}=XCX^{-1}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle C_{ii}=\\sum _{k=0}^{n}c_{k}\\lambda _{i}^{k}=\\prod _{j=1}^{n}(\\lambda _{i}-\\lambda _{j})=0,\\qquad C_{i,j\\neq i}=0}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\therefore p_{A}(A)=XCX^{-1}=O.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Diagonalizable matrices are dense",
+      "anchor": {
+        "section": "Preliminaries",
+        "snippet": "diagonalizable complex square matrices of a given size is dense in the set of all such square matrices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Density of diagonalizable complex matrices is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Preliminaries",
+          "snippet": "diagonalizable complex square matrices of a given size is dense in the set of all such square matrices"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e(D)=\\left\\{{\\begin{pmatrix}0&amp;\\cdots &amp;0\\\\\\vdots &amp;\\ddots &amp;\\vdots \\\\0&amp;\\cdots &amp;0\\end{pmatrix}}\\right\\}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Adjugate matrix and fundamental relations",
+      "anchor": {
+        "section": "Adjugate matrices",
+        "snippet": "the transpose of its cofactor matrix"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.adjugate",
+        "module": "Mathlib.LinearAlgebra.Matrix.Adjugate",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.adjugate` is defined, with the fundamental relations `Matrix.mul_adjugate`/`adjugate_mul` giving `A·adj A = adj A·A = det·1`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Adjugate matrices",
+          "snippet": "the transpose of its cofactor matrix"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {adj} (M)\\cdot M=\\det(M)I_{n}=M\\cdot \\operatorname {adj} (M)~.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Euclidean division by a monic polynomial",
+      "anchor": {
+        "section": "A synthesis of the first two proofs",
+        "snippet": "Euclidean division by a monic polynomial P is defined, and always produces a unique quotient and remainder"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.div_modByMonic_unique",
+        "module": "Mathlib.Algebra.Polynomial.Div",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial.divByMonic`/`modByMonic` with `div_modByMonic_unique` give existence and uniqueness of quotient and remainder for division by a monic polynomial.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "adj(A) is a polynomial in A",
+      "anchor": {
+        "section": "A synthesis of the first two proofs",
+        "snippet": "adj( A ) can always be expressed as a polynomial in A"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.adjugate",
+        "module": "Mathlib.LinearAlgebra.Matrix.Adjugate",
+        "match_kind": null
+      },
+      "note": "`Matrix.adjugate` is defined and used (as `adjugate (charmatrix M)`) inside the charpoly proof, but its expression as a polynomial in `A` is not a standalone lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Permanent counterexample to bogus proof",
+      "anchor": {
+        "section": "A bogus \"proof\": p ( A ) = det( AI n − A ) = det( A − A ) = 0",
+        "snippet": "if we consider the permanent function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.permanent",
+        "module": "Mathlib.LinearAlgebra.Matrix.Permanent",
+        "match_kind": null
+      },
+      "note": "`Matrix.permanent` is defined, but the pedagogical counterexample showing the bogus proof fails is not a formalized statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Theorem over any commutative ring",
+      "anchor": {
+        "section": "Abstraction and generalizations",
+        "snippet": "holds for matrices with entries in any commutative ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.aeval_self_charpoly",
+        "module": "Mathlib.LinearAlgebra.Matrix.Charpoly.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.aeval_self_charpoly` is already stated for matrices over an arbitrary commutative ring `R`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Source of the Nakayama lemma",
+      "anchor": {
+        "section": "Abstraction and generalizations",
+        "snippet": "is the source of the celebrated Nakayama lemma"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.eq_bot_of_le_smul_of_le_jacobson_bot",
+        "module": "Mathlib.RingTheory.Nakayama",
+        "match_kind": null
+      },
+      "note": "Nakayama's lemma is formalized (e.g. `Submodule.eq_bot_of_le_smul_of_le_jacobson_bot`), though the historical link to the determinant trick is not itself a statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Theorem over the quaternions",
+      "anchor": {
+        "section": "Abstraction and generalizations",
+        "snippet": "also holds for matrices over the quaternions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A Cayley–Hamilton theorem for matrices over the (noncommutative) quaternions is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Explicit expression for coefficients c_i",
+      "anchor": {
+        "section": "Remarks",
+        "snippet": "An explicit expression for the coefficients c i is provided by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A general explicit (Newton/power-sum) formula for all charpoly coefficients is not formalized; only `det` and `trace` extremes exist.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Remarks",
+          "snippet": "An explicit expression for the coefficients c i is provided by"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c_{i}=\\sum _{k_{1},k_{2},\\ldots ,k_{n}}\\prod _{l=1}^{n}{\\frac {(-1)^{k_{l}+1}}{l^{k_{l}}k_{l}!}}\\operatorname {tr} (A^{l})^{k_{l}},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{l=1}^{n}lk_{l}=n-i.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Faddeev–LeVerrier recursive algorithm",
+      "anchor": {
+        "section": "Remarks",
+        "snippet": "There also exists an equivalent, related recursive algorithm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Faddeev–LeVerrier algorithm is not present in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Remarks",
+          "snippet": "There also exists an equivalent, related recursive algorithm"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {\\partial p(\\lambda )}{\\partial \\lambda }}=p(\\lambda )\\sum _{m=0}^{\\infty }\\lambda ^{-(m+1)}\\operatorname {tr} A^{m}=p(\\lambda )~\\operatorname {tr} {\\frac {I}{\\lambda I-A}}\\equiv \\operatorname {tr} B~,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}M_{0}&amp;\\equiv O&amp;c_{n}&amp;=1\\qquad &amp;(k=0)\\\\[5pt]M_{k}&amp;\\equiv AM_{k-1}-{\\frac {1}{k-1}}(\\operatorname {tr} (AM_{k-1}))I\\qquad \\qquad &amp;c_{n-k}&amp;=-{\\frac {1}{k}}\\operatorname {tr} (AM_{k})\\qquad &amp;k=1,\\ldots ,n~.\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lambda p'-np=\\operatorname {tr} (AB)~,}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Theorem for split-quaternions",
+      "anchor": {
+        "section": "Remarks",
+        "snippet": "The theorem holds as well for the slightly less well-behaved split-quaternions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A Cayley–Hamilton theorem over split-quaternions is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Modified theorem for octonions",
+      "anchor": {
+        "section": "Remarks",
+        "snippet": "a modified Cayley–Hamilton theorem still holds for the octonions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A modified Cayley–Hamilton theorem for octonions is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

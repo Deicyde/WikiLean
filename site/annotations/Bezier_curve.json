@@ -1,0 +1,777 @@
+{
+  "slug": "Bezier_curve",
+  "wikipedia_title": "Bézier curve",
+  "display_title": "Bézier curve",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Bézier curve",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a parametric curve used in computer graphics and related fields"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Bézier curve definition (only the underlying Bernstein polynomials).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Control points define the curve",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "defines a smooth, continuous curve by means of a formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Bézier curve construction from control points exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Order of a Bézier curve",
+      "anchor": {
+        "section": "Specific cases",
+        "snippet": "where n is called the order of the curve"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bézier curves and their order are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Endpoints are first and last control points",
+      "anchor": {
+        "section": "Specific cases",
+        "snippet": "The first and last control points are always the endpoints of the curve"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "bernsteinPolynomial.eval_at_0",
+        "module": "Mathlib.RingTheory.Polynomial.Bernstein",
+        "match_kind": null
+      },
+      "note": "Bernstein basis evaluation at 0/1 (eval_at_0, eval_at_1) underlies B(0)=P₀, B(1)=Pₙ, but Bézier curves themselves are absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear Bézier curve",
+      "anchor": {
+        "section": "Linear Bézier curves",
+        "snippet": "a linear Bézier curve is simply a line between those two points"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineMap.lineMap",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineMap",
+        "match_kind": "generalization"
+      },
+      "note": "`AffineMap.lineMap p₀ p₁` is exactly the linear Bézier curve, generalized to any affine space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linear Bézier equals linear interpolation",
+      "anchor": {
+        "section": "Linear Bézier curves",
+        "snippet": "is equivalent to linear interpolation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineMap.lineMap_apply_module",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineMap",
+        "match_kind": "generalization"
+      },
+      "note": "lineMap_apply_module states lineMap p₀ p₁ c = (1-c)•p₀ + c•p₁, i.e. linear interpolation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quadratic Bézier curve",
+      "anchor": {
+        "section": "Quadratic Bézier curves",
+        "snippet": "A quadratic Bézier curve is the path traced by the function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "bernsteinPolynomial",
+        "module": "Mathlib.RingTheory.Polynomial.Bernstein",
+        "match_kind": null
+      },
+      "note": "The degree-2 Bernstein basis is formalized but the quadratic Bézier curve is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tangents intersect at P1",
+      "anchor": {
+        "section": "Quadratic Bézier curves",
+        "snippet": "the tangents to the curve at P 0 and P 2 intersect at P 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This geometric tangency claim about quadratic Bézier curves is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Second derivative of quadratic Bézier",
+      "anchor": {
+        "section": "Quadratic Bézier curves",
+        "snippet": "The second derivative of the Bézier curve with respect to t is"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "bernsteinPolynomial.derivative_succ",
+        "module": "Mathlib.RingTheory.Polynomial.Bernstein",
+        "match_kind": null
+      },
+      "note": "Bernstein-polynomial derivative lemmas give the building blocks, but no Bézier second-derivative statement exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cubic Bézier curve",
+      "anchor": {
+        "section": "Cubic Bézier curves",
+        "snippet": "in the plane or in higher-dimensional space define a cubic Bézier curve"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "bernsteinPolynomial",
+        "module": "Mathlib.RingTheory.Polynomial.Bernstein",
+        "match_kind": null
+      },
+      "note": "The degree-3 Bernstein basis exists but the cubic Bézier curve is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Four points convert to a cubic Bézier",
+      "anchor": {
+        "section": "Cubic Bézier curves",
+        "snippet": "Any series of 4 distinct points can be converted to a cubic Bézier curve that goes through all 4 points in order"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bézier interpolation through four points is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Derivative of cubic Bézier",
+      "anchor": {
+        "section": "Cubic Bézier curves",
+        "snippet": "The derivative of the cubic Bézier curve with respect to t is"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "bernsteinPolynomial.derivative_succ",
+        "module": "Mathlib.RingTheory.Polynomial.Bernstein",
+        "match_kind": null
+      },
+      "note": "Bernstein derivative recurrence is formalized, but the cubic Bézier derivative statement is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tschirnhausen cubic case",
+      "anchor": {
+        "section": "Cubic Bézier curves",
+        "snippet": "the resulting cubic Bézier curve is an arc of a (scaled and translated) Tschirnhausen cubic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Tschirnhausen cubic and this special case are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Recursive definition of Bézier curve",
+      "anchor": {
+        "section": "Recursive definition",
+        "snippet": "A recursive definition for the Bézier curve of degree n expresses it as a point-to-point linear combination"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The recursive (de Casteljau) definition of Bézier curves is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Explicit formula",
+      "anchor": {
+        "section": "Explicit definition",
+        "snippet": "The formula can be expressed explicitly as follows"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "bernsteinPolynomial",
+        "module": "Mathlib.RingTheory.Polynomial.Bernstein",
+        "match_kind": null
+      },
+      "note": "The Bernstein basis used in the explicit Bézier sum is formalized, but the Bézier curve sum itself is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Explicit formula for n=5",
+      "anchor": {
+        "section": "Explicit definition",
+        "snippet": "For example, when n = 5"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "bernsteinPolynomial",
+        "module": "Mathlib.RingTheory.Polynomial.Bernstein",
+        "match_kind": null
+      },
+      "note": "The degree-5 Bernstein basis is an instance of the general definition, but no Bézier curve example exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bernstein basis polynomials",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "are known as Bernstein basis polynomials of degree n"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "bernsteinPolynomial",
+        "module": "Mathlib.RingTheory.Polynomial.Bernstein",
+        "match_kind": "exact"
+      },
+      "note": "`bernsteinPolynomial R n ν = (choose n ν) * X^ν * (1-X)^(n-ν)` is exactly the Bernstein basis polynomial.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Control points",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "The points P i are called control points for the Bézier curve"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Control points as Bézier terminology are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bézier polygon",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "is called the Bézier polygon"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Bézier (control) polygon is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convex hull contains the curve",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "The convex hull of the Bézier polygon contains the Bézier curve"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "bernsteinPolynomial.sum",
+        "module": "Mathlib.RingTheory.Polynomial.Bernstein",
+        "match_kind": null
+      },
+      "note": "The Bernstein partition-of-unity (sum = 1) plus nonnegativity and Mathlib's convexHull machinery would give this, but it is not stated for Bézier curves.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Polynomial form",
+      "anchor": {
+        "section": "Polynomial form",
+        "snippet": "express the Bézier curve as a polynomial"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The monomial-basis polynomial form of a Bézier curve is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Endpoint interpolation property",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "this is the so-called endpoint interpolation property"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "bernsteinPolynomial.eval_at_0",
+        "module": "Mathlib.RingTheory.Polynomial.Bernstein",
+        "match_kind": null
+      },
+      "note": "Bernstein eval_at_0/eval_at_1 give the endpoint values underlying interpolation, but the Bézier property is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Curve is a line iff control points collinear",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The curve is a line if and only if all the control points are collinear"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Collinear but not this characterization for Bézier curves.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tangency at endpoints",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "is tangent to the first and last section of the Bézier polygon"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Endpoint tangency to the control polygon is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Subdivision into subcurves",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "A curve can be split at any point into two subcurves"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bézier subdivision is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Circle not exactly a Bézier curve",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "cannot be described exactly by a Bézier or piecewise Bézier curve"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This impossibility result is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Degree elevation equivalence",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Every quadratic Bézier curve is also a cubic Bézier curve"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Degree elevation of Bézier curves is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Variation diminishing property",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Bézier curves have the variation diminishing property"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The variation diminishing property is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "No local control",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "There is no local control in degree n Bézier curves"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This qualitative property of Bézier curves is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Self-intersection or cusp possible",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "A Bézier curve of order higher than two may intersect itself or have a cusp"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Self-intersection/cusp behavior of Bézier curves is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quadratic Bézier is a parabolic segment",
+      "anchor": {
+        "section": "Second-order curve is a parabolic segment",
+        "snippet": "A quadratic Bézier curve is also a segment of a parabola"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Parabolas and this identification are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Endpoint tangents meet at control point",
+      "anchor": {
+        "section": "Second-order curve is a parabolic segment",
+        "snippet": "Tangents to the parabola at the endpoints of the curve (A and B) intersect at its control point (C)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This parabola tangent construction is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vertex construction",
+      "anchor": {
+        "section": "Second-order curve is a parabolic segment",
+        "snippet": "the tangent to the curve which is perpendicular to CD (dashed cyan line) defines its vertex (V)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This geometric vertex construction is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Directrix construction",
+      "anchor": {
+        "section": "Second-order curve is a parabolic segment",
+        "snippet": "the line passing through G and perpendicular to CD is the directrix (solid green)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Parabola directrix construction is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Focus construction",
+      "anchor": {
+        "section": "Second-order curve is a parabolic segment",
+        "snippet": "The focus (F) is at the intersection of the axis and a line passing through E and perpendicular to CD"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Parabola focus construction is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Derivative of order-n curve",
+      "anchor": {
+        "section": "Derivative",
+        "snippet": "The derivative for a curve of order n is"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "bernsteinPolynomial.derivative_succ",
+        "module": "Mathlib.RingTheory.Polynomial.Bernstein",
+        "match_kind": null
+      },
+      "note": "The Bernstein derivative recurrence underlies the order-n Bézier derivative formula, but the latter is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "de Casteljau linear construction",
+      "anchor": {
+        "section": "Linear curves",
+        "snippet": "B ( t ) draws a line from P 0 to P 1"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineMap.lineMap",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineMap",
+        "match_kind": null
+      },
+      "note": "The single linear-interpolation step is `lineMap`, but the de Casteljau algorithm is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "de Casteljau quadratic construction",
+      "anchor": {
+        "section": "Quadratic curves",
+        "snippet": "one can construct intermediate points Q 0 and Q 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The de Casteljau construction is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "de Casteljau higher-order construction",
+      "anchor": {
+        "section": "Higher-order curves",
+        "snippet": "For cubic curves one can construct intermediate points Q 0 , Q 1 , and Q 2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The higher-order de Casteljau construction is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Offset of cubic Bézier is 10th-order curve",
+      "anchor": {
+        "section": "Offsets (or stroking) of Bézier curves",
+        "snippet": "the two-sided offset curve of a cubic Bézier is a 10th-order algebraic curve"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Offset curves of Bézier curves are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Offset of degree-n Bézier",
+      "anchor": {
+        "section": "Offsets (or stroking) of Bézier curves",
+        "snippet": "the two-sided offset curve is an algebraic curve of degree 4 n − 2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The degree of Bézier offset curves is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Degree elevation",
+      "anchor": {
+        "section": "Degree elevation",
+        "snippet": "A Bézier curve of degree n can be converted into a Bézier curve of degree n + 1 with the same shape"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Degree elevation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Degree elevation from 2 to 3",
+      "anchor": {
+        "section": "Degree elevation",
+        "snippet": "Here is the example of increasing degree from 2 to 3"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This degree elevation example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Repeated degree elevation vertices",
+      "anchor": {
+        "section": "Repeated degree elevation",
+        "snippet": "After r degree elevations, the polygon R r has the vertices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Repeated degree elevation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exact degree reduction condition",
+      "anchor": {
+        "section": "Degree reduction",
+        "snippet": "Degree reduction can only be done exactly when the curve in question is originally elevated from a lower degree"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Degree reduction of Bézier curves is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rational Bézier curve",
+      "anchor": {
+        "section": "Rational Bézier curves",
+        "snippet": "The rational Bézier curve adds adjustable weights to provide closer approximations to arbitrary shapes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Rational Bézier curves are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Full circle from complex weights",
+      "anchor": {
+        "section": "Rational Bézier curves",
+        "snippet": "generate a full circle with radius one"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This rational-Bézier circle example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "G1 continuity",
+      "anchor": {
+        "section": "Computer graphics",
+        "snippet": "a property called G1 continuity suffices to force the control point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Geometric (G1) continuity of curves is not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,249 @@
+{
+  "slug": "Spectral_theory",
+  "wikipedia_title": "Spectral theory",
+  "display_title": "Spectral theory",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Regular and singular operators",
+      "anchor": {
+        "section": "A definition of spectrum",
+        "snippet": "If the inverse exists, T is called regular ."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "resolventSet",
+        "module": "Mathlib.Algebra.Algebra.Spectrum.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib has no named 'regular/singular operator' definition, but the underlying notion of invertibility (IsUnit of ζ·1−T) is captured by resolventSet/spectrum membership.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Resolvent set",
+      "anchor": {
+        "section": "A definition of spectrum",
+        "snippet": "the resolvent set of T is the set of all complex numbers ζ such that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "resolventSet",
+        "module": "Mathlib.Algebra.Algebra.Spectrum.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`resolventSet R a` is defined as the set of r where `algebraMap r - a` is a unit, exactly the resolvent set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Spectrum of an operator",
+      "anchor": {
+        "section": "A definition of spectrum",
+        "snippet": "The spectrum of T is the set of all complex numbers ζ such that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "spectrum",
+        "module": "Mathlib.Algebra.Algebra.Spectrum.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`spectrum R a` is defined as the complement of the resolvent set, i.e. the ζ for which ζ·1−a is not invertible.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Resolvent",
+      "anchor": {
+        "section": "A definition of spectrum",
+        "snippet": "is called the resolvent of T"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "resolvent",
+        "module": "Mathlib.Algebra.Algebra.Spectrum.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`resolvent a r = (algebraMap r - a)⁻¹ʳ` is the resolvent function of an algebra element.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Eigenvalues belong to the spectrum",
+      "anchor": {
+        "section": "A definition of spectrum",
+        "snippet": "Every eigenvalue of T belongs to σ ( T ), but σ ( T ) may contain non-eigenvalues."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.End.HasEigenvalue.mem_spectrum",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`HasEigenvalue.mem_spectrum` proves that any eigenvalue of an endomorphism lies in its spectrum.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Spectrum of self-adjoint operators",
+      "anchor": {
+        "section": "A definition of spectrum",
+        "snippet": "for self-adjoint operators , the spectrum lies on the real line"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsSelfAdjoint.mem_spectrum_eq_re",
+        "module": "Mathlib.Analysis.CStarAlgebra.Spectrum",
+        "match_kind": "exact"
+      },
+      "note": "`IsSelfAdjoint.mem_spectrum_eq_re` shows every spectral value of a self-adjoint element equals its real part, so the spectrum is real.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Operator as a dyadic product",
+      "anchor": {
+        "section": "Spectral theory briefly",
+        "snippet": "a very particular linear operator L might be written as a dyadic product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.rankOne",
+        "module": "Mathlib.Analysis.InnerProductSpace.LinearMap",
+        "match_kind": "exact"
+      },
+      "note": "`InnerProductSpace.rankOne 𝕜 x y` is the rank-one (outer/dyadic product) operator |x⟩⟨y|, with `rankOne_apply` giving z ↦ ⟪y,z⟫•x.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Eigenvalues and eigenfunctions of L",
+      "anchor": {
+        "section": "Spectral theory briefly",
+        "snippet": "are eigenvalues of L and the functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.End.HasEigenvalue",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Eigenvalues and eigenvectors of a linear operator are formalized as `Module.End.HasEigenvalue` and `Module.End.HasEigenvector`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Resolution of the identity",
+      "anchor": {
+        "section": "Resolution of the identity",
+        "snippet": "This expression of the identity operation is called a representation or a resolution of the identity."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "OrthonormalBasis.sum_rankOne_eq_id",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "special_case"
+      },
+      "note": "`OrthonormalBasis.sum_rankOne_eq_id` states ∑ᵢ |eᵢ⟩⟨eᵢ| = id, the resolution of the identity for a finite orthonormal basis.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Generalized Fourier expansion",
+      "anchor": {
+        "section": "Resolution of the identity",
+        "snippet": "which is the generalized Fourier expansion of ψ in terms of the basis functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "OrthonormalBasis.sum_repr'",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "exact"
+      },
+      "note": "`OrthonormalBasis.sum_repr'` gives ψ = ∑ᵢ ⟪eᵢ, ψ⟫ • eᵢ, the generalized Fourier expansion (also `HilbertBasis.hasSum_repr` for the infinite case).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dyad expansion of L",
+      "anchor": {
+        "section": "Resolution of the identity",
+        "snippet": "Then the resolution of the identity above provides the dyad expansion of L"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.IsSymmetric.eigenvectorBasis_apply_self_apply",
+        "module": "Mathlib.Analysis.InnerProductSpace.Spectrum",
+        "match_kind": null
+      },
+      "note": "The spectral/diagonalization theorem is formalized via the eigenvector basis, but the explicit dyad expansion L = ∑ λᵢ |eᵢ⟩⟨eᵢ| is not stated as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Resolvent poles at eigenvalues",
+      "anchor": {
+        "section": "Resolvent operator",
+        "snippet": "This function has poles in the complex λ -plane at each eigenvalue of L ."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The meromorphic structure of the resolvent (poles located at eigenvalues) is not formalized in Mathlib, only the resolvent function itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Green's function for L",
+      "anchor": {
+        "section": "Resolvent operator",
+        "snippet": "is called the Green's function for operator L"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Green's-function construction for (differential) operators.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Solution of operator equation via Green's function",
+      "anchor": {
+        "section": "Operator equations",
+        "snippet": "the function ψ ( x ) satisfying the operator equation is found if we can find the spectrum of O , and construct G"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Solving an operator equation by constructing a Green's function from the spectrum is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Maximizer of Rayleigh quotient is largest eigenvector",
+      "anchor": {
+        "section": "Spectral theorem and Rayleigh quotient",
+        "snippet": "Let M be a symmetric matrix and let x be the non-zero vector that maximizes the Rayleigh quotient with respect to M"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsSelfAdjoint.hasEigenvector_of_isMaxOn",
+        "module": "Mathlib.Analysis.InnerProductSpace.Rayleigh",
+        "match_kind": "generalization"
+      },
+      "note": "`IsSelfAdjoint.hasEigenvector_of_isMaxOn` proves a maximizer of the Rayleigh quotient of a self-adjoint operator is an eigenvector with eigenvalue the supremum, generalizing the symmetric-matrix statement.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,1241 @@
+{
+  "slug": "Hilbert_space",
+  "wikipedia_title": "Hilbert space",
+  "display_title": "Hilbert space",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{pmatrix}x_{1}\\\\x_{2}\\\\x_{3}\\end{pmatrix}}\\cdot {\\begin{pmatrix}y_{1}\\\\y_{2}\\\\y_{3}\\end{pmatrix}}=x_{1}y_{1}+x_{2}y_{2}+x_{3}y_{3}\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific 3D Euclidean dot product formula; not a single named Mathlib decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {x} \\cdot \\mathbf {y} =\\left\\|\\mathbf {x} \\right\\|\\left\\|\\mathbf {y} \\right\\|\\,\\cos \\theta \\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Geometric formula relating dot product to angle; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sum _{n=0}^{\\infty }\\mathbf {x} _{n}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Generic series of vectors notation; not a standalone Mathlib declaration."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sum _{k=0}^{\\infty }\\|\\mathbf {x} _{k}\\|<\\infty \\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Absolute convergence condition expression; not a named decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\lim _{N\\to \\infty }\\left\\|\\mathbf {L} -\\sum _{k=0}^{N}\\mathbf {x} _{k}\\right\\|=0.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Convergence definition of vector series; not a standalone decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle |z|^{2}=z{\\overline {z}}\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Complex modulus identity; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle |z|={\\sqrt {x^{2}+y^{2}}}\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Complex modulus from real/imag parts; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle z,w\\rangle =z{\\overline {w}}\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Inner product on ℂ; not a standalone Mathlib decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle z,w\\rangle =z_{1}{\\overline {w}}_{1}+z_{2}{\\overline {w}}_{2}\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Inner product on ℂ²; not a standalone decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle w,z\\rangle ={\\overline {\\langle z,w\\rangle }}\\,.}"
+      },
+      "status": "partial",
+      "decl": "InnerProductSpace",
+      "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+      "note": "Conjugate symmetry is part of the InnerProductSpace class axioms."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle y,x\\rangle ={\\overline {\\langle x,y\\rangle }}\\,.}"
+      },
+      "status": "partial",
+      "decl": "InnerProductSpace",
+      "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+      "note": "Conjugate symmetry axiom is built into the InnerProductSpace class."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle ax_{1}+bx_{2},y\\rangle =a\\langle x_{1},y\\rangle +b\\langle x_{2},y\\rangle \\,.}"
+      },
+      "status": "partial",
+      "decl": "InnerProductSpace",
+      "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+      "note": "Linearity in the first argument is part of the InnerProductSpace class."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{alignedat}{4}\\langle x,x\\rangle >0&\\quad {\\text{ if }}x\\neq 0,\\\\\\langle x,x\\rangle =0&\\quad {\\text{ if }}x=0\\,.\\end{alignedat}}}"
+      },
+      "status": "partial",
+      "decl": "InnerProductSpace",
+      "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+      "note": "Positive-definiteness axiom is part of the InnerProductSpace class."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle x,ay_{1}+by_{2}\\rangle ={\\bar {a}}\\langle x,y_{1}\\rangle +{\\bar {b}}\\langle x,y_{2}\\rangle \\,.}"
+      },
+      "status": "partial",
+      "decl": "InnerProductSpace",
+      "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+      "note": "Conjugate-linearity in the second argument follows from the InnerProductSpace axioms."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\|x\\|={\\sqrt {\\langle x,x\\rangle }}\\,,}"
+      },
+      "status": "partial",
+      "decl": "InnerProductSpace",
+      "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+      "note": "Norm from inner product is part of the InnerProductSpace class definition."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d(x,y)=\\|x-y\\|={\\sqrt {\\langle x-y,x-y\\rangle }}\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Distance formula from norm; not a standalone decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d(x,z)\\leq d(x,y)+d(y,z)\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Triangle inequality; not a standalone decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left|\\langle x,y\\rangle \\right|\\leq \\|x\\|\\|y\\|}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Cauchy–Schwarz inequality not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sum _{k=0}^{\\infty }u_{k}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Generic series notation; not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sum _{k=0}^{\\infty }\\|u_{k}\\|<\\infty \\,,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Absolute convergence condition; not a standalone decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sum _{n=1}^{\\infty }|z_{n}|^{2}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Square-summability condition for ℓ²; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle \\mathbf {z} ,\\mathbf {w} \\rangle =\\sum _{n=1}^{\\infty }z_{n}{\\overline {w}}_{n}\\,,}"
+      },
+      "status": "partial",
+      "decl": "HilbertBasis",
+      "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
+      "note": "Related ℓ² inner product setting via HilbertBasis/l2Space; exact decl for the ℓ² inner product not in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{X}|f|^{2}\\,\\mathrm {d} \\mu <\\infty \\,,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "L² square-integrability condition; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle f,g\\rangle =\\int _{X}f(t){\\overline {g(t)}}\\,\\mathrm {d} \\mu (t)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "L² inner product formula; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle f,g\\rangle =\\int _{X}{\\overline {f(t)}}g(t)\\,\\mathrm {d} \\mu (t)\\,,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Alternative L² inner product convention; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{0}^{1}{\\bigl |}f(t){\\bigr |}^{2}w(t)\\,\\mathrm {d} t<\\infty }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Weighted L² condition; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle f,g\\rangle =\\int _{0}^{1}f(t){\\overline {g(t)}}w(t)\\,\\mathrm {d} t\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Weighted L² inner product; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mu (A)=\\int _{A}w(t)\\,\\mathrm {d} t\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Weighted measure definition; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle f,g\\rangle =\\int _{\\Omega }f(x){\\bar {g}}(x)\\,\\mathrm {d} x+\\int _{\\Omega }Df(x)\\cdot D{\\bar {g}}(x)\\,\\mathrm {d} x+\\cdots +\\int _{\\Omega }D^{s}f(x)\\cdot D^{s}{\\bar {g}}(x)\\,\\mathrm {d} x}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Sobolev space inner product; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle H^{s}(\\Omega )=\\left\\{(1-\\Delta )^{-s/2}f\\mathrel {\\Big |} f\\in L^{2}(\\Omega )\\right\\}\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Bessel potential space definition; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle M_{r}(f)={\\frac {1}{2\\pi }}\\int _{0}^{2\\pi }\\left|f{\\bigl (}re^{i\\theta }{\\bigr )}\\right|^{2}\\,\\mathrm {d} \\theta }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Hardy space mean function; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left\\|f\\right\\|_{2}=\\lim _{r\\to 1}{\\sqrt {M_{r}(f)}}\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Hardy space norm; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(z)=\\sum _{n=0}^{\\infty }a_{n}z^{n}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Power series of holomorphic function; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sum _{n=0}^{\\infty }|a_{n}|^{2}<\\infty \\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Hardy condition on coefficients; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\|f\\|^{2}=\\int _{D}|f(z)|^{2}\\,\\mathrm {d} \\mu (z)<\\infty \\,,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Bergman space norm condition; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sup _{z\\in K}\\left|f(z)\\right|\\leq C_{K}\\left\\|f\\right\\|_{2}\\,,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Bergman compact estimate; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(z)=\\int _{D}f(\\zeta ){\\overline {\\eta _{z}(\\zeta )}}\\,\\mathrm {d} \\mu (\\zeta )}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Bergman point-evaluation representation; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle K(\\zeta ,z)={\\overline {\\eta _{z}(\\zeta )}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Bergman kernel definition; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(z)=\\int _{D}f(\\zeta )K(\\zeta ,z)\\,\\mathrm {d} \\mu (\\zeta )\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Bergman reproducing property; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle -{\\frac {\\mathrm {d} }{\\mathrm {d} x}}\\left[p(x){\\frac {\\mathrm {d} y}{\\mathrm {d} x}}\\right]+q(x)y=\\lambda w(x)y}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Sturm–Liouville equation; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{cases}\\alpha y(a)+\\alpha 'y'(a)&=0\\\\\\beta y(b)+\\beta 'y'(b)&=0\\,.\\end{cases}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Robin boundary conditions; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{\\Omega }\\nabla u\\cdot \\nabla v=\\int _{\\Omega }gv\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Weak formulation of Poisson equation; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle a(u,v)=b(v)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Abstract weak equation; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle a(u,v)=\\int _{\\Omega }\\nabla u\\cdot \\nabla v,\\quad b(v)=\\int _{\\Omega }gv\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific bilinear/linear forms; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(T_{t}w)=f(w)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Invariance condition; not a standalone decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left\\langle f,g\\right\\rangle _{L^{2}\\left(\\Omega _{E},\\mu \\right)}=\\int _{\\Omega _{E}}f{\\bar {g}}\\,\\mathrm {d} \\mu \\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "L²(Ω_E, μ) inner product; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle Px=\\lim _{T\\to \\infty }{\\frac {1}{T}}\\int _{0}^{T}U_{t}x\\,\\mathrm {d} t\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Mean ergodic theorem formula; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\underset {T\\to \\infty }{L^{2}-\\lim }}{\\frac {1}{T}}\\int _{0}^{T}f(T_{t}w)\\,\\mathrm {d} t=\\int _{\\Omega _{E}}f(y)\\,\\mathrm {d} \\mu (y)\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Ergodic theorem application; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sum _{n=-\\infty }^{\\infty }a_{n}e^{2\\pi in\\theta }}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Fourier series expression; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle a_{n}=\\int _{0}^{1}f(\\theta )\\;\\!e^{-2\\pi in\\theta }\\,\\mathrm {d} \\theta \\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Fourier coefficient formula; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(\\theta )=\\sum _{n}a_{n}e_{n}(\\theta )\\,,\\quad a_{n}=\\langle f,e_{n}\\rangle }"
+      },
+      "status": "partial",
+      "decl": "HilbertBasis",
+      "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
+      "note": "Orthonormal basis expansion is captured abstractly by HilbertBasis, not specifically for Fourier."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(x)\\approx f_{n}(x)=a_{1}e_{1}(x)+a_{2}e_{2}(x)+\\cdots +a_{n}e_{n}(x)\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Finite Fourier approximation; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle a_{j}=\\int _{0}^{1}{\\overline {e_{j}(x)}}f(x)\\,\\mathrm {d} x\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Fourier coefficient via inner product; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {Var} (X+Y)=\\operatorname {Var} (X)+\\operatorname {Var} (Y),}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Variance additivity for uncorrelated variables; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle E\\left[\\left(\\int _{0}^{t}H_{s}\\,dM_{s}\\right)^{2}\\right]=E\\left[\\int _{0}^{t}H_{s}^{2}\\,d\\langle M\\rangle _{s}\\right]}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Itô isometry; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\|u+v\\|^{2}=\\langle u+v,u+v\\rangle =\\langle u,u\\rangle +2\\,\\operatorname {Re} \\langle u,v\\rangle +\\langle v,v\\rangle =\\|u\\|^{2}+\\|v\\|^{2}\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Pythagorean identity expansion; not a standalone decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left\\|u_{1}+\\cdots +u_{n}\\right\\|^{2}=\\left\\|u_{1}\\right\\|^{2}+\\cdots +\\left\\|u_{n}\\right\\|^{2}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Finite Pythagorean identity; not a standalone decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\Biggl \\|}\\sum _{k=0}^{\\infty }u_{k}{\\Biggr \\|}^{2}=\\sum _{k=0}^{\\infty }\\left\\|u_{k}\\right\\|^{2}\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Infinite Pythagorean identity; not a standalone decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\|u+v\\|^{2}+\\|u-v\\|^{2}=2{\\bigl (}\\|u\\|^{2}+\\|v\\|^{2}{\\bigr )}\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Parallelogram identity; not a standalone decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle u,v\\rangle ={\\tfrac {1}{4}}{\\bigl (}\\|u+v\\|^{2}-\\|u-v\\|^{2}{\\bigr )}\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Real polarization identity; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle u,v\\rangle ={\\tfrac {1}{4}}{\\bigl (}\\|u+v\\|^{2}-\\|u-v\\|^{2}+i\\|u+iv\\|^{2}-i\\|u-iv\\|^{2}{\\bigr )}\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Complex polarization identity; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle y\\in C\\,,\\quad \\|x-y\\|=\\operatorname {dist} (x,C)=\\min {\\bigl \\{}\\|x-z\\|\\mathrel {\\big |} z\\in C{\\bigr \\}}\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Best approximation in a closed convex set; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle y\\in F\\,,\\quad x-y\\perp F\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Orthogonal projection characterization; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\|\\varphi \\|=\\sup _{\\|x\\|=1,x\\in H}|\\varphi (x)|\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Operator norm on dual space; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle f,g\\rangle _{H^{*}}=\\sum _{i\\in I}f(e_{i}){\\overline {g(e_{i})}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Dual-space inner product formula; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\varphi _{u}(x)=\\langle x,u\\rangle }"
+      },
+      "status": "formalized",
+      "decl": "InnerProductSpace.toDual",
+      "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+      "note": "Riesz representation map sending u to the functional ⟨·,u⟩ is exactly InnerProductSpace.toDual."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle x,u_{\\varphi }\\rangle =\\varphi (x)}"
+      },
+      "status": "formalized",
+      "decl": "InnerProductSpace.toDual",
+      "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+      "note": "Existence/uniqueness of u_φ representing φ is encoded by the isometric isomorphism toDual."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle \\varphi ,\\psi \\rangle =\\langle u_{\\psi },u_{\\varphi }\\rangle \\,.}"
+      },
+      "status": "partial",
+      "decl": "InnerProductSpace.toDual",
+      "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+      "note": "Induced inner product on dual via toDual isometry; exact named decl for the dual inner product not in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle u=\\langle v,v\\rangle ^{-1}\\,{\\overline {\\varphi (v)}}\\,v\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Explicit construction in Riesz proof; not a standalone decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle x|y\\rangle =\\langle y,x\\rangle \\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Physics convention for inner product; not a Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\lim _{n}\\langle x_{n},v\\rangle =\\langle x,v\\rangle }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Weak convergence definition; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\lVert A\\rVert =\\sup {\\bigl \\{}\\|Ax\\|\\mathrel {\\big |} \\|x\\|\\leq 1{\\bigr \\}}\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Operator norm definition; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left\\langle x,A^{*}y\\right\\rangle =\\langle Ax,y\\rangle }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Adjoint defining property; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle A=B^{2}=B^{*}B\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Square root of positive operator; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle A=\\operatorname {Re} A+i\\operatorname {Im} A={\\frac {A+A^{*}}{2}}+i{\\frac {A-A^{*}}{2i}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Cartesian decomposition of an operator; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {index} T=\\dim \\ker T-\\dim \\operatorname {coker} T\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Fredholm index definition; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle T:D(T)\\to H}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Unbounded operator notation; not a standalone decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle x\\mapsto \\langle Tx,y\\rangle ,\\qquad x\\in D(T),}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Adjoint domain criterion; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle Tx,y\\rangle =\\langle x,T^{*}y\\rangle }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Adjoint identity for unbounded operators; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (Qf)(x)=xf(x),}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Position operator definition; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle D(Q)=\\{f\\in L^{2}(\\mathbf {R} ):xf(x)\\in L^{2}(\\mathbf {R} )\\}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Position operator domain; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (Pf)(x)=-i{\\frac {d}{dx}}f(x),}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Momentum operator definition; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle H_{1}\\oplus H_{2}\\,,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Notation for direct sum; not a standalone decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\bigl \\langle }(x_{1},x_{2}),(y_{1},y_{2}){\\bigr \\rangle }_{H_{1}\\oplus H_{2}}=\\left\\langle x_{1},y_{1}\\right\\rangle _{H_{1}}+\\left\\langle x_{2},y_{2}\\right\\rangle _{H_{2}}\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Inner product on direct sum; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\bigoplus _{i\\in I}H_{i}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Indexed Hilbert direct sum; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle x=(x_{i}\\in H_{i}\\mid i\\in I)\\in \\prod _{i\\in I}H_{i}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Generic indexed family notation; not a standalone decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sum _{i\\in I}\\|x_{i}\\|^{2}<\\infty \\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Square-summability for ℓ²-direct sum; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle x,y\\rangle =\\sum _{i\\in I}\\left\\langle x_{i},y_{i}\\right\\rangle _{H_{i}}\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Inner product on Hilbert direct sum; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle E_{i}E_{j}=0,\\quad i\\neq j\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Orthogonality of summand projections; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle x_{1}\\otimes x_{2},\\,y_{1}\\otimes y_{2}\\rangle =\\langle x_{1},y_{1}\\rangle \\,\\langle x_{2},y_{2}\\rangle \\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Tensor product inner product on simple tensors; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (s,t)\\mapsto f_{1}(s)\\,f_{2}(t)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Tensor product realisation for L²; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle x^{*}\\mapsto x^{*}(x_{1})x_{2}\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Tensor as operator from dual; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (c_{1},c_{2},c_{3},\\dots )}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Generic sequence notation; not a standalone decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left|c_{1}\\right|^{2}+\\left|c_{2}\\right|^{2}+\\left|c_{3}\\right|^{2}+\\cdots <\\infty \\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "ℓ² summability condition; not a standalone decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}e_{1}&=(1,0,0,\\dots )\\\\e_{2}&=(0,1,0,\\dots )\\\\&\\ \\ \\vdots \\end{aligned}}}"
+      },
+      "status": "partial",
+      "decl": "HilbertBasis",
+      "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
+      "note": "Canonical ℓ² basis is an instance of HilbertBasis; specific named decl for these vectors not listed."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\ell ^{2}(B)={\\biggl \\{}x:B\\xrightarrow {x} \\mathbf {C} \\mathrel {\\bigg |} \\sum _{b\\in B}\\left|x(b)\\right|^{2}<\\infty {\\biggr \\}}\\,.}"
+      },
+      "status": "partial",
+      "decl": "HilbertBasis",
+      "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
+      "note": "ℓ²(B) is the underlying space in Mathlib's l2Space; the set-builder decl itself not provided."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sum _{b\\in B}\\left|x(b)\\right|^{2}=\\sup \\sum _{n=1}^{N}\\left|x(b_{n})\\right|^{2}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Unordered sum definition; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle x,y\\rangle =\\sum _{b\\in B}x(b){\\overline {y(b)}}}"
+      },
+      "status": "partial",
+      "decl": "HilbertBasis",
+      "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
+      "note": "ℓ²(B) inner product underlies HilbertBasis; the specific inner product decl not in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e_{b}(b')={\\begin{cases}1&{\\text{if }}b=b'\\\\0&{\\text{otherwise.}}\\end{cases}}}"
+      },
+      "status": "partial",
+      "decl": "HilbertBasis",
+      "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
+      "note": "Standard ℓ²(B) basis is a HilbertBasis; the indicator-vector decl itself not provided."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle y=\\sum _{j=1}^{n}\\langle x,f_{j}\\rangle \\,f_{j}\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Finite orthogonal projection formula; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\|x\\|^{2}=\\|x-y\\|^{2}+\\|y\\|^{2}\\geq \\|y\\|^{2}=\\sum _{j=1}^{n}{\\bigl |}\\langle x,f_{j}\\rangle {\\bigr |}^{2}\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Finite Bessel inequality derivation; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sum _{i\\in I}{\\bigl |}\\langle x,f_{i}\\rangle {\\bigr |}^{2}\\leq \\|x\\|^{2},\\quad x\\in H}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Bessel's inequality; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle x=\\sum _{k\\in B}\\left\\langle x,e_{k}\\right\\rangle \\,e_{k}\\,.}"
+      },
+      "status": "partial",
+      "decl": "HilbertBasis",
+      "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
+      "note": "Orthonormal basis expansion is captured by HilbertBasis.repr; expansion identity not separately listed."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\|x\\|^{2}=\\sum _{k\\in B}|\\langle x,e_{k}\\rangle |^{2}\\,.}"
+      },
+      "status": "partial",
+      "decl": "HilbertBasis",
+      "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
+      "note": "Parseval's identity is encoded by the HilbertBasis isometry; identity decl not separately listed."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\bigl \\langle }\\Phi (x),\\Phi (y){\\bigr \\rangle }_{l^{2}(B)}=\\left\\langle x,y\\right\\rangle _{H}}"
+      },
+      "status": "formalized",
+      "decl": "HilbertBasis",
+      "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
+      "note": "HilbertBasis provides exactly the isometric isomorphism H ≃ₗᵢ ℓ²(B)."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle S^{\\perp }=\\left\\{x\\in H\\mid \\langle x,s\\rangle =0\\ {\\text{ for all }}s\\in S\\right\\}\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Orthogonal complement definition; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle i:V\\to H\\,,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Generic inclusion map; not a standalone decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left\\langle ix,y\\right\\rangle _{H}=\\left\\langle x,\\pi y\\right\\rangle _{V}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Adjoint relation between inclusion and projection; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\|P_{V}\\|=\\sup _{x\\in H,x\\neq 0}{\\frac {\\|P_{V}x\\|}{\\|x\\|}}=1\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Operator norm of orthogonal projection equals one; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\biggl (}\\sum _{i}V_{i}{\\biggr )}^{\\perp }=\\bigcap _{i}V_{i}^{\\perp }\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Orthogonal complement of sum equals intersection of complements; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\overline {\\sum _{i}V_{i}^{\\perp }{\\vphantom {\\Big |}}}}={\\biggl (}\\bigcap _{i}V_{i}{\\biggr )}^{\\perp }\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Closure of sum of complements equals complement of intersection; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle m=\\inf _{\\|x\\|=1}\\langle Tx,x\\rangle \\,,\\quad M=\\sup _{\\|x\\|=1}\\langle Tx,x\\rangle \\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Numerical range bounds; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle H_{\\lambda }=\\ker(T-\\lambda )\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Eigenspace definition; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle H=\\bigoplus _{\\lambda \\in \\sigma (T)}H_{\\lambda }\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Spectral decomposition for compact self-adjoint operators; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle T=\\sum _{\\lambda \\in \\sigma (T)}\\lambda E_{\\lambda }\\,,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Spectral decomposition formula; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle A^{+}={\\tfrac {1}{2}}{\\Bigl (}{\\sqrt {A^{2}}}+A{\\Bigr )}\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Positive part of self-adjoint operator; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle T=\\int _{\\mathbf {R} }\\lambda \\,\\mathrm {d} E_{\\lambda }\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Spectral integral representation; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle Tx,y\\rangle =\\int _{\\mathbf {R} }\\lambda \\,\\mathrm {d} \\langle E_{\\lambda }x,y\\rangle \\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Scalar-valued spectral integral; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(T)=\\int _{\\sigma (T)}f(\\lambda )\\,\\mathrm {d} E_{\\lambda }\\,.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Continuous functional calculus; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle R_{\\lambda }=(T-\\lambda )^{-1}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Resolvent operator definition; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle Tx,y\\rangle =\\int _{\\mathbf {R} }\\lambda \\,\\mathrm {d} E_{x,y}(\\lambda )}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Spectral theorem integral form; not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem — The orthogonal projection P V is a self-adjoint li"
+      },
+      "section": "Orthogonal complements and projections",
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Characterization theorem for orthogonal projections; no matching standalone decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem — Given a densely defined self-adjoint operator T on"
+      },
+      "section": "Spectral theory",
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Spectral theorem for unbounded self-adjoint operators; not in the provided decl list."
+    }
+  ]
+}

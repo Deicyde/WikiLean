@@ -1,0 +1,457 @@
+{
+  "slug": "Adjoint_representation",
+  "wikipedia_title": "Adjoint representation",
+  "display_title": "Adjoint representation",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Adjoint representation of a Lie group",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the adjoint representation (or adjoint action ) of a Lie group G is a way of representing the elements of the group as linear transformations of the group's Lie algebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has the Lie-algebra-level `LieAlgebra.ad` but does not define the Lie group adjoint representation `Ad : G → Aut(g)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Adjoint representation of GL(n)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "For example, if G is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Lie group adjoint representation is defined, so the GL(n) example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inner automorphism map Ψ",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "be the mapping g ↦ Ψ g , with Aut( G ) the automorphism group of G and Ψ g : G → G given by the inner automorphism"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MulAut.conj",
+        "module": "Mathlib.Algebra.Group.Aut",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has `MulAut.conj` for the abstract group inner-automorphism map, but not the smooth Lie group inner automorphism Ψ_g : G → Aut(G).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ad_g as derivative of Ψ_g",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "For each g in G , define Ad g to be the derivative of Ψ g at the origin"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define Ad_g as the derivative at the identity of conjugation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Adjoint representation of G",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is a group representation called the adjoint representation of G"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Lie group-level adjoint representation `Ad : G → GL(g)` is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ad formula for linear Lie groups",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "If G is a linear Lie group , then the Lie algebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formula `Ad_g(X) = gXg⁻¹` for matrix Lie groups exists in Mathlib because Ad on Lie groups is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Adjoint as isotropy representation",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Succinctly, an adjoint representation is an isotropy representation associated to the conjugation action of G around the identity element of G"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib lacks the notion of isotropy representation of a Lie group action.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Adjoint representation of the Lie algebra (via derivative of Ad)",
+      "anchor": {
+        "section": "Derivative of Ad",
+        "snippet": "at the identity element gives the adjoint representation of the Lie algebra"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LieAlgebra.ad",
+        "module": "Mathlib.Algebra.Lie.OfAssociative",
+        "match_kind": "generalization"
+      },
+      "note": "`LieAlgebra.ad` defines ad directly on a Lie algebra, but not as the derivative of `Ad` at the identity since `Ad` is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Ad exp(x) = exp(ad x)",
+      "anchor": {
+        "section": "Derivative of Ad",
+        "snippet": "Ad and ad are related through the exponential map"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Lie group exponential / Ad / ad relation theorem found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Adjoint endomorphism ad_x",
+      "anchor": {
+        "section": "Adjoint representation of a Lie algebra",
+        "snippet": "It is called the adjoint endomorphism or adjoint action"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieAlgebra.ad",
+        "module": "Mathlib.Algebra.Lie.OfAssociative",
+        "match_kind": "exact"
+      },
+      "note": "`LieAlgebra.ad R L : L →ₗ⁅R⁆ Module.End R L` with `ad_apply : ad R L x y = ⁅x, y⁆` formalizes ad_x.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "ad is a Lie algebra homomorphism (adjoint representation)",
+      "anchor": {
+        "section": "Adjoint representation of a Lie algebra",
+        "snippet": "This last identity says that ad is a Lie algebra homomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieAlgebra.ad",
+        "module": "Mathlib.Algebra.Lie.OfAssociative",
+        "match_kind": "exact"
+      },
+      "note": "`LieAlgebra.ad` is typed as a Lie algebra homomorphism `L →ₗ⁅R⁆ Module.End R L`, so the homomorphism property is the definition's typing.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Kernel of ad is the center",
+      "anchor": {
+        "section": "Adjoint representation of a Lie algebra",
+        "snippet": "The kernel of ad is the center of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieDerivation.ad_ker_eq_center",
+        "module": "Mathlib.Algebra.Lie.AdjointAction.Derivation",
+        "match_kind": "exact"
+      },
+      "note": "`ad_ker_eq_center : (ad R L).ker = LieAlgebra.center R L` proves the kernel of the adjoint action equals the center.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "ad_z is a derivation (Leibniz law)",
+      "anchor": {
+        "section": "Adjoint representation of a Lie algebra",
+        "snippet": "the linear mapping"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieAlgebra.ad_lie",
+        "module": "Mathlib.Algebra.Lie.OfAssociative",
+        "match_kind": "exact"
+      },
+      "note": "`LieAlgebra.ad_lie` states `(ad R L x) ⁅y, z⁆ = ⁅ad R L x y, z⁆ + ⁅y, ad R L x z⁆`, the derivation property, and `LieDerivation.ad` packages ad as a Lie derivation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "ad is differential of Ad at identity",
+      "anchor": {
+        "section": "Adjoint representation of a Lie algebra",
+        "snippet": "When"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not relate ad to a derivative of `Ad` because Lie group Ad is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Leibniz-like formula for ad",
+      "anchor": {
+        "section": "Adjoint representation of a Lie algebra",
+        "snippet": "There is the following formula similar to the Leibniz formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieAlgebra.ad_pow_lie",
+        "module": "Mathlib.Algebra.Lie.OfAssociative",
+        "match_kind": "exact"
+      },
+      "note": "`LieAlgebra.ad_pow_lie` (via `LieModule.toEnd_pow_lie`) gives the binomial-style expansion `(ad x)^n ⁅y,z⁆ = Σ choose ... ⁅(ad x)^i y, (ad x)^j z⁆`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Matrix elements of ad via structure constants",
+      "anchor": {
+        "section": "Structure constants",
+        "snippet": "The explicit matrix elements of the adjoint representation are given by the structure constants of the algebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `Mathlib.Algebra.Lie.Basis` discusses structure constants conceptually but does not formalize the matrix-of-ad-equals-structure-constants identity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Adjoint representation of su(2) is so(3)",
+      "anchor": {
+        "section": "Structure constants",
+        "snippet": "Thus, for example, the adjoint representation of su(2) is the defining representation of so(3)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No isomorphism between the adjoint representation of su(2) and the defining representation of so(3) is recorded in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Adjoint representation of abelian group is trivial",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "If G is abelian of dimension n , the adjoint representation of G is the trivial"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsLieAbelian",
+        "module": "Mathlib.Algebra.Lie.Abelian",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `IsLieAbelian` and trivial Lie modules, and ad is zero on abelian Lie algebras by `ad_apply`, but the Lie group statement is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Adjoint for matrix Lie group",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "If G is a matrix Lie group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lie-group-level adjoint for matrix groups is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Adjoint representation of SL(2, R)",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "If G is SL(2, R ) (real 2×2 matrices with determinant 1)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines the Lie subalgebra `sl` in `Mathlib.Algebra.Lie.Classical` but not the SL(2,ℝ) Lie-group adjoint representation example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Kernel of Ad and faithfulness",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "If G is connected , the kernel of the adjoint representation coincides with the kernel of Ψ which is just the center of G"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Kernel of group-level Ad as center of G is not formalized; only the analogous Lie algebra statement `ad_ker_eq_center` exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Adjoint group via Lie's third theorem",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "by Lie's third theorem , there is a connected Lie group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lie's third theorem and the construction of the adjoint group are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Image of adjoint representation equals adjoint group",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Now, if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the adjoint group as image of Ad in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Non-zero weights form a root system",
+      "anchor": {
+        "section": "Roots of a semisimple Lie group",
+        "snippet": "If G is semisimple , the non-zero weights of the adjoint representation form a root system"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieAlgebra.IsKilling.rootSystem",
+        "module": "Mathlib.Algebra.Lie.Weights.RootSystem",
+        "match_kind": "exact"
+      },
+      "note": "`LieAlgebra.IsKilling.rootSystem` constructs the root system from nonzero weights of the adjoint action of a Cartan subalgebra on a finite-dimensional Lie algebra with nondegenerate Killing form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Root system of SL(n, R)",
+      "anchor": {
+        "section": "Roots of a semisimple Lie group",
+        "snippet": "To see how this works, consider the case G = SL( n , R )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Although `Mathlib.Algebra.Lie.Classical.sl` exists, the explicit type-A root system of sl(n) is not assembled in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Root system of SL(2, R)",
+      "anchor": {
+        "section": "Example SL(2, R)",
+        "snippet": "When computing the root system for one of the simplest cases of Lie Groups, the group SL(2, R ) of two dimensional matrices with determinant 1"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LieAlgebra.sl2",
+        "module": "Mathlib.Algebra.Lie.Sl2",
+        "match_kind": "generalization"
+      },
+      "note": "`Mathlib.Algebra.Lie.Sl2` develops sl₂-triples, but the explicit A₁ root system computation for sl(2,ℝ) is not given.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Co-adjoint representation",
+      "anchor": {
+        "section": "Variants and analogues",
+        "snippet": "The co-adjoint representation is the contragredient representation of the adjoint representation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Searches for `coadjoint`/`co_adjoint`/`contragredient` in Mathlib return no results.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Kirillov: co-adjoint orbits are symplectic manifolds",
+      "anchor": {
+        "section": "Variants and analogues",
+        "snippet": "Alexandre Kirillov observed that the orbit of any vector in a co-adjoint representation is a symplectic manifold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Kirillov orbit / symplectic-structure-on-coadjoint-orbits formalization in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

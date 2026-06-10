@@ -1,0 +1,233 @@
+{
+  "slug": "Fundamental_theorem_of_calculus",
+  "wikipedia_title": "Fundamental theorem of calculus",
+  "display_title": "Fundamental theorem of calculus",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "theorem",
+      "label": "First fundamental theorem of calculus",
+      "anchor": {
+        "section": "First part",
+        "snippet": "Let f be a continuous real-valued function defined on a closed interval"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Continuous.integral_hasStrictDerivAt",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus",
+        "match_kind": "exact"
+      },
+      "note": "States that for continuous f, u ↦ ∫ x in a..u, f x has strict derivative f b at b; see also Continuous.deriv_integral.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Corollary (evaluation via antiderivative)",
+      "anchor": {
+        "section": "Corollary",
+        "snippet": "The fundamental theorem is often employed to compute the definite integral"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "intervalIntegral.integral_deriv_eq_sub'",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus",
+        "match_kind": "exact"
+      },
+      "note": "If deriv f = f' with f differentiable and f' continuous on [a, b], then ∫ y in a..b, f' y = f b - f a.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Second fundamental theorem of calculus (Newton–Leibniz)",
+      "anchor": {
+        "section": "Second part",
+        "snippet": "This part is sometimes referred to as the second fundamental theorem of calculus"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "intervalIntegral.integral_eq_sub_of_hasDerivAt",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus",
+        "match_kind": "exact"
+      },
+      "note": "If f has derivative f' on [a,b] and f' is interval-integrable then ∫ y in a..b, f' y = f b - f a.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Computing a particular integral",
+      "anchor": {
+        "section": "Computing a particular integral",
+        "snippet": "Suppose the following is to be calculated"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Worked numerical example, not a named lemma in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Using the first part",
+      "anchor": {
+        "section": "Using the first part",
+        "snippet": "Using the first part of the theorem with"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pedagogical example illustrating Part I; not a separate Mathlib statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "An integral where the corollary is insufficient",
+      "anchor": {
+        "section": "An integral where the corollary is insufficient",
+        "snippet": "Therefore, the corollary cannot be used to compute"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Discussion-style example, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Theoretical example",
+      "anchor": {
+        "section": "Theoretical example",
+        "snippet": "The theorem can be used to prove that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Worked theoretical example illustrating use of the theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Generalization: Part I for Lebesgue integrable f continuous at a point",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "if f is any Lebesgue integrable function on"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "intervalIntegral.integral_hasStrictDerivAt_right",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus",
+        "match_kind": "exact"
+      },
+      "note": "For an interval-integrable f continuous at b, u ↦ ∫ x in a..u, f x has strict derivative f b at b.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Generalization: Lebesgue differentiation theorem (higher dimensions)",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "In higher dimensions Lebesgue's differentiation theorem generalizes the Fundamental theorem of calculus"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "VitaliFamily.ae_tendsto_average_norm_sub",
+        "module": "Mathlib.MeasureTheory.Covering.Differentiation",
+        "match_kind": "exact"
+      },
+      "note": "Locally integrable f satisfies the Lebesgue differentiation theorem at almost every point via the Vitali family framework (also Besicovitch.ae_tendsto_average_norm_sub).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Generalization: Part II for Lebesgue integrable functions with antiderivative",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "Part II of the theorem is true for any Lebesgue integrable function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "intervalIntegral.integral_eq_sub_of_hasDerivAt_of_le",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus",
+        "match_kind": "exact"
+      },
+      "note": "Assumes only that f is continuous on [a,b], has derivative f' on (a,b), and f' is interval (Lebesgue/Bochner) integrable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Generalization: absolutely continuous F and integrability of F'",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "However, if F is absolutely continuous"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AbsolutelyContinuousOnInterval.integral_deriv_eq_sub",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.AbsolutelyContinuousFun",
+        "match_kind": "exact"
+      },
+      "note": "If f is absolutely continuous on uIcc a b, then ∫ x in a..b, deriv f x = f b - f a.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Generalization: Henstock–Kurzweil version",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "if a continuous function F ( x ) admits a derivative f ( x ) at all but countably many points"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "intervalIntegral.integral_eq_sub_of_hasDeriv_right",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib lacks a one-dimensional Henstock–Kurzweil integral; the closest result is FTC2 for right-derivatives requiring f' to be Lebesgue-integrable, which is strictly weaker than the HK version.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Generalization: complex functions with holomorphic antiderivative",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "suppose U is an open set in C and f : U → C is a function that has a holomorphic antiderivative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has curveIntegral and primitive existence (Complex.IsConservativeOn.isExactOn_ball, DifferentiableOn.isExactOn_ball) but no direct theorem evaluating a path integral as F(γ(1)) − F(γ(0)) when F is a holomorphic primitive.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Generalized Stokes theorem",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "Let M be an oriented piecewise smooth manifold of dimension"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_divergence_of_hasFDerivWithinAt_off_countable",
+        "module": "Mathlib.MeasureTheory.Integral.DivergenceTheorem",
+        "match_kind": "special_case"
+      },
+      "note": "Only the divergence theorem on rectangular boxes in ℝⁿ⁺¹ is formalized; there is no manifold-with-corners ∫_M dω = ∫_{∂M} ω.",
+      "provenance": "ai"
+    }
+  ]
+}

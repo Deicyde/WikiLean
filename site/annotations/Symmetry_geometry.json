@@ -1,0 +1,649 @@
+{
+  "slug": "Symmetry_geometry",
+  "wikipedia_title": "Symmetry (geometry)",
+  "display_title": "Symmetry (geometry)",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Symmetry of a geometric object",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "an object has symmetry if there is an operation or transformation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MulAction.stabilizer",
+        "module": "Mathlib.GroupTheory.GroupAction.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "The general notion of transformations leaving an object invariant is captured abstractly by the stabilizer of a point under a group action, but no dedicated geometric-symmetry definition exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rotational symmetry (circle)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A circle is thus said to be symmetric under rotation or to have rotational symmetry"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Orientation.rotation",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Oriented.Rotation",
+        "match_kind": null
+      },
+      "note": "Rotations are formalized (e.g. `Orientation.rotation`), but the specific statement that a circle is invariant under all rotations is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Reflectional symmetry / line symmetry",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the figure is said to have reflectional symmetry or line symmetry"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Submodule.reflection",
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.Reflection",
+        "match_kind": null
+      },
+      "note": "Reflection across a subspace is formalized, but reflectional symmetry as a property of a figure is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetry group of an object",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the set of transforms under which an object is symmetric form a mathematical group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction.stabilizer",
+        "module": "Mathlib.GroupTheory.GroupAction.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`MulAction.stabilizer` is exactly the (sub)group of transformations fixing an object, generalizing the symmetry group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euclidean group of isometries",
+      "anchor": {
+        "section": "Euclidean symmetries in general",
+        "snippet": "distance-preserving transformations in space commonly referred to"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsometryEquiv",
+        "module": "Mathlib.Topology.MetricSpace.Isometry",
+        "match_kind": null
+      },
+      "note": "Distance-preserving bijections (`IsometryEquiv`) form a group under composition, but the Euclidean group is not packaged under that name.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetric under an isometric transformation",
+      "anchor": {
+        "section": "Euclidean symmetries in general",
+        "snippet": "a geometric object is said to be symmetric if, after transformation, the object is indistinguishable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsometryEquiv",
+        "module": "Mathlib.Topology.MetricSpace.Isometry",
+        "match_kind": null
+      },
+      "note": "Isometric transformations are formalized via `Isometry`/`IsometryEquiv`, but invariance of an object under one is not given as a definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cartan–Dieudonné theorem",
+      "anchor": {
+        "section": "Euclidean symmetries in general",
+        "snippet": "an orthogonal transformation in n -dimensional space can be represented by the composition of at most"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearIsometryEquiv.reflections_generate_dim",
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.FiniteDimensional",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves the real inner-product-space case (each orthogonal map is a product of at most `finrank` reflections), explicitly noted as a special case of Cartan–Dieudonné.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Reflectional symmetry",
+      "anchor": {
+        "section": "Reflectional symmetry",
+        "snippet": "is symmetry with respect to reflection"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Submodule.reflection",
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.Reflection",
+        "match_kind": null
+      },
+      "note": "Reflection is formalized as an isometry, but reflectional symmetry of a figure is not a defined property.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Axis of symmetry",
+      "anchor": {
+        "section": "Reflectional symmetry",
+        "snippet": "The axis of symmetry of a two-dimensional figure is a line such that"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.reflection",
+        "module": "Mathlib.Geometry.Euclidean.Projection",
+        "match_kind": null
+      },
+      "note": "Reflection across an affine subspace exists, but the notion of an axis/line of symmetry of a figure is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Axes of symmetry of square and circle",
+      "anchor": {
+        "section": "Reflectional symmetry",
+        "snippet": "a square has four axes of symmetry"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement about counting axes of symmetry of squares or circles is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Vertical symmetry of letter T",
+      "anchor": {
+        "section": "Reflectional symmetry",
+        "snippet": "If the letter T is reflected along a vertical axis, it appears the same"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This illustrative example about a letter glyph has no Mathlib formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Triangles and quadrilaterals with reflection symmetry",
+      "anchor": {
+        "section": "Reflectional symmetry",
+        "snippet": "The triangles with reflection symmetry are isosceles"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No classification of triangles/quadrilaterals by reflection symmetry is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reflection symmetry group isomorphic to C_s",
+      "anchor": {
+        "section": "Reflectional symmetry",
+        "snippet": "the symmetry group is isomorphic with C s"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Submodule.reflection_involutive",
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.Reflection",
+        "match_kind": null
+      },
+      "note": "Reflection is proven involutive (hence generates an order-2 group), but the isomorphism to C_s is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Involutive isometries generalizing reflection",
+      "anchor": {
+        "section": "Point reflection and other involutive isometries",
+        "snippet": "Reflection symmetry can be generalized to other isometries of m -dimensional space which are involutions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Submodule.reflection_involutive",
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.Reflection",
+        "match_kind": null
+      },
+      "note": "Isometric involutions exist (`Function.Involutive` applied to reflections), but a general class of involutive isometries is not defined as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Point reflection / inversion through a point",
+      "anchor": {
+        "section": "Point reflection and other involutive isometries",
+        "snippet": "such a transformation is known as a point reflection , or an inversion through a point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineIsometryEquiv.pointReflection",
+        "module": "Mathlib.Analysis.Normed.Affine.Isometry",
+        "match_kind": "exact"
+      },
+      "note": "Point reflection through a point is defined as an affine isometric automorphism `AffineIsometryEquiv.pointReflection`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orientation preserved iff k even",
+      "anchor": {
+        "section": "Point reflection and other involutive isometries",
+        "snippet": "preserves orientation if and only if k is an even number"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Submodule.det_reflection",
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.FiniteDimensional",
+        "match_kind": null
+      },
+      "note": "`det_reflection` gives the determinant of a reflection as `(-1)^finrank`, the key fact behind orientation parity, but the iff-k-even statement is not packaged.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rotational symmetry",
+      "anchor": {
+        "section": "Rotational symmetry",
+        "snippet": "Rotational symmetry is symmetry with respect to some or all rotations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Orientation.rotation",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Oriented.Rotation",
+        "match_kind": null
+      },
+      "note": "Rotations are formalized, but rotational symmetry as an invariance property is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "All-point rotations imply translational symmetry",
+      "anchor": {
+        "section": "Rotational symmetry",
+        "snippet": "implies translational symmetry with respect to all translations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The implication from rotational symmetry about every point to translational symmetry is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rotations about a point form SO(m)",
+      "anchor": {
+        "section": "Rotational symmetry",
+        "snippet": "These rotations form the special orthogonal group SO( m )"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.specialOrthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": null
+      },
+      "note": "The special orthogonal group SO(m) is defined, but the identification of geometric rotations about a point with SO(m) is not proven.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Noether: rotational symmetry and angular momentum",
+      "anchor": {
+        "section": "Rotational symmetry",
+        "snippet": "rotational symmetry of a physical system is equivalent to the angular momentum conservation law"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Noether's theorem linking rotational symmetry to angular-momentum conservation (physics) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Translational symmetry",
+      "anchor": {
+        "section": "Translational symmetry",
+        "snippet": "Translational symmetry leaves an object invariant under a discrete or continuous group of translations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineEquiv.constVAdd",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineEquiv",
+        "match_kind": null
+      },
+      "note": "Translations are formalized (`constVAdd`) and form a group, but translational symmetry as an invariance property is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Glide reflection symmetry",
+      "anchor": {
+        "section": "Glide reflection symmetry",
+        "snippet": "means that a reflection in a line or plane combined with a translation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Glide reflection is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Composition of two glide reflections",
+      "anchor": {
+        "section": "Glide reflection symmetry",
+        "snippet": "The composition of two glide reflections results in a translation symmetry with twice the translation vector"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement about composing glide reflections exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rotoreflection / improper rotation",
+      "anchor": {
+        "section": "Rotoreflection symmetry",
+        "snippet": "is a rotation about an axis combined with reflection in a plane perpendicular to that axis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Rotoreflection (improper rotation) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Screw axis (rotary translation)",
+      "anchor": {
+        "section": "Helical symmetry",
+        "snippet": "a screw axis (or rotary translation) is a combination of a rotation and a translation along the rotation axis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The screw axis / rotary translation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Helical symmetry",
+      "anchor": {
+        "section": "Helical symmetry",
+        "snippet": "Helical symmetry is the kind of symmetry seen in everyday objects"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Helical symmetry is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Infinite helical symmetry",
+      "anchor": {
+        "section": "Helical symmetry",
+        "snippet": "If there are no distinguishing features along the length of a helix"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Infinite helical symmetry is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "n-fold helical symmetry",
+      "anchor": {
+        "section": "Helical symmetry",
+        "snippet": "If the requirement that every cross section of the helical object be identical is relaxed"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "n-fold helical symmetry is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Non-repeating helical symmetry",
+      "anchor": {
+        "section": "Helical symmetry",
+        "snippet": "This is the case in which the angle of rotation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Non-repeating helical symmetry is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Double rotation symmetry",
+      "anchor": {
+        "section": "Double rotation symmetry",
+        "snippet": "a double rotation symmetry can be generated as the composite of two orthogonal rotations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Double rotation symmetry (4D) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Non-isometric geometric symmetry",
+      "anchor": {
+        "section": "Non-isometric symmetries",
+        "snippet": "A wider definition of geometric symmetry allows operations from a larger group than the Euclidean group of isometries"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MulAction.stabilizer",
+        "module": "Mathlib.GroupTheory.GroupAction.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Invariance under arbitrary group actions (beyond isometries) is captured by `MulAction.stabilizer`, but no geometric symmetry framework is built on it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Klein's Erlangen program",
+      "anchor": {
+        "section": "Non-isometric symmetries",
+        "snippet": "each possible group of symmetries defines a geometry in which objects that are related by a member of the symmetry group are considered to be equivalent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Klein's Erlangen program is not formalized as a framework in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Scale symmetry",
+      "anchor": {
+        "section": "Scale symmetry and fractals",
+        "snippet": "Scale symmetry means that if an object is expanded or reduced in size, the new object has the same properties as the original"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineMap.homothety",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineMap",
+        "match_kind": null
+      },
+      "note": "Scaling maps (`homothety`) are formalized, but scale invariance as a symmetry property is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fractals",
+      "anchor": {
+        "section": "Scale symmetry and fractals",
+        "snippet": "fractals are a mathematical concept in which the structure of a complex form looks similar at any degree of magnification"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fractals / self-similarity are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Geometry and its group of symmetries (Klein)",
+      "anchor": {
+        "section": "Klein's view",
+        "snippet": "With every geometry, Felix Klein associated an underlying group of symmetries"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Klein's association of a geometry with a symmetry group is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Model geometry (Thurston)",
+      "anchor": {
+        "section": "Thurston's view",
+        "snippet": "A model geometry is a simply connected smooth manifold X together with a transitive action of a Lie group G"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Thurston model geometries are not formalized, though component notions (Lie groups, transitive actions, manifolds) exist separately.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Maximal model geometry",
+      "anchor": {
+        "section": "Thurston's view",
+        "snippet": "A model geometry is called maximal if G is maximal among groups acting smoothly and transitively"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Maximal model geometry is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Geometric structure on a manifold",
+      "anchor": {
+        "section": "Thurston's view",
+        "snippet": "A geometric structure on a manifold M is a diffeomorphism from M to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Geometric structures in Thurston's sense are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Model geometry relevant to geometrization conjecture",
+      "anchor": {
+        "section": "Thurston's view",
+        "snippet": "is relevant to the geometrization conjecture if it is maximal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Relevance to the geometrization conjecture is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Thurston's classification of 8 model geometries",
+      "anchor": {
+        "section": "Thurston's view",
+        "snippet": "Thurston classified the 8 model geometries satisfying these conditions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Thurston's classification of the eight 3-dimensional model geometries is not in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

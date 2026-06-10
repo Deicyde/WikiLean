@@ -1,0 +1,825 @@
+{
+  "slug": "Modular_arithmetic",
+  "wikipedia_title": "Modular arithmetic",
+  "display_title": "Modular arithmetic",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "example",
+      "label": "Clock arithmetic example",
+      "anchor": {
+        "section": "Motivating example",
+        "snippet": "If the hour hand points to 7 now, then 8 hours later it will point to 3"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal motivating arithmetic example not stated as a Mathlib lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "12 hours wait identity",
+      "anchor": {
+        "section": "Motivating example",
+        "snippet": "After a wait of exactly 12 hours, the hour hand will be right where it started"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal example; no dedicated lemma in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Congruence modulo m",
+      "anchor": {
+        "section": "Congruence",
+        "snippet": "two integers a and b are said to be congruent modulo m , if their difference a − b is an integer multiple of m"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.ModEq",
+        "module": "Mathlib.Data.Int.ModEq",
+        "match_kind": "exact"
+      },
+      "note": "`Int.ModEq n a b` is defined exactly as a % n = b % n, with the equivalent dvd characterization in `Int.modEq_iff_dvd`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Congruence is a congruence relation",
+      "anchor": {
+        "section": "Congruence",
+        "snippet": "Congruence modulo m is a congruence relation , meaning that it is an equivalence relation compatible with addition , subtraction , and multiplication"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.ModEq.add",
+        "module": "Mathlib.Data.Int.ModEq",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib provides the equivalence-relation instance and the compatibility lemmas `Int.ModEq.add`, `.sub`, `.mul` (and analogues for `Nat.ModEq`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Modulo operation (b mod m)",
+      "anchor": {
+        "section": "Congruence",
+        "snippet": "which refers to the remainder of b when divided by m , known as the modulo operation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.emod",
+        "module": "Mathlib.Data.Int.ModEq",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib uses the core `Int.emod`/`Nat.mod` for the modulo operation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Same remainder characterization",
+      "anchor": {
+        "section": "Congruence",
+        "snippet": "a ≡ b (mod m ) asserts that a and b have the same remainder when divided by m"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.ModEq",
+        "module": "Mathlib.Data.Int.ModEq",
+        "match_kind": "exact"
+      },
+      "note": "By definition `Int.ModEq n a b ↔ a % n = b % n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Negative modulus equivalence",
+      "anchor": {
+        "section": "Congruence",
+        "snippet": "This means that every non-zero integer m may be taken as a modulus"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Int.ModEq",
+        "module": "Mathlib.Data.Int.ModEq",
+        "match_kind": null
+      },
+      "note": "`Int.ModEq` permits any integer modulus but there is no dedicated lemma asserting that the relation is unchanged under negation of the modulus.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "38 ≡ 14 (mod 12)",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "because the difference is 38 − 14 = 24 = 2 × 12 , a multiple of 12"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific numerical example, not stated as a Mathlib lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Congruence with negative values",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The definition of congruence also applies to negative values"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Illustrative example only.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence relation properties",
+      "anchor": {
+        "section": "Basic properties",
+        "snippet": "The congruence relation satisfies all the conditions of an equivalence relation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.ModEq.trans",
+        "module": "Mathlib.Data.Int.ModEq",
+        "match_kind": "exact"
+      },
+      "note": "Equivalence is captured by the `Equivalence` instance built from `Int.ModEq.refl`, `.symm`, `.trans` (line 87).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compatibility properties of congruence",
+      "anchor": {
+        "section": "Basic properties",
+        "snippet": "compatibility with translation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.ModEq.add",
+        "module": "Mathlib.Data.Int.ModEq",
+        "match_kind": "exact"
+      },
+      "note": "Compatibility with translation/scaling/multiplication is covered by `Int.ModEq.add`, `.add_left`, `.mul_left`, `.mul`, `.neg`, `.sub`, `.pow`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euler totient exponent rule",
+      "anchor": {
+        "section": "Basic properties",
+        "snippet": "where φ is Euler's totient function , then a c ≡ a d (mod m ) —provided that a is coprime with m"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.ModEq.pow_totient",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.ModEq.pow_totient` gives `x^φ n ≡ 1 [MOD n]` when `x` is coprime with `n`, yielding the exponent-mod-φ(m) rule.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Congruence modulo product implies modulo factors",
+      "anchor": {
+        "section": "Basic properties",
+        "snippet": "If a ≡ b (mod mn ) , then a ≡ b (mod m ) and a ≡ b (mod n )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.ModEq.of_mul_right",
+        "module": "Mathlib.Data.Int.ModEq",
+        "match_kind": "exact"
+      },
+      "note": "`Int.ModEq.of_mul_left` and `Int.ModEq.of_mul_right` give exactly this.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cancellation rules",
+      "anchor": {
+        "section": "Basic properties",
+        "snippet": "For cancellation of common terms, we have the following rules"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.ModEq.mul_left_cancel'",
+        "module": "Mathlib.Data.Int.ModEq",
+        "match_kind": "exact"
+      },
+      "note": "Cancellation results are in `Int.ModEq.mul_left_cancel'`, `.mul_right_cancel'`, and the gcd-aware `cancel_left_div_gcd` family.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Division within modular arithmetic",
+      "anchor": {
+        "section": "Basic properties",
+        "snippet": "The last rule can be used to move modular arithmetic into division"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Int.ModEq.cancel_left_div_gcd",
+        "module": "Mathlib.Data.Int.ModEq",
+        "match_kind": null
+      },
+      "note": "The gcd-divided cancellation lemmas underpin moving to division, but no single lemma states the article's `(a/c) ≡ (b/c)` reformulation directly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Modular multiplicative inverse",
+      "anchor": {
+        "section": "Basic properties",
+        "snippet": "The modular multiplicative inverse is defined by the following rules"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.inv",
+        "module": "Mathlib.Data.ZMod.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `Inv (ZMod n)` (line 714) so that `a * a⁻¹ = 1` when gcd is 1, e.g. `ZMod.mul_inv_eq_gcd` / `ZMod.coe_mul_inv_eq_one`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Computing multiplicative inverse via Bézout",
+      "anchor": {
+        "section": "Basic properties",
+        "snippet": "may be efficiently computed by solving Bézout's equation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Int.gcd_eq_gcd_ab",
+        "module": "Mathlib.Data.Int.GCD",
+        "match_kind": null
+      },
+      "note": "Bézout coefficients via `Int.gcdA`/`Nat.xgcd` exist, but Mathlib does not package an explicit `inverse via Bézout` algorithm/lemma for ZMod.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverses exist modulo a prime",
+      "anchor": {
+        "section": "Basic properties",
+        "snippet": "thus a multiplicative inverse exists for all a that is not congruent to zero modulo p"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.instField",
+        "module": "Mathlib.Data.ZMod.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Encoded by the `Field (ZMod p)` instance under `[Fact p.Prime]`, so every nonzero element is invertible.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fermat's little theorem",
+      "anchor": {
+        "section": "Advanced properties",
+        "snippet": "Fermat's little theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.pow_card",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ZMod.pow_card` (line 583) and `ZMod.pow_card_sub_one_eq_one` (line 606) give Fermat's little theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler's theorem",
+      "anchor": {
+        "section": "Advanced properties",
+        "snippet": "Euler's theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.ModEq.pow_totient",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.ModEq.pow_totient` is exactly Euler's theorem `a^φ(n) ≡ 1 [MOD n]`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverse via Fermat's little theorem",
+      "anchor": {
+        "section": "Advanced properties",
+        "snippet": "A simple consequence of Fermat's little theorem is that if p is prime"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ZMod.pow_card_sub_one_eq_one",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": null
+      },
+      "note": "The underlying identity `a^{p-1}=1` is `ZMod.pow_card_sub_one_eq_one`, but Mathlib does not packaged this as a named formula for `a⁻¹ = a^{p-2}`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponent congruence consequence",
+      "anchor": {
+        "section": "Advanced properties",
+        "snippet": "Another simple consequence is that if a ≡ b (mod φ ( m ))"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.ModEq.pow_totient",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": null
+      },
+      "note": "Follows from `Nat.ModEq.pow_totient` but no dedicated `x^a ≡ x^b` lemma indexed by `a ≡ b [MOD φ m]` is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Wilson's theorem",
+      "anchor": {
+        "section": "Advanced properties",
+        "snippet": "Wilson's theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.wilsons_lemma",
+        "module": "Mathlib.NumberTheory.Wilson",
+        "match_kind": "exact"
+      },
+      "note": "`ZMod.wilsons_lemma` gives `(p-1)! = -1 (ZMod p)` and `Nat.prime_iff_fac_equiv_neg_one` is the iff form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Chinese remainder theorem",
+      "anchor": {
+        "section": "Advanced properties",
+        "snippet": "Chinese remainder theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.chineseRemainder",
+        "module": "Mathlib.Data.ZMod.QuotientRing",
+        "match_kind": "exact"
+      },
+      "note": "`ZMod.chineseRemainder`/`Nat.chineseRemainder` formalize CRT; further generalizations exist as `Ideal.quotientInfRingEquivPiQuotient`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lagrange's theorem (polynomial mod p)",
+      "anchor": {
+        "section": "Advanced properties",
+        "snippet": "Lagrange's theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.card_roots",
+        "module": "Mathlib.Algebra.Polynomial.Roots",
+        "match_kind": "generalization"
+      },
+      "note": "`Polynomial.card_roots` bounds roots of a nonzero polynomial over an integral domain by its degree, which specializes to the Z/p case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Primitive root modulo m",
+      "anchor": {
+        "section": "Advanced properties",
+        "snippet": "Primitive root modulo m"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsPrimitiveRoot",
+        "module": "Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's general `IsPrimitiveRoot` plus `IsCyclic (ZMod n)ˣ` encode the notion of primitive root mod m.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Existence of primitive roots",
+      "anchor": {
+        "section": "Advanced properties",
+        "snippet": "A primitive root modulo m exists if and only if m is equal to 2, 4"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.isCyclic_units_iff",
+        "module": "Mathlib.RingTheory.ZMod.UnitsCyclic",
+        "match_kind": "exact"
+      },
+      "note": "`ZMod.isCyclic_units_iff` characterizes exactly when `(ZMod n)ˣ` is cyclic, i.e. primitive roots exist.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quadratic residue",
+      "anchor": {
+        "section": "Advanced properties",
+        "snippet": "Quadratic residue"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsSquare",
+        "module": "Mathlib.Algebra.GroupPower.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Quadratic residues mod p are formalized via `IsSquare (a : ZMod p)`, used e.g. in `ZMod.euler_criterion`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler's criterion",
+      "anchor": {
+        "section": "Advanced properties",
+        "snippet": "Euler's criterion asserts that, if p is an odd prime"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.euler_criterion",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ZMod.euler_criterion` states `IsSquare a ↔ a^(p/2) = 1` for `a ≠ 0` in `ZMod p`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Congruence class / residue class",
+      "anchor": {
+        "section": "Congruence classes",
+        "snippet": "The equivalence class modulo m of an integer a is the set of all integers of the form a + k m"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod",
+        "module": "Mathlib.Data.ZMod.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Residue classes are elements of `ZMod n` (equivalently `ℤ ⧸ Ideal.span {(n:ℤ)}`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unique representative in range",
+      "anchor": {
+        "section": "Congruence classes",
+        "snippet": "Each residue class modulo m contains exactly one integer in the range"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.emod_lt_of_pos",
+        "module": "Mathlib.Data.Int.Order",
+        "match_kind": "exact"
+      },
+      "note": "Combined with `Int.emod_nonneg` and `Int.emod_emod_of_dvd`, `Int.emod_lt_of_pos` picks the unique representative in `[0, m)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Residue of a modulo m",
+      "anchor": {
+        "section": "Congruence classes",
+        "snippet": "it is called the residue of a modulo m"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.emod",
+        "module": "Init.Data.Int.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The residue is `a % m` (`Int.emod`/`Nat.mod`) and corresponds to `ZMod.val` in `ZMod n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Partition into residue classes",
+      "anchor": {
+        "section": "Residue systems",
+        "snippet": "every integer belongs to one and only one residue class modulo m"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.ModEq",
+        "module": "Mathlib.Data.Int.ModEq",
+        "match_kind": "exact"
+      },
+      "note": "Follows from the `Equivalence` instance on `Int.ModEq`; the quotient is `ZMod n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Least and complete residue systems",
+      "anchor": {
+        "section": "Residue systems",
+        "snippet": "The set of integers {0, 1, 2, ..., m − 1} is called the least residue system modulo m"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated `complete residue system` definition; Mathlib uses `ZMod n` directly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Complete residue systems modulo 4",
+      "anchor": {
+        "section": "Residue systems",
+        "snippet": "the least residue system modulo 4 is {0, 1, 2, 3}"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific illustrative example, not a Mathlib lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Non-complete residue systems mod 4",
+      "anchor": {
+        "section": "Residue systems",
+        "snippet": "Some sets that are not complete residue systems modulo 4 are"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Illustrative example only.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Reduced residue system",
+      "anchor": {
+        "section": "Reduced residue systems",
+        "snippet": "is called a reduced residue system modulo m"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ZMod.unitsEquivCoprime",
+        "module": "Mathlib.Data.ZMod.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib has `(ZMod n)ˣ` and `ZMod.unitsEquivCoprime { x // Coprime x.val n }` rather than a 'reduced residue system' name.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Covering system",
+      "anchor": {
+        "section": "Covering systems",
+        "snippet": "Covering systems represent yet another type of residue system that may contain residues with varying moduli"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Covering systems are not defined in Mathlib (grep finds no occurrences).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ring of integers modulo m",
+      "anchor": {
+        "section": "Integers modulo m",
+        "snippet": "The set of all congruence classes modulo m is a ring called the ring of integers modulo m"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod",
+        "module": "Mathlib.Data.ZMod.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`ZMod n` is defined in `Mathlib/Data/ZMod/Defs.lean` line 149.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Edge cases m = 0, 1",
+      "anchor": {
+        "section": "Integers modulo m",
+        "snippet": "When m = 1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.charZero",
+        "module": "Mathlib.Data.ZMod.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ZMod 0 = ℤ` is realized by `IsDomain (ZMod 0)`/`CharZero (ZMod 0)`; `ZMod 1` is a `Subsingleton`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Commutative ring structure",
+      "anchor": {
+        "section": "Integers modulo m",
+        "snippet": "The properties given before imply that, with these operations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.commRing",
+        "module": "Mathlib.Data.ZMod.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`ZMod n` carries a `CommRing` instance (inherited via `Fin n` / `ℤ`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quotient ring description",
+      "anchor": {
+        "section": "Integers modulo m",
+        "snippet": "is used because this ring is the quotient ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.quotientSpanNatEquivZMod",
+        "module": "Mathlib.Data.ZMod.QuotientRing",
+        "match_kind": "exact"
+      },
+      "note": "`Int.quotientSpanNatEquivZMod` provides the ring iso `ℤ ⧸ (n) ≃+* ZMod n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cyclic group classification",
+      "anchor": {
+        "section": "Integers modulo m",
+        "snippet": "All finite cyclic groups are isomorphic with"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "zmodCyclicMulEquiv",
+        "module": "Mathlib.GroupTheory.SpecificGroups.Cyclic",
+        "match_kind": "exact"
+      },
+      "note": "`zmodCyclicMulEquiv` shows any cyclic group is `MulEquiv` to `Multiplicative (ZMod n)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Z/m is a field iff m prime",
+      "anchor": {
+        "section": "Integers modulo m",
+        "snippet": "The ring of integers modulo m is a field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.instField",
+        "module": "Mathlib.Data.ZMod.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Field (ZMod p)` is the instance under `[Fact p.Prime]`; conversely a `ZMod n` field forces `n` prime.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Finite field of prime power order",
+      "anchor": {
+        "section": "Integers modulo m",
+        "snippet": "there exists a unique (up to isomorphism) finite field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GaloisField.algEquivGaloisField",
+        "module": "Mathlib.FieldTheory.Finite.GaloisField",
+        "match_kind": "exact"
+      },
+      "note": "`GaloisField p n` plus `GaloisField.algEquivGaloisField` give existence and uniqueness of the finite field of order p^n.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multiplicative group of integers modulo m",
+      "anchor": {
+        "section": "Integers modulo m",
+        "snippet": "denotes the multiplicative group of the integers modulo m that are invertible"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.unitsEquivCoprime",
+        "module": "Mathlib.Data.ZMod.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`(ZMod n)ˣ` is the multiplicative group; `ZMod.unitsEquivCoprime` identifies it with elements coprime to n.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "ISBN/IBAN checksums",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "International Standard Book Number (ISBN) uses modulo 11"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Application example, no ISBN/IBAN checksum formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Casting out nines",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "The method of casting out nines offers a quick check of decimal arithmetic computations performed by hand"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Application example; no Mathlib formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Day of the week algorithms",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "Arithmetic modulo 7 is used in algorithms that determine the day of the week for a given date"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Application example; no Mathlib formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linear congruences in polynomial time",
+      "anchor": {
+        "section": "Computational complexity",
+        "snippet": "A linear system of congruences can be solved in polynomial time"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Complexity statement, not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Nonlinear modular system is NP-complete",
+      "anchor": {
+        "section": "Computational complexity",
+        "snippet": "Solving a system of non-linear modular arithmetic equations is NP-complete"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "NP-completeness result, not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

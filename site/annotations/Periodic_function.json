@@ -1,0 +1,409 @@
+{
+  "slug": "Periodic_function",
+  "wikipedia_title": "Periodic function",
+  "display_title": "Periodic function",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Periodic function (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A periodic function is a function that repeats its values at regular intervals."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Periodic",
+        "module": "Mathlib.Algebra.Ring.Periodic",
+        "match_kind": "exact"
+      },
+      "note": "`Function.Periodic f c := ∀ x, f (x + c) = f x` directly captures the informal notion of a function repeating its values at regular intervals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Period",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The length of the interval over which a periodic function repeats is called its period"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Periodic",
+        "module": "Mathlib.Algebra.Ring.Periodic",
+        "match_kind": "exact"
+      },
+      "note": "The constant `c` in `Function.Periodic f c` is exactly the period.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Aperiodic function",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Any function that is not periodic is called aperiodic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no named `Aperiodic` predicate; one would simply write `¬ ∃ c ≠ 0, Function.Periodic f c`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Periodic function (formal)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "More formally, a function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Periodic",
+        "module": "Mathlib.Algebra.Ring.Periodic",
+        "match_kind": "exact"
+      },
+      "note": "The Mathlib definition `Function.Periodic f c := ∀ x, f (x + c) = f x` matches the formal Wikipedia definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Period of a function",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A nonzero constant"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Periodic",
+        "module": "Mathlib.Algebra.Ring.Periodic",
+        "match_kind": "exact"
+      },
+      "note": "The parameter `c` of `Function.Periodic f c` is the period; nonzeroness is supplied at usage sites rather than baked into the definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Integer multiples of a period are periods",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "any integer multiple"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Periodic.int_mul",
+        "module": "Mathlib.Algebra.Ring.Periodic",
+        "match_kind": "exact"
+      },
+      "note": "`Function.Periodic.int_mul` (and `Periodic.zsmul`, `Periodic.nsmul`) prove that integer multiples of a period are themselves periods.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fundamental period",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "If there is a least positive period, it is called the fundamental period"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `Function.minimalPeriod` for periodic points of iterated maps, but no `Function.Periodic`-style notion of least positive real period for general periodic functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Translational symmetry of graph",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Geometrically, a periodic function's graph exhibits translational symmetry"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Periodic",
+        "module": "Mathlib.Algebra.Ring.Periodic",
+        "match_kind": "exact"
+      },
+      "note": "The equation `f (x + c) = f x` in `Function.Periodic` is precisely the algebraic statement of translational symmetry of the graph by `c`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sawtooth wave (fractional part)",
+      "anchor": {
+        "section": "Sawtooth wave",
+        "snippet": "An example is the function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.fract_periodic",
+        "module": "Mathlib.Algebra.Field.Periodic",
+        "match_kind": "exact"
+      },
+      "note": "`Int.fract_periodic` proves `Function.Periodic Int.fract 1`, exactly the sawtooth fractional-part example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sine and cosine periodicity",
+      "anchor": {
+        "section": "Trigonometric functions",
+        "snippet": "The sine function and cosine function are periodic with a fundamental period of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.sin_periodic",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`sin_periodic` and `cos_periodic` prove `Function.Periodic sin (2 * π)` and `Function.Periodic cos (2 * π)`; minimality of this period is not stated as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Dirichlet function",
+      "anchor": {
+        "section": "Exotic functions",
+        "snippet": "The Dirichlet function , for example, is periodic, with any nonzero rational number serving as a period."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A grep for `Dirichlet`/`Periodic` finds no Mathlib formalization of the indicator-of-rationals Dirichlet function or its periodicity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Complex exponential periodicity",
+      "anchor": {
+        "section": "Complex exponential",
+        "snippet": "The complex exponential function is a periodic function with a purely imaginary period"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_periodic",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.exp_periodic` states `Function.Periodic exp (2 * π * I)`, exactly the purely-imaginary period claim.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Elliptic (double-periodic) functions",
+      "anchor": {
+        "section": "Double-periodic functions",
+        "snippet": "A function on the complex plane can have two distinct, incommensurate periods without being a constant function."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PeriodPair.weierstrassP_add_coe",
+        "module": "Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass",
+        "match_kind": "special_case"
+      },
+      "note": "The Weierstrass `℘` function is constructed in Mathlib for a `PeriodPair`, with `PeriodPair.weierstrassP_add_coe` establishing its double periodicity; no general `DoublyPeriodic` predicate is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Repeated values under period",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Periodic functions can take on values many times."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Periodic.not_injective",
+        "module": "Mathlib.Algebra.Ring.Periodic",
+        "match_kind": "exact"
+      },
+      "note": "`Function.Periodic.not_injective` shows that a nonzero-period periodic function is not injective, i.e. takes values more than once.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Integral over one period invariant",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "its definite integral over any interval of length"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Periodic.intervalIntegral_add_eq",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.Periodic",
+        "match_kind": "exact"
+      },
+      "note": "`Function.Periodic.intervalIntegral_add_eq` proves that the integral over any interval of length one period is the same.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Period under horizontal scaling",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "is a non-zero real number such that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Periodic.const_mul",
+        "module": "Mathlib.Algebra.Field.Periodic",
+        "match_kind": "exact"
+      },
+      "note": "`Function.Periodic.const_mul` and `Function.Periodic.mul_const` (in `Mathlib.Algebra.Field.Periodic`) give the scaled period for `x ↦ f (a*x)` over a division semiring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Combinations of periodic functions are periodic",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Any function that is a combination of periodic functions with the same period is also periodic"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Periodic.add",
+        "module": "Mathlib.Algebra.Ring.Periodic",
+        "match_kind": "exact"
+      },
+      "note": "Closure under addition/multiplication/division/scalar-multiplication with the same period is provided by `Periodic.add`, `Periodic.mul`, `Periodic.div`, `Periodic.smul`, etc.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Antiperiodic function",
+      "anchor": {
+        "section": "Antiperiodic functions",
+        "snippet": "One subset of periodic functions is that of antiperiodic functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Antiperiodic",
+        "module": "Mathlib.Algebra.Ring.Periodic",
+        "match_kind": "exact"
+      },
+      "note": "`Function.Antiperiodic f c := ∀ x, f (x + c) = -f x` matches the Wikipedia definition exactly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Antiperiodic implies periodic",
+      "anchor": {
+        "section": "Antiperiodic functions",
+        "snippet": "the converse is not necessarily true"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Antiperiodic.periodic",
+        "module": "Mathlib.Algebra.Ring.Periodic",
+        "match_kind": "exact"
+      },
+      "note": "`Function.Antiperiodic.periodic` shows any `c`-antiperiodic function is `2 • c`-periodic.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bloch-periodic function",
+      "anchor": {
+        "section": "Bloch-periodic functions",
+        "snippet": "Functions of this form are sometimes called Bloch-periodic in this context."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A grep for `Bloch` in `Mathlib/` returns no matches; no `Bloch`/quasi-periodic predicate is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quotient space domain for periodic functions",
+      "anchor": {
+        "section": "Quotient spaces as domain",
+        "snippet": "each element in"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Periodic.lift",
+        "module": "Mathlib.Algebra.Ring.Periodic",
+        "match_kind": "exact"
+      },
+      "note": "`Function.Periodic.lift` lifts a `c`-periodic function to a function on the quotient `α ⧸ AddSubgroup.zmultiples c`, exactly the quotient-space-domain construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Calculating period from frequency ratios",
+      "anchor": {
+        "section": "Calculating period",
+        "snippet": "To find the period, T, first find the least common denominator of all the elements in the set."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib provides closure properties such as `Periodic.add_period` but no LCM/LCD-based algorithm for computing a common period from a set of frequency ratios.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Period of Western major scale",
+      "anchor": {
+        "section": "Calculating period",
+        "snippet": "For set representing all notes of Western major scale"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no music-theoretic formalization of the Western major scale or its period.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Period of major triad",
+      "anchor": {
+        "section": "Calculating period",
+        "snippet": "For set representing all notes of a major triad"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no music-theoretic formalization of major triads or their period.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Period of minor triad",
+      "anchor": {
+        "section": "Calculating period",
+        "snippet": "For set representing all notes of a minor triad"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no music-theoretic formalization of minor triads or their period.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,489 @@
+{
+  "slug": "Riemann_integral",
+  "wikipedia_title": "Riemann integral",
+  "display_title": "Riemann integral",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Partition of an interval",
+      "anchor": {
+        "section": "Partitions of an interval",
+        "snippet": "A partition of an interval"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "BoxIntegral.Prepartition.IsPartition",
+        "module": "Mathlib.Analysis.BoxIntegral.Partition.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib only has partitions of n-dimensional boxes (`BoxIntegral.Prepartition` with predicate `IsPartition`), which specialises to interval partitions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sub-interval of a partition",
+      "anchor": {
+        "section": "Partitions of an interval",
+        "snippet": "is called a sub-interval of the partition"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "BoxIntegral.Prepartition.boxes",
+        "module": "Mathlib.Analysis.BoxIntegral.Partition.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Sub-boxes of a (pre)partition are exposed via `π.boxes : Finset (Box ι)`; no dedicated 1d sub-interval definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Mesh (norm) of a partition",
+      "anchor": {
+        "section": "Partitions of an interval",
+        "snippet": "The mesh or norm of a partition is defined to be the length of the longest sub-interval"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's BoxIntegral uses `IsSubordinate` w.r.t. a gauge function and `distortion`; there is no mesh/longest-subinterval definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tagged partition",
+      "anchor": {
+        "section": "Partitions of an interval",
+        "snippet": "A tagged partition"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "BoxIntegral.TaggedPrepartition",
+        "module": "Mathlib.Analysis.BoxIntegral.Partition.Tagged",
+        "match_kind": "generalization"
+      },
+      "note": "`BoxIntegral.TaggedPrepartition` plus `IsPartition` generalises tagged interval partitions to n dimensions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Refinement of a tagged partition",
+      "anchor": {
+        "section": "Partitions of an interval",
+        "snippet": "is a refinement of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "BoxIntegral.TaggedPrepartition.infPrepartition",
+        "module": "Mathlib.Analysis.BoxIntegral.Partition.Tagged",
+        "match_kind": "generalization"
+      },
+      "note": "Refinement is encoded via `infPrepartition` and the partial order on `Prepartition I`, not as a named `Refinement` definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Directed set of tagged partitions",
+      "anchor": {
+        "section": "Partitions of an interval",
+        "snippet": "We can turn the set of all tagged partitions into a directed set"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "BoxIntegral.IntegrationParams.toFilter",
+        "module": "Mathlib.Analysis.BoxIntegral.Partition.Filter",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib bypasses the directed-set picture and works with the filter `IntegrationParams.toFilter` of subordinate tagged partitions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Riemann sum",
+      "anchor": {
+        "section": "Riemann sum",
+        "snippet": "The Riemann sum of f with respect to a tagged partition"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "BoxIntegral.integralSum",
+        "module": "Mathlib.Analysis.BoxIntegral.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`BoxIntegral.integralSum f vol π` is the Riemann sum (with a general box-additive `vol`) generalising the 1d Riemann sum.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lower and upper Darboux sums",
+      "anchor": {
+        "section": "Riemann sum",
+        "snippet": "Closely related concepts are the lower and upper Darboux sums"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no lower/upper Darboux sum definition (the file `Mathlib/Analysis/Calculus/Darboux.lean` is about Darboux's theorem on derivatives).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Darboux sums equal Riemann sums for continuous f",
+      "anchor": {
+        "section": "Riemann sum",
+        "snippet": "the lower and upper Darboux sums for an untagged partition are equal to the Riemann sum for that partition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without Darboux sums in Mathlib, this equality statement is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Darboux integral equivalent to Riemann integral",
+      "anchor": {
+        "section": "Riemann sum",
+        "snippet": "is equivalent to the Riemann integral"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Darboux integral is defined in Mathlib, so its equivalence with the Riemann integral is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Riemann integral (epsilon-delta)",
+      "anchor": {
+        "section": "Riemann integral",
+        "snippet": "we say that the Riemann integral of f exists and equals s if the following condition holds"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "BoxIntegral.hasIntegral_iff",
+        "module": "Mathlib.Analysis.BoxIntegral.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`BoxIntegral.hasIntegral_iff` provides the ε–δ characterisation of `HasIntegral` for the box (generalised Riemann) integral.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Riemann integral (refinement form)",
+      "anchor": {
+        "section": "Riemann integral",
+        "snippet": "Our new definition says that the Riemann integral of f exists and equals s"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "BoxIntegral.HasIntegral",
+        "module": "Mathlib.Analysis.BoxIntegral.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`BoxIntegral.HasIntegral` is defined as a `Filter.Tendsto` over (sub)tagged partitions with parameter `IntegrationParams.Riemann`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence of the two Riemann integral definitions",
+      "anchor": {
+        "section": "Riemann integral",
+        "snippet": "these two definitions are equivalent"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "BoxIntegral.hasIntegral_iff",
+        "module": "Mathlib.Analysis.BoxIntegral.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `HasIntegral` filter-theoretically and proves the ε–δ form equivalent via `hasIntegral_iff`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Constant function 1 on [0,1]",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "be the function which takes the value 1 at every point"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "intervalIntegral.integral_const",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`intervalIntegral.integral_const` gives ∫ x in a..b, c = (b-a)•c, covering the example via the Lebesgue interval integral rather than a Riemann calculation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Indicator of rationals is not Riemann integrable",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "be the indicator function of the rational numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement that the Dirichlet (rationals) indicator fails to be Riemann/box-integrable was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Indicator of Smith–Volterra–Cantor set",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "let C be the Smith–Volterra–Cantor set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Smith–Volterra–Cantor set and the (non)integrability of its indicator are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linearity of the Riemann integral",
+      "anchor": {
+        "section": "Linearity",
+        "snippet": "The Riemann integral is a linear transformation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "BoxIntegral.HasIntegral.add",
+        "module": "Mathlib.Analysis.BoxIntegral.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`BoxIntegral.HasIntegral.add` and `BoxIntegral.HasIntegral.smul` establish linearity of the box (Riemann) integral; analogous results exist for `intervalIntegral.integral_add`/`integral_smul`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Riemann integral as a linear functional",
+      "anchor": {
+        "section": "Linearity",
+        "snippet": "this makes the Riemann integral a linear functional on the vector space of Riemann-integrable functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has component lemmas for linearity but no bundled `LinearMap` packaging the Riemann/box integral as a linear functional on integrable functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lebesgue–Vitali characterization of Riemann integrability",
+      "anchor": {
+        "section": "Integrability",
+        "snippet": "is Riemann integrable if and only if it is continuous almost everywhere"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Searches for `integrable_iff_continuous_ae` / Lebesgue–Vitali in `Mathlib` find nothing; the characterisation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bounded function with countably many discontinuities is Riemann integrable",
+      "anchor": {
+        "section": "Integrability",
+        "snippet": "a bounded function (on a compact interval) with only finitely or countably many discontinuities is Riemann integrable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement bounding the discontinuity set by countability to conclude Riemann integrability was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Right/left-hand limit sufficient criterion for integrability",
+      "anchor": {
+        "section": "Integrability",
+        "snippet": "the existence of a right-hand (or left-hand) limit at every point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no integrability criterion phrased in terms of one-sided limits existing everywhere.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Indicator function Riemann-integrable iff Jordan measurable",
+      "anchor": {
+        "section": "Integrability",
+        "snippet": "An indicator function of a bounded set is Riemann-integrable if and only if the set is Jordan measurable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Jordan measurability of sets is not defined in Mathlib (the existing `Jordan` file concerns the Jordan decomposition of vector measures).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Monotone functions are Riemann integrable",
+      "anchor": {
+        "section": "Integrability",
+        "snippet": "If a real-valued function is monotone on the interval"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Monotone.intervalIntegrable",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Monotone.intervalIntegrable` (and `MonotoneOn.intervalIntegrable`) proves integrability of monotone functions on a compact interval, but only for the Bochner/Lebesgue interval integral.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Riemann integrable implies Lebesgue integrable",
+      "anchor": {
+        "section": "Integrability",
+        "snippet": "If a real-valued function on"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No direct theorem linking `BoxIntegral.Integrable` to `MeasureTheory.IntegrableOn` (Lebesgue) was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniform convergence preserves Riemann integrability",
+      "anchor": {
+        "section": "Integrability",
+        "snippet": "is a uniformly convergent sequence on"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TendstoUniformlyOn.tendsto_intervalIntegral_of_continuousOn",
+        "module": "Mathlib.MeasureTheory.Integral.DominatedConvergence",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves convergence of `intervalIntegral` under uniform convergence of continuous functions, but not the preservation of Riemann integrability per se.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Riemann integral for vector-valued functions",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "The integral is defined component-wise"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "BoxIntegral.HasIntegral",
+        "module": "Mathlib.Analysis.BoxIntegral.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`BoxIntegral.HasIntegral` already takes values in an arbitrary normed space `F`, so vector-valued Riemann integration is subsumed directly (not component-wise).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Improper Riemann integral",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "The simplest possible extension is to define such an integral as a limit"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "intervalIntegral_tendsto_integral_Ioi",
+        "module": "Mathlib.MeasureTheory.Integral.IntegralEqImproper",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalises improper integrals as limits of `intervalIntegral` over expanding intervals (e.g. `intervalIntegral_tendsto_integral_Ioi/Iic`), in the Lebesgue setting.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sign function improper integral",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "consider the sign function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No example computing/discussing the improper integral of `Real.sign` was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Uniform convergence fails on unbounded intervals",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "take f n ( x ) to be n −1 on"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This counterexample about uniform convergence on unbounded intervals is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Riemann integrable iff bounded with discontinuity set of measure zero",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "a function f defined on a bounded interval is Riemann-integrable if and only if it is bounded"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Lebesgue criterion (bounded + discontinuities of measure zero) for Riemann integrability is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

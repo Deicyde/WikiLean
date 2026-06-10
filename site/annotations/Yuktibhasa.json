@@ -1,0 +1,185 @@
+{
+  "slug": "Yuktibhasa",
+  "wikipedia_title": "Yuktibhāṣā",
+  "display_title": "Yuktibhāṣā",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "theorem",
+      "label": "Madhava's arctangent power series",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "The first term is the product of the given sine and radius of the desired arc divided by the cosine of the arc"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.hasSum_arctan",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Arctan",
+        "match_kind": "exact"
+      },
+      "note": "Real.hasSum_arctan states arctan x = ∑ (-1)^n x^(2n+1)/(2n+1) for |x|<1, exactly Madhava's arctangent series.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gregory's series",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "which in Europe was conventionally called Gregory's series after James Gregory"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.hasSum_arctan",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Arctan",
+        "match_kind": "exact"
+      },
+      "note": "Gregory's series is the same arctan power series formalized as Real.hasSum_arctan.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Madhava–Leibniz series for π",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "The text also contains Madhava's infinite series expansion of π which he obtained from the expansion of the arc-tangent function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.tendsto_sum_pi_div_four",
+        "module": "Mathlib.Analysis.Real.Pi.Leibniz",
+        "match_kind": "exact"
+      },
+      "note": "Real.tendsto_sum_pi_div_four proves ∑ (-1)^i/(2i+1) → π/4, the Madhava–Leibniz series for π.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Approximations of π to 11 and 13 decimals",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "Jyeṣṭhadeva gave values of π as 3.14159265359, correct to 11 decimals"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.pi_lt_d20",
+        "module": "Mathlib.Analysis.Real.Pi.Bounds",
+        "match_kind": "generalization"
+      },
+      "note": "Real.pi_gt_d20/Real.pi_lt_d20 rigorously bound π to 20 decimal places, subsuming the 11- and 13-decimal approximations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rapidly converging series for π",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "obtain a rapidly converging series by transforming the original infinite series of π"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib declaration formalizes Madhava's convergence-accelerated transformations of the π series.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Remainder term method for π",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "The other method was to add a remainder term to the original series of π"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formalization of the remainder-term correction added to the π series.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sine and cosine series expansions",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "Proofs for the expansion of the sine and cosine functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.hasSum_sin",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Series",
+        "match_kind": "exact"
+      },
+      "note": "Real.hasSum_sin and Real.hasSum_cos give the Maclaurin series expansions of sine and cosine.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum and difference formulae for sine and cosine",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "The sum and difference formulae for sine and cosine"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.cos_add",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "Real.sin_add, Real.cos_add, Real.sin_sub, Real.cos_sub formalize the sum and difference identities.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Geometric derivations of series",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "Geometric derivations of series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This refers to a proof methodology rather than a stated theorem, and Mathlib has no corresponding declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Kuttakaram: integer solutions of linear systems",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "Integer solutions of systems of linear equations (solved using a system known as kuttakaram )"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Int.gcd_eq_gcd_ab",
+        "module": "Mathlib.Data.Int.GCD",
+        "match_kind": null
+      },
+      "note": "Int.gcd_eq_gcd_ab gives Bézout coefficients (the kernel of the kuttaka algorithm), but Mathlib has no general integer-solver for systems of linear equations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Taylor series statements",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "Statements of Taylor series for some functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "taylor_mean_remainder_lagrange",
+        "module": "Mathlib.Analysis.Calculus.Taylor",
+        "match_kind": "generalization"
+      },
+      "note": "taylor_mean_remainder_lagrange formalizes Taylor's theorem with Lagrange remainder, generalizing the text's Taylor-series statements.",
+      "provenance": "ai"
+    }
+  ]
+}

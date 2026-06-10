@@ -1,0 +1,422 @@
+{
+  "slug": "Bayesian_inference",
+  "wikipedia_title": "Bayesian inference",
+  "display_title": "Bayesian inference",
+  "schema_version": 3,
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Bayesian inference",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a method of statistical inference in which Bayes' theorem is used to calculate a probability of a hypothesis"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bayes' theorem (posterior computation)",
+      "anchor": {
+        "section": "Formal explanation",
+        "snippet": "Bayesian inference computes the posterior probability according to Bayes' theorem"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Hypothesis H",
+      "anchor": {
+        "section": "Formal explanation",
+        "snippet": "stands for any hypothesis whose probability may be affected by data"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Prior probability",
+      "anchor": {
+        "section": "Formal explanation",
+        "snippet": "is the estimate of the probability of the hypothesis"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Evidence",
+      "anchor": {
+        "section": "Formal explanation",
+        "snippet": "corresponds to new data that were not used in computing the prior probability"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Posterior probability",
+      "anchor": {
+        "section": "Formal explanation",
+        "snippet": "This is what we want to know: the probability of a hypothesis given the observed evidence"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Likelihood",
+      "anchor": {
+        "section": "Formal explanation",
+        "snippet": "it indicates the compatibility of the evidence with the given hypothesis"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Marginal likelihood (model evidence)",
+      "anchor": {
+        "section": "Formal explanation",
+        "snippet": "This factor is the same for all possible hypotheses being considered"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Posterior proportional to prior times likelihood",
+      "anchor": {
+        "section": "Formal explanation",
+        "snippet": "the posterior probability of a hypothesis is proportional to its prior probability"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bayes' rule in odds form",
+      "anchor": {
+        "section": "Formal explanation",
+        "snippet": "Bayes' rule can be rewritten as follows"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rule of multiplication form",
+      "anchor": {
+        "section": "Formal explanation",
+        "snippet": "One quick and easy way to remember the equation would be to use rule of multiplication"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Jeffrey's rule (probability kinematics)",
+      "anchor": {
+        "section": "Alternatives to Bayesian updating",
+        "snippet": "which applies Bayes' rule to the case where the evidence itself is assigned a probability"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "General formulation of Bayesian updating",
+      "anchor": {
+        "section": "General formulation",
+        "snippet": "Suppose a process is generating independent and identically distributed events"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Update for multiple iid observations",
+      "anchor": {
+        "section": "Multiple observations",
+        "snippet": "it can be shown by induction that repeated application of the above is equivalent to"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Parametric posterior update",
+      "anchor": {
+        "section": "Parametric formulation: motivating the formal description",
+        "snippet": "By parameterizing the space of models, the belief in all models may be updated in a single step"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Data point",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "a data point in general. This may be a vector of values"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Parameter",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "the parameter of the data point's distribution"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Hyperparameter",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "the hyperparameter of the parameter distribution"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Sample",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "is the sample, a set of"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "New data point",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "a new data point whose distribution is to be predicted"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Prior distribution",
+      "anchor": {
+        "section": "Bayesian inference",
+        "snippet": "The prior distribution is the distribution of the parameter(s) before any data is observed"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Sampling distribution (likelihood)",
+      "anchor": {
+        "section": "Bayesian inference",
+        "snippet": "The sampling distribution is the distribution of the observed data conditional on its parameters"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Marginal likelihood",
+      "anchor": {
+        "section": "Bayesian inference",
+        "snippet": "is the distribution of the observed data marginalized over the parameter(s)"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Posterior distribution",
+      "anchor": {
+        "section": "Bayesian inference",
+        "snippet": "The posterior distribution is the distribution of the parameter(s) after taking into account the observed data"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bayes' rule (posterior ∝ likelihood × prior)",
+      "anchor": {
+        "section": "Bayesian inference",
+        "snippet": "posterior is proportional to likelihood times prior"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Existence/uniqueness via Radon–Nikodym",
+      "anchor": {
+        "section": "Bayesian inference",
+        "snippet": "Existence and uniqueness of the needed conditional expectation is a consequence of the Radon–Nikodym theorem"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Generalization to improper priors",
+      "anchor": {
+        "section": "Bayesian inference",
+        "snippet": "Bayes' theorem can be generalized to include improper prior distributions"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Posterior predictive distribution",
+      "anchor": {
+        "section": "Bayesian prediction",
+        "snippet": "The posterior predictive distribution is the distribution of a new data point, marginalized over the posterior"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Prior predictive distribution",
+      "anchor": {
+        "section": "Bayesian prediction",
+        "snippet": "The prior predictive distribution is the distribution of a new data point, marginalized over the prior"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Predictive distributions are compound distributions",
+      "anchor": {
+        "section": "Bayesian prediction",
+        "snippet": "Both types of predictive distributions have the form of a compound probability distribution"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Interpretation of evidence factor",
+      "anchor": {
+        "section": "Interpretation of factor",
+        "snippet": "if the model were true, the evidence would be more likely than is predicted by the current state of belief"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cromwell's rule",
+      "anchor": {
+        "section": "Cromwell's rule",
+        "snippet": "This can be interpreted to mean that hard convictions are insensitive to counter-evidence"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bernstein–von Mises theorem",
+      "anchor": {
+        "section": "Asymptotic behaviour of posterior",
+        "snippet": "in the limit of infinite trials, the posterior converges to a Gaussian distribution"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Conjugate prior",
+      "anchor": {
+        "section": "Conjugate priors",
+        "snippet": "the corresponding posterior distribution will be in the same family"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Posterior median as robust estimator",
+      "anchor": {
+        "section": "Estimates of parameters and predictions",
+        "snippet": "The posterior median is attractive as a robust estimator"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Posterior mean estimator",
+      "anchor": {
+        "section": "Estimates of parameters and predictions",
+        "snippet": "then the posterior mean is a method of estimation"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Maximum a posteriori estimation (MAP)",
+      "anchor": {
+        "section": "Estimates of parameters and predictions",
+        "snippet": "Taking a value with the greatest probability defines the maximum a posteriori estimation"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "No MAP estimate attained",
+      "anchor": {
+        "section": "Estimates of parameters and predictions",
+        "snippet": "There are examples where no maximum is attained, in which case the set of MAP estimates is empty"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Posterior-risk-minimizing estimators",
+      "anchor": {
+        "section": "Estimates of parameters and predictions",
+        "snippet": "There are other methods of estimation that minimize the posterior risk"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Posterior predictive of a new observation",
+      "anchor": {
+        "section": "Estimates of parameters and predictions",
+        "snippet": "The posterior predictive distribution of a new observation"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Cookie bowls problem",
+      "anchor": {
+        "section": "Probability of a hypothesis",
+        "snippet": "Suppose there are two full bowls of cookies"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Archaeological pottery dating",
+      "anchor": {
+        "section": "Making a prediction",
+        "snippet": "An archaeologist is working at a site thought to be from the medieval period"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Wald's complete class theorem",
+      "anchor": {
+        "section": "In frequentist statistics and decision theory",
+        "snippet": "who proved that every unique Bayesian procedure is admissible"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Bayes factor in model comparison",
+      "anchor": {
+        "section": "Model selection",
+        "snippet": "the ratio of their posterior probabilities corresponds to the Bayes factor"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Solomonoff's universal prior",
+      "anchor": {
+        "section": "Computer applications",
+        "snippet": "is the sum of the probabilities of all programs"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gardner-Medwin courtroom implication",
+      "anchor": {
+        "section": "In the courtroom",
+        "snippet": "A and not- B implies the truth of C , but the reverse is not true"
+      },
+      "provenance": "ai-agent1"
+    }
+  ]
+}

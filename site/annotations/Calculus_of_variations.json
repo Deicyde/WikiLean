@@ -1,0 +1,761 @@
+{
+  "slug": "Calculus_of_variations",
+  "wikipedia_title": "Calculus of variations",
+  "display_title": "Calculus of variations",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Calculus of variations",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a field of mathematical analysis that uses variations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Names a mathematical field rather than a formalizable statement; Mathlib has no calculus-of-variations development.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Extremum of a functional",
+      "anchor": {
+        "section": "Extrema",
+        "snippet": "is said to have an extremum at the function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsLocalExtr",
+        "module": "Mathlib.Topology.Order.LocalExtr",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's general `IsLocalExtr`/`IsExtrOn` covers extrema of any function, but there is no functional-on-function-space framing.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Extremal function",
+      "anchor": {
+        "section": "Extrema",
+        "snippet": "is called an extremal function or extremal"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsLocalExtr",
+        "module": "Mathlib.Topology.Order.LocalExtr",
+        "match_kind": "generalization"
+      },
+      "note": "An extremal is just a point satisfying `IsLocalExtr`; no dedicated calculus-of-variations notion exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Local maximum and minimum",
+      "anchor": {
+        "section": "Extrema",
+        "snippet": "is called a local maximum if"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsLocalMax",
+        "module": "Mathlib.Topology.Order.LocalExtr",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `IsLocalMax`/`IsLocalMin` define local extrema for general functions, applying to functionals only as a special case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Strong and weak extrema",
+      "anchor": {
+        "section": "Extrema",
+        "snippet": "are called strong extrema or weak extrema"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The C⁰- versus C¹-norm distinction between strong and weak extrema is absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Strong extremum is weak extremum",
+      "anchor": {
+        "section": "Extrema",
+        "snippet": "a strong extremum is also a weak extremum"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No strong/weak extremum notions exist, so this implication is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler–Lagrange equation",
+      "anchor": {
+        "section": "Euler–Lagrange equation",
+        "snippet": "implies that the part of the integrand in parentheses is zero"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Euler–Lagrange equation is not present anywhere in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Variation of a function",
+      "anchor": {
+        "section": "Euler–Lagrange equation",
+        "snippet": "is called the variation of the function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The perturbation δy of a function as used in variational arguments has no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Functional derivative",
+      "anchor": {
+        "section": "Euler–Lagrange equation",
+        "snippet": "is called the functional derivative of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The functional derivative δJ/δy is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euler–Lagrange is necessary not sufficient",
+      "anchor": {
+        "section": "Euler–Lagrange equation",
+        "snippet": "is a necessary , but not sufficient , condition for an extremum"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsLocalExtr.fderiv_eq_zero",
+        "module": "Mathlib.Analysis.Calculus.LocalExtr.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has the finite-dimensional Fermat condition (vanishing derivative is necessary for a local extremum), the analog of Euler–Lagrange necessity, but not for functionals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Shortest curve between two points",
+      "anchor": {
+        "section": "Example",
+        "snippet": "the shortest curve that connects two points"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem that the straight line minimizes arc length between two points was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Beltrami identity",
+      "anchor": {
+        "section": "Beltrami's identity",
+        "snippet": "the Euler–Lagrange equation can be simplified to the Beltrami identity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Beltrami identity does not appear in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euler–Poisson equation",
+      "anchor": {
+        "section": "Euler–Poisson equation",
+        "snippet": "must satisfy the Euler– Poisson equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The higher-derivative Euler–Poisson equation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Du Bois-Reymond's theorem",
+      "anchor": {
+        "section": "Du Bois-Reymond's theorem",
+        "snippet": "asserts that this weak form implies the strong form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Du Bois-Reymond's lemma/theorem of the calculus of variations is absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lavrentiev phenomenon",
+      "anchor": {
+        "section": "Lavrentiev phenomenon",
+        "snippet": "identifies a difference in the infimum of a minimization problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Lavrentiev phenomenon is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Manià's example",
+      "anchor": {
+        "section": "Lavrentiev phenomenon",
+        "snippet": "the following problem, presented by Manià in 1934"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Manià's example exhibiting the Lavrentiev gap is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Weak repulsion property",
+      "anchor": {
+        "section": "Lavrentiev phenomenon",
+        "snippet": "will display the weak repulsion property"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The weak repulsion property is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Membrane potential energy",
+      "anchor": {
+        "section": "Functions of several variables",
+        "snippet": "then its potential energy is proportional to its surface area"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Dirichlet/surface-area energy functional for a membrane is not set up in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Plateau's problem",
+      "anchor": {
+        "section": "Functions of several variables",
+        "snippet": "consists of finding a function that minimizes the surface area"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Plateau's minimal-surface problem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Nonlinear Euler–Lagrange equation",
+      "anchor": {
+        "section": "Functions of several variables",
+        "snippet": "The Euler–Lagrange equation for this problem is nonlinear"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The minimal-surface (nonlinear Euler–Lagrange) equation is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dirichlet's principle",
+      "anchor": {
+        "section": "Dirichlet's principle",
+        "snippet": "Riemann named this idea the Dirichlet principle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dirichlet's principle is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Weierstrass non-existence example",
+      "anchor": {
+        "section": "Dirichlet's principle",
+        "snippet": "Weierstrass gave an example of a variational problem with no solution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Weierstrass's example of a variational problem with no minimizer is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Validity of Dirichlet's principle",
+      "anchor": {
+        "section": "Dirichlet's principle",
+        "snippet": "Eventually it was shown that Dirichlet's principle is valid"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The rigorous validity result for Dirichlet's principle is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Natural boundary conditions",
+      "anchor": {
+        "section": "Generalization to other boundary value problems",
+        "snippet": "Such conditions are called natural boundary conditions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Natural boundary conditions arising from variational problems are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equilibrium of external forces",
+      "anchor": {
+        "section": "Generalization to other boundary value problems",
+        "snippet": "implies that net external forces on the system are in equilibrium"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This physical equilibrium consequence of the boundary terms is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Eigenvalue problems as variational problems",
+      "anchor": {
+        "section": "Eigenvalue problems",
+        "snippet": "can be formulated as variational problems"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsSelfAdjoint.hasEigenvector_of_isMaxOn",
+        "module": "Mathlib.Analysis.InnerProductSpace.Rayleigh",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes the variational characterization of eigenvalues via extrema of the Rayleigh quotient of a self-adjoint operator.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sturm–Liouville eigenvalue problem",
+      "anchor": {
+        "section": "Sturm–Liouville problems",
+        "snippet": "The Sturm–Liouville eigenvalue problem involves a general quadratic form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Sturm–Liouville problems are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Minimizer satisfies Euler–Lagrange equation",
+      "anchor": {
+        "section": "Sturm–Liouville problems",
+        "snippet": "has two derivatives and satisfies the Euler–Lagrange equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Euler–Lagrange equation for Sturm–Liouville minimizers is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rayleigh–Ritz method",
+      "anchor": {
+        "section": "Sturm–Liouville problems",
+        "snippet": "leads to the Rayleigh–Ritz method"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.IsSymmetric.hasEigenvalue_iSup_of_finiteDimensional",
+        "module": "Mathlib.Analysis.InnerProductSpace.Rayleigh",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has the Rayleigh-quotient variational characterization of the extreme eigenvalue, but not the Ritz approximation procedure itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Natural boundary conditions (Sturm–Liouville)",
+      "anchor": {
+        "section": "Sturm–Liouville problems",
+        "snippet": "are the natural boundary conditions for this problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Natural boundary conditions for Sturm–Liouville problems are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler–Lagrange equation in several dimensions",
+      "anchor": {
+        "section": "Eigenvalue problems in several dimensions",
+        "snippet": "The Euler–Lagrange equation satisfied by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The multidimensional Euler–Lagrange (PDE) equation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Natural boundary condition (several dimensions)",
+      "anchor": {
+        "section": "Eigenvalue problems in several dimensions",
+        "snippet": "must also satisfy the natural boundary condition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The associated natural boundary condition in several dimensions is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fermat's principle",
+      "anchor": {
+        "section": "Optics",
+        "snippet": "states that light takes a path that (locally) minimizes the optical length"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fermat's principle of least optical path is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Snell's law",
+      "anchor": {
+        "section": "Snell's law",
+        "snippet": "Snell's law is equivalent to vanishing of the first variation of the optical path length"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Snell's law and its variational derivation are not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hamilton–Jacobi theory",
+      "anchor": {
+        "section": "Fermat's principle in three dimensions",
+        "snippet": "is equivalent to finding families of solutions of the variational problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hamilton–Jacobi theory is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Action",
+      "anchor": {
+        "section": "Mechanics",
+        "snippet": "is defined as the time integral of the Lagrangian"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The action functional of classical mechanics is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lagrangian",
+      "anchor": {
+        "section": "Mechanics",
+        "snippet": "The Lagrangian is the difference of energies"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The mechanical Lagrangian (kinetic minus potential energy) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hamilton's principle",
+      "anchor": {
+        "section": "Mechanics",
+        "snippet": "states that the motion of a conservative holonomic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hamilton's principle of stationary action is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lagrange's equations",
+      "anchor": {
+        "section": "Mechanics",
+        "snippet": "are known as Lagrange's equations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lagrange's equations of motion are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conjugate momenta",
+      "anchor": {
+        "section": "Mechanics",
+        "snippet": "The conjugate momenta"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Conjugate (canonical) momenta are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hamiltonian",
+      "anchor": {
+        "section": "Mechanics",
+        "snippet": "by a Legendre transformation of the Lagrangian"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The mechanical Hamiltonian via Legendre transform is absent (the only `Hamiltonian` in Mathlib is graph-theoretic).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hamilton–Jacobi equation",
+      "anchor": {
+        "section": "Mechanics",
+        "snippet": "This function is a solution of the Hamilton–Jacobi equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hamilton–Jacobi equation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "First and second variation",
+      "anchor": {
+        "section": "Variations and sufficient condition for a minimum",
+        "snippet": "is defined as the linear part of the change in the functional"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "lineDeriv",
+        "module": "Mathlib.Analysis.Calculus.LineDeriv.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The first variation is the directional/Gâteaux derivative (`lineDeriv`), present generally, but the second variation as a calculus-of-variations object is not dedicated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Differentiable functional",
+      "anchor": {
+        "section": "Variations and sufficient condition for a minimum",
+        "snippet": "is said to be differentiable if"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HasFDerivAt",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "The given definition (ΔJ = bounded-linear φ[h] + o(‖h‖)) is exactly Fréchet differentiability `HasFDerivAt`, stated generally for normed spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Twice differentiable functional",
+      "anchor": {
+        "section": "Variations and sufficient condition for a minimum",
+        "snippet": "is said to be twice differentiable if"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HasFDerivAt",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's iterated Fréchet derivatives generalize twice differentiability, but there is no functional-specific second-variation expansion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Strongly positive second variation",
+      "anchor": {
+        "section": "Variations and sufficient condition for a minimum",
+        "snippet": "is said to be strongly positive if"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsCoercive",
+        "module": "Mathlib.Analysis.Normed.Operator.NormedSpace",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `IsCoercive` (∃ C>0, C‖u‖² ≤ B u u) for a bounded bilinear form matches the 'strongly positive' condition on the second variation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sufficient condition for a minimum",
+      "anchor": {
+        "section": "Variations and sufficient condition for a minimum",
+        "snippet": "Sufficient condition for a minimum"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "isLocalMin_of_deriv_deriv_pos",
+        "module": "Mathlib.Analysis.Calculus.DerivativeTest",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has the finite-dimensional (1D) second-derivative test—vanishing first derivative plus positive second derivative gives a local minimum—the analog of the sufficient condition, but not for functionals.",
+      "provenance": "ai"
+    }
+  ]
+}

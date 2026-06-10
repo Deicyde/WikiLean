@@ -1,0 +1,1035 @@
+{
+  "slug": "Finite_field",
+  "wikipedia_title": "Finite field",
+  "display_title": "Finite field",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Finite field",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a finite field or Galois field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FiniteField",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "exact"
+      },
+      "note": "A finite field is encoded in Mathlib as a type with `[Field K] [Finite K]` (or `[Fintype K]`); the namespace `FiniteField` in `Mathlib/FieldTheory/Finite/Basic.lean` collects results under this assumption.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Order of a finite field",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The order of a finite field is its number of elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fintype.card",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The order is just the cardinality `Fintype.card K` / `Nat.card K`; throughout `FiniteField` it is the abbreviation `q`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence and isomorphism of finite fields by order",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "For every prime number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GaloisField",
+        "module": "Mathlib.FieldTheory.Finite.GaloisField",
+        "match_kind": "exact"
+      },
+      "note": "Existence is given by `GaloisField p n` with `GaloisField.card`, and uniqueness up to isomorphism by `FiniteField.algEquivOfCardEq` / `FiniteField.ringEquivOfCardEq`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Order/size of a finite field (Properties)",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The number of elements of a finite field is called its order"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fintype.card",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Same notion as in the lead: `Fintype.card K` (notation `q`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Characterization of orders of finite fields",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "A finite field of order"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FiniteField.card",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`FiniteField.card` (and `FiniteField.card'`, `FiniteField.isPrimePow_card`) states that any finite field has cardinality a prime power.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness of finite fields of given order",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "all fields of order"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FiniteField.ringEquivOfCardEq",
+        "module": "Mathlib.FieldTheory.Finite.GaloisField",
+        "match_kind": "exact"
+      },
+      "note": "Any two finite fields of equal cardinality are ring-isomorphic via `FiniteField.ringEquivOfCardEq` (and algebra-isomorphic via `FiniteField.algEquivOfCardEq`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Polynomial X^q - X has all elements as roots",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "the polynomial"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FiniteField.pow_card",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`FiniteField.pow_card` shows `a ^ q = a` for all `a : K`; `FiniteField.roots_X_pow_card_sub_X` packages this as a roots-multiset equality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multiplicative group of a finite field is cyclic",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The non-zero elements of a finite field form a multiplicative group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isCyclic_of_subgroup_isDomain",
+        "module": "Mathlib.RingTheory.IntegralDomain",
+        "match_kind": "generalization"
+      },
+      "note": "The general result `IsCyclic Rˣ` for finite integral domains (`isCyclic_of_subgroup_isDomain` and the `instance [Finite Rˣ] : IsCyclic Rˣ`) covers finite fields.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Primitive element",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "a primitive element of the field"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsCyclic.exists_generator",
+        "module": "Mathlib.GroupTheory.SpecificGroups.Cyclic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib expresses primitive elements through `IsCyclic.exists_generator` on `Kˣ`; there is no dedicated `primitiveElement` name for finite fields.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Prime fields as integers modulo p",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The simplest examples of finite fields are the fields of prime order"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod",
+        "module": "Mathlib.Data.ZMod.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`ZMod p` is a field when `p` is prime (via `ZMod.instField`), giving the prime fields.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Characteristic of a finite field",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The least positive"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CharP",
+        "module": "Mathlib.Algebra.CharP.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "The characteristic is the general `CharP K p` typeclass; for finite fields it is the prime `p` from `FiniteField.card`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Freshman's dream identity",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "sometimes called the freshman's dream"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "add_pow_char",
+        "module": "Mathlib.Algebra.CharP.Frobenius",
+        "match_kind": "exact"
+      },
+      "note": "`add_pow_char` (and `add_pow_expChar_pow`) gives `(x + y)^p = x^p + y^p` in characteristic `p`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fermat's little theorem for finite fields",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "By Fermat's little theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FiniteField.pow_card_sub_one_eq_one",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`FiniteField.pow_card_sub_one_eq_one` states `a^(q-1) = 1` for nonzero `a`; `ZMod.pow_card_sub_one_eq_one` is the prime-field case.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Properties",
+          "snippet": "By Fermat's little theorem"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle X^{p}-X=\\prod _{a\\in \\mathrm {GF} (p)}(X-a)}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite fields are perfect (separable simple extensions)",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Any finite field extension of a finite field is separable and simple"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PerfectField.ofFinite",
+        "module": "Mathlib.FieldTheory.Perfect",
+        "match_kind": "exact"
+      },
+      "note": "`PerfectField.ofFinite` makes every finite field perfect (hence every algebraic extension separable), and `Field.exists_primitive_element` then yields simplicity for finite separable extensions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Chevalley–Warning: finite fields are quasi-algebraically closed",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Finite fields are quasi-algebraically closed"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "char_dvd_card_solutions_of_sum_lt",
+        "module": "Mathlib.FieldTheory.ChevalleyWarning",
+        "match_kind": "exact"
+      },
+      "note": "Chevalley–Warning is formalized as `char_dvd_card_solutions_of_sum_lt`, but the abstract notion of a quasi-algebraically closed (C₁) field is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Splitting field of X^q - X has order q",
+      "anchor": {
+        "section": "Existence and uniqueness",
+        "snippet": "be the splitting field of the polynomial"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GaloisField.card",
+        "module": "Mathlib.FieldTheory.Finite.GaloisField",
+        "match_kind": "exact"
+      },
+      "note": "`GaloisField p n := SplittingField (X^p^n - X)` and `GaloisField.card` proves it has cardinality `p^n`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Existence and uniqueness",
+          "snippet": "be the splitting field of the polynomial"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle P=X^{q}-X}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness up to isomorphism via splitting fields",
+      "anchor": {
+        "section": "Existence and uniqueness",
+        "snippet": "The uniqueness up to isomorphism of splitting fields"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GaloisField.algEquivGaloisField",
+        "module": "Mathlib.FieldTheory.Finite.GaloisField",
+        "match_kind": "exact"
+      },
+      "note": "`GaloisField.algEquivGaloisField` (and `FiniteField.algEquivOfCardEq`) realize this via the universal property of `IsSplittingField.algEquiv`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Moore's classification theorem for finite fields",
+      "anchor": {
+        "section": "Existence and uniqueness",
+        "snippet": "The order of a finite field is a prime power"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fintype.nonempty_field_iff",
+        "module": "Mathlib.FieldTheory.Cardinality",
+        "match_kind": "exact"
+      },
+      "note": "`Fintype.nonempty_field_iff` says a finite type admits a field structure iff its cardinality is a prime power, combining `FiniteField.card` with `GaloisField` existence.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Existence and uniqueness",
+          "snippet": "The order of a finite field is a prime power"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x^{q}=x,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle X^{q}-X=\\prod _{a\\in F}(X-a).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Subfield criterion for finite fields",
+      "anchor": {
+        "section": "Existence and uniqueness",
+        "snippet": "contains a subfield isomorphic to"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FiniteField.nonempty_algHom_iff_finrank_dvd",
+        "module": "Mathlib.FieldTheory.Finite.GaloisField",
+        "match_kind": "generalization"
+      },
+      "note": "`FiniteField.nonempty_algHom_iff_finrank_dvd` gives the divisibility criterion for embedding finite-field extensions, but the direct `GF(p^m) ↪ GF(p^n) ↔ m ∣ n` statement is not isolated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Construction of GF(p^n) via irreducible polynomial quotient",
+      "anchor": {
+        "section": "Non-prime fields",
+        "snippet": "the field"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AdjoinRoot",
+        "module": "Mathlib.RingTheory.AdjoinRoot",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the general quotient-by-irreducible construction `AdjoinRoot`, but no dedicated `GF(p^n) := (ZMod p)[X] / (f)` definition.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Non-prime fields",
+          "snippet": "the field"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathrm {GF} (q)=\\mathrm {GF} (p)[X]/(P)}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Field with four elements GF(4)",
+      "anchor": {
+        "section": "Field with four elements",
+        "snippet": "The smallest non-prime field is the field with four elements"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "GaloisField",
+        "module": "Mathlib.FieldTheory.Finite.GaloisField",
+        "match_kind": "special_case"
+      },
+      "note": "Available abstractly as `GaloisField 2 2`, but no explicit small construction or addition/multiplication table is stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Frobenius automorphism on GF(4)",
+      "anchor": {
+        "section": "Field with four elements",
+        "snippet": "is the non-trivial field automorphism"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "frobenius",
+        "module": "Mathlib.Algebra.CharP.Frobenius",
+        "match_kind": "generalization"
+      },
+      "note": "The generic `frobenius` ring hom exists but no instance is specialized as the nontrivial automorphism of `GaloisField 2 2`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Field with four elements",
+          "snippet": "is the non-trivial field automorphism"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\varphi :x\\mapsto x^{2}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Irreducibility of X^2 - r over GF(p) via quadratic non-residue",
+      "anchor": {
+        "section": "GF( p 2 ) for an odd prime p",
+        "snippet": "is irreducible over"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No direct statement that `X^2 - r` is irreducible over `ZMod p` when `r` is a quadratic non-residue was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Construction of GF(p^2) for odd prime p",
+      "anchor": {
+        "section": "GF( p 2 ) for an odd prime p",
+        "snippet": "Having chosen a quadratic non-residue"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `GaloisField p 2` abstractly but not the explicit `(ZMod p)[X]/(X^2 - r)` presentation.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "GF( p 2 ) for an odd prime p",
+          "snippet": "Having chosen a quadratic non-residue"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a+b\\alpha ,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}-(a+b\\alpha )&amp;=-a+(-b)\\alpha \\\\(a+b\\alpha )+(c+d\\alpha )&amp;=(a+c)+(b+d)\\alpha \\\\(a+b\\alpha )(c+d\\alpha )&amp;=(ac+rbd)+(ad+bc)\\alpha \\\\(a+b\\alpha )^{-1}&amp;=a(a^{2}-rb^{2})^{-1}+(-b)(a^{2}-rb^{2})^{-1}\\alpha \\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Construction of GF(8) and GF(27)",
+      "anchor": {
+        "section": "GF(8) and GF(27)",
+        "snippet": "is irreducible over"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific minimal-polynomial constructions of `GF(8)` and `GF(27)` are not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Construction of GF(16)",
+      "anchor": {
+        "section": "GF(16)",
+        "snippet": "The polynomial"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An explicit construction of `GF(16)` via `X^4 + X + 1` is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Primitive elements of GF(16)",
+      "anchor": {
+        "section": "GF(16)",
+        "snippet": "has eight primitive elements"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement enumerating the eight primitive elements of `GF(16)` was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Multiplicative group of a finite field is cyclic",
+      "anchor": {
+        "section": "Multiplicative structure",
+        "snippet": "The multiplicative group of the non-zero elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isCyclic_of_subgroup_isDomain",
+        "module": "Mathlib.RingTheory.IntegralDomain",
+        "match_kind": "generalization"
+      },
+      "note": "Same as the earlier entry: `IsCyclic Kˣ` holds for any finite integral domain via `isCyclic_of_subgroup_isDomain`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Primitive element of GF(q)",
+      "anchor": {
+        "section": "Multiplicative structure",
+        "snippet": "is called a primitive element of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsCyclic.exists_generator",
+        "module": "Mathlib.GroupTheory.SpecificGroups.Cyclic",
+        "match_kind": "generalization"
+      },
+      "note": "Generators of the cyclic group `Kˣ` provide primitive elements via `IsCyclic.exists_generator`; no dedicated finite-field definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of primitive elements via Euler's totient",
+      "anchor": {
+        "section": "Multiplicative structure",
+        "snippet": "The number of primitive elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCyclic.card_orderOf_eq_totient",
+        "module": "Mathlib.GroupTheory.SpecificGroups.Cyclic",
+        "match_kind": "generalization"
+      },
+      "note": "`IsCyclic.card_orderOf_eq_totient` gives the count of elements of given order in a cyclic group as Euler's totient, applied to `Kˣ` of order `q-1`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Discrete logarithm",
+      "anchor": {
+        "section": "Discrete logarithm",
+        "snippet": "is called the discrete logarithm of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of discrete logarithm in `Kˣ` of a finite field was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zech's logarithms",
+      "anchor": {
+        "section": "Discrete logarithm",
+        "snippet": "called Zech's logarithms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Zech's logarithms are not defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Discrete logarithm",
+          "snippet": "called Zech's logarithms"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a^{m}+a^{n}=a^{n}\\left(a^{m-n}+1\\right)}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Every nonzero element is a root of unity",
+      "anchor": {
+        "section": "Roots of unity",
+        "snippet": "Every nonzero element of a finite field is a root of unity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FiniteField.pow_card_sub_one_eq_one",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`FiniteField.pow_card_sub_one_eq_one` shows every nonzero `a : K` satisfies `a^(q-1) = 1`, i.e. is a `(q-1)`-th root of unity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "n-th primitive root of unity",
+      "anchor": {
+        "section": "Roots of unity",
+        "snippet": "th primitive root of unity is a solution of the equation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsPrimitiveRoot",
+        "module": "Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's general `IsPrimitiveRoot ζ n` captures this concept in any monoid.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence criterion for primitive n-th roots of unity in GF(q)",
+      "anchor": {
+        "section": "Roots of unity",
+        "snippet": "th primitive root of unity if and only if"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsCyclic.card_orderOf_eq_totient",
+        "module": "Mathlib.GroupTheory.SpecificGroups.Cyclic",
+        "match_kind": "generalization"
+      },
+      "note": "Follows from cyclicity of `Kˣ` and `IsCyclic.card_orderOf_eq_totient` plus `Fintype.card_units = q - 1`, but no dedicated `IsPrimitiveRoot.exists ↔ n ∣ q-1` for finite fields is isolated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "No primitive p-th roots of unity in characteristic p",
+      "anchor": {
+        "section": "Roots of unity",
+        "snippet": "primitive"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "frobenius_zmod",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Follows from `a^p = a` (`ZMod.pow_card`/`FiniteField.pow_card`), but no isolated statement that there are no primitive `p`-th roots of unity in characteristic `p` was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cyclotomic polynomial factorization in characteristic p",
+      "anchor": {
+        "section": "Roots of unity",
+        "snippet": "the roots of the"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.cyclotomic",
+        "module": "Mathlib.RingTheory.Polynomial.Cyclotomic.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines cyclotomic polynomials and proves `prod_cyclotomic_eq_X_pow_sub_one`, but the explicit characteristic-`p` factorization statement is not isolated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "GF(64) subfields and primitive elements",
+      "anchor": {
+        "section": "Example: GF(64)",
+        "snippet": "The field GF(64) has several interesting properties"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific worked example about `GF(64)` was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Frobenius automorphism",
+      "anchor": {
+        "section": "Frobenius automorphism and Galois theory",
+        "snippet": "It is called the Frobenius automorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "frobenius",
+        "module": "Mathlib.Algebra.CharP.Frobenius",
+        "match_kind": "exact"
+      },
+      "note": "`frobenius R p` is the `p`-th power ring endomorphism; `FiniteField.frobeniusAlgEquiv` packages it as an algebra automorphism for finite fields.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Frobenius automorphism and Galois theory",
+          "snippet": "It is called the Frobenius automorphism"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\varphi :x\\mapsto x^{p}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Powers of Frobenius and order n",
+      "anchor": {
+        "section": "Frobenius automorphism and Galois theory",
+        "snippet": "the composition of φ with itself"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FiniteField.frobenius_pow",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`FiniteField.frobenius_pow` shows that `frobenius K p ^ n = 1` when `q = p^n`; `FiniteField.orderOf_frobeniusAlgHom` gives the exact order.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Frobenius automorphism and Galois theory",
+          "snippet": "the composition of φ with itself"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\varphi ^{k}:x\\mapsto x^{p^{k}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle X^{p^{k}}-X}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Galois group of GF(p^n)/GF(p) is cyclic of order n",
+      "anchor": {
+        "section": "Frobenius automorphism and Galois theory",
+        "snippet": "There are no other GF( p ) -automorphisms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FiniteField.orderOf_frobeniusAlgEquivOfAlgebraic",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Combined with the `IsCyclic Gal(L/K)` instance for finite extensions of finite fields (in `Basic.lean`) and `IsGalois.card_aut_eq_finrank`, this gives the full statement.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Frobenius automorphism and Galois theory",
+          "snippet": "There are no other GF( p ) -automorphisms"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathrm {Id} =\\varphi ^{0},\\varphi ,\\varphi ^{2},\\ldots ,\\varphi ^{n-1}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Every finite field is perfect (via surjective Frobenius)",
+      "anchor": {
+        "section": "Frobenius automorphism and Galois theory",
+        "snippet": "The fact that the Frobenius map is surjective"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PerfectRing.ofFiniteOfIsReduced",
+        "module": "Mathlib.FieldTheory.Perfect",
+        "match_kind": "exact"
+      },
+      "note": "`PerfectRing.ofFiniteOfIsReduced` (and the field-level `PerfectField.ofFinite`) deduce perfection from surjective Frobenius.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Irreducible polynomial over a finite field",
+      "anchor": {
+        "section": "Polynomial factorization",
+        "snippet": "a non-constant monic polynomial with coefficients in"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Irreducible",
+        "module": "Mathlib.Algebra.Group.Irreducible",
+        "match_kind": "generalization"
+      },
+      "note": "The general `Irreducible` predicate applies to `Polynomial K`; no finite-field-specific definition is needed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unique factorization of monic polynomials over finite fields",
+      "anchor": {
+        "section": "Polynomial factorization",
+        "snippet": "every polynomial ring over a field is a unique factorization domain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.uniqueFactorizationMonoid",
+        "module": "Mathlib.RingTheory.Polynomial.UniqueFactorization",
+        "match_kind": "generalization"
+      },
+      "note": "Polynomial rings over UFDs are UFDs by the global instance in `Mathlib/RingTheory/Polynomial/UniqueFactorization.lean`, which applies to fields.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "X^q - X is product of all monic degree-one polynomials",
+      "anchor": {
+        "section": "Irreducible polynomials of a given degree",
+        "snippet": "factors into linear factors over a field of order"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FiniteField.roots_X_pow_card_sub_X",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`FiniteField.roots_X_pow_card_sub_X` identifies the roots as `Finset.univ`, which yields the linear-product factorization, but the explicit `∏ a, (X - C a)` form is not stated.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Irreducible polynomials of a given degree",
+          "snippet": "factors into linear factors over a field of order"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle X^{q}-X}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "X^q - X is product of irreducible monic polynomials of degree dividing n",
+      "anchor": {
+        "section": "Irreducible polynomials of a given degree",
+        "snippet": "This implies that, if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement that `X^(q^n) - X` factors as the product of all monic irreducibles over `GF(q)` of degree dividing `n` was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Number of monic irreducible polynomials of degree n over GF(q)",
+      "anchor": {
+        "section": "Number of monic irreducible polynomials of a given degree over a finite field",
+        "snippet": "The number N ( q , n ) of monic irreducible polynomials"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gauss's necklace formula `N(q,n) = (1/n) Σ μ(d) q^(n/d)` is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Number of monic irreducible polynomials of a given degree over a finite field",
+          "snippet": "The number N ( q , n ) of monic irreducible polynomials"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle N(q,n)={\\frac {1}{n}}\\sum _{d\\mid n}\\mu (d)q^{n/d},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence of irreducible polynomial of every degree",
+      "anchor": {
+        "section": "Number of monic irreducible polynomials of a given degree over a finite field",
+        "snippet": "the right hand side is positive"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "GaloisField",
+        "module": "Mathlib.FieldTheory.Finite.GaloisField",
+        "match_kind": "generalization"
+      },
+      "note": "Existence follows abstractly because `GaloisField p n` exists with degree `n` over `ZMod p`, but no direct theorem of the form `∃ f : (ZMod p)[X], Irreducible f ∧ degree f = n` is isolated.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Number of monic irreducible polynomials of a given degree over a finite field",
+          "snippet": "the right hand side is positive"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle N(q,n)\\geq {\\frac {1}{n}}{\\biggl (}q^{n}-\\sum _{\\ell \\mid n,\\ \\ell {\\text{ prime}}}q^{n/\\ell }{\\biggr )};}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite fields are not algebraically closed",
+      "anchor": {
+        "section": "Algebraic closure",
+        "snippet": "is not algebraically closed"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No direct statement `[Finite K] [Field K] → ¬ IsAlgClosed K` was found.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Algebraic closure",
+          "snippet": "is not algebraically closed"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(T)=1+\\prod _{\\alpha \\in F}(T-\\alpha ),}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Algebraic closure of GF(p) and its structure",
+      "anchor": {
+        "section": "Algebraic closure",
+        "snippet": "be an algebraic closure of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgebraicClosure",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure",
+        "match_kind": "generalization"
+      },
+      "note": "`AlgebraicClosure (ZMod p)` exists generically; structural details specific to finite-field closures are not separately stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unique degree-n subextension of the algebraic closure",
+      "anchor": {
+        "section": "Algebraic closure",
+        "snippet": "it is the unique degree n extension"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement isolating, inside `AlgebraicClosure (ZMod p)`, the unique subfield of degree `n` was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Algebraic closure as direct limit",
+      "anchor": {
+        "section": "Algebraic closure",
+        "snippet": "Any algebraic extension is the union of its finite subextensions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No realization of `AlgebraicClosure (ZMod p)` as the direct limit `colim GaloisField p n` was found.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Algebraic closure",
+          "snippet": "Any algebraic extension is the union of its finite subextensions"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\overline {\\mathbb {F} }}_{p}=\\bigcup _{n\\geq 1}\\mathbb {F} _{p^{n}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Wedderburn's little theorem",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "Wedderburn's little theorem states that all finite division rings are commutative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "littleWedderburn",
+        "module": "Mathlib.RingTheory.LittleWedderburn",
+        "match_kind": "exact"
+      },
+      "note": "`littleWedderburn` provides a `Field` instance for any finite division ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Artin–Zorn theorem",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "The Artin–Zorn theorem states that all alternative division rings are finite fields"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Artin–Zorn is explicitly listed as future work in the header of `Mathlib/RingTheory/LittleWedderburn.lean` and is not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,139 @@
+{
+  "slug": "Haar_measure",
+  "wikipedia_title": "Haar measure",
+  "display_title": "Haar measure",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle gS=\\{g\\cdot s\\,:\\,s\\in S\\}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Definition of left translate of a set; not a standalone Mathlib decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle Sg=\\{s\\cdot g\\,:\\,s\\in S\\}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Definition of right translate of a set; not a standalone Mathlib decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mu (S)=\\inf\\{\\mu (U):S\\subseteq U,U{\\text{ open}}\\}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Outer regularity condition; not present as a dedicated decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mu (U)=\\sup\\{\\mu (K):K\\subseteq U,K{\\text{ compact}}\\}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Inner regularity condition; not present as a dedicated decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mu (S)={\\frac {1}{2\\pi }}m(f^{-1}(S)),}"
+      },
+      "status": "partial",
+      "decl": "MeasureTheory.Measure.haarMeasure",
+      "module": "Mathlib.MeasureTheory.Measure.Haar.Basic",
+      "note": "Specific Haar measure on the circle group; covered abstractly by the general haarMeasure construction."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mu (S)=\\int _{S}{\\frac {1}{t}}\\,dt}"
+      },
+      "status": "partial",
+      "decl": "MeasureTheory.Measure.haarMeasure",
+      "module": "Mathlib.MeasureTheory.Measure.Haar.Basic",
+      "note": "Specific Haar measure on positive reals; the general haarMeasure decl covers this abstractly."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mu (S)=\\int _{S}{\\frac {1}{|t|}}\\,dt}"
+      },
+      "status": "partial",
+      "decl": "MeasureTheory.Measure.haarMeasure",
+      "module": "Mathlib.MeasureTheory.Measure.Haar.Basic",
+      "note": "Specific Haar measure on nonzero reals; covered abstractly by the general haarMeasure construction."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mu (S)=\\int _{S}{1 \\over |\\det(X)|^{n}}\\,dX}"
+      },
+      "status": "partial",
+      "decl": "MeasureTheory.Measure.haarMeasure",
+      "module": "Mathlib.MeasureTheory.Measure.Haar.Basic",
+      "note": "Specific Haar measure on GL_n; covered abstractly by the general haarMeasure decl, but not as a concrete formula."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mu _{L}(S)=\\int _{S}{\\frac {1}{x^{2}}}\\,dx\\,dy}"
+      },
+      "status": "partial",
+      "decl": "MeasureTheory.Measure.haarMeasure",
+      "module": "Mathlib.MeasureTheory.Measure.Haar.Basic",
+      "note": "Left Haar measure on the affine group ax+b; covered abstractly by the general haarMeasure construction."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mu _{R}(S)=\\int _{S}{\\frac {1}{x}}\\,dx\\,dy}"
+      },
+      "status": "partial",
+      "decl": "MeasureTheory.Measure.haarMeasure",
+      "module": "Mathlib.MeasureTheory.Measure.Haar.Basic",
+      "note": "Right Haar measure on the affine group ax+b; covered abstractly via the general haarMeasure construction."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mu _{L}((s,t)\\circ S)=\\int _{(s,t)\\circ S}{\\frac {1}{x^{2}}}\\,dx\\,dy=\\int _{S}{\\frac {1}{(su)^{2}}}|(s)(s)-(0)(0)|\\,du\\,dv=\\mu _{L}(S)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Worked computation verifying left invariance for the affine group; an example calculation, not a standalone decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mu _{R}(S\\circ (u,v))=\\int _{S\\circ (u,v)}{\\frac {1}{x}}\\,dx\\,dy=\\int _{S}{\\frac {1}{su}}|(u)(1)-(v)(0)|\\,ds\\,dt=\\mu _{R}(S).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Worked computation verifying right invariance for the affine group; an example calculation, not a standalone decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mu (S)=\\int _{S}{\\frac {1}{(x^{2}+y^{2}+z^{2}+w^{2})^{2}}}\\,dx\\,dy\\,dz\\,dw}"
+      },
+      "status": "partial",
+      "decl": "MeasureTheory.Measure.haarMeasure",
+      "module": "Mathlib.MeasureTheory.Measure.Haar.Basic",
+      "note": "Specific Haar measure on the quaternions; covered abstractly by the general haarMeasure construction."
+    }
+  ]
+}

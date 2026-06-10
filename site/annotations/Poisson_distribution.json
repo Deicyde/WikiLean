@@ -1,0 +1,1697 @@
+{
+  "slug": "Poisson_distribution",
+  "wikipedia_title": "Poisson distribution",
+  "display_title": "Poisson distribution",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Poisson distribution",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a discrete probability distribution that expresses the probability of a given number of events occurring in a fixed interval of time"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "poissonMeasure",
+        "module": "Mathlib.Probability.Distributions.Poisson.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`poissonMeasure r` defines the Poisson distribution on ℕ with rate `r`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Probability of k events",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the probability of k events in the same interval is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "poissonMeasure_singleton",
+        "module": "Mathlib.Probability.Distributions.Poisson.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`poissonMeasure_singleton` gives `P{n} = exp(-r) r^n / n!`, the stated PMF.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "(Lead)",
+          "snippet": "the probability of k events in the same interval is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {\\lambda ^{k}e^{-\\lambda }}{k!}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Call center calls",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "consider a call center which receives an average of λ = 3 calls per minute at all times of day"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal motivating example with no formal counterpart in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "(Lead)",
+          "snippet": "consider a call center which receives an average of λ = 3 calls per minute at all times of day"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {\\lambda ^{k}e^{-\\lambda }}{k!}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Radioactive decay",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the number of radioactive decay events during a fixed observation period"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A physical application example, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Probability mass function",
+      "anchor": {
+        "section": "Probability mass function",
+        "snippet": "A discrete random variable X is said to have a Poisson distribution with parameter"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "poissonMeasure_singleton",
+        "module": "Mathlib.Probability.Distributions.Poisson.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The Poisson PMF is given exactly by `poissonMeasure_singleton`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Probability mass function",
+          "snippet": "A discrete random variable X is said to have a Poisson distribution with parameter"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(k;\\lambda )=\\Pr(X{=}k)={\\frac {\\lambda ^{k}e^{-\\lambda }}{k!}},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Mean equals variance equals λ",
+      "anchor": {
+        "section": "Probability mass function",
+        "snippet": "The positive real number λ is equal to the expected value of X and also to its variance"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "integral_poissonMeasure",
+        "module": "Mathlib.Probability.Distributions.Poisson.Basic",
+        "match_kind": null
+      },
+      "note": "Integration infrastructure exists but neither the mean nor variance of `poissonMeasure` is computed as `λ`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Probability mass function",
+          "snippet": "The positive real number λ is equal to the expected value of X and also to its variance"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lambda =\\operatorname {E} (X)=\\operatorname {Var} (X).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Rate-form of the equation",
+      "anchor": {
+        "section": "Probability mass function",
+        "snippet": "The equation can be adapted if, instead of the average number of events"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The rate×time reparametrization is not given as a separate formal definition.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Probability mass function",
+          "snippet": "The equation can be adapted if, instead of the average number of events"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle P(k{\\text{ events in interval }}t)={\\frac {(rt)^{k}e^{-rt}}{k!}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Events modeled by Poisson",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The Poisson distribution may be useful to model events such as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A list of modeling examples, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Random points in space",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Examples of the occurrence of random points in space are"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Application examples with no formal counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Validity assumptions",
+      "anchor": {
+        "section": "Assumptions and validity",
+        "snippet": "The Poisson distribution is an appropriate model if the following assumptions are true"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal modeling assumptions, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Limit of a binomial distribution",
+      "anchor": {
+        "section": "Assumptions and validity",
+        "snippet": "The Poisson distribution is also the limit of a binomial distribution"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendsto_choose_mul_pow_of_tendsto_mul_atTop",
+        "module": "Mathlib.Probability.Distributions.Poisson.PoissonLimitThm",
+        "match_kind": "exact"
+      },
+      "note": "The Poisson limit theorem proves binomial probabilities converge to the Poisson PMF.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Derivation from differential equations",
+      "anchor": {
+        "section": "Assumptions and validity",
+        "snippet": "The Poisson distribution may also be derived from the differential equations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The ODE derivation of the Poisson PMF is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Overflow floods",
+      "anchor": {
+        "section": "Examples of probability for Poisson distributions",
+        "snippet": "On a particular river, overflow floods occur once every 100 years on average"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A worked numerical example, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "World Cup goals",
+      "anchor": {
+        "section": "Examples of probability for Poisson distributions",
+        "snippet": "the average number of goals in a World Cup soccer match is approximately 2.5"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A worked numerical example, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Student union arrivals",
+      "anchor": {
+        "section": "Examples that violate the Poisson assumptions",
+        "snippet": "The number of students who arrive at the student union per minute will likely not follow a Poisson distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal counterexample, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Earthquake aftershocks",
+      "anchor": {
+        "section": "Examples that violate the Poisson assumptions",
+        "snippet": "The number of magnitude 5 earthquakes per year in a country may not follow a Poisson distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal counterexample, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Guaranteed event",
+      "anchor": {
+        "section": "Examples that violate the Poisson assumptions",
+        "snippet": "Examples in which at least one event is guaranteed are not Poisson distributed"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal counterexample, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Excess zeros",
+      "anchor": {
+        "section": "Examples that violate the Poisson assumptions",
+        "snippet": "Count distributions in which the number of intervals with zero events is higher than predicted by a Poisson model"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal counterexample, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Expected value",
+      "anchor": {
+        "section": "Descriptive statistics",
+        "snippet": "The expected value of a Poisson random variable is λ"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "integral_poissonMeasure",
+        "module": "Mathlib.Probability.Distributions.Poisson.Basic",
+        "match_kind": null
+      },
+      "note": "An integration formula against `poissonMeasure` exists, but `E[X] = λ` is not proven.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Variance",
+      "anchor": {
+        "section": "Descriptive statistics",
+        "snippet": "The variance of a Poisson random variable is also λ"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "integral_poissonMeasure",
+        "module": "Mathlib.Probability.Distributions.Poisson.Basic",
+        "match_kind": null
+      },
+      "note": "Integration infrastructure exists but the variance `λ` of the Poisson measure is not computed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Coefficient of variation and index of dispersion",
+      "anchor": {
+        "section": "Descriptive statistics",
+        "snippet": "while the index of dispersion is 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "These derived dispersion quantities for Poisson are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mean absolute deviation",
+      "anchor": {
+        "section": "Descriptive statistics",
+        "snippet": "The mean absolute deviation about the mean is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Poisson mean absolute deviation formula is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Descriptive statistics",
+          "snippet": "The mean absolute deviation about the mean is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {E} [\\ |X-\\lambda |\\ ]={\\frac {2\\lambda ^{\\lfloor \\lambda \\rfloor +1}e^{-\\lambda }}{\\lfloor \\lambda \\rfloor !}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Mode",
+      "anchor": {
+        "section": "Descriptive statistics",
+        "snippet": "The mode of a Poisson-distributed random variable with non-integer λ is equal to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The mode of the Poisson distribution is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cumulants and factorial moments",
+      "anchor": {
+        "section": "Descriptive statistics",
+        "snippet": "All of the cumulants of the Poisson distribution are equal to the expected value λ"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cumulants and factorial moments of the Poisson distribution are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Intensity and exposure decomposition",
+      "anchor": {
+        "section": "Descriptive statistics",
+        "snippet": "The expected value of a Poisson process is sometimes decomposed into the product of intensity and exposure"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The intensity×exposure decomposition is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sharp bounds for the median",
+      "anchor": {
+        "section": "Median",
+        "snippet": "of the distribution are known and are sharp"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Sharp median bounds for the Poisson distribution are not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Median",
+          "snippet": "of the distribution are known and are sharp"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lambda -\\ln 2\\leq \\nu &lt;\\lambda +{\\frac {1}{3}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Higher moments as Touchard polynomials",
+      "anchor": {
+        "section": "Higher moments",
+        "snippet": "The higher non-centered moments m k of the Poisson distribution are Touchard polynomials in λ"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Touchard/Bell polynomial moment formulas for Poisson are not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Higher moments",
+          "snippet": "The higher non-centered moments m k of the Poisson distribution are Touchard polynomials in λ"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle m_{k}=\\sum _{i=0}^{k}\\lambda ^{i}{\\begin{Bmatrix}k\\\\i\\end{Bmatrix}},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle E[X]=\\lambda ,\\quad E[X(X-1)]=\\lambda ^{2},\\quad E[X(X-1)(X-2)]=\\lambda ^{3},\\cdots }"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Upper bound on raw moments",
+      "anchor": {
+        "section": "Higher moments",
+        "snippet": "A simple upper bound is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The stated upper bound on Poisson raw moments is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Higher moments",
+          "snippet": "A simple upper bound is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle m_{k}=E[X^{k}]\\leq \\left({\\frac {k}{\\log(k/\\lambda +1)}}\\right)^{k}\\leq \\lambda ^{k}\\exp \\left({\\frac {k^{2}}{2\\lambda }}\\right).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum of independent Poissons",
+      "anchor": {
+        "section": "Sums of Poisson-distributed random variables",
+        "snippet": "are independent , then"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma proves the sum of independent Poisson variables is Poisson(λ₁+λ₂).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Raikov's theorem",
+      "anchor": {
+        "section": "Sums of Poisson-distributed random variables",
+        "snippet": "A converse is Raikov's theorem , which says that if the sum of two independent random variables is Poisson-distributed"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Raikov's theorem is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Maximum-entropy distribution",
+      "anchor": {
+        "section": "Maximum entropy",
+        "snippet": "It is a maximum-entropy distribution among the set of generalized binomial distributions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The maximum-entropy characterization of the Poisson distribution is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Infinitely divisible",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "The Poisson distributions are infinitely divisible probability distributions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Infinite divisibility of the Poisson distribution is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Directed KL divergence",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "The directed Kullback–Leibler divergence of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The KL divergence formula between two Poisson distributions is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Other properties",
+          "snippet": "The directed Kullback–Leibler divergence of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {D} _{\\text{KL}}(P\\parallel P_{0})=\\lambda _{0}-\\lambda +\\lambda \\log {\\frac {\\lambda }{\\lambda _{0}}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Integer-λ identities",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "is an integer, then"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The integer-λ tail/CDF identities are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chernoff tail bounds",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "Bounds for the tail probabilities of a Poisson random variable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chernoff-type tail bounds for the Poisson distribution are not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Other properties",
+          "snippet": "Bounds for the tail probabilities of a Poisson random variable"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}P(X\\geq x)&amp;\\leq {\\frac {\\left(e\\lambda \\right)^{x}e^{-\\lambda }}{x^{x}}},&amp;{\\text{ for }}x&gt;\\lambda ,\\\\[1ex]P(X\\leq x)&amp;\\leq {\\frac {\\left(e\\lambda \\right)^{x}e^{-\\lambda }}{x^{x}}},&amp;{\\text{ for }}x&lt;\\lambda .\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Tightened upper tail bound",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "The upper tail probability can be tightened (by a factor of at least two) as follows"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The tightened upper tail bound is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Other properties",
+          "snippet": "The upper tail probability can be tightened (by a factor of at least two) as follows"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle P(X\\geq x)\\leq {\\frac {e^{-\\operatorname {D} _{\\text{KL}}(Q\\parallel P)}}{\\max {(2,{\\sqrt {4\\pi \\operatorname {D} _{\\text{KL}}(Q\\parallel P)}}})}},{\\text{ for }}x&gt;\\lambda ,}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "CDF vs normal CDF inequalities",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "Inequalities that relate the cumulative distribution function of a Poisson random variable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Poisson-vs-normal CDF inequalities are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Poisson race bounds",
+      "anchor": {
+        "section": "Poisson races",
+        "snippet": "be independent random variables, with"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Poisson race tail bounds are not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Poisson races",
+          "snippet": "be independent random variables, with"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {e^{-({\\sqrt {\\mu }}-{\\sqrt {\\lambda }})^{2}}}{(\\lambda +\\mu )^{2}}}-{\\frac {e^{-(\\lambda +\\mu )}}{2{\\sqrt {\\lambda \\mu }}}}-{\\frac {e^{-(\\lambda +\\mu )}}{4\\lambda \\mu }}\\leq P(X-Y\\geq 0)\\leq e^{-({\\sqrt {\\mu }}-{\\sqrt {\\lambda }})^{2}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Limiting case of binomial",
+      "anchor": {
+        "section": "As a Binomial distribution with infinitesimal time-steps",
+        "snippet": "The Poisson distribution can be derived as a limiting case to the binomial distribution as the number of trials goes to infinity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendsto_choose_mul_pow_of_tendsto_mul_atTop",
+        "module": "Mathlib.Probability.Distributions.Poisson.PoissonLimitThm",
+        "match_kind": "exact"
+      },
+      "note": "The binomial→Poisson limit as `n→∞` with `np→r` is proved by the Poisson limit theorem.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "As a Binomial distribution with infinitesimal time-steps",
+          "snippet": "The Poisson distribution can be derived as a limiting case to the binomial distribution as the number of trials goes to infinity"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F_{\\mathrm {B} }(k;n,p)\\ \\approx \\ F_{\\mathrm {P} }(k;\\lambda =np).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle p_{k}^{(n)}={\\binom {n}{k}}\\left({\\frac {\\lambda }{n}}\\right)^{\\!k}\\left(1{-}{\\frac {\\lambda }{n}}\\right)^{\\!n-k},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle P^{(n)}(x)=\\sum _{k=0}^{n}p_{k}^{(n)}x^{k}=\\left(1-{\\frac {\\lambda }{n}}+{\\frac {\\lambda }{n}}x\\right)^{n}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{n\\to \\infty }P^{(n)}(x)=\\lim _{n\\to \\infty }\\left(1{+}{\\tfrac {\\lambda (x-1)}{n}}\\right)^{n}=e^{\\lambda (x-1)}=\\sum _{k=0}^{\\infty }e^{-\\lambda }{\\frac {\\lambda ^{k}}{k!}}x^{k}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Binomial approximation criteria",
+      "anchor": {
+        "section": "As a Binomial distribution with infinitesimal time-steps",
+        "snippet": "The Poisson distribution is a good approximation of the binomial distribution if n is at least 20 and p is smaller than or equal to 0.05"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "These heuristic numerical approximation criteria are not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "As a Binomial distribution with infinitesimal time-steps",
+          "snippet": "The Poisson distribution is a good approximation of the binomial distribution if n is at least 20 and p is smaller than or equal to 0.05"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F_{\\mathrm {B} }(k;n,p)\\ \\approx \\ F_{\\mathrm {P} }(k;\\lambda =np).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle p_{k}^{(n)}={\\binom {n}{k}}\\left({\\frac {\\lambda }{n}}\\right)^{\\!k}\\left(1{-}{\\frac {\\lambda }{n}}\\right)^{\\!n-k},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle P^{(n)}(x)=\\sum _{k=0}^{n}p_{k}^{(n)}x^{k}=\\left(1-{\\frac {\\lambda }{n}}+{\\frac {\\lambda }{n}}x\\right)^{n}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{n\\to \\infty }P^{(n)}(x)=\\lim _{n\\to \\infty }\\left(1{+}{\\tfrac {\\lambda (x-1)}{n}}\\right)^{n}=e^{\\lambda (x-1)}=\\sum _{k=0}^{\\infty }e^{-\\lambda }{\\frac {\\lambda ^{k}}{k!}}x^{k}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Difference is Skellam",
+      "anchor": {
+        "section": "General",
+        "snippet": "follows a Skellam distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Skellam distribution is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conditional distribution is binomial",
+      "anchor": {
+        "section": "General",
+        "snippet": "are independent, then the distribution of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The conditional binomial distribution given the Poisson sum is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Binomial-thinned Poisson is Poisson",
+      "anchor": {
+        "section": "General",
+        "snippet": "conditional on X = k is a binomial distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Poisson thinning results are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Special case of compound Poisson",
+      "anchor": {
+        "section": "General",
+        "snippet": "The Poisson distribution is a special case of the discrete compound Poisson distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The compound Poisson distribution is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Normal approximation",
+      "anchor": {
+        "section": "General",
+        "snippet": "For sufficiently large values of λ , (say λ > 1000 ), the normal distribution with mean λ and variance λ"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The normal approximation of the Poisson distribution is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "General",
+          "snippet": "For sufficiently large values of λ , (say λ > 1000 ), the normal distribution with mean λ and variance λ"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F_{\\mathrm {Poisson} }(x;\\lambda )\\approx F_{\\mathrm {normal} }(x;\\mu =\\lambda ,\\sigma ^{2}=\\lambda )}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Variance-stabilizing transformation",
+      "anchor": {
+        "section": "General",
+        "snippet": "Variance-stabilizing transformation : If"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The square-root variance-stabilizing transformation is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "General",
+          "snippet": "Variance-stabilizing transformation : If"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle Y=2{\\sqrt {X}}\\approx {\\mathcal {N}}(2{\\sqrt {\\lambda }};1),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle Y={\\sqrt {X}}\\approx {\\mathcal {N}}({\\sqrt {\\lambda }};1/4).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Inter-arrival times are exponential",
+      "anchor": {
+        "section": "General",
+        "snippet": "If for every t > 0 the number of arrivals in the time interval [0, t ] follows the Poisson distribution with mean λt"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The exponential inter-arrival-time relation for Poisson processes is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Relation to chi-squared CDF",
+      "anchor": {
+        "section": "General",
+        "snippet": "The cumulative distribution functions of the Poisson and chi-squared distributions are related in the following ways"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Poisson–chi-squared CDF relations are not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "General",
+          "snippet": "The cumulative distribution functions of the Poisson and chi-squared distributions are related in the following ways"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F_{\\text{Poisson}}(k;\\lambda )=1-F_{\\chi ^{2}}(2\\lambda ;2(k+1))\\quad \\quad {\\text{ integer }}k,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle P(X=k)=F_{\\chi ^{2}}(2\\lambda ;2(k+1))-F_{\\chi ^{2}}(2\\lambda ;2k).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Conditional multinomial approximation",
+      "anchor": {
+        "section": "Poisson approximation",
+        "snippet": "is multinomially distributed"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The conditional multinomial distribution of Poisson counts is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Expectation bound for nonnegative functions",
+      "anchor": {
+        "section": "Poisson approximation",
+        "snippet": "among other things, that for any nonnegative function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Le Cam / Poisson-approximation expectation bound is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Poisson approximation",
+          "snippet": "among other things, that for any nonnegative function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {E} [f(Y_{1},Y_{2},\\dots ,Y_{n})]\\leq e{\\sqrt {m}}\\operatorname {E} [f(X_{1},X_{2},\\dots ,X_{n})]}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Monotone factor refinement",
+      "anchor": {
+        "section": "Poisson approximation",
+        "snippet": "is further assumed to be monotonically increasing or decreasing"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The monotone refinement of the Poisson-approximation bound is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bivariate Poisson distribution",
+      "anchor": {
+        "section": "Bivariate Poisson distribution",
+        "snippet": "This distribution has been extended to the bivariate case"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The bivariate Poisson distribution is not present in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Bivariate Poisson distribution",
+          "snippet": "This distribution has been extended to the bivariate case"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle g(u,v)=\\exp[(\\theta _{1}-\\theta _{12})(u-1)+(\\theta _{2}-\\theta _{12})(v-1)+\\theta _{12}(uv-1)]}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\theta _{1},\\theta _{2}&gt;\\theta _{12}&gt;0}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Marginals and correlation range",
+      "anchor": {
+        "section": "Bivariate Poisson distribution",
+        "snippet": "The marginal distributions are Poisson( θ 1 ) and Poisson( θ 2 )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Marginals/correlation of the bivariate Poisson are not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Bivariate Poisson distribution",
+          "snippet": "The marginal distributions are Poisson( θ 1 ) and Poisson( θ 2 )"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 0\\leq \\rho \\leq \\min \\left\\{{\\sqrt {\\frac {\\theta _{1}}{\\theta _{2}}}},{\\sqrt {\\frac {\\theta _{2}}{\\theta _{1}}}}\\right\\}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Generating a bivariate Poisson",
+      "anchor": {
+        "section": "Bivariate Poisson distribution",
+        "snippet": "A simple way to generate a bivariate Poisson distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The bivariate Poisson generation construction is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Bivariate Poisson distribution",
+          "snippet": "A simple way to generate a bivariate Poisson distribution"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Pr(X_{1}=k_{1},X_{2}=k_{2})=\\exp \\left(-\\lambda _{1}-\\lambda _{2}-\\lambda _{3}\\right){\\frac {\\lambda _{1}^{k_{1}}}{k_{1}!}}{\\frac {\\lambda _{2}^{k_{2}}}{k_{2}!}}\\sum _{k=0}^{\\min(k_{1},k_{2})}{\\binom {k_{1}}{k}}{\\binom {k_{2}}{k}}k!\\left({\\frac {\\lambda _{3}}{\\lambda _{1}\\lambda _{2}}}\\right)^{k}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Free Poisson distribution",
+      "anchor": {
+        "section": "Free Poisson distribution",
+        "snippet": "The free Poisson distribution [ 45 ] with jump size"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The free Poisson distribution (free probability) is not present in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Free Poisson distribution",
+          "snippet": "The free Poisson distribution [ 45 ] with jump size"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left(\\left(1-{\\frac {\\lambda }{N}}\\right)\\delta _{0}+{\\frac {\\lambda }{N}}\\delta _{\\alpha }\\right)^{\\boxplus N}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Measure of the free Poisson law",
+      "anchor": {
+        "section": "Free Poisson distribution",
+        "snippet": "The measure associated to the free Poisson law is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The free Poisson law's measure is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Free Poisson distribution",
+          "snippet": "The measure associated to the free Poisson law is given by"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mu ={\\begin{cases}(1-\\lambda )\\delta _{0}+\\nu ,&amp;{\\text{if }}0\\leq \\lambda \\leq 1\\\\\\nu ,&amp;{\\text{if }}\\lambda &gt;1,\\end{cases}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\nu ={\\frac {1}{2\\pi \\alpha t}}{\\sqrt {4\\lambda \\alpha ^{2}-(t-\\alpha (1+\\lambda ))^{2}}}\\,dt}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Marchenko–Pastur law and free cumulants",
+      "anchor": {
+        "section": "Free Poisson distribution",
+        "snippet": "This law also arises in random matrix theory as the Marchenko–Pastur law"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Marchenko–Pastur law is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "R-transform",
+      "anchor": {
+        "section": "Some transforms of this law",
+        "snippet": "The R-transform of the free Poisson law is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Free-probability R-transforms are not present in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Some transforms of this law",
+          "snippet": "The R-transform of the free Poisson law is given by"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle R(z)={\\frac {\\lambda \\alpha }{1-\\alpha z}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Cauchy transform",
+      "anchor": {
+        "section": "Some transforms of this law",
+        "snippet": "The Cauchy transform (which is the negative of the Stieltjes transformation ) is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Cauchy/Stieltjes transform of the free Poisson law is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Some transforms of this law",
+          "snippet": "The Cauchy transform (which is the negative of the Stieltjes transformation ) is given by"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle G(z)={\\frac {z+\\alpha -\\lambda \\alpha -{\\sqrt {(z-\\alpha (1+\\lambda ))^{2}-4\\lambda \\alpha ^{2}}}}{2\\alpha z}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "S-transform",
+      "anchor": {
+        "section": "Some transforms of this law",
+        "snippet": "The S-transform is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Free-probability S-transforms are not present in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Some transforms of this law",
+          "snippet": "The S-transform is given by"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle S(z)={\\frac {1}{z+\\lambda }}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Maximum likelihood estimate",
+      "anchor": {
+        "section": "Parameter estimation",
+        "snippet": "The maximum likelihood estimate is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The MLE for the Poisson rate is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "MLE is unbiased and efficient",
+      "anchor": {
+        "section": "Parameter estimation",
+        "snippet": "the maximum likelihood estimate is an unbiased estimator of λ"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Unbiasedness/efficiency of the Poisson MLE is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sufficiency via factorization",
+      "anchor": {
+        "section": "Parameter estimation",
+        "snippet": "To prove sufficiency we may use the factorization theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Fisher–Neyman factorization sufficiency argument is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Completeness of a family",
+      "anchor": {
+        "section": "Parameter estimation",
+        "snippet": "a family of distributions is said to be complete if and only if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Statistical completeness of a family of distributions is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exact confidence interval",
+      "anchor": {
+        "section": "Confidence interval",
+        "snippet": "Given an observation k from a Poisson distribution with mean μ , a confidence interval for μ with confidence level 1 – α is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Exact Poisson confidence intervals are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Wilson–Hilferty approximation",
+      "anchor": {
+        "section": "Confidence interval",
+        "snippet": "an accurate approximation to this exact interval has been proposed (based on the Wilson–Hilferty transformation )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Wilson–Hilferty approximation is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Confidence interval",
+          "snippet": "an accurate approximation to this exact interval has been proposed (based on the Wilson–Hilferty transformation )"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle k\\left(1-{\\frac {1}{9k}}-{\\frac {z_{\\alpha /2}}{3{\\sqrt {k}}}}\\right)^{3}\\leq \\mu \\leq (k+1)\\left(1-{\\frac {1}{9(k+1)}}+{\\frac {z_{\\alpha /2}}{3{\\sqrt {k+1}}}}\\right)^{3},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Gamma conjugate prior",
+      "anchor": {
+        "section": "Bayesian inference",
+        "snippet": "the conjugate prior for the rate parameter λ of the Poisson distribution is the gamma distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gamma–Poisson conjugacy is not formalized though a Gamma distribution exists separately.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Posterior distribution",
+      "anchor": {
+        "section": "Bayesian inference",
+        "snippet": "and a prior of Gamma( α , β ) , the posterior distribution is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Gamma posterior for the Poisson rate is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Posterior mean is linear",
+      "anchor": {
+        "section": "Bayesian inference",
+        "snippet": "Note that the posterior mean is linear and is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The linear posterior-mean formula is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Bayesian inference",
+          "snippet": "Note that the posterior mean is linear and is given by"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle E[\\lambda \\mid k_{1},\\ldots ,k_{n}]={\\frac {\\alpha +\\sum _{i=1}^{n}k_{i}}{\\beta +n}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Posterior predictive is negative binomial",
+      "anchor": {
+        "section": "Bayesian inference",
+        "snippet": "The posterior predictive distribution for a single additional observation is a negative binomial distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The negative binomial distribution is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Inadmissibility of MLE (Clevenson–Zidek)",
+      "anchor": {
+        "section": "Simultaneous estimation of multiple Poisson means",
+        "snippet": "similar as in Stein's example for the Normal means"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Clevenson–Zidek inadmissibility result is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Family of minimax estimators",
+      "anchor": {
+        "section": "Simultaneous estimation of multiple Poisson means",
+        "snippet": "a family of minimax estimators is given for any"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The family of minimax estimators is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Simultaneous estimation of multiple Poisson means",
+          "snippet": "a family of minimax estimators is given for any"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\hat {\\lambda }}_{i}=\\left(1-{\\frac {c}{b+\\sum _{i=1}^{p}X_{i}}}\\right)X_{i},\\qquad i=1,\\dots ,p.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Applications to count data",
+      "anchor": {
+        "section": "Occurrence and applications",
+        "snippet": "Some applications of the Poisson distribution to count data"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Application examples, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gallagher on primes in short intervals",
+      "anchor": {
+        "section": "Occurrence and applications",
+        "snippet": "Gallagher showed in 1976 that, if a certain version of the unproved prime r-tuple conjecture holds"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gallagher's result on primes in short intervals is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Poisson limit theorem",
+      "anchor": {
+        "section": "Law of rare events",
+        "snippet": "the binomial distribution converges to what is known as the Poisson distribution by the Poisson limit theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendsto_choose_mul_pow_of_tendsto_mul_atTop",
+        "module": "Mathlib.Probability.Distributions.Poisson.PoissonLimitThm",
+        "match_kind": "exact"
+      },
+      "note": "This is exactly the formalized Poisson limit theorem (law of rare events).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Variance ratio to binomial",
+      "anchor": {
+        "section": "Law of rare events",
+        "snippet": "The variance of the binomial distribution is 1 − p times that of the Poisson distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The binomial/Poisson variance ratio statement is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Counts in a Poisson point process",
+      "anchor": {
+        "section": "Poisson point process",
+        "snippet": "The Poisson distribution arises as the number of points of a Poisson point process located in some finite region"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Poisson point processes are not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Poisson and negative binomial regression",
+      "anchor": {
+        "section": "Poisson regression and negative binomial regression",
+        "snippet": "Poisson regression and negative binomial regression are useful for analyses where the dependent (response) variable is the count"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Poisson/negative binomial regression models are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Luria–Delbrück experiment",
+      "anchor": {
+        "section": "Biology",
+        "snippet": "The Luria–Delbrück experiment tested against the hypothesis of Lamarckian evolution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A biology application example, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Katz and Miledi membrane potential",
+      "anchor": {
+        "section": "Biology",
+        "snippet": "Katz and Miledi measured the membrane potential with and without the presence of acetylcholine (ACh)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A biology application example, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Mutations per replication",
+      "anchor": {
+        "section": "Biology",
+        "snippet": "During each cellular replication event, the number of mutations is roughly Poisson distributed"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A biology application example, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Poisson noise / shot noise",
+      "anchor": {
+        "section": "Other applications in science",
+        "snippet": "These fluctuations are denoted as Poisson noise or (particularly in electronics) as shot noise"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Poisson/shot noise is an applied concept, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Causal set spacetime elements",
+      "anchor": {
+        "section": "Other applications in science",
+        "snippet": "In causal set theory the discrete elements of spacetime follow a Poisson distribution in the volume"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A physics application example, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Coherent state energy measurement",
+      "anchor": {
+        "section": "Other applications in science",
+        "snippet": "for a quantum harmonic oscillator system in a coherent state , the probability of measuring a particular energy level has a Poisson distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The coherent-state photon-number Poisson statistics result is not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

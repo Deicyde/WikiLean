@@ -1,0 +1,793 @@
+{
+  "slug": "History_of_the_function_concept",
+  "wikipedia_title": "History of the function concept",
+  "display_title": "History of the function concept",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "example",
+      "label": "Slope as a function of the x-coordinate",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "of a graph at a point was regarded as a function of the x -coordinate of the point"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "deriv",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The slope of the tangent as a function of x is formalized as the derivative function `deriv`, though the historical geometric framing is informal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Modern concept of a function",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a single-valued mapping from one set to another"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.Logic.Function.Basic",
+        "match_kind": null
+      },
+      "note": "A single-valued mapping is Lean's primitive function type `α → β`, a foundational notion rather than a defined Mathlib declaration, though extensive function infrastructure exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sharaf al-Din's analysis of solutions",
+      "anchor": {
+        "section": "Functions before the 17th century",
+        "snippet": "A value less than d means no positive solution; a value equal to d corresponds to one solution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific historical analysis of the number of positive roots of a cubic via its maximum is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bernoulli's definition of a function (1718)",
+      "anchor": {
+        "section": "Notion of function in analysis",
+        "snippet": "any expression made up of a variable and some constants"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bernoulli's prose definition of a function as an expression has no corresponding Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Differentiable functions",
+      "anchor": {
+        "section": "Notion of function in analysis",
+        "snippet": "The functions considered in those times are called today differentiable functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Differentiable",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Differentiable functions are formalized as `Differentiable`, generalized to functions between normed spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euler's definition of a function (1748)",
+      "anchor": {
+        "section": "Euler",
+        "snippet": "an analytic expression composed in any way whatsoever"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Euler's historical notion of an 'analytic expression' is a prose definition, distinct from Mathlib's modern analytic-function concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euler's multi-valued functions",
+      "anchor": {
+        "section": "Euler",
+        "snippet": "multi-valued functions whose values are determined by an implicit equation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ImplicitFunctionData",
+        "module": "Mathlib.Analysis.Calculus.ImplicitFunction.ProdDomain",
+        "match_kind": "invocation"
+      },
+      "note": "The implicit function theorem yields single-valued local solutions of implicit equations (`ImplicitFunctionData`), but genuinely multi-valued functions are not formalized as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euler's general definition (1755)",
+      "anchor": {
+        "section": "Euler",
+        "snippet": "then the first are called functions of the second"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Euler's 1755 prose definition of dependent variables has no specific Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fourier's representation claim",
+      "anchor": {
+        "section": "Fourier",
+        "snippet": "an arbitrary function could be represented by a Fourier series"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "hasSum_fourier_series_L2",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves Fourier series converge for L² functions (`hasSum_fourier_series_L2`), the corrected form of Fourier's overly broad claim about arbitrary functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cauchy's notion of a function",
+      "anchor": {
+        "section": "Cauchy",
+        "snippet": "he normally regards a function as being defined by an analytic expression"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cauchy's historical conception of a function as an analytic expression is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Modern formal definition of a function",
+      "anchor": {
+        "section": "Lobachevsky and Dirichlet",
+        "snippet": "a relation in which every first element has a unique second element"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Rel",
+        "module": "Mathlib.Data.Rel",
+        "match_kind": null
+      },
+      "note": "Relations are formalized as `Rel := α → β → Prop`, but the single-valued-relation definition of 'function' is not Mathlib's primitive function notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lobachevsky's definition (1834)",
+      "anchor": {
+        "section": "Lobachevsky and Dirichlet",
+        "snippet": "a function of x be defined as a number given for each x and varying gradually with x"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lobachevsky's 1834 prose definition has no specific Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dirichlet's continuous function (1837)",
+      "anchor": {
+        "section": "Lobachevsky and Dirichlet",
+        "snippet": "y is called a continuous function of x for this interval"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Continuous",
+        "module": "Mathlib.Topology.Defs.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Continuity is formalized as `Continuous`, generalizing Dirichlet's interval-based ε-style notion to arbitrary topological spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dedekind's definition of a function",
+      "anchor": {
+        "section": "Dedekind",
+        "snippet": "a function as a single-valued mapping between any two sets"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.Logic.Function.Basic",
+        "match_kind": null
+      },
+      "note": "Dedekind's single-valued mapping coincides with Lean's primitive function type `α → β` rather than a named Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hardy's definition of a function",
+      "anchor": {
+        "section": "Hardy",
+        "snippet": "a function as a relation between two variables x and y"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hardy's prose definition of a function as a relation between variables has no specific Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "De Morgan's propositional form",
+      "anchor": {
+        "section": "Prior to 1850",
+        "snippet": "into a form such as \"X is Y\", where the symbols"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "De Morgan's syntactic 'X is Y' propositional form is a historical logical notation, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Boole's class symbolism for oxen and horses",
+      "anchor": {
+        "section": "Prior to 1850",
+        "snippet": "the class oxen by x and that of horses by y"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This illustrative example of Boole's class notation is not a formalizable mathematical statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Boole's definition of a function (c.1849)",
+      "anchor": {
+        "section": "Prior to 1850",
+        "snippet": "is said to be a function of it"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Boole's historical prose definition of a function has no specific Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Boole's algebraic definition of f(x)",
+      "anchor": {
+        "section": "George Boole's The Laws of Thought 1854; John Venn's Symbolic Logic 1881",
+        "snippet": "Any algebraic expression involving symbol x is termed a function of x"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Boole's definition of a function as 'any algebraic expression in x' is a historical prose definition without a Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Boole's logical operations as algebra",
+      "anchor": {
+        "section": "George Boole's The Laws of Thought 1854; John Venn's Symbolic Logic 1881",
+        "snippet": "is logical NOT( x ), xy is the logical AND"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BooleanRing",
+        "module": "Mathlib.Algebra.Ring.BooleanRing",
+        "match_kind": "generalization"
+      },
+      "note": "Boole's algebraic rendering of logical operations (xy = AND, 1−x = NOT) is captured abstractly by `BooleanRing` (and `BooleanAlgebra`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Venn's logical function as a class",
+      "anchor": {
+        "section": "George Boole's The Laws of Thought 1854; John Venn's Symbolic Logic 1881",
+        "snippet": "he equated unequivocally the notion of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Venn's identification of a logical function with a class is a historical conceptual claim, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Frege's argument and function",
+      "anchor": {
+        "section": "Frege's Begriffsschrift 1879",
+        "snippet": "replacing them with argument and function respectively"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Frege's argument/function analysis of judgments is a historical logical doctrine without a Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Frege's lighter-than carbon dioxide function",
+      "anchor": {
+        "section": "Frege's Begriffsschrift 1879",
+        "snippet": "stable component, representing the totality of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This illustrative Fregean example is not a formalizable mathematical statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Frege's one- and two-argument function symbolism",
+      "anchor": {
+        "section": "Frege's Begriffsschrift 1879",
+        "snippet": "where A is the argument and"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Frege's notation for one- and two-argument functions is a historical symbolism, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Peano's function presign",
+      "anchor": {
+        "section": "Peano's The Principles of Arithmetic 1889",
+        "snippet": "Given all these conditions are met"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Peano's 'presign' function notation is a historical symbolism without a Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Russell's propositional functions",
+      "anchor": {
+        "section": "Bertrand Russell's The Principles of Mathematics 1903",
+        "snippet": "these generalizations Russell named propositional functions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.Logic.Basic",
+        "match_kind": null
+      },
+      "note": "A propositional function corresponds to a predicate `α → Prop`, a foundational type-theoretic notion rather than a named Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Frege's 2x³+x function essence",
+      "anchor": {
+        "section": "Bertrand Russell's The Principles of Mathematics 1903",
+        "snippet": "is what is left when the x is taken away"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The philosophical claim about the 'essence' of a function after removing its argument is not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Propositional functions as fundamental",
+      "anchor": {
+        "section": "Evolution of Russell's notion of \"function\" 1908–1913",
+        "snippet": "the fundamental kind from which the more usual kinds of function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Russell's philosophical claim that propositional functions are the fundamental kind of function is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Russell's \"ŷ is hurt\" propositional function",
+      "anchor": {
+        "section": "Evolution of Russell's notion of \"function\" 1908–1913",
+        "snippet": "Substitution of one of these values for variable ŷ yields a proposition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This illustrative example of substitution into a propositional function is not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Russell's descriptive function",
+      "anchor": {
+        "section": "Evolution of Russell's notion of \"function\" 1908–1913",
+        "snippet": "defines a descriptive function (pages 30ff) as the unique value"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ExistsUnique",
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The 'unique value satisfying a relation' relates to `ExistsUnique` and choice operators, but Russell's definite-description (iota) operator is not formalized as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hilbert's logical ε-function",
+      "anchor": {
+        "section": "Formalist's function: David Hilbert's axiomatization of mathematics (1904–1927)",
+        "snippet": "let us call ε the logical ε-function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Classical.epsilon",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Hilbert's ε-operator is Lean's core `Classical.epsilon` (built on indefinite description), used throughout Mathlib (e.g. Mathlib.ModelTheory.Skolem).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Effectively calculable function",
+      "anchor": {
+        "section": "Formalist's function: David Hilbert's axiomatization of mathematics (1904–1927)",
+        "snippet": "define what was meant by an"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Partrec",
+        "module": "Mathlib.Computability.Partrec",
+        "match_kind": "exact"
+      },
+      "note": "The class of effectively calculable functions is formalized as the partial recursive / computable functions (`Partrec`, `Computable`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Church's thesis",
+      "anchor": {
+        "section": "Formalist's function: David Hilbert's axiomatization of mathematics (1904–1927)",
+        "snippet": "this class of functions exhausts all the number-theoretic functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Church–Turing thesis is an informal claim identifying intuitive computability with recursiveness and cannot be stated as a formal theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Turing's unsolvability result",
+      "anchor": {
+        "section": "Formalist's function: David Hilbert's axiomatization of mathematics (1904–1927)",
+        "snippet": "there can be no general process for determining whether a given formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "halting_problem",
+        "module": "Mathlib.Computability.Halting",
+        "match_kind": "special_case"
+      },
+      "note": "The unsolvability of the Entscheidungsproblem is captured by the formalized non-computability of the halting problem (`halting_problem`), together with Rice's theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Russell's paradox",
+      "anchor": {
+        "section": "Russell's paradox 1902",
+        "snippet": "to be a predicate that cannot be predicated of itself"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Russell's paradox is not formalized (Lean's type-theoretic foundations preclude unrestricted comprehension), though the related Burali-Forti paradox and Cantor's theorem are.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zermelo's Axiom of Separation",
+      "anchor": {
+        "section": "Zermelo's set theory (1908) modified by Skolem (1922)",
+        "snippet": "M possesses a subset M Φ containing as elements precisely those elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZFSet.sep",
+        "module": "Mathlib.SetTheory.ZFC.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The separation/specification schema is realized by `ZFSet.sep` together with the characterization `ZFSet.mem_sep`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Skolem's definite proposition",
+      "anchor": {
+        "section": "Zermelo's set theory (1908) modified by Skolem (1922)",
+        "snippet": "a finite expression constructed from elementary propositions of the form"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.BoundedFormula",
+        "module": "Mathlib.ModelTheory.Syntax",
+        "match_kind": null
+      },
+      "note": "Skolem's replacement of 'definite property' by first-order definability corresponds to Mathlib's first-order `BoundedFormula`/`Formula`, though 'definite proposition' itself is not a named decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Russell's ordered couple with sense",
+      "anchor": {
+        "section": "Wiener–Hausdorff–Kuratowski ordered pair definition 1914–1921",
+        "snippet": "it may also be called an ordered couple"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Prod",
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An ordered couple 'with sense' is the ordered pair, realized as the core type `Prod`; Russell's specific set-theoretic construction is not used.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hausdorff's ordered pair",
+      "anchor": {
+        "section": "Wiener–Hausdorff–Kuratowski ordered pair definition 1914–1921",
+        "snippet": "gave the definition of the ordered pair"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's set-theoretic ordered pair uses Kuratowski's construction, not Hausdorff's specific definition with distinguished elements.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Kuratowski's ordered pair",
+      "anchor": {
+        "section": "Wiener–Hausdorff–Kuratowski ordered pair definition 1914–1921",
+        "snippet": "Kuratowski (1921) offered a definition that has been widely used ever since"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZFSet.pair",
+        "module": "Mathlib.SetTheory.ZFC.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ZFSet.pair x y = {{x}, {x, y}}` is exactly Kuratowski's definition of the ordered pair.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Schönfinkel's many-one correspondence",
+      "anchor": {
+        "section": "Schönfinkel's notion of function as a many-one correspondence 1924",
+        "snippet": "by function we mean in the simplest case a correspondence between the elements of some domain"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.Logic.Function.Basic",
+        "match_kind": null
+      },
+      "note": "A function as a many-one correspondence is Lean's primitive `α → β`; Schönfinkel's associated currying idea is realized as `Function.curry`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Von Neumann's function as set of pairs",
+      "anchor": {
+        "section": "Von Neumann's set theory 1925",
+        "snippet": "since a function can be regarded as a set of pairs"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PFun.graph",
+        "module": "Mathlib.Data.PFun",
+        "match_kind": null
+      },
+      "note": "A function's graph as a set of pairs is `PFun.graph`/`Set.graphOn`, but Mathlib's functions are primitive rather than literally sets of pairs.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bourbaki's functional relation (1939)",
+      "anchor": {
+        "section": "Bourbaki 1939",
+        "snippet": "is called a functional relation in y if, for all"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Rel",
+        "module": "Mathlib.Data.Rel",
+        "match_kind": null
+      },
+      "note": "Single-valued (functional) relations correspond to `Rel`/`PFun`, but they are not Mathlib's defining notion of a function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Set-theoretic function as a relation",
+      "anchor": {
+        "section": "In contemporary set theory",
+        "snippet": "define a relation as a set of ordered pairs"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Rel",
+        "module": "Mathlib.Data.Rel",
+        "match_kind": null
+      },
+      "note": "A relation as a set of ordered pairs is `Rel := α → β → Prop`; defining functions via such relations is not Mathlib's primitive approach.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Kleene's predicate as propositional function",
+      "anchor": {
+        "section": "In contemporary set theory",
+        "snippet": "The predicate is a propositional function of one variable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.Logic.Basic",
+        "match_kind": null
+      },
+      "note": "A predicate (propositional function of one variable) is the type `α → Prop` in Lean, a foundational notion rather than a named declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bourbaki's function as a triple (1954)",
+      "anchor": {
+        "section": "In contemporary set theory",
+        "snippet": "gave a definition of a function as a triple"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib functions are primitive `α → β` carrying their domain and codomain as types, not modeled as explicit (domain, codomain, graph) triples.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Suppes's function definition (1960)",
+      "anchor": {
+        "section": "In contemporary set theory",
+        "snippet": "a function (p. 86) as a relation where no two pairs have the same first member"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PFun.graph",
+        "module": "Mathlib.Data.PFun",
+        "match_kind": null
+      },
+      "note": "Single-valued relations (no two pairs sharing a first member) correspond to `PFun`/`Rel`, but functions remain primitive in Lean.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tarski's sentential function",
+      "anchor": {
+        "section": "Relational form of a function",
+        "snippet": "which contains variables and, on replacement of these variables by constants becomes a sentence"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.BoundedFormula",
+        "module": "Mathlib.ModelTheory.Syntax",
+        "match_kind": null
+      },
+      "note": "Open formulas with free variables that become sentences upon substitution are formalized as `BoundedFormula`/`Formula` (closed ones being `Sentence`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tarski's functional relation",
+      "anchor": {
+        "section": "Relational form of a function",
+        "snippet": "Tarski calls the relational form of function a"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Rel",
+        "module": "Mathlib.Data.Rel",
+        "match_kind": null
+      },
+      "note": "The relational form of a function corresponds to `Rel`, but it is not Mathlib's primitive function notion.",
+      "provenance": "ai"
+    }
+  ]
+}

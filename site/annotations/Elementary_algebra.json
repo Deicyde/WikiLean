@@ -1,0 +1,889 @@
+{
+  "slug": "Elementary_algebra",
+  "wikipedia_title": "Elementary algebra",
+  "display_title": "Elementary algebra",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Basic algebraic operation",
+      "anchor": {
+        "section": "Algebraic operations",
+        "snippet": "a basic algebraic operation is a mathematical operation similar to any one of the common operations of elementary algebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has the specific operations (+, ×, ^, etc.) but no general informal notion of 'basic algebraic operation'.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic operation on a set",
+      "anchor": {
+        "section": "Algebraic operations",
+        "snippet": "may be defined more formally as a function that maps to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib models operations via typeclasses/functions but has no dedicated definition of an n-ary 'algebraic operation' as a function Sⁿ → S.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Arity and operand",
+      "anchor": {
+        "section": "Algebraic operations",
+        "snippet": "The length of the tuples is called the arity of the operation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib declaration captures the informal concepts of 'arity' and 'operand' of an operation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Binary operation",
+      "anchor": {
+        "section": "Algebraic operations",
+        "snippet": "the operation is called a binary operation and the operands form an ordered pair"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib represents specific binary operations via Mul/Add typeclasses but has no generic 'BinaryOperation' definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unary operation",
+      "anchor": {
+        "section": "Algebraic operations",
+        "snippet": "A unary operation is an operation of arity one that has only one operand"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated 'unary operation' definition exists; such maps are just functions α → α.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ternary operation (triple product)",
+      "anchor": {
+        "section": "Algebraic operations",
+        "snippet": "An example of a ternary operation (arity three) is the triple product"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "triple_product_eq_det",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes the scalar triple product (triple_product_eq_det) as a specific ternary map, but not the general notion of a ternary operation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Compound algebraic operation",
+      "anchor": {
+        "section": "Algebraic operations",
+        "snippet": "The term algebraic operation may also be used for operations that may be defined by compounding basic algebraic operations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib declaration formalizes the informal notion of compounding basic algebraic operations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coefficient",
+      "anchor": {
+        "section": "Algebraic notation",
+        "snippet": "A coefficient is a numerical value, or letter representing a numerical constant, that multiplies a variable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.coeff",
+        "module": "Mathlib.Algebra.Polynomial.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib has Polynomial.coeff for coefficients of polynomials, which is related infrastructure but not the informal elementary-algebra notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Term",
+      "anchor": {
+        "section": "Algebraic notation",
+        "snippet": "A term is an addend or a summand"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no declaration formalizing the informal notion of a 'term' (addend/summand) of an expression.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponent of zero gives 1",
+      "anchor": {
+        "section": "Algebraic notation",
+        "snippet": "When the exponent is zero, the result is always 1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "pow_zero",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "pow_zero states a ^ 0 = 1, exactly matching the claim.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Variables for unknown values",
+      "anchor": {
+        "section": "Variables",
+        "snippet": "Variables may represent numbers whose values are not yet known"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an informal description of the use of variables, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Variables for general problems",
+      "anchor": {
+        "section": "Variables",
+        "snippet": "Variables allow one to describe general problems"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal motivation for using variables, with no corresponding Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Variables for relationships",
+      "anchor": {
+        "section": "Variables",
+        "snippet": "Variables allow one to describe mathematical relationships between quantities that may vary"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal description of variables expressing relationships, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Commutativity of addition",
+      "anchor": {
+        "section": "Variables",
+        "snippet": "a basic property of addition is commutativity which states that the order of numbers being added together does not matter"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "add_comm",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "add_comm states a + b = b + a in any additive commutative structure, exactly the stated property.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Simplify added terms",
+      "anchor": {
+        "section": "Simplifying expressions",
+        "snippet": "Added terms are simplified using coefficients"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This describes a syntactic simplification heuristic rather than a stated theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Simplify multiplied terms",
+      "anchor": {
+        "section": "Simplifying expressions",
+        "snippet": "Multiplied terms are simplified using exponents"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This describes a simplification heuristic (collecting factors into exponents) rather than a single theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Combine like terms",
+      "anchor": {
+        "section": "Simplifying expressions",
+        "snippet": "Like terms are added together"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Combining like terms is an informal simplification procedure with no dedicated Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Distributive property (multiplying out brackets)",
+      "anchor": {
+        "section": "Simplifying expressions",
+        "snippet": "Brackets can be \"multiplied out\", using the distributive property"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "left_distrib",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "left_distrib states a * (b + c) = a * b + a * c, exactly the distributive law used to expand brackets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Factoring expressions",
+      "anchor": {
+        "section": "Simplifying expressions",
+        "snippet": "Expressions can be factored"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Factoring is described as a manipulation procedure, not formalized as a single statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equation",
+      "anchor": {
+        "section": "Equations",
+        "snippet": "An equation states that two expressions are equal using the symbol for equality"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The underlying equality relation is Lean's core Eq, but Mathlib has no declaration defining 'equation' as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Pythagorean theorem",
+      "anchor": {
+        "section": "Equations",
+        "snippet": "describes Pythagoras' law relating the length of the sides of a right angle triangle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.dist_sq_eq_dist_sq_add_dist_sq_iff_angle_eq_pi_div_two",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.RightAngle",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's Pythagorean theorem states dist² = dist² + dist² iff the angle is π/2, generalizing a²+b²=c² to Euclidean spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Identity",
+      "anchor": {
+        "section": "Equations",
+        "snippet": "such equations are called identities"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An identity is an equation true for all values; Mathlib expresses these as universally quantified equalities but has no 'identity' definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conditional equation",
+      "anchor": {
+        "section": "Equations",
+        "snippet": "Conditional equations are true for only some values of the involved variables"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib declaration formalizes the informal notion of a 'conditional equation'.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inequality",
+      "anchor": {
+        "section": "Equations",
+        "snippet": "Inequalities are used to show that one side of the equation is greater, or less, than the other"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The order relations < and ≤ (LT.lt/LE.le) provide the underlying infrastructure, but there is no 'inequality' definition itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Flipping inequality on negative multiplication",
+      "anchor": {
+        "section": "Equations",
+        "snippet": "when multiplying or dividing by a negative number, the inequality symbol must be flipped"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mul_lt_mul_of_neg_left",
+        "module": "Mathlib.Algebra.Order.Ring.Unbundled.Basic",
+        "match_kind": "exact"
+      },
+      "note": "mul_lt_mul_of_neg_left (and _right) state that multiplying by a negative reverses a strict inequality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Equality is an equivalence relation",
+      "anchor": {
+        "section": "Properties of equality",
+        "snippet": "equality is an equivalence relation , meaning it is reflexive"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "eq_equivalence",
+        "module": "Mathlib.Logic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "eq_equivalence proves Equivalence (@Eq α), i.e. equality is reflexive, symmetric and transitive.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Substitution property of equality",
+      "anchor": {
+        "section": "Properties of equality",
+        "snippet": "if two symbols are used for equal things, then one symbol can be substituted for the other in any true statement about the first"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Eq.subst",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Lean's core Eq.subst (the Eq eliminator) is exactly the Leibniz substitution principle for equal terms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Transitivity of inequalities",
+      "anchor": {
+        "section": "Properties of inequality",
+        "snippet": "have the property of transitivity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lt_trans",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "lt_trans (and le_trans, aliased in Mathlib.Order.Basic) give transitivity of strict and non-strict inequalities.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reversing an inequation",
+      "anchor": {
+        "section": "Properties of inequality",
+        "snippet": "By reversing the inequation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ge_iff_le",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "ge_iff_le states a ≥ b ↔ b ≤ a, formalizing the swap of ≤ and ≥ by reversing an inequation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Substitution",
+      "anchor": {
+        "section": "Substitution",
+        "snippet": "Substitution is replacing the terms in an expression to create a new expression"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Substituting values into expressions is realized via function/polynomial evaluation but has no dedicated 'substitution' definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero-product property",
+      "anchor": {
+        "section": "Substitution",
+        "snippet": "then xy = 0 implies x = 0 or y = 0"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mul_eq_zero",
+        "module": "Mathlib.Algebra.GroupWithZero.Defs",
+        "match_kind": "exact"
+      },
+      "note": "mul_eq_zero states a * b = 0 ↔ a = 0 ∨ b = 0 in a domain, exactly the zero-product property.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear equation",
+      "anchor": {
+        "section": "Linear equations with one variable",
+        "snippet": "Linear equations are so-called, because when they are plotted, they describe a straight line"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has LinearMap/AffineMap and lines, but no definition of 'linear equation' as an elementary-algebra object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Child age problem",
+      "anchor": {
+        "section": "Linear equations with one variable",
+        "snippet": "If you double the age of a child and add 4, the resulting answer is 12"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a worked word problem, not a formalizable mathematical statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "General solution of a one-variable linear equation",
+      "anchor": {
+        "section": "Linear equations with one variable",
+        "snippet": "The general form of a linear equation with one variable, can be written as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib theorem states the general solution x = -b/a of ax + b = 0, though field arithmetic lemmas could derive it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linear equation in two variables has infinitely many solutions",
+      "anchor": {
+        "section": "Linear equations with two variables",
+        "snippet": "A linear equation with two variables has many (i.e. an infinite number of) solutions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated Mathlib statement asserts that a single linear equation in two variables has infinitely many solutions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Father and son age problem",
+      "anchor": {
+        "section": "Linear equations with two variables",
+        "snippet": "A father is 22 years older than his son"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a worked word problem, not a formalizable mathematical statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quadratic equation",
+      "anchor": {
+        "section": "Quadratic equations",
+        "snippet": "A quadratic equation is one which includes a term with an exponent of 2"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "discrim",
+        "module": "Mathlib.Algebra.QuadraticDiscriminant",
+        "match_kind": null
+      },
+      "note": "Mathlib reasons about quadratics via discrim and related lemmas (a*(x*x)+b*x+c) but has no standalone 'quadratic equation' definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Standard form of a quadratic equation",
+      "anchor": {
+        "section": "Quadratic equations",
+        "snippet": "we may divide by a and rearrange the equation into the standard form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib statement formalizes normalizing a quadratic to monic standard form by dividing through by a.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Quadratic formula",
+      "anchor": {
+        "section": "Quadratic equations",
+        "snippet": "leads to the quadratic formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "quadratic_eq_zero_iff",
+        "module": "Mathlib.Algebra.QuadraticDiscriminant",
+        "match_kind": "exact"
+      },
+      "note": "quadratic_eq_zero_iff gives the roots (-b ± s)/(2a) where s² = discrim, i.e. the quadratic formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Solving quadratics by factorization",
+      "anchor": {
+        "section": "Quadratic equations",
+        "snippet": "Quadratic equations can also be solved using factorization"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "mul_eq_zero",
+        "module": "Mathlib.Algebra.GroupWithZero.Defs",
+        "match_kind": null
+      },
+      "note": "The factorization method relies on the zero-product property (mul_eq_zero), but the procedure itself is not a single formalized theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero-product property for quadratics",
+      "anchor": {
+        "section": "Quadratic equations",
+        "snippet": "It follows from the zero-product property that either"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mul_eq_zero",
+        "module": "Mathlib.Algebra.GroupWithZero.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "This is a direct application of mul_eq_zero to a factored quadratic (x-r)(x-s) = 0.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Quadratic with no real solution",
+      "anchor": {
+        "section": "Quadratic equations",
+        "snippet": "has no real number solution since no real number squared equals −1"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "quadratic_ne_zero_of_discrim_ne_sq",
+        "module": "Mathlib.Algebra.QuadraticDiscriminant",
+        "match_kind": null
+      },
+      "note": "quadratic_ne_zero_of_discrim_ne_sq gives nonexistence of roots when the discriminant is not a square, covering x²+1=0 over ℝ, but the specific example is not a named result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Root of multiplicity 2",
+      "anchor": {
+        "section": "Quadratic equations",
+        "snippet": "Sometimes a quadratic equation has a root of multiplicity 2"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "quadratic_eq_zero_iff_of_discrim_eq_zero",
+        "module": "Mathlib.Algebra.QuadraticDiscriminant",
+        "match_kind": null
+      },
+      "note": "quadratic_eq_zero_iff_of_discrim_eq_zero shows a unique (double) root -b/(2a) when the discriminant is zero, but 'multiplicity 2' per se uses Polynomial.rootMultiplicity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Quadratics have two complex solutions",
+      "anchor": {
+        "section": "Complex numbers",
+        "snippet": "All quadratic equations have exactly two solutions in complex numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "exists_quadratic_eq_zero",
+        "module": "Mathlib.Algebra.QuadraticDiscriminant",
+        "match_kind": null
+      },
+      "note": "exists_quadratic_eq_zero gives existence of roots when the discriminant is a square (always true over the algebraically closed ℂ), but the exact 'two solutions counted with multiplicity' statement is not stated for quadratics specifically.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Complex solutions of a quadratic",
+      "anchor": {
+        "section": "Complex numbers",
+        "snippet": "Complex numbers first arise in the teaching of quadratic equations and the quadratic formula"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "exists_quadratic_eq_zero",
+        "module": "Mathlib.Algebra.QuadraticDiscriminant",
+        "match_kind": null
+      },
+      "note": "Solving quadratics over ℂ is supported via exists_quadratic_eq_zero plus ℂ being algebraically closed, but this illustrative example is not itself formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exponential equation",
+      "anchor": {
+        "section": "Exponential and logarithmic equations",
+        "snippet": "An exponential equation is one which has the form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has rpow/exp but no definition of 'exponential equation' as an elementary-algebra object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Logarithmic equation",
+      "anchor": {
+        "section": "Exponential and logarithmic equations",
+        "snippet": "A logarithmic equation is an equation of the form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Real.log but no definition of a 'logarithmic equation'.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Radical equation",
+      "anchor": {
+        "section": "Radical equations",
+        "snippet": "A radical equation is one that includes a radical sign, which includes square roots"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has roots/Real.sqrt but no definition of a 'radical equation'.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "nth root as exponential form",
+      "anchor": {
+        "section": "Radical equations",
+        "snippet": "Recall that an n th root can be rewritten in exponential format"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.rpow_inv_natCast_pow",
+        "module": "Mathlib.Analysis.SpecialFunctions.Pow.Real",
+        "match_kind": "exact"
+      },
+      "note": "Real.rpow_inv_natCast_pow states (x^(1/n))^n = x for x ≥ 0, formalizing the nth root as the exponent 1/n.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Elimination method",
+      "anchor": {
+        "section": "Elimination method",
+        "snippet": "An example of solving a system of linear equations is by using the elimination method"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The elimination solving procedure is illustrated by example and is not formalized as a stated theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Substitution method",
+      "anchor": {
+        "section": "Substitution method",
+        "snippet": "Another way of solving the same system of linear equations is by substitution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The substitution solving procedure is illustrated by example and is not formalized as a stated theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inconsistent system",
+      "anchor": {
+        "section": "Inconsistent systems",
+        "snippet": "Such a system is called inconsistent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib reasons about solvability of linear systems but has no definition of an 'inconsistent system'.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "System with infinitely many solutions",
+      "anchor": {
+        "section": "Undetermined systems",
+        "snippet": "There are also systems which have infinitely many solutions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated Mathlib statement formalizes this illustrative example of a system with infinitely many solutions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Underdetermined system",
+      "anchor": {
+        "section": "Over- and underdetermined systems",
+        "snippet": "Systems with more variables than the number of linear equations are called underdetermined"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no definition for 'underdetermined system' of linear equations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Overdetermined system",
+      "anchor": {
+        "section": "Over- and underdetermined systems",
+        "snippet": "A system with a higher number of equations than variables is called overdetermined"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no definition for 'overdetermined system' of linear equations.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,297 @@
+{
+  "slug": "Commutative_diagram",
+  "wikipedia_title": "Commutative diagram",
+  "display_title": "Commutative diagram",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Commutative diagram",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a commutative diagram is a diagram such that all directed paths in the diagram with the same start and endpoints lead to the same result"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.CommSq",
+        "module": "Mathlib.CategoryTheory.CommSq",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has no generic 'commutative diagram' predicate; only the special case of commutative squares is bundled (`CommSq`, with bundled variant `Square`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Parts of a commutative diagram",
+      "anchor": {
+        "section": "Description",
+        "snippet": "A commutative diagram often consists of three parts"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is meta-mathematical description of diagram presentation and is not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Monomorphism arrow",
+      "anchor": {
+        "section": "Arrow symbols",
+        "snippet": "A monomorphism may be labeled with a"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Mono",
+        "module": "Mathlib.CategoryTheory.EpiMono",
+        "match_kind": "invocation"
+      },
+      "note": "Arrow decorations are notational; the underlying concept `Mono` is formalized in Mathlib but the visual hooked-arrow convention itself is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Epimorphism arrow",
+      "anchor": {
+        "section": "Arrow symbols",
+        "snippet": "An epimorphism may be labeled with a"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Epi",
+        "module": "Mathlib.CategoryTheory.EpiMono",
+        "match_kind": "invocation"
+      },
+      "note": "The underlying notion `Epi` is formalized; the two-headed arrow notation is presentational only.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isomorphism arrow",
+      "anchor": {
+        "section": "Arrow symbols",
+        "snippet": "An isomorphism may be labeled with a"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.IsIso",
+        "module": "Mathlib.CategoryTheory.Iso",
+        "match_kind": "invocation"
+      },
+      "note": "`IsIso`/`Iso` formalize isomorphisms; the `≅` decoration on arrows is presentational.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dashed arrow (existence)",
+      "anchor": {
+        "section": "Arrow symbols",
+        "snippet": "The dashed arrow typically represents the claim that the indicated morphism exists"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dashed-arrow conventions are visual notation without a direct Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Natural transformation arrow",
+      "anchor": {
+        "section": "Arrow symbols",
+        "snippet": "If the morphism acts between two arrows"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.NatTrans",
+        "module": "Mathlib.CategoryTheory.NatTrans",
+        "match_kind": "invocation"
+      },
+      "note": "Natural transformations are formalized as `NatTrans`; the double-arrow drawing convention is presentational.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Commutativity of polygonal subdiagrams",
+      "anchor": {
+        "section": "Verifying commutativity",
+        "snippet": "a diagram is commutative if every polygonal subdiagram is commutative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no general theorem reducing commutativity of a diagram to commutativity of subpolygons.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "First isomorphism theorem diagram",
+      "anchor": {
+        "section": "Example 1",
+        "snippet": "In the left diagram, which expresses the first isomorphism theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuotientGroup.quotientKerEquivRange",
+        "module": "Mathlib.GroupTheory.QuotientGroup.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The first isomorphism theorem for groups is `QuotientGroup.quotientKerEquivRange`, with analogous versions in module/ring files.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Three equalities diagram",
+      "anchor": {
+        "section": "Example 2",
+        "snippet": "In order for the diagram below to commute, three equalities must be satisfied"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an illustrative ad-hoc diagram and has no dedicated Mathlib statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Diagram chasing",
+      "anchor": {
+        "section": "Diagram chasing",
+        "snippet": "Diagram chasing (also called diagrammatic search ) is a method of mathematical proof used especially in homological algebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Diagram chasing is a proof methodology, not an object; Mathlib proves diagram lemmas but does not name the technique.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Diagram chasing lemmas",
+      "anchor": {
+        "section": "Diagram chasing",
+        "snippet": "Examples of proofs by diagram chasing include those typically given for the five lemma"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.bijective_of_surjective_of_bijective_of_bijective_of_injective",
+        "module": "Mathlib.Algebra.FiveLemma",
+        "match_kind": "exact"
+      },
+      "note": "The five lemma is formalized both for modules (`Mathlib.Algebra.FiveLemma`) and abelian categories (`Mathlib.CategoryTheory.Abelian.DiagramLemmas.Four`), with the snake lemma in `Mathlib.Algebra.Homology.ShortComplex.SnakeLemma`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cat as a 2-category",
+      "anchor": {
+        "section": "In higher category theory",
+        "snippet": "the category of small categories Cat is naturally a 2-category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Cat.bicategory",
+        "module": "Mathlib.CategoryTheory.Category.Cat",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib provides `Cat.bicategory` together with `Cat.bicategory.strict`, exhibiting `Cat` as a strict bicategory (i.e. a 2-category).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vertical and horizontal composition in a 2-category",
+      "anchor": {
+        "section": "In higher category theory",
+        "snippet": "There are two kinds of composition in a 2-category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Bicategory",
+        "module": "Mathlib.CategoryTheory.Bicategory.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Vertical composition is the `homCategory` composition and horizontal composition is given by `whiskerLeft`/`whiskerRight` plus 1-cell composition in the `Bicategory` class.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Diagram as a functor",
+      "anchor": {
+        "section": "Diagrams as functors",
+        "snippet": "A commutative diagram in a category C can be interpreted as a functor from an index category J to C"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor",
+        "module": "Mathlib.CategoryTheory.Functor.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib uniformly identifies diagrams of shape `J` in `C` with functors `J ⥤ C` (e.g. as cones over such functors in the limits library).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Commutative diagram from poset category",
+      "anchor": {
+        "section": "Diagrams as functors",
+        "snippet": "a commutative diagram is a visualization of a diagram indexed by a poset category"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Preorder.smallCategory",
+        "module": "Mathlib.CategoryTheory.Category.Preorder",
+        "match_kind": "invocation"
+      },
+      "note": "Preorders/posets carry the canonical thin category instance `Preorder.smallCategory`, so functors out of them are automatically commutative diagrams, but this informal correspondence is not named.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Poset category from commutative diagram",
+      "anchor": {
+        "section": "Diagrams as functors",
+        "snippet": "given a commutative diagram, it defines a poset category"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no Mathlib construction taking an arbitrary commutative diagram and returning its underlying poset/thin category.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Non-commuting diagrams (free quiver)",
+      "anchor": {
+        "section": "Diagrams as functors",
+        "snippet": "the diagram of a single object with an endomorphism"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Paths",
+        "module": "Mathlib.CategoryTheory.PathCategory.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the free category `Paths` on a quiver (`PathCategory/Basic`), of which the single-loop quiver case is an instance, but this specific example is not isolated.",
+      "provenance": "ai"
+    }
+  ]
+}

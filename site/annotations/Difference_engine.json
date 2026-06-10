@@ -1,0 +1,297 @@
+{
+  "slug": "Difference_engine",
+  "wikipedia_title": "Difference engine",
+  "display_title": "Difference engine",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Difference engine",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A difference engine is an automatic mechanical calculator designed to tabulate polynomial functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A physical mechanical calculator; Mathlib formalizes mathematics, not hardware devices.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Method of finite differences",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a way to interpolate or tabulate functions by using a small set of polynomial co-efficients"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "shift_eq_sum_fwdDiff_iter",
+        "module": "Mathlib.Algebra.Group.ForwardDiff",
+        "match_kind": "generalization"
+      },
+      "note": "The forward-difference operator `fwdDiff` and the Gregory-Newton formula `shift_eq_sum_fwdDiff_iter` formalize tabulating/interpolating a function from its finite differences.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Column addition rule",
+      "anchor": {
+        "section": "Operation",
+        "snippet": "can only add the value of a column n + 1 to column n to produce the new value of n"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a mechanical update rule of the machine's columns, not a mathematical statement in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Programming via initial values",
+      "anchor": {
+        "section": "Operation",
+        "snippet": "The engine is programmed by setting initial values to the columns"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An operational description of programming the machine, with no corresponding Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Iteration per shaft rotation",
+      "anchor": {
+        "section": "Timing",
+        "snippet": "one iteration (i.e. one full set of addition and carry operations) happens for each rotation of the main shaft"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A mechanical timing fact of the engine, not a mathematical statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Four-step iteration cycle",
+      "anchor": {
+        "section": "Steps",
+        "snippet": "Each iteration creates a new result, and is accomplished in four steps corresponding to four complete turns of the handle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A description of the machine's operating cycle, not formalizable mathematics.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Subtraction via ten's complement",
+      "anchor": {
+        "section": "Subtraction",
+        "snippet": "The engine represents negative numbers as ten's complements"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ten's-complement number representation is not formalized as such in Mathlib (which has modular `ZMod` arithmetic but no ten's-complement encoding).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Principle is method of divided differences",
+      "anchor": {
+        "section": "Method of differences",
+        "snippet": "The principle of a difference engine is Newton's method of divided differences"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "fwdDiff",
+        "module": "Mathlib.Algebra.Group.ForwardDiff",
+        "match_kind": null
+      },
+      "note": "Mathlib has the forward (finite) difference operator `fwdDiff` actually used by the engine, but Newton's divided-difference scheme itself is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Tabulating a quadratic polynomial",
+      "anchor": {
+        "section": "Method of differences",
+        "snippet": "with the goal of tabulating the values"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "shift_eq_sum_fwdDiff_iter",
+        "module": "Mathlib.Algebra.Group.ForwardDiff",
+        "match_kind": null
+      },
+      "note": "The worked quadratic example is an instance of the general Gregory-Newton tabulation formula `shift_eq_sum_fwdDiff_iter`, but no such concrete example is a Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Constant (n+1)th difference of degree-n polynomial",
+      "anchor": {
+        "section": "Method of differences",
+        "snippet": "by starting with any polynomial of degree n , the column number n + 1 will always be constant"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.fwdDiff_iter_degree_eq_factorial",
+        "module": "Mathlib.Algebra.Group.ForwardDiff",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial.fwdDiff_iter_degree_eq_factorial` proves the n-th forward difference of a degree-n polynomial is the constant `leadingCoeff • n!` (with `fwdDiff_iter_degree_add_one_eq_zero` giving that the next difference vanishes).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Storage to tabulate degree-n polynomials",
+      "anchor": {
+        "section": "Method of differences",
+        "snippet": "To tabulate polynomials of degree n , one needs sufficient storage to hold n numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A statement about the machine's storage requirement, not a mathematical theorem in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Initial values by backtracking",
+      "anchor": {
+        "section": "Initial values",
+        "snippet": "The initial values of columns can be calculated by first manually calculating N consecutive values of the function and by backtracking"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "fwdDiff_iter_eq_sum_shift",
+        "module": "Mathlib.Algebra.Group.ForwardDiff",
+        "match_kind": null
+      },
+      "note": "`fwdDiff_iter_eq_sum_shift` expresses the n-th forward difference as a combination of consecutive function values, the mathematical content of backtracking, but the backtracking procedure itself is not a Mathlib decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Initial values from polynomial coefficients",
+      "anchor": {
+        "section": "Initial values",
+        "snippet": "the initial values can be calculated directly from the constant coefficients"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.fwdDiff_iter_degree_eq_factorial",
+        "module": "Mathlib.Algebra.Group.ForwardDiff",
+        "match_kind": null
+      },
+      "note": "Mathlib relates iterated forward differences to polynomial coefficients (e.g. `Polynomial.fwdDiff_iter_degree_eq_factorial`), but the direct closed-form for all initial column values is not stated as one declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Analytic functions as power series",
+      "anchor": {
+        "section": "Use of derivatives",
+        "snippet": "Many commonly used functions are analytic functions , which can be expressed as power series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AnalyticAt",
+        "module": "Mathlib.Analysis.Analytic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`AnalyticAt` (via `HasFPowerSeriesAt`/`HasFPowerSeriesOnBall`) defines a function as analytic exactly when it has a convergent power-series expansion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Taylor series from derivatives",
+      "anchor": {
+        "section": "Use of derivatives",
+        "snippet": "The Taylor series expresses the function as a sum obtained from its derivatives at one point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "taylorWithin",
+        "module": "Mathlib.Analysis.Calculus.Taylor",
+        "match_kind": "exact"
+      },
+      "note": "`taylorWithin`/`taylorCoeffWithin` define the Taylor polynomial as a sum of iterated-derivative terms, and `Complex.hasSum_taylorSeries_on_ball` shows the series sums to the function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Maclaurin series at zero",
+      "anchor": {
+        "section": "Use of derivatives",
+        "snippet": "Setting 0 as the start of computation we get the simplified Maclaurin series"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "taylorWithin",
+        "module": "Mathlib.Analysis.Calculus.Taylor",
+        "match_kind": "special_case"
+      },
+      "note": "The Maclaurin series is the Taylor series `taylorWithin` at base point 0, but Mathlib has no dedicated Maclaurin declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Curve fitting bounds maximum error",
+      "anchor": {
+        "section": "Curve fitting",
+        "snippet": "A solution which guarantees a constant maximum error is to use curve fitting"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.leadingCoeff_le_of_forall_abs_le_one",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Chebyshev.Extremal",
+        "match_kind": null
+      },
+      "note": "Mathlib has Chebyshev extremal properties underlying minimax approximation, but no curve-fitting/equioscillation theorem guaranteeing a constant maximum error.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Polynomial interpolation via Gaussian reduction",
+      "anchor": {
+        "section": "Curve fitting",
+        "snippet": "an N −1th degree polynomial interpolation of the function is found"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Lagrange.interpolate",
+        "module": "Mathlib.LinearAlgebra.Lagrange",
+        "match_kind": "generalization"
+      },
+      "note": "`Lagrange.interpolate` (with `eq_interpolate`/`degree_interpolate_lt`) gives the unique interpolating polynomial of degree < N through N nodes, the same result though constructed via Lagrange rather than Gaussian elimination.",
+      "provenance": "ai"
+    }
+  ]
+}

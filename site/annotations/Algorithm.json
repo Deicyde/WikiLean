@@ -1,0 +1,809 @@
+{
+  "slug": "Algorithm",
+  "wikipedia_title": "Algorithm",
+  "display_title": "Algorithm",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Algorithm",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "of mathematically rigorous instructions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no informal/general definition of \"algorithm\"; it formalizes specific computation models, not the umbrella concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Heuristic",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a heuristic is an approach to solving problems"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of a heuristic is not a formalized object in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Effective method",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "an algorithm can be expressed within a finite amount of space and time"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes computability (partial recursive functions) but not the informal Church-Turing notion of \"effective method\".",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Informal definition of algorithm",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "a set of rules that precisely defines a sequence of operations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal prose definition has no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Program is an algorithm only if it halts",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "a program is an algorithm only if it stops eventually"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ComputablePred.halting_problem",
+        "module": "Mathlib.Computability.Halting",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes the halting predicate and the undecidability of the halting problem, but not the definitional claim that an algorithm must halt.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Formal definition of algorithm",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "algorithm is an explicit set of instructions to produce an output"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Turing.TM0.Machine",
+        "module": "Mathlib.Computability.TuringMachine.PostTuringMachine",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes concrete models of computation (Turing machines, partial recursive functions) that instantiate this idea, but not a single abstract \"formal definition of algorithm\".",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "High-level description",
+      "anchor": {
+        "section": "Turing machines",
+        "snippet": "A high-level description describes the qualities of the algorithm itself"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a meta-level description style with no Mathlib formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Implementation description",
+      "anchor": {
+        "section": "Turing machines",
+        "snippet": "An implementation description describes the general manner in which the machine moves its head"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A description-level concept, not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Formal description",
+      "anchor": {
+        "section": "Turing machines",
+        "snippet": "a formal description gives the exact state table and list of transitions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Turing.TM0.step",
+        "module": "Mathlib.Computability.TuringMachine.PostTuringMachine",
+        "match_kind": null
+      },
+      "note": "Mathlib's Turing machine is defined exactly by states, configurations, and a transition step function, matching the idea of a state table with transitions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Flowchart",
+      "anchor": {
+        "section": "Flowchart representation",
+        "snippet": "A flowchart is a graphical aid that describes and documents an algorithm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Flowcharts are a diagrammatic notation with no Mathlib formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Linear-time list summation",
+      "anchor": {
+        "section": "Algorithmic analysis",
+        "snippet": "an algorithm that adds up the elements of a list of n numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "List.sum",
+        "module": "Mathlib.Algebra.BigOperators.Group.List.Basic",
+        "match_kind": null
+      },
+      "note": "The summation function `List.sum` exists, but its linear-time complexity is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Binary search vs sequential search",
+      "anchor": {
+        "section": "Algorithmic analysis",
+        "snippet": "outperforms a sequential search"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formalized search algorithms with comparative running-time analysis.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Best case",
+      "anchor": {
+        "section": "Best Case and Worst Case",
+        "snippet": "The best case of an algorithm refers to the scenario or input"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no complexity-analysis framework defining best-case behavior.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Worst case",
+      "anchor": {
+        "section": "Best Case and Worst Case",
+        "snippet": "The worst case of an algorithm is the case that causes the algorithm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no complexity-analysis framework defining worst-case behavior.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Turing-complete models compute any algorithm",
+      "anchor": {
+        "section": "Structured programming",
+        "snippet": "Any algorithm can be computed by any Turing complete model"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Turing.PartrecToTM2.tr_eval",
+        "module": "Mathlib.Computability.TuringMachine.ToPartrec",
+        "match_kind": null
+      },
+      "note": "Mathlib proves a Turing machine can evaluate any partial recursive program (and the reverse), giving model equivalence, but no general statement about \"any Turing-complete model\".",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Four instruction types for Turing completeness",
+      "anchor": {
+        "section": "Structured programming",
+        "snippet": "Turing completeness only requires four instruction types"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific claim about a four-instruction basis is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Böhm-Jacopini canonical structures",
+      "anchor": {
+        "section": "Structured programming",
+        "snippet": "Tausworthe augments the three Böhm-Jacopini canonical structures"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Böhm-Jacopini structured-programming structures are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Structured programs admit proofs by induction",
+      "anchor": {
+        "section": "Structured programming",
+        "snippet": "it lends itself to proofs of correctness using mathematical induction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "While Mathlib uses induction pervasively, this meta-statement about structured-program correctness proofs is not itself formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Recursive algorithm",
+      "anchor": {
+        "section": "By implementation",
+        "snippet": "A recursive algorithm invokes itself repeatedly until meeting a termination condition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Recursion is a language/meta feature; \"recursive algorithm\" is not a formalized mathematical object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Iterative algorithm",
+      "anchor": {
+        "section": "By implementation",
+        "snippet": "Iterative algorithms use repetitions such as loops or data structures like stacks"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The concept of an iterative algorithm is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Tower of Hanoi",
+      "anchor": {
+        "section": "By implementation",
+        "snippet": "The Tower of Hanoi is a puzzle commonly solved using recursive implementation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Tower of Hanoi puzzle is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Recursive and iterative versions are equivalent",
+      "anchor": {
+        "section": "By implementation",
+        "snippet": "Every recursive version has an equivalent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general recursion/iteration equivalence theorem is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Serial algorithm",
+      "anchor": {
+        "section": "By implementation",
+        "snippet": "Serial algorithms are designed for these environments"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Serial-execution algorithms are not a formalized concept in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Parallel algorithm",
+      "anchor": {
+        "section": "By implementation",
+        "snippet": "Parallel algorithms take advantage of computer architectures"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Parallel algorithms are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Distributed algorithm",
+      "anchor": {
+        "section": "By implementation",
+        "snippet": "Distributed algorithms use multiple machines connected via a computer network"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Distributed algorithms are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inherently serial problems",
+      "anchor": {
+        "section": "By implementation",
+        "snippet": "are called inherently serial problems"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This complexity-theory notion is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Deterministic vs non-deterministic algorithms",
+      "anchor": {
+        "section": "By implementation",
+        "snippet": "Deterministic algorithms solve the problem with exact decisions at every step"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has deterministic/non-deterministic finite automata but no general deterministic-vs-nondeterministic algorithm definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Approximation algorithm",
+      "anchor": {
+        "section": "By implementation",
+        "snippet": "approximation algorithms seek an approximation that is close to the true solution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Approximation algorithms are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Knapsack problem",
+      "anchor": {
+        "section": "By implementation",
+        "snippet": "the goal is to pack the knapsack to get the maximum total value"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The knapsack problem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quantum algorithm",
+      "anchor": {
+        "section": "By implementation",
+        "snippet": "Quantum algorithms run on a realistic model of quantum computation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quantum computation models and quantum algorithms are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Brute force",
+      "anchor": {
+        "section": "By design paradigm",
+        "snippet": "Brute force is a problem-solving method of systematically trying every possible option"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The brute-force design paradigm is not a formalized object in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Divide-and-conquer",
+      "anchor": {
+        "section": "By design paradigm",
+        "snippet": "A divide-and-conquer algorithm repeatedly reduces a problem to one or more smaller instances of itself"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AkraBazziRecurrence.isTheta_asympBound",
+        "module": "Mathlib.Computability.AkraBazzi.AkraBazzi",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes the Akra-Bazzi theorem for the asymptotic cost of divide-and-conquer recurrences, but not the paradigm definition itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Merge sort",
+      "anchor": {
+        "section": "By design paradigm",
+        "snippet": "Merge sorting is an example of divide and conquer"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "List.mergeSort",
+        "module": "Mathlib.Data.List.Sort",
+        "match_kind": "exact"
+      },
+      "note": "`List.mergeSort` is the merge sort algorithm, with proofs of sortedness and permutation invariance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Prune and search / decrease-and-conquer",
+      "anchor": {
+        "section": "By design paradigm",
+        "snippet": "called prune and search or decrease-and-conquer algorithm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The prune-and-search/decrease-and-conquer paradigm is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Binary search as prune and search",
+      "anchor": {
+        "section": "By design paradigm",
+        "snippet": "An example of a prune and search algorithm is the binary search algorithm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Binary search is not formalized as an algorithm in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Graph exploration algorithm",
+      "anchor": {
+        "section": "By design paradigm",
+        "snippet": "A graph exploration algorithm specifies rules for moving around a graph"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has graph theory but no formalized graph exploration/traversal algorithm concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Randomized algorithm",
+      "anchor": {
+        "section": "By design paradigm",
+        "snippet": "Such algorithms make some choices randomly"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Randomized algorithms are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "P versus NP problem",
+      "anchor": {
+        "section": "By design paradigm",
+        "snippet": "is an open question known as the P versus NP problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The P versus NP problem and its complexity classes are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Monte Carlo algorithm",
+      "anchor": {
+        "section": "By design paradigm",
+        "snippet": "Monte Carlo algorithms return a correct answer with high probability"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Monte Carlo algorithms are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Las Vegas algorithm",
+      "anchor": {
+        "section": "By design paradigm",
+        "snippet": "Las Vegas algorithms always return the correct answer"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Las Vegas algorithms are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Reduction of complexity (transform and conquer)",
+      "anchor": {
+        "section": "By design paradigm",
+        "snippet": "This technique transforms difficult problems into better-known problems"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has computability many-one reductions but no formalized algorithmic transform-and-conquer technique.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Median via sorting selection algorithm",
+      "anchor": {
+        "section": "By design paradigm",
+        "snippet": "one selection algorithm finds the median of an unsorted list"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No median/selection algorithm is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Backtracking",
+      "anchor": {
+        "section": "By design paradigm",
+        "snippet": "multiple solutions are built incrementally and abandoned"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The backtracking paradigm is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear programming",
+      "anchor": {
+        "section": "Optimization problems",
+        "snippet": "searching for optimal solutions to a linear function bound by linear equality and inequality constraints"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has convex analysis but no formalized linear programming problem/solver.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Integer programming",
+      "anchor": {
+        "section": "Optimization problems",
+        "snippet": "then it is classified in integer programming"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Integer programming is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dynamic programming",
+      "anchor": {
+        "section": "Optimization problems",
+        "snippet": "a quicker approach called dynamic programming avoids recomputing solutions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The dynamic programming paradigm is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Floyd–Warshall shortest path",
+      "anchor": {
+        "section": "Optimization problems",
+        "snippet": "the shortest path between a start and goal vertex in a weighted graph can be found"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Floyd–Warshall shortest-path algorithm is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Greedy algorithm",
+      "anchor": {
+        "section": "Optimization problems",
+        "snippet": "work by examining substructures, in this case not of the problem but of a given solution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The greedy-algorithm paradigm is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Heuristic algorithm (optimization)",
+      "anchor": {
+        "section": "Optimization problems",
+        "snippet": "heuristic algorithms find solutions close to the optimal solution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Heuristic optimization algorithms are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Finding the largest number in a list",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "One of the simplest algorithms finds the largest number in a list of numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "List.maximum",
+        "module": "Mathlib.Data.List.MinMax",
+        "match_kind": null
+      },
+      "note": "`List.maximum` (and `List.argmax`) compute the largest element of a list, but the result is a function/lemma rather than an algorithm with the described iterative procedure.",
+      "provenance": "ai"
+    }
+  ]
+}

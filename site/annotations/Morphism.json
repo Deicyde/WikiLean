@@ -1,0 +1,553 @@
+{
+  "slug": "Morphism",
+  "wikipedia_title": "Morphism",
+  "display_title": "Morphism",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Category (objects and morphisms)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Category",
+        "module": "Mathlib.CategoryTheory.Category.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`class Category` bundles objects with hom-types (via `CategoryStruct`/`Quiver`) along with id, composition, and the three axioms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Source and target of a morphism",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "There are two objects that are associated to every morphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Quiver.Hom",
+        "module": "Mathlib.Combinatorics.Quiver.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Source and target are encoded as the two indices of `Quiver.Hom : V → V → Type v`, written `X ⟶ Y`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Composition of morphisms",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Morphisms are equipped with a partial binary operation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.CategoryStruct.comp",
+        "module": "Mathlib.CategoryTheory.Category.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`CategoryStruct.comp` provides the (typed) composition `(X ⟶ Y) → (Y ⟶ Z) → (X ⟶ Z)`, notated `f ≫ g`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Identity morphism axiom",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "there exists a morphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Category.id_comp",
+        "module": "Mathlib.CategoryTheory.Category.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`CategoryStruct.id` gives `𝟙 X` and `Category.id_comp`/`comp_id` are the left/right identity axioms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Associativity axiom",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "whenever all the compositions are defined"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Category.assoc",
+        "module": "Mathlib.CategoryTheory.Category.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Category.assoc` states `(f ≫ g) ≫ h = f ≫ g ≫ h` as a field of the `Category` class.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Concrete category identity and composition",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "For a concrete category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.ConcreteCategory",
+        "module": "Mathlib.CategoryTheory.ConcreteCategory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ConcreteCategory` carries `id_apply` and `comp_apply` lemmas stating identity acts as `id` on the underlying set and composition acts as function composition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hom-set",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The collection of all morphisms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Quiver.Hom",
+        "module": "Mathlib.Combinatorics.Quiver.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Quiver.Hom X Y` (`X ⟶ Y`) is the type of morphisms between two objects, the hom-set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Locally small category",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is called locally small"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.LocallySmall",
+        "module": "Mathlib.CategoryTheory.EssentiallySmall",
+        "match_kind": "exact"
+      },
+      "note": "`class LocallySmall` directly captures the property that each hom-type is equivalent to one in the given universe.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Monomorphism",
+      "anchor": {
+        "section": "Monomorphisms and epimorphisms",
+        "snippet": "is called a monomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Mono",
+        "module": "Mathlib.CategoryTheory.Category.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`class Mono` requires the right-cancellation property `g ≫ f = h ≫ f → g = h`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Split monomorphism / retraction",
+      "anchor": {
+        "section": "Monomorphisms and epimorphisms",
+        "snippet": "has a left inverse or is a split monomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.SplitMono",
+        "module": "Mathlib.CategoryTheory.EpiMono",
+        "match_kind": "exact"
+      },
+      "note": "`structure SplitMono` bundles a retraction with `f ≫ retraction f = 𝟙 X`; the propositional version is `IsSplitMono`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Left inverse implies monomorphism",
+      "anchor": {
+        "section": "Monomorphisms and epimorphisms",
+        "snippet": "Morphisms with left inverses are always monomorphisms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.SplitMono.mono",
+        "module": "Mathlib.CategoryTheory.EpiMono",
+        "match_kind": "exact"
+      },
+      "note": "`SplitMono.mono` (and the instance `IsSplitMono.mono`) derive `Mono f` from a splitting on the left.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Injective vs monomorphism in concrete categories",
+      "anchor": {
+        "section": "Monomorphisms and epimorphisms",
+        "snippet": "In concrete categories"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ModuleCat.mono_iff_injective",
+        "module": "Mathlib.Algebra.Category.ModuleCat.EpiMono",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves `mono_iff_injective` separately in many concrete categories (e.g. `ModuleCat`, `Grp`) but has no single statement covering all concrete categories where mono = injective.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Epimorphism",
+      "anchor": {
+        "section": "Monomorphisms and epimorphisms",
+        "snippet": "is called an epimorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Epi",
+        "module": "Mathlib.CategoryTheory.Category.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`class Epi` requires the left-cancellation property `f ≫ g = f ≫ h → g = h`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Split epimorphism / section",
+      "anchor": {
+        "section": "Monomorphisms and epimorphisms",
+        "snippet": "has a right inverse or is a split epimorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.SplitEpi",
+        "module": "Mathlib.CategoryTheory.EpiMono",
+        "match_kind": "exact"
+      },
+      "note": "`structure SplitEpi` bundles a section with `section_ ≫ f = 𝟙 Y`; the propositional version is `IsSplitEpi`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Right inverse implies epimorphism",
+      "anchor": {
+        "section": "Monomorphisms and epimorphisms",
+        "snippet": "Morphisms having a right inverse are always epimorphisms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.SplitEpi.epi",
+        "module": "Mathlib.CategoryTheory.EpiMono",
+        "match_kind": "exact"
+      },
+      "note": "`SplitEpi.epi` and the instance `IsSplitEpi.epi` produce `Epi f` from any splitting on the right.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Split monomorphism induces split epimorphism",
+      "anchor": {
+        "section": "Monomorphisms and epimorphisms",
+        "snippet": "If a monomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.SplitMono.splitEpi",
+        "module": "Mathlib.CategoryTheory.EpiMono",
+        "match_kind": "exact"
+      },
+      "note": "`SplitMono.splitEpi` / `SplitEpi.splitMono` exhibit each splitting's partner as the dual splitting on the retraction/section.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Surjection has section equivalent to axiom of choice",
+      "anchor": {
+        "section": "Monomorphisms and epimorphisms",
+        "snippet": "the statement that every surjection has a section is equivalent to the axiom of choice"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Function.surjective_iff_hasRightInverse",
+        "module": "Mathlib.Logic.Function.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`Function.surjective_iff_hasRightInverse` gives one direction using `Classical.choice`, but the equivalence with the axiom of choice itself is not formalized as a metatheorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bimorphism",
+      "anchor": {
+        "section": "Monomorphisms and epimorphisms",
+        "snippet": "is called a bimorphism"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Bimorphism` definition was found in Mathlib (only `Mono` and `Epi` separately).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Vector spaces: mono/epi coincide with inj/surj",
+      "anchor": {
+        "section": "Monomorphisms and epimorphisms",
+        "snippet": "in the category of vector spaces over a fixed field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ModuleCat.mono_iff_injective",
+        "module": "Mathlib.Algebra.Category.ModuleCat.EpiMono",
+        "match_kind": "generalization"
+      },
+      "note": "`ModuleCat.mono_iff_injective` and `ModuleCat.epi_iff_surjective` cover vector spaces as the special case where the base ring is a field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Commutative rings: non-surjective epimorphism",
+      "anchor": {
+        "section": "Monomorphisms and epimorphisms",
+        "snippet": "In the category of commutative rings"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CommRingCat.epi_iff_epi",
+        "module": "Mathlib.Algebra.Category.Ring.Epi",
+        "match_kind": "invocation"
+      },
+      "note": "`CommRingCat.epi_iff_epi` characterizes epis in `CommRingCat` (not by surjectivity), but the specific example ℤ → ℚ as a non-surjective epi is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isomorphism",
+      "anchor": {
+        "section": "Isomorphisms",
+        "snippet": "is called an isomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Iso",
+        "module": "Mathlib.CategoryTheory.Iso",
+        "match_kind": "exact"
+      },
+      "note": "`structure Iso` bundles a two-sided inverse and `class IsIso` is the propositional version.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness of inverse",
+      "anchor": {
+        "section": "Isomorphisms",
+        "snippet": "Inverse morphisms, if they exist, are unique"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.IsIso.inv_eq_of_hom_inv_id",
+        "module": "Mathlib.CategoryTheory.Iso",
+        "match_kind": "exact"
+      },
+      "note": "`inv_eq_of_hom_inv_id` (and `inv_eq_of_inv_hom_id`) show any morphism splitting `f` on either side equals `inv f`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bimorphism need not be isomorphism",
+      "anchor": {
+        "section": "Isomorphisms",
+        "snippet": "While every isomorphism is a bimorphism"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a `Bimorphism` notion in Mathlib, the statement that bimorphisms need not be isomorphisms is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Epi + split mono is isomorphism",
+      "anchor": {
+        "section": "Isomorphisms",
+        "snippet": "any morphism that is both an epimorphism and a split monomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.isIso_of_epi_of_isSplitMono",
+        "module": "Mathlib.CategoryTheory.EpiMono",
+        "match_kind": "exact"
+      },
+      "note": "`isIso_of_epi_of_isSplitMono` (dual: `isIso_of_mono_of_isSplitEpi`) gives `IsIso f` from `Epi f` together with `IsSplitMono f`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Balanced category",
+      "anchor": {
+        "section": "Isomorphisms",
+        "snippet": "is known as a balanced category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Balanced",
+        "module": "Mathlib.CategoryTheory.Balanced",
+        "match_kind": "exact"
+      },
+      "note": "`class Balanced` asserts that every morphism that is both mono and epi is an isomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Endomorphism",
+      "anchor": {
+        "section": "Endomorphisms and automorphisms",
+        "snippet": "is an endomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.End",
+        "module": "Mathlib.CategoryTheory.Endomorphism",
+        "match_kind": "exact"
+      },
+      "note": "`End X := X ⟶ X` defines endomorphisms and is given a monoid structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Split endomorphism",
+      "anchor": {
+        "section": "Endomorphisms and automorphisms",
+        "snippet": "A split endomorphism is an idempotent endomorphism"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has the related Karoubi envelope and `Idempotents` infrastructure but no specific `SplitEndomorphism` definition matching the article.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Automorphism",
+      "anchor": {
+        "section": "Endomorphisms and automorphisms",
+        "snippet": "An automorphism is a morphism that is both an endomorphism and an isomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Aut",
+        "module": "Mathlib.CategoryTheory.Endomorphism",
+        "match_kind": "exact"
+      },
+      "note": "`Aut X := X ≅ X` defines automorphisms as self-isomorphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Automorphism group",
+      "anchor": {
+        "section": "Endomorphisms and automorphisms",
+        "snippet": "the automorphisms of an object always form a group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Aut.instGroup",
+        "module": "Mathlib.CategoryTheory.Endomorphism",
+        "match_kind": "exact"
+      },
+      "note": "The `instance : Group (Aut X)` makes the automorphisms of any object a group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Morphisms of algebraic structures",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "For algebraic structures commonly considered in algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Grp",
+        "module": "Mathlib.Algebra.Category.Grp.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib supplies bundled categories like `Grp`, `Ring`, `CommRingCat`, `ModuleCat` whose morphisms are the corresponding structure-preserving homomorphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Topological spaces and homeomorphisms",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "In the category of topological spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopCat.isoOfHomeo",
+        "module": "Mathlib.Topology.Category.TopCat.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`TopCat` is the category of topological spaces and `isoOfHomeo`/`homeoOfIso` identify its isomorphisms with homeomorphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Smooth manifolds and diffeomorphisms",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "In the category of smooth manifolds"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Diffeomorph",
+        "module": "Mathlib.Geometry.Manifold.Diffeomorph",
+        "match_kind": "invocation"
+      },
+      "note": "`Diffeomorph` is defined, but Mathlib has no bundled category of smooth manifolds whose morphisms are smooth maps and isomorphisms are diffeomorphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Small categories and functors",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "In the category of small categories"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Cat.category",
+        "module": "Mathlib.CategoryTheory.Category.Cat",
+        "match_kind": "exact"
+      },
+      "note": "`Cat` is the (large) category of small categories with functors as morphisms via `Cat.category`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Functor category and natural transformations",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "In a functor category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor.category",
+        "module": "Mathlib.CategoryTheory.Functor.Category",
+        "match_kind": "exact"
+      },
+      "note": "`Functor.category` instantiates `C ⥤ D` as a category whose morphisms are `NatTrans` (natural transformations).",
+      "provenance": "ai"
+    }
+  ]
+}

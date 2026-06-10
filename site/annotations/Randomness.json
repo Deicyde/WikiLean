@@ -1,0 +1,345 @@
+{
+  "slug": "Randomness",
+  "wikipedia_title": "Randomness",
+  "display_title": "Randomness",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Randomness (common usage)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "randomness is the apparent or actual lack of definite patterns or predictability in information"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an informal/philosophical characterization of randomness with no corresponding Mathlib definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Throwing two dice",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the outcome of any particular roll is unpredictable, but a sum of 7 will tend to occur twice as often as 4"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific dice-sum example is not a Mathlib declaration, though uniform PMFs could model individual dice.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Random variable",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a random variable is an assignment of a numerical value to each possible outcome of an event space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.HasLaw",
+        "module": "Mathlib.Probability.HasLaw",
+        "match_kind": null
+      },
+      "note": "Mathlib encodes random variables as measurable functions on a probability space rather than via a dedicated type, with predicates like HasLaw registering their law.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Random process",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A random process is a sequence of random variables whose outcomes do not follow a deterministic pattern"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Filtration",
+        "module": "Mathlib.Probability.Process.Filtration",
+        "match_kind": null
+      },
+      "note": "Stochastic processes are represented as families `ι → Ω → E` with supporting infrastructure (filtrations, adaptedness) rather than a single named definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Random selection / simple random sample",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Random selection, when narrowly associated with a simple random sample"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.IsUniform",
+        "module": "Mathlib.Probability.Distributions.Uniform",
+        "match_kind": null
+      },
+      "note": "The uniform distribution over a set (IsUniform / PMF.uniformOfFinset) captures equal-probability random selection but not the survey-sampling notion of a simple random sample.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Bowl of marbles",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "with a bowl containing just 10 red marbles and 90 blue marbles"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a concrete illustrative example with no corresponding Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Ramsey theory: pure randomness impossible",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "pure randomness (in the sense of there being no discernible pattern) is impossible"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Combinatorics.Line.exists_mono_in_high_dimension",
+        "module": "Mathlib.Combinatorics.HalesJewett",
+        "match_kind": null
+      },
+      "note": "The Ramsey-theoretic results underlying this claim (Hales–Jewett) are formalized, but the informal statement that pure randomness is impossible is not itself a theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Infinite hierarchy of randomness",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "there is infinite hierarchy (in terms of quality or strength) of forms of randomness"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The hierarchy of algorithmic randomness notions is not developed in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Kolmogorov randomness",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "a string of bits is random if and only if it is shorter than any computer program that can produce that string"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Kolmogorov complexity and Kolmogorov randomness are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Martin-Löf randomness",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "An infinite sequence is random if and only if it withstands all recursively enumerable null sets"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Martin-Löf randomness and recursively enumerable null sets are not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Recursive and Schnorr randomness",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "recursive randomness and Schnorr randomness, which are based on recursively computable martingales"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Martingale",
+        "module": "Mathlib.Probability.Martingale.Basic",
+        "match_kind": null
+      },
+      "note": "Measure-theoretic martingales are formalized, but the computable-martingale-based notions of recursive and Schnorr randomness are not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Wang: randomness notions differ",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "It was shown by Yongge Wang that these randomness notions are generally different"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This separation result in algorithmic randomness theory is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Digit frequencies of pi",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "In the first six billion decimal places of pi, each of the digits from 0 through 9 shows up about six hundred million times"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Empirical digit-frequency statistics and the normality of pi are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Random walk hypothesis",
+      "anchor": {
+        "section": "In finance",
+        "snippet": "asset prices in an organized market evolve at random, in the sense that the expected value of their change is zero"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Martingale",
+        "module": "Mathlib.Probability.Martingale.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The martingale property (zero expected increment given the past) is formalized as MeasureTheory.Martingale, which generalizes the financial random-walk hypothesis.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Three mechanisms of random behavior",
+      "anchor": {
+        "section": "Generation",
+        "snippet": "there exist three mechanisms responsible for (apparently) random behavior in systems"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an informal taxonomy of sources of randomness with no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pseudorandomness",
+      "anchor": {
+        "section": "Generation",
+        "snippet": "This is also called pseudorandomness"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pseudorandomness and pseudorandom generators are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Random processes have no memory",
+      "anchor": {
+        "section": "Fallacy: a number is \"due\"",
+        "snippet": "Truly random processes such as these do not have memory, which makes it impossible for past outcomes to affect future outcomes"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.IndepFun",
+        "module": "Mathlib.Probability.Independence.Basic",
+        "match_kind": null
+      },
+      "note": "The 'no memory' property for independent trials is captured by ProbabilityTheory.IndepFun, but memorylessness is not stated as a standalone theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Drawing a jack without replacement",
+      "anchor": {
+        "section": "Fallacy: a number is \"due\"",
+        "snippet": "once a jack is removed from the deck, the next draw is less likely to be a jack and more likely to be some other card"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This sampling-without-replacement example is not formalized, though conditional probability (ProbabilityTheory.cond) exists as background machinery.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fair die: past rolls uninformative",
+      "anchor": {
+        "section": "Fallacy: a number is \"cursed\" or \"blessed\"",
+        "snippet": "If the die is known to be fair, then previous rolls can give no indication of future events"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.IndepFun",
+        "module": "Mathlib.Probability.Independence.Basic",
+        "match_kind": null
+      },
+      "note": "The claim is exactly statistical independence of trials, formalized as ProbabilityTheory.IndepFun, though not stated as this specific fair-die proposition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Two-children problem",
+      "anchor": {
+        "section": "Fallacy: odds are never dynamic",
+        "snippet": "one would notice that the probability is actually only"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The two-children probability puzzle is not formalized, though the conditional-probability tools it uses (ProbabilityTheory.cond) exist.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Monty Hall problem",
+      "anchor": {
+        "section": "Fallacy: odds are never dynamic",
+        "snippet": "a game show scenario in which a car is hidden behind one of three doors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A grep for Monty Hall found nothing; the puzzle is not formalized, though Bayes' theorem (cond_eq_inv_mul_cond_mul) is available.",
+      "provenance": "ai"
+    }
+  ]
+}

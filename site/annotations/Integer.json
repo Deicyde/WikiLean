@@ -1,0 +1,777 @@
+{
+  "slug": "Integer",
+  "wikipedia_title": "Integer",
+  "display_title": "Integer",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Integer",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "An integer is the number zero"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int",
+        "module": "Mathlib.Data.Int.Notation",
+        "match_kind": "exact"
+      },
+      "note": "The integer type with notation ℤ is the basic object of the article (type itself comes from Lean core).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Negative integers",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The negations or additive inverses of the positive natural numbers are referred to as negative integers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Int.instAddCommGroup",
+        "module": "Mathlib.Algebra.Group.Int.Defs",
+        "match_kind": null
+      },
+      "note": "Negation/additive inverse is provided by the additive group structure, but 'negative integers' is not defined as a named subset.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chain of subsets N ⊂ Z ⊂ Q ⊂ R",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "which in turn is a subset of the set of all rational numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib relates these via coercion ring homomorphisms (Int.cast, Rat.cast) as distinct types, not as literal subset inclusions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Z is countably infinite",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Like the set of natural numbers, the set of integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Denumerable.int",
+        "module": "Mathlib.Logic.Denumerable",
+        "match_kind": "exact"
+      },
+      "note": "The Denumerable instance for ℤ states exactly that ℤ is in bijection with ℕ (countably infinite).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Integer as real without fractional component",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "An integer may be regarded as a real number that can be written without a fractional component"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Int.fract_intCast",
+        "module": "Mathlib.Algebra.Order.Floor.Ring",
+        "match_kind": null
+      },
+      "note": "fract_intCast shows the fractional part of a cast integer is zero, capturing the 'no fractional component' idea but not a full characterization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Integers vs non-integers",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "For example, 21, 4, 0, and −2048 are integers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "These are illustrative numeric examples with no corresponding Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Smallest group and ring containing N",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The integers form the smallest group and the smallest ring containing the natural numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CommRingCat.zIsInitial",
+        "module": "Mathlib.Algebra.Category.Ring.Constructions",
+        "match_kind": null
+      },
+      "note": "ℤ being initial in CommRingCat captures 'smallest ring', but the Grothendieck-group 'smallest group containing ℕ' framing is not directly formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rational integers",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "integers are sometimes called rational integers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is alternative terminology with no separate Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rational integers are rational algebraic integers",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "(rational) integers are algebraic integers that are also rational numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "GCDMonoid.toIsIntegrallyClosed",
+        "module": "Mathlib.Algebra.GCDMonoid.IntegrallyClosed",
+        "match_kind": null
+      },
+      "note": "ℤ being integrally closed (rationals integral over ℤ lie in ℤ) holds via this instance, formalizing the content but not stated for ℤ by name.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closed under addition and multiplication",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "closed under the operations of addition and multiplication"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.instCommRing",
+        "module": "Mathlib.Algebra.Ring.Int.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "The commutative ring structure on ℤ provides total addition and multiplication operations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closed under subtraction",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "unlike the natural numbers, is also closed under subtraction"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.instAddCommGroup",
+        "module": "Mathlib.Algebra.Group.Int.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "The additive group structure gives a total subtraction operation on ℤ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Z is initial object in category of rings",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "The integers form a ring which is the most basic one"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CommRingCat.zIsInitial",
+        "module": "Mathlib.Algebra.Category.Ring.Constructions",
+        "match_kind": "exact"
+      },
+      "note": "zIsInitial proves ℤ is the initial object of the category of commutative rings.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Injectivity iff characteristic zero",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "This unique homomorphism is injective if and only if the characteristic of the ring is zero"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "RingHom.injective_int",
+        "module": "Mathlib.Data.Int.CharZero",
+        "match_kind": null
+      },
+      "note": "The forward direction (CharZero implies the integer cast hom is injective) is formalized, but the full iff is not a single declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Characteristic-zero rings contain a copy of Z",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "every ring of characteristic zero contains a subring isomorphic to"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RingHom.injective_int",
+        "module": "Mathlib.Data.Int.CharZero",
+        "match_kind": "invocation"
+      },
+      "note": "Injectivity of ℤ →+* R for CharZero R yields a subring of R isomorphic to ℤ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Not closed under division",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "since the quotient of two integers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib theorem asserts that integer quotients fail to be integers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Not closed under exponentiation",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "the natural numbers are closed under exponentiation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib theorem states that ℤ fails to be closed under (negative) exponentiation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Z under addition is an abelian group",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "under addition, is an abelian group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.instAddCommGroup",
+        "module": "Mathlib.Algebra.Group.Int.Defs",
+        "match_kind": "exact"
+      },
+      "note": "ℤ is given an AddCommGroup instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Z under addition is cyclic",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "It is also a cyclic group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "instIsAddCyclicInt",
+        "module": "Mathlib.GroupTheory.SpecificGroups.Cyclic",
+        "match_kind": "exact"
+      },
+      "note": "An IsAddCyclic ℤ instance (generated by 1) is provided.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Z is the unique infinite cyclic group",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "is the only infinite cyclic group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "intCyclicAddEquiv",
+        "module": "Mathlib.GroupTheory.SpecificGroups.Cyclic",
+        "match_kind": "generalization"
+      },
+      "note": "intCyclicAddEquiv gives an isomorphism ℤ ≃+ G for any infinite cyclic additive group G.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Z under multiplication is a commutative monoid",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "under multiplication is a commutative monoid"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.instCommMonoid",
+        "module": "Mathlib.Algebra.Group.Int.Defs",
+        "match_kind": "exact"
+      },
+      "note": "ℤ is given a CommMonoid instance under multiplication.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Z under multiplication is not a group",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "not every integer has a multiplicative inverse"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Int.isUnit_iff",
+        "module": "Mathlib.Algebra.Group.Int.Units",
+        "match_kind": null
+      },
+      "note": "Int.isUnit_iff shows the only units are ±1, implying not every integer is invertible, but 'ℤ is not a multiplicative group' is not stated directly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Z is a commutative ring with unity",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "together with addition and multiplication is a commutative ring with unity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.instCommRing",
+        "module": "Mathlib.Algebra.Ring.Int.Defs",
+        "match_kind": "exact"
+      },
+      "note": "ℤ is given a CommRing instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Z is an integral domain",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "The lack of zero divisors in the integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.instIsDomain",
+        "module": "Mathlib.Algebra.Ring.Int.Defs",
+        "match_kind": "exact"
+      },
+      "note": "ℤ is given an IsDomain instance (no zero divisors, nontrivial).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Z is not a field",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "The lack of multiplicative inverses, which is equivalent to the fact that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.not_isField",
+        "module": "Mathlib.Algebra.Ring.Int.Field",
+        "match_kind": "exact"
+      },
+      "note": "Int.not_isField proves ¬ IsField ℤ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Smallest field containing Z is Q",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "The smallest field containing the integers as a subring is the field of rational numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Rat.isFractionRing",
+        "module": "Mathlib.RingTheory.Localization.FractionRing",
+        "match_kind": "exact"
+      },
+      "note": "ℚ is the fraction field (smallest field) of ℤ via the IsFractionRing ℤ ℚ instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euclidean division",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "It is called Euclidean division"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.ediv_emod_unique''",
+        "module": "Mathlib.Data.Int.Lemmas",
+        "match_kind": "special_case"
+      },
+      "note": "Characterizes the unique quotient and remainder with a = r + b*q and 0 ≤ r < |b|.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Z is a Euclidean domain (hence PID)",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "is a Euclidean domain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.euclideanDomain",
+        "module": "Mathlib.Algebra.EuclideanDomain.Int",
+        "match_kind": "exact"
+      },
+      "note": "ℤ is given a EuclideanDomain instance (from which PID follows).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of arithmetic",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "any positive integer can be written as the products of primes in an essentially unique way"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.primeFactorsList_unique",
+        "module": "Mathlib.Data.Nat.Factors",
+        "match_kind": "exact"
+      },
+      "note": "Uniqueness (up to permutation) of prime factorization of naturals; existence is prod_primeFactorsList.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Z is totally ordered without bounds",
+      "anchor": {
+        "section": "Order-theoretic properties",
+        "snippet": "is a totally ordered set without upper or lower bound"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.instLinearOrder",
+        "module": "Mathlib.Data.Int.Order.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "ℤ has a LinearOrder (total order); NoMaxOrder/NoMinOrder (unboundedness) follow from its strict ordered ring structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Positive and negative integers",
+      "anchor": {
+        "section": "Order-theoretic properties",
+        "snippet": "An integer is positive if it is greater than zero"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Int.instLinearOrder",
+        "module": "Mathlib.Data.Int.Order.Basic",
+        "match_kind": null
+      },
+      "note": "Positivity/negativity is expressed as 0 < n / n < 0 via the order; there is no dedicated named subset definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Order compatible with operations",
+      "anchor": {
+        "section": "Order-theoretic properties",
+        "snippet": "The ordering of integers is compatible with the algebraic operations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.instIsStrictOrderedRing",
+        "module": "Mathlib.Algebra.Order.Ring.Int",
+        "match_kind": "invocation"
+      },
+      "note": "The strict ordered ring instance encodes compatibility of the order with addition and multiplication.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Z is an ordered ring",
+      "anchor": {
+        "section": "Order-theoretic properties",
+        "snippet": "together with the above ordering is an ordered ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.instIsStrictOrderedRing",
+        "module": "Mathlib.Algebra.Order.Ring.Int",
+        "match_kind": "exact"
+      },
+      "note": "ℤ is given an IsStrictOrderedRing instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Z characterized as well-ordered ordered abelian group",
+      "anchor": {
+        "section": "Order-theoretic properties",
+        "snippet": "The integers are the only nontrivial totally ordered abelian group whose positive elements are well-ordered"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This order-theoretic uniqueness characterization of ℤ is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Traditional construction of integers",
+      "anchor": {
+        "section": "Traditional development",
+        "snippet": "integers are often intuitively defined as the union of the (positive) natural numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib uses Lean core's inductive definition of ℤ, not a union-of-naturals-and-negatives construction in Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Piecewise arithmetic operations",
+      "anchor": {
+        "section": "Traditional development",
+        "snippet": "The traditional arithmetic operations can then be defined on the integers in a piecewise fashion"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The piecewise definition of operations under the traditional construction is not used in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Integers as equivalence classes of pairs",
+      "anchor": {
+        "section": "Equivalence classes of ordered pairs",
+        "snippet": "The integers can thus be formally constructed as the equivalence classes of ordered pairs of natural numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not construct ℤ as the Grothendieck quotient of ℕ×ℕ; it uses the core inductive type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalence relation on pairs",
+      "anchor": {
+        "section": "Equivalence classes of ordered pairs",
+        "snippet": "we define an equivalence relation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The equivalence relation on ℕ×ℕ used for the pair construction is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Addition and multiplication of classes",
+      "anchor": {
+        "section": "Equivalence classes of ordered pairs",
+        "snippet": "Addition and multiplication of integers can be defined in terms of the equivalent operations on the natural numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Operations defined on equivalence classes of pairs are not part of Mathlib's ℤ construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Negation of a class",
+      "anchor": {
+        "section": "Equivalence classes of ordered pairs",
+        "snippet": "The negation (or additive inverse) of an integer is obtained by reversing the order of the pair"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Negation via reversing pair order is specific to the unused pair construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Subtraction via additive inverse",
+      "anchor": {
+        "section": "Equivalence classes of ordered pairs",
+        "snippet": "subtraction can be defined as the addition of the additive inverse"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "sub_eq_add_neg",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "sub_eq_add_neg states a - b = a + -b in any subtraction monoid, including ℤ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Standard ordering on classes",
+      "anchor": {
+        "section": "Equivalence classes of ordered pairs",
+        "snippet": "The standard ordering on the integers is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The ordering defined on equivalence classes of pairs is not used by Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Canonical representative of each class",
+      "anchor": {
+        "section": "Equivalence classes of ordered pairs",
+        "snippet": "Every equivalence class has a unique member that is of the form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Canonical representatives of the pair-construction equivalence classes are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Examples of class arithmetic",
+      "anchor": {
+        "section": "Equivalence classes of ordered pairs",
+        "snippet": "Some examples are"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "These are worked examples of the pair construction with no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multiple constructions of signed integers",
+      "anchor": {
+        "section": "Other approaches",
+        "snippet": "There exist at least ten such constructions of signed integers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a meta-mathematical remark about alternative constructions, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Z is countably infinite",
+      "anchor": {
+        "section": "Cardinality",
+        "snippet": "The set of integers is countably infinite"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Denumerable.int",
+        "module": "Mathlib.Logic.Denumerable",
+        "match_kind": "exact"
+      },
+      "note": "The Denumerable instance for ℤ encodes countable infiniteness via a bijection with ℕ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Pairing of integers with naturals",
+      "anchor": {
+        "section": "Cardinality",
+        "snippet": "An example of such a pairing is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.intEquivNat",
+        "module": "Mathlib.Logic.Equiv.Nat",
+        "match_kind": "exact"
+      },
+      "note": "intEquivNat is an explicit equivalence ℤ ≃ ℕ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cardinality of Z is aleph-null",
+      "anchor": {
+        "section": "Cardinality",
+        "snippet": "More technically, the cardinality of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.mk_int",
+        "module": "Mathlib.SetTheory.Cardinal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Cardinal.mk_int proves #ℤ = ℵ₀.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bijection",
+      "anchor": {
+        "section": "Cardinality",
+        "snippet": "is called a bijection"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Bijective",
+        "module": "Mathlib.Logic.Function.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Function.Bijective defines a bijection as an injective and surjective function.",
+      "provenance": "ai"
+    }
+  ]
+}

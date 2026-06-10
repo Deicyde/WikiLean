@@ -1,0 +1,473 @@
+{
+  "slug": "Fundamental_theorem_of_arithmetic",
+  "wikipedia_title": "Fundamental theorem of arithmetic",
+  "display_title": "Fundamental theorem of arithmetic",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of arithmetic",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "states that every integer greater than 1 is either prime or can be represented uniquely as a product of prime numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.primeFactorsList_unique",
+        "module": "Mathlib.Data.Nat.Factors",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib states the FTA as uniqueness of the prime factor list (`Nat.primeFactorsList_unique`) together with `Nat.prod_primeFactorsList` for existence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Prime factorization of 1200",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "there will always be exactly four 2s, one 3, two 5s, and no other primes in the product"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific numerical example (1200 = 2^4·3·5^2) is not stated as a lemma in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Necessity of prime factors",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The requirement that the factors be prime is necessary"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a meta-remark about the theorem's hypotheses rather than a formal statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Restatement using empty product convention",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "every positive integer can be represented uniquely as a product of prime numbers, up to the order of the factors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.primeFactorsList_unique",
+        "module": "Mathlib.Data.Nat.Factors",
+        "match_kind": "exact"
+      },
+      "note": "The same theorem with the empty-product convention is captured by `Nat.primeFactorsList_unique` (the case `n=1` yields the empty list).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Why 1 is not prime",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "if 1 were prime, then factorization into primes would not be unique"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal justification for the convention; Mathlib's `Nat.Prime` simply excludes 1 by definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Generalization to UFDs",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The theorem generalizes to other algebraic structures that are called unique factorization domains"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UniqueFactorizationMonoid",
+        "module": "Mathlib.RingTheory.UniqueFactorizationDomain.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`UniqueFactorizationMonoid` axiomatizes UFD-style existence and uniqueness of factorizations into irreducibles.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euclid's lemma (Elements VII.30)",
+      "anchor": {
+        "section": "History",
+        "snippet": "if a prime p divides the product ab , then p divides either a or b or both"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Prime.dvd_mul",
+        "module": "Mathlib.Data.Nat.Prime.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Euclid's lemma is `Nat.Prime.dvd_mul : p.Prime → (p ∣ m * n ↔ p ∣ m ∨ p ∣ n)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every composite has a prime divisor (Elements VII.31)",
+      "anchor": {
+        "section": "History",
+        "snippet": "every integer greater than one is divided evenly by some prime number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.exists_prime_and_dvd",
+        "module": "Mathlib.Data.Nat.Prime.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.exists_prime_and_dvd : n ≠ 1 → ∃ p, Prime p ∧ p ∣ n` is precisely Elements VII.31.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every number is prime or has a prime divisor (Elements VII.32)",
+      "anchor": {
+        "section": "History",
+        "snippet": "Proposition 32 is derived from proposition 31, and proves that the decomposition is possible"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.prod_primeFactorsList",
+        "module": "Mathlib.Data.Nat.Factors",
+        "match_kind": "exact"
+      },
+      "note": "Existence of a prime factorization is given by `Nat.prod_primeFactorsList` together with `Nat.prime_of_mem_primeFactorsList`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "LCM of primes (Elements IX.14)",
+      "anchor": {
+        "section": "History",
+        "snippet": "a least common multiple of several prime numbers is not a multiple of any other prime number"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.factorization_lcm",
+        "module": "Mathlib.Data.Nat.Factorization.LCM",
+        "match_kind": "generalization"
+      },
+      "note": "The general factorization-of-LCM lemma exists; the exact Elements IX.14 phrasing is not isolated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Canonical representation",
+      "anchor": {
+        "section": "Canonical representation of a positive integer",
+        "snippet": "Every positive integer n > 1 can be represented in exactly one way as a product of prime powers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.factorization",
+        "module": "Mathlib.Data.Nat.Factorization.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.factorization n : ℕ →₀ ℕ` records the canonical prime-power exponent function, with `prod_factorization_pow_eq_self` recovering `n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Canonical representations of 999, 1000, 1001",
+      "anchor": {
+        "section": "Canonical representation of a positive integer",
+        "snippet": "1001 = 7×11×13"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific numerical factorizations of 999/1000/1001 are not stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Infinite product representation",
+      "anchor": {
+        "section": "Canonical representation of a positive integer",
+        "snippet": "any positive integer can be uniquely represented as an infinite product taken over all the positive prime numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.factorization",
+        "module": "Mathlib.Data.Nat.Factorization.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.factorization` is a finitely-supported function on all primes, which is the Mathlib version of this 'infinite product with finitely many nonzero exponents'.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Canonical form for positive rationals",
+      "anchor": {
+        "section": "Canonical representation of a positive integer",
+        "snippet": "Allowing negative exponents provides a canonical form for positive rational numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define a `Rat.factorization : ℕ →₀ ℤ` canonical form; only `padicValRat` gives individual exponents.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product, GCD, LCM via canonical representations",
+      "anchor": {
+        "section": "Arithmetic operations",
+        "snippet": "can be expressed simply in terms of the canonical representations of a and b themselves"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.factorization_mul",
+        "module": "Mathlib.Data.Nat.Factorization.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib has `Nat.factorization_mul`, `Nat.factorization_gcd`, and `Nat.factorization_lcm` expressing these operations on factorizations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Additive and multiplicative functions determined by prime powers",
+      "anchor": {
+        "section": "Arithmetic functions",
+        "snippet": "the values of additive and multiplicative functions are determined by their values on the powers of prime numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.multiplicative_factorization",
+        "module": "Mathlib.Data.Nat.Factorization.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.multiplicative_factorization` (and `Nat.recOnPrimeCoprime` induction principle) encodes that a multiplicative function is determined by its values on prime powers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Proof uses Euclid's lemma",
+      "anchor": {
+        "section": "Proof",
+        "snippet": "If a prime divides the product of two integers, then it must divide at least one of these integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Prime.dvd_mul",
+        "module": "Mathlib.Data.Nat.Prime.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Same statement as Euclid's lemma, formalized as `Nat.Prime.dvd_mul`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence of prime factorization",
+      "anchor": {
+        "section": "Existence",
+        "snippet": "It must be shown that every integer greater than 1 is either prime or a product of primes"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.prod_primeFactorsList",
+        "module": "Mathlib.Data.Nat.Factors",
+        "match_kind": "exact"
+      },
+      "note": "Existence is `Nat.prod_primeFactorsList : n ≠ 0 → (primeFactorsList n).prod = n` with primality of the entries by `Nat.prime_of_mem_primeFactorsList`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness of prime factorization",
+      "anchor": {
+        "section": "Uniqueness",
+        "snippet": "Suppose, to the contrary, there is an integer that has two distinct prime factorizations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.primeFactorsList_unique",
+        "module": "Mathlib.Data.Nat.Factors",
+        "match_kind": "exact"
+      },
+      "note": "Uniqueness up to permutation is `Nat.primeFactorsList_unique`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness without Euclid's lemma",
+      "anchor": {
+        "section": "Uniqueness without Euclid's lemma",
+        "snippet": "The fundamental theorem of arithmetic can also be proved without using Euclid's lemma"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An alternative proof strategy; Mathlib's proof of `primeFactorsList_unique` does use Euclid's lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Gaussian integers have unique factorization",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "the composites have unique factorization as a product of primes"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "GaussianInt.instEuclideanDomain",
+        "module": "Mathlib.NumberTheory.Zsqrtd.GaussianInt",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib gives ℤ[i] a `EuclideanDomain` instance, which induces UFD via the PID-to-UFD chain, but no explicit `UniqueFactorizationMonoid ℤ[i]` lemma is stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Eisenstein integers have unique factorization",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "This is the ring of Eisenstein integers , and he proved it has the six units"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no ring of Eisenstein integers ℤ[ω]; the existing Eisenstein files concern Eisenstein's criterion and Eisenstein series.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Failure of unique factorization",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "it was also discovered that unique factorization does not always hold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A historical/illustrative remark; Mathlib does not state a counterexample like ℤ[√-5] as a named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Irreducible vs prime",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "In algebraic number theory 2 is called irreducible"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Irreducible",
+        "module": "Mathlib.Algebra.Prime.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Both `Irreducible` and `Prime` are defined in `Mathlib.Algebra.Prime.Defs`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Prime implies irreducible in integral domains",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "Using these definitions it can be proven that in any integral domain a prime must be irreducible"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Prime.irreducible",
+        "module": "Mathlib.Algebra.Prime.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Prime.irreducible : Prime p → Irreducible p` is proved in `Mathlib.Algebra.Prime.Defs`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unique factorization domain",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "The rings in which factorization into irreducibles is essentially unique are called unique factorization domains"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UniqueFactorizationMonoid",
+        "module": "Mathlib.RingTheory.UniqueFactorizationDomain.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`UniqueFactorizationMonoid` axiomatizes exactly this notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dedekind domain",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "the rings in which they have unique factorization are called Dedekind domains"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsDedekindDomain",
+        "module": "Mathlib.RingTheory.DedekindDomain.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsDedekindDomain` is defined and `Ideal.uniqueFactorizationMonoid` proves ideals factor uniquely.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unique factorization for ordinals",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "There is a version of unique factorization for ordinals"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ordinal.CNF",
+        "module": "Mathlib.SetTheory.Ordinal.CantorNormalForm",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has Cantor Normal Form for ordinals (`Ordinal.CNF`), which is the closest analog; the specific multiplicative unique factorization theorem is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unique factorization in commutative Möbius monoids",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "Any commutative Möbius monoid satisfies a unique factorization theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of 'Möbius monoid'; the `Moebius.lean` file in `UniqueFactorizationDomain` is about the Möbius function on UFDs, not Möbius monoids.",
+      "provenance": "ai"
+    }
+  ]
+}

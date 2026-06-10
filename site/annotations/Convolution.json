@@ -1,0 +1,1623 @@
+{
+  "slug": "Convolution",
+  "wikipedia_title": "Convolution",
+  "display_title": "Convolution",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Convolution",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "convolution is a mathematical operation on two functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.convolution",
+        "module": "Mathlib.Analysis.Convolution",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `convolution f g L μ x = ∫ t, L (f t) (g (x - t)) ∂μ` via a continuous bilinear map, generalizing the scalar convolution operation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Relation to cross-correlation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "differs from cross-correlation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no cross-correlation operator, so the comparison is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cross-correlation as adjoint (complex case)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the cross-correlation operator is the adjoint of the convolution operator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No cross-correlation operator or its adjoint relationship to convolution is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Deconvolution",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Computing the inverse of the convolution operation is known as deconvolution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Deconvolution as an inversion operation is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Definition of convolution integral",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "It is defined as the integral of the product of the two functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.convolution",
+        "module": "Mathlib.Analysis.Convolution",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.convolution` (with `convolution_def`) gives exactly `(f ⋆[L,μ] g) x = ∫ t, L (f t) (g (x - t)) ∂μ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalent (commutative) definition",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "An equivalent definition is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.convolution_eq_swap",
+        "module": "Mathlib.Analysis.Convolution",
+        "match_kind": "exact"
+      },
+      "note": "`convolution_eq_swap` proves `(f ⋆[L,μ] g) x = ∫ t, L (f (x - t)) (g t) ∂μ`, the variable-substituted equivalent form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Truncated convolution for one-sided support",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "the integration limits can be truncated"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.posConvolution",
+        "module": "Mathlib.Analysis.Convolution",
+        "match_kind": "special_case"
+      },
+      "note": "`posConvolution` defines the one-sided convolution `convolution (indicator (Ioi 0) f) (indicator (Ioi 0) g) L`, the truncated form for functions supported on `[0,∞)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Engineering notational convention",
+      "anchor": {
+        "section": "Notation",
+        "snippet": "A common engineering notational convention is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a notational convention, not a mathematical statement, and is not represented in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convolution via inverse Laplace transform",
+      "anchor": {
+        "section": "Relations with other transforms",
+        "snippet": "can be defined as the inverse Laplace transform of the product"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib lacks the Laplace transform machinery needed to define convolution via inverse Laplace transform.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convolution as LTI system output",
+      "anchor": {
+        "section": "Relations with other transforms",
+        "snippet": "an important class of operations known as linear time-invariant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Linear time-invariant systems theory is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convolution with a unit impulse",
+      "anchor": {
+        "section": "Visual explanation",
+        "snippet": "the result of this process is simply"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.mconv_dirac_one",
+        "module": "Mathlib.MeasureTheory.Group.Convolution",
+        "match_kind": "special_case"
+      },
+      "note": "The identity property is captured for measures by `mconv_dirac_one` (μ ∗ₘ δ₁ = μ), but convolution of a function with a Dirac delta is not directly formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Periodicity of convolution with periodic function",
+      "anchor": {
+        "section": "Circular convolution",
+        "snippet": "the convolution is also periodic and identical to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Circular/periodic convolution of functions and its periodicity are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Periodic summation",
+      "anchor": {
+        "section": "Circular convolution",
+        "snippet": "The summation is called a periodic summation of the function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The periodic summation (periodization) operator is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Circular (cyclic) convolution",
+      "anchor": {
+        "section": "Circular convolution",
+        "snippet": "is known as a circular or cyclic convolution of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "DiscreteConvolution.convolution",
+        "module": "Mathlib.Topology.Algebra.InfiniteSum.DiscreteConvolution",
+        "match_kind": "special_case"
+      },
+      "note": "The general monoid convolution specializes to a cyclic group, but circular convolution of periodic functions is not specifically formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Periodic convolution",
+      "anchor": {
+        "section": "Circular convolution",
+        "snippet": "the operation is called a periodic convolution of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Periodic convolution of periodic functions over one period is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Discrete convolution",
+      "anchor": {
+        "section": "Discrete convolution",
+        "snippet": "of integers, the discrete convolution of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DiscreteConvolution.convolution",
+        "module": "Mathlib.Topology.Algebra.InfiniteSum.DiscreteConvolution",
+        "match_kind": "generalization"
+      },
+      "note": "`DiscreteConvolution.convolution` defines `(f ⋆[L] g) x = ∑' ab : fiber x, L (f a) (g b)` over a monoid, generalizing the integer discrete convolution.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalent (commutative) discrete convolution",
+      "anchor": {
+        "section": "Discrete convolution",
+        "snippet": "or equivalently (see commutativity ) by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DiscreteConvolution.convolution_comm",
+        "module": "Mathlib.Topology.Algebra.InfiniteSum.DiscreteConvolution",
+        "match_kind": "generalization"
+      },
+      "note": "`convolution_comm` proves `f ⋆[L] g = g ⋆[L] f` for symmetric bilinear maps over commutative monoids.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cauchy product of polynomial coefficients",
+      "anchor": {
+        "section": "Discrete convolution",
+        "snippet": "This is known as the Cauchy product of the coefficients"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.coeff_mul",
+        "module": "Mathlib.Algebra.Polynomial.Coeff",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial.coeff_mul` gives `coeff (p*q) n = ∑ x ∈ antidiagonal n, coeff p x.1 * coeff q x.2`, exactly the Cauchy product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite summation for finite support",
+      "anchor": {
+        "section": "Discrete convolution",
+        "snippet": "a finite summation may be used"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.coeff_mul",
+        "module": "Mathlib.Algebra.Polynomial.Coeff",
+        "match_kind": "special_case"
+      },
+      "note": "`Polynomial.coeff_mul` realizes the finite-support discrete convolution as a finite antidiagonal sum, but the general truncation statement for finitely-supported sequences is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Periodicity of discrete convolution",
+      "anchor": {
+        "section": "Circular discrete convolution",
+        "snippet": "the convolution is also periodic and identical to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Periodicity of circular discrete convolution is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Discrete periodic summation",
+      "anchor": {
+        "section": "Circular discrete convolution",
+        "snippet": "is called a periodic summation of the function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The discrete periodic summation operator is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Circular discrete convolution",
+      "anchor": {
+        "section": "Circular discrete convolution",
+        "snippet": "is known as a circular convolution of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "DiscreteConvolution.convolution",
+        "module": "Mathlib.Topology.Algebra.InfiniteSum.DiscreteConvolution",
+        "match_kind": "special_case"
+      },
+      "note": "The monoid discrete convolution covers convolution over a finite cyclic group, but circular discrete convolution is not specifically named or developed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cyclic convolution notation",
+      "anchor": {
+        "section": "Circular discrete convolution",
+        "snippet": "for cyclic convolution denotes convolution over the cyclic group"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "DiscreteConvolution.convolution",
+        "module": "Mathlib.Topology.Algebra.InfiniteSum.DiscreteConvolution",
+        "match_kind": "special_case"
+      },
+      "note": "Convolution over the cyclic group is an instance of `DiscreteConvolution.convolution` for a monoid `M`, though no dedicated cyclic-group notation exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convolution on R^d",
+      "anchor": {
+        "section": "Domain of definition",
+        "snippet": "The convolution of two complex-valued functions on R d is itself a complex-valued function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.convolution",
+        "module": "Mathlib.Analysis.Convolution",
+        "match_kind": "generalization"
+      },
+      "note": "`MeasureTheory.convolution` is defined over any additive group with measure, of which complex-valued functions on `ℝ^d` are a special case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convolution of compactly supported continuous functions",
+      "anchor": {
+        "section": "Compactly supported functions",
+        "snippet": "If f and g are compactly supported continuous functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasCompactSupport.convolution",
+        "module": "Mathlib.Analysis.Convolution",
+        "match_kind": "exact"
+      },
+      "note": "`HasCompactSupport.convolution` proves the convolution of two compactly supported functions has compact support, with existence/continuity available alongside.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compactly supported with locally integrable",
+      "anchor": {
+        "section": "Compactly supported functions",
+        "snippet": "if either function (say f ) is compactly supported and the other is locally integrable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasCompactSupport.convolutionExists_left",
+        "module": "Mathlib.Analysis.Convolution",
+        "match_kind": "exact"
+      },
+      "note": "`HasCompactSupport.convolutionExists_left` establishes the convolution is well-defined when one function is compactly supported continuous and the other locally integrable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convolution of locally square integrable one-sided functions",
+      "anchor": {
+        "section": "Compactly supported functions",
+        "snippet": "is also well defined when both functions are locally square integrable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.posConvolution",
+        "module": "Mathlib.Analysis.Convolution",
+        "match_kind": "special_case"
+      },
+      "note": "`posConvolution` handles the one-sided (supported on `[0,∞)`) convolution, but the specific local-square-integrability well-definedness is not proven.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Convolution of L^1 functions is integrable",
+      "anchor": {
+        "section": "Integrable functions",
+        "snippet": "The convolution of f and g exists if f and g are both Lebesgue integrable functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Integrable.integrable_convolution",
+        "module": "Mathlib.Analysis.Convolution",
+        "match_kind": "exact"
+      },
+      "note": "`Integrable.integrable_convolution` proves the convolution of two integrable functions is integrable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "L^1 convolved with L^p stays in L^p",
+      "anchor": {
+        "section": "Integrable functions",
+        "snippet": "Likewise, if f ∈ L 1 ( R d ) and g ∈ L p ( R d )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The file's own TODO notes the L^p/L^q convolution results are not yet done in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "L^1 is a Banach algebra under convolution",
+      "anchor": {
+        "section": "Integrable functions",
+        "snippet": "L 1 is a Banach algebra under the convolution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Banach algebra structure on L^1 under convolution is constructed in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Young's convolution inequality",
+      "anchor": {
+        "section": "Integrable functions",
+        "snippet": "Young's inequality implies that the convolution is a continuous bilinear map"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Young's convolution inequality (L^p norm bounds) is absent; Mathlib's Young inequalities concern products `a^p/p + b^q/q`, not convolution.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sharp Young inequality constant (Brascamp–Lieb)",
+      "anchor": {
+        "section": "Integrable functions",
+        "snippet": "there exists a constant B p , q < 1 such that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The sharp Brascamp–Lieb constant for Young's convolution inequality is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Weak Young inequality estimate",
+      "anchor": {
+        "section": "Integrable functions",
+        "snippet": "A stronger estimate is true provided"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The weak-type Young inequality estimate is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convolution preserves rapid decay",
+      "anchor": {
+        "section": "Functions of rapid decay",
+        "snippet": "if f and g are rapidly decreasing functions , then so is the convolution"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SchwartzMap.convolution",
+        "module": "Mathlib.Analysis.Fourier.Convolution",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes closure under convolution for the full Schwartz class via `SchwartzMap.convolution`, but rapid decay alone (without smoothness) is not separately treated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Schwartz functions closed under convolution",
+      "anchor": {
+        "section": "Functions of rapid decay",
+        "snippet": "the class of Schwartz functions is closed under convolution"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SchwartzMap.convolution",
+        "module": "Mathlib.Analysis.Fourier.Convolution",
+        "match_kind": "exact"
+      },
+      "note": "`SchwartzMap.convolution` produces a Schwartz function `𝓢(E,F₁) → 𝓢(E,F₂) →L 𝓢(E,F₃)`, showing the class is closed under convolution.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convolution of a smooth compactly supported function with a distribution",
+      "anchor": {
+        "section": "Distributions",
+        "snippet": "If f is a smooth function that is compactly supported and g is a distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib lacks a theory of distributions (test-function duals) and convolution with them.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Associative law extended to distributions",
+      "anchor": {
+        "section": "Distributions",
+        "snippet": "remains valid in the case where f is a distribution, and g a compactly supported distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Associativity of convolution for distributions is not formalized since distribution convolution is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convolution of Borel measures",
+      "anchor": {
+        "section": "Measures",
+        "snippet": "The convolution of any two Borel measures μ and ν of bounded variation is the measure"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.conv",
+        "module": "Mathlib.MeasureTheory.Group.Convolution",
+        "match_kind": "exact"
+      },
+      "note": "`Measure.conv` (additive `mconv`) is the pushforward of the product measure under addition, the convolution of two measures.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Young's inequality for measures",
+      "anchor": {
+        "section": "Measures",
+        "snippet": "The convolution of measures also satisfies the following version of Young's inequality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The total-variation Young inequality `‖μ∗ν‖ ≤ ‖μ‖‖ν‖` is not formalized, though finiteness/probability preservation of convolutions is.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Integrable functions form a commutative associative algebra",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "is a commutative associative algebra without identity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The convolution algebra structure on L^1 is not constructed in Mathlib, though individual algebraic laws are proven separately.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Algebraic properties",
+          "snippet": "is a commutative associative algebra without identity"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f*g=g*f}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (f*g)(t)=\\int _{-\\infty }^{\\infty }f(\\tau )g(t-\\tau )\\,d\\tau }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f*(g*h)=(f*g)*h}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f*(g+h)=(f*g)+(f*h)}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a(f*g)=(af)*g}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f*\\delta =f}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle S^{-1}*S=\\delta }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\overline {f*g}}={\\overline {f}}*{\\overline {g}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Commutativity",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "Proof: By definition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.convolution_flip",
+        "module": "Mathlib.Analysis.Convolution",
+        "match_kind": "generalization"
+      },
+      "note": "`convolution_flip` proves `g ⋆[L.flip,μ] f = f ⋆[L,μ] g`, giving commutativity for symmetric bilinear maps such as scalar convolution.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Algebraic properties",
+          "snippet": "Proof: By definition"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f*g=g*f}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (f*g)(t)=\\int _{-\\infty }^{\\infty }f(\\tau )g(t-\\tau )\\,d\\tau }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f*(g*h)=(f*g)*h}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f*(g+h)=(f*g)+(f*h)}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a(f*g)=(af)*g}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f*\\delta =f}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle S^{-1}*S=\\delta }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\overline {f*g}}={\\overline {f}}*{\\overline {g}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Associativity",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "This follows from using Fubini's theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.convolution_assoc",
+        "module": "Mathlib.Analysis.Convolution",
+        "match_kind": "exact"
+      },
+      "note": "`convolution_assoc` proves `(f ⋆ g) ⋆ k = f ⋆ (g ⋆ k)` under suitable integrability conditions.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Algebraic properties",
+          "snippet": "This follows from using Fubini's theorem"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f*(g*h)=(f*g)*h}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f*(g+h)=(f*g)+(f*h)}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a(f*g)=(af)*g}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f*\\delta =f}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle S^{-1}*S=\\delta }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\overline {f*g}}={\\overline {f}}*{\\overline {g}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Distributivity",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "This follows from linearity of the integral"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.ConvolutionExists.distrib_add",
+        "module": "Mathlib.Analysis.Convolution",
+        "match_kind": "exact"
+      },
+      "note": "`ConvolutionExists.distrib_add` and `add_distrib` prove `f ⋆ (g+g') = f⋆g + f⋆g'` and the left-distributive analogue.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Algebraic properties",
+          "snippet": "This follows from linearity of the integral"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f*(g+h)=(f*g)+(f*h)}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a(f*g)=(af)*g}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f*\\delta =f}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle S^{-1}*S=\\delta }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\overline {f*g}}={\\overline {f}}*{\\overline {g}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Associativity with scalar multiplication",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "for any real (or complex) number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.convolution_smul",
+        "module": "Mathlib.Analysis.Convolution",
+        "match_kind": "exact"
+      },
+      "note": "`convolution_smul` and `smul_convolution` prove `a(f⋆g) = (a•f)⋆g = f⋆(a•g)`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Algebraic properties",
+          "snippet": "for any real (or complex) number"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a(f*g)=(af)*g}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f*\\delta =f}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle S^{-1}*S=\\delta }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\overline {f*g}}={\\overline {f}}*{\\overline {g}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "No multiplicative identity; delta is identity for distributions",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "No algebra of functions possesses an identity for the convolution"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.dirac_one_mconv",
+        "module": "Mathlib.MeasureTheory.Group.Convolution",
+        "match_kind": "special_case"
+      },
+      "note": "The Dirac measure acts as identity (`dirac_one_mconv`/`mconv_dirac_one`), but the no-function-identity statement is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Algebraic properties",
+          "snippet": "No algebra of functions possesses an identity for the convolution"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f*\\delta =f}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle S^{-1}*S=\\delta }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\overline {f*g}}={\\overline {f}}*{\\overline {g}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Invertible distributions form an abelian group",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "Some distributions S have an inverse element S −1 for the convolution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Convolution-invertible distributions and their group structure are not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Algebraic properties",
+          "snippet": "Some distributions S have an inverse element S −1 for the convolution"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle S^{-1}*S=\\delta }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\overline {f*g}}={\\overline {f}}*{\\overline {g}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Property proven via the convolution theorem",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "Proof (using convolution theorem )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a meta-remark about proof technique rather than a distinct formalizable statement.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Algebraic properties",
+          "snippet": "Proof (using convolution theorem )"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (f*g)'=f'*g=f*g'}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (F*g)(t)=(f*G)(t)=\\int _{-\\infty }^{t}(f*g)(\\tau )\\,d\\tau .}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Integral of a convolution",
+      "anchor": {
+        "section": "Integration",
+        "snippet": "the integral of their convolution on the whole space is simply obtained as the product of their integrals"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_convolution",
+        "module": "Mathlib.Analysis.Convolution",
+        "match_kind": "exact"
+      },
+      "note": "`integral_convolution` proves `∫ (f ⋆[L,ν] g) ∂μ = L (∫ f) (∫ g)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Derivative of a convolution (one variable)",
+      "anchor": {
+        "section": "Differentiation",
+        "snippet": "In the one-variable case"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasCompactSupport.hasDerivAt_convolution_right",
+        "module": "Mathlib.Analysis.Calculus.ContDiff.Convolution",
+        "match_kind": "exact"
+      },
+      "note": "`hasDerivAt_convolution_right` proves `deriv (f ⋆ g) = f ⋆ (deriv g)` in the one-variable case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Partial derivative of a convolution",
+      "anchor": {
+        "section": "Differentiation",
+        "snippet": "an analogous formula holds with the partial derivative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasCompactSupport.hasFDerivAt_convolution_right",
+        "module": "Mathlib.Analysis.Calculus.ContDiff.Convolution",
+        "match_kind": "generalization"
+      },
+      "note": "`hasFDerivAt_convolution_right` computes the (Fréchet) derivative of the convolution as a convolution with the derivative, covering partial derivatives.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convolution as a smoothing operation",
+      "anchor": {
+        "section": "Differentiation",
+        "snippet": "differentiable as many times as f and g are in total"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HasCompactSupport.contDiff_convolution_right",
+        "module": "Mathlib.Analysis.Calculus.ContDiff.Convolution",
+        "match_kind": "special_case"
+      },
+      "note": "`contDiff_convolution_right` shows the convolution is `𝒞ⁿ` when one factor is `𝒞ⁿ` and compactly supported, but the sharp 'sum of regularities' statement is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Difference operator on discrete convolution",
+      "anchor": {
+        "section": "Differentiation",
+        "snippet": "the difference operator D f ( n ) = f ( n + 1) − f ( n ) satisfies an analogous relationship"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The discrete difference operator's relation to discrete convolution is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Convolution theorem",
+      "anchor": {
+        "section": "Convolution theorem",
+        "snippet": "The convolution theorem states that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.fourier_mul_convolution_eq",
+        "module": "Mathlib.Analysis.Fourier.Convolution",
+        "match_kind": "special_case"
+      },
+      "note": "`Real.fourier_mul_convolution_eq` proves the Fourier transform of a convolution equals the product of the Fourier transforms (over Euclidean space).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convolution theorem for other transforms",
+      "anchor": {
+        "section": "Convolution in other types of transformations",
+        "snippet": "Versions of this theorem also hold for the Laplace transform"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Convolution theorems for the Laplace and other transforms are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convolution via Fourier transform matrix",
+      "anchor": {
+        "section": "Convolution on matrices",
+        "snippet": "is the Fourier transform matrix"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The DFT-matrix diagonalization of convolution is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Generalization to appropriate matrices",
+      "anchor": {
+        "section": "Convolution on matrices",
+        "snippet": "This can be generalized for appropriate matrices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The matrix generalization of the convolution-diagonalization identity is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convolution commutes with translations",
+      "anchor": {
+        "section": "Translational equivariance",
+        "snippet": "The convolution commutes with translations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma stating `τₓ(f ⋆ g) = (τₓ f) ⋆ g` exists in Mathlib's convolution file.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Translation operator",
+      "anchor": {
+        "section": "Translational equivariance",
+        "snippet": "where τ x f is the translation of the function f by x"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no named translation operator `τₓ f = f(· − x)` developed for convolution in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Schwartz function as convolution with translated delta",
+      "anchor": {
+        "section": "Translational equivariance",
+        "snippet": "If f is a Schwartz function , then τ x f is the convolution with a translated Dirac delta function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Representing translation of a Schwartz function as convolution with a shifted Dirac delta is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Translation-invariant operators are convolutions",
+      "anchor": {
+        "section": "Translational equivariance",
+        "snippet": "Suppose that S is a bounded linear operator acting on functions which commutes with translations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The characterization of translation-invariant bounded operators as convolutions is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Translation-invariant operators on L^1 as convolution with a Borel measure",
+      "anchor": {
+        "section": "Translational equivariance",
+        "snippet": "every continuous translation invariant continuous linear operator on L 1 is the convolution with a finite Borel measure"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Wendel-type theorem for translation-invariant operators on L^1 is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convolution on a group",
+      "anchor": {
+        "section": "Convolutions on groups",
+        "snippet": "If G is a suitable group endowed with a measure λ"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.convolution",
+        "module": "Mathlib.Analysis.Convolution",
+        "match_kind": "special_case"
+      },
+      "note": "`MeasureTheory.convolution` defines convolution on an additive (abelian) group with measure, a special case of the general (possibly non-abelian) group convolution.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Commutation with left translation",
+      "anchor": {
+        "section": "Convolutions on groups",
+        "snippet": "convolution with a fixed function g commutes with left translation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Commutation of group convolution with left translation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Convolution theorem on locally compact abelian groups",
+      "anchor": {
+        "section": "Convolutions on groups",
+        "snippet": "a version of the convolution theorem holds: the Fourier transform of a convolution is the pointwise product"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Pontryagin-dual convolution theorem on general locally compact abelian groups is not formalized (only the Euclidean case is).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convolution operator T is compact",
+      "anchor": {
+        "section": "Convolutions on groups",
+        "snippet": "The operator T is compact"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Compactness of the convolution operator on L^2 of a compact group is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Adjoint of the convolution operator",
+      "anchor": {
+        "section": "Convolutions on groups",
+        "snippet": "its adjoint T* is convolution with"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The adjoint of the convolution operator is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convolution operator is normal",
+      "anchor": {
+        "section": "Convolutions on groups",
+        "snippet": "By the commutativity property cited above, T is normal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Normality of the convolution operator is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Simultaneous diagonalization by an orthonormal basis",
+      "anchor": {
+        "section": "Convolutions on groups",
+        "snippet": "there exists an orthonormal basis { h k } that simultaneously diagonalizes S"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Simultaneous diagonalization of convolution operators by an orthonormal basis is not formalized for this setting.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Convolution on finite cyclic groups via circulant matrices",
+      "anchor": {
+        "section": "Convolutions on groups",
+        "snippet": "Convolution operators are here represented by circulant matrices"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.circulant",
+        "module": "Mathlib.LinearAlgebra.Matrix.Circulant",
+        "match_kind": "special_case"
+      },
+      "note": "`Matrix.circulant` defines circulant matrices, but their identification with convolution operators on cyclic groups is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Peter–Weyl basis for compact groups",
+      "anchor": {
+        "section": "Convolutions on groups",
+        "snippet": "the matrix coefficients of finite-dimensional unitary representations form an orthonormal basis in L 2 by the Peter–Weyl theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Peter–Weyl theorem is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convolution of Radon measures",
+      "anchor": {
+        "section": "Convolution of measures",
+        "snippet": "If μ and ν are Radon measures on G , then their convolution μ ∗ ν is defined as the pushforward measure"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.conv",
+        "module": "Mathlib.MeasureTheory.Group.Convolution",
+        "match_kind": "exact"
+      },
+      "note": "`Measure.conv`/`mconv` is exactly the pushforward of the product measure under the group operation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Total variation of convolution of measures",
+      "anchor": {
+        "section": "Convolution of measures",
+        "snippet": "The convolution is also a Radon measure, whose total variation satisfies"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.finite_of_finite_mconv",
+        "module": "Mathlib.MeasureTheory.Group.Convolution",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves the convolution of finite measures is finite (and of probability measures is a probability measure), but not the sharp total-variation inequality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Density of convolution of absolutely continuous measures",
+      "anchor": {
+        "section": "Convolution of measures",
+        "snippet": "the convolution μ∗ν is also absolutely continuous, and its density function is just the convolution of the two separate density functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.mconv_withDensity_eq_mlconvolution",
+        "module": "Mathlib.MeasureTheory.Measure.WithDensity",
+        "match_kind": "exact"
+      },
+      "note": "`mconv_withDensity_eq_mlconvolution` proves `(μ.withDensity f) ∗ₘ (μ.withDensity g) = μ.withDensity (f ⋆ₘₗ g)`, i.e. the density is the convolution of densities.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convolution of probability measures = distribution of sum",
+      "anchor": {
+        "section": "Convolution of measures",
+        "snippet": "the convolution μ ∗ ν is the probability distribution of the sum X + Y of two independent random variables"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.IndepFun.map_add_eq_map_conv_map₀",
+        "module": "Mathlib.Probability.Independence.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IndepFun.map_add_eq_map_conv_map₀` proves the law of `X+Y` for independent `X,Y` equals the convolution of their laws.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Infimal convolution",
+      "anchor": {
+        "section": "Infimal convolution",
+        "snippet": "the infimal convolution of proper"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Infimal convolution of convex functions is not defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Infimal convolution",
+          "snippet": "the infimal convolution of proper"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (f_{1}*\\cdots *f_{m})(x)=\\inf _{x}\\{f_{1}(x_{1})+\\cdots +f_{m}(x_{m})|x_{1}+\\cdots +x_{m}=x\\}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\varphi ^{*}(x)=\\sup _{y}(x\\cdot y-\\varphi (y)).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (f_{1}*\\cdots *f_{m})^{*}(x)=f_{1}^{*}(x)+\\cdots +f_{m}^{*}(x).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Infimal convolution of convex functions is convex",
+      "anchor": {
+        "section": "Infimal convolution",
+        "snippet": "the infimal convolution of convex functions is convex"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without an infimal convolution definition, its convexity is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Infimal convolution",
+          "snippet": "the infimal convolution of convex functions is convex"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (f_{1}*\\cdots *f_{m})(x)=\\inf _{x}\\{f_{1}(x_{1})+\\cdots +f_{m}(x_{m})|x_{1}+\\cdots +x_{m}=x\\}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\varphi ^{*}(x)=\\sup _{y}(x\\cdot y-\\varphi (y)).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (f_{1}*\\cdots *f_{m})^{*}(x)=f_{1}^{*}(x)+\\cdots +f_{m}^{*}(x).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Legendre transform identity for infimal convolution",
+      "anchor": {
+        "section": "Infimal convolution",
+        "snippet": "with the role of the Fourier transform is played instead by the Legendre transform"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the Legendre/Fenchel conjugate nor its interaction with infimal convolution is formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Infimal convolution",
+          "snippet": "with the role of the Fourier transform is played instead by the Legendre transform"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (f_{1}*\\cdots *f_{m})(x)=\\inf _{x}\\{f_{1}(x_{1})+\\cdots +f_{m}(x_{m})|x_{1}+\\cdots +x_{m}=x\\}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\varphi ^{*}(x)=\\sup _{y}(x\\cdot y-\\varphi (y)).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (f_{1}*\\cdots *f_{m})^{*}(x)=f_{1}^{*}(x)+\\cdots +f_{m}^{*}(x).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Convolution on a bialgebra endomorphism algebra",
+      "anchor": {
+        "section": "Bialgebras",
+        "snippet": "the convolution φ ∗ ψ is defined as the composition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.convMul",
+        "module": "Mathlib.RingTheory.Coalgebra.Convolution",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.convMul` defines the convolution product `f * g = mul' ∘ (f ⊗ g) ∘ comul` on linear maps from a coalgebra to an algebra.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hopf algebra characterized by antipode",
+      "anchor": {
+        "section": "Bialgebras",
+        "snippet": "A bialgebra is a Hopf algebra if and only if it has an antipode"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HopfAlgebra",
+        "module": "Mathlib.RingTheory.HopfAlgebra.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib's `HopfAlgebra` is defined as a bialgebra equipped with an antipode satisfying the convolution-inverse axioms, but no explicit 'bialgebra is Hopf iff antipode exists' iff-theorem is stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Convolutional neural networks",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "Convolutional neural networks apply multiple cascaded convolution kernels"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Convolutional neural networks are an application, not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Out-of-focus photograph (bokeh)",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "an out-of-focus photograph is a convolution of the sharp image with a lens function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This imaging application is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Reverberation in acoustics",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "reverberation is the convolution of the original sound with echoes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This acoustics application is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Weighted moving average",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "a weighted moving average is a convolution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The weighted moving average as a convolution application is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Distribution of sum of independent random variables",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "the probability distribution of the sum of two independent random variables is the convolution of their individual distributions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.IndepFun.map_add_eq_map_conv_map₀",
+        "module": "Mathlib.Probability.Independence.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IndepFun.map_add_eq_map_conv_map₀` proves the distribution of the sum of two independent random variables is the convolution of their distributions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Voigt line shape",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "the line shape is a convolution of Gaussian and Lorentzian, a Voigt function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Voigt profile (Gaussian–Lorentzian convolution) is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

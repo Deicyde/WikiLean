@@ -1,0 +1,383 @@
+{
+  "slug": "Commutative_property",
+  "wikipedia_title": "Commutative property",
+  "display_title": "Commutative property",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Commutative binary operation",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A binary operation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CommMagma",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "CommMagma is a type with a binary operation `*` satisfying `mul_comm : ∀ a b, a * b = b * a`, the exact definition of a commutative binary operation.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "A binary operation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x*y=y*x}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Noncommutative operation",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "An operation that is not commutative is said to be"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no positive class/predicate for 'noncommutative'; noncommutativity is only ever the absence of a CommMagma/CommMonoid instance.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "An operation that is not commutative is said to be"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x*y=y*x}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Elements commute",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "One says that x commutes with y"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Commute",
+        "module": "Mathlib.Algebra.Group.Commute.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Commute a b` is defined so that `commute_iff_eq : Commute a b ↔ a * b = b * a`, exactly the notion of two elements commuting.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "One says that x commutes with y"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x*y=y*x.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Commutative iff all elements commute",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "an operation is commutative if every two elements commute"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "commute_iff_eq",
+        "module": "Mathlib.Algebra.Group.Commute.Defs",
+        "match_kind": null
+      },
+      "note": "`commute_iff_eq` and `mul_comm` express the per-pair equivalence, but there is no named theorem stating that an operation is a CommMagma iff every pair commutes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Addition and multiplication commutative in number systems",
+      "anchor": {
+        "section": "Commutative operations",
+        "snippet": "Addition and multiplication are commutative in most number systems"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mul_comm",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "ℕ, ℤ, ℚ, ℝ, ℂ all carry CommRing/CommMonoid instances, so `add_comm`/`mul_comm` apply to their addition and multiplication.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Addition commutative in vector spaces and algebras",
+      "anchor": {
+        "section": "Commutative operations",
+        "snippet": "Addition is commutative in every vector space and in every algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AddCommGroup",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "Module/vector-space and Algebra typeclasses require an AddCommMonoid/AddCommGroup carrier, so `add_comm` holds for their addition by construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Union and intersection commutative",
+      "anchor": {
+        "section": "Commutative operations",
+        "snippet": "Union and intersection are commutative operations on sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.union_comm",
+        "module": "Mathlib.Data.Set.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Set.union_comm` (`a ∪ b = b ∪ a`) and `Set.inter_comm` (`a ∩ b = b ∩ a`) state commutativity of union and intersection.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "And and or commutative",
+      "anchor": {
+        "section": "Commutative operations",
+        "snippet": "are commutative logical operations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "and_comm",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "`and_comm` and `or_comm` (Lean core, used throughout Mathlib) state commutativity of logical conjunction and disjunction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Division is noncommutative",
+      "anchor": {
+        "section": "Noncommutative operations",
+        "snippet": "Division is noncommutative, since"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no theorem asserting the noncommutativity of division.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Subtraction is anti-commutative",
+      "anchor": {
+        "section": "Noncommutative operations",
+        "snippet": "Subtraction is noncommutative, since"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "neg_sub",
+        "module": "Mathlib.Algebra.Group.Basic",
+        "match_kind": null
+      },
+      "note": "`neg_sub : -(a - b) = b - a` (the additive form of `inv_div`) captures the anti-commutativity of subtraction, though no statement asserts subtraction is noncommutative.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Exponentiation is noncommutative",
+      "anchor": {
+        "section": "Noncommutative operations",
+        "snippet": "Exponentiation is noncommutative, since"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no theorem asserting that exponentiation is noncommutative.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Some truth functions are noncommutative",
+      "anchor": {
+        "section": "Noncommutative operations",
+        "snippet": "Some truth functions are noncommutative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not state the noncommutativity of truth functions such as implication.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Function composition is noncommutative",
+      "anchor": {
+        "section": "Noncommutative operations",
+        "snippet": "Function composition is generally noncommutative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Function composition (`Function.comp`) is defined and proven associative, but its general noncommutativity is not stated.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Noncommutative operations",
+          "snippet": "Function composition is generally noncommutative"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (f\\circ g)(x)=f(g(x))=2(3x+7)+1=6x+15}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (g\\circ f)(x)=g(f(x))=3(2x+1)+7=6x+10.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Matrix multiplication is noncommutative",
+      "anchor": {
+        "section": "Noncommutative operations",
+        "snippet": "Matrix multiplication of square matrices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Square matrices form a (generally noncommutative) ring in Mathlib, but no theorem asserts that matrix multiplication is noncommutative.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Noncommutative operations",
+          "snippet": "Matrix multiplication of square matrices"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{bmatrix}0&amp;2\\\\0&amp;1\\end{bmatrix}}={\\begin{bmatrix}1&amp;1\\\\0&amp;1\\end{bmatrix}}{\\begin{bmatrix}0&amp;1\\\\0&amp;1\\end{bmatrix}}\\neq {\\begin{bmatrix}0&amp;1\\\\0&amp;1\\end{bmatrix}}{\\begin{bmatrix}1&amp;1\\\\0&amp;1\\end{bmatrix}}={\\begin{bmatrix}0&amp;1\\\\0&amp;1\\end{bmatrix}}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Cross product is anti-commutative",
+      "anchor": {
+        "section": "Noncommutative operations",
+        "snippet": "The vector product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "cross_anticomm",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": "exact"
+      },
+      "note": "`cross_anticomm : -(v ⨯₃ w) = w ⨯₃ v` states the anti-commutativity of the cross product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Commutative semigroup",
+      "anchor": {
+        "section": "Commutative structures",
+        "snippet": "a commutative semigroup is a semigroup whose operation is commutative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CommSemigroup",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`CommSemigroup` extends `Semigroup` and `CommMagma`, i.e. a semigroup with commutative operation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Commutative monoid",
+      "anchor": {
+        "section": "Commutative structures",
+        "snippet": "a commutative monoid is a monoid whose operation is commutative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CommMonoid",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`CommMonoid` extends `Monoid` and `CommSemigroup`, exactly a monoid with commutative multiplication.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Commutative group (abelian group)",
+      "anchor": {
+        "section": "Commutative structures",
+        "snippet": "a commutative group or abelian group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CommGroup",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`CommGroup` extends `Group` and `CommMonoid`, the standard definition of an abelian group (additive form `AddCommGroup`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Commutative ring",
+      "anchor": {
+        "section": "Commutative structures",
+        "snippet": "a commutative ring is a ring whose multiplication is commutative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CommRing",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`CommRing` extends `Ring` and `CommMonoid`, a ring whose multiplication is commutative.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Commutative algebra",
+      "anchor": {
+        "section": "Commutative structures",
+        "snippet": "refers only to associative algebras that have a commutative multiplication"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Algebra",
+        "module": "Mathlib.Algebra.Algebra.Defs",
+        "match_kind": null
+      },
+      "note": "Mathlib expresses a commutative algebra by combining `Algebra R A` with a `CommSemiring`/`CommRing A` instance rather than via a single dedicated `CommAlgebra` class.",
+      "provenance": "ai"
+    }
+  ]
+}

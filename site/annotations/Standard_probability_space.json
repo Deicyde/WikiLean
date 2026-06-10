@@ -1,0 +1,633 @@
+{
+  "slug": "Standard_probability_space",
+  "wikipedia_title": "Standard probability space",
+  "display_title": "Standard probability space",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Isomorphism of probability spaces",
+      "anchor": {
+        "section": "Isomorphism",
+        "snippet": "An isomorphism between two probability spaces"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.MeasurePreserving",
+        "module": "Mathlib.Dynamics.Ergodic.MeasurePreserving",
+        "match_kind": null
+      },
+      "note": "Mathlib has MeasurePreserving and MeasurableEquiv (≃ᵐ) whose combination is exactly a probability-space isomorphism, but there is no single packaged definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isomorphic probability spaces",
+      "anchor": {
+        "section": "Isomorphism",
+        "snippet": "isomorphic if there exists an isomorphism between them"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.MeasurePreserving",
+        "module": "Mathlib.Dynamics.Ergodic.MeasurePreserving",
+        "match_kind": null
+      },
+      "note": "Existence of a measure-preserving MeasurableEquiv expresses this, but Mathlib has no named 'isomorphic probability spaces' relation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isomorphism modulo zero",
+      "anchor": {
+        "section": "Isomorphism modulo zero",
+        "snippet": "if there exist null sets"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of isomorphism mod 0 (isomorphism after deleting null sets) of measure spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Standard probability space",
+      "anchor": {
+        "section": "Standard probability space",
+        "snippet": "A probability space is standard"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "StandardBorelSpace",
+        "module": "Mathlib.MeasureTheory.Constructions.Polish.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes StandardBorelSpace (the measurable structure) but not the measure-theoretic Lebesgue–Rokhlin standard probability space defined via mod-0 isomorphism to an interval plus atoms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "A naive white noise",
+      "anchor": {
+        "section": "A naive white noise",
+        "snippet": "may be thought of as the product"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This pathological product-of-continuum-many-copies example is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "A perforated interval",
+      "anchor": {
+        "section": "A perforated interval",
+        "snippet": "be a set whose inner Lebesgue measure is equal to 0"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This counterexample using a set of inner Lebesgue measure 0 is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "A superfluous measurable set",
+      "anchor": {
+        "section": "A superfluous measurable set",
+        "snippet": "be as in the previous example"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This non-standardness counterexample is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pushforward measure",
+      "anchor": {
+        "section": "A single random variable",
+        "snippet": "induces a pushforward measure"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.map",
+        "module": "Mathlib.MeasureTheory.Measure.Map",
+        "match_kind": "exact"
+      },
+      "note": "Measure.map is exactly the pushforward of a measure along a measurable function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generating function",
+      "anchor": {
+        "section": "A single random variable",
+        "snippet": "is called generating if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has MeasurableSpace.comap/generateFrom but no 'generating (mod 0)' predicate for a random variable on a probability space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Insufficient condition for generating",
+      "anchor": {
+        "section": "A single random variable",
+        "snippet": "The following condition is not sufficient"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This counterexample about a non-sufficient condition for generating is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Standardness criterion (single random variable)",
+      "anchor": {
+        "section": "A single random variable",
+        "snippet": "Let a measurable function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Rokhlin's standardness criterion via a generating random variable is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Standardness criterion (random vector)",
+      "anchor": {
+        "section": "A random vector",
+        "snippet": "The same theorem holds for any"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The standardness criterion for a generating random vector is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Standardness criterion (random sequence)",
+      "anchor": {
+        "section": "A random sequence",
+        "snippet": "The theorem still holds for the space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The standardness criterion for a generating random sequence is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Generating for a sequence of events",
+      "anchor": {
+        "section": "A sequence of events",
+        "snippet": "if the random variables"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The equivalence between generating events and generating indicator variables is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Basis of a probability space",
+      "anchor": {
+        "section": "A sequence of events",
+        "snippet": "are called bases of the probability space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of a 'basis' (generating sequence of events) of a probability space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complete mod 0 basis",
+      "anchor": {
+        "section": "A sequence of events",
+        "snippet": "A basis is called complete mod 0"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The 'complete mod 0' property of a basis is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Completeness independent of basis (Rokhlin)",
+      "anchor": {
+        "section": "A sequence of events",
+        "snippet": "Rokhlin proved that if a probability space is complete mod 0"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Rokhlin's theorem that completeness mod 0 is independent of the chosen basis is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence of the four cases",
+      "anchor": {
+        "section": "Additional remarks",
+        "snippet": "The four cases treated above are mutually equivalent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The mutual equivalence of the single-variable, vector, sequence, and events formulations is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Countably separated",
+      "anchor": {
+        "section": "Additional remarks",
+        "snippet": "we get the property well known as being countably separated"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasurableSpace.CountablySeparated",
+        "module": "Mathlib.MeasureTheory.MeasurableSpace.CountablyGenerated",
+        "match_kind": "exact"
+      },
+      "note": "CountablySeparated states points are separated by a countable family of measurable sets, matching the definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Countably generated",
+      "anchor": {
+        "section": "Additional remarks",
+        "snippet": "we get the property well known as being countably generated"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasurableSpace.CountablyGenerated",
+        "module": "Mathlib.MeasureTheory.MeasurableSpace.CountablyGenerated",
+        "match_kind": "exact"
+      },
+      "note": "CountablyGenerated states the σ-algebra is generated by a countable family of sets, matching the definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Injective implies generating",
+      "anchor": {
+        "section": "Additional remarks",
+        "snippet": "Every injective measurable function from a standard probability space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Measurable.measurableEmbedding",
+        "module": "Mathlib.MeasureTheory.Constructions.Polish.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib proves an injective measurable map from a standard Borel space is a measurable embedding, but does not phrase this as 'generating mod 0' for probability spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Countably generated is mod 0 invariant",
+      "anchor": {
+        "section": "Additional remarks",
+        "snippet": "is invariant under mod 0 isomorphisms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mod-0 isomorphism is absent in Mathlib, so the invariance of countable generation under it is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Countably separated iff cardinality ≤ continuum",
+      "anchor": {
+        "section": "Additional remarks",
+        "snippet": "is countably separated if and only if the cardinality"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasurableSpace.measurable_injection_nat_bool_of_countablySeparated",
+        "module": "Mathlib.MeasureTheory.MeasurableSpace.CountablyGenerated",
+        "match_kind": null
+      },
+      "note": "Mathlib gives a measurable injection of a countably separated space into ℕ→Bool (yielding cardinality ≤ continuum), but the full iff with cardinality is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Standardness via absolute measurability",
+      "anchor": {
+        "section": "Via absolute measurability",
+        "snippet": "is standard if it is countably separated, countably generated, and absolutely measurable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Absolute measurability and this equivalent definition of standardness are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Standardness via perfectness",
+      "anchor": {
+        "section": "Via perfectness",
+        "snippet": "is standard if it is countably separated and perfect"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Perfect measures and this characterization of standardness are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Standardness via topology",
+      "anchor": {
+        "section": "Via topology",
+        "snippet": "is standard if there exists a topology"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "StandardBorelSpace",
+        "module": "Mathlib.MeasureTheory.Constructions.Polish.Basic",
+        "match_kind": null
+      },
+      "note": "StandardBorelSpace is defined exactly as 'there exists a Polish topology whose Borel σ-algebra is the given one', matching the topological core but without the measure-completion part.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Distributions on the real line are standard",
+      "anchor": {
+        "section": "Verifying the standardness",
+        "snippet": "Every probability distribution on the space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "standardBorel_of_polish",
+        "module": "Mathlib.MeasureTheory.Constructions.Polish.Basic",
+        "match_kind": null
+      },
+      "note": "ℝ is a StandardBorelSpace (Polish), giving the Borel-structure half, but standardness of the probability space itself is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Distributions on Polish spaces are standard",
+      "anchor": {
+        "section": "Verifying the standardness",
+        "snippet": "The same holds on every Polish space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "standardBorel_of_polish",
+        "module": "Mathlib.MeasureTheory.Constructions.Polish.Basic",
+        "match_kind": null
+      },
+      "note": "standardBorel_of_polish shows every Polish space is standard Borel, but the measure-theoretic standardness of distributions on it is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Wiener measure gives a standard space",
+      "anchor": {
+        "section": "Verifying the standardness",
+        "snippet": "the Wiener measure turns the Polish space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Wiener measure / Brownian motion is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Joint distribution of a sequence",
+      "anchor": {
+        "section": "Verifying the standardness",
+        "snippet": "for every sequence of random variables, their joint distribution turns the Polish space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "StandardBorelSpace.pi",
+        "module": "Mathlib.MeasureTheory.Constructions.Polish.Basic",
+        "match_kind": null
+      },
+      "note": "ℝ^∞ is standard Borel via the pi instance, but standardness of the joint-distribution probability space is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product of two standard spaces",
+      "anchor": {
+        "section": "Verifying the standardness",
+        "snippet": "The product of two standard probability spaces"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "StandardBorelSpace.prod",
+        "module": "Mathlib.MeasureTheory.Constructions.Polish.Basic",
+        "match_kind": null
+      },
+      "note": "StandardBorelSpace.prod gives closure of standard Borel spaces under binary products; the probability-space version is not separately formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product of countably many standard spaces",
+      "anchor": {
+        "section": "Verifying the standardness",
+        "snippet": "The same holds for the product of countably many spaces"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "StandardBorelSpace.pi",
+        "module": "Mathlib.MeasureTheory.Constructions.Polish.Basic",
+        "match_kind": null
+      },
+      "note": "StandardBorelSpace.pi gives closure under countable products of standard Borel spaces; the probability-space statement is not separately formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Measurable subset of a standard space",
+      "anchor": {
+        "section": "Verifying the standardness",
+        "snippet": "A measurable subset of a standard probability space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasurableSet.standardBorel",
+        "module": "Mathlib.MeasureTheory.Constructions.Polish.Basic",
+        "match_kind": null
+      },
+      "note": "MeasurableSet.standardBorel shows a measurable subset of a standard Borel space is standard Borel; the probability-space version is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Measure on a standard Borel space",
+      "anchor": {
+        "section": "Verifying the standardness",
+        "snippet": "Every probability measure on a standard Borel space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "StandardBorelSpace",
+        "module": "Mathlib.MeasureTheory.Constructions.Polish.Basic",
+        "match_kind": null
+      },
+      "note": "StandardBorelSpace is formalized but the statement that any probability measure on it yields a standard probability space is not, since standard probability space is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence of regular conditional probabilities",
+      "anchor": {
+        "section": "Regular conditional probabilities",
+        "snippet": "this is possible, and well known as canonical system of measures"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.condKernel",
+        "module": "Mathlib.Probability.Kernel.Disintegration.StandardBorel",
+        "match_kind": "exact"
+      },
+      "note": "Measure.condKernel together with its IsCondKernel instance gives disintegration ρ = ρ.fst ⊗ₘ ρ.condKernel for standard Borel target spaces, i.e. existence of regular conditional probabilities.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Measure preserving map covers standard space",
+      "anchor": {
+        "section": "Measure preserving transformations",
+        "snippet": "if the probability spaces"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.MeasurePreserving",
+        "module": "Mathlib.Dynamics.Ergodic.MeasurePreserving",
+        "match_kind": null
+      },
+      "note": "MeasurePreserving is formalized, but the standard-space-specific theorem about essential surjectivity/coverage is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverse of one-to-one measure preserving map",
+      "anchor": {
+        "section": "Measure preserving transformations",
+        "snippet": "is also one-to-one then every"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.MeasurePreserving.symm",
+        "module": "Mathlib.Dynamics.Ergodic.MeasurePreserving",
+        "match_kind": null
+      },
+      "note": "MeasurePreserving.symm gives that the inverse of a measure-preserving MeasurableEquiv is measure preserving, but the standard-space result that an injective measure-preserving map automatically has measurable inverse is not packaged.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Measure algebra",
+      "anchor": {
+        "section": "Measure preserving transformations",
+        "snippet": "form a normed complete Boolean algebra called the measure algebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The measure algebra (Boolean algebra of measurable sets mod null sets with its metric/norm) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Homomorphisms of measure algebras come from maps",
+      "anchor": {
+        "section": "Measure preserving transformations",
+        "snippet": "for standard probability spaces each"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The result that every measure-algebra homomorphism between standard spaces is induced by a measure-preserving map is not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,533 @@
+{
+  "slug": "Arc_length",
+  "wikipedia_title": "Arc length",
+  "display_title": "Arc length",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Arc length as integral of speed",
+      "anchor": {
+        "section": "As an integral",
+        "snippet": "the arc length is obtained by integrating speed"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Manifold.pathELength",
+        "module": "Mathlib.Geometry.Manifold.Riemannian.PathELength",
+        "match_kind": "generalization"
+      },
+      "note": "pathELength is defined as ∫⁻ t in Icc a b, ‖mfderiv γ t 1‖ₑ, i.e. the length as the integral of the norm of the velocity (speed), generalizing the Euclidean case to manifolds.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "As an integral",
+          "snippet": "the arc length is obtained by integrating speed"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle L=\\int _{a}^{b}{\\sqrt {x'(t)^{2}+y'(t)^{2}}}\\,dt.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Arc length formula for differentiable curve",
+      "anchor": {
+        "section": "As an integral",
+        "snippet": "The length of the curve is given by the formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Manifold.pathELength",
+        "module": "Mathlib.Geometry.Manifold.Riemannian.PathELength",
+        "match_kind": "generalization"
+      },
+      "note": "The integral formula L = ∫‖γ'‖ for a differentiable curve is exactly pathELength, of which the Euclidean √(Σ(dxᵢ/dt)²) form is a special case.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "As an integral",
+          "snippet": "The length of the curve is given by the formula"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle L(f)=\\int _{a}^{b}|f'(t)|\\,dt}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Independence of parameterization",
+      "anchor": {
+        "section": "As an integral",
+        "snippet": "is the same regardless of the parameterization used to define the curve"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Manifold.pathELength_comp_of_monotoneOn",
+        "module": "Mathlib.Geometry.Manifold.Riemannian.PathELength",
+        "match_kind": "generalization"
+      },
+      "note": "pathELength_comp_of_monotoneOn proves the path length is invariant under monotone reparametrization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Chordal distance",
+      "anchor": {
+        "section": "As a limit",
+        "snippet": "that approximation is known as the (cumulative) chordal distance"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "eVariationOn",
+        "module": "Mathlib.Topology.EMetricSpace.BoundedVariation",
+        "match_kind": null
+      },
+      "note": "The cumulative chord sum ∑ edist(f(uᵢ₊₁), f(uᵢ)) appears inside the definition of eVariationOn but is not given its own named definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Refinement does not decrease chordal distance",
+      "anchor": {
+        "section": "As a limit",
+        "snippet": "the chordal distance will not decrease"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "eVariationOn.add_point",
+        "module": "Mathlib.Topology.EMetricSpace.BoundedVariation",
+        "match_kind": "special_case"
+      },
+      "note": "eVariationOn.add_point shows that inserting a point into a partition does not decrease the chord sum, the single-step case from which general refinement monotonicity follows.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Length as limit of polygonal chains",
+      "anchor": {
+        "section": "As a limit",
+        "snippet": "this bound is the length of the curve"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "eVariationOn",
+        "module": "Mathlib.Topology.EMetricSpace.BoundedVariation",
+        "match_kind": "generalization"
+      },
+      "note": "eVariationOn is defined as the supremum over partitions of the chord sums, which is exactly the definition of length as the limit/supremum of polygonal approximations, in general metric spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Limit length equals integral length",
+      "anchor": {
+        "section": "As a limit",
+        "snippet": "this limiting length always equals the length obtained from integration"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Both the supremum/polygonal definition (eVariationOn) and the integral definition (pathELength) exist, but no theorem equating them for differentiable curves was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rectifiable curve",
+      "anchor": {
+        "section": "As a limit",
+        "snippet": "is called a rectifiable curve"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BoundedVariationOn",
+        "module": "Mathlib.Topology.EMetricSpace.BoundedVariation",
+        "match_kind": "generalization"
+      },
+      "note": "A rectifiable curve is one of finite length, exactly BoundedVariationOn (eVariationOn f s ≠ ∞).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Signed arc length",
+      "anchor": {
+        "section": "Sign",
+        "snippet": "A signed arc length can be defined to convey a sense of orientation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "variationOnFromTo",
+        "module": "Mathlib.Topology.EMetricSpace.BoundedVariation",
+        "match_kind": "generalization"
+      },
+      "note": "variationOnFromTo f s a b is the signed variation, negated when b < a, capturing the orientation-aware signed arc length.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Arc length for explicit function y=f(x)",
+      "anchor": {
+        "section": "Finding arc lengths by integration",
+        "snippet": "then it is simply a special case of a parametric equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma giving L = ∫√(1+f'(x)²) for the graph of an explicit function was found, though it follows from pathELength.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Finding arc lengths by integration",
+          "snippet": "then it is simply a special case of a parametric equation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\sqrt {dx^{2}+dy^{2}}}={\\sqrt {1+\\left({\\frac {dy}{dx}}\\right)^{2}\\,}}dx.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Curves with closed-form arc length",
+      "anchor": {
+        "section": "Finding arc lengths by integration",
+        "snippet": "Curves with closed-form solutions for arc length include the catenary"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No catenary/cycloid/cardioid arc-length computations were found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Quarter of unit circle by numerical integration",
+      "anchor": {
+        "section": "Numerical integration",
+        "snippet": "consider the problem of finding the length of a quarter of the unit circle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No numerical-integration arc-length example for the quarter unit circle was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Arc length integrand on a surface (first fundamental form)",
+      "anchor": {
+        "section": "Curve on a surface",
+        "snippet": "so the integrand of the arc length integral can be written as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no surface theory or first fundamental form formulation of the arc-length integrand.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Arc length in polar coordinates",
+      "anchor": {
+        "section": "Other coordinate systems",
+        "snippet": "So for a curve expressed in polar coordinates, the arc length is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No polar-coordinate arc-length formula ∫√(r²+(dr/dθ)²) was found in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Other coordinate systems",
+          "snippet": "So for a curve expressed in polar coordinates, the arc length is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{t_{1}}^{t_{2}}{\\sqrt {\\left({\\frac {dr}{dt}}\\right)^{2}+r^{2}\\left({\\frac {d\\theta }{dt}}\\right)^{2}\\,}}dt=\\int _{\\theta (t_{1})}^{\\theta (t_{2})}{\\sqrt {\\left({\\frac {dr}{d\\theta }}\\right)^{2}+r^{2}\\,}}d\\theta .}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Arc length in spherical coordinates",
+      "anchor": {
+        "section": "Other coordinate systems",
+        "snippet": "So for a curve expressed in spherical coordinates, the arc length is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No spherical-coordinate arc-length formula was found in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Other coordinate systems",
+          "snippet": "So for a curve expressed in spherical coordinates, the arc length is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{t_{1}}^{t_{2}}{\\sqrt {\\left({\\frac {dr}{dt}}\\right)^{2}+r^{2}\\left({\\frac {d\\theta }{dt}}\\right)^{2}+r^{2}\\sin ^{2}\\theta \\left({\\frac {d\\phi }{dt}}\\right)^{2}\\,}}dt.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Arc length in cylindrical coordinates",
+      "anchor": {
+        "section": "Other coordinate systems",
+        "snippet": "the arc length of a curve expressed in cylindrical coordinates is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No cylindrical-coordinate arc-length formula was found in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Other coordinate systems",
+          "snippet": "the arc length of a curve expressed in cylindrical coordinates is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{t_{1}}^{t_{2}}{\\sqrt {\\left({\\frac {dr}{dt}}\\right)^{2}+r^{2}\\left({\\frac {d\\theta }{dt}}\\right)^{2}+\\left({\\frac {dz}{dt}}\\right)^{2}\\,}}dt.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Definition of pi via circumference",
+      "anchor": {
+        "section": "Arcs of circles",
+        "snippet": "This equation is a definition of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.pi",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": null
+      },
+      "note": "Real.pi exists but is defined as twice a zero of cos in [1,2], not via the circumference-to-diameter ratio.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Semicircle arc length",
+      "anchor": {
+        "section": "Arcs of circles",
+        "snippet": "If the arc is a semicircle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem computing the arc length of a semicircle as πr was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Definition of the radian",
+      "anchor": {
+        "section": "Arcs of circles",
+        "snippet": "This is a definition of the radian."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines angles via cos/arccos and Real.Angle, not as arc length divided by radius.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Arc length with angle in degrees",
+      "anchor": {
+        "section": "Arcs of circles",
+        "snippet": "is in degrees"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No degree-based circular arc-length formula was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Arc length with angle in grads",
+      "anchor": {
+        "section": "Arcs of circles",
+        "snippet": "is in grads (100 grads, or grades, or gradians are one right-angle )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of grads or a grad-based arc-length formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Arc length with angle in turns",
+      "anchor": {
+        "section": "Arcs of circles",
+        "snippet": "is in turns (one turn is a complete rotation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no turn-based arc-length formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Great-circle arc length on Earth",
+      "anchor": {
+        "section": "Great circles on Earth",
+        "snippet": "applies in the following circumstances"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No great-circle distance / geographic arc-length computation was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Curves of infinite length",
+      "anchor": {
+        "section": "Curves with infinite length",
+        "snippet": "such curves are said to have infinite length"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "eVariationOn",
+        "module": "Mathlib.Topology.EMetricSpace.BoundedVariation",
+        "match_kind": null
+      },
+      "note": "Infinite length is representable since eVariationOn is ℝ≥0∞-valued (value ∞, i.e. the negation of BoundedVariationOn), but there is no dedicated 'infinite-length curve' definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Koch curve",
+      "anchor": {
+        "section": "Curves with infinite length",
+        "snippet": "An example of such a curve is the Koch curve."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Koch curve is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Graph of x sin(1/x)",
+      "anchor": {
+        "section": "Curves with infinite length",
+        "snippet": "Another example of a curve with infinite length is the graph of the function defined by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No example showing the graph of x·sin(1/x) has infinite length / unbounded variation was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Length of a curve on a (pseudo-)Riemannian manifold",
+      "anchor": {
+        "section": "Generalization to (pseudo-)Riemannian manifolds",
+        "snippet": "is defined to be"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Manifold.pathELength",
+        "module": "Mathlib.Geometry.Manifold.Riemannian.PathELength",
+        "match_kind": "generalization"
+      },
+      "note": "pathELength gives the length of a path on a (Riemannian/normed-tangent) manifold as ∫‖γ'‖, but the pseudo-Riemannian/Lorentzian case (where g(v,v) may be negative) is not covered.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Curve length is non-negative",
+      "anchor": {
+        "section": "Generalization to (pseudo-)Riemannian manifolds",
+        "snippet": "Thus the length of a curve is a non-negative real number."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Manifold.pathELength",
+        "module": "Mathlib.Geometry.Manifold.Riemannian.PathELength",
+        "match_kind": "invocation"
+      },
+      "note": "pathELength (and eVariationOn) are valued in ℝ≥0∞, so length is non-negative by construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Arc length as proper time/distance in relativity",
+      "anchor": {
+        "section": "Generalization to (pseudo-)Riemannian manifolds",
+        "snippet": "arc length of timelike curves ( world lines ) is the proper time elapsed along the world line"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Lorentzian/pseudo-Riemannian geometry, so proper time along world lines is not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,399 @@
+{
+  "slug": "Banach_fixed-point_theorem",
+  "wikipedia_title": "Banach fixed-point theorem",
+  "display_title": "Banach fixed-point theorem",
+  "schema_version": 3,
+  "annotation_style": null,
+  "last_ai_run": "2026-05-27T20:22:21+00:00",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Contraction mapping on a metric space",
+      "anchors": [
+        {
+          "type": "prose_snippet",
+          "section": "Statement",
+          "snippet": "a map T : X → X is called a contraction mapping on X if there exists a nonnegative constant q < 1"
+        },
+        {
+          "type": "math_alttext",
+          "value": "d(T(x),T(y)) \\le q\\, d(x,y)"
+        }
+      ],
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContractingWith",
+        "module": "Mathlib.Topology.MetricSpace.Contracting",
+        "match_kind": "exact"
+      },
+      "note": "`ContractingWith K f` is defined as `K < 1 ∧ LipschitzWith K f`, exactly the article's definition of a contraction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Banach fixed-point theorem",
+      "anchors": [
+        {
+          "type": "prose_snippet",
+          "section": "Statement",
+          "snippet": "Let (X, d) be a non-empty complete metric space with a contraction mapping T : X → X. Then T admits a unique fixed point"
+        }
+      ],
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContractingWith.exists_fixedPoint",
+        "module": "Mathlib.Topology.MetricSpace.Contracting",
+        "match_kind": "generalization"
+      },
+      "note": "The EMetric version `exists_fixedPoint` gives existence + iteration convergence + error bound; `ContractingWith.fixedPoint`, `fixedPoint_isFixedPt`, and `fixedPoint_unique` package the unique fixed point on a complete nonempty metric space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Picard iteration converges to the fixed point",
+      "anchor": {
+        "type": "prose_snippet",
+        "section": "Statement",
+        "snippet": "start with an arbitrary element x_0 in X and define x_n = T(x_{n-1}) for n ≥ 1. Then lim_{n→∞} x_n = x*"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContractingWith.tendsto_iterate_fixedPoint",
+        "module": "Mathlib.Topology.MetricSpace.Contracting",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `tendsto_iterate_fixedPoint` states `Tendsto (fun n ↦ f^[n] x) atTop (𝓝 (fixedPoint f hf))`, exactly the Picard iteration limit.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rate-of-convergence inequalities for Banach iteration",
+      "anchors": [
+        {
+          "type": "prose_snippet",
+          "section": "Statement",
+          "snippet": "The following inequalities are equivalent and describe the speed of convergence"
+        },
+        {
+          "type": "math_alttext",
+          "value": "d(x^*, x_n) \\leq q^n d(x^*,x_0),"
+        }
+      ],
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContractingWith.apriori_dist_iterate_fixedPoint_le",
+        "module": "Mathlib.Topology.MetricSpace.Contracting",
+        "match_kind": "exact"
+      },
+      "note": "`apriori_dist_iterate_fixedPoint_le` gives `dist (f^[n] x) (fixedPoint f hf) ≤ dist x (f x) * K^n / (1 - K)` (article's second form); `aposteriori_dist_iterate_fixedPoint_le` gives the third form using consecutive iterates.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lipschitz constant (and best Lipschitz constant)",
+      "anchor": {
+        "type": "prose_snippet",
+        "section": "Statement",
+        "snippet": "The value q is called a Lipschitz constant for T, and a minimal such q is sometimes called \"the best Lipschitz constant\" of T."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LipschitzWith",
+        "module": "Mathlib.Topology.EMetricSpace.Lipschitz",
+        "match_kind": "exact"
+      },
+      "note": "`LipschitzWith K f` captures the notion of `K` being a Lipschitz constant. The 'best' (least) Lipschitz constant is not a separate named decl, but the constant is parameter `K`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Counter-example: T(x)=x+1/x on [1,∞) has no fixed point",
+      "anchors": [
+        {
+          "type": "prose_snippet",
+          "section": "Statement",
+          "snippet": "The condition d(T(x),T(y))<d(x,y) for all x ≠ y is in general not enough to ensure the existence of a fixed point"
+        },
+        {
+          "type": "math_alttext",
+          "value": "T : [1,\\infty) \\to [1,\\infty), \\,\\, T(x)=x+\\tfrac{1}{x}\\,,"
+        }
+      ],
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific counter-example demonstrating that strict (<) contractivity alone does not yield a fixed point is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fixed-point theorem on compact metric spaces under strict contraction",
+      "anchor": {
+        "type": "prose_snippet",
+        "section": "Statement",
+        "snippet": "if X is compact, then this weaker condition does imply the existence and uniqueness of a fixed point which can be easily found as a minimizer of d(x,T(x))"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Edelstein-type theorem stating that a strict contraction on a compact metric space has a unique fixed point.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Picard–Lindelöf theorem via Banach fixed-point",
+      "anchor": {
+        "type": "prose_snippet",
+        "section": "Applications",
+        "snippet": "Picard–Lindelöf theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsPicardLindelof.exists_eq_forall_mem_Icc_hasDerivWithinAt",
+        "module": "Mathlib.Analysis.ODE.PicardLindelof",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib formalizes the Picard–Lindelöf existence theorem for ODEs via `IsPicardLindelof` and uses `ContractingWith.isFixedPt_fixedPoint_iterate` internally, precisely the Banach FPT route the article describes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Small Lipschitz perturbations of identity are bi-Lipschitz homeomorphisms",
+      "anchors": [
+        {
+          "type": "prose_snippet",
+          "section": "Applications",
+          "snippet": "small Lipschitz perturbations of the identity are bi-lipschitz homeomorphisms"
+        },
+        {
+          "type": "prose_snippet",
+          "section": "Applications",
+          "snippet": "Let Ω be an open set of a Banach space E; let I:Ω→E denote the identity (inclusion) map and let g:Ω→E be a Lipschitz map of constant k<1"
+        }
+      ],
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ApproximatesLinearOn.toOpenPartialHomeomorph",
+        "module": "Mathlib.Analysis.Calculus.InverseFunctionTheorem.ApproximatesLinearOn",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib generalizes this: any map approximating an invertible continuous linear equivalence by a small constant `c` on an open set is repacked as an `OpenPartialHomeomorph`. The article's `I+g` case is the specialization where the linear equivalence is the identity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Openness of (I+g)Ω under small Lipschitz perturbation",
+      "anchor": {
+        "type": "prose_snippet",
+        "section": "Applications",
+        "snippet": "Ω':=(I+g)Ω is an open subset of E"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ApproximatesLinearOn.closedBall_subset_target",
+        "module": "Mathlib.Analysis.Calculus.InverseFunctionTheorem.ApproximatesLinearOn",
+        "match_kind": "generalization"
+      },
+      "note": "`closedBall_subset_target` gives the quantitative ball inclusion `closedBall (f b) ((N⁻¹ - c) * ε) ⊆ target`, generalizing the article's `B((I+g)(x), r(1-k)) ⊂ Ω'`. Openness of the image follows from `open_target` of `toOpenPartialHomeomorph`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverse of I+g is of the form I+h with Lipschitz constant k/(1-k)",
+      "anchor": {
+        "type": "prose_snippet",
+        "section": "Applications",
+        "snippet": "(I+g)^{-1} is still of the form I+h:Ω→Ω' with h a Lipschitz map of constant k/(1-k)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ApproximatesLinearOn.to_inv",
+        "module": "Mathlib.Analysis.Calculus.InverseFunctionTheorem.ApproximatesLinearOn",
+        "match_kind": "generalization"
+      },
+      "note": "`to_inv` proves the inverse approximates `f'.symm` with constant `N * (N⁻¹ - c)⁻¹ * c`. Specialized to `f' = id`, `N = 1`, `c = k`, this yields the article's constant `k/(1-k)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverse function theorem (via Banach FPT)",
+      "anchor": {
+        "type": "prose_snippet",
+        "section": "Applications",
+        "snippet": "inverse function theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasStrictFDerivAt.to_localInverse",
+        "module": "Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `HasStrictFDerivAt.toOpenPartialHomeomorph` and `to_localInverse` give the inverse function theorem, proved precisely via `ApproximatesLinearOn` and the Banach fixed-point machinery.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Nash embedding theorem (via Banach FPT)",
+      "anchor": {
+        "type": "prose_snippet",
+        "section": "Applications",
+        "snippet": "Nash embedding theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Nash embedding theorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Map-on-floor illustration of the theorem",
+      "anchor": {
+        "type": "prose_snippet",
+        "section": "Applications",
+        "snippet": "Suppose a person holds a sheet of people on which is printed a map of the city they are in"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal real-world illustration; nothing to formalize directly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bessaga converse of the Banach contraction principle",
+      "anchor": {
+        "type": "prose_snippet",
+        "section": "Converses",
+        "snippet": "Let f:X→X be a map of an abstract set such that each iterate f^n has a unique fixed point. Let q ∈ (0, 1), then there exists a complete metric on X such that f is contractive, and q is the contraction constant."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bessaga's converse (existence of a compatible complete metric making `f` contractive) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hitzler–Seda converse on T1 topological spaces",
+      "anchor": {
+        "type": "prose_snippet",
+        "section": "Converses",
+        "snippet": "if f : X → X is a map on a T1 topological space with a unique fixed point a, such that for each x ∈ X we have f^n(x)→a, then there already exists a metric on X with respect to which f satisfies the conditions of the Banach contraction principle with contraction constant 1/2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hitzler–Seda converse on T1 spaces (with the ultrametric strengthening) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Iterate-is-contraction generalization",
+      "anchor": {
+        "type": "prose_snippet",
+        "section": "Generalizations",
+        "snippet": "Assume that some iterate T^n of T is a contraction. Then T has a unique fixed point."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContractingWith.isFixedPt_fixedPoint_iterate",
+        "module": "Mathlib.Topology.MetricSpace.Contracting",
+        "match_kind": "exact"
+      },
+      "note": "If `f^[n]` is `ContractingWith K`, Mathlib proves that the fixed point of `f^[n]` is also a fixed point of `f`; uniqueness then follows since any fixed point of `f` is a fixed point of `f^[n]` and `ContractingWith` has a unique fixed point.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Summable Lipschitz-coefficients generalization",
+      "anchors": [
+        {
+          "type": "prose_snippet",
+          "section": "Generalizations",
+          "snippet": "Assume that for each n, there exist c_n such that d(T^n(x),T^n(y))≤c_n d(x,y) for all x and y, and that"
+        },
+        {
+          "type": "math_alttext",
+          "value": "\\sum\\nolimits_n c_n <\\infty."
+        }
+      ],
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The fixed-point theorem under summable per-iterate Lipschitz constants is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Edelstein-type theorem on compact metric spaces",
+      "anchor": {
+        "type": "prose_snippet",
+        "section": "Generalizations",
+        "snippet": "In a non-empty compact metric space, any function T satisfying d(T(x),T(y))<d(x,y) for all distinct x,y, has a unique fixed point."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Edelstein's fixed-point theorem for strict (<) contractions on compact metric spaces is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Approximating π by iterating f(x)=x+sin(x)",
+      "anchor": {
+        "type": "prose_snippet",
+        "section": "Example",
+        "snippet": "An application of the Banach fixed-point theorem and fixed-point iteration can be used to quickly obtain an approximation of π with high accuracy. Consider the function f(x)=x+sin(x)."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This worked numerical example computing π via Banach iteration of `x ↦ x + sin x` is not formalized as such in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lipschitz bound 0 ≤ 1+cos(x) ≤ 1−1/√2 on [3π/4, 5π/4]",
+      "anchor": {
+        "type": "math_alttext",
+        "value": "0\\leqslant 1+\\cos(x)\\leqslant 1-\\frac{1}{\\sqrt{2\\,}\\,}\\approx 0.292893<1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific quantitative inequality on `[3π/4, 5π/4]`, used to certify the Lipschitz constant in the π example, is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,681 @@
+{
+  "slug": "Numerical_methods_for_ordinary_differential_equations",
+  "wikipedia_title": "Numerical methods for ordinary differential equations",
+  "display_title": "Numerical methods for ordinary differential equations",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Initial value problem (first-order ODE)",
+      "anchor": {
+        "section": "The problem",
+        "snippet": "A first-order differential equation is an Initial value problem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsIntegralCurveAt",
+        "module": "Mathlib.Analysis.ODE.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib expresses the IVP relation via integral curves (`HasDerivAt γ (v t (γ t))`) plus an initial value, but has no single named 'initial value problem' definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "First-order equation",
+      "anchor": {
+        "section": "The problem",
+        "snippet": "First-order means that only the first derivative of y appears in the equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is descriptive terminology, not a formalized statement, though Mathlib does work exclusively with first-order systems via `HasDerivAt`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Reducing a second-order ODE to first-order system",
+      "anchor": {
+        "section": "The problem",
+        "snippet": "the second-order equation y ′′ = − y can be rewritten as two first-order equations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no general order-reduction construction for higher-order ODEs.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Picard–Lindelöf theorem",
+      "anchor": {
+        "section": "The problem",
+        "snippet": "The Picard–Lindelöf theorem states that there is a unique solution"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsPicardLindelof.exists_eq_forall_mem_Icc_hasDerivWithinAt",
+        "module": "Mathlib.Analysis.ODE.PicardLindelof",
+        "match_kind": "exact"
+      },
+      "note": "Local existence is given by `exists_eq_forall_mem_Icc_hasDerivWithinAt` and uniqueness by `ODE_solution_unique` in `Mathlib.Analysis.ODE.Gronwall`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euler method",
+      "anchor": {
+        "section": "Euler method",
+        "snippet": "This is the Euler method"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Euler method or other numerical ODE integrators.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Euler method as an explicit method",
+      "anchor": {
+        "section": "Euler method",
+        "snippet": "The Euler method is an example of an explicit method"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of explicit numerical methods exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Backward Euler method",
+      "anchor": {
+        "section": "Backward Euler method",
+        "snippet": "we get the backward Euler method"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no backward Euler scheme.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Backward Euler is implicit",
+      "anchor": {
+        "section": "Backward Euler method",
+        "snippet": "The backward Euler method is an implicit method"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of implicit numerical methods exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exponential integrators",
+      "anchor": {
+        "section": "First-order exponential integrator method",
+        "snippet": "Exponential integrators describe a large class of integrators"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no exponential integrator methods.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "First-order exponential integrator",
+      "anchor": {
+        "section": "First-order exponential integrator method",
+        "snippet": "The first-order exponential integrator can be realized by holding"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No exponential integrator scheme is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multistep method",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "This yields a so-called multistep method"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no multistep numerical methods.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Leapfrog method",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "the leapfrog method which is second order"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The leapfrog method is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear multistep methods",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "Almost all practical multistep methods fall within the family of linear multistep methods"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Linear multistep methods are not present in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Generalizations",
+          "snippet": "Almost all practical multistep methods fall within the family of linear multistep methods"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}&amp;{}\\alpha _{k}y_{n+k}+\\alpha _{k-1}y_{n+k-1}+\\cdots +\\alpha _{0}y_{n}\\\\&amp;{}\\quad =h\\left[\\beta _{k}f(t_{n+k},y_{n+k})+\\beta _{k-1}f(t_{n+k-1},y_{n+k-1})+\\cdots +\\beta _{0}f(t_{n},y_{n})\\right].\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Runge–Kutta methods",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "This leads to the family of Runge–Kutta methods"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Runge–Kutta methods are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Variable step-size methods",
+      "anchor": {
+        "section": "Advanced features",
+        "snippet": "variable step-size methods have been developed"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No adaptive step-size machinery exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Error indicator",
+      "anchor": {
+        "section": "Advanced features",
+        "snippet": "the methods must also compute an error indicator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of a numerical error indicator.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Variable order method",
+      "anchor": {
+        "section": "Advanced features",
+        "snippet": "this is called a variable order method"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Variable order methods are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multiderivative methods",
+      "anchor": {
+        "section": "Alternative methods",
+        "snippet": "multiderivative methods , which use not only the function f but also its derivatives"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Multiderivative numerical methods are not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Nyström methods",
+      "anchor": {
+        "section": "Alternative methods",
+        "snippet": "Nyström methods work directly with second-order equations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Nyström methods are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Geometric integration methods",
+      "anchor": {
+        "section": "Alternative methods",
+        "snippet": "are especially designed for special classes of ODEs"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Geometric/structure-preserving integrators are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quantized state systems methods",
+      "anchor": {
+        "section": "Alternative methods",
+        "snippet": "Quantized state systems methods are a family of ODE integration methods"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quantized state system methods are not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Parallel-in-time methods",
+      "anchor": {
+        "section": "Parallel-in-time methods",
+        "snippet": "Parallel-in-time (PinT) methods have been developed in response to these issues"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Parallel-in-time integration methods are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convergent numerical method",
+      "anchor": {
+        "section": "Convergence",
+        "snippet": "A numerical method is said to be convergent if the numerical solution approaches the exact solution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no definition of convergence of a numerical scheme.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Listed methods are convergent",
+      "anchor": {
+        "section": "Convergence",
+        "snippet": "All the methods mentioned above are convergent."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No convergence results for numerical ODE methods are formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Local (truncation) error",
+      "anchor": {
+        "section": "Consistency and order",
+        "snippet": "The local (truncation) error of the method is the error committed by one step of the method"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Local truncation error is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Consistent method",
+      "anchor": {
+        "section": "Consistency and order",
+        "snippet": "The method is said to be consistent if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Consistency of a numerical method is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Consistency and order",
+          "snippet": "The method is said to be consistent if"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{h\\to 0}{\\frac {\\delta _{n+k}^{h}}{h}}=0.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\delta _{n+k}^{h}=O(h^{p+1})\\quad {\\text{as }}h\\to 0.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Order of a method",
+      "anchor": {
+        "section": "Consistency and order",
+        "snippet": "The method has order"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The order of a numerical method is not defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Consistency and order",
+          "snippet": "The method has order"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{h\\to 0}{\\frac {\\delta _{n+k}^{h}}{h}}=0.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\delta _{n+k}^{h}=O(h^{p+1})\\quad {\\text{as }}h\\to 0.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Consistency from positive order",
+      "anchor": {
+        "section": "Consistency and order",
+        "snippet": "Hence a method is consistent if it has an order greater than 0."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This consistency-from-order implication is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Consistency and order",
+          "snippet": "Hence a method is consistent if it has an order greater than 0."
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{h\\to 0}{\\frac {\\delta _{n+k}^{h}}{h}}=0.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\delta _{n+k}^{h}=O(h^{p+1})\\quad {\\text{as }}h\\to 0.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Convergence requires consistency and zero-stability",
+      "anchor": {
+        "section": "Consistency and order",
+        "snippet": "for a method to be convergent, it must be both consistent and zero-stable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Dahlquist equivalence theorem (convergence ⇔ consistency + zero-stability) is not in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Consistency and order",
+          "snippet": "for a method to be convergent, it must be both consistent and zero-stable"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{h\\to 0}{\\frac {\\delta _{n+k}^{h}}{h}}=0.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\delta _{n+k}^{h}=O(h^{p+1})\\quad {\\text{as }}h\\to 0.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Euler methods have order 1",
+      "anchor": {
+        "section": "Consistency and order",
+        "snippet": "introduced above both have order 1, so they are consistent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No order analysis of the Euler methods exists in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Consistency and order",
+          "snippet": "introduced above both have order 1, so they are consistent"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{h\\to 0}{\\frac {\\delta _{n+k}^{h}}{h}}=0.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\delta _{n+k}^{h}=O(h^{p+1})\\quad {\\text{as }}h\\to 0.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Global (truncation) error",
+      "anchor": {
+        "section": "Consistency and order",
+        "snippet": "A related concept is the global (truncation) error"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Global truncation error is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Global error of one-step method implies convergence",
+      "anchor": {
+        "section": "Consistency and order",
+        "snippet": "in particular, such a method is convergent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This convergence result for one-step methods is not formalized in Mathlib, though `discrete_gronwall` provides related discrete error-bound infrastructure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Stiffness",
+      "anchor": {
+        "section": "Stability and stiffness",
+        "snippet": "is described as stiffness"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Stiffness of ODEs is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Finite Difference Method for BVPs",
+      "anchor": {
+        "section": "Numerical solutions to second-order one-dimensional boundary value problems",
+        "snippet": "is called the Finite Difference Method"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The finite difference method for boundary value problems is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Central difference for first derivative",
+      "anchor": {
+        "section": "Numerical solutions to second-order one-dimensional boundary value problems",
+        "snippet": "the second-order central difference approximation to the first derivative is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Central difference approximations are not formalized in Mathlib (only `slope` for exact divided differences exists).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Central difference for second derivative",
+      "anchor": {
+        "section": "Numerical solutions to second-order one-dimensional boundary value problems",
+        "snippet": "the second-order central difference for the second derivative is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The central difference formula for the second derivative is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Discretizing a BVP into a linear system",
+      "anchor": {
+        "section": "Numerical solutions to second-order one-dimensional boundary value problems",
+        "snippet": "suppose the equation to be solved is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Discretization of a boundary value problem into a linear system is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,441 @@
+{
+  "slug": "Algebraic_topology",
+  "wikipedia_title": "Algebraic topology",
+  "display_title": "Algebraic topology",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "example",
+      "label": "Subgroup of a free group is free",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "any subgroup of a free group is again a free group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "subgroupIsFreeOfIsFree",
+        "module": "Mathlib.GroupTheory.FreeGroup.NielsenSchreier",
+        "match_kind": "exact"
+      },
+      "note": "The instance `subgroupIsFreeOfIsFree` states a subgroup of a free group is free (the Nielsen–Schreier theorem).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homotopy groups",
+      "anchor": {
+        "section": "Homotopy groups",
+        "snippet": "homotopy groups are used in algebraic topology to classify topological spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HomotopyGroup",
+        "module": "Mathlib.Topology.Homotopy.HomotopyGroup",
+        "match_kind": "exact"
+      },
+      "note": "`HomotopyGroup N X x` defines the n-th homotopy group of a pointed space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fundamental group",
+      "anchor": {
+        "section": "Homotopy groups",
+        "snippet": "The first and simplest homotopy group is the fundamental group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FundamentalGroup",
+        "module": "Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup",
+        "match_kind": "exact"
+      },
+      "note": "`FundamentalGroup X x` is defined as the endomorphisms of `x` in the fundamental groupoid.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homology",
+      "anchor": {
+        "section": "Homology",
+        "snippet": "a certain general procedure to associate a sequence of abelian groups or modules"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "singularHomologyFunctor",
+        "module": "Mathlib.AlgebraicTopology.SingularHomology.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`singularHomologyFunctor` assigns homology objects to a topological space; the general algebraic notion is `HomologicalComplex.homology`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cohomology",
+      "anchor": {
+        "section": "Cohomology",
+        "snippet": "cohomology is a general term for a sequence of abelian groups defined from a cochain complex"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HomologicalComplex.homology",
+        "module": "Mathlib.Algebra.Homology.ShortComplex.HomologicalComplex",
+        "match_kind": "generalization"
+      },
+      "note": "`HomologicalComplex.homology` gives the homology/cohomology of a (co)chain complex for any complex shape.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Manifold",
+      "anchor": {
+        "section": "Manifolds",
+        "snippet": "A manifold is a topological space that near each point resembles Euclidean space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsManifold",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`IsManifold` formalizes C^n manifolds modelled on (Euclidean/normed) model spaces via `ChartedSpace`, generalizing the topological-manifold notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Examples of manifolds",
+      "anchor": {
+        "section": "Manifolds",
+        "snippet": "Examples include the plane , the sphere , and the torus"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanSpace.instIsManifoldSphere",
+        "module": "Mathlib.Geometry.Manifold.Instances.Sphere",
+        "match_kind": "special_case"
+      },
+      "note": "The sphere (and circle) carry manifold instances and the plane is trivially a manifold, but the torus is not formalized as a manifold.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Knot theory",
+      "anchor": {
+        "section": "Knot theory",
+        "snippet": "Knot theory is the study of mathematical knots"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Quandle",
+        "module": "Mathlib.Algebra.Quandle",
+        "match_kind": null
+      },
+      "note": "Only the algebraic structures `Rack`/`Quandle` (axiomatizing knot diagram moves) exist; knot theory itself is not developed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Knot (embedding of a circle)",
+      "anchor": {
+        "section": "Knot theory",
+        "snippet": "a knot is an embedding of a circle in three-dimensional Euclidean space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no definition of a knot as an embedding of a circle into ℝ³.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalence of knots",
+      "anchor": {
+        "section": "Knot theory",
+        "snippet": "Two mathematical knots are equivalent if one can be transformed into the other via a deformation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of ambient isotopy / knot equivalence is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Simplicial complex",
+      "anchor": {
+        "section": "Complexes",
+        "snippet": "A simplicial complex is a topological space of a certain kind"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Geometry.SimplicialComplex",
+        "module": "Mathlib.Analysis.Convex.SimplicialComplex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Geometry.SimplicialComplex` defines a geometric simplicial complex as a set of simplices closed under faces with proper intersections.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "CW complex",
+      "anchor": {
+        "section": "Complexes",
+        "snippet": "A CW complex is a type of topological space introduced by J. H. C. Whitehead"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CWComplex",
+        "module": "Mathlib.Topology.CWComplex.Classical.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Classical (relative) CW complexes are formalized via `RelCWComplex`/`CWComplex`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite presentation of fundamental group of a simplicial complex",
+      "anchor": {
+        "section": "Method of algebraic invariants",
+        "snippet": "The fundamental group of a (finite) simplicial complex does have a finite presentation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not compute the fundamental group of a simplicial complex nor establish its finite presentation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Classification of finitely generated abelian groups",
+      "anchor": {
+        "section": "Method of algebraic invariants",
+        "snippet": "Finitely generated abelian groups are completely classified"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AddCommGroup.equiv_free_prod_directSum_zmod",
+        "module": "Mathlib.GroupTheory.FiniteAbelian.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The structure theorem expresses any finitely generated abelian group as ℤⁿ times a direct sum of `ZMod (p^e)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Functoriality of algebraic topology constructions",
+      "anchor": {
+        "section": "Setting in category theory",
+        "snippet": "all constructions of algebraic topology are functorial"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "singularHomologyFunctor",
+        "module": "Mathlib.AlgebraicTopology.SingularHomology.Basic",
+        "match_kind": null
+      },
+      "note": "Specific constructions (e.g. `singularHomologyFunctor`, the fundamental groupoid functor) are formalized as functors, but no blanket functoriality statement exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "De Rham theorem",
+      "anchor": {
+        "section": "Setting in category theory",
+        "snippet": "the Betti numbers derived through simplicial homology were the same Betti numbers as those derived through de Rham cohomology"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "De Rham cohomology and the de Rham comparison theorem are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Eilenberg–Steenrod axiomatization",
+      "anchor": {
+        "section": "Setting in category theory",
+        "snippet": "proved that such an axiomatization uniquely characterized the theory"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Eilenberg–Steenrod axioms for homology theories are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of algebra via fundamental group",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "one may easily prove the fundamental theorem of algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.isAlgClosed",
+        "module": "Mathlib.Analysis.Complex.Polynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The fundamental theorem of algebra (`Complex.isAlgClosed`/`Complex.exists_root`) is proved, though via complex analysis rather than the fundamental group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Brouwer fixed point theorem",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "to itself has a fixed point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Only the Banach contraction fixed-point theorem exists; the Brouwer fixed-point theorem for the disk/ball is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Betti number and Euler–Poincaré characteristic",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "The free rank of the n th homology group of a simplicial complex is the n th Betti number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Betti numbers and the Euler–Poincaré characteristic of complexes are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "De Rham cohomology and differential equations",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "to investigate the solvability of differential equations defined on the manifold in question"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "De Rham cohomology and its application to solvability of differential equations on manifolds are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orientability via top integral homology",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "A manifold is orientable when the top-dimensional integral homology group is the integers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `Orientation` for vector spaces but no characterization of manifold orientability via top integral homology.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hairy ball theorem",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "admits a nowhere-vanishing continuous unit vector field if and only if n is odd"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The hairy ball theorem on nowhere-vanishing vector fields on spheres is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Invariance of domain and dimension",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "Invariance of domain and invariance of dimension"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither invariance of domain nor topological invariance of dimension is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Borsuk–Ulam theorem",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "identifies at least one pair of antipodal points"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Borsuk–Ulam theorem is not formalized (the Mazur–Ulam theorem found is unrelated).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Jordan curve theorem",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "Jordan curve theorem and its generalizations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Jordan curve theorem is not formalized in Mathlib (only unrelated 'Jordan' decompositions/algebras exist).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Nielsen–Schreier theorem",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "any subgroup of a free group is free"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "subgroupIsFreeOfIsFree",
+        "module": "Mathlib.GroupTheory.FreeGroup.NielsenSchreier",
+        "match_kind": "exact"
+      },
+      "note": "The Nielsen–Schreier theorem is the instance `subgroupIsFreeOfIsFree`: any subgroup of a free group is free.",
+      "provenance": "ai"
+    }
+  ]
+}

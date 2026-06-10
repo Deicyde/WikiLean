@@ -1,0 +1,119 @@
+{
+  "slug": "Euclidean_distance",
+  "wikipedia_title": "Euclidean distance",
+  "display_title": "Euclidean distance",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d(p,q)=|p-q|.}"
+      },
+      "status": "formalized",
+      "decl": "Real.dist_eq",
+      "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+      "note": "Exactly states dist x y = |x - y| for real numbers."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d(p,q)={\\sqrt {(p-q)^{2}}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "No standalone lemma rewrites real distance as √((p-q)²); trivially follows from Real.sqrt_sq_eq_abs."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d(p,q)={\\sqrt {(p_{1}-q_{1})^{2}+(p_{2}-q_{2})^{2}}}.}"
+      },
+      "status": "partial",
+      "decl": "EuclideanSpace.dist_eq",
+      "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+      "note": "General n-dimensional sum-of-squares formula; the 2D specialization is not a separate theorem."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d(p,q)=(p_{1}-q_{1})\\oplus (p_{2}-q_{2})={\\mathsf {hypot}}(p_{1}-q_{1},p_{2}-q_{2}).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Mathlib has no hypot function as a primitive numerical operation."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d(p,q)={\\sqrt {r^{2}+s^{2}-2rs\\cos(\\theta -\\psi )}}.}"
+      },
+      "status": "partial",
+      "decl": "dist_sq_eq_dist_sq_add_dist_sq_sub_two_mul_dist_mul_dist_mul_cos_angle",
+      "module": "Mathlib.Geometry.Euclidean.Triangle",
+      "note": "Abstract law of cosines is formalized; the polar-coordinate specialization is not stated separately."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d(p,q)=|p-q|.}"
+      },
+      "status": "formalized",
+      "decl": "Complex.dist_eq",
+      "module": "Mathlib.Analysis.Complex.Norm",
+      "note": "States dist z w = ‖z - w‖ using the complex norm."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d(p,q)={\\sqrt {(p_{1}-q_{1})^{2}+(p_{2}-q_{2})^{2}+(p_{3}-q_{3})^{2}}}.}"
+      },
+      "status": "partial",
+      "decl": "EuclideanSpace.dist_eq",
+      "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+      "note": "General n-dimensional formula; the 3D specialization is not a separate theorem."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d(p,q)={\\sqrt {(p_{1}-q_{1})^{2}+(p_{2}-q_{2})^{2}+\\cdots +(p_{n}-q_{n})^{2}}}.}"
+      },
+      "status": "formalized",
+      "decl": "EuclideanSpace.dist_eq",
+      "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+      "note": "Directly states the n-dimensional Euclidean distance as √(∑ dist(xᵢ,yᵢ)²)."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d(p,q)=\\|p-q\\|.}"
+      },
+      "status": "formalized",
+      "decl": "dist_eq_norm",
+      "module": "Mathlib.Analysis.Normed.Group.Basic",
+      "note": "Alias of dist_eq_norm_sub stating dist a b = ‖a - b‖ in any normed group."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d(p,q)\\cdot d(r,s)+d(q,r)\\cdot d(p,s)\\geq d(p,r)\\cdot d(q,s).}"
+      },
+      "status": "formalized",
+      "decl": "EuclideanGeometry.mul_dist_le_mul_dist_add_mul_dist",
+      "module": "Mathlib.Geometry.Euclidean.Inversion.Basic",
+      "note": "Ptolemy's inequality: |AC|·|BD| ≤ |AB|·|CD| + |BC|·|AD| in any Euclidean affine space."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d^{2}(p,q)=(p_{1}-q_{1})^{2}+(p_{2}-q_{2})^{2}+\\cdots +(p_{n}-q_{n})^{2}.}"
+      },
+      "status": "formalized",
+      "decl": "EuclideanSpace.dist_sq_eq",
+      "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+      "note": "States dist x y ^ 2 = ∑ i, dist (x i) (y i) ^ 2, the squared Euclidean distance."
+    }
+  ]
+}

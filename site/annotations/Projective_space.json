@@ -1,0 +1,979 @@
+{
+  "slug": "Projective_space",
+  "wikipedia_title": "Projective space",
+  "display_title": "Projective space",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Projective space (via vector lines)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Using linear algebra , a projective space of dimension n is defined as the set of the vector lines"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Projectivization.equivSubmodule",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Projectivization` is the projectivization of a vector space and `equivSubmodule` gives its bijection with the one-dimensional subspaces (vector lines), over any division ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective line and projective plane",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A projective space of dimension 1 is a projective line , and a projective space of dimension 2 is a projective plane ."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Projectivization",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Projective lines/planes arise as special cases of `Projectivization` (e.g. `OnePoint.equivProjectivization` for the line), but are not separately named in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective space as set of vector lines",
+      "anchor": {
+        "section": "Motivation",
+        "snippet": "So, a projective space of dimension n can be defined as the set of vector lines"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Projectivization.equivSubmodule",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`equivSubmodule` realizes the projective space as the collection of one-dimensional subspaces (vector lines) of `V`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective space via equivalence classes",
+      "anchor": {
+        "section": "Motivation",
+        "snippet": "This set can be the set of equivalence classes under the equivalence relation between vectors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "projectivizationSetoid",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Projectivization` is literally defined as the quotient by `projectivizationSetoid`, the scalar-multiple equivalence on nonzero vectors.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective space as antipodal point pairs",
+      "anchor": {
+        "section": "Motivation",
+        "snippet": "A third equivalent definition is to define a projective space of dimension n as the set of pairs of antipodal points"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no construction of (real) projective space as the sphere quotient by the antipodal map.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective space P(V)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Given a vector space V over a field K , the projective space P ( V ) is the set of equivalence classes"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Projectivization",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Projectivization K V` (notation `ℙ K V`) is exactly P(V), defined for any division ring `K`, generalizing the field case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective coordinates",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "the projective coordinates of a point P are the coordinates on the basis of any element of the corresponding equivalence class"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Projectivization.rep",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": null
+      },
+      "note": "`Projectivization.rep` chooses a representative vector whose basis coordinates would be the projective coordinates, but no homogeneous-coordinate API is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Real and complex projective space",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "If K is the field of real or complex numbers, a projective space is called a real projective space or a complex projective space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Projectivization",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "These are the instances `ℙ ℝ V` and `ℙ ℂ V` of `Projectivization`, but Mathlib provides no dedicated real/complex projective space with topology or manifold structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Riemann sphere",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The complex projective line is also called the Riemann sphere ."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "OnePoint.equivProjectivization",
+        "module": "Mathlib.Topology.Compactification.OnePoint.ProjectiveLine",
+        "match_kind": "special_case"
+      },
+      "note": "`OnePoint.equivProjectivization` identifies `OnePoint ℂ` (ℂ ∪ {∞}) with the complex projective line `ℙ ℂ (Fin 2 → ℂ)`, but the Riemann sphere as a complex manifold is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linear subspace is a union of lines",
+      "anchor": {
+        "section": "Subspace",
+        "snippet": "Every linear subspace W of V is a union of lines."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma states that a submodule is the union of its one-dimensional subspaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective subspace",
+      "anchor": {
+        "section": "Subspace",
+        "snippet": "A projective subspace is thus a projective space that is obtained by restricting to a linear subspace"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Projectivization.Subspace",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Subspace",
+        "match_kind": "exact"
+      },
+      "note": "`Projectivization.Subspace` defines projective subspaces, with an order-isomorphism `Subspace.submodule` to the submodules of `V`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unique line through two points",
+      "anchor": {
+        "section": "Subspace",
+        "snippet": "There is exactly one projective line that passes through two different points of P ( V )"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Projectivization.Subspace.span",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Subspace",
+        "match_kind": null
+      },
+      "note": "The span of a set of points is available via `Subspace.span`, but there is no lemma asserting a unique line through two distinct points.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Intersection of projective subspaces",
+      "anchor": {
+        "section": "Span",
+        "snippet": "Every intersection of projective subspaces is a projective subspace."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Projectivization.Subspace.instInfSet",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Subspace",
+        "match_kind": "generalization"
+      },
+      "note": "`Subspace` has an `InfSet`/`CompleteLattice` instance, so arbitrary intersections of projective subspaces are again subspaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective span and spanning set",
+      "anchor": {
+        "section": "Span",
+        "snippet": "This projective subspace is called the projective span of S , and S is a spanning set for it."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Projectivization.Subspace.span",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Subspace",
+        "match_kind": "exact"
+      },
+      "note": "`Subspace.span` is the projective span of a set of points, given as a Galois insertion with the subset-of-points functor.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projectively independent set",
+      "anchor": {
+        "section": "Span",
+        "snippet": "A set S of points is projectively independent if its span is not the span of any proper subset of S ."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Projectivization.Independent",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Independence",
+        "match_kind": null
+      },
+      "note": "`Projectivization.Independent` formalizes independence of a family of projective points via linear independence of representatives, an equivalent formulation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence of independent spanning subset",
+      "anchor": {
+        "section": "Span",
+        "snippet": "If S is a spanning set of a projective space P , then there is a subset of S that spans P and is projectively independent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No projective-space analogue of basis extraction from a spanning set is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective frame / basis",
+      "anchor": {
+        "section": "Frame",
+        "snippet": "A projective frame or projective basis is an ordered set of points in a projective space that allows defining coordinates."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define projective frames/bases (points in general position determining coordinates).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Frame characterization via basis",
+      "anchor": {
+        "section": "Frame",
+        "snippet": "is a projective frame if and only if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No characterization of projective frames in terms of underlying vector-space bases is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homogeneous coordinates on a frame",
+      "anchor": {
+        "section": "Frame",
+        "snippet": "The projective coordinates or homogeneous coordinates of a point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Homogeneous coordinates relative to a projective frame are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Canonical frame",
+      "anchor": {
+        "section": "Frame",
+        "snippet": "The canonical frame of the projective space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The canonical projective frame is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective geometry",
+      "anchor": {
+        "section": "Projective geometry",
+        "snippet": "projective geometry is the study of geometric properties that are invariant with respect to projective transformations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This describes a field of study rather than a single formalizable statement; Mathlib has no such overarching development.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homography",
+      "anchor": {
+        "section": "Projective transformation",
+        "snippet": "a homography is an isomorphism of projective spaces"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.ProjGenLinGroup",
+        "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Projective",
+        "match_kind": null
+      },
+      "note": "Homographies correspond to the `PGL` action on `ℙ`, which exists (`ProjGenLinGroup` and `Projectivization.map`), but homographies are not defined as a named isomorphism of projective spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of projective geometry",
+      "anchor": {
+        "section": "Projective transformation",
+        "snippet": "the fundamental theorem of projective geometry asserts that is not so in the case of real projective spaces of dimension at least two"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The fundamental theorem of projective geometry is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Projective space is a topological space",
+      "anchor": {
+        "section": "Topology",
+        "snippet": "A projective space is a topological space , as endowed with the quotient topology"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No quotient topology or `TopologicalSpace` instance is placed on `Projectivization`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Projective space is a manifold",
+      "anchor": {
+        "section": "Topology",
+        "snippet": "This shows that a projective space is a manifold."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No charted-space/manifold structure on projective space is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Projective spaces are analytic manifolds",
+      "anchor": {
+        "section": "Topology",
+        "snippet": "it results that projective spaces are analytic manifolds"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No analytic-manifold structure on projective space is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "CW complex structure of real projective space",
+      "anchor": {
+        "section": "CW complex structure",
+        "snippet": "Real projective spaces have a simple CW complex structure"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no CW-complex structure for real projective space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fundamental theorem of algebra",
+      "anchor": {
+        "section": "Algebraic geometry",
+        "snippet": "the fundamental theorem of algebra asserts that a univariate square-free polynomial of degree n has exactly n complex roots"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exists_root",
+        "module": "Mathlib.Analysis.Complex.Polynomial.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Complex.exists_root` (and `Complex.isAlgClosed`) is the fundamental theorem of algebra, from which the degree-`n` root count follows.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Bézout's theorem",
+      "anchor": {
+        "section": "Algebraic geometry",
+        "snippet": "Bézout's theorem asserts that the intersection of two plane algebraic curves of respective degrees d and e consists of exactly de points"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `Bezout` file concerns Bézout rings/domains, not the intersection theorem for plane curves, which is unformalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective variety",
+      "anchor": {
+        "section": "Algebraic geometry",
+        "snippet": "So a projective variety is the set of points in a projective space, whose homogeneous coordinates are common zeros of a set of homogeneous polynomials"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProjectiveSpectrum.zeroLocus",
+        "module": "Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Topology",
+        "match_kind": "generalization"
+      },
+      "note": "`ProjectiveSpectrum.zeroLocus` gives the (scheme-theoretic) common-zero loci of homogeneous elements, the analogue of projective varieties, but classical projective varieties are not separately developed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Completion of an affine variety",
+      "anchor": {
+        "section": "Algebraic geometry",
+        "snippet": "Any affine variety can be completed , in a unique way, into a projective variety by adding its points at infinity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The projective closure of an affine variety is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Image of projective variety is closed",
+      "anchor": {
+        "section": "Algebraic geometry",
+        "snippet": "the image of a projective variety under a morphism of algebraic varieties is closed for Zariski topology"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.Proj.toSpecZero",
+        "module": "Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Proper",
+        "match_kind": "generalization"
+      },
+      "note": "`Proj.toSpecZero` is proven `UniversallyClosed`/`IsProper` over `Spec 𝒜₀`, the scheme-theoretic completeness expressing that images of projective schemes are closed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Projective space is a projective variety",
+      "anchor": {
+        "section": "Algebraic geometry",
+        "snippet": "A projective space is itself a projective variety, being the set of zeros of the zero polynomial."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProjectiveSpectrum.zeroLocus",
+        "module": "Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Topology",
+        "match_kind": null
+      },
+      "note": "The whole space is the zero locus of `0` via `zeroLocus`, but this triviality is not stated as a named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Proj construction",
+      "anchor": {
+        "section": "Scheme theory",
+        "snippet": "The Proj construction is the construction of the scheme of a projective space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.Proj",
+        "module": "Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Scheme",
+        "match_kind": "generalization"
+      },
+      "note": "`AlgebraicGeometry.Proj` constructs the scheme `Proj 𝒜` for any ℕ-graded ring `A`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Axiomatic projective space",
+      "anchor": {
+        "section": "Synthetic geometry",
+        "snippet": "a projective space S can be defined axiomatically as a set P (the set of points), together with a set L of subsets of P"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no axiomatic/synthetic incidence-geometry definition of projective space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Veblen–Young theorem (dimension ≥ 3)",
+      "anchor": {
+        "section": "Synthetic geometry",
+        "snippet": "If the (projective) dimension is at least three then, by the Veblen–Young theorem , there is no difference."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Veblen–Young coordinatization theorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pappus's theorem (as axiom)",
+      "anchor": {
+        "section": "Synthetic geometry",
+        "snippet": "If the six vertices of a hexagon lie alternately on two lines, the three points of intersection of pairs of opposite sides are collinear."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pappus's theorem in projective geometry is not formalized in Mathlib (only mentioned in docs).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fano's axiom",
+      "anchor": {
+        "section": "Synthetic geometry",
+        "snippet": "The three diagonal points of a complete quadrangle are never collinear."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fano's axiom on diagonal points of a complete quadrangle is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Subspace (synthetic)",
+      "anchor": {
+        "section": "Synthetic geometry",
+        "snippet": "A subspace of the projective space is a subset X"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Projectivization.Subspace",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Subspace",
+        "match_kind": null
+      },
+      "note": "`Projectivization.Subspace` captures the line-closure subspace condition, but only in the linear (not purely synthetic) setting.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Geometric dimension",
+      "anchor": {
+        "section": "Synthetic geometry",
+        "snippet": "The geometric dimension of the space is said to be n if that is the largest number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no notion of projective/geometric dimension via maximal chains of subspaces in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Synthetic geometry",
+          "snippet": "The geometric dimension of the space is said to be n if that is the largest number"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\varnothing =X_{-1}\\subset X_{0}\\subset \\cdots X_{n}=P.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Correspondence with geomodular lattices",
+      "anchor": {
+        "section": "Synthetic geometry",
+        "snippet": "There is a bijective correspondence between projective spaces and geomodular lattices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The correspondence between projective spaces and geomodular lattices is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Classification: dimension 0",
+      "anchor": {
+        "section": "Classification",
+        "snippet": "Dimension 0 (no lines): The space is a single point."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Projectivization.card_of_finrank",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Cardinality",
+        "match_kind": null
+      },
+      "note": "`card_of_finrank` with `finrank = 1` yields a single point (`Nat.card (ℙ k V) = 1`), but the synthetic dim-0 classification is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Classification: dimension 1",
+      "anchor": {
+        "section": "Classification",
+        "snippet": "Dimension 1 (exactly one line): All points lie on the unique line."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The synthetic classification of dimension-1 projective spaces is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Classification: dimension 2 equals projective plane",
+      "anchor": {
+        "section": "Classification",
+        "snippet": "A projective space for n = 2 is equivalent to a projective plane ."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize the synthetic equivalence of dimension-2 projective spaces with projective planes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Classification: dimension ≥ 3 isomorphic to PG(n,K)",
+      "anchor": {
+        "section": "Classification",
+        "snippet": "every projective space of dimension n ≥ 3 is isomorphic with a PG( n , K )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The coordinatization of dimension ≥ 3 projective spaces as PG(n,K) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Finite projective space",
+      "anchor": {
+        "section": "Finite projective spaces and planes",
+        "snippet": "A finite projective space is a projective space where P is a finite set of points."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Projectivization.finite_of_finite",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Cardinality",
+        "match_kind": null
+      },
+      "note": "`finite_of_finite` shows `ℙ k V` is finite when `V` is finite, but 'finite projective space' is not a named concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Order of a finite projective space",
+      "anchor": {
+        "section": "Finite projective spaces and planes",
+        "snippet": "the order of the space is defined as one less than this common number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The order of a finite projective space/plane is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Wedderburn's theorem implication",
+      "anchor": {
+        "section": "Finite projective spaces and planes",
+        "snippet": "Wedderburn's theorem implies that the division ring over which the projective space is defined must be a finite field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "littleWedderburn",
+        "module": "Mathlib.RingTheory.LittleWedderburn",
+        "match_kind": "exact"
+      },
+      "note": "`littleWedderburn` is exactly Wedderburn's little theorem: every finite division ring is a (commutative) field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fano plane PG(2,2)",
+      "anchor": {
+        "section": "Finite projective spaces and planes",
+        "snippet": "The smallest projective plane is the Fano plane , PG(2, 2) with 7 points and 7 lines."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Projectivization.card_of_finrank",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Cardinality",
+        "match_kind": null
+      },
+      "note": "`card_of_finrank` gives 7 points for `ℙ (ZMod 2) (Fin 3 → ZMod 2)`, but the Fano plane and its line incidences are not named/developed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "PG(3,2)",
+      "anchor": {
+        "section": "Finite projective spaces and planes",
+        "snippet": "The smallest 3-dimensional projective space is PG(3, 2) , with 15 points, 35 lines and 15 planes."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Projectivization.card_of_finrank",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Cardinality",
+        "match_kind": null
+      },
+      "note": "`card_of_finrank` yields 15 points for `ℙ (ZMod 2) (Fin 4 → ZMod 2)`, but the line/plane counts of PG(3,2) are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Injective maps induce projective maps",
+      "anchor": {
+        "section": "Morphisms",
+        "snippet": "Injective linear maps T ∈ L ( V , W ) between two vector spaces V and W over the same field K induce mappings of the corresponding projective spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Projectivization.map",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Projectivization.map` builds the induced map on projective spaces from an injective semilinear map, generalizing the linear case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Maps agree iff scalar multiple",
+      "anchor": {
+        "section": "Morphisms",
+        "snippet": "Two linear maps S and T in L ( V , W ) induce the same map between P ( V ) and P ( W ) if and only if they differ by a scalar multiple"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma states that two linear maps induce the same projective map iff they are scalar multiples.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Algebraic automorphisms are linear",
+      "anchor": {
+        "section": "Morphisms",
+        "snippet": "any algebraic (not necessarily linear) automorphism must be linear"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The result that algebraic automorphisms of projective space are induced by (semi)linear maps is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective linear groups PGL",
+      "anchor": {
+        "section": "Morphisms",
+        "snippet": "The groups PGL are called projective linear groups ."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.ProjGenLinGroup",
+        "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Projective",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.ProjGenLinGroup` (notation `PGL(n, R)`) is the projective general linear group, the quotient of `GL n R` by its center.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Möbius transformations",
+      "anchor": {
+        "section": "Morphisms",
+        "snippet": "The automorphisms of the complex projective line P 1 ( C ) are called Möbius transformations ."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "OnePoint.instGLAction",
+        "module": "Mathlib.Topology.Compactification.OnePoint.ProjectiveLine",
+        "match_kind": null
+      },
+      "note": "The `GL(2,K)` action on `OnePoint K`/`ℙ¹` is given explicitly by Möbius transformations, but no named 'Möbius transformation' group of P¹(ℂ) is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dual projective space",
+      "anchor": {
+        "section": "Dual projective space",
+        "snippet": "one obtains the dual projective space, which can be canonically identified with the space of hyperplanes through the origin of V"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The dual projective space (projectivization of the dual / space of hyperplanes) is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Grassmannian manifold",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "is generalized to Grassmannian manifold , which is parametrizing higher-dimensional subspaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Grassmannian",
+        "module": "Mathlib.RingTheory.Grassmannian",
+        "match_kind": "generalization"
+      },
+      "note": "`Module.Grassmannian` defines Grassmannians (via locally free quotients) over a ring, generalizing the subspace Grassmannian, though not as a smooth manifold.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Flag manifold",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "flag manifold is the space of flags, i.e., chains of linear subspaces of V"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has order-theoretic `Flag` (maximal chains) but no flag variety/manifold of chains of subspaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Severi–Brauer varieties",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "Severi–Brauer varieties are algebraic varieties over a field K , which become isomorphic to projective spaces after an extension of the base field K"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Severi–Brauer varieties are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Weighted projective spaces",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "Another generalization of projective spaces are weighted projective spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Weighted projective spaces are not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

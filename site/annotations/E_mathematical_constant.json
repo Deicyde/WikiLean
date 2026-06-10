@@ -1,0 +1,815 @@
+{
+  "slug": "E_mathematical_constant",
+  "wikipedia_title": "E (mathematical constant)",
+  "display_title": "E (mathematical constant)",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "e as limit",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "The number e is the limit"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.tendsto_one_add_div_pow_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.LogBounds",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has `(1 + t/n)^n → exp t` for any real t, which specializes to t=1 to give e, but no dedicated lemma states the e-specific limit.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definitions",
+          "snippet": "The number e is the limit"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{n\\to \\infty }\\left(1+{\\frac {1}{n}}\\right)^{n},}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "e as infinite series",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "It is the sum of the infinite series"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "NormedSpace.exp_eq_tsum_div",
+        "module": "Mathlib.Analysis.Normed.Algebra.Exponential",
+        "match_kind": "generalization"
+      },
+      "note": "The series expansion `exp x = ∑ x^n / n!` is proved generally; specializing to x=1 yields the series for e but no dedicated lemma.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definitions",
+          "snippet": "It is the sum of the infinite series"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e=\\sum \\limits _{n=0}^{\\infty }{\\frac {1}{n!}}=1+{\\frac {1}{1}}+{\\frac {1}{1\\cdot 2}}+{\\frac {1}{1\\cdot 2\\cdot 3}}+\\cdots .}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "e via slope characterization",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "the unique positive number a such that the graph of the function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration characterizes e as the unique base whose exponential has slope 1 at 0.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Natural exponential function",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "the unique function that equals its own derivative"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.hasDerivAt_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.ExpDeriv",
+        "match_kind": "invocation"
+      },
+      "note": "`Real.exp` is defined and shown to satisfy `HasDerivAt exp (exp x) x`, though uniqueness in the analytic sense is only in `PowerSeries.exp_unique_of_derivative_eq_self`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definitions",
+          "snippet": "the unique function that equals its own derivative"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e=\\exp(1),}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "e via integral",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "The number e can also be characterized in terms of an integral"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration characterizes e as the unique upper bound such that ∫₁^e 1/x dx = 1.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definitions",
+          "snippet": "The number e can also be characterized in terms of an integral"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{1}^{e}{\\frac {dx}{x}}=1.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Bernoulli's compound interest limit",
+      "anchor": {
+        "section": "History",
+        "snippet": "the constant e occurs as the limit"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.tendsto_one_add_div_pow_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.LogBounds",
+        "match_kind": "generalization"
+      },
+      "note": "Specializing the limit `(1 + t/n)^n → exp t` at t=1 gives Bernoulli's limit but no dedicated e-version is stated.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "History",
+          "snippet": "the constant e occurs as the limit"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{n\\to \\infty }\\left(1+{\\frac {1}{n}}\\right)^{n},}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler's series for e",
+      "anchor": {
+        "section": "History",
+        "snippet": "Euler proved that e is the sum of the infinite series"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "NormedSpace.exp_eq_tsum_div",
+        "module": "Mathlib.Analysis.Normed.Algebra.Exponential",
+        "match_kind": "generalization"
+      },
+      "note": "Specializing `exp x = ∑ x^n / n!` to x=1 yields Euler's series.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "History",
+          "snippet": "Euler proved that e is the sum of the infinite series"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e=\\sum _{n=0}^{\\infty }{\\frac {1}{n!}}={\\frac {1}{0!}}+{\\frac {1}{1!}}+{\\frac {1}{2!}}+{\\frac {1}{3!}}+{\\frac {1}{4!}}+\\cdots ,}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Compound interest account",
+      "anchor": {
+        "section": "Compound interest",
+        "snippet": "An account starts with $1.00 and pays 100 percent interest per year"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an illustrative example not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuous compounding limit",
+      "anchor": {
+        "section": "Compound interest",
+        "snippet": "The limit as n grows large is the number that came to be known as e"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.tendsto_one_add_div_pow_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.LogBounds",
+        "match_kind": "generalization"
+      },
+      "note": "Same general limit as Bernoulli's, specialized at t=1.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Slot machine Bernoulli trial",
+      "anchor": {
+        "section": "Bernoulli trials",
+        "snippet": "Suppose that a gambler plays a slot machine that pays out with a probability of one in n"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an illustrative example not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Binomial probability of k wins",
+      "anchor": {
+        "section": "Bernoulli trials",
+        "snippet": "The probability of winning k times out of n trials is"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.binomial",
+        "module": "Mathlib.Probability.Distributions.Binomial",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the binomial distribution but no dedicated lemma for this exact probability formula in the slot-machine framing.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Limit of zero-win probability is 1/e",
+      "anchor": {
+        "section": "Bernoulli trials",
+        "snippet": "The limit of the above expression, as n tends to infinity, is precisely"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.tendsto_one_add_div_pow_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.LogBounds",
+        "match_kind": "special_case"
+      },
+      "note": "The general limit specializes to `(1 - 1/n)^n → e⁻¹` at t = -1, though no dedicated lemma is stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exponential growth",
+      "anchor": {
+        "section": "Exponential growth and decay",
+        "snippet": "Exponential growth is a process that increases quantity over time at an ever-increasing rate"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `Asymptotics.ExpGrowth` is unrelated; the informal definition of exponential growth has no formal counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Standard normal distribution",
+      "anchor": {
+        "section": "Standard normal distribution",
+        "snippet": "The normal distribution with zero mean and unit standard deviation is known as the standard normal distribution"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.gaussianReal",
+        "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+        "match_kind": "generalization"
+      },
+      "note": "`gaussianReal 0 1` is the standard normal distribution; the general Gaussian measure is defined with mean and variance.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Standard normal distribution",
+          "snippet": "The normal distribution with zero mean and unit standard deviation is known as the standard normal distribution"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\phi (x)={\\frac {1}{\\sqrt {2\\pi }}}e^{-{\\frac {1}{2}}x^{2}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Hat check (derangements) problem",
+      "anchor": {
+        "section": "Derangements",
+        "snippet": "n guests are invited to a party and, at the door, the guests all check their hats"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "derangements",
+        "module": "Mathlib.Combinatorics.Derangements.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `derangements α` as the set of permutations with no fixed points, encoding the hat-check problem abstractly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Derangement count is n!/e rounded",
+      "anchor": {
+        "section": "Derangements",
+        "snippet": "the number of ways the hats can be placed into the boxes so that none of the hats are in the right box"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "numDerangements_tendsto_inv_e",
+        "module": "Mathlib.Combinatorics.Derangements.Exponential",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves `numDerangements n / n! → 1/e` but does not state the rounding-to-nearest-integer formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Maximum of x-th root",
+      "anchor": {
+        "section": "Optimal planning problems",
+        "snippet": "The maximum value of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma states that x^(1/x) is maximized at x = e.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Breaking stick into n equal parts",
+      "anchor": {
+        "section": "Optimal planning problems",
+        "snippet": "useful in the problem of a stick of length L that is broken into n equal parts"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an illustrative example not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Stirling's formula",
+      "anchor": {
+        "section": "Asymptotics",
+        "snippet": "Stirling's formula for the asymptotics of the factorial function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Stirling.tendsto_stirlingSeq_sqrt_pi",
+        "module": "Mathlib.Analysis.SpecialFunctions.Stirling",
+        "match_kind": "exact"
+      },
+      "note": "Stirling's formula is proved as `tendsto_stirlingSeq_sqrt_pi` with an `Asymptotics.IsEquivalent` form `factorial_isEquivalent_stirling`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Asymptotics",
+          "snippet": "Stirling's formula for the asymptotics of the factorial function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle n!\\sim {\\sqrt {2\\pi n}}\\left({\\frac {n}{e}}\\right)^{n}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Derivative of general exponential",
+      "anchor": {
+        "section": "Calculus",
+        "snippet": "A general exponential function y = a x has a derivative, given by a limit"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.hasDerivAt_const_rpow",
+        "module": "Mathlib.Analysis.SpecialFunctions.Pow.Deriv",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the derivative of `a^x` via rpow (giving `a^x * log a`) though it is computed without going through the limit definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Derivative of base-a logarithm",
+      "anchor": {
+        "section": "Calculus",
+        "snippet": "considering the derivative of the base- a logarithm"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.deriv_log",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Deriv",
+        "match_kind": "special_case"
+      },
+      "note": "The derivative of the natural log is `1/x`; the base-a log derivative `1/(x log a)` follows by change of base but is not stated as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Taylor series for exponential",
+      "anchor": {
+        "section": "Calculus",
+        "snippet": "The Taylor series for the exponential function can be deduced from the facts"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedSpace.exp_eq_tsum_div",
+        "module": "Mathlib.Analysis.Normed.Algebra.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "`exp x = ∑ x^n / n!` is proved in `exp_eq_tsum_div`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Calculus",
+          "snippet": "The Taylor series for the exponential function can be deduced from the facts"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e^{x}=\\sum _{n=0}^{\\infty }{\\frac {x^{n}}{n!}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Natural logarithm via integral",
+      "anchor": {
+        "section": "Calculus",
+        "snippet": "The natural logarithm function can be defined as the integral"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "integral_one_div",
+        "module": "Mathlib.Analysis.SpecialFunctions.Integrals.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`∫_a^b 1/x dx = log(b/a)` is proved, but log is defined via exp in Mathlib rather than as this integral.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Calculus",
+          "snippet": "The natural logarithm function can be defined as the integral"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{1}^{e}{\\frac {1}{t}}\\,dt=1.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "e^x is its own antiderivative",
+      "anchor": {
+        "section": "Calculus",
+        "snippet": "it is therefore its own antiderivative as well"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.hasDerivAt_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.ExpDeriv",
+        "match_kind": "exact"
+      },
+      "note": "`HasDerivAt exp (exp x) x` establishes that exp is its own derivative, hence antiderivative.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Solutions to y' = y",
+      "anchor": {
+        "section": "Calculus",
+        "snippet": "is the full solution to the differential equation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PowerSeries.exp_unique_of_derivative_eq_self",
+        "module": "Mathlib.RingTheory.PowerSeries.Exp",
+        "match_kind": "special_case"
+      },
+      "note": "Uniqueness is shown at the level of formal power series; uniqueness for real ODE solutions y' = y is not stated as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unique real e inequality",
+      "anchor": {
+        "section": "Inequalities",
+        "snippet": "The number e is the unique real number such that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has bounds on `exp 1` but no characterization of e as the unique base for which the inequality holds.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Inequalities",
+          "snippet": "The number e is the unique real number such that"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left(1+{\\frac {1}{x}}\\right)^{x}&lt;e&lt;\\left(1+{\\frac {1}{x}}\\right)^{x+1}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "e^x ≥ x+1 inequality",
+      "anchor": {
+        "section": "Inequalities",
+        "snippet": "e is the unique base of the exponential for which the inequality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.add_one_le_exp",
+        "module": "Mathlib.Analysis.Complex.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "`Real.add_one_le_exp` proves `x + 1 ≤ exp x`; uniqueness of e as the base is not separately stated.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Inequalities",
+          "snippet": "e is the unique base of the exponential for which the inequality"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e^{x}\\geq x+1}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Steiner's problem maximum",
+      "anchor": {
+        "section": "Exponential-like functions",
+        "snippet": "Steiner's problem asks to find the global maximum for the function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration shows x^(1/x) achieves its global maximum at x = e.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Convergence of infinite tetration",
+      "anchor": {
+        "section": "Exponential-like functions",
+        "snippet": "The infinite tetration"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize infinite tetration or its convergence region.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "e is irrational",
+      "anchor": {
+        "section": "Number theory",
+        "snippet": "The real number e is irrational"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Search found no `Irrational (Real.exp 1)` declaration in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "e is transcendental (Hermite)",
+      "anchor": {
+        "section": "Number theory",
+        "snippet": "by the Lindemann–Weierstrass theorem, e is transcendental"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LindemannWeierstrass",
+        "module": "Mathlib.NumberTheory.Transcendental.Lindemann.AnalyticalPart",
+        "match_kind": "generalization"
+      },
+      "note": "Only the analytical part of Lindemann–Weierstrass is in Mathlib; the conclusion that e is transcendental is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Taylor series of exponential extends to complex",
+      "anchor": {
+        "section": "Complex numbers",
+        "snippet": "The exponential function e x may be written as a Taylor series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedSpace.exp_eq_tsum_div",
+        "module": "Mathlib.Analysis.Normed.Algebra.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "The series identity holds for any normed algebra over ℂ, hence for Complex.exp.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler's formula",
+      "anchor": {
+        "section": "Complex numbers",
+        "snippet": "allows one to derive Euler's formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_mul_I",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.exp_mul_I` states `exp (z * I) = cos z + sin z * I`; `exp_ofReal_mul_I` gives the real-variable version.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler's identity",
+      "anchor": {
+        "section": "Complex numbers",
+        "snippet": "The special case with x = π is Euler's identity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_pi_mul_I",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.exp_pi_mul_I` states `exp (π * I) = -1`, equivalent to Euler's identity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "de Moivre's formula",
+      "anchor": {
+        "section": "Complex numbers",
+        "snippet": "for any integer n , which is de Moivre's formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.cos_add_sin_mul_I_pow",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "Stated for ℕ as `(cos z + sin z * I)^n = cos (n z) + sin (n z) * I`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Entropy of a partition",
+      "anchor": {
+        "section": "Entropy",
+        "snippet": "the entropy of which is the expected information gained"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.negMulLog",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.NegMulLog",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has `negMulLog` (the entropy summand) and binary entropy, but no general Shannon entropy of a partition.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Entropy",
+          "snippet": "the entropy of which is the expected information gained"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle H(\\xi )=-\\sum _{i=1}^{k}p(A_{i})\\ln p(A_{i}).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Simple continued fraction for e",
+      "anchor": {
+        "section": "Representations",
+        "snippet": "there is also the simple continued fraction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has continued fractions but no continued-fraction expansion of e.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Infinite product for e",
+      "anchor": {
+        "section": "Representations",
+        "snippet": "The following infinite product evaluates to e"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No infinite-product representation of e was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Expected value of V is e",
+      "anchor": {
+        "section": "Stochastic representations",
+        "snippet": "Let V be the least number n such that the sum of the first n observations exceeds 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize this stochastic characterization of e.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Series for computing e",
+      "anchor": {
+        "section": "Computing the digits",
+        "snippet": "One way to compute the digits of e is with the series"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "NormedSpace.exp_eq_tsum_div",
+        "module": "Mathlib.Analysis.Normed.Algebra.Exponential",
+        "match_kind": "special_case"
+      },
+      "note": "The standard series at x=1 is what's typically used; effective digit bounds appear in `Real.exp_one_near_20`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Computing the digits",
+          "snippet": "One way to compute the digits of e is with the series"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e=\\sum _{k=0}^{\\infty }{\\frac {1}{k!}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Recursive binary splitting for e",
+      "anchor": {
+        "section": "Computing the digits",
+        "snippet": "A faster method involves two recursive functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize binary-splitting algorithms for computing e.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Computing the digits",
+          "snippet": "A faster method involves two recursive functions"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\binom {p(a,b)}{q(a,b)}}={\\begin{cases}{\\binom {1}{b}},&amp;{\\text{if }}b=a+1{\\text{,}}\\\\{\\binom {p(a,m)q(m,b)+p(m,b)}{q(a,m)q(m,b)}},&amp;{\\text{otherwise, where }}m=\\lfloor (a+b)/2\\rfloor .\\end{cases}}}"
+        }
+      ]
+    }
+  ]
+}

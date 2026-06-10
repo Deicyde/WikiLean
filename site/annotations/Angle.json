@@ -1,0 +1,953 @@
+{
+  "slug": "Angle",
+  "wikipedia_title": "Angle",
+  "display_title": "Angle",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Angle",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "an angle is formed by two lines that meet at a point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.angle",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.Affine",
+        "match_kind": "generalization"
+      },
+      "note": "EuclideanGeometry.angle (∠ p₁ p₂ p₃) is the undirected angle at a vertex p₂ formed by two rays/lines meeting there.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Standard definition of angle (two rays)",
+      "anchor": {
+        "section": "Fundamentals",
+        "snippet": "an angle is a figure consisting of two rays which lie in a plane"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.angle",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.Affine",
+        "match_kind": "exact"
+      },
+      "note": "EuclideanGeometry.angle is defined as the undirected angle at p₂ between the segments/rays to p₁ and p₃.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Angles from segments/curves",
+      "anchor": {
+        "section": "Fundamentals",
+        "snippet": "angles are also formed wherever two line segments come together"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.angle",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.Affine",
+        "match_kind": "special_case"
+      },
+      "note": "Angles between line segments meeting at a point are formalized as EuclideanGeometry.angle, but the curve/tangent case is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Interior and exterior of an angle",
+      "anchor": {
+        "section": "Fundamentals",
+        "snippet": "the interior of the angle and the exterior of the angle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration defines the interior/exterior region of an angle as a point set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Angle notation",
+      "anchor": {
+        "section": "Notation and measurement",
+        "snippet": "is used to identify angles in geometric figures"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.angle",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.Affine",
+        "match_kind": null
+      },
+      "note": "Mathlib provides the ∠ notation (and ∡ for oriented) for the angle function, realizing the standard angle notation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Signed angle convention",
+      "anchor": {
+        "section": "Notation and measurement",
+        "snippet": "signed angles are used by convention to indicate a direction of rotation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Orientation.oangle",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Oriented.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Orientation.oangle is the oriented (signed) angle valued in Real.Angle = ℝ/2πℤ, encoding direction of rotation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Full angle (complete rotation)",
+      "anchor": {
+        "section": "Units of measurement",
+        "snippet": "performs a compete rotation about the vertex"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.Angle.coe_two_pi",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Angle",
+        "match_kind": "special_case"
+      },
+      "note": "A full rotation 2π is identified with 0 in Real.Angle (coe_two_pi), but no standalone 'full angle' unit is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Degrees and turns",
+      "anchor": {
+        "section": "Units of measurement",
+        "snippet": "Degrees and turns are defined directly with reference to a full angle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib measures angles in radians (real numbers) and has no degree or turn units.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Radian",
+      "anchor": {
+        "section": "Units of measurement",
+        "snippet": "Radians are not defined directly in relation to a full angle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Angles are real-valued in radians by convention, but the radian as a defined unit (arc/radius) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Angle addition postulate",
+      "anchor": {
+        "section": "Addition and subtraction",
+        "snippet": "The angle addition postulate states that if D is a point lying in the interior"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.angle_add_of_ne_of_ne",
+        "module": "Mathlib.Geometry.Euclidean.Triangle",
+        "match_kind": "exact"
+      },
+      "note": "angle_add_of_ne_of_ne proves ∠ b a p + ∠ p a c = ∠ b a c when p lies between b and c (Wbtw).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Addition and subtraction",
+          "snippet": "The angle addition postulate states that if D is a point lying in the interior"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle m\\angle {\\text{BAC}}=m\\angle {\\text{BAD}}+m\\angle {\\text{DAC}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Zero angle",
+      "anchor": {
+        "section": "Common angles",
+        "snippet": "is called a zero angle"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductGeometry.angle_eq_zero_iff",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "The value 0 and its characterization (angle_eq_zero_iff) exist, but 'zero angle' is not a named concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Acute angle",
+      "anchor": {
+        "section": "Common angles",
+        "snippet": "is called an acute angle"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.Simplex.AcuteAngled",
+        "module": "Mathlib.Geometry.Euclidean.Simplex",
+        "match_kind": "special_case"
+      },
+      "note": "Acuteness (angle < π/2) is defined only as the AcuteAngled property of simplices, not as a standalone acute-angle predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Right angle",
+      "anchor": {
+        "section": "Common angles",
+        "snippet": "is called a right angle"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductGeometry.inner_eq_zero_iff_angle_eq_pi_div_two",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "A right angle is the value π/2, characterized by orthogonality (inner_eq_zero_iff_angle_eq_pi_div_two), but not defined as a named concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Obtuse angle",
+      "anchor": {
+        "section": "Common angles",
+        "snippet": "is called an obtuse angle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no obtuse-angle predicate (angle > π/2) defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Straight angle",
+      "anchor": {
+        "section": "Common angles",
+        "snippet": "is called a straight angle"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.angle_eq_pi_iff_sbtw",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.Affine",
+        "match_kind": "special_case"
+      },
+      "note": "A straight angle is the value π, characterized by collinearity (angle_eq_pi_iff_sbtw), but not a named concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Reflex angle",
+      "anchor": {
+        "section": "Common angles",
+        "snippet": "is called a reflex angle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Unoriented angles range in [0,π] and there is no reflex-angle (π to 2π) concept defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Full angle / perigon",
+      "anchor": {
+        "section": "Common angles",
+        "snippet": "is called a full angle , complete angle , round angle or perigon"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.Angle.coe_two_pi",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Angle",
+        "match_kind": "special_case"
+      },
+      "note": "The value 2π corresponds to 0 in Real.Angle, but no 'perigon'/full-angle named concept exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Oblique angle",
+      "anchor": {
+        "section": "Common angles",
+        "snippet": "is called an oblique angle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No predicate for oblique angles (not a multiple of a right angle) is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Adjacent angles",
+      "anchor": {
+        "section": "Adjacent and vertical angles",
+        "snippet": "Adjacent angles (abbreviated adj. ∠s ), are angles that share a common vertex and edge"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of adjacent angles sharing a vertex and edge is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vertical angles",
+      "anchor": {
+        "section": "Adjacent and vertical angles",
+        "snippet": "Vertical angles are formed when two straight lines intersect at a point"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Sbtw.oangle_eq_left_right",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Oriented.Affine",
+        "match_kind": "special_case"
+      },
+      "note": "Vertically opposite angles appear in Sbtw.oangle_eq_left_right but are not defined as a standalone concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Vertical angles are congruent",
+      "anchor": {
+        "section": "Adjacent and vertical angles",
+        "snippet": "A theorem states that vertical angles are always congruent or equal to each other"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Sbtw.oangle_eq_left_right",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Oriented.Affine",
+        "match_kind": "exact"
+      },
+      "note": "Sbtw.oangle_eq_left_right proves ∡ p₁ p₂ p₃ = ∡ p₁' p₂ p₃' when both pairs are on opposite rays (vertically opposite).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Transversal",
+      "anchor": {
+        "section": "Adjacent and vertical angles",
+        "snippet": "A transversal is a line that intersects a pair of (often parallel) lines"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No transversal-line concept is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complementary angles",
+      "anchor": {
+        "section": "Combining angle pairs",
+        "snippet": "Complementary angles are angle pairs whose measures sum to a right angle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No named concept of complementary angles (summing to π/2) is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Supplementary angles",
+      "anchor": {
+        "section": "Combining angle pairs",
+        "snippet": "Supplementary angles sum to a straight angle"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.angle_add_angle_eq_pi_of_angle_eq_pi",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.Affine",
+        "match_kind": "special_case"
+      },
+      "note": "The supplementary relation (angles summing to π on a line) appears in angle_add_angle_eq_pi_of_angle_eq_pi but is not a named concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Explementary angles",
+      "anchor": {
+        "section": "Combining angle pairs",
+        "snippet": "Explementary angles or conjugate angles sum to a full angle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No concept of explementary/conjugate angles (summing to 2π) is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Non-adjacent supplementary angles",
+      "anchor": {
+        "section": "Combining angle pairs",
+        "snippet": "Examples of non-adjacent supplementary angles include the consecutive angles of a parallelogram"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of parallelogram consecutive-angle supplementarity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Interior angle of a polygon",
+      "anchor": {
+        "section": "Polygon-related angles",
+        "snippet": "An angle that is part of a simple polygon is called an interior angle if it lies on the inside"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.angle",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.Affine",
+        "match_kind": "special_case"
+      },
+      "note": "Interior angles of triangles/simplices are expressed via EuclideanGeometry.angle at vertices, but general polygon interior angles are not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum of interior angles",
+      "anchor": {
+        "section": "Polygon-related angles",
+        "snippet": "the measures of the interior angles of a triangle add up to"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.angle_add_angle_add_angle_eq_pi",
+        "module": "Mathlib.Geometry.Euclidean.Triangle",
+        "match_kind": "special_case"
+      },
+      "note": "angle_add_angle_add_angle_eq_pi proves the three angles of a triangle sum to π; the general (n−2)π polygon case is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exterior angle",
+      "anchor": {
+        "section": "Polygon-related angles",
+        "snippet": "The supplement of an interior angle is called an exterior angle"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.exterior_angle_eq_angle_add_angle",
+        "module": "Mathlib.Geometry.Euclidean.Triangle",
+        "match_kind": "special_case"
+      },
+      "note": "The exterior-angle theorem for triangles is formalized (exterior_angle_eq_angle_add_angle), but 'exterior angle' is not a standalone definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum of exterior angles",
+      "anchor": {
+        "section": "Polygon-related angles",
+        "snippet": "the sum of the exterior angles of a simple convex polygon"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The sum of exterior angles of a polygon (2π) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Exterior bisectors concurrent",
+      "anchor": {
+        "section": "Polygon-related angles",
+        "snippet": "the bisectors of two exterior angles and the bisector of the other interior angle are concurrent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of excenter/angle-bisector concurrency in these terms was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Collinear external bisector intersections",
+      "anchor": {
+        "section": "Polygon-related angles",
+        "snippet": "three intersection points, each of an external angle bisector with the opposite extended side , are collinear"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This collinearity result for external bisectors is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Collinear mixed bisector intersections",
+      "anchor": {
+        "section": "Polygon-related angles",
+        "snippet": "three intersection points, two between an interior angle bisector and the opposite side"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This mixed-bisector collinearity result is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dihedral angle",
+      "anchor": {
+        "section": "Plane-related angles",
+        "snippet": "is called a dihedral angle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Only the algebraic dihedral group exists; the geometric dihedral angle between half-planes is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Plane-line angle complementary to normal",
+      "anchor": {
+        "section": "Plane-related angles",
+        "snippet": "The angle between a plane and an intersecting straight line is complementary"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No angle-between-a-plane-and-line concept (complementary to the normal angle) is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Radian measure",
+      "anchor": {
+        "section": "Circular measurement",
+        "snippet": "is defined as an angle for which the ratio"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The radian defined as arc-length-to-radius ratio is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Angle measure independent of circle size",
+      "anchor": {
+        "section": "Circular measurement",
+        "snippet": "The value of θ thus defined is independent of the size of the circle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The scale-invariance of radian measure across circle sizes is not stated as a theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Angle as dimensionless quantity",
+      "anchor": {
+        "section": "Dimensional analysis",
+        "snippet": "an angle is defined as a dimensionless quantity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Angles are plain real numbers; there is no dimensional-analysis framework treating them as dimensionless.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Angle in standard position",
+      "anchor": {
+        "section": "Signed angles",
+        "snippet": "an angle is typically defined by its two sides, with its vertex at the origin"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Orientation.oangle",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Oriented.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Oriented angles between vectors based at the origin are formalized, but 'standard position' with initial side along the positive x-axis is not a defined construct.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equal / congruent angles",
+      "anchor": {
+        "section": "Equivalent angles",
+        "snippet": "are said to be equal or congruent"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductGeometry.angle",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Angle congruence is captured by equality of real-valued angle measures, not by a dedicated congruence relation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coterminal angles",
+      "anchor": {
+        "section": "Equivalent angles",
+        "snippet": "Two angles that share terminal sides, but differ in size by an integer multiple of a turn, are called coterminal angles"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.Angle.angle_eq_iff_two_pi_dvd_sub",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Angle",
+        "match_kind": "exact"
+      },
+      "note": "Real.Angle = ℝ/2πℤ identifies coterminal angles, and angle_eq_iff_two_pi_dvd_sub states equality iff difference is an integer multiple of 2π.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Reference angle",
+      "anchor": {
+        "section": "Equivalent angles",
+        "snippet": "The reference angle (sometimes called related angle ) for any angle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No reference-angle construction is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Slope / gradient",
+      "anchor": {
+        "section": "Related quantities",
+        "snippet": "The slope or gradient is equal to the tangent of the angle"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "slope",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Slope",
+        "match_kind": "special_case"
+      },
+      "note": "slope is defined as a difference quotient, but its identity as the tangent of the inclination angle is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Spread between lines",
+      "anchor": {
+        "section": "Related quantities",
+        "snippet": "The spread between two lines is defined in rational geometry as the square of the sine"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The rational-geometry 'spread' (sin² of the angle) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Angle between curves",
+      "anchor": {
+        "section": "Angles between curves",
+        "snippet": "The angle between a line and a curve (mixed angle) or between two intersecting curves"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of angle between curves via their tangents is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Impossibility of trisection (Wantzel)",
+      "anchor": {
+        "section": "Bisecting and trisecting angles",
+        "snippet": "Pierre Wantzel showed that this construction could not be performed for most angles"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Compass-and-straightedge constructibility and the impossibility of angle trisection are not formalized (only topological 'constructible sets' share the name).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Angle via dot product",
+      "anchor": {
+        "section": "Dot product and generalisations",
+        "snippet": "is related to their dot product and their lengths by the formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductGeometry.cos_angle",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.Basic",
+        "match_kind": "exact"
+      },
+      "note": "cos_angle states cos(angle x y) = ⟪x, y⟫ / (‖x‖ * ‖y‖), exactly the dot-product angle formula.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Dot product and generalisations",
+          "snippet": "is related to their dot product and their lengths by the formula"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {u} \\cdot \\mathbf {v} =\\cos(\\theta )\\left\\|\\mathbf {u} \\right\\|\\left\\|\\mathbf {v} \\right\\|.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Angle in real inner product space",
+      "anchor": {
+        "section": "Inner product",
+        "snippet": "To define angles in an abstract real inner product space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductGeometry.angle",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.Basic",
+        "match_kind": "exact"
+      },
+      "note": "InnerProductGeometry.angle is defined as arccos(⟪x,y⟫/(‖x‖‖y‖)) in an arbitrary real inner product space.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Inner product",
+          "snippet": "To define angles in an abstract real inner product space"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\langle \\mathbf {u} ,\\mathbf {v} \\rangle =\\cos(\\theta )\\ \\left\\|\\mathbf {u} \\right\\|\\left\\|\\mathbf {v} \\right\\|.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Angle in complex inner product space",
+      "anchor": {
+        "section": "Inner product",
+        "snippet": "In a complex inner product space , the expression for the cosine above may give non-real values"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The angle definition is only over ℝ; no complex inner product space angle is defined.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Inner product",
+          "snippet": "In a complex inner product space , the expression for the cosine above may give non-real values"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Re} \\left(\\langle \\mathbf {u} ,\\mathbf {v} \\rangle \\right)=\\cos(\\theta )\\left\\|\\mathbf {u} \\right\\|\\left\\|\\mathbf {v} \\right\\|.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left|\\langle \\mathbf {u} ,\\mathbf {v} \\rangle \\right|=\\left|\\cos(\\theta )\\right|\\left\\|\\mathbf {u} \\right\\|\\left\\|\\mathbf {v} \\right\\|.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Principal angles between subspaces",
+      "anchor": {
+        "section": "Angles between subspaces",
+        "snippet": "angles called canonical or principal angles between subspaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Canonical/principal angles between subspaces are not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Angles between subspaces",
+          "snippet": "angles called canonical or principal angles between subspaces"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left|\\langle \\mathbf {u} ,\\mathbf {v} \\rangle \\right|=\\left|\\cos(\\theta )\\right|\\left\\|\\mathbf {u} \\right\\|\\left\\|\\mathbf {v} \\right\\|}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Angle in Riemannian geometry",
+      "anchor": {
+        "section": "Angles in Riemannian geometry",
+        "snippet": "the metric tensor is used to define the angle between two tangents"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of angle between tangent vectors via a Riemannian metric tensor was found.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Angles in Riemannian geometry",
+          "snippet": "the metric tensor is used to define the angle between two tangents"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\cos \\theta ={\\frac {g_{ij}U^{i}V^{j}}{\\sqrt {\\left|g_{ij}U^{i}U^{j}\\right|\\left|g_{ij}V^{i}V^{j}\\right|}}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Hyperbolic angle",
+      "anchor": {
+        "section": "Hyperbolic angle",
+        "snippet": "A hyperbolic angle is an argument of a hyperbolic function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hyperbolic functions (sinh/cosh/arsinh) exist, but the geometric hyperbolic angle (hyperbolic sector area) is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euclid's definition of plane angle",
+      "anchor": {
+        "section": "History and etymology",
+        "snippet": "Euclid defines a plane angle as the inclination to each other"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.angle",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.Affine",
+        "match_kind": "generalization"
+      },
+      "note": "The modern equivalent of Euclid's plane angle (inclination of two rays at a point) is EuclideanGeometry.angle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Vertical angle theorem",
+      "anchor": {
+        "section": "Vertical angle theorem",
+        "snippet": "The equality of vertically opposite angles is called the vertical angle theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Sbtw.oangle_eq_left_right",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Oriented.Affine",
+        "match_kind": "exact"
+      },
+      "note": "Sbtw.oangle_eq_left_right is the vertical angle theorem: replacing both outer points by points on the opposite rays preserves the oriented angle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Angular diameter of the full moon",
+      "anchor": {
+        "section": "Angles in geography and astronomy",
+        "snippet": "the full moon has an angular diameter of approximately 0.5°"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a numerical astronomy example with no formal counterpart in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

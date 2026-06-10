@@ -1,0 +1,389 @@
+{
+  "slug": "Adjoint_functors",
+  "wikipedia_title": "Adjoint functors",
+  "display_title": "Adjoint functors",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}F&:{\\mathcal {D}}\\rightarrow {\\mathcal {C}}\\\\G&:{\\mathcal {C}}\\rightarrow {\\mathcal {D}}\\end{aligned}}}"
+      },
+      "status": "partial",
+      "decl": "CategoryTheory.Adjunction",
+      "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+      "note": "Pair of functors is just the input data of the `Adjunction` structure."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathrm {hom} _{\\mathcal {C}}(Fd,c)\\cong \\mathrm {hom} _{\\mathcal {D}}(d,Gc)}"
+      },
+      "status": "formalized",
+      "decl": "CategoryTheory.Adjunction.homEquiv",
+      "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+      "note": "Hom-set bijection is exactly `homEquiv`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\varphi _{cd}:\\mathrm {hom} _{\\mathcal {C}}(Fd,c)\\cong \\mathrm {hom} _{\\mathcal {D}}(d,Gc)}"
+      },
+      "status": "formalized",
+      "decl": "CategoryTheory.Adjunction.homEquiv",
+      "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+      "note": "Mac Lane's family of bijections is the components of `homEquiv`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle F\\dashv G.}"
+      },
+      "status": "formalized",
+      "decl": "CategoryTheory.Adjunction",
+      "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+      "note": "Mathlib defines `F ⊣ G` notation for `Adjunction F G`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Phi :\\mathrm {Hom} _{\\mathcal {C}}(F-,-)\\to \\mathrm {Hom} _{\\mathcal {D}}(-,G-).}"
+      },
+      "status": "formalized",
+      "decl": "CategoryTheory.Adjunction.compCoyonedaIso",
+      "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+      "note": "The natural isomorphism on hom-functors is `compCoyonedaIso`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Phi _{Y,X}:\\mathrm {Hom} _{\\mathcal {C}}(FY,X)\\to \\mathrm {Hom} _{\\mathcal {D}}(Y,GX)}"
+      },
+      "status": "formalized",
+      "decl": "CategoryTheory.Adjunction.homEquiv",
+      "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+      "note": "Pointwise bijection at fixed Y, X is `homEquiv`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\varepsilon &:FG\\to 1_{\\mathcal {C}}\\\\\\eta &:1_{\\mathcal {D}}\\to GF\\end{aligned}}}"
+      },
+      "status": "formalized",
+      "decl": "CategoryTheory.Adjunction",
+      "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+      "note": "`unit` and `counit` are fields of the `Adjunction` structure."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle F\\xrightarrow {\\overset {}{\\;F\\eta \\;}} FGF\\xrightarrow {\\overset {}{\\;\\varepsilon F\\,}} F}"
+      },
+      "status": "formalized",
+      "decl": "CategoryTheory.Adjunction.left_triangle",
+      "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+      "note": "Whole-functor left triangle identity is `left_triangle`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle G\\xrightarrow {\\overset {}{\\;\\eta G\\;}} GFG\\xrightarrow {\\overset {}{\\;G\\varepsilon \\,}} G}"
+      },
+      "status": "formalized",
+      "decl": "CategoryTheory.Adjunction.right_triangle",
+      "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+      "note": "Whole-functor right triangle identity is `right_triangle`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}1_{F}&=\\varepsilon F\\circ F\\eta \\\\1_{G}&=G\\varepsilon \\circ \\eta G\\end{aligned}}}"
+      },
+      "status": "formalized",
+      "decl": "CategoryTheory.Adjunction.left_triangle",
+      "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+      "note": "Both counit–unit equations are `left_triangle` and `right_triangle`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}1_{FY}&=\\varepsilon _{FY}\\circ F(\\eta _{Y})\\\\1_{GX}&=G(\\varepsilon _{X})\\circ \\eta _{GX}.\\end{aligned}}}"
+      },
+      "status": "formalized",
+      "decl": "CategoryTheory.Adjunction.left_triangle_components",
+      "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+      "note": "Pointwise triangles are `left_triangle_components` and `right_triangle_components`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\text{Hom}}(FX,Y)={\\text{Hom}}(X,GY)}"
+      },
+      "status": "formalized",
+      "decl": "CategoryTheory.Adjunction.homEquiv",
+      "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+      "note": "Classical hom-set adjunction bijection is `homEquiv`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle FY\\xrightarrow {\\overset {}{\\;F(\\eta _{Y})\\;}} FGFY\\xrightarrow {\\;\\varepsilon _{FY}\\,} FY}"
+      },
+      "status": "formalized",
+      "decl": "CategoryTheory.Adjunction.left_triangle_components",
+      "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+      "note": "Single component left triangle is `left_triangle_components`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle GX\\xrightarrow {\\;\\eta _{GX}\\;} GFGX\\xrightarrow {\\overset {}{\\;G(\\varepsilon _{X})\\,}} GX}"
+      },
+      "status": "formalized",
+      "decl": "CategoryTheory.Adjunction.right_triangle_components",
+      "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+      "note": "Single component right triangle is `right_triangle_components`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\varepsilon '&=\\varepsilon \\circ (F\\eta ^{-1}G)\\circ (FG\\varepsilon ^{-1})\\\\\\eta '&=(GF\\eta ^{-1})\\circ (G\\varepsilon ^{-1}F)\\circ \\eta \\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific historical formula promoting an equivalence to an adjoint equivalence; no standalone decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\{y\\in Y\\mid \\exists x.\\,\\psi _{f}(x,y)\\land \\phi _{S}(x)\\}}"
+      },
+      "status": "partial",
+      "decl": "Set.image",
+      "module": "Mathlib.Data.Set.Image",
+      "note": "Existential image of a subset is `Set.image`; not the general subobject formulation."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f^{*}:{\\text{Sub}}(Y)\\longrightarrow {\\text{Sub}}(X)}"
+      },
+      "status": "formalized",
+      "decl": "CategoryTheory.Subobject.pullback",
+      "module": "Mathlib.CategoryTheory.Subobject.Basic",
+      "note": "Inverse image functor on subobjects is `Subobject.pullback`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\operatorname {Hom} }(\\exists _{f}S,T)\\cong {\\operatorname {Hom} }(S,f^{*}T),}"
+      },
+      "status": "formalized",
+      "decl": "CategoryTheory.Subobject.existsPullbackAdj",
+      "module": "Mathlib.CategoryTheory.Subobject.Basic",
+      "note": "Adjunction ∃_f ⊣ f* on subobjects is `Subobject.existsPullbackAdj`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\exists _{f}S\\subseteq T\\leftrightarrow S\\subseteq f^{-1}[T].}"
+      },
+      "status": "formalized",
+      "decl": "Set.image_subset_iff",
+      "module": "Mathlib.Data.Set.Image",
+      "note": "Image–preimage Galois connection on sets is `Set.image_subset_iff`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\exists _{f}S=\\{y\\in Y\\mid \\exists (x\\in f^{-1}[\\{y\\}]).\\,x\\in S\\;\\}=f[S].}"
+      },
+      "status": "formalized",
+      "decl": "Set.image",
+      "module": "Mathlib.Data.Set.Image",
+      "note": "Direct image f[S] is `Set.image`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\forall _{f}S=\\{y\\in Y\\mid \\forall (x\\in f^{-1}[\\{y\\}]).\\,x\\in S\\;\\}.}"
+      },
+      "status": "partial",
+      "decl": "Set.kernImage",
+      "module": "Mathlib.Data.Set.Lattice.Image",
+      "note": "Universal image (right adjoint of preimage) on sets is `Set.kernImage`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}f=\\Phi _{Y,X}^{-1}(g)&=\\varepsilon _{X}\\circ F(g)&\\in &\\,\\,\\mathrm {hom} _{C}(F(Y),X)\\\\g=\\Phi _{Y,X}(f)&=G(f)\\circ \\eta _{Y}&\\in &\\,\\,\\mathrm {hom} _{D}(Y,G(X))\\\\\\Phi _{GX,X}^{-1}(1_{GX})&=\\varepsilon _{X}&\\in &\\,\\,\\mathrm {hom} _{C}(FG(X),X)\\\\\\Phi _{Y,FY}(1_{FY})&=\\eta _{Y}&\\in &\\,\\,\\mathrm {hom} _{D}(Y,GF(Y))\\\\\\end{aligned}}}"
+      },
+      "status": "formalized",
+      "decl": "CategoryTheory.Adjunction.homEquiv",
+      "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+      "note": "These formulas are `homEquiv_unit`, `homEquiv_counit`, `homEquiv_id`, `homEquiv_symm_id`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}1_{FY}&=\\varepsilon _{FY}\\circ F(\\eta _{Y})\\\\1_{GX}&=G(\\varepsilon _{X})\\circ \\eta _{GX}\\end{aligned}}}"
+      },
+      "status": "formalized",
+      "decl": "CategoryTheory.Adjunction.left_triangle_components",
+      "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+      "note": "Pointwise triangle identities are `left_triangle_components` and `right_triangle_components`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\Phi _{Y,X}(f)=G(f)\\circ \\eta _{Y}\\\\\\Psi _{Y,X}(g)=\\varepsilon _{X}\\circ F(g)\\end{aligned}}}"
+      },
+      "status": "formalized",
+      "decl": "CategoryTheory.Adjunction.homEquiv",
+      "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+      "note": "Definitional formulas for `homEquiv` and its inverse; see `homEquiv_unit`/`homEquiv_counit`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\Psi \\Phi f&=\\varepsilon _{X}\\circ FG(f)\\circ F(\\eta _{Y})\\\\&=f\\circ \\varepsilon _{FY}\\circ F(\\eta _{Y})\\\\&=f\\circ 1_{FY}=f\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Proof step that Ψ∘Φ = id, internalised in `homEquiv` being an `Equiv`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\Phi \\Psi g&=G(\\varepsilon _{X})\\circ GF(g)\\circ \\eta _{Y}\\\\&=G(\\varepsilon _{X})\\circ \\eta _{GX}\\circ g\\\\&=1_{GX}\\circ g=g\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Proof step that Φ∘Ψ = id, internalised in `homEquiv` being an `Equiv`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (\\varepsilon ,\\eta ):F\\dashv G,}"
+      },
+      "status": "formalized",
+      "decl": "CategoryTheory.Adjunction.mkOfHomEquiv",
+      "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+      "note": "Constructing an adjunction from a natural hom-set equivalence is `mkOfHomEquiv`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\Phi _{Y,X}(f)=G(f)\\circ \\eta _{Y}\\\\\\Phi _{Y,X}^{-1}(g)=\\varepsilon _{X}\\circ F(g)\\end{aligned}}}"
+      },
+      "status": "formalized",
+      "decl": "CategoryTheory.Adjunction.homEquiv",
+      "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+      "note": "These are the defining equations of `homEquiv`, i.e. `homEquiv_unit`/`homEquiv_counit`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 1_{FY}=\\varepsilon _{FY}\\circ F(\\eta _{Y}),}"
+      },
+      "status": "formalized",
+      "decl": "CategoryTheory.Adjunction.left_triangle_components",
+      "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+      "note": "Left triangle identity at Y is `left_triangle_components`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 1_{GX}=G(\\varepsilon _{X})\\circ \\eta _{GX}.}"
+      },
+      "status": "formalized",
+      "decl": "CategoryTheory.Adjunction.right_triangle_components",
+      "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+      "note": "Right triangle identity at X is `right_triangle_components`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\eta '&=(\\tau \\ast \\sigma )\\circ \\eta \\\\\\varepsilon '&=\\varepsilon \\circ (\\sigma ^{-1}\\ast \\tau ^{-1}).\\end{aligned}}}"
+      },
+      "status": "partial",
+      "decl": "CategoryTheory.Adjunction.ofNatIsoLeft",
+      "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+      "note": "Transport along natural isos is `ofNatIsoLeft`/`ofNatIsoRight`; uniqueness is `leftAdjointUniq`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle F\\circ F':E\\rightarrow C}"
+      },
+      "status": "formalized",
+      "decl": "CategoryTheory.Adjunction.comp",
+      "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+      "note": "Composition of left adjoints is `Adjunction.comp`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle G'\\circ G:C\\to E.}"
+      },
+      "status": "formalized",
+      "decl": "CategoryTheory.Adjunction.comp",
+      "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+      "note": "Composition of right adjoints in `Adjunction.comp : F ⋙ H ⊣ I ⋙ G`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}&1_{\\mathcal {E}}{\\xrightarrow {\\eta '}}G'F'{\\xrightarrow {G'\\eta F'}}G'GFF'\\\\&FF'G'G{\\xrightarrow {F\\varepsilon 'G}}FG{\\xrightarrow {\\varepsilon }}1_{\\mathcal {C}}.\\end{aligned}}}"
+      },
+      "status": "formalized",
+      "decl": "CategoryTheory.Adjunction.comp_unit_app",
+      "module": "Mathlib.CategoryTheory.Adjunction.Basic",
+      "note": "Composed unit/counit formulas are `comp_unit_app` and `comp_counit_app`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Phi _{Y,X}:\\mathrm {hom} _{\\mathcal {C}}(FY,X)\\cong \\mathrm {hom} _{\\mathcal {D}}(Y,GX)}"
+      },
+      "status": "partial",
+      "decl": "CategoryTheory.Adjunction.right_adjoint_additive",
+      "module": "Mathlib.CategoryTheory.Adjunction.Additive",
+      "note": "Hom-set bijection is `homEquiv`; additivity of right adjoint is `right_adjoint_additive`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle T:{\\mathcal {D}}\\to {\\mathcal {D}}}"
+      },
+      "status": "formalized",
+      "decl": "CategoryTheory.Adjunction.toMonad",
+      "module": "Mathlib.CategoryTheory.Monad.Adjunction",
+      "note": "Associated monad T = GF on D is `Adjunction.toMonad`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\eta :1_{\\mathcal {D}}\\to T}"
+      },
+      "status": "formalized",
+      "decl": "CategoryTheory.Adjunction.toMonad",
+      "module": "Mathlib.CategoryTheory.Monad.Adjunction",
+      "note": "Monad unit is the η field of `toMonad`, set to `h.unit`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mu :T^{2}\\to T\\,}"
+      },
+      "status": "formalized",
+      "decl": "CategoryTheory.Adjunction.toMonad",
+      "module": "Mathlib.CategoryTheory.Monad.Adjunction",
+      "note": "Monad multiplication is the μ field of `toMonad`, given by whiskering the counit."
+    }
+  ]
+}

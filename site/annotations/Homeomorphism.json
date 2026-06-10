@@ -1,0 +1,339 @@
+{
+  "slug": "Homeomorphism",
+  "wikipedia_title": "Homeomorphism",
+  "display_title": "Homeomorphism",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Homeomorphism",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a bijective and continuous function between topological spaces that has a continuous inverse function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Homeomorph",
+        "module": "Mathlib.Topology.Homeomorph.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Homeomorph X Y` bundles an equivalence with continuous forward and inverse maps, matching the lead description.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homeomorphic spaces",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Two spaces with a homeomorphism between them are called homeomorphic"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Homeomorph",
+        "module": "Mathlib.Topology.Homeomorph.Defs",
+        "match_kind": null
+      },
+      "note": "Mathlib provides the type `X ≃ₜ Y` (so `Nonempty (X ≃ₜ Y)` expresses 'homeomorphic'), but has no named predicate like `IsHomeomorphicTo`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homeomorphism (formal)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is a homeomorphism if it has the following properties"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsHomeomorph",
+        "module": "Mathlib.Topology.Homeomorph.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The unbundled `IsHomeomorph f` predicate (continuous, open map, bijective) directly mirrors the formal definition for a function `f`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Self-homeomorphism",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A self-homeomorphism is a homeomorphism from a topological space onto itself"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Homeomorph",
+        "module": "Mathlib.Topology.Homeomorph.Defs",
+        "match_kind": null
+      },
+      "note": "Self-homeomorphisms are expressible as `X ≃ₜ X`, but Mathlib has no dedicated `SelfHomeomorph` abbreviation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homeomorphism classes",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Its equivalence classes are called homeomorphism classes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib decl introduces the equivalence relation 'X is homeomorphic to Y' or its quotient by name.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Necessity of continuous inverse",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The third requirement, that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The article's informal observation about needing continuity of the inverse is not stated as a Mathlib lemma (e.g., no canonical counterexample on `[0,1) → S¹`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homeomorphism group",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "forms a group , called the homeomorphism group of X"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Homeomorph.symm",
+        "module": "Mathlib.Topology.Homeomorph.Defs",
+        "match_kind": null
+      },
+      "note": "Mathlib has `Homeomorph.refl`, `Homeomorph.trans`, and `Homeomorph.symm`, but no `Group (X ≃ₜ X)` instance giving the homeomorphism group structure explicitly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Open interval homeomorphic to reals",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is homeomorphic to the real numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.tanPartialHomeomorph",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Arctan",
+        "match_kind": null
+      },
+      "note": "`Real.tanPartialHomeomorph` realizes `tan : (-π/2, π/2) → ℝ` as an `OpenPartialHomeomorph`, but there is no derived `Homeomorph (Ioo (-π/2) (π/2)) ℝ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Closed disk homeomorphic to square",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "and the square"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No homeomorphism between the closed unit disk and unit square appears in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Examples",
+          "snippet": "and the square"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (\\rho ,\\theta )\\mapsto \\left({\\frac {\\rho }{\\max(|\\cos \\theta |,|\\sin \\theta |)}},\\theta \\right).}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Graph of differentiable function",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The graph of a differentiable function is homeomorphic to the domain of the function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grepping for graph/homeomorph yields no statement that the graph of a (differentiable) function is homeomorphic to its domain.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Differentiable parametrization of a curve",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "A differentiable parametrization of a curve is a homeomorphism between the domain of the parametrization and the curve"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma asserts that a differentiable parametrization of a curve is a homeomorphism onto its image.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Chart of a manifold",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "A chart of a manifold is a homeomorphism between an open subset of the manifold and an open subset of a Euclidean space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ChartedSpace.chartAt",
+        "module": "Mathlib.Geometry.Manifold.ChartedSpace",
+        "match_kind": null
+      },
+      "note": "Charts in Mathlib are `OpenPartialHomeomorph M H` (not `Homeomorph` on open subsets), giving the same content via `chartAt H x`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Stereographic projection",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The stereographic projection is a homeomorphism between the unit sphere"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "stereographic",
+        "module": "Mathlib.Geometry.Manifold.Instances.Sphere",
+        "match_kind": null
+      },
+      "note": "`stereographic hv` is defined as an `OpenPartialHomeomorph` from the sphere minus `v` to the orthogonal complement of `v`, rather than as a packaged `Homeomorph`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Topological group operations",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is a topological group , its inversion map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Homeomorph.mulLeft",
+        "module": "Mathlib.Topology.Algebra.Group.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Homeomorph.mulLeft`, `Homeomorph.mulRight`, and `Homeomorph.inv` package the topological-group translations and inversion as homeomorphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "R^m not homeomorphic to R^n",
+      "anchor": {
+        "section": "Counter-examples",
+        "snippet": "are not homeomorphic for m ≠ n"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Invariance of domain / dimension is not stated in Mathlib (no `IsEmpty (EuclideanSpace ℝ (Fin m) ≃ₜ EuclideanSpace ℝ (Fin n))` lemma).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Real line vs unit circle",
+      "anchor": {
+        "section": "Counter-examples",
+        "snippet": "The Euclidean real line is not homeomorphic to the unit circle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma states that ℝ and the unit circle (or `Circle`) are not homeomorphic.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Intervals not homeomorphic",
+      "anchor": {
+        "section": "Counter-examples",
+        "snippet": "The one-dimensional intervals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no Mathlib statement distinguishing open, half-open, and closed intervals up to homeomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Homeomorphic spaces share topological properties",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Two homeomorphic spaces share the same topological properties"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Homeomorph",
+        "module": "Mathlib.Topology.Homeomorph.Lemmas",
+        "match_kind": null
+      },
+      "note": "`Mathlib.Topology.Homeomorph.Lemmas` collects many transfer lemmas across homeomorphisms, but the meta-statement 'all topological properties transfer' is not itself a theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Homeomorphism is open and closed",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "A homeomorphism is simultaneously an open mapping and a closed mapping"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Homeomorph.isOpenMap",
+        "module": "Mathlib.Topology.Homeomorph.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Homeomorph.isOpenMap` and `Homeomorph.isClosedMap` (same file) state that every `X ≃ₜ Y` is both open and closed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Alexander's trick",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "can be extended to a self-homeomorphism of the whole disk"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for 'Alexander' in `Mathlib/` returns no matches; Alexander's trick is not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,2137 @@
+{
+  "slug": "Differential_geometry_of_surfaces",
+  "wikipedia_title": "Differential geometry of surfaces",
+  "display_title": "Differential geometry of surfaces",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "proposition",
+      "label": "Regular surface is a Riemannian manifold and Riemann surface",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "Any regular surface is an example both of a Riemannian manifold and Riemann surface"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `IsRiemannianManifold` as a general predicate, but no notion of regular surface in ℝ³ or the claim that one is both a Riemannian manifold and a Riemann surface.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Smooth map between Euclidean open sets",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "a map between two open subsets of Euclidean space is smooth if its partial derivatives of every order exist"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContDiffOn",
+        "module": "Mathlib.Analysis.Calculus.ContDiff.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Smoothness of maps between open subsets is `ContDiffOn 𝕜 ⊤`, defined for general normed spaces (Euclidean space included).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Regular surface",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "such that every point of S admits any of the following three concepts"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of a regular surface (local graphs/parametrizations/level sets) embedded in ℝ³.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence of the three definitions",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The equivalence of all three definitions follows from the implicit function theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The implicit function theorem is formalized (`Mathlib.Analysis.Calculus.Implicit`), but the equivalence of the regular-surface definitions is not, since regular surfaces are undefined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Regular surface has smooth manifold structure",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "This shows that any regular surface naturally has the structure of a smooth manifold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Smooth-manifold infrastructure exists, but regular surfaces are not defined so this statement cannot be stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "2-sphere as a regular surface",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A simple example of a regular surface is given by the 2-sphere"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.instIsManifoldSphere",
+        "module": "Mathlib.Geometry.Manifold.Instances.Sphere",
+        "match_kind": "generalization"
+      },
+      "note": "The unit n-sphere in an inner product space carries an analytic manifold structure via stereographic projection; the 2-sphere is the special case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Torus of revolution",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is a torus of revolution with radii r and R"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The torus of revolution as an embedded regular surface in ℝ³ is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hyperboloid of two sheets",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "it can be covered by two Monge patches, with h"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Monge patches and the hyperboloid as a regular surface are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Helicoid",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The helicoid appears in the theory of minimal surfaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The helicoid surface is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tangent space",
+      "anchor": {
+        "section": "Tangent vectors and normal vectors",
+        "snippet": "the tangent space or tangent plane to S at p"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TangentSpace",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib defines the abstract manifold `TangentSpace`, not the embedded tangent plane spanned by f_u, f_v of a surface in ℝ³.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Normal space and unit normal vectors",
+      "anchor": {
+        "section": "Tangent vectors and normal vectors",
+        "snippet": "The normal space to S at p"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Orthogonal complements exist generally, but the normal space/unit normal of an embedded surface is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Intrinsic definition of tangent vectors",
+      "anchor": {
+        "section": "Tangent vectors and normal vectors",
+        "snippet": "an \"intrinsic\" definition of tangent vectors"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PointDerivation",
+        "module": "Mathlib.Geometry.Manifold.DerivationBundle",
+        "match_kind": null
+      },
+      "note": "Intrinsic tangent vectors as derivations of the algebra of smooth functions are formalized as `PointDerivation`, though the surface-specific equivalence-class definition is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vector field as a derivation (Leibniz rule)",
+      "anchor": {
+        "section": "Tangent vectors and normal vectors",
+        "snippet": "is a derivation , i.e. it satisfies the Leibniz rule"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PointDerivation",
+        "module": "Mathlib.Geometry.Manifold.DerivationBundle",
+        "match_kind": null
+      },
+      "note": "`Derivation`/`PointDerivation` encode the Leibniz rule on smooth functions, but the surface-specific directional-derivative-as-derivation statement is not separately formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lie bracket of vector fields",
+      "anchor": {
+        "section": "Tangent vectors and normal vectors",
+        "snippet": "satisfies the Jacobi identity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "VectorField.mlieBracket",
+        "module": "Mathlib.Geometry.Manifold.VectorField.LieBracket",
+        "match_kind": "generalization"
+      },
+      "note": "The Lie bracket of vector fields on manifolds is defined as `mlieBracket` and the Jacobi identity is proven (`leibniz_identity_mlieBracket`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vector fields form a Lie algebra",
+      "anchor": {
+        "section": "Tangent vectors and normal vectors",
+        "snippet": "form a Lie algebra under the Lie bracket"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "VectorField.leibniz_identity_mlieBracket",
+        "module": "Mathlib.Geometry.Manifold.VectorField.LieBracket",
+        "match_kind": null
+      },
+      "note": "Antisymmetry and the Jacobi identity for the vector-field Lie bracket are proven, but the space of vector fields is not bundled as a `LieAlgebra` instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "First and second fundamental forms",
+      "anchor": {
+        "section": "First and second fundamental forms, the shape operator, and the curvature",
+        "snippet": "The first fundamental form depends only on f , and not on n"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The first and second fundamental forms of a surface are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Curvatures from the shape operator",
+      "anchor": {
+        "section": "First and second fundamental forms, the shape operator, and the curvature",
+        "snippet": "the Gaussian curvature is the determinant of the shape operator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gaussian/mean curvature and the shape operator are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Positivity of E, G and EG−F²",
+      "anchor": {
+        "section": "First and second fundamental forms, the shape operator, and the curvature",
+        "snippet": "are all necessarily positive"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The first fundamental form coefficients E, G, EG−F² are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Effect of negating the unit normal",
+      "anchor": {
+        "section": "First and second fundamental forms, the shape operator, and the curvature",
+        "snippet": "a negation of the choice of unit normal vector field will negate the second fundamental form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The second fundamental form and its dependence on normal orientation are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Principal curvatures as extreme normal-section curvatures",
+      "anchor": {
+        "section": "First and second fundamental forms, the shape operator, and the curvature",
+        "snippet": "are the maximum and minimum possible values of the curvature of this plane curve"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Principal curvatures and normal sections are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Christoffel symbols",
+      "anchor": {
+        "section": "Christoffel symbols, Gauss–Codazzi equations, and the Theorema Egregium",
+        "snippet": "The Christoffel symbols assign, to each local parametrization"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Christoffel symbols are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Christoffel symbols from the first fundamental form",
+      "anchor": {
+        "section": "Christoffel symbols, Gauss–Codazzi equations, and the Theorema Egregium",
+        "snippet": "the Christoffel symbols can be calculated from the first fundamental form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither Christoffel symbols nor the first fundamental form are formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Codazzi equations",
+      "anchor": {
+        "section": "Christoffel symbols, Gauss–Codazzi equations, and the Theorema Egregium",
+        "snippet": "The Codazzi equations assert that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Codazzi equations are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gauss equation",
+      "anchor": {
+        "section": "Christoffel symbols, Gauss–Codazzi equations, and the Theorema Egregium",
+        "snippet": "The Gauss equation asserts that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Gauss equation for surfaces is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Theorema Egregium",
+      "anchor": {
+        "section": "Christoffel symbols, Gauss–Codazzi equations, and the Theorema Egregium",
+        "snippet": "This is known as the theorema egregium"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Theorema Egregium is not formalized (no Gaussian curvature).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bonnet's fundamental theorem for embedded surfaces",
+      "anchor": {
+        "section": "Christoffel symbols, Gauss–Codazzi equations, and the Theorema Egregium",
+        "snippet": "Pierre Bonnet proved that two quadratic forms satisfying the Gauss-Codazzi equations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bonnet's fundamental theorem of surface theory is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isometry of surfaces",
+      "anchor": {
+        "section": "Isometries",
+        "snippet": "is said to be an isometry if it preserves the metric"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Isometry",
+        "module": "Mathlib.Topology.MetricSpace.Isometry",
+        "match_kind": null
+      },
+      "note": "Metric-space `Isometry` (distance-preserving maps) is formalized generally, but the surface isometry preserving the first fundamental form is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Length-preserving maps are isometries",
+      "anchor": {
+        "section": "Isometries",
+        "snippet": "preserves the lengths of all parametrized in curves"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Path length exists (`pathELength`) but the theorem that length-preserving maps preserve the first fundamental form is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Isometry from shared parametrization",
+      "anchor": {
+        "section": "Isometries",
+        "snippet": "A simple example of an isometry is provided by two parametrizations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This surface isometry example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cylinder and plane locally isometric",
+      "anchor": {
+        "section": "Isometries",
+        "snippet": "The cylinder and the plane give examples of surfaces that are locally isometric"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Local isometry of the cylinder and plane is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Catenoid and helicoid locally isometric",
+      "anchor": {
+        "section": "Isometries",
+        "snippet": "the catenoid and helicoid are locally isometric"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The catenoid–helicoid local isometry is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tangential vector field",
+      "anchor": {
+        "section": "Covariant derivatives",
+        "snippet": "A tangential vector field X on S assigns"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContMDiffSection",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection",
+        "match_kind": null
+      },
+      "note": "Vector fields as sections of the tangent bundle are formalized, but not the embedded tangential vector field of a surface in ℝ³.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Smooth vector field",
+      "anchor": {
+        "section": "Covariant derivatives",
+        "snippet": "One says that X is smooth if the functions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContMDiffSection",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection",
+        "match_kind": null
+      },
+      "note": "Smoothness of vector fields is captured by `ContMDiffSection` of the tangent bundle, not via the surface-parametrization component condition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Covariant derivative via Christoffel symbols",
+      "anchor": {
+        "section": "Covariant derivatives",
+        "snippet": "one defines ∇ Y X to be the tangent vector"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsCovariantDerivativeOn",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic",
+        "match_kind": null
+      },
+      "note": "Covariant derivatives (Koszul connections) on vector bundles are formalized, but not the surface definition via Christoffel symbols.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Covariant derivative via orthogonal projection",
+      "anchor": {
+        "section": "Covariant derivatives",
+        "snippet": "The orthogonal projection of this vector onto"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsCovariantDerivativeOn",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic",
+        "match_kind": null
+      },
+      "note": "Abstract covariant derivatives exist, but the construction as the tangential projection of the ambient derivative for embedded surfaces is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Covariant differentiation depends only on first fundamental form",
+      "anchor": {
+        "section": "Covariant derivatives",
+        "snippet": "covariant differentiation depends only on the first fundamental form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The intrinsic nature of covariant differentiation (Levi-Civita determined by the metric) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Surface of revolution",
+      "anchor": {
+        "section": "Surfaces of revolution",
+        "snippet": "A surface of revolution is obtained by rotating a curve in the xz -plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Surfaces of revolution are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Regularity of a surface of revolution",
+      "anchor": {
+        "section": "Surfaces of revolution",
+        "snippet": "will be a regular surface in ℝ 3"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Regularity of surfaces of revolution is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rotationally symmetric minimal surfaces",
+      "anchor": {
+        "section": "Surfaces of revolution",
+        "snippet": "any such surface is part of a plane or a scaled catenoid"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Classification of rotationally symmetric minimal surfaces is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Geodesics on surfaces of revolution (Clairaut)",
+      "anchor": {
+        "section": "Surfaces of revolution",
+        "snippet": "geodesics on S are governed by Clairaut's relation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Clairaut's relation for geodesics is not formalized (no geodesic theory).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Curvatures of a quadric surface",
+      "anchor": {
+        "section": "Quadric surfaces",
+        "snippet": "Consider the quadric surface defined by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Curvatures of quadric surfaces are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ruled surface",
+      "anchor": {
+        "section": "Ruled surfaces",
+        "snippet": "A ruled surface is one which can be generated by the motion of a straight line"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ruled surfaces are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vanishing Gaussian curvature of a ruled surface",
+      "anchor": {
+        "section": "Ruled surfaces",
+        "snippet": "The Gaussian curvature of the ruled surface vanishes if and only if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gaussian curvature of ruled surfaces is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vanishing Gaussian curvature characterizes developable surfaces",
+      "anchor": {
+        "section": "Ruled surfaces",
+        "snippet": "has vanishing Gaussian curvature near a point if and only if it is developable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Developable surfaces and this characterization are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Minimal surface",
+      "anchor": {
+        "section": "Minimal surfaces",
+        "snippet": "Such a surface is called a minimal surface"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Minimal surfaces are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Meusnier: minimal iff mean curvature vanishes",
+      "anchor": {
+        "section": "Minimal surfaces",
+        "snippet": "A surface is minimal if and only if its mean curvature vanishes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Meusnier's characterization is not formalized (no mean curvature).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Douglas–Radó solution of Plateau's problem",
+      "anchor": {
+        "section": "Minimal surfaces",
+        "snippet": "gave an affirmative answer to Plateau's problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Plateau's problem and its solution are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Explicit minimal surfaces",
+      "anchor": {
+        "section": "Minimal surfaces",
+        "snippet": "Many explicit examples of minimal surface are known explicitly, such as the catenoid"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Explicit minimal surfaces (catenoid, etc.) are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Osserman: Gauss map of non-planar minimal surface is dense",
+      "anchor": {
+        "section": "Minimal surfaces",
+        "snippet": "if a minimal surface is non-planar, then its image under the Gauss map is dense"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Osserman's theorem and the Gauss map are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Surface of constant curvature",
+      "anchor": {
+        "section": "Surfaces of constant Gaussian curvature",
+        "snippet": "it is called a surface of constant curvature"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Surfaces of constant Gaussian curvature are not formalized (no Gaussian curvature).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Unit sphere has curvature +1",
+      "anchor": {
+        "section": "Surfaces of constant Gaussian curvature",
+        "snippet": "The unit sphere in E 3 has constant Gaussian curvature +1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gaussian curvature of the sphere is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Plane and cylinder have curvature 0",
+      "anchor": {
+        "section": "Surfaces of constant Gaussian curvature",
+        "snippet": "The Euclidean plane and the cylinder both have constant Gaussian curvature 0"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gaussian curvature of plane/cylinder is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Pseudosphere has curvature −1",
+      "anchor": {
+        "section": "Surfaces of constant Gaussian curvature",
+        "snippet": "A unit pseudosphere has constant Gaussian curvature -1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The pseudosphere and its curvature are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Transitive symmetry groups of constant-curvature surfaces",
+      "anchor": {
+        "section": "Surfaces of constant Gaussian curvature",
+        "snippet": "The sphere, the plane and the hyperbolic plane have transitive Lie group of symmetries"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "UpperHalfPlane.isPretransitiveSL2R",
+        "module": "Mathlib.Analysis.Complex.UpperHalfPlane.MoebiusAction",
+        "match_kind": null
+      },
+      "note": "SL(2,ℝ) acts transitively by isometries on the upper half-plane (`isPretransitiveSL2R`); the unified Lie-symmetry statement across all three geometries is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Developable surfaces have curvature 0",
+      "anchor": {
+        "section": "Surfaces of constant Gaussian curvature",
+        "snippet": "Other examples of surfaces with Gaussian curvature 0 include cones , tangent developables"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Developable surfaces and their curvature are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Riemannian metric on a surface",
+      "anchor": {
+        "section": "Local metric structure",
+        "snippet": "In each local chart a Riemannian metric is given by smoothly assigning a 2×2 positive definite matrix to each point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RiemannianMetric",
+        "module": "Mathlib.Topology.VectorBundle.Riemannian",
+        "match_kind": "generalization"
+      },
+      "note": "A smoothly varying positive-definite inner product on tangent spaces is formalized as `RiemannianMetric`/`ContMDiffRiemannianMetric`, generalizing the 2×2 surface case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Shape operator",
+      "anchor": {
+        "section": "Shape operator",
+        "snippet": "the shape operator S x can be defined as a linear operator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The shape operator is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Shape operator is self-adjoint",
+      "anchor": {
+        "section": "Shape operator",
+        "snippet": "the shape operator is self-adjoint on the tangent space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Self-adjointness of the shape operator is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Eigenvalues are the principal curvatures",
+      "anchor": {
+        "section": "Shape operator",
+        "snippet": "The eigenvalues of S x are just the principal curvatures"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Principal curvatures as eigenvalues of the shape operator are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Determinant of shape operator is Gaussian curvature",
+      "anchor": {
+        "section": "Shape operator",
+        "snippet": "the determinant of the shape operator at a point is the Gaussian curvature"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the shape operator nor Gaussian curvature are formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Shape operator via unit normal field",
+      "anchor": {
+        "section": "Shape operator",
+        "snippet": "Equivalently, the shape operator can be defined as a linear operator on tangent spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The shape operator defined via the unit normal field is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Embeddability of analytic metrics",
+      "anchor": {
+        "section": "Geodesic curves on a surface",
+        "snippet": "the theory of geodesics has been used to show this is true in the important case when the components of the metric are analytic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Local isometric embeddability of analytic metrics is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Length and energy of a path",
+      "anchor": {
+        "section": "Geodesics",
+        "snippet": "its length is defined by"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "pathELength",
+        "module": "Mathlib.Geometry.Manifold.Riemannian.PathELength",
+        "match_kind": null
+      },
+      "note": "Path length is formalized as `pathELength` (integral of the speed); the energy functional is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Length independent of parametrization",
+      "anchor": {
+        "section": "Geodesics",
+        "snippet": "The length is independent of the parametrization of a path"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "pathELength_comp_of_monotoneOn",
+        "module": "Mathlib.Geometry.Manifold.Riemannian.PathELength",
+        "match_kind": "exact"
+      },
+      "note": "`pathELength` is proven invariant under monotone (and antitone) reparametrization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Geodesic (Euler equations)",
+      "anchor": {
+        "section": "Geodesics",
+        "snippet": "A path satisfying the Euler equations is called a geodesic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Geodesics defined via the Euler–Lagrange equations are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Energy-minimizing path is a geodesic",
+      "anchor": {
+        "section": "Geodesics",
+        "snippet": "a path minimising energy is just a geodesic parametrised by arc length"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The energy-minimization characterization of geodesics is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Geodesic curvature",
+      "anchor": {
+        "section": "Geodesic curvature",
+        "snippet": "The geodesic curvature k g at a point of a curve"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Geodesic curvature is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Geodesic curvature is intrinsic",
+      "anchor": {
+        "section": "Geodesic curvature",
+        "snippet": "The geodesic curvature at a point is an intrinsic invariant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Intrinsic invariance of geodesic curvature is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Geodesic iff geodesic curvature vanishes",
+      "anchor": {
+        "section": "Geodesic curvature",
+        "snippet": "A unit speed curve on a surface is a geodesic if and only if its geodesic curvature vanishes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This characterization of geodesics is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Geodesic iff acceleration is normal",
+      "anchor": {
+        "section": "Geodesic curvature",
+        "snippet": "is a geodesic if and only if its acceleration vector"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The normal-acceleration characterization of geodesics is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gaussian curvature in orthogonal coordinates",
+      "anchor": {
+        "section": "Orthogonal coordinates",
+        "snippet": "then the Gaussian curvature is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The orthogonal-coordinate formula for Gaussian curvature is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gauss's derivative formula for the angle",
+      "anchor": {
+        "section": "Orthogonal coordinates",
+        "snippet": "The derivative of φ is given by a classical derivative formula of Gauss"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gauss's derivative formula for the angle is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exponential map",
+      "anchor": {
+        "section": "Exponential map",
+        "snippet": "The exponential map is defined by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Riemannian exponential map is not formalized (no geodesic flow).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponential map is a local diffeomorphism",
+      "anchor": {
+        "section": "Exponential map",
+        "snippet": "and gives a diffeomorphism between a disc"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Local diffeomorphism property of the exponential map is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Determination of normal-coordinate Taylor series",
+      "anchor": {
+        "section": "Computation of normal coordinates",
+        "snippet": "this uniquely determines α , β , L , M , λ and μ"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Normal coordinate Taylor expansions are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gauss lemma",
+      "anchor": {
+        "section": "Gauss's lemma",
+        "snippet": "usually called the Gauss lemma"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Riemannian-geometry Gauss lemma is not formalized (Mathlib's `GaussLemma` is about polynomial content).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Polar form of the metric",
+      "anchor": {
+        "section": "Gauss's lemma",
+        "snippet": "it follows that the metric has the form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The geodesic polar form of the metric is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Geodesic convexity of small balls",
+      "anchor": {
+        "section": "Gauss's lemma",
+        "snippet": "under the exponential map is geodesically convex"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Geodesic convexity of small metric balls is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Theorema Egregium",
+      "anchor": {
+        "section": "Theorema Egregium",
+        "snippet": "shows that the Gaussian curvature of a surface can be computed solely in terms of the metric"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Theorema Egregium is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gauss–Jacobi equation",
+      "anchor": {
+        "section": "Gauss–Jacobi equation",
+        "snippet": "the Sturm–Liouville equation satisfied by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Gauss–Jacobi (Jacobi field) equation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gaussian curvature via Laplace–Beltrami operator",
+      "anchor": {
+        "section": "Laplace–Beltrami operator",
+        "snippet": "the Gaussian curvature at a point is given by the formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Laplace–Beltrami operator and this curvature formula are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isothermal coordinates",
+      "anchor": {
+        "section": "Laplace–Beltrami operator",
+        "snippet": "In isothermal coordinates , first considered by Gauss, the metric is required to be of the special form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Isothermal coordinates are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Liouville's equation in isothermal coordinates",
+      "anchor": {
+        "section": "Laplace–Beltrami operator",
+        "snippet": "and φ satisfies Liouville's equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Liouville's PDE for the conformal factor is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Existence of isothermal coordinates",
+      "anchor": {
+        "section": "Laplace–Beltrami operator",
+        "snippet": "Isothermal coordinates are known to exist in a neighbourhood of any point on the surface"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Local existence of isothermal coordinates is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gauss's geodesic triangle formula",
+      "anchor": {
+        "section": "Geodesic triangles",
+        "snippet": "if Δ is a geodesic triangle on a surface with angles"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gauss's angle-excess formula for geodesic triangles is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Curvature as limit of angle excess over area",
+      "anchor": {
+        "section": "Geodesic triangles",
+        "snippet": "the curvature at a point can be calculated as the limit of angle excess"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Curvature as a limit of angle excess over area is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gauss–Bonnet theorem",
+      "anchor": {
+        "section": "Gauss–Bonnet theorem (2)",
+        "snippet": "This is the celebrated Gauss–Bonnet theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Gauss–Bonnet theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Poincaré–Hopf index theorem",
+      "anchor": {
+        "section": "Gauss–Bonnet theorem (2)",
+        "snippet": "the Poincaré-Hopf index theorem for vector fields on M"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Poincaré–Hopf index theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Positive curvature implies diffeomorphic to sphere",
+      "anchor": {
+        "section": "Curvature and embeddings",
+        "snippet": "If the Gaussian curvature of a surface M is everywhere positive"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This positive-curvature sphere result is not formalized (Poincaré-conjecture statements in Mathlib are `proof_wanted`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hilbert: embedded closed surface has positive-curvature point",
+      "anchor": {
+        "section": "Curvature and embeddings",
+        "snippet": "Hilbert proved that every isometrically embedded closed surface must have a point of positive curvature"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Garsia conformal isometric embedding",
+      "anchor": {
+        "section": "Curvature and embeddings",
+        "snippet": "as Adriano Garsia showed using the Beltrami equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Garsia's conformal embedding result is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Simply connected constant-curvature surfaces",
+      "anchor": {
+        "section": "Surfaces of constant curvature",
+        "snippet": "The simply connected surfaces of constant curvature 0, +1 and –1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Classification of simply connected constant-curvature surfaces is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dimension of moduli space of Riemann surfaces",
+      "anchor": {
+        "section": "Surfaces of constant curvature",
+        "snippet": "has real dimension 6 g − 6"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The 6g−6 moduli-space dimension is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Poincaré uniformization theorem",
+      "anchor": {
+        "section": "Surfaces of constant curvature",
+        "snippet": "By Poincaré's uniformization theorem , any orientable closed 2-manifold is conformally equivalent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The uniformization theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euclidean cosine rule",
+      "anchor": {
+        "section": "Euclidean geometry",
+        "snippet": "the cosine rule for a triangle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.law_cos",
+        "module": "Mathlib.Geometry.Euclidean.Triangle",
+        "match_kind": "exact"
+      },
+      "note": "The law of cosines is formalized as `EuclideanGeometry.law_cos`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Flat tori embed in E⁴ but not E³",
+      "anchor": {
+        "section": "Euclidean geometry",
+        "snippet": "These closed surfaces have no isometric embeddings in E 3"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Embeddability of flat tori is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Isometry group of the sphere",
+      "anchor": {
+        "section": "Spherical geometry",
+        "snippet": "The isometry group of the unit sphere S 2 in E 3 is the orthogonal group O(3)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The orthogonal group exists, but the identification of the sphere's isometry group with O(3) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Geodesics on the sphere are great circles",
+      "anchor": {
+        "section": "Spherical geometry",
+        "snippet": "The geodesics between two points on the sphere are the great circle arcs"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Spherical geodesics as great circles are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Spherical cosine law",
+      "anchor": {
+        "section": "Spherical geometry",
+        "snippet": "the spherical cosine law states that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The spherical law of cosines is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Area of a spherical triangle",
+      "anchor": {
+        "section": "Spherical geometry",
+        "snippet": "The area of the triangle is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Girard's spherical-excess area formula is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rotations correspond to Möbius transformations",
+      "anchor": {
+        "section": "Spherical geometry",
+        "snippet": "every rotation of S 2 corresponds to a Möbius transformation in SU(2)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The SU(2)/SO(3) correspondence with Möbius transformations of S² is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sphere unique closed orientable surface of curvature +1",
+      "anchor": {
+        "section": "Spherical geometry",
+        "snippet": "The unit sphere is the unique closed orientable surface with constant curvature +1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This uniqueness statement is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Real projective plane as a quotient",
+      "anchor": {
+        "section": "Spherical geometry",
+        "snippet": "The quotient SO(3)/O(2) can be identified with the real projective plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identification SO(3)/O(2) ≅ ℝP² is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Poincaré disk metric",
+      "anchor": {
+        "section": "Hyperbolic geometry",
+        "snippet": "be the Poincaré disk in the complex plane with Poincaré metric"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "UpperHalfPlane.dist_eq",
+        "module": "Mathlib.Analysis.Complex.UpperHalfPlane.Metric",
+        "match_kind": null
+      },
+      "note": "The hyperbolic metric is formalized on the upper half-plane model, not on the Poincaré disk.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SU(1,1) acts transitively on the disk",
+      "anchor": {
+        "section": "Hyperbolic geometry",
+        "snippet": "acts transitively by Möbius transformations on D and the stabilizer subgroup of 0 is the rotation group"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "UpperHalfPlane.isPretransitiveSL2R",
+        "module": "Mathlib.Analysis.Complex.UpperHalfPlane.MoebiusAction",
+        "match_kind": null
+      },
+      "note": "SL(2,ℝ) acts transitively by Möbius isometries on the upper half-plane; the conjugate SU(1,1)-on-disk version is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unique geodesic between two points of the disk",
+      "anchor": {
+        "section": "Hyperbolic geometry",
+        "snippet": "Any two points z , w in D are joined by a unique geodesic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Uniqueness of hyperbolic geodesics is not formalized (no geodesic theory).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hyperbolic distance formula",
+      "anchor": {
+        "section": "Hyperbolic geometry",
+        "snippet": "The distance between z and w is given by"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "UpperHalfPlane.dist_eq",
+        "module": "Mathlib.Analysis.Complex.UpperHalfPlane.Metric",
+        "match_kind": null
+      },
+      "note": "A closed-form hyperbolic distance formula (`dist_eq`) is proven for the upper half-plane, not the disk model.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Disk is complete as a metric space",
+      "anchor": {
+        "section": "Hyperbolic geometry",
+        "snippet": "as a metric space ( D , d ) is complete"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.Analysis.Complex.UpperHalfPlane.Metric",
+        "match_kind": null
+      },
+      "note": "The upper half-plane hyperbolic metric is proven to be a `ProperSpace` (hence complete), but for the half-plane model rather than the disk.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hyperbolic cosine rule",
+      "anchor": {
+        "section": "Hyperbolic geometry",
+        "snippet": "the hyperbolic cosine rule states that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hyperbolic cosh distance identities exist (`cosh_dist`), but the triangle cosine rule with angles is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Area of a hyperbolic triangle",
+      "anchor": {
+        "section": "Hyperbolic geometry",
+        "snippet": "The area of the hyperbolic triangle is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The angle-defect area formula for hyperbolic triangles is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Disk and half-plane conformally equivalent",
+      "anchor": {
+        "section": "Hyperbolic geometry",
+        "snippet": "are conformally equivalent by the Möbius transformations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Both the unit disc and upper half-plane are defined, but the conformal equivalence (Cayley transform) between them is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Disk unique simply connected surface of curvature −1",
+      "anchor": {
+        "section": "Hyperbolic geometry",
+        "snippet": "The unit disk with the Poincaré metric is the unique simply connected oriented 2-dimensional Riemannian manifold with constant curvature −1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This uniqueness/uniformization statement is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hyperbolic surface examples",
+      "anchor": {
+        "section": "Hyperbolic geometry",
+        "snippet": "the Bolza surface of genus 2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific hyperbolic surfaces like the Bolza surface are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Curvature under conformal change of metric",
+      "anchor": {
+        "section": "Uniformization",
+        "snippet": "The new Gaussian curvature K′ is then given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The conformal-change curvature transformation law is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Liouville's equation for uniformization",
+      "anchor": {
+        "section": "Uniformization",
+        "snippet": "it suffices to solve the following variant of Liouville's equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The uniformization Liouville-type PDE is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Solvability for negative Euler characteristic (Trudinger)",
+      "anchor": {
+        "section": "Uniformization",
+        "snippet": "this non-linear equation can always be solved"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Solvability of the uniformization PDE is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Ricci flow proof of uniformization",
+      "anchor": {
+        "section": "Uniformization",
+        "snippet": "The method of Ricci flow , developed by Richard S. Hamilton , gives another proof of existence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ricci flow is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Riemannian (Levi-Civita) connection",
+      "anchor": {
+        "section": "Covariant derivative",
+        "snippet": "The Riemannian connection or Levi-Civita connection"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CovariantDerivative",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic",
+        "match_kind": null
+      },
+      "note": "General covariant derivatives (and torsion via `CovariantDerivative.torsion`) are formalized, but not the metric-compatible torsion-free Levi-Civita connection specifically.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Parallel vector field along a curve",
+      "anchor": {
+        "section": "Parallel transport",
+        "snippet": "is said to be parallel along the curve if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Parallel transport along curves is not formalized (only the bundle covariant derivative exists).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Curvature from parallel transport around loops",
+      "anchor": {
+        "section": "Parallel transport",
+        "snippet": "The Gaussian curvature at a point can be recovered from parallel transport around increasingly small loops"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Recovering curvature from holonomy around small loops is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Kobayashi: connection 1-form as pullback of the sphere's",
+      "anchor": {
+        "section": "Connection 1-form",
+        "snippet": "is just the pullback under the Gauss map of the connection 1-form on S 2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Kobayashi's pullback description of the connection 1-form is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Klingenberg injectivity radius bound",
+      "anchor": {
+        "section": "Global differential geometry of surfaces",
+        "snippet": "Wilhelm Klingenberg proved in 1959 that the injectivity radius of a closed surface is bounded below"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Injectivity radius and Klingenberg's bound are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bonnet diameter bound",
+      "anchor": {
+        "section": "Global differential geometry of surfaces",
+        "snippet": "the diameter of a closed surface of positive Gaussian curvature is always bounded above"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Bonnet (–Myers) diameter bound for surfaces is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cohn-Vossen rigidity of ovaloids",
+      "anchor": {
+        "section": "Global differential geometry of surfaces",
+        "snippet": "In 1927 Cohn-Vossen proved that two ovaloids"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cohn-Vossen rigidity is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Liebmann: constant curvature closed surface is a sphere",
+      "anchor": {
+        "section": "Global differential geometry of surfaces",
+        "snippet": "a closed embedded surface of constant Gaussian curvature must be a sphere"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Liebmann's theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hopf: constant mean curvature genus-0 surface is a sphere",
+      "anchor": {
+        "section": "Global differential geometry of surfaces",
+        "snippet": "Heinz Hopf showed in 1950 that a closed embedded surface with constant mean curvature and genus 0"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hopf's constant-mean-curvature sphere theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Carathéodory conjecture on umbilic points",
+      "anchor": {
+        "section": "Global differential geometry of surfaces",
+        "snippet": "a closed convex three times differentiable surface admits at least two umbilic points"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Carathéodory umbilic-points conjecture is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Zero Gaussian curvature surfaces are cylinders or planes",
+      "anchor": {
+        "section": "Global differential geometry of surfaces",
+        "snippet": "a complete surface in E 3 with zero Gaussian curvature must be a cylinder or a plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This flat-surface classification is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hilbert's theorem on constant negative curvature",
+      "anchor": {
+        "section": "Global differential geometry of surfaces",
+        "snippet": "no complete surface with constant negative curvature can be immersed isometrically in E 3"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hilbert's theorem on constant negative curvature is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Willmore conjecture",
+      "anchor": {
+        "section": "Global differential geometry of surfaces",
+        "snippet": "the integral of the square of the mean curvature of a torus immersed in E 3 should be bounded below"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Willmore conjecture is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Schmidt isoperimetric inequality on sphere and hyperbolic plane",
+      "anchor": {
+        "section": "Global differential geometry of surfaces",
+        "snippet": "In 1939 Schmidt proved that the classical isoperimetric inequality for curves in the Euclidean plane is also valid"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The isoperimetric inequality on the sphere and hyperbolic plane is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Loewner's torus systolic inequality",
+      "anchor": {
+        "section": "Global differential geometry of surfaces",
+        "snippet": "In 1949 Loewner proved a torus inequality for metrics on the torus"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Loewner's systolic inequality is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Pu's inequality for the projective plane",
+      "anchor": {
+        "section": "Global differential geometry of surfaces",
+        "snippet": "Pu's inequality for the real projective plane from 1952"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pu's systolic inequality for ℝP² is not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

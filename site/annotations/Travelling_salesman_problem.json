@@ -1,0 +1,1113 @@
+{
+  "slug": "Travelling_salesman_problem",
+  "wikipedia_title": "Travelling salesman problem",
+  "display_title": "Travelling salesman problem",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Travelling salesman problem (TSP)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the travelling salesman problem ( TSP ) asks the following question"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of the travelling salesman problem appears anywhere in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Decision version of TSP",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The decision version of the TSP (where given a length L , the task is to decide whether the graph has a tour whose length is at most L )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formalization of the TSP decision problem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Decision TSP is NP-complete",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "belongs to the class of NP-complete problems"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib contains no complexity-theoretic notions such as NP-completeness.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Beardwood–Halton–Hammersley theorem (intro)",
+      "anchor": {
+        "section": "History",
+        "snippet": "The Beardwood–Halton–Hammersley theorem provides a practical solution to the travelling salesman problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No mention of Beardwood, Halton, or Hammersley anywhere in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Christofides–Serdyukov 1.5-approximation",
+      "anchor": {
+        "section": "History",
+        "snippet": "the Christofides–Serdyukov algorithm yields a solution that, in the worst case, is at most 1.5 times longer than the optimal solution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No mention of Christofides or Serdyukov anywhere in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Karp: Hamiltonian cycle is NP-complete implies TSP NP-hard",
+      "anchor": {
+        "section": "History",
+        "snippet": "Richard M. Karp showed in 1972 that the Hamiltonian cycle problem was NP-complete , which implies the NP-hardness of TSP"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines `SimpleGraph.IsHamiltonian` but has no complexity classes (NP, NP-hard).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "TSP as a graph problem",
+      "anchor": {
+        "section": "As a graph problem",
+        "snippet": "TSP can be modeled as an undirected weighted graph"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `SimpleGraph` but no weighted-graph TSP model.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetric TSP",
+      "anchor": {
+        "section": "Asymmetric and symmetric",
+        "snippet": "In the symmetric TSP , the distance between two cities is the same in each opposite direction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No symmetric-TSP formalization in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Asymmetric TSP",
+      "anchor": {
+        "section": "Asymmetric and symmetric",
+        "snippet": "In the asymmetric TSP , paths may not exist in both directions or the distances might be different"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No asymmetric-TSP formalization in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "TSP as Hamiltonian cycle problem",
+      "anchor": {
+        "section": "Related problems",
+        "snippet": "An equivalent formulation in terms of graph theory is"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SimpleGraph.Walk.IsHamiltonianCycle",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Hamiltonian",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes Hamiltonian cycles via `SimpleGraph.Walk.IsHamiltonianCycle`, but not the TSP equivalence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bottleneck travelling salesman problem",
+      "anchor": {
+        "section": "Related problems",
+        "snippet": "Another related problem is the bottleneck travelling salesman problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define the bottleneck TSP.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generalized travelling salesman problem",
+      "anchor": {
+        "section": "Related problems",
+        "snippet": "The generalized travelling salesman problem , also known as the \"travelling politician problem\""
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No generalized TSP definition exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Noon–Bean reduction",
+      "anchor": {
+        "section": "Related problems",
+        "snippet": "Noon and Bean demonstrated that the generalized travelling salesman problem can be transformed into a standard TSP"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Noon–Bean reduction in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sequential ordering problem",
+      "anchor": {
+        "section": "Related problems",
+        "snippet": "The sequential ordering problem deals with the problem of visiting a set of cities, where precedence relations between the cities exist"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No sequential ordering problem in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Travelling purchaser problem",
+      "anchor": {
+        "section": "Related problems",
+        "snippet": "The travelling purchaser problem deals with a purchaser who is charged with purchasing a set of products"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No travelling purchaser problem in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "TSP as an integer linear program",
+      "anchor": {
+        "section": "Integer linear programming formulations",
+        "snippet": "The TSP can be formulated as an integer linear program"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no integer linear programming infrastructure for TSP.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Miller–Tucker–Zemlin formulation",
+      "anchor": {
+        "section": "Miller–Tucker–Zemlin formulation",
+        "snippet": "The MTZ formulation of TSP is thus the following integer linear programming problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No MTZ formulation in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dantzig–Fulkerson–Johnson formulation",
+      "anchor": {
+        "section": "Dantzig–Fulkerson–Johnson formulation",
+        "snippet": "Then TSP can be written as the following integer linear programming problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No DFJ formulation in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Subtour elimination constraint",
+      "anchor": {
+        "section": "Dantzig–Fulkerson–Johnson formulation",
+        "snippet": "The last constraint of the DFJ formulation—called a subtour elimination constraint"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No subtour elimination constraint in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Brute-force permutation search",
+      "anchor": {
+        "section": "Exact algorithms",
+        "snippet": "The most direct solution would be to try all permutations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize a brute-force TSP search.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Held–Karp algorithm",
+      "anchor": {
+        "section": "Exact algorithms",
+        "snippet": "One of the earliest applications of dynamic programming is the Held–Karp algorithm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Held–Karp algorithm in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Ambainis et al. quantum exact algorithm",
+      "anchor": {
+        "section": "Exact algorithms",
+        "snippet": "The currently best quantum exact algorithm for TSP due to Ambainis et al."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No quantum TSP algorithm in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Nearest neighbour algorithm",
+      "anchor": {
+        "section": "Constructive heuristics",
+        "snippet": "The nearest neighbour (NN) algorithm (a greedy algorithm ) lets the salesman choose the nearest unvisited city as his next move"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No nearest-neighbour TSP heuristic in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Rosenkrantz NN approximation factor",
+      "anchor": {
+        "section": "Constructive heuristics",
+        "snippet": "showed that the NN algorithm has the approximation factor"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Rosenkrantz approximation bound in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bitonic tour",
+      "anchor": {
+        "section": "Constructive heuristics",
+        "snippet": "The bitonic tour of a set of points is the minimum-perimeter monotone polygon that has the points as its vertices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No bitonic tour definition in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Match Twice and Stitch (MTS)",
+      "anchor": {
+        "section": "Constructive heuristics",
+        "snippet": "Another constructive heuristic , Match Twice and Stitch (MTS), performs two sequential matchings"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Match-Twice-and-Stitch heuristic in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Christofides–Serdyukov algorithm",
+      "anchor": {
+        "section": "The Algorithm of Christofides and Serdyukov",
+        "snippet": "The algorithm of Christofides and Serdyukov follows a similar outline"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Christofides–Serdyukov algorithm in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Christofides–Serdyukov 1.5-approximation guarantee",
+      "anchor": {
+        "section": "The Algorithm of Christofides and Serdyukov",
+        "snippet": "This gives a TSP tour which is at most 1.5 times the optimal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No 1.5-approximation guarantee in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Eulerian tour lower bound via triangle inequality",
+      "anchor": {
+        "section": "The Algorithm of Christofides and Serdyukov",
+        "snippet": "By the triangle inequality , we know that the TSP tour can be no longer than the Eulerian tour"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib mentions Eulerian trails in `SimpleGraph.Trails` but no TSP-Eulerian bound.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pairwise exchange (2-opt)",
+      "anchor": {
+        "section": "Pairwise exchange",
+        "snippet": "The pairwise exchange or 2-opt technique involves iteratively removing two edges and replacing them"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No 2-opt heuristic in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "3-opt technique",
+      "anchor": {
+        "section": "Pairwise exchange",
+        "snippet": "the 3-opt technique removes 3 edges and reconnects them to form a shorter tour"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No 3-opt heuristic in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lin–Kernighan heuristic (k-opt)",
+      "anchor": {
+        "section": "k -opt heuristic, or Lin–Kernighan heuristics",
+        "snippet": "The Lin–Kernighan heuristic is a special case of the V -opt or variable-opt technique"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Lin–Kernighan heuristic in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "V-opt / variable-opt method",
+      "anchor": {
+        "section": "V -opt heuristic",
+        "snippet": "The variable-opt method is related to, and a generalization of, the k -opt method"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No V-opt method in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Constricting Insertion Heuristic",
+      "anchor": {
+        "section": "Constricting Insertion Heuristic",
+        "snippet": "This starts with a sub-tour such as the convex hull and then inserts other vertices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No constricting insertion heuristic in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ant colony system (ACS)",
+      "anchor": {
+        "section": "Ant colony optimization",
+        "snippet": "Marco Dorigo described in 1993 a method of heuristically generating \"good solutions\" to the TSP using a simulation of an ant colony called ACS"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No ant colony optimization in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Metric TSP",
+      "anchor": {
+        "section": "Metric",
+        "snippet": "In the metric TSP , also known as delta-TSP or Δ-TSP, the intercity distances satisfy the triangle inequality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has metric spaces but no metric-TSP problem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Euclidean TSP",
+      "anchor": {
+        "section": "Metric",
+        "snippet": "In the Euclidean TSP (see below), the distance between two cities is the Euclidean distance between the corresponding points"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Euclidean TSP formalization in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Rectilinear (Manhattan) TSP",
+      "anchor": {
+        "section": "Metric",
+        "snippet": "In the rectilinear TSP, the distance between two cities is the sum of the absolute values of the differences of their x - and y -coordinates"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No rectilinear-TSP formalization in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Maximum metric TSP",
+      "anchor": {
+        "section": "Metric",
+        "snippet": "In the maximum metric , the distance between two points is the maximum of the absolute values of differences of their x - and y -coordinates"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No max-metric TSP formalization in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reduction of non-metric to metric instance",
+      "anchor": {
+        "section": "Metric",
+        "snippet": "a symmetric, non-metric instance can be reduced to a metric one"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No such reduction in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euclidean optimal tour is a simple polygon",
+      "anchor": {
+        "section": "Euclidean",
+        "snippet": "the optimal solution to the travelling salesman problem forms a simple polygon through all of the points"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euclidean TSP is NP-hard",
+      "anchor": {
+        "section": "Euclidean",
+        "snippet": "Like the general TSP, the exact Euclidean TSP is NP-hard"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No complexity-class results in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Discretized Euclidean TSP NP-complete",
+      "anchor": {
+        "section": "Euclidean",
+        "snippet": "A discretized version of the problem with distances rounded to integers is NP-complete"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No complexity-class results in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euclidean TSP in Counting Hierarchy",
+      "anchor": {
+        "section": "Euclidean",
+        "snippet": "With rational coordinates and the actual Euclidean metric, Euclidean TSP is known to be in the Counting Hierarchy"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No counting-hierarchy results in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Arora–Mitchell PTAS for Euclidean TSP",
+      "anchor": {
+        "section": "Euclidean",
+        "snippet": "there is a polynomial-time algorithm that finds a tour of length at most (1 + 1/ c ) times the optimal for geometric instances of TSP"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No PTAS or Arora–Mitchell result in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Asymmetric TSP (definition)",
+      "anchor": {
+        "section": "Asymmetric",
+        "snippet": "The case where the distance from A to B is not equal to the distance from B to A is called asymmetric TSP"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No asymmetric TSP definition in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Stacker crane problem",
+      "anchor": {
+        "section": "Asymmetric",
+        "snippet": "The stacker crane problem can be viewed as a special case of the asymmetric TSP"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No stacker crane problem in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conversion of asymmetric to symmetric TSP",
+      "anchor": {
+        "section": "Conversion to symmetric",
+        "snippet": "One option is to turn an asymmetric matrix of size N into a symmetric matrix of size 2 N"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No such conversion construction in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Analyst's travelling salesman problem",
+      "anchor": {
+        "section": "Analyst's problem",
+        "snippet": "This problem is known as the analyst's travelling salesman problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define the analyst's TSP.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "BHH almost-sure limit for random points in a square",
+      "anchor": {
+        "section": "Path length for random sets of points in a square",
+        "snippet": "are [MATH] independent random variables with uniform distribution in the square"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Beardwood–Halton–Hammersley theorem in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Naïve slice-path upper bound",
+      "anchor": {
+        "section": "Upper bound",
+        "snippet": "by using a naïve path which visits monotonically the points inside each of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Few / Karloff upper bound",
+      "anchor": {
+        "section": "Upper bound",
+        "snippet": "later improved by Karloff (1987)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fietcher empirical upper bound",
+      "anchor": {
+        "section": "Upper bound",
+        "snippet": "Fietcher [ 46 ] empirically suggested an upper bound of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Nearest-point lower bound",
+      "anchor": {
+        "section": "Lower bound",
+        "snippet": "By observing that [MATH] is greater than [MATH] times the distance between"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Two-nearest-points lower bound",
+      "anchor": {
+        "section": "Lower bound",
+        "snippet": "A better lower bound is obtained by observing that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Held–Karp polynomial-time numerical lower bound",
+      "anchor": {
+        "section": "Lower bound",
+        "snippet": "Held and Karp gave a polynomial-time algorithm that provides numerical lower bounds"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Johnson computer-experiment lower bound",
+      "anchor": {
+        "section": "Lower bound",
+        "snippet": "David S. Johnson obtained a lower bound by computer experiment"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Valenzuela–Jones numerical lower bound",
+      "anchor": {
+        "section": "Lower bound",
+        "snippet": "Christine L. Valenzuela and Antonia J. Jones obtained the following other numerical lower bound"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "TSP is NP-hard / decision NP-complete",
+      "anchor": {
+        "section": "Computational complexity",
+        "snippet": "The problem has been shown to be NP-hard"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no complexity classes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bottleneck TSP NP-hard",
+      "anchor": {
+        "section": "Computational complexity",
+        "snippet": "The bottleneck travelling salesman problem is also NP-hard"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no complexity classes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Planar Euclidean TSP NP-hard",
+      "anchor": {
+        "section": "Computational complexity",
+        "snippet": "The problem remains NP-hard even for the case when the cities are in the plane with Euclidean distances"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no complexity classes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "General TSP is NPO-complete",
+      "anchor": {
+        "section": "Complexity of approximation",
+        "snippet": "In the general case, finding a shortest travelling salesman tour is NPO -complete"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define NPO.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Metric TSP is APX-complete",
+      "anchor": {
+        "section": "Complexity of approximation",
+        "snippet": "the problem becomes APX -complete"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define APX.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "(1,2)-metric TSP 8/7 approximation",
+      "anchor": {
+        "section": "Complexity of approximation",
+        "snippet": "If the distances are restricted to 1 and 2 (but still are a metric), then the approximation ratio becomes 8/7"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Svensson–Tarnawski–Végh constant-factor approximation for asymmetric TSP",
+      "anchor": {
+        "section": "Complexity of approximation",
+        "snippet": "In the asymmetric case with triangle inequality , in 2018, a constant factor approximation was developed by Svensson, Tarnawski, and Végh"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Traub–Vygen performance ratio",
+      "anchor": {
+        "section": "Complexity of approximation",
+        "snippet": "An algorithm by Vera Traub and Jens Vygen"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Inapproximability bound 75/74",
+      "anchor": {
+        "section": "Complexity of approximation",
+        "snippet": "The best known inapproximability bound is 75/74"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Max TSP approximable within 63/38",
+      "anchor": {
+        "section": "Complexity of approximation",
+        "snippet": "The corresponding maximization problem of finding the longest travelling salesman tour is approximable within 63/38"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Symmetric max TSP 4/3 deterministic approximation",
+      "anchor": {
+        "section": "Complexity of approximation",
+        "snippet": "the longest tour can be approximated within 4/3 by a deterministic algorithm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not present in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,309 @@
+{
+  "slug": "Algebraic_curve",
+  "wikipedia_title": "Algebraic curve",
+  "display_title": "Algebraic curve",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle ^{h}p(x,y,z)=z^{\\deg(p)}p\\left({\\frac {x}{z}},{\\frac {y}{z}}\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Mathlib has no general homogenization operator for plane-curve polynomials of arbitrary degree."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle p'_{\\infty }(x,y)={^{h}p'_{z}(x,y,1)}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Derivative at infinity of a general plane-curve polynomial is not isolated as a Mathlib definition."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle xp'_{x}(a,b)+yp'_{y}(a,b)+p'_{\\infty }(a,b)=0.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Tangent-line formula at a point of a general affine plane curve is not formalized."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle xp'_{x}(a,b)+yp'_{y}(a,b)+p'_{\\infty }(a,b)=0,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Symmetric tangent formula for general plane curves is not represented as a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle xP'_{x}(a,b,c)+yP'_{y}(a,b,c)+zP'_{z}(a,b,c)=0,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Euler tangent formula for arbitrary projective plane curves is not formalized in general degree."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle P'_{x}(a,b,c)=P'_{y}(a,b,c)=P'_{z}(a,b,c)=0.}"
+      },
+      "status": "partial",
+      "decl": "WeierstrassCurve.Projective.Nonsingular",
+      "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Projective.Basic",
+      "note": "Only the cubic Weierstrass case has a nonsingular condition via vanishing partials; no general-degree analogue."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle P={^{h}p}=p_{d}+zp_{d-1}+\\cdots +z^{d}p_{0}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Homogeneous decomposition of an affine plane-curve polynomial is not formalized."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle P'_{z}(a,b,0)=p_{d-1}(a,b).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Proof intermediate about z-derivative at infinity of a homogenized polynomial; not a standalone Mathlib lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle xq'_{x}(a,b)+yq'_{y}(a,b)+p_{d-1}(a,b)=0.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Asymptote equation of a general affine plane curve is not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle q'_{x}(a,b)=q'_{y}(a,b)=p_{d-1}(a,b)=0,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Condition for parabolic branches of plane curves is not represented in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle p'_{x}(x,y)=p'_{y}(x,y)=p(x,y)=0.}"
+      },
+      "status": "partial",
+      "decl": "WeierstrassCurve.Affine.Nonsingular",
+      "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Basic",
+      "note": "Only the affine Weierstrass-cubic singularity system is formalized; no general-degree affine analogue."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle p'_{x}(x,y)=p'_{y}(x,y)=p'_{\\infty }(x,y)=0,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Characteristic-zero reformulation of singular-point system via derivative at infinity is not formalized."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle P'_{x}(x,y,z)=P'_{y}(x,y,z)=P'_{z}(x,y,z)=0}"
+      },
+      "status": "partial",
+      "decl": "WeierstrassCurve.Projective.Nonsingular",
+      "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Projective.Basic",
+      "note": "Only cubic Weierstrass projective singular condition is formalized; no general-degree analogue."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle P(x)=\\sum _{n=n_{0}}^{\\infty }a_{n}x^{n/d},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Puiseux series are not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle P_{i}(x)=\\sum _{n=n_{0}}^{\\infty }a_{n}\\omega _{d}^{i}x^{n/d}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Conjugate Puiseux branches under a primitive root of unity are not formalized."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}&f(x_{1},x_{2})=0\\\\&g_{0}(x_{1},x_{2})\\neq 0\\\\x_{3}&={\\frac {g_{3}(x_{1},x_{2})}{g_{0}(x_{1},x_{2})}}\\\\&{}\\ \\vdots \\\\x_{n}&={\\frac {g_{n}(x_{1},x_{2})}{g_{0}(x_{1},x_{2})}}\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Birational presentation of non-plane algebraic curves is not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {\\partial f}{\\partial x}}(P)={\\frac {\\partial f}{\\partial y}}(P)={\\frac {\\partial f}{\\partial z}}(P)=0.}"
+      },
+      "status": "partial",
+      "decl": "WeierstrassCurve.Projective.Nonsingular",
+      "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Projective.Basic",
+      "note": "Mathlib only formalises this Jacobian-rank-zero singularity test for the cubic Weierstrass case."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(P)={\\frac {\\partial f}{\\partial x}}(P)={\\frac {\\partial f}{\\partial y}}(P)=0.}"
+      },
+      "status": "partial",
+      "decl": "WeierstrassCurve.Affine.Nonsingular",
+      "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Basic",
+      "note": "Affine singularity-via-Jacobian condition is formalised only for cubic Weierstrass curves."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle g={\\frac {1}{2}}(d-1)(d-2)-\\sum _{P}\\delta _{P},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Genus-delta formula via delta invariants is not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle x={\\frac {1-t^{2}}{1+t+t^{2}}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific rational parameterization of an example ellipse is not a Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle y=t(x+1)={\\frac {t(t+2)}{1+t+t^{2}}}\\,,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific rational parameterization of an example ellipse is not formalized."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle X=U^{2}-T^{2},\\quad Y=T\\,(T+2\\,U),\\quad Z=T^{2}+TU+U^{2}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Homogenized projective parameterization of an example ellipse is not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle X^{2}+X\\,Y+Y^{2}=Z^{2},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific projective ellipse equation example is not formalized."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle s:\\mathbb {P} ^{1}\\to \\mathbb {P} ^{2}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "A general rational map P¹ → P² parameterizing rational plane curves is not packaged in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle s([x:y])=[s_{1}([x:y]):s_{2}([x:y]):s_{3}([x:y])]}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Coordinate-wise formula for a rational parameterization map is not formalized."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle N_{d}=\\sum _{d_{A}+d_{B}=d}N_{d_{A}}N_{d_{B}}d_{A}^{2}d_{B}\\left(d_{B}{\\binom {3d-4}{3d_{A}-2}}-d_{A}{\\binom {3d-4}{3d_{A}-1}}\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Kontsevich's Gromov–Witten recursion for rational plane curves is not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle y^{2}z+a_{1}xyz+a_{3}yz^{2}=x^{3}+a_{2}x^{2}z+a_{4}xz^{2}+a_{6}z^{3}.}"
+      },
+      "status": "formalized",
+      "decl": "WeierstrassCurve.Projective.polynomial",
+      "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Projective.Basic",
+      "note": "This projective Tate–Weierstrass equation is exactly the defining polynomial in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle y^{2}=x^{3}+px+q.}"
+      },
+      "status": "partial",
+      "decl": "WeierstrassCurve",
+      "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Weierstrass",
+      "note": "Mathlib formalises the general Weierstrass form; the classical short y²=x³+px+q reduction is not isolated."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {(k-1)(k-2)}{2}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Genus formula (k-1)(k-2)/2 for smooth degree-k projective plane curves is not formalized."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle ab-a-b+1}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Genus formula for smooth curves of bidegree (a,b) in P¹×P¹ is not formalized in Mathlib."
+    }
+  ]
+}

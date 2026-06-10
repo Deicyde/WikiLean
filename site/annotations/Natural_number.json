@@ -1,0 +1,857 @@
+{
+  "slug": "Natural_number",
+  "wikipedia_title": "Natural number",
+  "display_title": "Natural number",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Natural number",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the natural numbers are the numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat",
+        "module": "Mathlib.Data.Nat.Notation",
+        "match_kind": "exact"
+      },
+      "note": "The type `Nat` (notation `ℕ`) is the core formalization of the natural numbers, with `ℕ` notation defined in Mathlib.Data.Nat.Notation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cardinal number",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "they are called cardinal numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal` is defined as the quotient of types under equinumerosity, exactly the cardinal-number notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ordinal number",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "they are called ordinal numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ordinal",
+        "module": "Mathlib.SetTheory.Ordinal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Ordinal` is defined as the quotient of well-orders by order isomorphism, the standard order-type/ordinal notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Nominal number",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "referred to as nominal numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A nominal number is a non-mathematical labeling use of numerals and has no Mathlib formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cardinality",
+      "anchor": {
+        "section": "Size of a collection",
+        "snippet": "the size of a collection , is called cardinality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.mk",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.mk α` (notation `#α`) is the cardinality of a type, exactly the size-of-a-collection notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equal cardinality via one-to-one correspondence",
+      "anchor": {
+        "section": "Size of a collection",
+        "snippet": "have the same size or cardinality if they have a one-to-one correspondence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.eq",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.eq : #α = #β ↔ Nonempty (α ≃ β)` states that equal cardinality is equivalent to existence of a bijection.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Size relationship between collections",
+      "anchor": {
+        "section": "Size of a collection",
+        "snippet": "this can be used to define a size relationship between them"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.le_def",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.le_def : #α ≤ #β ↔ Nonempty (α ↪ β)` defines the size relationship via existence of an injection.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sequence",
+      "anchor": {
+        "section": "Position in a sequence",
+        "snippet": "a sequence is a function that assigns an object to each position"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Stream'.Seq",
+        "module": "Mathlib.Data.Seq.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Stream'.Seq α` formalizes (possibly infinite) sequences indexed by positions, generalizing the function-on-positions notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Order type",
+      "anchor": {
+        "section": "Position in a sequence",
+        "snippet": "Every well-ordered set has an order type"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ordinal.type",
+        "module": "Mathlib.SetTheory.Ordinal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Ordinal.type r` assigns to each well-order its ordinal, exactly the order-type notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Natural numbers as simplest infinite well-ordered set",
+      "anchor": {
+        "section": "Position in a sequence",
+        "snippet": "they form the simplest infinite well-ordered set, with order type ω"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ordinal.type_nat_lt",
+        "module": "Mathlib.SetTheory.Ordinal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Ordinal.type_nat_lt : typeLT ℕ = ω` states the order type of `ℕ` under `<` is `ω` (`Ordinal.omega0`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Two definitions of natural numbers",
+      "anchor": {
+        "section": "Terminology and notation",
+        "snippet": "The term natural numbers has two common definitions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a terminological/meta remark about conventions (including vs excluding 0), not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Positive integers and non-negative integers",
+      "anchor": {
+        "section": "Terminology and notation",
+        "snippet": "are often called the positive integers and the non-negative integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PNat",
+        "module": "Mathlib.Data.PNat.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`PNat` (notation `ℕ+`) formalizes the positive integers, while non-negative integers are `ℕ` itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Whole numbers",
+      "anchor": {
+        "section": "Terminology and notation",
+        "snippet": "The phrase whole numbers is frequently used"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an ambiguous terminology remark, not a distinct mathematical object to formalize.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Numeral",
+      "anchor": {
+        "section": "Numeral",
+        "snippet": "A numeral is a symbol or grouping of symbols"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Num",
+        "module": "Mathlib.Data.Num.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib has numeral representations like `Num`/`PosNum` and `OfNat`, but the general informal notion of a numeral-as-symbol is not directly formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Decimal system",
+      "anchor": {
+        "section": "Numeral",
+        "snippet": "The decimal system which uses Arabic numerals"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.digits",
+        "module": "Mathlib.Data.Nat.Digits.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Nat.digits b n` gives the base-`b` digit representation, with the decimal system being the `b = 10` instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Counting",
+      "anchor": {
+        "section": "Counting",
+        "snippet": "Counting is the process of iterating through the natural numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Counting as a cognitive/procedural process is not formalized, though `List.range` enumerates naturals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cardinality principle",
+      "anchor": {
+        "section": "Counting",
+        "snippet": "The cardinality principle is the understanding"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The cardinality principle is a cognitive-developmental concept with no Mathlib formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Successor",
+      "anchor": {
+        "section": "Formal definitions",
+        "snippet": "another unique natural number that it is followed by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.succ",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "`Nat.succ` is the successor constructor of `Nat` (defined in Lean core and used throughout Mathlib).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Peano axioms",
+      "anchor": {
+        "section": "Peano axioms",
+        "snippet": "The five Peano axioms are"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.rec",
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`Nat` satisfies the Peano axioms (zero, injective successor, recursor `Nat.rec`), but Mathlib has no single bundled `PeanoAxioms` structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Axiom of induction",
+      "anchor": {
+        "section": "Peano axioms",
+        "snippet": "The axiom of induction"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.rec",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "The induction/recursion principle `Nat.rec` is the core recursor, with variants like `Nat.le_induction` and `Nat.strong_induction_on` in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "von Neumann ordinals construction",
+      "anchor": {
+        "section": "Set-theoretic definition",
+        "snippet": "the standard solution (due to John von Neumann )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PSet.ofNat",
+        "module": "Mathlib.SetTheory.ZFC.PSet",
+        "match_kind": "exact"
+      },
+      "note": "`PSet.ofNat n` constructs the n-th von Neumann ordinal (with `PSet.omega` for ω) in the ZFC set-theory development.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Set-theoretic cardinality",
+      "anchor": {
+        "section": "Set-theoretic definition",
+        "snippet": "a set S has n elements if there is a one-to-one correspondence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.card",
+        "module": "Mathlib.SetTheory.Cardinal.Finite",
+        "match_kind": "generalization"
+      },
+      "note": "`Nat.card`/`Fintype.card` give the number of elements of a type, characterized via bijections (e.g. `Fintype.card_eq`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Set-theoretic order",
+      "anchor": {
+        "section": "Set-theoretic definition",
+        "snippet": "n ≤ m if and only if n is a subset of m"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.SetTheory.ZFC.Ordinal",
+        "match_kind": null
+      },
+      "note": "Von Neumann ordinals and their membership/subset order exist in `SetTheory.ZFC.Ordinal`, but the specific `n ≤ m ↔ n ⊆ m` characterization for `ℕ` is not stated (Mathlib's `ℕ` order is the core `<`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zermelo ordinals",
+      "anchor": {
+        "section": "Set-theoretic definition",
+        "snippet": "Another construction sometimes called Zermelo ordinals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes the von Neumann construction (`PSet.ofNat`), not the Zermelo singleton-nesting construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Definition of addition",
+      "anchor": {
+        "section": "Addition",
+        "snippet": "sending each natural number to the next one"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.add",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "`Nat.add` is the recursively-defined addition on `Nat` (Lean core), with `Nat.add_zero`/`Nat.add_succ` giving its defining equations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Addition as repeated application of successor",
+      "anchor": {
+        "section": "Addition",
+        "snippet": "addition can be seen as repeated application of the successor function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.add_succ",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "`Nat.add_succ : a + succ b = succ (a + b)` (with `Nat.succ_eq_add_one`) realizes addition as repeated successor application.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "(ℕ, +) is a commutative monoid",
+      "anchor": {
+        "section": "Addition",
+        "snippet": "is a commutative monoid with identity element 0"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.instAddCommMonoid",
+        "module": "Mathlib.Algebra.Group.Nat.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.instAddCommMonoid` provides the additive commutative monoid structure on `ℕ` with identity `0`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "(ℕ, +) is a free monoid on one generator",
+      "anchor": {
+        "section": "Addition",
+        "snippet": "It is a free monoid on one generator"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FreeMonoid",
+        "module": "Mathlib.Algebra.FreeMonoid.Basic",
+        "match_kind": null
+      },
+      "note": "`FreeMonoid`/`FreeAddMonoid` are formalized, but the isomorphism `ℕ ≃ FreeAddMonoid Unit` (free on one generator) is not a named declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cancellation property and embedding in a group",
+      "anchor": {
+        "section": "Addition",
+        "snippet": "satisfies the cancellation property"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.instAddCancelCommMonoid",
+        "module": "Mathlib.Algebra.Group.Nat.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.instAddCancelCommMonoid` gives the additive cancellation property, and `ℕ` embeds into the group `ℤ` via `Nat.castRingHom`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Smallest group containing ℕ is the integers",
+      "anchor": {
+        "section": "Addition",
+        "snippet": "The smallest group containing the natural numbers is the integers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Int",
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The integers `Int` and the embedding `Nat.cast : ℕ → ℤ` exist, but the universal Grothendieck-group/group-completion property of `ℕ` is not formalized as a theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Definition of multiplication",
+      "anchor": {
+        "section": "Multiplication",
+        "snippet": "given that addition has been defined"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.mul",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "`Nat.mul` is the recursively-defined multiplication on `Nat` (Lean core), built from addition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "(ℕ, ×) is a free commutative monoid",
+      "anchor": {
+        "section": "Multiplication",
+        "snippet": "into a free commutative monoid with identity element 1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.factorizationEquiv",
+        "module": "Mathlib.Data.Nat.Factorization.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "`Nat.factorizationEquiv : ℕ+ ≃ {f : ℕ →₀ ℕ // ∀ p ∈ f.support, Prime p}` exhibits the multiplicative monoid `ℕ+` as the free commutative monoid on the primes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Primes generate the multiplicative monoid",
+      "anchor": {
+        "section": "Multiplication",
+        "snippet": "a generator set for this monoid is the set of prime numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.factorization_prod_pow_eq_self",
+        "module": "Mathlib.Data.Nat.Factorization.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.factorization_prod_pow_eq_self` expresses each positive natural as a product of prime powers, so primes generate the multiplicative monoid.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Distributive law",
+      "anchor": {
+        "section": "Relationship between addition and multiplication",
+        "snippet": "which is expressed in the distribution law"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.left_distrib",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "`Nat.left_distrib` (and `Nat.right_distrib`) state `a * (b + c) = a*b + a*c`, the distributive law on `ℕ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "ℕ not closed under subtraction",
+      "anchor": {
+        "section": "Relationship between addition and multiplication",
+        "snippet": "is not closed under subtraction"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.sub",
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes truncated subtraction `Nat.sub` (with `Nat.sub_eq_zero_of_le`), reflecting that ordinary subtraction is not total on `ℕ`, but non-closure is not stated as a theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "ℕ is a semiring, not a ring",
+      "anchor": {
+        "section": "Relationship between addition and multiplication",
+        "snippet": "instead it is a semiring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.instCommSemiring",
+        "module": "Mathlib.Algebra.Ring.Nat",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.instCommSemiring` gives `ℕ` its commutative semiring structure (it cannot be a ring as it lacks additive inverses).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "ℕ excluding 0 has no identity element",
+      "anchor": {
+        "section": "Relationship between addition and multiplication",
+        "snippet": "has no identity element"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The claim that the positive naturals under addition form a semigroup without identity is not stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Total order on natural numbers",
+      "anchor": {
+        "section": "Order",
+        "snippet": "A total order on the natural numbers is defined by letting"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.instLinearOrder",
+        "module": "Mathlib.Data.Nat.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.instLinearOrder` provides the total (linear) order on `ℕ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Order compatible with operations",
+      "anchor": {
+        "section": "Order",
+        "snippet": "This order is compatible with the arithmetical operations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.instIsStrictOrderedRing",
+        "module": "Mathlib.Algebra.Order.Ring.Nat",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.instIsStrictOrderedRing` (and `Nat.instIsOrderedAddMonoid`) establish that the order is compatible with addition and multiplication.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Well-ordering of the natural numbers",
+      "anchor": {
+        "section": "Order",
+        "snippet": "they are well-ordered : every non-empty set of natural numbers has a least element"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.find",
+        "module": "Mathlib.Data.Nat.Find",
+        "match_kind": "special_case"
+      },
+      "note": "`Nat.find` constructs the least natural satisfying a decidable predicate, and the `WellFoundedLT ℕ`/`IsWellOrder ℕ (·<·)` instances express the well-ordering principle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euclidean division",
+      "anchor": {
+        "section": "Division",
+        "snippet": "for any two natural numbers a and b with b ≠ 0 there are natural numbers q and r"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.div_add_mod",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "`Nat.div_add_mod : b * (a / b) + a % b = a` with `Nat.mod_lt` gives existence of quotient and remainder with `r < b`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quotient and remainder",
+      "anchor": {
+        "section": "Division",
+        "snippet": "The number q is called the quotient and r is called the remainder"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.div",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "`Nat.div` (quotient, notation `/`) and `Nat.mod` (remainder, notation `%`) are the core division operations on `ℕ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness of quotient and remainder",
+      "anchor": {
+        "section": "Division",
+        "snippet": "The numbers q and r are uniquely determined by a and b"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.div_mod_unique",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "`Nat.div_mod_unique` characterizes the quotient and remainder uniquely given `r < b`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closure under addition and multiplication",
+      "anchor": {
+        "section": "Algebraic properties satisfied by the natural numbers",
+        "snippet": "Closure under addition and multiplication"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.instCommSemiring",
+        "module": "Mathlib.Algebra.Ring.Nat",
+        "match_kind": "invocation"
+      },
+      "note": "Closure is inherent in the total operations `Nat.add`/`Nat.mul : ℕ → ℕ → ℕ`, packaged in `Nat.instCommSemiring`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Associativity",
+      "anchor": {
+        "section": "Algebraic properties satisfied by the natural numbers",
+        "snippet": "Associativity : for all natural numbers a , b , and c"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.add_assoc",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "`Nat.add_assoc` and `Nat.mul_assoc` state associativity of addition and multiplication on `ℕ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Commutativity",
+      "anchor": {
+        "section": "Algebraic properties satisfied by the natural numbers",
+        "snippet": "Commutativity : for all natural numbers a and b"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.add_comm",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "`Nat.add_comm` and `Nat.mul_comm` state commutativity of addition and multiplication on `ℕ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence of identity elements",
+      "anchor": {
+        "section": "Algebraic properties satisfied by the natural numbers",
+        "snippet": "Existence of identity elements : for every natural number a"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.add_zero",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "`Nat.add_zero`/`Nat.zero_add` (identity 0) and `Nat.mul_one`/`Nat.one_mul` (identity 1) provide the identity elements.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Distributivity of multiplication over addition",
+      "anchor": {
+        "section": "Algebraic properties satisfied by the natural numbers",
+        "snippet": "Distributivity of multiplication over addition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.left_distrib",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "`Nat.left_distrib`/`Nat.right_distrib` express distributivity of multiplication over addition on `ℕ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "No nonzero zero divisors",
+      "anchor": {
+        "section": "Algebraic properties satisfied by the natural numbers",
+        "snippet": "No nonzero zero divisors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.mul_eq_zero",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "`Nat.mul_eq_zero : m * n = 0 ↔ m = 0 ∨ n = 0` shows `ℕ` has no nonzero zero divisors (also via `Nat.instCommMonoidWithZero`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Construction of the integers",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "the result is the integers , which include zero and negative numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "`Int` (notation `ℤ`) formalizes the integers including zero and negatives (defined in Lean core, ring structure in Mathlib).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Construction of the rational numbers",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "the result is the rational numbers , including fractions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Rat",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "`Rat` (notation `ℚ`) formalizes the rationals as reduced fractions (core type, field structure developed in Mathlib).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Construction of the real numbers",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "If every infinite decimal is considered to be a number, the result is the real numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real",
+        "module": "Mathlib.Data.Real.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Real` (notation `ℝ`) is constructed as the Cauchy completion of `ℚ` (`structure Real where ofCauchy`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Construction of the complex numbers",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "If every solution of a polynomial equation is considered to be a number, the result is the complex numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Complex` (notation `ℂ`) is defined as pairs of reals (real and imaginary parts), the standard complex-number construction.",
+      "provenance": "ai"
+    }
+  ]
+}

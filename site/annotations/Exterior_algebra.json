@@ -1,0 +1,1179 @@
+{
+  "slug": "Exterior_algebra",
+  "wikipedia_title": "Exterior algebra",
+  "display_title": "Exterior algebra",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Exterior algebra",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the exterior algebra or Grassmann algebra of a vector space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ExteriorAlgebra",
+        "module": "Mathlib.LinearAlgebra.ExteriorAlgebra.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`ExteriorAlgebra R M` is defined as `CliffordAlgebra (0 : QuadraticForm R M)` for a commutative semiring `R` and module `M`, which generalizes the vector-space definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Simple k-vector / blade",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is called a simple"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Searching Mathlib for `blade`, `simple k-vector`, or analogous definitions returned no result; only the image of `ιMulti` is named (not the concept of a blade).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "k-vector and multivector",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a sum of blades of homogeneous degree"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "exteriorPower",
+        "module": "Mathlib.LinearAlgebra.ExteriorAlgebra.Basic",
+        "match_kind": null
+      },
+      "note": "Elements of `⋀[R]^n M` play the role of `k`-vectors, but Mathlib has no dedicated `kVector`/`multivector` definitions for the sum-of-blades vocabulary.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "k-th exterior power",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The linear span of the"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exteriorPower",
+        "module": "Mathlib.LinearAlgebra.ExteriorAlgebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`exteriorPower R n M` is defined as `LinearMap.range (ExteriorAlgebra.ι R) ^ n`, with notation `⋀[R]^n M`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exterior algebra as graded algebra",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "this makes the exterior algebra a graded algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ExteriorAlgebra.gradedAlgebra",
+        "module": "Mathlib.LinearAlgebra.ExteriorAlgebra.Grading",
+        "match_kind": "exact"
+      },
+      "note": "The instance `ExteriorAlgebra.gradedAlgebra` shows that the family `⋀[R]^i M` graded-decomposes `ExteriorAlgebra R M`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Universal property (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The exterior algebra is universal in the sense that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ExteriorAlgebra.lift",
+        "module": "Mathlib.LinearAlgebra.ExteriorAlgebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ExteriorAlgebra.lift` is the equiv between linear maps `M →ₗ A` whose image squares to zero and algebra maps `ExteriorAlgebra R M →ₐ A`, witnessing the universal property.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Area of parallelogram via determinant",
+      "anchor": {
+        "section": "Areas in the plane",
+        "snippet": "The area of this parallelogram is given by the standard determinant formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma states the parallelogram area = |det| in the geometric formulation; only the general `Matrix.det` is available.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Areas in the plane",
+          "snippet": "The area of this parallelogram is given by the standard determinant formula"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {v} ={\\begin{bmatrix}a\\\\b\\end{bmatrix}}=a\\,\\mathbf {e} _{1}+b\\,\\mathbf {e} _{2},\\quad \\mathbf {w} ={\\begin{bmatrix}c\\\\d\\end{bmatrix}}=c\\,\\mathbf {e} _{1}+d\\,\\mathbf {e} _{2}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\text{Area}}=\\left|\\det {\\begin{bmatrix}\\mathbf {v} &amp;\\mathbf {w} \\end{bmatrix}}\\right|=\\left|\\det {\\begin{bmatrix}a&amp;c\\\\b&amp;d\\end{bmatrix}}\\right|=\\left|ad-bc\\right|.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Exterior product yields signed area",
+      "anchor": {
+        "section": "Areas in the plane",
+        "snippet": "Consider now the exterior product of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No identification of the wedge product on `R^2` with signed area is recorded as a Mathlib statement.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Areas in the plane",
+          "snippet": "Consider now the exterior product of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\mathbf {v} \\wedge \\mathbf {w} &amp;=(a\\,\\mathbf {e} _{1}+b\\,\\mathbf {e} _{2})\\wedge (c\\,\\mathbf {e} _{1}+d\\,\\mathbf {e} _{2})\\\\&amp;=ac\\,\\mathbf {e} _{1}\\wedge \\mathbf {e} _{1}+ad\\,\\mathbf {e} _{1}\\wedge \\mathbf {e} _{2}+bc\\,\\mathbf {e} _{2}\\wedge \\mathbf {e} _{1}+bd\\,\\mathbf {e} _{2}\\wedge \\mathbf {e} _{2}\\\\&amp;=ad\\,\\mathbf {e} _{1}\\wedge \\mathbf {e} _{2}+bc\\,\\mathbf {e} _{2}\\wedge \\mathbf {e} _{1}\\\\&amp;=\\left(ad-bc\\right)\\mathbf {e} _{1}\\wedge \\mathbf {e} _{2},\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Axiomatic properties of signed area",
+      "anchor": {
+        "section": "Areas in the plane",
+        "snippet": "then A must satisfy the following properties"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The bilinear/alternating axiomatization of signed area is not explicitly stated for `R^2` in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Exterior product and cross product in R^3",
+      "anchor": {
+        "section": "Cross and triple products",
+        "snippet": "the exterior algebra is closely related to the cross product and triple product"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`crossProduct` exists in `Mathlib.LinearAlgebra.CrossProduct` but there is no lemma linking it to the wedge product / exterior square.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Cross and triple products",
+          "snippet": "the exterior algebra is closely related to the cross product and triple product"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {u} =u_{1}\\mathbf {e} _{1}+u_{2}\\mathbf {e} _{2}+u_{3}\\mathbf {e} _{3}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {v} =v_{1}\\mathbf {e} _{1}+v_{2}\\mathbf {e} _{2}+v_{3}\\mathbf {e} _{3}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\mathbf {u} \\wedge \\mathbf {v} \\,&amp;=(u_{1}v_{2}-u_{2}v_{1})(\\mathbf {e} _{1}\\wedge \\mathbf {e} _{2})\\\\&amp;+(u_{3}v_{1}-u_{1}v_{3})(\\mathbf {e} _{3}\\wedge \\mathbf {e} _{1})\\\\&amp;+(u_{2}v_{3}-u_{3}v_{2})(\\mathbf {e} _{2}\\wedge \\mathbf {e} _{3})\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Triple product as exterior product of three vectors",
+      "anchor": {
+        "section": "Cross and triple products",
+        "snippet": "the exterior product of three vectors is"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "triple_product_eq_det",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": null
+      },
+      "note": "`triple_product_eq_det` shows `u ⬝ v ⨯₃ w = det ![u,v,w]`, but this is not formulated through `ExteriorAlgebra.ιMulti`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Cross and triple products",
+          "snippet": "the exterior product of three vectors is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {w} =w_{1}\\mathbf {e} _{1}+w_{2}\\mathbf {e} _{2}+w_{3}\\mathbf {e} _{3},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {u} \\wedge \\mathbf {v} \\wedge \\mathbf {w} =(u_{1}v_{2}w_{3}+u_{2}v_{3}w_{1}+u_{3}v_{1}w_{2}-u_{1}v_{3}w_{2}-u_{2}v_{1}w_{3}-u_{3}v_{2}w_{1})(\\mathbf {e} _{1}\\wedge \\mathbf {e} _{2}\\wedge \\mathbf {e} _{3})}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Formal definition of exterior algebra",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "is defined as the quotient algebra of the tensor algebra"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ExteriorAlgebra",
+        "module": "Mathlib.LinearAlgebra.ExteriorAlgebra.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib defines `ExteriorAlgebra` as `CliffordAlgebra 0`, not as a quotient of the tensor algebra; only `TensorAlgebra.toExterior` connects the two presentations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exterior product on Lambda(V)",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "The exterior product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ExteriorAlgebra.ιMulti",
+        "module": "Mathlib.LinearAlgebra.ExteriorAlgebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Multiplication in `ExteriorAlgebra R M` is the wedge product, with `ExteriorAlgebra.ιMulti` packaging the multilinear wedge of `ι R`-images as an alternating map.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Alternating property",
+      "anchor": {
+        "section": "Alternating product",
+        "snippet": "The exterior product is by construction alternating on elements of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ExteriorAlgebra.ι_sq_zero",
+        "module": "Mathlib.LinearAlgebra.ExteriorAlgebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ExteriorAlgebra.ι_sq_zero` states `ι R m * ι R m = 0`, the alternating property on degree-1 elements.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Anticommutativity from alternating",
+      "anchor": {
+        "section": "Alternating product",
+        "snippet": "It follows that the product is also anticommutative on elements of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ExteriorAlgebra.ι_add_mul_swap",
+        "module": "Mathlib.LinearAlgebra.ExteriorAlgebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ExteriorAlgebra.ι_add_mul_swap` states `ι R x * ι R y + ι R y * ι R x = 0`, i.e. anticommutativity on `V`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Permutation sign formula",
+      "anchor": {
+        "section": "Alternating product",
+        "snippet": "is the signature of the permutation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlternatingMap.map_perm",
+        "module": "Mathlib.LinearAlgebra.Alternating.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`AlternatingMap.map_perm` (specialized to `ExteriorAlgebra.ιMulti`) yields `ιMulti R n (v ∘ σ) = sign σ • ιMulti R n v`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linear dependence criterion via wedge",
+      "anchor": {
+        "section": "Alternating product",
+        "snippet": "a necessary and sufficient condition for"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlternatingMap.map_linearDependent",
+        "module": "Mathlib.LinearAlgebra.Alternating.Basic",
+        "match_kind": null
+      },
+      "note": "`AlternatingMap.map_linearDependent` gives one direction (linearly dependent ⇒ wedge zero); the converse over a field via `ιMulti_family_linearIndependent_field` exists but the full iff is not packaged.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "k-th exterior power (formal)",
+      "anchor": {
+        "section": "Exterior power",
+        "snippet": "is the vector subspace of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exteriorPower",
+        "module": "Mathlib.LinearAlgebra.ExteriorAlgebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`exteriorPower R n M` is `LinearMap.range (ι R) ^ n`, the submodule of `n`-fold products in `ExteriorAlgebra R M`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Decomposable k-vector (blade)",
+      "anchor": {
+        "section": "Exterior power",
+        "snippet": "is said to be decomposable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No predicate `IsDecomposable` / `IsBlade` for elements of `⋀[R]^n M` appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Non-decomposable 2-vector",
+      "anchor": {
+        "section": "Exterior power",
+        "snippet": "the following 2-vector is not decomposable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No example of a non-decomposable 2-vector is recorded in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Basis of the k-th exterior power",
+      "anchor": {
+        "section": "Basis and dimension",
+        "snippet": "is a basis for"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Basis.exteriorPower",
+        "module": "Mathlib.LinearAlgebra.ExteriorPower.Basis",
+        "match_kind": "exact"
+      },
+      "note": "`Module.Basis.exteriorPower` builds the basis of `⋀[R]^n M` indexed by `powersetCard I n` from a basis of `M`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dimension of k-th exterior power",
+      "anchor": {
+        "section": "Basis and dimension",
+        "snippet": "the dimension of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exteriorPower.finrank_eq",
+        "module": "Mathlib.LinearAlgebra.ExteriorPower.Basis",
+        "match_kind": "exact"
+      },
+      "note": "`exteriorPower.finrank_eq` proves `finrank R (⋀[R]^n M) = Nat.choose (finrank R M) n` for finite free `M`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Direct sum decomposition of exterior algebra",
+      "anchor": {
+        "section": "Basis and dimension",
+        "snippet": "as a vector space the exterior algebra is a direct sum"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ExteriorAlgebra.instDecompositionExteriorPower",
+        "module": "Mathlib.LinearAlgebra.ExteriorAlgebra.Basis",
+        "match_kind": "exact"
+      },
+      "note": "The `DirectSum.Decomposition (fun n ↦ ⋀[R]^n M)` instance gives `ExteriorAlgebra R M ≃ ⨁ n, ⋀[R]^n M` as `R`-modules.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rank of a k-vector",
+      "anchor": {
+        "section": "Rank of a k -vector",
+        "snippet": "The rank of the k -vector"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of `rank` for an element of `⋀[R]^k M`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rank of 2-vector via coefficient matrix",
+      "anchor": {
+        "section": "Rank of a k -vector",
+        "snippet": "The rank of a 2-vector"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No characterization of the rank of a 2-vector through its coefficient matrix is recorded.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rank-p characterization in characteristic 0",
+      "anchor": {
+        "section": "Rank of a k -vector",
+        "snippet": "In characteristic 0, the 2-vector"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No analogous theorem on 2-vector rank via `α^(p+1) = 0` is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Graded algebra structure",
+      "anchor": {
+        "section": "Graded structure",
+        "snippet": "gives the exterior algebra the additional structure of a graded algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ExteriorAlgebra.gradedAlgebra",
+        "module": "Mathlib.LinearAlgebra.ExteriorAlgebra.Grading",
+        "match_kind": "exact"
+      },
+      "note": "Same `ExteriorAlgebra.gradedAlgebra` instance witnesses the `ℕ`-grading by powers of `LinearMap.range (ι R)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Graded anticommutativity",
+      "anchor": {
+        "section": "Graded structure",
+        "snippet": "The exterior product is graded anticommutative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identity `α ∧ β = (-1)^{pq} β ∧ α` for homogeneous `α, β` is not recorded as a lemma in Mathlib (only the degree-1 case `ι_add_mul_swap` is).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Universal property of exterior algebra",
+      "anchor": {
+        "section": "Universal property",
+        "snippet": "the exterior algebra has the following universal property"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ExteriorAlgebra.lift",
+        "module": "Mathlib.LinearAlgebra.ExteriorAlgebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ExteriorAlgebra.lift`, with companion `ι_comp_lift` and `lift_unique`, gives the universal property statement and its uniqueness.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exterior algebra of a module",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "we can define the exterior algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ExteriorAlgebra",
+        "module": "Mathlib.LinearAlgebra.ExteriorAlgebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ExteriorAlgebra R M` is defined for any commutative (semi)ring `R` and `R`-module `M`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Identification with antisymmetric tensors",
+      "anchor": {
+        "section": "Alternating tensor algebra",
+        "snippet": "can be canonically identified with the vector subspace of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "exteriorPower.toTensorPower",
+        "module": "Mathlib.LinearAlgebra.ExteriorPower.Pairing",
+        "match_kind": null
+      },
+      "note": "`exteriorPower.toTensorPower` provides the canonical map `⋀[R]^n M → ⨂[R]^n M` via alternatization, but no theorem identifies the image with antisymmetric tensors as a subspace.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Antisymmetrization of a decomposable tensor",
+      "anchor": {
+        "section": "Alternating tensor algebra",
+        "snippet": "The antisymmetrization (or sometimes the skew-symmetrization ) of a decomposable tensor is defined by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MultilinearMap.alternatization",
+        "module": "Mathlib.LinearAlgebra.Alternating.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`MultilinearMap.alternatization` sends a multilinear map to `∑ σ, sign σ • m.domDomCongr σ`, which is the skew-symmetrization formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Isomorphism via antisymmetrization (char 0)",
+      "anchor": {
+        "section": "Alternating tensor algebra",
+        "snippet": "Assuming"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlternatingMap.coe_alternatization",
+        "module": "Mathlib.LinearAlgebra.Alternating.Basic",
+        "match_kind": null
+      },
+      "note": "`AlternatingMap.coe_alternatization` shows alternatization of an alternating map is `n!` times itself, the key ingredient, but the resulting characteristic-0 isomorphism `⋀^n M ≅ Λ^n M ⊆ ⨂^n M` is not packaged.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Alternating tensor in index notation",
+      "anchor": {
+        "section": "Index notation",
+        "snippet": "any alternating tensor"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not use the antisymmetric component-index notation for alternating tensors.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exterior product in index notation",
+      "anchor": {
+        "section": "Index notation",
+        "snippet": "The exterior product of two alternating tensors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No index-notation formula for the wedge product is stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Interior product in index notation",
+      "anchor": {
+        "section": "Index notation",
+        "snippet": "The interior product may also be described in index notation as follows"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The interior product itself is not defined on `ExteriorAlgebra` in Mathlib; no index-notation lemma exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Alternating operator",
+      "anchor": {
+        "section": "Alternating operators",
+        "snippet": "an alternating operator from"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlternatingMap",
+        "module": "Mathlib.LinearAlgebra.Alternating.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`AlternatingMap R M N ι` (notation `M [⋀^ι]→ₗ[R] N`) is the bundled type of multilinear maps vanishing on inputs with two equal coordinates.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Universal property of alternating operators",
+      "anchor": {
+        "section": "Alternating operators",
+        "snippet": "this map is the \"most general\" alternating operator defined on"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exteriorPower.alternatingMapLinearEquiv",
+        "module": "Mathlib.LinearAlgebra.ExteriorPower.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`exteriorPower.alternatingMapLinearEquiv` gives `(M [⋀^Fin n]→ₗ[R] N) ≃ₗ[R] (⋀[R]^n M →ₗ[R] N)`, the universal property of the `n`-th exterior power.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Alternating multilinear form",
+      "anchor": {
+        "section": "Alternating multilinear forms",
+        "snippet": "is called an alternating multilinear form"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlternatingMap",
+        "module": "Mathlib.LinearAlgebra.Alternating.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "An alternating form is `AlternatingMap R M R ι`, the codomain-`R` specialization of `AlternatingMap`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Alternating forms iso with dual exterior power",
+      "anchor": {
+        "section": "Alternating multilinear forms",
+        "snippet": "the space of alternating forms of degree"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "exteriorPower.alternatingMapLinearEquiv",
+        "module": "Mathlib.LinearAlgebra.ExteriorPower.Basic",
+        "match_kind": null
+      },
+      "note": "Specializing `alternatingMapLinearEquiv` to `N = R` gives the iso `(M [⋀^Fin n]→ₗ[R] R) ≃ₗ Module.Dual R (⋀[R]^n M)`, but no lemma names this as the dual-exterior-power identification.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Alternation Alt of a multilinear map",
+      "anchor": {
+        "section": "Alternating multilinear forms",
+        "snippet": "the alternation Alt of a multilinear map is defined to be"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MultilinearMap.alternatization",
+        "module": "Mathlib.LinearAlgebra.Alternating.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`MultilinearMap.alternatization` is the `Alt` operator (up to the conventional `1/k!` factor that requires characteristic zero).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Interior product (antiderivation)",
+      "anchor": {
+        "section": "Interior product",
+        "snippet": "it is possible to define an antiderivation on the algebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No interior product / contraction on `ExteriorAlgebra` is defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Interior product",
+          "snippet": "it is possible to define an antiderivation on the algebra"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\iota _{\\alpha }\\colon {\\textstyle \\bigwedge ^{\\!k}}(V)\\to {\\textstyle \\bigwedge ^{\\!k-1}}(V).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Axiomatic properties of interior product",
+      "anchor": {
+        "section": "Axiomatic characterization and properties",
+        "snippet": "The interior product satisfies the following properties"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without an interior product definition, its graded-Leibniz axiomatization is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hodge duality isomorphism",
+      "anchor": {
+        "section": "Hodge duality",
+        "snippet": "the interior product induces a canonical isomorphism of vector spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Hodge duality / Hodge star theorem is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Volume / orientation form",
+      "anchor": {
+        "section": "Hodge duality",
+        "snippet": "is sometimes called a volume form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `volumeForm` definition on the top exterior power appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hodge star operator",
+      "anchor": {
+        "section": "Hodge duality",
+        "snippet": "the resulting isomorphism is called the Hodge star operator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `hodgeStar` declaration exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hodge star squared as identity multiple",
+      "anchor": {
+        "section": "Hodge duality",
+        "snippet": "is always a scalar multiple of the identity map"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a Hodge star, the `⋆∘⋆ = ±id` identity is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inner product on exterior algebra",
+      "anchor": {
+        "section": "Inner product",
+        "snippet": "the determinant of the matrix of inner products"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No induced inner product on `⋀[R]^k M` (Gram-determinant formula) is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orthonormal basis of exterior power",
+      "anchor": {
+        "section": "Inner product",
+        "snippet": "constitute an orthonormal basis for"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement that wedges of an ONB give an ONB of `⋀^k M` is recorded.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Adjointness of exterior and interior product",
+      "anchor": {
+        "section": "Inner product",
+        "snippet": "exterior multiplication and the interior product are mutually adjoint"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without an interior product, the adjointness `⟨α∧β,γ⟩ = ⟨β,ι_α γ⟩` is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bialgebra/Hopf structure on exterior algebra",
+      "anchor": {
+        "section": "Bialgebra structure",
+        "snippet": "inherits a bialgebra structure, and, indeed, a Hopf algebra structure"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Bialgebra` / `HopfAlgebra` instance on `ExteriorAlgebra R M` is provided in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coproduct on exterior algebra",
+      "anchor": {
+        "section": "Bialgebra structure",
+        "snippet": "The coproduct is a linear function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The shuffle-style coproduct `Δ` on `ExteriorAlgebra R M` is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Counit of exterior algebra",
+      "anchor": {
+        "section": "Bialgebra structure",
+        "snippet": "The counit is the homomorphism"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ExteriorAlgebra.algebraMapInv",
+        "module": "Mathlib.LinearAlgebra.ExteriorAlgebra.Basic",
+        "match_kind": null
+      },
+      "note": "`ExteriorAlgebra.algebraMapInv : ExteriorAlgebra R M →ₐ R` is the natural augmentation that would play the role of the counit, though it is not labeled as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Antipode making exterior algebra a Hopf algebra",
+      "anchor": {
+        "section": "Bialgebra structure",
+        "snippet": "With an antipode defined on homogeneous elements by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No antipode for the exterior Hopf algebra is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Functoriality of exterior algebra",
+      "anchor": {
+        "section": "Functoriality",
+        "snippet": "there exists a unique homomorphism of graded algebras"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ExteriorAlgebra.map",
+        "module": "Mathlib.LinearAlgebra.ExteriorAlgebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ExteriorAlgebra.map` lifts a linear map `M →ₗ N` to an algebra map of exterior algebras, with `map_id` and `map_comp_map` showing functoriality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Top exterior power gives determinant",
+      "anchor": {
+        "section": "Functoriality",
+        "snippet": "is a mapping of a one-dimensional vector space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Although `exteriorPower.map` and `finrank_eq` exist, no lemma identifies the induced scalar on the top exterior power with `LinearMap.det`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Exactness of induced exterior sequence",
+      "anchor": {
+        "section": "Exactness",
+        "snippet": "is an exact sequence of graded vector spaces"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "exteriorPower.map_surjective",
+        "module": "Mathlib.LinearAlgebra.ExteriorPower.Basic",
+        "match_kind": null
+      },
+      "note": "`exteriorPower.map_surjective` proves preservation of surjectivity (and `map_injective_field` covers injectivity), but the full short-exact-sequence statement is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Exterior algebra of a direct sum",
+      "anchor": {
+        "section": "Direct sums",
+        "snippet": "the exterior algebra of a direct sum is isomorphic to the tensor product of the exterior algebras"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No isomorphism `ExteriorAlgebra R (M ⊕ N) ≃ ExteriorAlgebra R M ⊗ ExteriorAlgebra R N` is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Natural filtration from short exact sequence",
+      "anchor": {
+        "section": "Direct sums",
+        "snippet": "there is a natural filtration"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No filtration on `⋀^k(M ⊕ N) = ⊕_{p+q=k} ⋀^p M ⊗ ⋀^q N` is recorded.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Oriented k-dimensional volume in affine space",
+      "anchor": {
+        "section": "Oriented volume in affine space",
+        "snippet": "we can define its oriented"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of an oriented `k`-volume of a `k`-simplex via the wedge product appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Boundary simplex volumes sum to zero",
+      "anchor": {
+        "section": "Oriented volume in affine space",
+        "snippet": "The sum of the"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The boundary-volume identity for an affine simplex is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Determinant via exterior product of columns",
+      "anchor": {
+        "section": "Linear algebra",
+        "snippet": "the determinant can be defined in terms of the exterior product of the column vectors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma stating `det A · (e₁ ∧ … ∧ eₙ) = (A e₁) ∧ … ∧ (A eₙ)` exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Electromagnetic field as differential 2-form",
+      "anchor": {
+        "section": "Electromagnetic field",
+        "snippet": "the electromagnetic field is generally given as a differential 2-form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No electromagnetism / Maxwell-form material is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Geometric interpretation of decomposable k-vectors",
+      "anchor": {
+        "section": "Linear geometry",
+        "snippet": "The decomposable k -vectors have geometric interpretations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No correspondence between decomposable `k`-vectors and `k`-dimensional subspaces is recorded.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Plücker embedding of Grassmannian",
+      "anchor": {
+        "section": "Projective geometry",
+        "snippet": "This is called the Plücker embedding"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`Module.Grassmannian` exists (as quotient parametrization) but no Plücker embedding into `ℙ(⋀^k V)` is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Differential forms via exterior algebra",
+      "anchor": {
+        "section": "Differential geometry",
+        "snippet": "where it is used to define differential forms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `Mathlib.Analysis.Calculus.DifferentialForm.VectorField` but no general definition of differential forms as sections of the exterior power of the cotangent bundle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "de Rham cohomology from exterior algebra",
+      "anchor": {
+        "section": "Differential geometry",
+        "snippet": "is a cochain complex whose cohomology is called the de Rham cohomology"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's only `DeRham` file (`BDeRham`) is `p`-adic Hodge theory; classical de Rham cohomology via differential forms is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lie algebra chain complex via exterior algebra",
+      "anchor": {
+        "section": "Lie algebra homology",
+        "snippet": "it is possible to define the structure of a chain complex on the exterior algebra of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Chevalley–Eilenberg complex on `⋀ 𝔤` is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Jacobi identity characterization of Lie algebras",
+      "anchor": {
+        "section": "Lie algebra homology",
+        "snippet": "The Jacobi identity holds if and only if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The reformulation `Jacobi ⇔ d² = 0` on the exterior-algebra chain complex of a Lie algebra is not in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

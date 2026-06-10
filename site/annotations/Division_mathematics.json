@@ -1,0 +1,489 @@
+{
+  "slug": "Division_mathematics",
+  "wikipedia_title": "Division (mathematics)",
+  "display_title": "Division (mathematics)",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Division terminology",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "What is being divided is called the dividend"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Wikipedia-style naming of dividend/divisor/quotient is informal and not encoded as a Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euclidean division of natural numbers",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The division with remainder or Euclidean division of two natural numbers provides an integer quotient"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.div_add_mod",
+        "module": "Init.Data.Nat",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.div_add_mod` (with `Nat.mod_lt`) gives the quotient-remainder decomposition for natural numbers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Division as inverse of multiplication",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "division is the inverse operation to multiplication"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "div_eq_mul_inv",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "In any `DivInvMonoid`, `div_eq_mul_inv` states `a / b = a * b⁻¹`, formalizing division as multiplication by an inverse.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "21 apples divided by 4",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "if 21 apples are divided between 4 people, everyone receives 5 apples again, and 1 apple remains"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A pedagogical numerical example, not a theorem of Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quotition and partition",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "The simplest way of viewing division is in terms of quotition and partition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quotitive vs partitive interpretations of division are pedagogical concepts not modelled in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "20 apples in five groups",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "20 apples divide into five groups of four apples"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Illustrative arithmetic example, not a Mathlib theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Division is non-commutative",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "division is not commutative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no explicit lemma asserting the non-commutativity of division on a concrete type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Division is non-associative",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "Division is also not, in general, associative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib declaration explicitly states the non-associativity of `/`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Non-associativity example",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "but 24 / (6 / 2) = 8"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A numerical witness to non-associativity, not a Mathlib statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Left-associativity convention",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "Division is traditionally considered as left-associative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Left-associativity of `/` is a Lean parsing convention (the `/` notation), not a stated theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Right-distributivity over addition/subtraction",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "Division is right-distributive over addition and subtraction"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "add_div",
+        "module": "Mathlib.Algebra.Field.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`add_div : (a + b) / c = a / c + b / c` formalizes right-distributivity of division in a field (with `sub_div` for subtraction).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Division is not left-distributive",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "However, division is not left-distributive"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma explicitly states that `/` fails to be left-distributive.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multiplicative inverse method",
+      "anchor": {
+        "section": "By computer",
+        "snippet": "a division by x may be computed as the product by the multiplicative inverse of x"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "div_eq_mul_inv",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`div_eq_mul_inv` directly states the computation of `/` via multiplication by an inverse.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euclidean division of integers",
+      "anchor": {
+        "section": "Euclidean division",
+        "snippet": "given two integers, a , the dividend , and b , the divisor , such that b ≠ 0, there are unique integers q , the quotient , and r , the remainder"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.euclideanDomain",
+        "module": "Mathlib.Algebra.EuclideanDomain.Int",
+        "match_kind": "exact"
+      },
+      "note": "The Euclidean domain instance on `ℤ` together with `EuclideanDomain.quotient_mul_add_remainder_eq` packages existence and uniqueness of integer Euclidean division.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Integers not closed under division",
+      "anchor": {
+        "section": "Of integers",
+        "snippet": "Integers are not closed under division"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma states this informal closure failure; `Int.div` is in fact total via Euclidean truncation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Division of rational numbers",
+      "anchor": {
+        "section": "Of rational numbers",
+        "snippet": "The division of two rational numbers p / q and r / s can be computed as"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Rat.instField",
+        "module": "Mathlib.Algebra.Field.Rat",
+        "match_kind": "exact"
+      },
+      "note": "The `Field ℚ` instance provides division on `ℚ` satisfying `div_eq_mul_inv` and the usual field laws.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Division of real numbers",
+      "anchor": {
+        "section": "Of real numbers",
+        "snippet": "It is defined such that a / b = c if and only if a = cb and b ≠ 0"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.instField",
+        "module": "Mathlib.Data.Real.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The `Field ℝ` instance defines `/` on `ℝ`, with `div_eq_iff` providing the characterization `a / b = c ↔ a = c * b` when `b ≠ 0`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Division of complex numbers",
+      "anchor": {
+        "section": "Of complex numbers",
+        "snippet": "Dividing two complex numbers (when the divisor is nonzero) results in another complex number, which is found using the conjugate of the denominator"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.inv_def",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.inv_def` expresses `z⁻¹ = conj z * (normSq z)⁻¹`, which combined with `div_eq_mul_inv` yields the conjugate-of-denominator formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complex division in polar form",
+      "anchor": {
+        "section": "Of complex numbers",
+        "snippet": "Division for complex numbers expressed in polar form is simpler than the definition above"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.polarCoord",
+        "module": "Mathlib.Analysis.SpecialFunctions.PolarCoord",
+        "match_kind": "invocation"
+      },
+      "note": "Polar coordinates and the exponential form exist via `Complex.polarCoord` and `Complex.exp_log`, but no dedicated lemma packages division as quotient of moduli with subtracted arguments.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Polynomial division",
+      "anchor": {
+        "section": "Of polynomials",
+        "snippet": "One can define the division operation for polynomials in one variable over a field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.div",
+        "module": "Mathlib.Algebra.Polynomial.FieldDivision",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial.div` (with `Polynomial.divByMonic`) defines division of polynomials over a field, giving a Euclidean domain instance on `R[X]`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Matrix division",
+      "anchor": {
+        "section": "Of matrices",
+        "snippet": "The usual way to do this is to define A / B = AB −1"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.inv",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has matrix inversion `Matrix.inv` and `Matrix.mul`, so `A * B⁻¹` is expressible, but no dedicated `Div` instance / `A / B` notation for matrices is provided.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Left and right matrix division",
+      "anchor": {
+        "section": "Left and right division",
+        "snippet": "one can also define a left division or so-called backslash-division as A \\ B = A −1 B"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not provide backslash left-division `A \\ B` on matrices as a named operation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Identities for left/right matrix division",
+      "anchor": {
+        "section": "Left and right division",
+        "snippet": "However, it holds that A / ( BC ) = ( A / C ) / B and ( AB ) \\ C = B \\ ( A \\ C )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Since matrix `/` and `\\` are not defined in Mathlib, these identities are not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pseudoinverse division",
+      "anchor": {
+        "section": "Pseudoinverse",
+        "snippet": "division can also be defined as multiplication by the pseudoinverse"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Moore–Penrose pseudoinverse is not currently formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Left/right division in a magma",
+      "anchor": {
+        "section": "Abstract algebra",
+        "snippet": "left division of b by a (written a \\ b ) is typically defined as the solution x to the equation a ∗ x = b"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Div",
+        "module": "Init.Prelude",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has the `Div` typeclass and uses `a / b = a * b⁻¹` in groups, but does not define abstract magma left/right division as the solution to `a * x = b` (no `Quasigroup` class).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quasigroup",
+      "anchor": {
+        "section": "Abstract algebra",
+        "snippet": "A magma for which both a \\ b and b / a exist and are unique for all a and all b"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no `Quasigroup` (or `Loop`) typeclass.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Finite ring with cancellative elements",
+      "anchor": {
+        "section": "Abstract algebra",
+        "snippet": "If a ring is finite and every nonzero element is cancellative, then by an application of the pigeonhole principle , every nonzero element of the ring is invertible"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finite.isField_of_domain",
+        "module": "Mathlib.RingTheory.IntegralDomain",
+        "match_kind": "exact"
+      },
+      "note": "`Finite.isField_of_domain` shows any finite integral domain is a field, exactly the pigeonhole-principle statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Real normed division algebras",
+      "anchor": {
+        "section": "Abstract algebra",
+        "snippet": "any real normed division algebra must be isomorphic to either the real numbers R , the complex numbers C , the quaternions H , or the octonions O"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Frobenius/Hurwitz classification of real normed division algebras is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Quotient rule",
+      "anchor": {
+        "section": "Calculus",
+        "snippet": "The derivative of the quotient of two functions is given by the quotient rule"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "deriv_div",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Inv",
+        "match_kind": "exact"
+      },
+      "note": "`deriv_div` (and `HasDerivAt.div`) state the quotient rule for derivatives.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Division by zero undefined",
+      "anchor": {
+        "section": "Division by zero",
+        "snippet": "Division of any number by zero in most mathematical systems is undefined"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "div_zero",
+        "module": "Mathlib.Algebra.GroupWithZero.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib defines `a / 0 = 0` in any `GroupWithZero` (via `inv_zero`/`div_zero`) rather than treating it as undefined, so the Wikipedia 'undefined' statement is not literally formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

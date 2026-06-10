@@ -1,0 +1,1065 @@
+{
+  "slug": "Tetrahedron",
+  "wikipedia_title": "Tetrahedron",
+  "display_title": "Tetrahedron",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Tetrahedron",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a polyhedron composed of four triangular faces"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Affine.Simplex",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Simplex.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Tetrahedra are not defined as polyhedra in Mathlib, but the 3-simplex `Affine.Simplex ℝ P 3` captures the affine notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "3-simplex",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the three-dimensional case of the more general concept of a Euclidean simplex"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Simplex",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Simplex.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `Affine.Simplex k P n` for any `n`, with `n = 3` being the 3-simplex.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Triangular pyramid",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is one kind of pyramid , which is a polyhedron with a flat polygon base and triangular faces connecting the base to a common point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no notion of pyramid as a polyhedron in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Two nets",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a tetrahedron can be folded from a single sheet of paper. It has two such nets"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Polyhedral nets are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence of circumsphere and insphere",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "there exists a sphere (called the circumsphere ) on which all four vertices lie, and another sphere (the insphere ) tangent to the tetrahedron's faces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Simplex.circumsphere",
+        "module": "Mathlib.Geometry.Euclidean.Circumcenter",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `Affine.Simplex.circumsphere` and `Affine.Simplex.insphere` for any simplex, including the 3-simplex.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Regular tetrahedron",
+      "anchor": {
+        "section": "Regular tetrahedron",
+        "snippet": "A regular tetrahedron is a tetrahedron in which all four faces are equilateral triangles"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Simplex.Regular",
+        "module": "Mathlib.Analysis.Normed.Affine.Simplex",
+        "match_kind": "generalization"
+      },
+      "note": "`Affine.Simplex.Regular` (and `Equilateral`) for `n = 3` give the regular tetrahedron.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Deltahedron",
+      "anchor": {
+        "section": "Regular tetrahedron",
+        "snippet": "the simplest deltahedron , a polyhedron all of whose faces are equilateral triangles"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Deltahedra are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orthocentric tetrahedron",
+      "anchor": {
+        "section": "Irregular tetrahedra",
+        "snippet": "If all three pairs of opposite edges of a tetrahedron are perpendicular , then it is called an orthocentric tetrahedron"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Orthocentric tetrahedra are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Semi-orthocentric tetrahedron",
+      "anchor": {
+        "section": "Irregular tetrahedra",
+        "snippet": "When only one pair of opposite edges are perpendicular, it is called a semi-orthocentric tetrahedron"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Semi-orthocentric tetrahedra are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Trirectangular tetrahedron",
+      "anchor": {
+        "section": "Irregular tetrahedra",
+        "snippet": "In a trirectangular tetrahedron the three face angles at one vertex are right angles"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Trirectangular tetrahedra are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isodynamic tetrahedron",
+      "anchor": {
+        "section": "Irregular tetrahedra",
+        "snippet": "An isodynamic tetrahedron is one in which the cevians that join the vertices to the incenters of the opposite faces are concurrent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Isodynamic tetrahedra are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isogonic tetrahedron",
+      "anchor": {
+        "section": "Irregular tetrahedra",
+        "snippet": "An isogonic tetrahedron has concurrent cevians that join the vertices to the points of contact of the opposite faces with the inscribed sphere"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Isogonic tetrahedra are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Disphenoid",
+      "anchor": {
+        "section": "Disphenoid",
+        "snippet": "A disphenoid is a tetrahedron with four congruent triangles as faces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Disphenoids are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "3-orthoscheme",
+      "anchor": {
+        "section": "Orthoschemes",
+        "snippet": "A 3-orthoscheme is a tetrahedron where all four faces are right triangles"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Orthoschemes are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orthoscheme",
+      "anchor": {
+        "section": "Orthoschemes",
+        "snippet": "An orthoscheme is an irregular simplex that is the convex hull of a tree in which all edges are mutually perpendicular"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "General orthoschemes are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cube dissected into 3-orthoschemes",
+      "anchor": {
+        "section": "Orthoschemes",
+        "snippet": "the cube can be subdivided into instances of this orthoscheme"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cube dissection into orthoschemes is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Regular tetrahedron subdivision into characteristic tetrahedra",
+      "anchor": {
+        "section": "Orthoschemes",
+        "snippet": "The regular tetrahedron is subdivided into 24 instances of its characteristic tetrahedron by its planes of symmetry"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This subdivision result is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Characteristic tetrahedron edge lengths",
+      "anchor": {
+        "section": "Orthoschemes",
+        "snippet": "If the regular tetrahedron has edge length"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Characteristic tetrahedron edge length formulas are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Space-filling tetrahedron",
+      "anchor": {
+        "section": "Space-filling tetrahedra",
+        "snippet": "A space-filling tetrahedron packs with directly congruent or enantiomorphous"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Space-filling tetrahedra are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Scissors-congruence to a cube",
+      "anchor": {
+        "section": "Space-filling tetrahedra",
+        "snippet": "All space-filling tetrahedra are scissors-congruent to a cube"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Scissors congruence is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Regular tetrahedra do not fill space",
+      "anchor": {
+        "section": "Space-filling tetrahedra",
+        "snippet": "Regular tetrahedra, however, cannot fill space by themselves"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This space-filling impossibility result is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Goursat tetrahedron",
+      "anchor": {
+        "section": "Fundamental domains",
+        "snippet": "An irregular tetrahedron which is the fundamental domain"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Goursat tetrahedra (in this geometric sense) are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Longest Edge Bisection",
+      "anchor": {
+        "section": "Subdivision and similarity classes",
+        "snippet": "One of the commonly used subdivision methods is the Longest Edge Bisection"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Longest Edge Bisection is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Similarity class",
+      "anchor": {
+        "section": "Subdivision and similarity classes",
+        "snippet": "A similarity class is the set of tetrahedra with the same geometric shape"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Affine.Simplex.Similar",
+        "module": "Mathlib.Geometry.Euclidean.Similarity",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has a notion of simplex similarity in `Mathlib.Geometry.Euclidean.Similarity`, but does not bundle similarity classes as a set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Iterative LEB similarity classes",
+      "anchor": {
+        "section": "Subdivision and similarity classes",
+        "snippet": "The iterative LEB of the regular tetrahedron has been shown to produce only 8 similarity classes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The iterative LEB similarity-class theorem is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tetrahedral graph is a wheel graph",
+      "anchor": {
+        "section": "General properties",
+        "snippet": "the tetrahedral graph is a wheel graph"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the tetrahedral graph nor wheel graphs appear to be defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "No space diagonal",
+      "anchor": {
+        "section": "General properties",
+        "snippet": "The tetrahedron is one of the polyhedra that does not have space diagonal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Space diagonals of polyhedra are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Self-dual",
+      "anchor": {
+        "section": "General properties",
+        "snippet": "It is self-dual , meaning its dual polyhedron is a tetrahedron itself"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Polyhedron duality is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Volume of a tetrahedron",
+      "anchor": {
+        "section": "Volume",
+        "snippet": "The volume of a tetrahedron is given by the formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A general (1/3)·base·height volume formula for tetrahedra is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Volume via determinant",
+      "anchor": {
+        "section": "Algebraic approach",
+        "snippet": "In terms of a determinant , the volume of a tetrahedron is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The determinant volume formula for tetrahedra is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Volume via scalar triple product",
+      "anchor": {
+        "section": "Algebraic approach",
+        "snippet": "another approach is by the absolute value of the scalar triple product"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Although the scalar/triple product exists in `Mathlib.LinearAlgebra.CrossProduct`, the connection to tetrahedron volume is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cayley–Menger determinant volume",
+      "anchor": {
+        "section": "Algebraic approach",
+        "snippet": "Given the distances between the vertices of a tetrahedron the volume can be computed using the Cayley–Menger determinant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Cayley–Menger determinant is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Volume from six edge lengths",
+      "anchor": {
+        "section": "Other approaches",
+        "snippet": "The above formula uses six lengths of edges, and the following formula uses three lengths of edges and three angles"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Tetrahedron-volume edge/angle formulas are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Heron-type volume formula",
+      "anchor": {
+        "section": "Other approaches",
+        "snippet": "The volume of a tetrahedron can be ascertained by using the Heron formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A Heron-type volume formula for tetrahedra is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bimedian bisects volume",
+      "anchor": {
+        "section": "Other approaches",
+        "snippet": "Any plane containing a bimedian (connector of opposite edges' midpoints) of a tetrahedron bisects the volume of the tetrahedron"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bimedians and volume-bisection theorems are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Murakami–Yano formula",
+      "anchor": {
+        "section": "Other approaches",
+        "snippet": "the volume is given by the Murakami–Yano formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Murakami–Yano formula is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Volume via skew-line distance",
+      "anchor": {
+        "section": "Other approaches",
+        "snippet": "another formula for the volume of a tetrahedron"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Volume via skew-line distances is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Monge point",
+      "anchor": {
+        "section": "Analogous to a triangle",
+        "snippet": "now known as the Monge point : the point where the six midplanes of a tetrahedron intersect"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Simplex.mongePoint",
+        "module": "Mathlib.Geometry.Euclidean.MongePoint",
+        "match_kind": "generalization"
+      },
+      "note": "`Affine.Simplex.mongePoint` defines the Monge point for any simplex (including tetrahedra).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Midplane",
+      "anchor": {
+        "section": "Analogous to a triangle",
+        "snippet": "A midplane is defined as a plane that is orthogonal to an edge joining any two vertices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Midplanes are not explicitly defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Median and bimedian",
+      "anchor": {
+        "section": "Analogous to a triangle",
+        "snippet": "A line segment joining a vertex of a tetrahedron with the centroid of the opposite face is called a median"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Affine.Simplex.faceOppositeCentroid",
+        "module": "Mathlib.Geometry.Euclidean.Simplex",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has `faceOppositeCentroid` so the median's endpoints are available, but medians and bimedians are not defined as segments.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Concurrency at centroid",
+      "anchor": {
+        "section": "Analogous to a triangle",
+        "snippet": "These seven line segments are all concurrent at a point called the centroid of the tetrahedron"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Affine.Simplex.centroid",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Simplex.Centroid",
+        "match_kind": "generalization"
+      },
+      "note": "The centroid is defined, but full concurrency of medians/bimedians at the centroid is not packaged as a theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Medians 3:1 ratio",
+      "anchor": {
+        "section": "Analogous to a triangle",
+        "snippet": "the four medians are divided in a 3:1 ratio by the centroid"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Simplex.dist_point_centroid_eq_mul_dist_centroid_faceOppositeCentroid",
+        "module": "Mathlib.Geometry.Euclidean.Simplex",
+        "match_kind": "generalization"
+      },
+      "note": "`dist (s.points i) s.centroid = n * dist s.centroid (s.faceOppositeCentroid i)` specializes to the 3:1 ratio at `n = 3`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler line of tetrahedron",
+      "anchor": {
+        "section": "Analogous to a triangle",
+        "snippet": "These points define the Euler line of the tetrahedron"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Euler line of a tetrahedron/simplex is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Twelve-point sphere",
+      "anchor": {
+        "section": "Analogous to a triangle",
+        "snippet": "It is the twelve-point sphere and besides the centroids of the four faces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Simplex.ninePointCircle",
+        "module": "Mathlib.Geometry.Euclidean.NinePointCircle",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `ninePointCircle` is the 3(n+1)-point sphere of a simplex; for `n = 3` it is the twelve-point sphere of a tetrahedron.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Twelve-point sphere radius",
+      "anchor": {
+        "section": "Analogous to a triangle",
+        "snippet": "The radius of the twelve-point sphere is one-third of the circumradius of the reference tetrahedron"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Simplex.ninePointCircle_radius",
+        "module": "Mathlib.Geometry.Euclidean.NinePointCircle",
+        "match_kind": "generalization"
+      },
+      "note": "`ninePointCircle_radius` gives `circumradius / n`, which is `circumradius / 3` for the tetrahedron.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Relation among face angles",
+      "anchor": {
+        "section": "Analogous to a triangle",
+        "snippet": "There is a relation among the angles made by the faces of a general tetrahedron"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Relations among tetrahedral dihedral/face angles are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Isogonic center (Lindelöf)",
+      "anchor": {
+        "section": "Analogous to a triangle",
+        "snippet": "Lorenz Lindelöf found that, corresponding to any given tetrahedron is a point now known as an isogonic center"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lindelöf's isogonic center for tetrahedra is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Law of sines for tetrahedron",
+      "anchor": {
+        "section": "Trigonometry and the space of all shapes",
+        "snippet": "A corollary of the usual law of sines is that in a tetrahedron with vertices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A law of sines for tetrahedra is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Space of tetrahedra is 5-dimensional",
+      "anchor": {
+        "section": "Trigonometry and the space of all shapes",
+        "snippet": "the space of all shapes of tetrahedra is 5-dimensional"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The moduli space of tetrahedral shapes is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Law of cosines for tetrahedron",
+      "anchor": {
+        "section": "Trigonometry and the space of all shapes",
+        "snippet": "The law of cosines for a tetrahedron, which relates the areas of the faces of the tetrahedron to the dihedral angles about a vertex"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A law of cosines for tetrahedra is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Interior point face-area identity",
+      "anchor": {
+        "section": "Interior point",
+        "snippet": "Let [MATH] be any interior point of a tetrahedron of volume"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Interior-point face-area identities are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Equal-area faces perpendicular feet identity",
+      "anchor": {
+        "section": "Interior point",
+        "snippet": "feet [MATH] , [MATH] , [MATH] , and [MATH] of the perpendiculars from [MATH] to the faces, and suppose the faces have equal areas"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This perpendicular-feet identity for tetrahedra is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Inradius inequality",
+      "anchor": {
+        "section": "Inradius",
+        "snippet": "with equality if and only if the tetrahedron is regular"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Inradius inequalities (with regularity equality) for tetrahedra are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Inradius from face areas",
+      "anchor": {
+        "section": "Inradius",
+        "snippet": "denote the area of each faces, the value of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The inradius-from-face-area formula for tetrahedra is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Circumradius formula",
+      "anchor": {
+        "section": "Circumradius",
+        "snippet": "Denote the circumradius of a tetrahedron as R"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Affine.Simplex.circumradius",
+        "module": "Mathlib.Geometry.Euclidean.Circumcenter",
+        "match_kind": "generalization"
+      },
+      "note": "Circumradius is defined for any simplex, but the explicit edge-length formula for tetrahedra is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Circumcenter via bisector planes",
+      "anchor": {
+        "section": "Circumcenter",
+        "snippet": "The circumcenter of a tetrahedron can be found as intersection of three bisector planes"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Affine.Simplex.circumcenter",
+        "module": "Mathlib.Geometry.Euclidean.Circumcenter",
+        "match_kind": "generalization"
+      },
+      "note": "The circumcenter exists and lies in the affine span, but the bisector-plane intersection characterization is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Circumcenter location",
+      "anchor": {
+        "section": "Circumcenter",
+        "snippet": "the circumcenter may not always lie outside of an obtuse tetrahedron"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Statements about obtuse-tetrahedron circumcenter location are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Heronian tetrahedra",
+      "anchor": {
+        "section": "Integer tetrahedra",
+        "snippet": "There exist tetrahedra having integer-valued edge lengths, face areas and volume. These are called Heronian tetrahedra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Heronian tetrahedra are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Heronian tetrahedron example",
+      "anchor": {
+        "section": "Integer tetrahedra",
+        "snippet": "One example has one edge of 896, the opposite edge of 990"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific Heronian tetrahedron example is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Consecutive-integer-edges tetrahedron",
+      "anchor": {
+        "section": "Integer tetrahedra",
+        "snippet": "A tetrahedron can have integer volume and consecutive integers as edges"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This consecutive-integer-edges example is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Matchstick puzzle",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "The tetrahedron with regular faces is a solution to an old puzzle asking to form four equilateral triangles using six unbroken matchsticks"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Recreational puzzles like the matchstick puzzle are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tetrahedral bond angle",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "For a perfect tetrahedron, the central angle between any two vertices is arccos"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The tetrahedral bond angle arccos(-1/3) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Thomson and Tammes minimum",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "The vertices of a regular tetrahedron applies as the minimum solution known for"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Thomson/Tammes minima for four points on a sphere are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Resistor tetrahedron resistance",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "If six equal resistors are soldered together to form a tetrahedron, then the resistance measured between any two vertices is half that of one resistor"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Resistor-network calculations are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Regular tetrahedra do not tessellate",
+      "anchor": {
+        "section": "Related topics",
+        "snippet": "Regular tetrahedra cannot tessellate space by themselves"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Tessellation impossibility theorems for regular tetrahedra are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "No parallel faces",
+      "anchor": {
+        "section": "Related topics",
+        "snippet": "The tetrahedron is unique among the uniform polyhedra in possessing no parallel faces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Parallel-face properties of uniform polyhedra are not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,649 @@
+{
+  "slug": "Algebra_over_a_field",
+  "wikipedia_title": "Algebra over a field",
+  "display_title": "Algebra over a field",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Algebra over a field",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "an algebra over a field (often simply called an algebra ) is a vector space equipped with a bilinear product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra",
+        "module": "Mathlib.Algebra.Algebra.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `Algebra R A` class for `CommSemiring R` and `Semiring A` generalizes the field-base notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Associative vs non-associative algebra",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "leading to the notions of associative algebras where associativity of multiplication is assumed, and non-associative algebras"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Algebra",
+        "module": "Mathlib.Algebra.Algebra.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Associative algebras are `Algebra` (over `Semiring A`); non-associative variants exist via `NonUnitalNonAssocSemiring`/`NonUnitalAlgHom` but there is no top-level `NonAssocAlgebra` class.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ring of real square matrices as associative algebra",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the ring of real square matrices of order n is an example of an associative algebra over the field of real numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.instAlgebra",
+        "module": "Mathlib.Data.Matrix.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Matrix.instAlgebra` makes `Matrix n n α` an `R`-algebra over any base commutative ring, including ℝ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Euclidean 3-space with cross product as non-associative algebra",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Three-dimensional Euclidean space with multiplication given by the vector cross product is an example of a nonassociative algebra"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "crossProduct",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": null
+      },
+      "note": "`crossProduct` is defined as a bilinear map on `Fin 3 → R` but is not packaged as a (non-associative) algebra instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unital algebra (lead)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "An algebra is unital or unitary if it has an identity element with respect to the multiplication"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra",
+        "module": "Mathlib.Algebra.Algebra.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The Mathlib `Algebra` class is unital by construction since it extends `Semiring A` (which has `1`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Unital associative algebra of matrices",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The ring of real square matrices of order n forms a unital algebra since the identity matrix"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.instAlgebra",
+        "module": "Mathlib.Data.Matrix.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Matrix.instAlgebra` gives `Matrix n n α` as a unital `R`-algebra with identity `1` being the identity matrix.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebra over a field (formal definition)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Then A is an algebra over K if the following identities hold for all elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra",
+        "module": "Mathlib.Algebra.Algebra.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`class Algebra (R A) extends SMul R A` axiomatizes precisely these compatibility identities via `commutes'` and `smul_def'`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "K-algebra homomorphism",
+      "anchor": {
+        "section": "Algebra homomorphisms",
+        "snippet": "a homomorphism of K -algebras or K - algebra homomorphism is a K - linear map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgHom",
+        "module": "Mathlib.Algebra.Algebra.Hom",
+        "match_kind": "exact"
+      },
+      "note": "`AlgHom R A B` bundles a ring homomorphism that commutes with `algebraMap R _`, equivalent to a multiplicative `R`-linear map.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unital homomorphism",
+      "anchor": {
+        "section": "Algebra homomorphisms",
+        "snippet": "then a homomorphism satisfying f (1 A ) = 1 B is said to be a unital homomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgHom",
+        "module": "Mathlib.Algebra.Algebra.Hom",
+        "match_kind": "exact"
+      },
+      "note": "`AlgHom` extends `RingHom`, hence by definition sends `1` to `1`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "K-algebra isomorphism",
+      "anchor": {
+        "section": "Algebra homomorphisms",
+        "snippet": "A K -algebra isomorphism is a bijective K -algebra homomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgEquiv",
+        "module": "Mathlib.Algebra.Algebra.Equiv",
+        "match_kind": "exact"
+      },
+      "note": "`AlgEquiv R A B` (`A ≃ₐ[R] B`) bundles a bijective `R`-algebra homomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Subalgebra",
+      "anchor": {
+        "section": "Subalgebras and ideals",
+        "snippet": "A subalgebra of an algebra over a field K is a linear subspace that has the property that the product of any two of its elements is again in the subspace"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subalgebra",
+        "module": "Mathlib.Algebra.Algebra.Subalgebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`structure Subalgebra R A` extends `Subsemiring A` with closure under `algebraMap`, matching the closure-under-multiplication-and-scalars notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Real line as subalgebra of complex numbers",
+      "anchor": {
+        "section": "Subalgebras and ideals",
+        "snippet": "the one-dimensional real line is a subalgebra"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Subalgebra.range",
+        "module": "Mathlib.Algebra.Algebra.Subalgebra.Basic",
+        "match_kind": null
+      },
+      "note": "The general infrastructure exists (`algebraMap ℝ ℂ`, `Subalgebra.range`/`Algebra.bot`) but the specific `ℝ ⊆ ℂ` subalgebra example isn't a named decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Left ideal of an algebra",
+      "anchor": {
+        "section": "Subalgebras and ideals",
+        "snippet": "A left ideal of a K -algebra is a linear subspace that has the property that any element of the subspace multiplied on the left"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ideal",
+        "module": "Mathlib.RingTheory.Ideal.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "`Ideal R` (a `Submodule R R`) is left-ideal-like for commutative rings; no dedicated `LeftIdeal` of an algebra is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Right ideal and two-sided ideal",
+      "anchor": {
+        "section": "Subalgebras and ideals",
+        "snippet": "If (3) were replaced with x · z is in L , then this would define a right ideal"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TwoSidedIdeal",
+        "module": "Mathlib.RingTheory.TwoSidedIdeal.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`TwoSidedIdeal R` formalizes the two-sided notion for non-commutative rings; no dedicated `RightIdeal` of an algebra structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every left or right ideal is a subalgebra",
+      "anchor": {
+        "section": "Subalgebras and ideals",
+        "snippet": "It follows from condition (3) that every left or right ideal is a subalgebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Ideal.toSubalgebra` or analogous lemma promoting an ideal to a subalgebra was found; also note proper ideals don't contain 1, so this needs a non-unital reading.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Extension of scalars",
+      "anchor": {
+        "section": "Extension of scalars",
+        "snippet": "there is a natural way to construct an algebra over F from any algebra over K"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra.TensorProduct.leftAlgebra",
+        "module": "Mathlib.RingTheory.TensorProduct.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Base change `A ⊗[R] B` carries an `S`-algebra structure via `Algebra.TensorProduct.leftAlgebra`, which is the extension-of-scalars construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unital algebra",
+      "anchor": {
+        "section": "Unital algebra",
+        "snippet": "An algebra is unital or unitary if it has a unit or identity element"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra",
+        "module": "Mathlib.Algebra.Algebra.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Same as above: Mathlib's `Algebra` requires `Semiring A`, so all `Algebra` instances are unital.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zero algebra",
+      "anchor": {
+        "section": "Zero algebra",
+        "snippet": "An algebra is called a zero algebra if uv = 0 for all u , v in the algebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No named `ZeroAlgebra` construction; one could express it via instances on a module with trivial multiplication but no library decl encodes this.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unital zero algebra",
+      "anchor": {
+        "section": "Zero algebra",
+        "snippet": "A unital zero algebra is the direct sum K ⊕ V of a field K and a K -vector space V"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Unitization",
+        "module": "Mathlib.Algebra.Algebra.Unitization",
+        "match_kind": "special_case"
+      },
+      "note": "`Unitization R A` constructs the algebra `R × A` with the appropriate product; specialized to the zero-multiplication `A` it is exactly the unital zero algebra `K ⊕ V`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Dual numbers as unital zero algebra",
+      "anchor": {
+        "section": "Zero algebra",
+        "snippet": "A classical example of unital zero algebra is the algebra of dual numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DualNumber",
+        "module": "Mathlib.Algebra.DualNumber",
+        "match_kind": "exact"
+      },
+      "note": "`DualNumber R` is defined as `TrivSqZeroExt R R` (a special case of `Unitization`), matching the dual-number construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Submodules correspond to ideals of unital zero algebra",
+      "anchor": {
+        "section": "Zero algebra",
+        "snippet": "the submodules of a module V correspond exactly to the ideals of K ⊕ V that are contained in V"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No correspondence lemma between `Submodule R V` and ideals of `Unitization R V` contained in the second summand was located.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Matrix algebra",
+      "anchor": {
+        "section": "Associative algebra",
+        "snippet": "the algebra of all n -by- n matrices over a field (or commutative ring) K"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.instAlgebra",
+        "module": "Mathlib.Data.Matrix.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.instAlgebra : Algebra R (Matrix n n α)` is the matrix algebra over any base commutative semiring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Group algebras",
+      "anchor": {
+        "section": "Associative algebra",
+        "snippet": "group algebras , where a group serves as a basis of the vector space and algebra multiplication extends group multiplication"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MonoidAlgebra",
+        "module": "Mathlib.Algebra.MonoidAlgebra.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`MonoidAlgebra R M` is the convolution algebra on functions `M →₀ R`; when `M` is a group this is the usual group algebra.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Polynomial algebra",
+      "anchor": {
+        "section": "Associative algebra",
+        "snippet": "the commutative algebra K [ x ] of all polynomials over K"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.algebraOfAlgebra",
+        "module": "Mathlib.Algebra.Polynomial.AlgebraMap",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial.algebraOfAlgebra : Algebra R A[X]` gives `R[x]` (= `A[X]`) the polynomial-algebra structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Algebras of functions",
+      "anchor": {
+        "section": "Associative algebra",
+        "snippet": "algebras of functions , such as the R -algebra of all real-valued continuous functions defined on the interval"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.algebra",
+        "module": "Mathlib.Topology.ContinuousMap.Algebra",
+        "match_kind": "exact"
+      },
+      "note": "`ContinuousMap.algebra : Algebra R C(α, A)` makes continuous functions into an `R`-algebra under pointwise operations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Incidence algebras",
+      "anchor": {
+        "section": "Associative algebra",
+        "snippet": "Incidence algebras are built on certain partially ordered sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IncidenceAlgebra",
+        "module": "Mathlib.Combinatorics.Enumerative.IncidenceAlgebra",
+        "match_kind": "exact"
+      },
+      "note": "`IncidenceAlgebra` is defined in `Combinatorics/Enumerative/IncidenceAlgebra.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Algebras of linear operators",
+      "anchor": {
+        "section": "Associative algebra",
+        "snippet": "algebras of linear operators , for example on a Hilbert space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.End.instAlgebra",
+        "module": "Mathlib.Algebra.Algebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Module.End.instAlgebra : Algebra R (Module.End S M)` provides the algebra of (linear) endomorphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Non-associative algebra",
+      "anchor": {
+        "section": "Non-associative algebra",
+        "snippet": "A non-associative algebra [ 3 ] (or distributive algebra ) over a field K is a K -vector space A equipped with a K - bilinear map"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "NonUnitalAlgHom",
+        "module": "Mathlib.Algebra.Algebra.NonUnitalHom",
+        "match_kind": null
+      },
+      "note": "Mathlib provides `NonUnitalNonAssocSemiring`/`NonUnitalAlgHom` and `Module` with bilinear multiplication, but no top-level `NonAssocAlgebra` class capturing precisely this notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Associative K-algebra via ring homomorphism",
+      "anchor": {
+        "section": "Algebras and rings",
+        "snippet": "an algebra over a field K is a ring A together with a ring homomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RingHom.toAlgebra",
+        "module": "Mathlib.Algebra.Algebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`RingHom.toAlgebra : (R →+* A) → Algebra R A` (with image in the center) realizes this equivalent definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Either A is the zero ring or η is injective",
+      "anchor": {
+        "section": "Algebras and rings",
+        "snippet": "then one must have either that A is the zero ring , or that η is injective"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FaithfulSMul.algebraMap_injective",
+        "module": "Mathlib.Algebra.Algebra.Basic",
+        "match_kind": null
+      },
+      "note": "`FaithfulSMul.algebraMap_injective` gives injectivity under a faithfulness hypothesis; the precise dichotomy (zero ring vs. injective) over a field is not stated as a lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unital K-algebra homomorphism via rings",
+      "anchor": {
+        "section": "Algebras and rings",
+        "snippet": "a unital K -algebra homomorphism f : A → B is a ring homomorphism that commutes with the scalar multiplication"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgHom",
+        "module": "Mathlib.Algebra.Algebra.Hom",
+        "match_kind": "exact"
+      },
+      "note": "`AlgHom` is defined as a `RingHom` whose `commutes'` field expresses compatibility with `algebraMap`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multiplication determined by basis",
+      "anchor": {
+        "section": "Structure coefficients",
+        "snippet": "the bilinear multiplication from A × A to A is completely determined by the multiplication of basis elements of A"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Basis.constr",
+        "module": "Mathlib.LinearAlgebra.Basis.Defs",
+        "match_kind": null
+      },
+      "note": "Bilinearity-from-basis is available via `Basis.constr` / `TensorProduct.lift`, but no dedicated lemma about determining algebra multiplication by its action on basis elements.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Structure coefficients",
+      "anchor": {
+        "section": "Structure coefficients",
+        "snippet": "any finite-dimensional algebra can be specified up to isomorphism by giving its dimension"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `structureCoefficients`/`structureConstants` definition for algebras was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Study's classification of low-dimensional unital associative algebras",
+      "anchor": {
+        "section": "Classification of low-dimensional unital associative algebras over the complex numbers",
+        "snippet": "Two-dimensional, three-dimensional and four-dimensional unital associative algebras over the field of complex numbers were completely classified up to isomorphism by Eduard Study"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Study's classification of low-dimensional unital associative ℂ-algebras is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Two two-dimensional unital associative C-algebras",
+      "anchor": {
+        "section": "Classification of low-dimensional unital associative algebras over the complex numbers",
+        "snippet": "There exist two such two-dimensional algebras"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement enumerating two-dimensional unital associative ℂ-algebras up to isomorphism is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Five three-dimensional unital associative C-algebras",
+      "anchor": {
+        "section": "Classification of low-dimensional unital associative algebras over the complex numbers",
+        "snippet": "There exist five such three-dimensional algebras"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No enumeration of three-dimensional unital associative ℂ-algebras is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebra over a ring",
+      "anchor": {
+        "section": "Generalization: algebra over a ring",
+        "snippet": "it is common to consider the more general concept of an algebra over a ring , where a commutative ring R replaces the field K"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra",
+        "module": "Mathlib.Algebra.Algebra.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Algebra R A` already takes `R : CommSemiring`, directly realizing the ring (and even semiring) base generalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ring is associative algebra over its center",
+      "anchor": {
+        "section": "Associative algebras over rings",
+        "snippet": "A ring A is always an associative algebra over its center , and over the integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra.instSubringCenter",
+        "module": "Mathlib.Algebra.Algebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "There is an `instance : Algebra (Subring.center R) R` (and `Ring.toIntAlgebra : Algebra ℤ R`) in `Mathlib.Algebra.Algebra.Basic`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Split-biquaternion algebra",
+      "anchor": {
+        "section": "Associative algebras over rings",
+        "snippet": "the split-biquaternion algebra , which is isomorphic to H × H"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `SplitBiquaternion` definition found; only ordinary `Quaternion` is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "R-algebra structure from ring homomorphism",
+      "anchor": {
+        "section": "Associative algebras over rings",
+        "snippet": "any unital ring homomorphism R → A defines an R -module structure on A , and this is what is known as the R -algebra structure"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RingHom.toAlgebra",
+        "module": "Mathlib.Algebra.Algebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`RingHom.toAlgebra : (R →+* A) → Algebra R A` (for `φ` landing in the center) gives this construction directly.",
+      "provenance": "ai"
+    }
+  ]
+}

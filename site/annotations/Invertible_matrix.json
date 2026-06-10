@@ -1,0 +1,637 @@
+{
+  "slug": "Invertible_matrix",
+  "wikipedia_title": "Invertible matrix",
+  "display_title": "Invertible matrix",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Invertible matrix",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "an invertible matrix ( non-singular , non-degenerate or regular ) is a square matrix that has an inverse"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Invertible",
+        "module": "Mathlib.Algebra.Group.Invertible.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's general `Invertible` class applied to `Matrix n n α` formalizes a matrix having a two-sided inverse.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Invertible matrix (formal)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "An n -by- n square matrix A is called invertible if there exists an n -by- n square matrix B such that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Invertible",
+        "module": "Mathlib.Algebra.Group.Invertible.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Invertible A` packages a `⅟A` with `⅟A * A = 1` and `A * ⅟A = 1`, exactly the Wikipedia formal definition.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "An n -by- n square matrix A is called invertible if there exists an n -by- n square matrix B such that"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {AB} =\\mathbf {BA} =\\mathbf {I} _{n},}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Matrix inversion",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Matrix inversion is the process of finding the matrix which when multiplied by the original matrix gives the identity matrix"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.inv",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "exact"
+      },
+      "note": "The noncomputable `Inv (Matrix n n α)` instance with `Matrix.inv_def : A⁻¹ = A.det⁻¹ʳ • A.adjugate` formalizes matrix inversion.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "Matrix inversion is the process of finding the matrix which when multiplied by the original matrix gives the identity matrix"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {AB} =\\mathbf {BA} =\\mathbf {I} _{n},}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Invertible 2x2 example",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Consider the following 2-by-2 matrix:"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific worked example of inverting a concrete 2×2 matrix is recorded in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Non-invertible 2x2 example",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "On the other hand, this is a non-invertible matrix:"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific worked counter-example of a singular concrete 2×2 matrix is recorded in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gaussian elimination for inverse",
+      "anchor": {
+        "section": "Gaussian elimination",
+        "snippet": "Gaussian elimination is a useful and easy way to compute the inverse of a matrix"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Gauss–Jordan/row-reduction algorithm formalized for computing matrix inverses.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Newton's method for inverse",
+      "anchor": {
+        "section": "Newton's method",
+        "snippet": "A generalization of Newton's method as used for a multiplicative inverse algorithm may be convenient if it is convenient to find a suitable starting seed"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `Dynamics.Newton` for scalar Newton iteration but no matrix-inverse Newton iteration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cayley–Hamilton inverse formula",
+      "anchor": {
+        "section": "Cayley–Hamilton method",
+        "snippet": "The Cayley–Hamilton theorem allows the inverse of A to be expressed in terms of det( A ) , traces and powers of A"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.aeval_self_charpoly",
+        "module": "Mathlib.LinearAlgebra.Matrix.Charpoly.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Cayley–Hamilton is formalized but the explicit inverse formula in terms of traces and powers is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverse via eigendecomposition",
+      "anchor": {
+        "section": "Eigendecomposition",
+        "snippet": "If matrix A can be eigendecomposed, and if none of its eigenvalues are zero, then A is invertible and its inverse is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma in Mathlib expresses the inverse of a diagonalizable matrix via its eigendecomposition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverse via Cholesky decomposition",
+      "anchor": {
+        "section": "Cholesky decomposition",
+        "snippet": "If matrix A is positive definite , then its inverse can be obtained as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cholesky decomposition is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Adjugate/cofactor inverse formula",
+      "anchor": {
+        "section": "Analytic solution",
+        "snippet": "Writing the transpose of the matrix of cofactors , known as an adjugate matrix , may also be an efficient way to calculate the inverse of small matrices"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.inv_def",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.inv_def` (and `Matrix.nonsing_inv_apply`) states `A⁻¹ = A.det⁻¹ʳ • A.adjugate`, the adjugate formula for the inverse.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inversion of 2x2 matrices",
+      "anchor": {
+        "section": "Inversion of 2 × 2 matrices",
+        "snippet": "The cofactor equation listed above yields the following result for 2 × 2 matrices"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.adjugate_fin_two_of",
+        "module": "Mathlib.LinearAlgebra.Matrix.Adjugate",
+        "match_kind": "generalization"
+      },
+      "note": "`adjugate_fin_two_of` gives the explicit 2×2 adjugate; combined with `inv_def` it yields the 2×2 inverse, though no single packaged `Matrix.inv_fin_two` lemma exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inversion of 3x3 matrices",
+      "anchor": {
+        "section": "Inversion of 3 × 3 matrices",
+        "snippet": "A computationally efficient 3 × 3 matrix inversion is given by"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.adjugate_fin_three_of",
+        "module": "Mathlib.LinearAlgebra.Matrix.Adjugate",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the explicit 3×3 adjugate (`adjugate_fin_three_of`) which combined with `inv_def` gives the inverse, but no dedicated explicit-inverse lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "3x3 inverse via cross/triple product",
+      "anchor": {
+        "section": "Inversion of 3 × 3 matrices",
+        "snippet": "The general 3 × 3 inverse can be expressed concisely in terms of the cross product and triple product"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formulation of the 3×3 matrix inverse in terms of cross and triple products is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inversion of 4x4 matrices",
+      "anchor": {
+        "section": "Inversion of 4 × 4 matrices",
+        "snippet": "For n = 4 , the Cayley–Hamilton method leads to an expression that is still tractable:"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No 4×4-specific inverse formula via Cayley–Hamilton is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Blockwise inversion formula",
+      "anchor": {
+        "section": "Blockwise inversion",
+        "snippet": "where A , B , C and D are matrix sub-blocks of arbitrary size"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.invOf_fromBlocks₂₂_eq",
+        "module": "Mathlib.LinearAlgebra.Matrix.SchurComplement",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.invOf_fromBlocks₂₂_eq` and `invOf_fromBlocks₁₁_eq` give the blockwise inverse via the Schur complement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Nullity theorem",
+      "anchor": {
+        "section": "Blockwise inversion",
+        "snippet": "The nullity theorem says that the nullity of A equals the nullity of the sub-block in the lower right of the inverse matrix"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The nullity theorem relating nullities of a block and the corresponding block of the inverse is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Woodbury matrix identity",
+      "anchor": {
+        "section": "Blockwise inversion",
+        "snippet": "where Equation ( 3 ) is the Woodbury matrix identity , which is equivalent to the binomial inverse theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.add_mul_mul_inv_eq_sub",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.add_mul_mul_inv_eq_sub` (and `invOf_add_mul_mul`) is the Woodbury identity, plus `add_mul_mul_inv_eq_sub'` gives the binomial inverse variant.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Weinstein–Aronszajn identity",
+      "anchor": {
+        "section": "Blockwise inversion",
+        "snippet": "By the Weinstein–Aronszajn identity , one of the two matrices in the block-diagonal matrix is invertible exactly when the other is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_one_add_mul_comm",
+        "module": "Mathlib.LinearAlgebra.Matrix.SchurComplement",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.det_one_add_mul_comm` is explicitly labelled the Weinstein–Aronszajn identity in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Symmetric block inverse formula",
+      "anchor": {
+        "section": "Blockwise inversion",
+        "snippet": "If the given invertible matrix is a symmetric matrix with invertible block A the following block inverse formula holds"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.invOf_fromBlocks₁₁_eq",
+        "module": "Mathlib.LinearAlgebra.Matrix.SchurComplement",
+        "match_kind": "generalization"
+      },
+      "note": "The general blockwise inverse formula covers this case, but no symmetric-block specialization with `C = Bᵀ` is stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Neumann series inverse",
+      "anchor": {
+        "section": "By Neumann series",
+        "snippet": "then A is nonsingular and its inverse may be expressed by a Neumann series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No matrix-valued Neumann series inversion result is recorded in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Neumann series near invertible X",
+      "anchor": {
+        "section": "By Neumann series",
+        "snippet": "More generally, if A is \"near\" the invertible matrix X in the sense that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No perturbative inverse formula for matrices near an invertible one is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "p-adic approximation method",
+      "anchor": {
+        "section": "p -adic approximation",
+        "snippet": "a p -adic approximation method converges to an exact solution in O( n 4 log 2 n )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No p-adic matrix-inversion algorithm is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reciprocal basis vectors inverse",
+      "anchor": {
+        "section": "Reciprocal basis vectors method",
+        "snippet": "then using Clifford algebra (or geometric algebra ) we compute the reciprocal (sometimes called dual ) column vectors:"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Clifford/geometric-algebra reciprocal-basis construction of the matrix inverse is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Singular matrix",
+      "anchor": {
+        "section": "Singularity",
+        "snippet": "Over a field , a square matrix that is not invertible is called singular or degenerate"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.nonsing_inv_apply_not_isUnit",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib uses `¬ IsUnit A` (equivalently `¬ IsUnit A.det`) for singularity but does not introduce a named `Singular` predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Singular iff determinant zero",
+      "anchor": {
+        "section": "Singularity",
+        "snippet": "A square matrix with entries in a field is singular if and only if its determinant is zero"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.isUnit_iff_isUnit_det",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "exact"
+      },
+      "note": "`isUnit_iff_isUnit_det` plus the fact that over a field `IsUnit x ↔ x ≠ 0` yields the singular-iff-zero-determinant characterization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Invertible matrix theorem",
+      "anchor": {
+        "section": "Invertible matrix theorem",
+        "snippet": "The following statements are equivalent, i.e., they are either all true or all false for any given matrix"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.isUnit_iff_isUnit_det",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "generalization"
+      },
+      "note": "Many individual equivalences (invertibility, unit determinant, injectivity of `mulVec`, etc.) exist (e.g. `vecMul_surjective_iff_exists_left_inverse`) but no single combined `invertible_matrix_theorem` lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Properties of invertible matrices",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "Furthermore, the following properties hold for an invertible matrix A"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.mul_inv_rev",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "generalization"
+      },
+      "note": "Standard properties like `(AB)⁻¹ = B⁻¹A⁻¹` (`mul_inv_rev`), `(A⁻¹)⁻¹ = A` (`inv_inv_of_invertible`), `det A⁻¹ = (det A)⁻¹` (`det_nonsing_inv`), `(Aᵀ)⁻¹ = (A⁻¹)ᵀ` (`transpose_nonsing_inv`) are formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rows of inverse orthonormal to columns",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "The rows of the inverse matrix V of a matrix U are orthonormal to the columns of U"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement framing the rows of `A⁻¹` as biorthogonal to the columns of `A` is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Involutory matrix",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "A matrix that is its own inverse (i.e., a matrix A such that A = A −1 and consequently A 2 = I ) is called an involutory matrix"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No named `Involutory` predicate for matrices satisfying `A * A = 1` is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverse via adjugate",
+      "anchor": {
+        "section": "In relation to its adjugate",
+        "snippet": "The adjugate of a matrix A can be used to find the inverse of A as follows:"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.nonsing_inv_apply",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.nonsing_inv_apply` shows `A⁻¹ = (det A)⁻¹ • adjugate A` whenever `det A` is a unit.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "One-sided inverse implies two-sided",
+      "anchor": {
+        "section": "In relation to the identity matrix",
+        "snippet": "It follows from the associativity of matrix multiplication that if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.mul_eq_one_comm",
+        "module": "Mathlib.LinearAlgebra.Matrix.SemiringInverse",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.mul_eq_one_comm : A * B = 1 ↔ B * A = 1` makes one-sided inverses two-sided for square matrices.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Singular matrices form a null set",
+      "anchor": {
+        "section": "Density",
+        "snippet": "the set of singular n -by- n matrices, considered as a subset of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement that the singular matrices have Lebesgue measure zero in `Matrix n n ℝ` is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Invertible matrices open and dense",
+      "anchor": {
+        "section": "Density",
+        "snippet": "the set of n -by- n invertible matrices is open and dense in the topological space of all n -by- n matrices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes continuity of `Matrix.inv` (`Topology.Instances.Matrix`) but does not prove openness/density of `GLₙ` in `Matrix n n ℝ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Derivative of matrix inverse",
+      "anchor": {
+        "section": "Derivative of the matrix inverse",
+        "snippet": "Suppose that the invertible matrix A depends on a parameter t . Then the derivative of the inverse of A with respect to t is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formula `d/dt (A⁻¹) = -A⁻¹ (dA/dt) A⁻¹` for the derivative of a matrix-valued inverse is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Left/right inverses of non-square matrices",
+      "anchor": {
+        "section": "Non-square matrices",
+        "snippet": "Non-square matrices, i.e. m -by- n matrices for which m ≠ n , do not have an inverse"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement explicitly addressing the existence/uniqueness of one-sided inverses for non-square matrices is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Invertibility over rings",
+      "anchor": {
+        "section": "In Abstract algebra",
+        "snippet": "in the case of a ring being commutative , the condition for a square matrix to be invertible is that its determinant is invertible in the ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.isUnit_iff_isUnit_det",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "exact"
+      },
+      "note": "`isUnit_iff_isUnit_det` proves over a commutative ring that a square matrix is a unit iff its determinant is a unit.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "General linear group",
+      "anchor": {
+        "section": "In Abstract algebra",
+        "snippet": "The set of n × n invertible matrices together with the operation of matrix multiplication and entries from ring R form a group , the general linear group of degree n"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.GeneralLinearGroup",
+        "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.GeneralLinearGroup n R := (Matrix n n R)ˣ` formalizes `GLₙ(R)` as the unit group.",
+      "provenance": "ai"
+    }
+  ]
+}

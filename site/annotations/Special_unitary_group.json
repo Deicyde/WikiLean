@@ -1,0 +1,841 @@
+{
+  "slug": "Special_unitary_group",
+  "wikipedia_title": "Special unitary group",
+  "display_title": "Special unitary group",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Special unitary group SU(n)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the special unitary group of degree"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.specialUnitaryGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "exact"
+      },
+      "note": "Defined as the submonoid of unitary matrices with determinant 1.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unitary group U(n)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The special unitary group is a normal subgroup of the unitary group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.unitaryGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "exact"
+      },
+      "note": "Defined as `unitary (Matrix n n α)`; `Matrix.specialUnitaryGroup_le_unitaryGroup` records the inclusion but not normality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "SU(1) is trivial",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The simplest case, SU(1) , is the trivial group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration shows SU(1) is the trivial group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SU(2) isomorphic to unit quaternions",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The group SU(2) is isomorphic to the group of quaternions of norm 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quaternions exist (`Quaternion`) but no iso with SU(2) is recorded.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Surjective homomorphism SU(2) to SO(3)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "there is a surjective homomorphism from SU(2) to the rotation group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No SU(2)→SO(3) homomorphism is constructed in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SU(2) as Spin(3)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "SU(2) is identical to one of the symmetry groups of spinors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`spinGroup` is defined in `Mathlib.LinearAlgebra.CliffordAlgebra.SpinGroup` but no Spin(3)≅SU(2) result exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dimension and topology of SU(n)",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Its dimension as a real manifold is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not record SU(n) as a real Lie manifold or compute its dimension.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Center of SU(n)",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The center of SU( n ) is isomorphic to the cyclic group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No description of the center of SU(n) is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Outer automorphism group of SU(n)",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Its outer automorphism group for"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No outer automorphism statement for SU(n).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Maximal torus and Weyl group of SU(n)",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "A maximal torus of rank"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No maximal torus or Weyl group description of SU(n) appears.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lie algebra of SU(n)",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "can be identified with the set of traceless anti"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines `LieAlgebra.SpecialLinear.sl` but not the Lie algebra `su(n)` of traceless skew-Hermitian matrices.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lie algebra of SU(n) (skew-Hermitian)",
+      "anchor": {
+        "section": "Lie algebra",
+        "snippet": "consists of n × n skew-Hermitian matrices with trace zero"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `su(n)` defined; skew-Hermitian + trace-zero subspace is not packaged as a Lie algebra.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Physicists' Hermitian generators",
+      "anchor": {
+        "section": "Fundamental representation",
+        "snippet": "it is common to identify the Lie algebra with the space of trace-zero Hermitian"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Hermitian-generator identification of `su(n)` exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Commutator and anticommutator relations",
+      "anchor": {
+        "section": "Fundamental representation",
+        "snippet": "As a consequence, the commutator is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No commutator/anticommutator relations for SU(n) generators are stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Normalization condition",
+      "anchor": {
+        "section": "Fundamental representation",
+        "snippet": "The conventional normalization condition is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No normalization convention for SU(n) generators is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Jacobi identity for generators",
+      "anchor": {
+        "section": "Fundamental representation",
+        "snippet": "The generators satisfy the Jacobi identity"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "leibniz_lie",
+        "module": "Mathlib.Algebra.Lie.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the general Jacobi/Leibniz identity for Lie rings but not specifically applied to SU(n) generators.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "SU(2) and SU(3) generator conventions",
+      "anchor": {
+        "section": "Fundamental representation",
+        "snippet": "in the physics literature the generators"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pauli and Gell-Mann matrices are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Adjoint representation generators",
+      "anchor": {
+        "section": "Adjoint representation",
+        "snippet": "the generators are represented by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No SU(n) adjoint-representation generators are defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SU(2) as a group",
+      "anchor": {
+        "section": "SU(2)",
+        "snippet": "Using matrix multiplication for the binary operation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.specialUnitaryGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "special_case"
+      },
+      "note": "Group instance on `specialUnitaryGroup n α` specializes to SU(2).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SU(2) is the 3-sphere",
+      "anchor": {
+        "section": "Diffeomorphism with the 3-sphere S 3",
+        "snippet": "This is the equation of the 3-sphere"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No identification of SU(2) with S³ is recorded.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "S³ diffeomorphic to SU(2)",
+      "anchor": {
+        "section": "Diffeomorphism with the 3-sphere S 3",
+        "snippet": "as a manifold, S 3 is diffeomorphic to SU(2)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No S³ ≃ SU(2) diffeomorphism present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Versors",
+      "anchor": {
+        "section": "Isomorphism with group of versors",
+        "snippet": "Quaternions of norm 1 are called versors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `versor` definition; norm-1 quaternions are expressible via `‖·‖` but not packaged.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SU(2) isomorphic to versors",
+      "anchor": {
+        "section": "Isomorphism with group of versors",
+        "snippet": "This map is in fact a group isomorphism"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No isomorphism between SU(2) and unit quaternions exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SU(2) as universal cover of SO(3)",
+      "anchor": {
+        "section": "Relation to spatial rotations",
+        "snippet": "there is a 2:1 surjective homomorphism from SU(2) to SO(3)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No 2:1 SU(2)→SO(3) homomorphism or universal-cover statement is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lie algebra of SU(2)",
+      "anchor": {
+        "section": "Lie algebra (2)",
+        "snippet": "The Lie algebra of SU(2) consists of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define the Lie algebra `su(2)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Generators of su(2)",
+      "anchor": {
+        "section": "Lie algebra (2)",
+        "snippet": "The Lie algebra is then generated by the following matrices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Generators of su(2) are not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quaternion relations and commutator",
+      "anchor": {
+        "section": "Lie algebra (2)",
+        "snippet": "These satisfy the quaternion relationships"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The su(2)–quaternion commutator relations are not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Relation to Pauli matrices",
+      "anchor": {
+        "section": "Lie algebra (2)",
+        "snippet": "The above generators are related to the Pauli matrices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pauli matrices are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "SU(3)",
+      "anchor": {
+        "section": "SU(3)",
+        "snippet": "The group SU(3) is an 8-dimensional simple Lie group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.specialUnitaryGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "special_case"
+      },
+      "note": "SU(3) is the n=3 instance of `specialUnitaryGroup`; its dimension and simplicity are not proved.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SU(3) as fiber bundle",
+      "anchor": {
+        "section": "Topology",
+        "snippet": "SU(3) is a fiber bundle over the base"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No SU(3)→S⁵ fiber-bundle description in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Classification of SU(2)-bundles over S⁵",
+      "anchor": {
+        "section": "Topology",
+        "snippet": "The SU(2) -bundles over S 5 are classified by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No classification of principal SU(2)-bundles over S⁵ is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SU(3) is nontrivial twisted bundle",
+      "anchor": {
+        "section": "Topology",
+        "snippet": "SU(3) cannot be the trivial bundle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement that SU(3) is a nontrivial twisted bundle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generators of su(3) via Gell-Mann matrices",
+      "anchor": {
+        "section": "Lie algebra (3)",
+        "snippet": "in the defining (particle physics, Hermitian) representation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gell-Mann matrices are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gell-Mann span traceless Hermitian matrices",
+      "anchor": {
+        "section": "Lie algebra (3)",
+        "snippet": "span all traceless Hermitian matrices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement about spanning traceless Hermitian matrices.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Structure constants of su(3)",
+      "anchor": {
+        "section": "Lie algebra (3)",
+        "snippet": "The f are the structure constants of the Lie algebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No structure constants of su(3) are recorded.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Symmetric d coefficients",
+      "anchor": {
+        "section": "Lie algebra (3)",
+        "snippet": "The symmetric coefficients d take the values"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Symmetric d-coefficients are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Generic SU(3) element as polynomial",
+      "anchor": {
+        "section": "Lie algebra (3)",
+        "snippet": "A generic SU(3) group element generated by a traceless"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No polynomial expansion of SU(3) elements is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Complexification of su(n)",
+      "anchor": {
+        "section": "Lie algebra structure",
+        "snippet": "The complexification of the Lie algebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No complexification of su(n) is recorded.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Simple roots of SU(n)",
+      "anchor": {
+        "section": "Lie algebra structure",
+        "snippet": "A choice of simple roots is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No simple-root system specifically for SU(n) is recorded.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rank and Dynkin diagram of SU(n)",
+      "anchor": {
+        "section": "Lie algebra structure",
+        "snippet": "SU( n ) is of rank"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No rank or Dynkin diagram of SU(n) is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Weyl group of SU(n)",
+      "anchor": {
+        "section": "Lie algebra structure",
+        "snippet": "Its Weyl group or Coxeter group is the symmetric group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement identifying the Weyl group of SU(n) with the symmetric group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generalized special unitary group",
+      "anchor": {
+        "section": "Generalized special unitary group",
+        "snippet": "the generalized special unitary group over"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No SU(p,q) or generalized special-unitary group is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "SU(p,q) standard choice",
+      "anchor": {
+        "section": "Generalized special unitary group",
+        "snippet": "Specifically, fix a Hermitian matrix"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No SU(p,q) defined via a Hermitian form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Picard modular group",
+      "anchor": {
+        "section": "Example",
+        "snippet": "An important example of this type of group is the Picard modular group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Picard modular group exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "GUT subgroups of SU(n)",
+      "anchor": {
+        "section": "Important subgroups",
+        "snippet": "Subgroups of SU( n ) that are important in GUT physics"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No GUT-relevant subgroups of SU(n) are described.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Accidental isomorphisms",
+      "anchor": {
+        "section": "Important subgroups",
+        "snippet": "There are also the accidental isomorphisms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No accidental Lie-group isomorphisms are present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SU(2) double cover of SO(3)",
+      "anchor": {
+        "section": "Important subgroups",
+        "snippet": "SU(2) is the double covering group of SO(3)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No SU(2) double-cover of SO(3) statement in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SU(1,1) isomorphism",
+      "anchor": {
+        "section": "SU(1, 1)",
+        "snippet": "This group is isomorphic to SL(2,"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No SU(1,1) ≅ SL(2,ℝ) statement in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coquaternion basis",
+      "anchor": {
+        "section": "SU(1, 1)",
+        "snippet": "the elements i , j , and k all anticommute"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Coquaternions / split quaternions are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coquaternion conjugate and quadratic form",
+      "anchor": {
+        "section": "SU(1, 1)",
+        "snippet": "with scalar w , has conjugate"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Coquaternion conjugate/norm not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hyperboloid stability under SU(1,1)",
+      "anchor": {
+        "section": "SU(1, 1)",
+        "snippet": "The hyperboloid is stable under SU(1, 1)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No SU(1,1)-stability-of-hyperboloid statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SU(1,1) as Möbius transformations on disk",
+      "anchor": {
+        "section": "SU(1, 1)",
+        "snippet": "When an element of SU(1, 1) is interpreted as a Möbius transformation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No SU(1,1) Möbius-transformation action on the unit disk is recorded.",
+      "provenance": "ai"
+    }
+  ]
+}

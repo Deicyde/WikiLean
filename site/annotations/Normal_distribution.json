@@ -1,0 +1,2277 @@
+{
+  "slug": "Normal_distribution",
+  "wikipedia_title": "Normal distribution",
+  "display_title": "Normal distribution",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Normal distribution",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a normal distribution or Gaussian distribution is a type of continuous probability distribution for a real-valued random variable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.gaussianReal",
+        "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `gaussianReal μ v` as the Gaussian measure on ℝ with mean μ and variance v.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "(Lead)",
+          "snippet": "a normal distribution or Gaussian distribution is a type of continuous probability distribution for a real-valued random variable"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)={\\frac {1}{\\sqrt {2\\pi \\sigma ^{2}}}}\\exp {\\left(-{\\frac {(x-\\mu )^{2}}{2\\sigma ^{2}}}\\right)}\\,.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Central limit theorem (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "It states that the average of many statistically independent samples"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.tendstoInDistribution_inv_sqrt_mul_sum_sub",
+        "module": "Mathlib.Probability.CentralLimitTheorem",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib has the 1D CLT for i.i.d. variables converging in distribution to a Gaussian.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linear combination of normals is normal",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "any linear combination of a fixed collection of independent normal deviates is a normal deviate"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.gaussianReal_add_gaussianReal_of_indepFun",
+        "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+        "match_kind": "special_case"
+      },
+      "note": "Sum of independent Gaussians and scalar multiplication are formalized; a single n-ary linear-combination statement is not present but follows by combining `gaussianReal_const_mul` and the independence-sum lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Standard normal distribution",
+      "anchor": {
+        "section": "Standard normal distribution",
+        "snippet": "The simplest case of a normal distribution is known as the standard normal distribution or unit normal distribution"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.gaussianReal",
+        "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+        "match_kind": "special_case"
+      },
+      "note": "`gaussianReal 0 1` is the standard normal; `stdGaussian E` is the multivariate analogue.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Standard normal distribution",
+          "snippet": "The simplest case of a normal distribution is known as the standard normal distribution or unit normal distribution"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\varphi (z)={\\frac {e^{-z^{2}/2}}{\\sqrt {2\\pi }}}\\,.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Gauss's standard normal",
+      "anchor": {
+        "section": "Standard normal distribution",
+        "snippet": "Carl Friedrich Gauss , for example, once defined the standard normal as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gauss's historical variance-1/2 convention is not separately formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Stigler's standard normal",
+      "anchor": {
+        "section": "Standard normal distribution",
+        "snippet": "Stephen Stigler once defined the standard normal as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Stigler's alternative standardization is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Scaling/shifting standard normal yields general normal",
+      "anchor": {
+        "section": "General normal distribution",
+        "snippet": "If ⁠ ⁠ is a standard normal deviate , then"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.gaussianReal_const_mul",
+        "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+        "match_kind": "exact"
+      },
+      "note": "Combined with `gaussianReal_const_add`, this gives that `σ·X + μ` is `gaussianReal μ σ²` when `X ~ gaussianReal 0 1`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Standardization of a normal variate",
+      "anchor": {
+        "section": "General normal distribution",
+        "snippet": "Conversely, if ⁠ ⁠ is a normal deviate with parameters"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.gaussianReal_div_const",
+        "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+        "match_kind": "invocation"
+      },
+      "note": "Combining `gaussianReal_sub_const` with `gaussianReal_div_const` gives `(X-μ)/σ ~ gaussianReal 0 1`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Notation for normal distribution",
+      "anchor": {
+        "section": "Notation",
+        "snippet": "The normal distribution is often referred to as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib uses `gaussianReal μ v` rather than the customary `N(μ, σ²)` notation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Precision parameterization",
+      "anchor": {
+        "section": "Alternative parameterizations",
+        "snippet": "Some authors advocate using the precision"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib only parameterizes Gaussians by mean and variance.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Alternative parameterizations",
+          "snippet": "Some authors advocate using the precision"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)={\\sqrt {\\frac {\\tau }{2\\pi }}}e^{-\\tau (x-\\mu )^{2}/2}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Alternative precision (reciprocal of standard deviation)",
+      "anchor": {
+        "section": "Alternative parameterizations",
+        "snippet": "Alternatively, the reciprocal of the standard deviation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Reciprocal-standard-deviation parameterization is not present.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Alternative parameterizations",
+          "snippet": "Alternatively, the reciprocal of the standard deviation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)={\\frac {\\tau '}{\\sqrt {2\\pi }}}e^{-(\\tau ')^{2}(x-\\mu )^{2}/2}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Normal as exponential family",
+      "anchor": {
+        "section": "Alternative parameterizations",
+        "snippet": "Normal distributions form an exponential family with natural parameters"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formal `ExponentialFamily` class.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Standard normal CDF",
+      "anchor": {
+        "section": "Cumulative distribution function",
+        "snippet": "The cumulative distribution function (CDF) of the standard normal distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no dedicated definition of Φ; one can take `gaussianReal 0 1 (Set.Iic x)` ad hoc.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Cumulative distribution function",
+          "snippet": "The cumulative distribution function (CDF) of the standard normal distribution"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Phi (x)={\\frac {1}{\\sqrt {2\\pi }}}\\int _{-\\infty }^{x}e^{-t^{2}/2}\\,dt\\,.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Error function",
+      "anchor": {
+        "section": "Cumulative distribution function",
+        "snippet": "The related error function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The error function `erf` is not defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Cumulative distribution function",
+          "snippet": "The related error function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {erf} (x)={\\frac {1}{\\sqrt {\\pi }}}\\int _{-x}^{x}e^{-t^{2}}\\,dt={\\frac {2}{\\sqrt {\\pi }}}\\int _{0}^{x}e^{-t^{2}}\\,dt\\,.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Relation between Phi and erf",
+      "anchor": {
+        "section": "Cumulative distribution function",
+        "snippet": "The two functions are closely related"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without erf or Φ formalized, the relation is absent.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Cumulative distribution function",
+          "snippet": "The two functions are closely related"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Phi (x)={\\frac {1}{2}}\\left[1+\\operatorname {erf} \\left({\\frac {x}{\\sqrt {2}}}\\right)\\right].}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "General normal CDF",
+      "anchor": {
+        "section": "Cumulative distribution function",
+        "snippet": "For a generic normal distribution with density"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.gaussianReal_apply_eq_integral",
+        "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib expresses Gaussian measure of a set as an integral of the pdf but does not name the CDF.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Cumulative distribution function",
+          "snippet": "For a generic normal distribution with density"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F(x)=\\Phi {\\left({\\frac {x-\\mu }{\\sigma }}\\right)}={\\frac {1}{2}}\\left[1+\\operatorname {erf} \\left({\\frac {x-\\mu }{\\sigma {\\sqrt {2}}}}\\right)\\right].}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Probability of interval",
+      "anchor": {
+        "section": "Cumulative distribution function",
+        "snippet": "The probability that x lies between a and b"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.gaussianReal_apply_eq_integral",
+        "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+        "match_kind": "generalization"
+      },
+      "note": "The interval-probability formula follows from `gaussianReal_apply_eq_integral` but is not stated directly.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Cumulative distribution function",
+          "snippet": "The probability that x lies between a and b"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {P} (a&lt;x\\leq b)={\\frac {1}{2}}\\left[\\operatorname {erf} \\left({\\frac {b-\\mu }{\\sigma {\\sqrt {2}}}}\\right)-\\operatorname {erf} \\left({\\frac {a-\\mu }{\\sigma {\\sqrt {2}}}}\\right)\\right]}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Q-function",
+      "anchor": {
+        "section": "Cumulative distribution function",
+        "snippet": "is often called the Q-function , especially in engineering texts"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The tail-probability Q-function is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rotational symmetry of Phi",
+      "anchor": {
+        "section": "Cumulative distribution function",
+        "snippet": "has 2-fold rotational symmetry around the point (0,1/2)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No symmetry lemma for the standard normal CDF is present.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Cumulative distribution function",
+          "snippet": "has 2-fold rotational symmetry around the point (0,1/2)"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int \\Phi (x)\\,dx=x\\Phi (x)+\\varphi (x)+C.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Asymptotic expansion of CDF",
+      "anchor": {
+        "section": "Cumulative distribution function",
+        "snippet": "An asymptotic expansion of the cumulative distribution function for large x can be derived using integration by parts"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Tail asymptotics of the normal CDF are not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Cumulative distribution function",
+          "snippet": "An asymptotic expansion of the cumulative distribution function for large x can be derived using integration by parts"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Phi (x)={\\frac {1}{2}}+{\\frac {1}{\\sqrt {2\\pi }}}e^{-x^{2}/2}\\sum _{n=0}^{\\infty }{\\frac {1}{(2n+1)!!}}x^{2n+1}\\,.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Taylor series for normal density",
+      "anchor": {
+        "section": "Taylor series representation",
+        "snippet": "The Taylor series for the normal distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The explicit Taylor expansion of the Gaussian pdf is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Taylor series for CDF",
+      "anchor": {
+        "section": "Taylor series representation",
+        "snippet": "This series can be integrated term by term to obtain the Taylor series for the cumulative distribution function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Taylor expansion of Φ is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Recursive Taylor expansion via Hermite polynomials",
+      "anchor": {
+        "section": "Recursive computation with Taylor series",
+        "snippet": "The recurrence relation for Hermite polynomials"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.deriv_gaussian_eq_hermite_mul_gaussian",
+        "module": "Mathlib.RingTheory.Polynomial.Hermite.Gaussian",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the identity expressing iterated derivatives of the Gaussian via Hermite polynomials, but no Taylor-series recursion for Φ.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Recursive computation with Taylor series",
+          "snippet": "The recurrence relation for Hermite polynomials"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Phi (x)=\\sum _{n=0}^{\\infty }{\\frac {\\Phi ^{(n)}(x_{0})}{n!}}(x-x_{0})^{n}\\,,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\Phi ^{(0)}(x_{0})&amp;={\\frac {1}{\\sqrt {2\\pi }}}\\int _{-\\infty }^{x_{0}}e^{-t^{2}/2}\\,dt\\\\\\Phi ^{(1)}(x_{0})&amp;={\\frac {1}{\\sqrt {2\\pi }}}e^{-x_{0}^{2}/2}\\\\\\Phi ^{(n)}(x_{0})&amp;=-\\left(x_{0}\\Phi ^{(n-1)}(x_{0})+(n-2)\\Phi ^{(n-2)}(x_{0})\\right),&amp;n\\geq 2\\,.\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "68-95-99.7 rule",
+      "anchor": {
+        "section": "Standard deviation and coverage",
+        "snippet": "This is known as the 68–95–99.7 (empirical) rule"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The empirical 68-95-99.7 rule is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quantile/probit function",
+      "anchor": {
+        "section": "Quantile function",
+        "snippet": "The quantile function of a distribution is the inverse of the cumulative distribution function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No probit/quantile function for the normal is defined.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Quantile function",
+          "snippet": "The quantile function of a distribution is the inverse of the cumulative distribution function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Phi ^{-1}(p)={\\sqrt {2}}\\operatorname {erf} ^{-1}(2p-1),\\quad p\\in (0,1).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F^{-1}(p)=\\mu +\\sigma \\Phi ^{-1}(p)=\\mu +\\sigma {\\sqrt {2}}\\operatorname {erf} ^{-1}(2p-1),\\quad p\\in (0,1).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Newton's method for quantile",
+      "anchor": {
+        "section": "Using root finding to compute the quantile function",
+        "snippet": "can be used with Newton's method"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Newton iteration applied to the normal quantile is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Using root finding to compute the quantile function",
+          "snippet": "can be used with Newton's method"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x_{n}=x_{n-1}-{\\frac {\\Phi (x_{n-1})-q}{\\varphi (x_{n-1})}}\\,.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Maximum entropy characterization of normal",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "It is also the continuous distribution with the maximum entropy for a specified mean and variance"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Differential entropy and its maximum-entropy characterization are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Geary's characterization",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Geary has shown, assuming that the mean and variance are finite"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Geary's theorem on independence of sample mean and variance is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Symmetries and derivatives of normal density",
+      "anchor": {
+        "section": "Symmetries and derivatives",
+        "snippet": "has the following properties: It is symmetric around the point"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.gaussianPDFReal",
+        "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+        "match_kind": "generalization"
+      },
+      "note": "The Gaussian pdf and its basic properties (positivity, integrability) are formalized but symmetry/derivative properties are not stated as named lemmas.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Properties of standard normal density",
+      "anchor": {
+        "section": "Symmetries and derivatives",
+        "snippet": "the density ⁠ ⁠ of the standard normal distribution"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.gaussianPDFReal",
+        "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+        "match_kind": "special_case"
+      },
+      "note": "Properties at μ=0, v=1 are specializations of the general `gaussianPDFReal` facts.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Plain and absolute moments",
+      "anchor": {
+        "section": "Moments",
+        "snippet": "The plain and absolute moments of a variable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.centralMoment",
+        "module": "Mathlib.Probability.Moments.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has generic `moment` and `centralMoment`, but no specific definitions of plain/absolute moments for the normal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Central moments of normal",
+      "anchor": {
+        "section": "Moments",
+        "snippet": "the non-central moments exist and are finite for any"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.memLp_id_gaussianReal",
+        "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+        "match_kind": "generalization"
+      },
+      "note": "Finiteness of all moments of the Gaussian is captured by `memLp_id_gaussianReal`; closed-form moment formulas are not stated.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Moments",
+          "snippet": "the non-central moments exist and are finite for any"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {E} \\left[(X-\\mu )^{p}\\right]={\\begin{cases}0&amp;{\\text{if }}p{\\text{ is odd,}}\\\\\\sigma ^{p}(p-1)!!&amp;{\\text{if }}p{\\text{ is even.}}\\end{cases}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Central absolute moments",
+      "anchor": {
+        "section": "Moments",
+        "snippet": "The central absolute moments coincide with plain moments for all even orders"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Closed-form expressions for absolute moments are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conditional expectation on an interval (inverse Mills ratio)",
+      "anchor": {
+        "section": "Moments",
+        "snippet": "The expectation of ⁠ ⁠ conditioned on the event"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The inverse Mills ratio is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Moments",
+          "snippet": "The expectation of ⁠ ⁠ conditioned on the event"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {E} \\left[X\\mid a&lt;X&lt;b\\right]=\\mu -\\sigma ^{2}{\\frac {f(b)-f(a)}{F(b)-F(a)}}\\,,}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Fourier transform of normal density",
+      "anchor": {
+        "section": "Fourier transform and characteristic function",
+        "snippet": "The Fourier transform of a normal density"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fourierIntegral_gaussian",
+        "module": "Mathlib.Analysis.SpecialFunctions.Gaussian.FourierTransform",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib computes the Fourier integral of a Gaussian.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Characteristic function",
+      "anchor": {
+        "section": "Fourier transform and characteristic function",
+        "snippet": "is closely connected to the characteristic function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.charFun_gaussianReal",
+        "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib has the general `charFun` and the closed form for the Gaussian.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Fourier transform and characteristic function",
+          "snippet": "is closely connected to the characteristic function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\varphi _{X}(t)={\\hat {f}}(-t)\\,.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Moment generating function of normal",
+      "anchor": {
+        "section": "Moment- and cumulant-generating functions",
+        "snippet": "the moment generating function exists and is equal to"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.mgf_gaussianReal",
+        "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves `mgf X p t = exp(μt + v t²/2)` for Gaussian `X`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cumulant generating function",
+      "anchor": {
+        "section": "Moment- and cumulant-generating functions",
+        "snippet": "The cumulant generating function is the logarithm of the moment generating function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.cgf_gaussianReal",
+        "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+        "match_kind": "exact"
+      },
+      "note": "Both the generic `cgf` and the Gaussian formula `μt + v t²/2` are present.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Moment- and cumulant-generating functions",
+          "snippet": "The cumulant generating function is the logarithm of the moment generating function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle g(t)=\\ln M(t)=\\mu t+{\\tfrac {1}{2}}\\sigma ^{2}t^{2}\\,.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Stein operator and class",
+      "anchor": {
+        "section": "Stein operator and class",
+        "snippet": "Within Stein's method the Stein operator and class of a random variable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Stein's method is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero-variance limit (Dirac delta)",
+      "anchor": {
+        "section": "Zero-variance limit",
+        "snippet": "In the limit when"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.gaussianReal_zero_var",
+        "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines the zero-variance Gaussian as `Measure.dirac μ`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Zero-variance limit",
+          "snippet": "In the limit when"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F(x)={\\begin{cases}0&amp;{\\text{if }}x&lt;\\mu \\\\1&amp;{\\text{if }}x\\geq \\mu .\\end{cases}}}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Maximum entropy theorem for normal",
+      "anchor": {
+        "section": "Maximum entropy",
+        "snippet": "Of all probability distributions over the reals with a specified finite mean"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Differential entropy and its maximization are not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Maximum entropy",
+          "snippet": "Of all probability distributions over the reals with a specified finite mean"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle H(X)=-\\int _{-\\infty }^{\\infty }f(x)\\ln f(x)\\,dx\\,,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle L=-\\int _{-\\infty }^{\\infty }f(x)\\ln f(x)\\,dx-\\lambda _{0}\\left(1-\\int _{-\\infty }^{\\infty }f(x)\\,dx\\right)-\\lambda _{1}\\left(\\mu -\\int _{-\\infty }^{\\infty }f(x)x\\,dx\\right)-\\lambda _{2}\\left(\\sigma ^{2}-\\int _{-\\infty }^{\\infty }f(x)(x-\\mu )^{2}\\,dx\\right)\\,.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Marcinkiewicz theorem",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "the Marcinkiewicz theorem (named after Józef Marcinkiewicz ) asserts that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Marcinkiewicz's theorem on characteristic functions is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Jointly normal and uncorrelated implies independent",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "are jointly normal and uncorrelated , then they are independent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.HasGaussianLaw.indepFun_of_covariance_eq_zero",
+        "module": "Mathlib.Probability.Distributions.Gaussian.HasGaussianLaw.Independence",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves zero covariance implies independence for jointly Gaussian random variables.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Kullback-Leibler divergence of normals",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "The Kullback–Leibler divergence of one normal distribution"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.klDivergence",
+        "module": "Mathlib.InformationTheory.KullbackLeibler.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "KL divergence is defined generally but the closed-form formula for two normals is not stated.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Other properties",
+          "snippet": "The Kullback–Leibler divergence of one normal distribution"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle D_{\\mathrm {KL} }(X_{1}\\parallel X_{2})={\\frac {(\\mu _{1}-\\mu _{2})^{2}}{2\\sigma _{2}^{2}}}+{\\frac {1}{2}}\\left({\\frac {\\sigma _{1}^{2}}{\\sigma _{2}^{2}}}-1-\\ln {\\frac {\\sigma _{1}^{2}}{\\sigma _{2}^{2}}}\\right)}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle H^{2}(X_{1},X_{2})=1-{\\sqrt {\\frac {2\\sigma _{1}\\sigma _{2}}{\\sigma _{1}^{2}+\\sigma _{2}^{2}}}}\\exp \\left(-{\\frac {1}{4}}{\\frac {(\\mu _{1}-\\mu _{2})^{2}}{\\sigma _{1}^{2}+\\sigma _{2}^{2}}}\\right)}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Fisher information matrix",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "The Fisher information matrix for a normal distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fisher information is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Other properties",
+          "snippet": "The Fisher information matrix for a normal distribution"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathcal {I}}(\\mu ,\\sigma ^{2})={\\begin{pmatrix}{\\frac {1}{\\sigma ^{2}}}&amp;0\\\\0&amp;{\\frac {1}{2\\sigma ^{4}}}\\end{pmatrix}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Conjugate prior for the mean",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "The conjugate prior of the mean of a normal distribution is another normal distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bayesian conjugate-prior theory is not in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Other properties",
+          "snippet": "The conjugate prior of the mean of a normal distribution is another normal distribution"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mu \\mid x_{1},\\ldots ,x_{n}\\sim {\\mathcal {N}}\\left({\\frac {{\\frac {\\sigma ^{2}}{n}}\\mu _{0}+\\sigma _{0}^{2}{\\bar {x}}}{{\\frac {\\sigma ^{2}}{n}}+\\sigma _{0}^{2}}},\\left({\\frac {n}{\\sigma ^{2}}}+{\\frac {1}{\\sigma _{0}^{2}}}\\right)^{-1}\\right)}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Central limit theorem",
+      "anchor": {
+        "section": "Central limit theorem",
+        "snippet": "The central limit theorem states that under certain (fairly common) conditions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.tendstoInDistribution_inv_sqrt_mul_sum_sub",
+        "module": "Mathlib.Probability.CentralLimitTheorem",
+        "match_kind": "exact"
+      },
+      "note": "1D CLT for i.i.d. variables with finite variance is in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Central limit theorem",
+          "snippet": "The central limit theorem states that under certain (fairly common) conditions"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle Z={\\sqrt {n}}{\\biggl (}{\\frac {1}{n}}\\sum _{i=1}^{n}X_{i}{\\biggr )}}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Berry-Esseen theorem",
+      "anchor": {
+        "section": "Central limit theorem",
+        "snippet": "A general upper bound for the approximation error in the central limit theorem is given by the Berry–Esseen theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Berry-Esseen bound is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closure of normal family under linear transformations",
+      "anchor": {
+        "section": "Operations on a single normal variable",
+        "snippet": "the family of normal distributions is closed under linear transformations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.gaussianReal_map_linearMap",
+        "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves a linear map of a `gaussianReal` is again `gaussianReal`, with a multivariate analogue in `IsGaussian.isGaussian_map`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponential of normal is log-normal",
+      "anchor": {
+        "section": "Operations on a single normal variable",
+        "snippet": "The exponential of ⁠ ⁠ is distributed log-normally"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The log-normal distribution is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sigmoid of normal is logit-normal",
+      "anchor": {
+        "section": "Operations on a single normal variable",
+        "snippet": "The standard sigmoid of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The logit-normal distribution is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Absolute value: folded/half-normal",
+      "anchor": {
+        "section": "Operations on a single normal variable",
+        "snippet": "The absolute value of ⁠ ⁠ has folded normal distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Folded/half-normal distributions are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Absolute normalized residuals: chi distribution",
+      "anchor": {
+        "section": "Operations on a single normal variable",
+        "snippet": "The absolute value of normalized residuals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The chi distribution is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Square has noncentral chi-squared distribution",
+      "anchor": {
+        "section": "Operations on a single normal variable",
+        "snippet": "The square of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chi-squared/noncentral chi-squared distributions are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Truncated normal distribution",
+      "anchor": {
+        "section": "Operations on a single normal variable",
+        "snippet": "The distribution of the variable ⁠ ⁠ restricted to an interval"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Truncated normal is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum of independent normals is normal",
+      "anchor": {
+        "section": "Operations on a single normal variable",
+        "snippet": "are two independent normal random variables, with means"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.gaussianReal_add_gaussianReal_of_indepFun",
+        "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves the sum of two independent Gaussians is Gaussian with summed parameters.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Polarization identity for normals",
+      "anchor": {
+        "section": "Operations on a single normal variable",
+        "snippet": "This is a special case of the polarization identity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Stability of normal distribution",
+      "anchor": {
+        "section": "Operations on a single normal variable",
+        "snippet": "It follows that the normal distribution is stable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Stable distributions are not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Operations on a single normal variable",
+          "snippet": "It follows that the normal distribution is stable"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle X_{3}={\\frac {aX_{1}+bX_{2}-(a+b)\\mu }{\\sqrt {a^{2}+b^{2}}}}+\\mu }"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Ratio of independent standard normals: Cauchy",
+      "anchor": {
+        "section": "Operations on a single normal variable",
+        "snippet": "Their ratio follows the standard Cauchy distribution"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.cauchyMeasure",
+        "module": "Mathlib.Probability.Distributions.Cauchy",
+        "match_kind": "generalization"
+      },
+      "note": "The Cauchy measure exists in Mathlib but no theorem identifies the ratio of two standard normals with it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euclidean norm: Rayleigh distribution",
+      "anchor": {
+        "section": "Operations on a single normal variable",
+        "snippet": "Their Euclidean norm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Rayleigh distribution is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linear combination of independent normals is normal",
+      "anchor": {
+        "section": "Operations on multiple independent normal variables",
+        "snippet": "Any linear combination of independent normal deviates is a normal deviate"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.iIndepFun.hasGaussianLaw",
+        "module": "Mathlib.Probability.Distributions.Gaussian.HasGaussianLaw.Independence",
+        "match_kind": "generalization"
+      },
+      "note": "Independent Gaussian RVs are jointly Gaussian and `isGaussian_map` preserves Gaussian under linear maps; the n-ary linear-combination statement is derivable but not a named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum of squares: chi-squared",
+      "anchor": {
+        "section": "Operations on multiple independent normal variables",
+        "snippet": "then the sum of their squares has the chi-squared distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chi-squared distribution is not in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Operations on multiple independent normal variables",
+          "snippet": "then the sum of their squares has the chi-squared distribution"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle X_{1}^{2}+\\cdots +X_{n}^{2}\\sim \\chi _{n}^{2}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Sample mean and variance independence; t-distribution",
+      "anchor": {
+        "section": "Operations on multiple independent normal variables",
+        "snippet": "then their sample mean is independent from the sample standard deviation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Sample mean/variance independence and the t-distribution are not in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Operations on multiple independent normal variables",
+          "snippet": "then their sample mean is independent from the sample standard deviation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle t={\\frac {{\\overline {X}}-\\mu }{S/{\\sqrt {n}}}}={\\frac {{\\frac {1}{n}}(X_{1}+\\cdots +X_{n})-\\mu }{\\sqrt {{\\frac {1}{n(n-1)}}\\left[(X_{1}-{\\overline {X}})^{2}+\\cdots +(X_{n}-{\\overline {X}})^{2}\\right]}}}\\sim t_{n-1}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "F-distribution ratio",
+      "anchor": {
+        "section": "Operations on multiple independent normal variables",
+        "snippet": "then the ratio of their normalized sums of squares will have the F-distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The F-distribution is not in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Operations on multiple independent normal variables",
+          "snippet": "then the ratio of their normalized sums of squares will have the F-distribution"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F={\\frac {\\left(X_{1}^{2}+X_{2}^{2}+\\cdots +X_{n}^{2}\\right)/n}{\\left(Y_{1}^{2}+Y_{2}^{2}+\\cdots +Y_{m}^{2}\\right)/m}}\\sim F_{n,m}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Quadratic form: generalized chi-square",
+      "anchor": {
+        "section": "Operations on multiple correlated normal variables",
+        "snippet": "A quadratic form of a normal vector"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Generalized chi-square is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Split normal distribution",
+      "anchor": {
+        "section": "Operations on the density function",
+        "snippet": "The split normal distribution is most directly defined in terms of joining scaled sections"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Infinite divisibility of normal",
+      "anchor": {
+        "section": "Infinite divisibility and Cramér's theorem",
+        "snippet": "This property is called infinite divisibility"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no general definition of infinitely divisible distributions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cramér's decomposition theorem",
+      "anchor": {
+        "section": "Infinite divisibility and Cramér's theorem",
+        "snippet": "This result is known as Cramér's decomposition theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cramér's decomposition theorem is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Kac-Bernstein theorem",
+      "anchor": {
+        "section": "The Kac–Bernstein theorem",
+        "snippet": "The Kac–Bernstein theorem states that if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Kac-Bernstein is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Generalized Kac-Bernstein",
+      "anchor": {
+        "section": "The Kac–Bernstein theorem",
+        "snippet": "More generally, if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Generalizations of Kac-Bernstein are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multivariate normal distribution",
+      "anchor": {
+        "section": "Extensions",
+        "snippet": "The multivariate normal distribution describes the Gaussian law in the k -dimensional Euclidean space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.multivariateGaussian",
+        "module": "Mathlib.Probability.Distributions.Gaussian.Multivariate",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `multivariateGaussian μ S` over `EuclideanSpace ℝ ι`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rectified Gaussian distribution",
+      "anchor": {
+        "section": "Extensions",
+        "snippet": "Rectified Gaussian distribution a rectified version of normal distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complex normal distribution",
+      "anchor": {
+        "section": "Extensions",
+        "snippet": "Complex normal distribution deals with the complex normal vectors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Complex Gaussians are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Matrix normal distribution",
+      "anchor": {
+        "section": "Extensions",
+        "snippet": "Matrix normal distribution describes the case of normally distributed matrices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Matrix normal is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Gaussian processes",
+      "anchor": {
+        "section": "Extensions",
+        "snippet": "Gaussian processes are the normally distributed stochastic processes"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.IsGaussianProcess",
+        "module": "Mathlib.Probability.Distributions.Gaussian.IsGaussianProcess.Def",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `IsGaussianProcess` via finite-dimensional Gaussian laws.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Gaussian q-distribution",
+      "anchor": {
+        "section": "Extensions",
+        "snippet": "Gaussian q-distribution is an abstract mathematical construction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "q-Gaussian",
+      "anchor": {
+        "section": "Extensions",
+        "snippet": "the q-Gaussian is an analogue of the Gaussian distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Kaniadakis kappa-Gaussian",
+      "anchor": {
+        "section": "Extensions",
+        "snippet": "The Kaniadakis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Two-piece normal distribution",
+      "anchor": {
+        "section": "Extensions",
+        "snippet": "A random variable X has a two-piece normal distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Extensions",
+          "snippet": "A random variable X has a two-piece normal distribution"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f_{X}(x)={\\begin{cases}N(\\mu ,\\sigma _{1}^{2}),&amp;{\\text{ if }}x\\leq \\mu \\\\N(\\mu ,\\sigma _{2}^{2}),&amp;{\\text{ if }}x\\geq \\mu \\end{cases}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Maximum likelihood estimators",
+      "anchor": {
+        "section": "Estimation of parameters",
+        "snippet": "The standard approach to this problem is the maximum likelihood method"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "MLE for normal parameters is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Estimation of parameters",
+          "snippet": "The standard approach to this problem is the maximum likelihood method"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\ln {\\mathcal {L}}(\\mu ,\\sigma ^{2})&amp;=\\sum _{i=1}^{n}\\ln f(x_{i}\\mid \\mu ,\\sigma ^{2})\\\\&amp;=-{\\frac {n}{2}}\\ln(2\\pi )-{\\frac {n}{2}}\\ln \\sigma ^{2}-{\\frac {1}{2\\sigma ^{2}}}\\sum _{i=1}^{n}(x_{i}-\\mu )^{2}.\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\hat {\\mu }}={\\overline {x}}\\equiv {\\frac {1}{n}}\\sum _{i=1}^{n}x_{i},\\qquad {\\hat {\\sigma }}^{2}={\\frac {1}{n}}\\sum _{i=1}^{n}(x_{i}-{\\overline {x}})^{2}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Sample mean",
+      "anchor": {
+        "section": "Sample mean",
+        "snippet": "is called the sample mean , since it is the arithmetic mean of all observations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Sample-mean estimator is not formalized as a named concept.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Sample mean",
+          "snippet": "is called the sample mean , since it is the arithmetic mean of all observations"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\hat {\\mu }}\\sim {\\mathcal {N}}(\\mu ,\\sigma ^{2}/n).}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Lehmann-Scheffé UMVU for sample mean",
+      "anchor": {
+        "section": "Sample mean",
+        "snippet": "by the Lehmann–Scheffé theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lehmann-Scheffé is not in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Sample mean",
+          "snippet": "by the Lehmann–Scheffé theorem"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\hat {\\mu }}\\sim {\\mathcal {N}}(\\mu ,\\sigma ^{2}/n).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Sample variance and Bessel's correction",
+      "anchor": {
+        "section": "Sample variance",
+        "snippet": "is called the sample variance , since it is the variance of the sample"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Sample variance with Bessel correction is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Sample variance",
+          "snippet": "is called the sample variance , since it is the variance of the sample"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle s^{2}={\\frac {n}{n-1}}{\\hat {\\sigma }}^{2}={\\frac {1}{n-1}}\\sum _{i=1}^{n}(x_{i}-{\\overline {x}})^{2}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle s^{2}\\sim {\\frac {\\sigma ^{2}}{n-1}}\\cdot \\chi _{n-1}^{2},\\qquad {\\hat {\\sigma }}^{2}\\sim {\\frac {\\sigma ^{2}}{n}}\\cdot \\chi _{n-1}^{2}.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Cochran's theorem (normal sample mean/variance independence)",
+      "anchor": {
+        "section": "Confidence intervals",
+        "snippet": "By Cochran's theorem , for normal distributions the sample mean"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cochran's theorem is not in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Confidence intervals",
+          "snippet": "By Cochran's theorem , for normal distributions the sample mean"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle t={\\frac {{\\hat {\\mu }}-\\mu }{s/{\\sqrt {n}}}}={\\frac {{\\overline {x}}-\\mu }{\\sqrt {{\\frac {1}{n(n-1)}}\\sum (x_{i}-{\\overline {x}})^{2}}}}\\sim t_{n-1}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mu \\in \\left[{\\hat {\\mu }}-t_{n-1,1-\\alpha /2}{\\frac {s}{\\sqrt {n}}},\\,{\\hat {\\mu }}+t_{n-1,1-\\alpha /2}{\\frac {s}{\\sqrt {n}}}\\right]}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sigma ^{2}\\in \\left[{\\frac {n-1}{\\chi _{n-1,1-\\alpha /2}^{2}}}s^{2},\\,{\\frac {n-1}{\\chi _{n-1,\\alpha /2}^{2}}}s^{2}\\right]}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Confidence intervals via t and chi-squared",
+      "anchor": {
+        "section": "Confidence intervals",
+        "snippet": "This quantity t has the Student's t-distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "t and chi-squared confidence intervals are not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Confidence intervals",
+          "snippet": "This quantity t has the Student's t-distribution"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle t={\\frac {{\\hat {\\mu }}-\\mu }{s/{\\sqrt {n}}}}={\\frac {{\\overline {x}}-\\mu }{\\sqrt {{\\frac {1}{n(n-1)}}\\sum (x_{i}-{\\overline {x}})^{2}}}}\\sim t_{n-1}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mu \\in \\left[{\\hat {\\mu }}-t_{n-1,1-\\alpha /2}{\\frac {s}{\\sqrt {n}}},\\,{\\hat {\\mu }}+t_{n-1,1-\\alpha /2}{\\frac {s}{\\sqrt {n}}}\\right]}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sigma ^{2}\\in \\left[{\\frac {n-1}{\\chi _{n-1,1-\\alpha /2}^{2}}}s^{2},\\,{\\frac {n-1}{\\chi _{n-1,\\alpha /2}^{2}}}s^{2}\\right]}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Normality tests",
+      "anchor": {
+        "section": "Normality tests",
+        "snippet": "Normality tests assess the likelihood that the given data set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Statistical normality tests are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Q-Q plot",
+      "anchor": {
+        "section": "Normality tests",
+        "snippet": "Q–Q plot , also known as normal probability plot or rankit plot"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Q-Q plots are graphical tools, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "P-P plot",
+      "anchor": {
+        "section": "Normality tests",
+        "snippet": "P–P plot – similar to the Q–Q plot"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "P-P plots are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum of two quadratics formula",
+      "anchor": {
+        "section": "Sum of two quadratics",
+        "snippet": "This equation rewrites the sum of two quadratics in x"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Algebraic completing-the-square identity in this form not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bayesian update with known variance",
+      "anchor": {
+        "section": "With known variance",
+        "snippet": "For a set of i.i.d. normally distributed data points X of size n"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bayesian update formulas not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bayesian update with known mean",
+      "anchor": {
+        "section": "With known mean",
+        "snippet": "the conjugate prior of the variance has an inverse gamma distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Inverse-gamma conjugate prior is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "With known mean",
+          "snippet": "the conjugate prior of the variance has an inverse gamma distribution"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle p(\\sigma ^{2}\\mid \\nu _{0},\\sigma _{0}^{2})={\\frac {(\\sigma _{0}^{2}{\\frac {\\nu _{0}}{2}})^{\\nu _{0}/2}}{\\Gamma \\left({\\frac {\\nu _{0}}{2}}\\right)}}~{\\frac {\\exp \\left[{\\frac {-\\nu _{0}\\sigma _{0}^{2}}{2\\sigma ^{2}}}\\right]}{(\\sigma ^{2})^{1+{\\frac {\\nu _{0}}{2}}}}}\\propto {\\frac {\\exp \\left[{\\frac {-\\nu _{0}\\sigma _{0}^{2}}{2\\sigma ^{2}}}\\right]}{(\\sigma ^{2})^{1+{\\frac {\\nu _{0}}{2}}}}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Bayesian update with unknown mean and variance",
+      "anchor": {
+        "section": "With unknown mean and unknown variance",
+        "snippet": "a combined (multivariate) conjugate prior is placed over the mean and variance"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Normal-inverse-gamma conjugate prior is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Velocity distribution of elastic spheres",
+      "anchor": {
+        "section": "Exact normality",
+        "snippet": "The velocity distribution of independently moving and perfectly elastic spheres"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Physical example, not a mathematical statement to formalize.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Quantum harmonic oscillator ground state",
+      "anchor": {
+        "section": "Exact normality",
+        "snippet": "The ground state wave function in position space of the quantum harmonic oscillator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "QHO ground state not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Diffusion of a particle",
+      "anchor": {
+        "section": "Exact normality",
+        "snippet": "The position of a particle that experiences diffusion"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Diffusion/Brownian motion is not formalized as Gaussian-marginalled in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Log-normality in biology",
+      "anchor": {
+        "section": "Assumed normality",
+        "snippet": "In biology , the logarithm of various variables tend to have a normal distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Modeling example, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Black-Scholes model",
+      "anchor": {
+        "section": "Assumed normality",
+        "snippet": "In finance, in particular the Black–Scholes model"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Black-Scholes is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Measurement errors modeled normally",
+      "anchor": {
+        "section": "Assumed normality",
+        "snippet": "Measurement errors in physical experiments are often modeled by a normal distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Modeling assumption, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Standardized testing (SAT, IQ)",
+      "anchor": {
+        "section": "Assumed normality",
+        "snippet": "In standardized testing , results can be made to have a normal distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Real-world example, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hydrology rainfall/discharge",
+      "anchor": {
+        "section": "Assumed normality",
+        "snippet": "In hydrology the distribution of long duration river discharge or rainfall"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Real-world example, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Probability integral transform",
+      "anchor": {
+        "section": "Generating values from normal distribution",
+        "snippet": "The most straightforward method is based on the probability integral transform property"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The probability integral transform is not stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "CLT-based 12-uniforms approximation",
+      "anchor": {
+        "section": "Generating values from normal distribution",
+        "snippet": "An easy-to-program approximate approach that relies on the central limit theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Sampling algorithm, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Box-Muller method",
+      "anchor": {
+        "section": "Generating values from normal distribution",
+        "snippet": "The Box–Muller method uses two independent random numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Box-Muller is not in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Generating values from normal distribution",
+          "snippet": "The Box–Muller method uses two independent random numbers"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle X={\\sqrt {-2\\ln U}}\\,\\cos(2\\pi V),\\qquad Y={\\sqrt {-2\\ln U}}\\,\\sin(2\\pi V).}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Marsaglia polar method",
+      "anchor": {
+        "section": "Generating values from normal distribution",
+        "snippet": "The Marsaglia polar method is a modification of the Box–Muller method"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Generating values from normal distribution",
+          "snippet": "The Marsaglia polar method is a modification of the Box–Muller method"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle X=U{\\sqrt {\\frac {-2\\ln S}{S}}},\\qquad Y=V{\\sqrt {\\frac {-2\\ln S}{S}}}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Ratio method",
+      "anchor": {
+        "section": "Generating values from normal distribution",
+        "snippet": "The Ratio method"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Sampling algorithm, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ziggurat algorithm",
+      "anchor": {
+        "section": "Generating values from normal distribution",
+        "snippet": "The ziggurat algorithm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Sampling algorithm, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Zelen & Severo approximation",
+      "anchor": {
+        "section": "Numerical approximations for the normal cumulative distribution function and normal quantile function",
+        "snippet": "give the approximation for"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Numerical approximation not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Numerical approximations for the normal cumulative distribution function and normal quantile function",
+          "snippet": "give the approximation for"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Phi (x)=1-\\varphi (x)\\left(b_{1}t+b_{2}t^{2}+b_{3}t^{3}+b_{4}t^{4}+b_{5}t^{5}\\right)+\\varepsilon (x),\\qquad t={\\frac {1}{1+b_{0}x}},}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Hart's rational approximations",
+      "anchor": {
+        "section": "Numerical approximations for the normal cumulative distribution function and normal quantile function",
+        "snippet": "Hart (1968) lists dozens of approximations by means of rational functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Marsaglia Taylor-series algorithm",
+      "anchor": {
+        "section": "Numerical approximations for the normal cumulative distribution function and normal quantile function",
+        "snippet": "suggested a simple algorithm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Numerical approximations for the normal cumulative distribution function and normal quantile function",
+          "snippet": "suggested a simple algorithm"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Phi (x)={\\frac {1}{2}}+\\varphi (x)\\left(x+{\\frac {x^{3}}{3}}+{\\frac {x^{5}}{3\\cdot 5}}+{\\frac {x^{7}}{3\\cdot 5\\cdot 7}}+{\\frac {x^{9}}{3\\cdot 5\\cdot 7\\cdot 9}}+\\cdots \\right)}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Shore's approximation",
+      "anchor": {
+        "section": "Numerical approximations for the normal cumulative distribution function and normal quantile function",
+        "snippet": "introduced simple approximations that may be incorporated in stochastic optimization models"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Numerical approximations for the normal cumulative distribution function and normal quantile function",
+          "snippet": "introduced simple approximations that may be incorporated in stochastic optimization models"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle z=\\Phi ^{-1}(p)=5.5556\\left[1-\\left({\\frac {1-p}{p}}\\right)^{0.1186}\\right],\\qquad p\\geq 1/2}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "De Moivre's binomial expansion result",
+      "anchor": {
+        "section": "Development",
+        "snippet": "De Moivre proved that the middle term in this expansion has the approximate magnitude"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "De Moivre's asymptotic is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gauss's normal law of errors",
+      "anchor": {
+        "section": "Development",
+        "snippet": "Gauss demonstrates that the only law that rationalizes the choice of arithmetic mean as an estimator of the location parameter"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gauss's characterization by least squares is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Development",
+          "snippet": "Gauss demonstrates that the only law that rationalizes the choice of arithmetic mean as an estimator of the location parameter"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\varphi {\\mathit {\\Delta }}={\\frac {h}{\\surd \\pi }}\\,e^{-\\mathrm {hh} \\Delta \\Delta },}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Laplace's central limit theorem",
+      "anchor": {
+        "section": "Development",
+        "snippet": "it was Laplace who in 1810 proved and presented to the academy the fundamental central limit theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.tendstoInDistribution_inv_sqrt_mul_sum_sub",
+        "module": "Mathlib.Probability.CentralLimitTheorem",
+        "match_kind": "generalization"
+      },
+      "note": "The modern 1D CLT in Mathlib subsumes Laplace's original statement.",
+      "provenance": "ai"
+    }
+  ]
+}

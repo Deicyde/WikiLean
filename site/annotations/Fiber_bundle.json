@@ -1,0 +1,735 @@
+{
+  "slug": "Fiber_bundle",
+  "wikipedia_title": "Fiber bundle",
+  "display_title": "Fiber bundle",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Fiber bundle (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a fiber bundle ( Commonwealth English : fibre bundle ) is a space that is locally a product space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FiberBundle",
+        "module": "Mathlib.Topology.FiberBundle.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The informal notion is captured by the `FiberBundle` class declared in `Mathlib/Topology/FiberBundle/Basic.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Trivial bundle (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "This is called a trivial bundle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Bundle.Trivial.fiberBundle",
+        "module": "Mathlib.Topology.FiberBundle.Constructions",
+        "match_kind": "exact"
+      },
+      "note": "The trivial bundle is constructed as `Bundle.Trivial.fiberBundle` (and also captured Prop-style by `IsHomeomorphicTrivialFiberBundle`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Section of a bundle (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is called a section of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FiberBundle.continuousAt_section",
+        "module": "Mathlib.Topology.FiberBundle.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib treats sections informally as terms of `∀ x, E x` (with continuity lemmas like `continuousAt_section`), but has no dedicated `Section` type for general fiber bundles.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Structure group (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "known as the structure group , acting on the fiber"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of a structure group acting on the fiber of a fiber bundle; `StructureGroupoid` is for charted spaces, not bundles.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fiber bundle (formal)",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "A fiber bundle is a 4-tuple"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FiberBundle",
+        "module": "Mathlib.Topology.FiberBundle.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The `FiberBundle` class encodes the same data via a family `E : B → Type*` and an atlas of `Trivialization`s rather than the literal 4-tuple.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Local triviality condition",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "We require that for every"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FiberBundle.mem_baseSet_trivializationAt",
+        "module": "Mathlib.Topology.FiberBundle.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Local triviality is built into `FiberBundle` via the fields `trivializationAt` and `mem_baseSet_trivializationAt`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Local trivialization",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "is called a local trivialization of the bundle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Trivialization",
+        "module": "Mathlib.Topology.FiberBundle.Trivialization",
+        "match_kind": "exact"
+      },
+      "note": "The `Trivialization` structure is precisely a local trivialization as an open partial homeomorphism to `B × F`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fiber over a point",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "is homeomorphic to"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FiberBundle.homeomorphAt",
+        "module": "Mathlib.Topology.FiberBundle.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`FiberBundle.homeomorphAt` produces a homeomorphism between each fiber `E b` and the model fiber `F`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bundle projection is open",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "is an open map , since projections of products are open maps"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FiberBundle.isOpenMap_proj",
+        "module": "Mathlib.Topology.FiberBundle.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`FiberBundle.isOpenMap_proj` shows that the bundle projection `π F E` is an open map.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Smooth fiber bundle",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "A smooth fiber bundle is a fiber bundle in the category of smooth manifolds"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContMDiffVectorBundle",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib has smooth vector bundles (`ContMDiffVectorBundle`) and smooth charted-space infrastructure but no generic `SmoothFiberBundle` class for non-vector smooth fiber bundles.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Trivial bundle",
+      "anchor": {
+        "section": "Trivial bundle",
+        "snippet": "Any such fiber bundle is called a trivial bundle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Bundle.Trivial.fiberBundle",
+        "module": "Mathlib.Topology.FiberBundle.Constructions",
+        "match_kind": "exact"
+      },
+      "note": "The trivial bundle example is realized as `Bundle.Trivial.fiberBundle B F`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bundles over contractible CW-complexes are trivial",
+      "anchor": {
+        "section": "Trivial bundle",
+        "snippet": "Any fiber bundle over a contractible CW-complex is trivial"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no theorem about triviality of fiber bundles over contractible CW-complexes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Möbius strip",
+      "anchor": {
+        "section": "Möbius strip",
+        "snippet": "the simplest example of a nontrivial bundle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Möbius strip (and its bundle structure over `S¹`) is not constructed in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Klein bottle",
+      "anchor": {
+        "section": "Klein bottle",
+        "snippet": "A similar nontrivial bundle is the Klein bottle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Klein bottle is not constructed in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Covering space as fiber bundle",
+      "anchor": {
+        "section": "Covering map",
+        "snippet": "A covering space is a fiber bundle such that the bundle projection is a local homeomorphism"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsCoveringMap",
+        "module": "Mathlib.Topology.Covering.Basic",
+        "match_kind": null
+      },
+      "note": "`IsCoveringMap` is defined via evenly covered neighborhoods, but is not stated as / connected to a `FiberBundle` instance with discrete fiber.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vector bundle",
+      "anchor": {
+        "section": "Vector and principal bundles",
+        "snippet": "called vector bundles , are those whose fibers are vector spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "VectorBundle",
+        "module": "Mathlib.Topology.VectorBundle.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The `VectorBundle` class encodes fiber bundles with linear trivializations whose fibers are vector spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Principal bundle",
+      "anchor": {
+        "section": "Vector and principal bundles",
+        "snippet": "called principal bundles , are bundles on whose fibers a free and transitive action by a group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no `PrincipalBundle` definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Associated bundle",
+      "anchor": {
+        "section": "Vector and principal bundles",
+        "snippet": "known as the associated bundle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no associated-bundle construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sphere bundle",
+      "anchor": {
+        "section": "Sphere bundles",
+        "snippet": "A sphere bundle is a fiber bundle whose fiber is an n -sphere"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no `SphereBundle` definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unit sphere bundle",
+      "anchor": {
+        "section": "Sphere bundles",
+        "snippet": "one can construct the associated unit sphere bundle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The unit sphere bundle of a normed vector bundle is not constructed in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euler class of sphere bundle",
+      "anchor": {
+        "section": "Sphere bundles",
+        "snippet": "A sphere bundle is partially characterized by its Euler class"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Euler class of a sphere bundle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Mapping torus",
+      "anchor": {
+        "section": "Mapping tori",
+        "snippet": "the mapping torus"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The mapping torus construction is absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quotient by closed subgroup as bundle",
+      "anchor": {
+        "section": "Quotient spaces",
+        "snippet": "is a fiber bundle, whose fiber is the topological space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no theorem that `G/H → G/K` (for closed `H ≤ K`) is a fiber bundle with fiber `K/H`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lie group quotient is a bundle",
+      "anchor": {
+        "section": "Quotient spaces",
+        "snippet": "is a Lie group and"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem that the quotient of a Lie group by a closed subgroup gives a (principal/fiber) bundle is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hopf fibration",
+      "anchor": {
+        "section": "Quotient spaces",
+        "snippet": "One example of this is the Hopf fibration"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hopf fibration is not constructed in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closed Lie subgroup quotient",
+      "anchor": {
+        "section": "Quotient spaces",
+        "snippet": "More generally, if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The general closed-Lie-subgroup quotient as a fiber bundle is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Section (cross section)",
+      "anchor": {
+        "section": "Sections",
+        "snippet": "A section (or cross section ) of a fiber bundle"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FiberBundle.continuousAt_section",
+        "module": "Mathlib.Topology.FiberBundle.Basic",
+        "match_kind": null
+      },
+      "note": "Sections appear informally as `∀ x, E x` with auxiliary continuity lemmas, but no top-level `Section` definition exists for general fiber bundles.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hairy ball theorem",
+      "anchor": {
+        "section": "Sections",
+        "snippet": "The most well-known example is the hairy ball theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The hairy ball theorem is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Local section",
+      "anchor": {
+        "section": "Sections",
+        "snippet": "A local section of a fiber bundle is a continuous map"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no `LocalSection` concept for general fiber bundles.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "G-atlas",
+      "anchor": {
+        "section": "Structure groups and transition functions",
+        "snippet": "atlas for the bundle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of a G-atlas on a fiber bundle.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Structure groups and transition functions",
+          "snippet": "atlas for the bundle"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\varphi _{i}\\varphi _{j}^{-1}:\\left(U_{i}\\cap U_{j}\\right)\\times F\\to \\left(U_{i}\\cap U_{j}\\right)\\times F}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\varphi _{i}\\varphi _{j}^{-1}(x,\\,\\xi )=\\left(x,\\,t_{ij}(x)\\xi \\right)}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "G-bundle and structure group",
+      "anchor": {
+        "section": "Structure groups and transition functions",
+        "snippet": "A G -bundle is a fiber bundle with an equivalence class of G -atlases"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no `GBundle` typeclass capturing a fiber bundle equipped with a structure group.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Structure groups and transition functions",
+          "snippet": "A G -bundle is a fiber bundle with an equivalence class of G -atlases"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\varphi _{i}\\varphi _{j}^{-1}:\\left(U_{i}\\cap U_{j}\\right)\\times F\\to \\left(U_{i}\\cap U_{j}\\right)\\times F}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\varphi _{i}\\varphi _{j}^{-1}(x,\\,\\xi )=\\left(x,\\,t_{ij}(x)\\xi \\right)}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Smooth G-bundle",
+      "anchor": {
+        "section": "Structure groups and transition functions",
+        "snippet": "a G -bundle is a smooth fiber bundle where G is a Lie group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no smooth G-bundle with Lie group structure group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cocycle condition",
+      "anchor": {
+        "section": "Structure groups and transition functions",
+        "snippet": "is called the (Čech) cocycle condition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FiberBundleCore.coordChange_comp",
+        "module": "Mathlib.Topology.FiberBundle.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The cocycle condition `coordChange j k ∘ coordChange i j = coordChange i k` is a field of `FiberBundleCore`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Principal G-bundle",
+      "anchor": {
+        "section": "Structure groups and transition functions",
+        "snippet": "A principal G -bundle is a G -bundle where the fiber F is a principal homogeneous space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no principal G-bundle definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bundle map / morphism",
+      "anchor": {
+        "section": "Bundle maps",
+        "snippet": "A bundle map or bundle morphism consists of a pair of continuous"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no general bundle-morphism definition between fiber bundles over possibly different bases.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Bundle maps",
+          "snippet": "A bundle map or bundle morphism consists of a pair of continuous"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\varphi :E\\to F,\\quad f:M\\to N}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Equivariant bundle morphism",
+      "anchor": {
+        "section": "Bundle maps",
+        "snippet": "bundle morphisms are also required to be"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no equivariant bundle morphism for G-bundles.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bundle morphism over B",
+      "anchor": {
+        "section": "Bundle maps",
+        "snippet": "a bundle morphism over"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `BundleMorphism` over a fixed base is defined for general fiber bundles in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bundle isomorphism",
+      "anchor": {
+        "section": "Bundle maps",
+        "snippet": "A bundle isomorphism is a bundle map"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no general `BundleIso` for fiber bundles.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fibered manifold",
+      "anchor": {
+        "section": "Differentiable fiber bundles",
+        "snippet": "is called a fibered manifold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of `FiberedManifold` (smooth surjective submersion) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Submersion of compact connected manifolds is a bundle",
+      "anchor": {
+        "section": "Differentiable fiber bundles",
+        "snippet": "If M and N are compact and connected"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no theorem that a submersion between compact connected manifolds is a fiber bundle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Ehresmann's fibration theorem",
+      "anchor": {
+        "section": "Differentiable fiber bundles",
+        "snippet": "Another sufficient condition, due to Ehresmann"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ehresmann's fibration theorem is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fibration",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "a fibration is a mapping"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Hurewicz/Serre fibration definition (the only `Fibration` file in Mathlib is order-theoretic).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Homotopy lifting property of bundles",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "a fiber bundle always has the homotopy lifting property"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not have the homotopy lifting property for fiber bundles.",
+      "provenance": "ai"
+    }
+  ]
+}

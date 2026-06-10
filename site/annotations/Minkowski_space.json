@@ -1,0 +1,1491 @@
+{
+  "slug": "Minkowski_space",
+  "wikipedia_title": "Minkowski space",
+  "display_title": "Minkowski space",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Minkowski space",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is the main mathematical description of spacetime in the absence of gravitation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Minkowski/spacetime structure exists in Mathlib (grep for `Minkowski` finds only Minkowski's theorem, inequality and functional).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Spacetime interval / Minkowski norm squared",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a pseudo-Euclidean space equipped with an isotropic quadratic form called the spacetime interval"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "QuadraticMap.Anisotropic",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "General quadratic forms and the (an)isotropy notion exist, but the specific indefinite Minkowski interval form is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Light cone",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is on the null cone of the origin, called the light cone"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No null cone / light cone of a Lorentzian form is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Minkowski inner product",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the quadratic form is converted to a symmetric bilinear form called the Minkowski inner product"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "QuadraticMap.polarBilin",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Polarization of a quadratic form to a symmetric bilinear form is general infrastructure, but the Minkowski form itself is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lorentz group",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "that preserves the spacetime interval"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.IsometryEquiv",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.IsometryEquiv",
+        "match_kind": "generalization"
+      },
+      "note": "Isometries of a bilinear form exist generally, but the Lorentz group O(3,1) of an indefinite form is not defined (only the Euclidean `Matrix.orthogonalGroup`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Timelike, spacelike, null vectors",
+      "anchor": {
+        "section": "Causal structure",
+        "snippet": "A vector is timelike if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Causal classification of vectors by sign of a Lorentzian form is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Light cone of an event",
+      "anchor": {
+        "section": "Causal structure",
+        "snippet": "The set of all null vectors at an event"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of the null-vector set at an event is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Future- and past-directed timelike vectors",
+      "anchor": {
+        "section": "Causal structure",
+        "snippet": "future-directed timelike vectors whose first component is positive"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Time orientation of timelike vectors is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Three classes of null vectors",
+      "anchor": {
+        "section": "Causal structure",
+        "snippet": "Null vectors fall into three classes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Classification of null vectors is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Composition of an orthonormal basis",
+      "anchor": {
+        "section": "Causal structure",
+        "snippet": "necessarily consists of one timelike and three spacelike unit vectors"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "QuadraticForm.sigPos_of_equiv_weightedSumSquares",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Signature",
+        "match_kind": "generalization"
+      },
+      "note": "This is Sylvester's law of inertia (signature is basis-independent), whose uniqueness part is formalized, though not specialized to the (1,3) Minkowski case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Null basis",
+      "anchor": {
+        "section": "Causal structure",
+        "snippet": "basis consisting entirely of null vectors, called a null basis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of a null (light-cone) basis is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Timelike/spacelike/null vector fields",
+      "anchor": {
+        "section": "Causal structure",
+        "snippet": "Vector fields are called timelike, spacelike, or null"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Causal classification of vector fields is not formalized (no Lorentzian metric).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convexity of the light cones",
+      "anchor": {
+        "section": "Properties of time-like vectors",
+        "snippet": "both forward and backward cones are convex, whereas the space-like region is not convex"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Convexity of the Minkowski timelike cones is not proven (general `ConvexCone` exists but not this statement).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Scalar product of time-like vectors",
+      "anchor": {
+        "section": "Scalar product",
+        "snippet": "The scalar product of two time-like vectors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Minkowski scalar product restricted to timelike vectors is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Scalar product",
+          "snippet": "The scalar product of two time-like vectors"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\eta (u_{1},u_{2})=u_{1}\\cdot u_{2}=c^{2}t_{1}t_{2}-x_{1}x_{2}-y_{1}y_{2}-z_{1}z_{2}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Positivity of the scalar product",
+      "anchor": {
+        "section": "Scalar product",
+        "snippet": "the scalar product of two similarly directed time-like vectors is always positive"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This Lorentzian-specific positivity result is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero scalar product implies space-like",
+      "anchor": {
+        "section": "Scalar product",
+        "snippet": "if the scalar product of two vectors is zero, then one of these, at least, must be space-like"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This Lorentzian-specific result is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Positive sum of similarly directed time-like vectors",
+      "anchor": {
+        "section": "Scalar product",
+        "snippet": "a linear sum with positive coefficients of similarly directed time-like vectors is also similarly directed"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Closure of the future timelike cone under positive combinations is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Norm of a time-like vector",
+      "anchor": {
+        "section": "Norm and reversed Cauchy inequality",
+        "snippet": "The norm of a time-like vector"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Lorentzian norm of timelike vectors is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Norm and reversed Cauchy inequality",
+          "snippet": "The norm of a time-like vector"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left\\|u\\right\\|={\\sqrt {\\eta (u,u)}}={\\sqrt {c^{2}t^{2}-x^{2}-y^{2}-z^{2}}}}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Reversed Cauchy inequality",
+      "anchor": {
+        "section": "Norm and reversed Cauchy inequality",
+        "snippet": "The reversed Cauchy inequality is another consequence of the convexity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Only the ordinary Cauchy–Schwarz inequality for inner product spaces is in Mathlib, not the reversed Lorentzian version.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Norm and reversed Cauchy inequality",
+          "snippet": "The reversed Cauchy inequality is another consequence of the convexity"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\eta (u_{1},u_{2})&gt;\\left\\|u_{1}\\right\\|\\left\\|u_{2}\\right\\|}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c^{2}t_{1}t_{2}-x_{1}x_{2}-y_{1}y_{2}-z_{1}z_{2}&gt;{\\sqrt {\\left(c^{2}t_{1}^{2}-x_{1}^{2}-y_{1}^{2}-z_{1}^{2}\\right)\\left(c^{2}t_{2}^{2}-x_{2}^{2}-y_{2}^{2}-z_{2}^{2}\\right)}}}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Reversed triangle inequality",
+      "anchor": {
+        "section": "Reversed triangle inequality",
+        "snippet": "For two similarly directed time-like vectors u and w , the inequality is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The reversed triangle inequality for timelike vectors is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Reversed triangle inequality",
+          "snippet": "For two similarly directed time-like vectors u and w , the inequality is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left\\|u+w\\right\\|\\geq \\left\\|u\\right\\|+\\left\\|w\\right\\|,}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Minkowski space as a vector space with bilinear form",
+      "anchor": {
+        "section": "Mathematical structure",
+        "snippet": "is a 4 -dimensional real vector space equipped with a non-degenerate, symmetric bilinear form"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.Nondegenerate",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Properties",
+        "match_kind": "generalization"
+      },
+      "note": "Non-degenerate symmetric bilinear forms on a vector space are fully developed, but no 4-dimensional Minkowski instance is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Canonical identification of tangent vectors",
+      "anchor": {
+        "section": "Tangent vectors",
+        "snippet": "allows for the canonical identification of vectors in tangent spaces"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TangentSpace",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.Tangent",
+        "match_kind": "generalization"
+      },
+      "note": "For a normed/vector space modeled manifold the `TangentSpace` is canonically the space itself, but this is generic, not Minkowski-specific.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Tangent vectors",
+          "snippet": "allows for the canonical identification of vectors in tangent spaces"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\left(x^{0},\\,x^{1},\\,x^{2},\\,x^{3}\\right)\\ &amp;\\leftrightarrow \\ \\left.x^{0}\\mathbf {e} _{0}\\right|_{p}+\\left.x^{1}\\mathbf {e} _{1}\\right|_{p}+\\left.x^{2}\\mathbf {e} _{2}\\right|_{p}+\\left.x^{3}\\mathbf {e} _{3}\\right|_{p}\\\\&amp;\\leftrightarrow \\ \\left.x^{0}\\mathbf {e} _{0}\\right|_{q}+\\left.x^{1}\\mathbf {e} _{1}\\right|_{q}+\\left.x^{2}\\mathbf {e} _{2}\\right|_{q}+\\left.x^{3}\\mathbf {e} _{3}\\right|_{q}\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left.\\mathbf {e} _{\\mu }\\right|_{p}=\\left.{\\frac {\\partial }{\\partial x^{\\mu }}}\\right|_{p}{\\text{ or }}\\mathbf {e} _{0}|_{p}=\\left({\\begin{matrix}1\\\\0\\\\0\\\\0\\end{matrix}}\\right){\\text{, etc}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Tangent vector as a column vector under Lorentz transformation",
+      "anchor": {
+        "section": "Tangent vectors",
+        "snippet": "A tangent vector at a point p may be defined"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The transformation-law definition of a tangent vector under Lorentz transformations is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Tangent vectors",
+          "snippet": "A tangent vector at a point p may be defined"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}x'^{\\mu }&amp;={\\Lambda ^{\\mu }}_{\\nu }x^{\\nu },\\\\v'^{\\mu }&amp;={\\Lambda ^{\\mu }}_{\\nu }v^{\\nu }.\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Metric signature",
+      "anchor": {
+        "section": "Metric signature",
+        "snippet": "The metric signature refers to which sign the Minkowski inner product yields"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "sigPos",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Signature",
+        "match_kind": "generalization"
+      },
+      "note": "The signature (`sigPos`/`sigNeg`) of a quadratic form over a linearly ordered field is formalized as the general concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Minkowski metric tensor",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "is a tensor of type (0,2) at each point in spacetime, called the Minkowski metric"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Minkowski metric tensor field is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lorentzian manifold",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "a Lorentzian manifold L is likewise equipped with a metric tensor g"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib only has positive-definite Riemannian metrics; Lorentzian (indefinite-signature) metrics are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Minkowski space as pseudo-Euclidean space",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "is thus a pseudo-Euclidean space with total dimension n = 4 and signature"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.Nondegenerate",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Properties",
+        "match_kind": "generalization"
+      },
+      "note": "Non-degenerate symmetric bilinear forms with a notion of signature exist, but no pseudo-Euclidean Minkowski space is constructed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Events",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "Elements of Minkowski space are called events"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Minkowski space, hence no notion of events.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Metric on abstract vector space V",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "the metric is a bilinear form on an abstract four-dimensional real vector space V"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Bilinear forms on an abstract vector space are the `LinearMap.BilinForm` type, but the specific 4-dimensional Minkowski metric is not defined.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Terminology",
+          "snippet": "the metric is a bilinear form on an abstract four-dimensional real vector space V"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\eta :V\\times V\\rightarrow \\mathbf {R} }"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Born coordinates and light-cone coordinates",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "An interesting example of non-inertial coordinates for (part of) Minkowski spacetime is the Born coordinates"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Born/light-cone coordinate systems are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Minkowski inner product is indefinite",
+      "anchor": {
+        "section": "Pseudo-Euclidean metrics",
+        "snippet": "The Minkowski inner product is not an inner product , since it has non-zero null vectors"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "QuadraticMap.PosDef",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Positive-definiteness/anisotropy of forms is formalized (indefinite = not `PosDef`), but the Minkowski case is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Minkowski metric as metric tensor",
+      "anchor": {
+        "section": "Pseudo-Euclidean metrics",
+        "snippet": "The Minkowski metric η is the metric tensor of Minkowski space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Minkowski metric tensor η is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Minkowski inner product definition",
+      "anchor": {
+        "section": "Pseudo-Euclidean metrics",
+        "snippet": "yields an inner product-like structure on M , previously and also henceforth, called the Minkowski inner product"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The general symmetric bilinear form structure exists, but the Minkowski inner product itself is not defined.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Pseudo-Euclidean metrics",
+          "snippet": "yields an inner product-like structure on M , previously and also henceforth, called the Minkowski inner product"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle u\\cdot v=\\eta (u,\\,v)}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle u\\cdot u=\\eta (u,u)\\equiv \\|u\\|^{2}\\equiv u^{2},}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Minkowski norm squared",
+      "anchor": {
+        "section": "Pseudo-Euclidean metrics",
+        "snippet": "the resulting quantity will be called the Minkowski norm squared"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.toQuadraticMap",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The quadratic form v ↦ B(v,v) of a bilinear form is general infrastructure, but the Minkowski norm squared is not defined.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Pseudo-Euclidean metrics",
+          "snippet": "the resulting quantity will be called the Minkowski norm squared"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle u\\cdot v=\\eta (u,\\,v)}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle u\\cdot u=\\eta (u,u)\\equiv \\|u\\|^{2}\\equiv u^{2},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Invariance of inner product under Lorentz transformations",
+      "anchor": {
+        "section": "Pseudo-Euclidean metrics",
+        "snippet": "these are quantities unaffected by Lorentz transformations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.Isometry",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Isometry",
+        "match_kind": "generalization"
+      },
+      "note": "Isometries of a bilinear form preserve it by definition; the Lorentz-specific statement is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Defining property of a Lorentz transformation",
+      "anchor": {
+        "section": "Pseudo-Euclidean metrics",
+        "snippet": "the defining property of a Lorentz transformation in that it preserves the inner product"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.Isometry",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Isometry",
+        "match_kind": "generalization"
+      },
+      "note": "A form-preserving linear map is `BilinForm.Isometry`; the Lorentz group itself is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orthogonality of events",
+      "anchor": {
+        "section": "Orthogonality",
+        "snippet": "Two events u and v are orthogonal when the bilinear form is zero for them"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.IsOrtho",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Orthogonal",
+        "match_kind": "generalization"
+      },
+      "note": "`IsOrtho B x y ↔ B x y = 0` is exactly orthogonality with respect to a bilinear form, generalizing the Minkowski case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hyperbolic orthogonality",
+      "anchor": {
+        "section": "Orthogonality",
+        "snippet": "then the relation is hyperbolic orthogonality"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.IsOrtho",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Orthogonal",
+        "match_kind": "generalization"
+      },
+      "note": "Orthogonality wrt an indefinite form is captured by `IsOrtho`, but the rapidity/hyperbolic-angle interpretation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rapidity",
+      "anchor": {
+        "section": "Orthogonality",
+        "snippet": "has been labelled rapidity since it is associated with the speed of the frame"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Rapidity (Lorentz-boost hyperbolic angle) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Spacetime interval",
+      "anchor": {
+        "section": "Minkowski metric",
+        "snippet": "the spacetime interval between two arbitrary events called 1 and 2 is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The spacetime interval between two events is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Minkowski metric",
+          "snippet": "the spacetime interval between two arbitrary events called 1 and 2 is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c^{2}\\left(t_{1}-t_{2}\\right)^{2}-\\left(x_{1}-x_{2}\\right)^{2}-\\left(y_{1}-y_{2}\\right)^{2}-\\left(z_{1}-z_{2}\\right)^{2}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Invariance of the interval under linear transformations",
+      "anchor": {
+        "section": "Minkowski metric",
+        "snippet": "The invariance of the interval under coordinate transformations between inertial frames"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.Isometry",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Isometry",
+        "match_kind": "generalization"
+      },
+      "note": "Invariance of a form under its isometries is general infrastructure; the interval invariance statement is not present.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Minkowski metric",
+          "snippet": "The invariance of the interval under coordinate transformations between inertial frames"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c^{2}t^{2}-x^{2}-y^{2}-z^{2}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle u\\cdot v=c^{2}t_{1}t_{2}-x_{1}x_{2}-y_{1}y_{2}-z_{1}z_{2}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle u\\cdot v=u^{\\textsf {T}}\\,[\\eta ]\\,v,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\eta =\\left({\\begin{array}{r}1&amp;0&amp;0&amp;0\\\\0&amp;-1&amp;0&amp;0\\\\0&amp;0&amp;-1&amp;0\\\\0&amp;0&amp;0&amp;-1\\end{array}}\\right)\\!,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle u\\cdot v=\\eta (u,v),}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Standard (orthonormal) basis",
+      "anchor": {
+        "section": "Standard basis",
+        "snippet": "A standard or orthonormal basis for Minkowski space is a set of four mutually orthogonal vectors"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.iIsOrtho",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Orthogonal",
+        "match_kind": "generalization"
+      },
+      "note": "Orthogonal families/bases with respect to a bilinear form are formalized, but the Minkowski standard basis with fixed normalization is not.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Standard basis",
+          "snippet": "A standard or orthonormal basis for Minkowski space is a set of four mutually orthogonal vectors"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\eta (e_{0},e_{0})=-\\eta (e_{1},e_{1})=-\\eta (e_{2},e_{2})=-\\eta (e_{3},e_{3})=1}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\eta (e_{\\mu },e_{\\nu })=0}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Timelike and spatial components",
+      "anchor": {
+        "section": "Standard basis",
+        "snippet": "The component v 0 is called the timelike component of v while the other three components are called the spatial components"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The timelike/spatial component terminology is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Standard bases related by Lorentz transformation",
+      "anchor": {
+        "section": "Standard basis",
+        "snippet": "Any two such bases are related in some sense by a Lorentz transformation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Lorentz group, so this transitivity statement is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Standard basis",
+          "snippet": "Any two such bases are related in some sense by a Lorentz transformation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Lambda _{\\rho }^{\\mu }\\eta _{\\mu \\nu }\\Lambda _{\\sigma }^{\\nu }=\\eta _{\\rho \\sigma }.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\eta (\\Lambda u,\\Lambda v)=\\eta (u,v).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-degenerate form gives map to dual",
+      "anchor": {
+        "section": "Raising and lowering of indices",
+        "snippet": "a non-degenerate bilinear form provides a map between a vector space and its dual"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.toDual",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Properties",
+        "match_kind": "generalization"
+      },
+      "note": "`BilinForm.toDual` gives the linear equivalence V ≃ₗ Module.Dual K V from a non-degenerate form on a finite-dimensional space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Covariant vectors",
+      "anchor": {
+        "section": "Raising and lowering of indices",
+        "snippet": "vectors with lower indices are referred to as covariant vectors"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.Dual",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Covectors are `Module.Dual`, though the index/covariant terminology is not used.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Contravariant vectors",
+      "anchor": {
+        "section": "Raising and lowering of indices",
+        "snippet": "The ones with upper indices are contravariant vectors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Contravariant vectors are simply module elements; no specific declaration or index terminology exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Raising of an index",
+      "anchor": {
+        "section": "Raising and lowering of indices",
+        "snippet": "can be used to define raising of an index"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.toDual",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Properties",
+        "match_kind": "invocation"
+      },
+      "note": "Raising an index is the inverse `(B.toDual hB).symm : Dual → V`, but the tensor-index formalism is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lowered vector via partial evaluation",
+      "anchor": {
+        "section": "Coordinate free raising and lowering",
+        "snippet": "the lowered version of a vector can be thought of as the partial evaluation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.toDual",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Properties",
+        "match_kind": "invocation"
+      },
+      "note": "The lowered vector is the partial evaluation `B x : Module.Dual`, packaged as `B.toDual`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Coordinate free raising and lowering",
+          "snippet": "the lowered version of a vector can be thought of as the partial evaluation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\eta (\\cdot ,-):M\\rightarrow M^{*}\\ ~,\\quad v\\mapsto \\eta (v,\\cdot )~.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-degeneracy equals injectivity of partial evaluation",
+      "anchor": {
+        "section": "Coordinate free raising and lowering",
+        "snippet": "Non-degeneracy is then equivalent to injectivity of the partial evaluation map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.nondegenerate_iff_ker_eq_bot",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Properties",
+        "match_kind": "exact"
+      },
+      "note": "Non-degeneracy is proven equivalent to the kernel of the partial-evaluation map being trivial (i.e. injectivity).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Coordinate free raising and lowering",
+          "snippet": "Non-degeneracy is then equivalent to injectivity of the partial evaluation map"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\eta ^{-1}:M^{*}\\rightarrow M\\ ,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\eta ^{-1}:M^{*}\\times M^{*}\\rightarrow \\mathbb {R} \\ ~,\\quad \\eta ^{-1}\\!(\\alpha ,\\beta )\\ =\\ \\eta {\\bigl (}\\ \\eta ^{-1}\\!(\\alpha ),\\ \\eta ^{-1}\\!(\\beta )\\ {\\bigr )}\\ }"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Exterior derivative as covector field",
+      "anchor": {
+        "section": "Formalism of the Minkowski metric",
+        "snippet": "The exterior derivative d f of a function f is a covector field"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "mfderiv",
+        "module": "Mathlib.Geometry.Manifold.MFDeriv.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "The differential `mfderiv` assigns a cotangent covector to each point, but Mathlib has no general differential-forms / exterior-derivative framework.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Formalism of the Minkowski metric",
+          "snippet": "The exterior derivative d f of a function f is a covector field"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {d} f(X)=X\\ f,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {d} x^{\\mu }\\left({\\frac {\\partial }{\\partial x^{\\nu }}}\\right)={\\frac {\\partial x^{\\mu }}{\\partial x^{\\nu }}}=\\delta _{\\nu }^{\\mu }~.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Vector field",
+      "anchor": {
+        "section": "Formalism of the Minkowski metric",
+        "snippet": "A vector field is an assignment of a tangent vector to each point p"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TangentSpace",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.Tangent",
+        "match_kind": "generalization"
+      },
+      "note": "Vector fields are sections `Π x, TangentSpace I x` of the tangent bundle (with `ContMDiffSection` for smoothness).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Formalism of the Minkowski metric",
+          "snippet": "A vector field is an assignment of a tangent vector to each point p"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {d} f(X)=X\\ f,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {d} x^{\\mu }\\left({\\frac {\\partial }{\\partial x^{\\nu }}}\\right)={\\frac {\\partial x^{\\mu }}{\\partial x^{\\nu }}}=\\delta _{\\nu }^{\\mu }~.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Chronological precedence",
+      "anchor": {
+        "section": "Chronological and causality relations",
+        "snippet": "x chronologically precedes y if y − x is future-directed timelike"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The chronological order relation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Causal precedence",
+      "anchor": {
+        "section": "Chronological and causality relations",
+        "snippet": "x causally precedes y if y − x is future-directed null or future-directed timelike"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The causal order relation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Simultaneous hyperplane",
+      "anchor": {
+        "section": "Chronological and causality relations",
+        "snippet": "the simultaneous hyperplane for x is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The simultaneity hyperplane is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lorentzian manifold as generalization",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "A Lorentzian manifold is a generalization of Minkowski space in two ways"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lorentzian manifolds are not formalized; Mathlib only has positive-definite Riemannian metrics.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complexified Minkowski space",
+      "anchor": {
+        "section": "Complexified Minkowski space",
+        "snippet": "Complexified Minkowski space is defined as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Complexified Minkowski space is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inner product on complexified Minkowski space",
+      "anchor": {
+        "section": "Complexified Minkowski space",
+        "snippet": "The inner product -like structure on M c is defined as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The bilinear extension to complexified Minkowski space is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Relativistic pure spin",
+      "anchor": {
+        "section": "Complexified Minkowski space",
+        "snippet": "A relativistic pure spin of an electron or any half spin particle is described by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This physics example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "n-dimensional Minkowski space",
+      "anchor": {
+        "section": "Generalized Minkowski space",
+        "snippet": "n -dimensional Minkowski space is a vector space of real dimension n"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.Nondegenerate",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Properties",
+        "match_kind": "generalization"
+      },
+      "note": "Vector spaces with a non-degenerate symmetric bilinear form (any dimension) are formalized, but no Minkowski instance with signature (n−1,1) is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "String theory and M-theory",
+      "anchor": {
+        "section": "Generalized Minkowski space",
+        "snippet": "String theory and M-theory are two examples where n > 4"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "These physics examples are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "de Sitter space as submanifold",
+      "anchor": {
+        "section": "Generalized Minkowski space",
+        "snippet": "de Sitter space can be formulated as a submanifold of generalized Minkowski space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "de Sitter space is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Flat spacetime obeys the Pythagorean theorem",
+      "anchor": {
+        "section": "Curvature",
+        "snippet": "the three spatial components of Minkowski spacetime always obey the Pythagorean theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a physical statement about spatial flatness of spacetime; not formalized (general Euclidean Pythagoras exists but is unrelated to this claim).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Local approximation by Minkowski space",
+      "anchor": {
+        "section": "Curvature",
+        "snippet": "Minkowski space is still a good description in an infinitesimal region surrounding any point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Local flatness of a Lorentzian manifold is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Minkowski space is not a metric or Riemannian space",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "not a metric space and not a Riemannian manifold with a Riemannian metric"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This negative statement about Minkowski space is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Isometric embedding of hyperbolic spaces",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "Hyperbolic spaces can be isometrically embedded in spaces of one more dimension"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No hyperbolic space embedding into Minkowski space is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hyperboloid model of hyperbolic space",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "the hyperboloid model of hyperbolic space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The hyperboloid model is not formalized (grep for `hyperboloid` finds nothing).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Geometry",
+          "snippet": "the hyperboloid model of hyperbolic space"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {H} _{R}^{1(n)}=\\left\\{\\left(ct,x^{1},\\ldots ,x^{n}\\right)\\in \\mathbf {M} ^{n}:c^{2}t^{2}-\\left(x^{1}\\right)^{2}-\\cdots -\\left(x^{n}\\right)^{2}=R^{2},ct&gt;0\\right\\}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle h_{R}^{1(n)}=\\iota ^{*}\\eta ,}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Constant negative curvature of the hyperboloid",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "It is a space of constant negative curvature"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Constant negative curvature of the hyperboloid model is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Geometry",
+          "snippet": "It is a space of constant negative curvature"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {H} _{R}^{1(n)}=\\left\\{\\left(ct,x^{1},\\ldots ,x^{n}\\right)\\in \\mathbf {M} ^{n}:c^{2}t^{2}-\\left(x^{1}\\right)^{2}-\\cdots -\\left(x^{n}\\right)^{2}=R^{2},ct&gt;0\\right\\}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle h_{R}^{1(n)}=\\iota ^{*}\\eta ,}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Behavior of tensors under inclusion",
+      "anchor": {
+        "section": "Preliminaries",
+        "snippet": "For inclusion maps from a submanifold S into M and a covariant tensor"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pullback of covariant tensors under inclusions is not formalized (no general tensor-field pullback).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Preliminaries",
+          "snippet": "For inclusion maps from a submanifold S into M and a covariant tensor"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\iota ^{*}\\alpha \\left(X_{1},\\,X_{2},\\,\\ldots ,\\,X_{k}\\right)=\\alpha \\left(\\iota _{*}X_{1},\\,\\iota _{*}X_{2},\\,\\ldots ,\\,\\iota _{*}X_{k}\\right)=\\alpha \\left(X_{1},\\,X_{2},\\,\\ldots ,\\,X_{k}\\right),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\iota ^{*}\\alpha =\\alpha |_{S},}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Pullback of a covariant tensor",
+      "anchor": {
+        "section": "Preliminaries",
+        "snippet": "The pullback of a covariant k -tensor"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has pullback of vector fields (`VectorField.mpullback`) but no pullback of covariant k-tensors / differential forms.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Preliminaries",
+          "snippet": "The pullback of a covariant k -tensor"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F^{*}\\colon T_{F(p)}^{k}N\\rightarrow T_{p}^{k}M,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle T^{k}V=\\underbrace {V^{*}\\otimes V^{*}\\otimes \\cdots \\otimes V^{*}} _{k{\\text{ times}}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Pushforward of vectors",
+      "anchor": {
+        "section": "Preliminaries",
+        "snippet": "of a vector field under a map F : M → N between manifolds is defined by"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "mfderiv",
+        "module": "Mathlib.Geometry.Manifold.MFDeriv.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "The pointwise pushforward T_pM → T_{F(p)}N is `mfderiv I I' F p`, though pushforward of an entire vector field is not packaged.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Preliminaries",
+          "snippet": "of a vector field under a map F : M → N between manifolds is defined by"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F_{*}(X)f=X(f\\circ F),}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Parametrization of a submanifold",
+      "anchor": {
+        "section": "Hyperbolic stereographic projection",
+        "snippet": "A parametrization of a submanifold S of a manifold M is a map"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No named notion of a submanifold parametrization exists (only immersions/embeddings/charts as related infrastructure).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hyperbolic stereographic projection",
+      "anchor": {
+        "section": "Hyperbolic stereographic projection",
+        "snippet": "Stereographic projection σ"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "stereographic",
+        "module": "Mathlib.Geometry.Manifold.Instances.Sphere",
+        "match_kind": null
+      },
+      "note": "Only the Euclidean stereographic projection from a sphere is formalized, not the hyperbolic (hyperboloid-to-ball) version.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Hyperbolic stereographic projection",
+          "snippet": "Stereographic projection σ"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\sigma (\\tau ,\\mathbf {x} )=\\mathbf {u} &amp;={\\frac {R\\mathbf {x} }{R+\\tau }},\\\\\\sigma ^{-1}(\\mathbf {u} )=(\\tau ,\\mathbf {x} )&amp;=\\left(R{\\frac {R^{2}+|u|^{2}}{R^{2}-|u|^{2}}},{\\frac {2R^{2}\\mathbf {u} }{R^{2}-|u|^{2}}}\\right),\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Pulled-back metric is the Poincaré ball metric",
+      "anchor": {
+        "section": "Pulling back the metric",
+        "snippet": "the metric on the ball is identical to the Riemannian metric"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Poincaré ball model and this pulled-back-metric identity are not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

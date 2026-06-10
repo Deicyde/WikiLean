@@ -1,0 +1,329 @@
+{
+  "slug": "Rotation",
+  "wikipedia_title": "Rotation",
+  "display_title": "Rotation",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Rotation (mathematical)",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "a rotation is a rigid body movement which, unlike a translation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Orientation.rotation",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Oriented.Rotation",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib defines rotation by an oriented angle in a 2D real inner product space (and via `Circle` on ℂ), but no general n-dimensional Euclidean rotation as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Classification of rigid body movements",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "All rigid body movements are rotations, translations, or combinations of the two."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem in Mathlib classifying Euclidean isometries (rigid motions) as compositions of rotations and translations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rotations form a group",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "the rotations around a point/axis form a group"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.specialOrthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the special orthogonal group as a group and shows `Orientation.rotation_trans` / `rotation_trans` (Complex), but doesn't state the article's slogan as a stand-alone theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Principal rotations",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "Rotations around the x , y and z axes are called principal rotations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Rotations about coordinate axes are not named/defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Decomposition into principal rotations",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "any spatial rotation can be decomposed into a combination of principal rotations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Euler-angle decomposition of an SO(3) element is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Composition of 3D rotations about a fixed point",
+      "anchor": {
+        "section": "Fixed axis vs. fixed point",
+        "snippet": "The combination of any sequence of rotations of an object in three dimensions about a fixed point is always equivalent to a rotation about an axis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Euler's rotation theorem for SO(3) is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "2D rotations have no axis",
+      "anchor": {
+        "section": "Axis of 2-dimensional rotations",
+        "snippet": "2-dimensional rotations, unlike the 3-dimensional ones, possess no axis of rotation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib statement about absence of a fixed axis for 2D rotations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "No real eigenvector of a 2D rotation",
+      "anchor": {
+        "section": "Axis of 2-dimensional rotations",
+        "snippet": "no real vector in the plane is kept unchanged by A"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib doesn't state that a nontrivial 2D rotation has no real fixed direction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rotation angle from trace",
+      "anchor": {
+        "section": "Rotation angle and axis in 3 dimensions",
+        "snippet": "Knowing that the trace is an invariant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The trace–angle formula 1 + 2 cos θ for an SO(3) element is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Existence of rotation axis in 3D",
+      "anchor": {
+        "section": "Rotation angle and axis in 3 dimensions",
+        "snippet": "in 3D space has an axis of rotation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not prove that every element of SO(3) fixes a nontrivial axis.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Decomposition of improper orthogonal matrices",
+      "anchor": {
+        "section": "Rotation angle and axis in 3 dimensions",
+        "snippet": "any improper orthogonal 3x3 matrix may be decomposed as a proper rotation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib lacks the decomposition O(3) = SO(3) × {±I-reflection}.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence of invariant rotation plane",
+      "anchor": {
+        "section": "Rotation plane",
+        "snippet": "every tridimensional rotation has a plane, which is perpendicular to the rotation axis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize the invariant plane perpendicular to the axis of a 3D rotation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rotating vector",
+      "anchor": {
+        "section": "Rotation of vectors",
+        "snippet": "A vector is said to be rotating if it changes its orientation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of a time-varying rotating vector in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Perpendicular component characterizes rotation",
+      "anchor": {
+        "section": "Rotation of vectors",
+        "snippet": "a rotating vector always has a non-zero perpendicular component of its rate of change vector against the vector itself"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Moment of inertia (ratio)",
+      "anchor": {
+        "section": "Physics",
+        "snippet": "The ratio of torque τ to the angular acceleration α is given by the moment of inertia"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize physical quantities like moment of inertia.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler's rotation theorem",
+      "anchor": {
+        "section": "Circular motion",
+        "snippet": "any change in orientation can be described by rotation about an axis through a chosen reference point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Euler's rotation theorem is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Chasles' theorem",
+      "anchor": {
+        "section": "Circular motion",
+        "snippet": "any motion of rigid bodies can be treated as a composition of rotation and translation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chasles' theorem on rigid motions is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euler rotations",
+      "anchor": {
+        "section": "Euler rotations",
+        "snippet": "Euler rotations provide an alternative description of a rotation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Euler angle decomposition is absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rotational invariance",
+      "anchor": {
+        "section": "Rotational invariance",
+        "snippet": "A system which behaves the same regardless of how it is oriented in space is said to be rotationally invariant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general definition of rotational invariance for physical systems in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Noether's theorem (rotation)",
+      "anchor": {
+        "section": "Rotational invariance",
+        "snippet": "if the action (the integral over time of its Lagrangian) of a physical system is invariant under rotation, then angular momentum is conserved"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Noether's theorem (Lagrangian/angular momentum conservation) is not in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

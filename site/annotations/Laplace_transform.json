@@ -1,0 +1,1265 @@
+{
+  "slug": "Laplace_transform",
+  "wikipedia_title": "Laplace transform",
+  "display_title": "Laplace transform",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Laplace transform (integral definition)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The Laplace transform is defined (for suitable functions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.complexMGF",
+        "module": "Mathlib.Probability.Moments.ComplexMGF",
+        "match_kind": null
+      },
+      "note": "Mathlib has no Laplace transform of a function; the closest is complexMGF X μ z = ∫ cexp(z·X) dμ, the Laplace transform of a measure.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "(Lead)",
+          "snippet": "The Laplace transform is defined (for suitable functions"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathcal {L}}\\{f\\}(s)=\\int _{0}^{\\infty }f(t)e^{-st}\\,dt,}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Simple harmonic oscillator transformed",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the equation of the simple harmonic oscillator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Solving an ODE via the Laplace transform is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "(Lead)",
+          "snippet": "the equation of the simple harmonic oscillator"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x''(t)+kx(t)=0}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle s^{2}X(s)-sx(0)-x'(0)+kX(s)=0,}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Laplace transform of f(t)",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "The Laplace transform of a function f ( t ) , defined for all real numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.complexMGF",
+        "module": "Mathlib.Probability.Moments.ComplexMGF",
+        "match_kind": null
+      },
+      "note": "No Laplace transform of a function exists; complexMGF (∫ cexp(z·X) dμ) is the analogous measure-based exponential integral transform.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Laplace transform of a Borel measure",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "One can define the Laplace transform of a finite Borel measure"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.complexMGF",
+        "module": "Mathlib.Probability.Moments.ComplexMGF",
+        "match_kind": null
+      },
+      "note": "complexMGF id μ z = ∫ cexp(z·x) dμ is exactly the (bilateral) Laplace transform of a finite measure, up to the sign convention in the exponent.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Formal definition",
+          "snippet": "One can define the Laplace transform of a finite Borel measure"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathcal {L}}\\{\\mu \\}(s)=\\int _{[0,\\infty )}e^{-st}\\,d\\mu (t).}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Probability measure / Dirac delta case",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "An important special case is where"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.mgf",
+        "module": "Mathlib.Probability.Moments.Basic",
+        "match_kind": null
+      },
+      "note": "The Laplace transform of a probability measure is the moment-generating function mgf X μ t = μ[exp(t·X)], with Dirac measures available as MeasureTheory.Measure.dirac.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Formal definition",
+          "snippet": "An important special case is where"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathcal {L}}\\{f\\}(s)=\\int _{0^{-}}^{\\infty }f(t)e^{-st}\\,dt,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{\\varepsilon \\to 0^{+}}\\int _{-\\varepsilon }^{\\infty }.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Bilateral Laplace transform",
+      "anchor": {
+        "section": "Bilateral Laplace transform",
+        "snippet": "The bilateral Laplace transform F ( s ) is defined as follows"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.complexMGF",
+        "module": "Mathlib.Probability.Moments.ComplexMGF",
+        "match_kind": null
+      },
+      "note": "complexMGF integrates cexp(z·X) over the whole measure space, matching the two-sided Laplace transform of the distribution.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Uniqueness up to measure zero",
+      "anchor": {
+        "section": "Inverse Laplace transform",
+        "snippet": "Two integrable functions have the same Laplace transform only if they differ on a set of Lebesgue measure zero"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.ext_of_complexMGF_eq",
+        "module": "Mathlib.Probability.Moments.ComplexMGF",
+        "match_kind": null
+      },
+      "note": "Mathlib proves complex MGFs (the measure Laplace transform) separate distributions, an injectivity analog, but not the a.e.-equality statement for integrable functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inverse Laplace transform (Bromwich integral)",
+      "anchor": {
+        "section": "Inverse Laplace transform",
+        "snippet": "The inverse Laplace transform is given by the following complex integral"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "mellinInv",
+        "module": "Mathlib.Analysis.MellinTransform",
+        "match_kind": null
+      },
+      "note": "No Bromwich/inverse-Laplace integral exists; mellinInv is the analogous vertical-line complex contour inversion integral.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Laplace transform as expectation",
+      "anchor": {
+        "section": "Probability theory",
+        "snippet": "If X is a random variable with probability density function f"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.mgf",
+        "module": "Mathlib.Probability.Moments.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "mgf X μ t = μ[exp(t·X)] = E[e^{tX}] is exactly the Laplace transform written as an expectation (up to the s ↦ -t sign convention).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Probability theory",
+          "snippet": "If X is a random variable with probability density function f"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathcal {L}}\\{f\\}(s)=\\operatorname {E} \\left[e^{-sX}\\right],}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Recovering the CDF",
+      "anchor": {
+        "section": "Probability theory",
+        "snippet": "Of particular use is the ability to recover the cumulative distribution function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formula recovering the CDF from the Laplace transform is formalized, though ProbabilityTheory.cdf and MGF-determines-distribution results exist separately.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Probability theory",
+          "snippet": "Of particular use is the ability to recover the cumulative distribution function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F_{X}(x)={\\mathcal {L}}^{-1}\\left\\{{\\frac {1}{s}}\\operatorname {E} \\left[e^{-sX}\\right]\\right\\}(x)={\\mathcal {L}}^{-1}\\left\\{{\\frac {1}{s}}{\\mathcal {L}}\\{f\\}(s)\\right\\}(x).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic construction of the transform",
+      "anchor": {
+        "section": "Algebraic construction",
+        "snippet": "The Laplace transform can be alternatively defined in a purely algebraic manner"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The purely algebraic/operational construction of the Laplace transform is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convergence condition",
+      "anchor": {
+        "section": "Region of convergence",
+        "snippet": "If f is a locally integrable function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.integrableExpSet",
+        "module": "Mathlib.Probability.Moments.IntegrableExpMul",
+        "match_kind": null
+      },
+      "note": "integrableExpSet captures the set of exponents where the exponential integral converges, the analog of the Laplace convergence region.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Region of convergence",
+          "snippet": "If f is a locally integrable function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{R\\to \\infty }\\int _{0}^{R}f(t)e^{-st}\\,dt}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Absolute convergence",
+      "anchor": {
+        "section": "Region of convergence",
+        "snippet": "The Laplace transform converges absolutely if the integral"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.integrableExpSet",
+        "module": "Mathlib.Probability.Moments.IntegrableExpMul",
+        "match_kind": null
+      },
+      "note": "Absolute convergence of the exponential integral is captured by integrability membership in integrableExpSet, but not stated for a named Laplace transform.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Region of convergence",
+          "snippet": "The Laplace transform converges absolutely if the integral"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{0}^{\\infty }\\left|f(t)e^{-st}\\right|\\,dt}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Abscissa of absolute convergence",
+      "anchor": {
+        "section": "Region of convergence",
+        "snippet": "The set of values for which F ( s ) converges absolutely is either of the form"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.convex_integrableExpSet",
+        "module": "Mathlib.Probability.Moments.IntegrableExpMul",
+        "match_kind": null
+      },
+      "note": "convex_integrableExpSet shows the convergence set is an interval (half-line), the analog of the abscissa of convergence determining a half-plane.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Analyticity in region of absolute convergence",
+      "anchor": {
+        "section": "Region of convergence",
+        "snippet": "The Laplace transform is analytic in the region of absolute convergence"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.analyticOn_complexMGF",
+        "module": "Mathlib.Probability.Moments.ComplexMGF",
+        "match_kind": null
+      },
+      "note": "analyticOn_complexMGF proves the complex MGF (measure Laplace transform) is analytic on the vertical strip of convergence, the exact analyticity-in-ROC statement for measures.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Convergence extends to larger half-plane",
+      "anchor": {
+        "section": "Region of convergence",
+        "snippet": "then it automatically converges for all s with"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.convex_integrableExpSet",
+        "module": "Mathlib.Probability.Moments.IntegrableExpMul",
+        "match_kind": null
+      },
+      "note": "Convexity of integrableExpSet encodes that convergence at one exponent extends across the interval, analogous to the half-plane extension.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Integration-by-parts representation",
+      "anchor": {
+        "section": "Region of convergence",
+        "snippet": "the Laplace transform of f can be expressed by integrating by parts"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The integration-by-parts representation of the Laplace transform is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Region of convergence",
+          "snippet": "the Laplace transform of f can be expressed by integrating by parts"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F(s)=(s-s_{0})\\int _{0}^{\\infty }e^{-(s-s_{0})t}\\beta (t)\\,dt,\\quad \\beta (u)=\\int _{0}^{u}e^{-s_{0}t}f(t)\\,dt.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "One-to-one correspondence with holomorphic functions",
+      "anchor": {
+        "section": "Region of convergence",
+        "snippet": "the Laplace transform gives a one-to-one correspondence between the holomorphic functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The bijection between Laplace transforms and holomorphic functions with growth bounds is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Paley–Wiener theorems",
+      "anchor": {
+        "section": "Region of convergence",
+        "snippet": "There are several Paley–Wiener theorems concerning the relationship between the decay properties"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Paley–Wiener theorem is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "LTI stability criterion",
+      "anchor": {
+        "section": "Region of convergence",
+        "snippet": "is stable if every bounded input produces a bounded output"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "BIBO stability criteria for LTI systems are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Differentiation/integration to multiplication/division",
+      "anchor": {
+        "section": "Properties and theorems",
+        "snippet": "it converts differentiation and integration in the time domain into multiplication and division by s"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.fourier_deriv",
+        "module": "Mathlib.Analysis.Fourier.FourierTransformDeriv",
+        "match_kind": null
+      },
+      "note": "The Fourier analog fourier_deriv (transform of the derivative equals multiplication by 2πix) exists, but the Laplace differentiation/integration rules are not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Table of unilateral transform properties",
+      "anchor": {
+        "section": "Properties and theorems",
+        "snippet": "the following table is a list of properties of unilateral Laplace transform"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The table of unilateral Laplace transform properties is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Final value theorem",
+      "anchor": {
+        "section": "Properties and theorems",
+        "snippet": "The final value theorem is useful because it gives the long-term behaviour"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The final value theorem for the Laplace transform is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuous analogue of a power series",
+      "anchor": {
+        "section": "Relation to power series",
+        "snippet": "The Laplace transform can be viewed as a continuous analogue of a power series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The heuristic view of the Laplace transform as a continuous power series is not a formalized statement.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Relation to power series",
+          "snippet": "The Laplace transform can be viewed as a continuous analogue of a power series"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{n=0}^{\\infty }a(n)x^{n}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{0}^{\\infty }f(t)x^{t}\\,dt}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Analyticity analogous to power series",
+      "anchor": {
+        "section": "Relation to power series",
+        "snippet": "then the power series converges to an analytic function in"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FormalMultilinearSeries.analyticOnNhd",
+        "module": "Mathlib.Analysis.Analytic.ChangeOrigin",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes that a power series is analytic within its ball of convergence, the underlying analyticity fact alluded to here.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Moments via differentiation",
+      "anchor": {
+        "section": "Relation to moments",
+        "snippet": "If the first n moments of f converge absolutely"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.iteratedDeriv_mgf",
+        "module": "Mathlib.Probability.Moments.MGFAnalytic",
+        "match_kind": null
+      },
+      "note": "iteratedDeriv_mgf gives the n-th derivative of the MGF as μ[X^n·exp(t·X)], yielding moments at t=0, exactly this property for the measure transform.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Relation to moments",
+          "snippet": "If the first n moments of f converge absolutely"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mu _{n}=\\int _{0}^{\\infty }t^{n}f(t)\\,dt}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (-1)^{n}({\\mathcal {L}}f)^{(n)}(0)=\\mu _{n}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mu _{n}=(-1)^{n}{\\frac {d^{n}}{ds^{n}}}\\operatorname {E} \\left[e^{-sX}\\right](0).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Differentiation property",
+      "anchor": {
+        "section": "Transform of a function's derivative",
+        "snippet": "to find the transform of a function's derivative"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.fourier_deriv",
+        "module": "Mathlib.Analysis.Fourier.FourierTransformDeriv",
+        "match_kind": null
+      },
+      "note": "The Fourier analog (transform of f' equals 2πix times the transform) is formalized; the Laplace version with the f(0) boundary term is not.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Transform of a function's derivative",
+          "snippet": "to find the transform of a function's derivative"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}{\\mathcal {L}}\\left\\{f(t)\\right\\}&amp;=\\int _{0^{-}}^{\\infty }e^{-st}f(t)\\,dt\\\\[6pt]&amp;=\\left[{\\frac {f(t)e^{-st}}{-s}}\\right]_{0^{-}}^{\\infty }-\\int _{0^{-}}^{\\infty }{\\frac {e^{-st}}{-s}}f'(t)\\,dt\\quad {\\text{(by parts)}}\\\\[6pt]&amp;=\\left[-{\\frac {f(0^{-})}{-s}}\\right]+{\\frac {1}{s}}{\\mathcal {L}}\\left\\{f'(t)\\right\\},\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathcal {L}}\\{f'(t)\\}=s\\cdot {\\mathcal {L}}\\{f(t)\\}-f(0^{-}),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathcal {L}}\\{f'(t)\\}=s\\int _{-\\infty }^{\\infty }e^{-st}f(t)\\,dt=s\\cdot {\\mathcal {L}}\\{f(t)\\}.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Transform of n-th derivative",
+      "anchor": {
+        "section": "Transform of a function's derivative",
+        "snippet": "can then be established with an inductive argument"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.fourier_iteratedDeriv",
+        "module": "Mathlib.Analysis.Fourier.FourierTransformDeriv",
+        "match_kind": null
+      },
+      "note": "fourier_iteratedDeriv gives the Fourier transform of the n-th derivative as (2πix)^n times the transform; the Laplace version with boundary terms is absent.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Transform of a function's derivative",
+          "snippet": "can then be established with an inductive argument"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathcal {L}}\\left\\{f^{(n)}(t)\\right\\}=s^{n}\\cdot {\\mathcal {L}}\\{f(t)\\}-s^{n-1}f(0^{-})-\\cdots -f^{(n-1)}(0^{-}),}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Parseval-type integral property",
+      "anchor": {
+        "section": "Evaluating integrals over the positive real axis",
+        "snippet": "A useful property of the Laplace transform is the following"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Laplace multiplication/Parseval-type integral identity is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Evaluating integrals over the positive real axis",
+          "snippet": "A useful property of the Laplace transform is the following"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{0}^{\\infty }f(x)g(x)\\,dx=\\int _{0}^{\\infty }({\\mathcal {L}}f)(s)\\cdot ({\\mathcal {L}}^{-1}g)(s)\\,ds}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{0}^{\\infty }({\\mathcal {L}}f)(x)g(x)\\,dx=\\int _{0}^{\\infty }f(s)({\\mathcal {L}}g)(s)\\,ds.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Computing a difficult integral",
+      "anchor": {
+        "section": "Evaluating integrals over the positive real axis",
+        "snippet": "This method can be used to compute integrals that would otherwise be difficult to compute"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Using the Laplace transform to evaluate hard integrals is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Evaluating integrals over the positive real axis",
+          "snippet": "This method can be used to compute integrals that would otherwise be difficult to compute"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{0}^{\\infty }{\\frac {\\sin x}{x}}dx=\\int _{0}^{\\infty }{\\mathcal {L}}(1)(x)\\sin xdx=\\int _{0}^{\\infty }1\\cdot {\\mathcal {L}}(\\sin )(x)dx=\\int _{0}^{\\infty }{\\frac {dx}{x^{2}+1}}={\\frac {\\pi }{2}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Laplace–Stieltjes transform",
+      "anchor": {
+        "section": "Laplace–Stieltjes transform",
+        "snippet": "The (unilateral) Laplace–Stieltjes transform of a function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.complexMGF",
+        "module": "Mathlib.Probability.Moments.ComplexMGF",
+        "match_kind": null
+      },
+      "note": "complexMGF integrates cexp(z·X) against a measure, which coincides with the Laplace–Stieltjes transform with respect to the associated Stieltjes measure.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Laplace–Stieltjes transform",
+          "snippet": "The (unilateral) Laplace–Stieltjes transform of a function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\{{\\mathcal {L}}^{*}g\\}(s)=\\int _{0}^{\\infty }e^{-st}\\,d\\,g(t)~.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Coincidence with Laplace transform",
+      "anchor": {
+        "section": "Laplace–Stieltjes transform",
+        "snippet": "then the Laplace–Stieltjes transform of g and the Laplace transform of f coincide"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The coincidence of the Laplace–Stieltjes and Laplace transforms when g is an antiderivative is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Laplace transform yields Fourier transform",
+      "anchor": {
+        "section": "Fourier transform",
+        "snippet": "be a complex-valued Lebesgue integrable function supported on"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The relation expressing the Fourier transform via the Laplace transform is not formalized, since the Laplace transform itself is absent.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Fourier transform",
+          "snippet": "be a complex-valued Lebesgue integrable function supported on"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F(\\sigma +i\\tau )=\\int _{0}^{\\infty }f(t)e^{-\\sigma t}e^{-i\\tau t}\\,dt,}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Fourier as bilateral transform at s=iω",
+      "anchor": {
+        "section": "Fourier transform",
+        "snippet": "the Fourier transform is equivalent to evaluating the bilateral Laplace transform with imaginary argument"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.complexMGF_id_mul_I",
+        "module": "Mathlib.Probability.Moments.ComplexMGF",
+        "match_kind": null
+      },
+      "note": "complexMGF_id_mul_I proves complexMGF id μ (t·I) = charFun μ t, i.e. the bilateral transform on the imaginary axis equals the characteristic (Fourier) transform.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Fourier transform",
+          "snippet": "the Fourier transform is equivalent to evaluating the bilateral Laplace transform with imaginary argument"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}{\\hat {f}}(\\omega )&amp;={\\mathcal {F}}\\{f(t)\\}\\\\[4pt]&amp;={\\mathcal {L}}\\{f(t)\\}|_{s=i\\omega }=F(s)|_{s=i\\omega }\\\\[4pt]&amp;=\\int _{-\\infty }^{\\infty }e^{-i\\omega t}f(t)\\,dt~.\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Validity requires ROC contains imaginary axis",
+      "anchor": {
+        "section": "Fourier transform",
+        "snippet": "is valid as stated if and only if the region of convergence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The condition that the Laplace–Fourier identity holds iff the ROC contains the imaginary axis is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cosine transform and its ROC",
+      "anchor": {
+        "section": "Fourier transform",
+        "snippet": "For example, the function f ( t ) = cos"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This worked example computing the cosine transform and its ROC is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mellin–Laplace change of variables",
+      "anchor": {
+        "section": "Mellin transform",
+        "snippet": "The Mellin transform and its inverse are related to the two-sided Laplace transform by a change of variables"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "mellin",
+        "module": "Mathlib.Analysis.MellinTransform",
+        "match_kind": null
+      },
+      "note": "The Mellin transform is defined, but its explicit change-of-variables relation to the (absent) two-sided Laplace transform is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Z-transform via sampling",
+      "anchor": {
+        "section": "Z-transform",
+        "snippet": "The unilateral or one-sided Z-transform is the Laplace transform of an ideally sampled signal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Z-transform is not defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Z-transform",
+          "snippet": "The unilateral or one-sided Z-transform is the Laplace transform of an ideally sampled signal"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle z{\\stackrel {\\mathrm {def} }{{}={}}}e^{sT},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Z-transform–Laplace relationship",
+      "anchor": {
+        "section": "Z-transform",
+        "snippet": "we find the relationship between the unilateral Z-transform and the Laplace transform of the sampled signal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Z-transform–Laplace relationship is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Z-transform",
+          "snippet": "we find the relationship between the unilateral Z-transform and the Laplace transform of the sampled signal"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle X_{q}(s)=X(z){\\Big |}_{z=e^{sT}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Borel transform",
+      "anchor": {
+        "section": "Borel transform",
+        "snippet": "is a special case of the Laplace transform for f an entire function of exponential type"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Borel transform is not defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Borel transform",
+          "snippet": "is a special case of the Laplace transform for f an entire function of exponential type"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F(s)=\\int _{0}^{\\infty }f(z)e^{-sz}\\,dz}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle |f(z)|\\leq Ae^{B|z|}}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Nachbin's theorem",
+      "anchor": {
+        "section": "Borel transform",
+        "snippet": "Nachbin's theorem gives necessary and sufficient conditions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Nachbin's theorem is listed in docs/1000.yaml without a Mathlib formalization.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Borel transform",
+          "snippet": "Nachbin's theorem gives necessary and sufficient conditions"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F(s)=\\int _{0}^{\\infty }f(z)e^{-sz}\\,dz}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle |f(z)|\\leq Ae^{B|z|}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Unity of integral transforms",
+      "anchor": {
+        "section": "Fundamental relationships",
+        "snippet": "the theory of the Laplace-, Fourier-, Mellin-, and Z-transforms are at bottom the same subject"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an informal unifying remark, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linearity (sum)",
+      "anchor": {
+        "section": "Table of selected Laplace transforms",
+        "snippet": "The Laplace transform of a sum is the sum of Laplace transforms of each term"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_add",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "match_kind": null
+      },
+      "note": "Additivity of the Laplace transform reduces to integral_add, but is not stated for a named Laplace transform.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Table of selected Laplace transforms",
+          "snippet": "The Laplace transform of a sum is the sum of Laplace transforms of each term"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathcal {L}}\\{f(t)+g(t)\\}={\\mathcal {L}}\\{f(t)\\}+{\\mathcal {L}}\\{g(t)\\}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Linearity (scalar multiple)",
+      "anchor": {
+        "section": "Table of selected Laplace transforms",
+        "snippet": "The Laplace transform of a multiple of a function is that multiple times the Laplace transformation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_const_mul",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "match_kind": null
+      },
+      "note": "Scalar homogeneity reduces to integral_const_mul/integral_smul, but is not stated for a named Laplace transform.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Table of selected Laplace transforms",
+          "snippet": "The Laplace transform of a multiple of a function is that multiple times the Laplace transformation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathcal {L}}\\{af(t)\\}=a{\\mathcal {L}}\\{f(t)\\}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Evaluating improper integrals",
+      "anchor": {
+        "section": "Evaluating improper integrals",
+        "snippet": "Even when the interchange cannot be justified the calculation can be suggestive"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This heuristic example of evaluating improper integrals is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Evaluating improper integrals",
+          "snippet": "Even when the interchange cannot be justified the calculation can be suggestive"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{0}^{\\infty }{\\frac {f(t)}{t}}\\,dt=\\int _{0}^{\\infty }F(p)\\,dp,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\int _{0}^{\\infty }{\\frac {\\cos(at)-\\cos(bt)}{t}}\\,dt&amp;=\\int _{0}^{\\infty }\\left({\\frac {p}{p^{2}+a^{2}}}-{\\frac {p}{p^{2}+b^{2}}}\\right)\\,dp\\\\[6pt]&amp;=\\left[{\\frac {1}{2}}\\ln {\\frac {p^{2}+a^{2}}{p^{2}+b^{2}}}\\right]_{0}^{\\infty }={\\frac {1}{2}}\\ln {\\frac {b^{2}}{a^{2}}}=\\ln \\left|{\\frac {b}{a}}\\right|.\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Complex impedance of a capacitor",
+      "anchor": {
+        "section": "Complex impedance of a capacitor",
+        "snippet": "the current flow in a capacitor is proportional to the capacitance and rate of change in the electrical potential"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Circuit impedance analysis via the Laplace transform is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Complex impedance of a capacitor",
+          "snippet": "the current flow in a capacitor is proportional to the capacitance and rate of change in the electrical potential"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle i=C{dv \\over dt},}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Impulse response via partial fractions",
+      "anchor": {
+        "section": "Impulse response",
+        "snippet": "Consider a linear time-invariant system with transfer function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Computing an LTI impulse response via partial-fraction inversion is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Impulse response",
+          "snippet": "Consider a linear time-invariant system with transfer function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle H(s)={\\frac {1}{(s+\\alpha )(s+\\beta )}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Phase delay",
+      "anchor": {
+        "section": "Phase delay",
+        "snippet": "we find the inverse by first rearranging terms in the fraction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This phase-delay inverse-transform example is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Phase delay",
+          "snippet": "we find the inverse by first rearranging terms in the fraction"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle X(s)={\\frac {s\\sin(\\varphi )+\\omega \\cos(\\varphi )}{s^{2}+\\omega ^{2}}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}X(s)&amp;={\\frac {s\\sin(\\varphi )}{s^{2}+\\omega ^{2}}}+{\\frac {\\omega \\cos(\\varphi )}{s^{2}+\\omega ^{2}}}\\\\&amp;=\\sin(\\varphi )\\left({\\frac {s}{s^{2}+\\omega ^{2}}}\\right)+\\cos(\\varphi )\\left({\\frac {\\omega }{s^{2}+\\omega ^{2}}}\\right).\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Partition function via Laplace transform",
+      "anchor": {
+        "section": "Statistical mechanics",
+        "snippet": "the Laplace transform of the density of states"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The statistical-mechanics partition function as a Laplace transform of the density of states is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Statistical mechanics",
+          "snippet": "the Laplace transform of the density of states"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle Z(\\beta )=\\int _{0}^{\\infty }e^{-\\beta E}g(E)\\,dE}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle g(E)={\\frac {1}{2\\pi i}}\\int _{\\beta _{0}-i\\infty }^{\\beta _{0}+i\\infty }e^{\\beta E}Z(\\beta )\\,d\\beta }"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Astronomical spatial structure from spectrum",
+      "anchor": {
+        "section": "Spatial (not time) structure from astronomical spectrum",
+        "snippet": "calculations based on carrying out an inverse Laplace transformation on the spectrum of the object"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This astronomical inverse-Laplace application is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Birth and death processes (random walk)",
+      "anchor": {
+        "section": "Birth and death processes",
+        "snippet": "Consider a random walk , with steps"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This generating-function/random-walk Laplace-transform example is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Birth and death processes",
+          "snippet": "Consider a random walk , with steps"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle P_{n}(t)=\\int _{0}^{t}\\lambda e^{-\\lambda (t-s)}(pP_{n-1}(s)+qP_{n+1}(s))\\,ds\\quad (+e^{-\\lambda t}\\quad {\\text{when}}\\ n=0).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\pi _{n}(s)={\\mathcal {L}}(P_{n})(s),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\pi _{n}(s)={\\frac {\\lambda }{\\lambda +s}}(p\\pi _{n-1}(s)+q\\pi _{n+1}(s))\\quad (+{\\frac {1}{\\lambda +s}}\\quad {\\text{when}}\\ n=0)}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Tauberian theorems",
+      "anchor": {
+        "section": "Tauberian theory",
+        "snippet": "Tauberian theorems are theorems relating the asymptotics of the Laplace transform"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Tauberian theorems for the Laplace transform are not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Tauberian theory",
+          "snippet": "Tauberian theorems are theorems relating the asymptotics of the Laplace transform"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathcal {L}}\\mu (s)=\\int _{0}^{\\infty }e^{-st}d\\mu (t).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle M(t)=\\mu ([0,t)).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{s\\to 0^{+}}{\\mathcal {L}}\\mu (s)=\\lim _{t\\to \\infty }M(t).}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Ikehara Tauberian theorem",
+      "anchor": {
+        "section": "Tauberian theory",
+        "snippet": "be a non-negative, monotonic nondecreasing function of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Wiener–Ikehara theorem is formalized in the external PrimeNumberTheoremAnd project, not in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Tauberian theory",
+          "snippet": "be a non-negative, monotonic nondecreasing function of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(s)=\\int _{0}^{\\infty }A(x)e^{-xs}\\,dx}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(s)-{\\frac {c}{s-1}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Application to prime number theorem",
+      "anchor": {
+        "section": "Tauberian theory",
+        "snippet": "provides an extremely short way to prove the prime number theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The prime number theorem is not in Mathlib (only Chebyshev asymptotic bounds); the full PNT lives in the external PrimeNumberTheoremAnd project.",
+      "provenance": "ai"
+    }
+  ]
+}

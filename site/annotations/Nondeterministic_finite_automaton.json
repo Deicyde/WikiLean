@@ -1,0 +1,617 @@
+{
+  "slug": "Nondeterministic_finite_automaton",
+  "wikipedia_title": "Nondeterministic finite automaton",
+  "display_title": "Nondeterministic finite automaton",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Deterministic finite automaton (DFA)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is called a deterministic finite automaton"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DFA",
+        "module": "Mathlib.Computability.DFA",
+        "match_kind": "generalization"
+      },
+      "note": "The `DFA` structure (step, start, accept over types α, σ) is the standard DFA, generalized to allow infinite state types.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Nondeterministic finite automaton (NFA)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "does not need to obey these restrictions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NFA",
+        "module": "Mathlib.Computability.NFA",
+        "match_kind": "generalization"
+      },
+      "note": "The `NFA` structure has a set-valued transition function and a set of start states, matching the NFA definition (generalized to infinite states).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every DFA is an NFA",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "every DFA is also an NFA"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DFA.toNFA_correct",
+        "module": "Mathlib.Computability.NFA",
+        "match_kind": "exact"
+      },
+      "note": "`DFA.toNFA` converts a DFA to an NFA and `DFA.toNFA_correct` proves the language is preserved.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Subset construction yields equivalent DFA",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "each NFA can be translated to an equivalent DFA"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NFA.toDFA_correct",
+        "module": "Mathlib.Computability.NFA",
+        "match_kind": "exact"
+      },
+      "note": "`NFA.toDFA` is the subset construction and `NFA.toDFA_correct` proves `M.toDFA.accepts = M.accepts`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "NFAs recognize only regular languages",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "NFAs only recognize regular languages"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "NFA.toDFA_correct",
+        "module": "Mathlib.Computability.NFA",
+        "match_kind": "invocation"
+      },
+      "note": "Follows from `NFA.toDFA_correct` together with the `Language.IsRegular` definition, but no single lemma states `M.accepts.IsRegular` directly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "NFA as a 5-tuple",
+      "anchor": {
+        "section": "Automaton",
+        "snippet": "An NFA is represented formally by a 5- tuple"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NFA",
+        "module": "Mathlib.Computability.NFA",
+        "match_kind": "generalization"
+      },
+      "note": "The `NFA` structure encodes the (Q, Σ, δ, q₀, F) tuple with Q, Σ as type parameters and a set of start states.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Recognized language of an NFA",
+      "anchor": {
+        "section": "Recognized language",
+        "snippet": "its recognized language is denoted by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NFA.accepts",
+        "module": "Mathlib.Computability.NFA",
+        "match_kind": "exact"
+      },
+      "note": "`NFA.accepts` is the language of words for which some accept state is reachable, matching L(M).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Acceptance via state sequence",
+      "anchor": {
+        "section": "Recognized language",
+        "snippet": "there are several equivalent formal definitions of a string"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NFA.accepts_iff_exists_path",
+        "module": "Mathlib.Computability.NFA",
+        "match_kind": "exact"
+      },
+      "note": "`NFA.accepts_iff_exists_path` characterizes acceptance via the existence of a `NFA.Path` (a sequence of states r₀…rₙ).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Acceptance via recursive reachable-set definition",
+      "anchor": {
+        "section": "Recognized language",
+        "snippet": "is defined recursively by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NFA.evalFrom",
+        "module": "Mathlib.Computability.NFA",
+        "match_kind": "exact"
+      },
+      "note": "`NFA.evalFrom` (a `List.foldl` of `stepSet`) is exactly the recursively-extended reachable-set transition function δ*.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multiple initial states reducible to single initial state",
+      "anchor": {
+        "section": "Initial state",
+        "snippet": "There is an easy construction that translates an NFA with multiple initial states to an NFA with a single initial state"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `NFA` already permits a set of start states, but the reduction construction to a single start state is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "NFA M accepting strings ending in 1",
+      "anchor": {
+        "section": "Example",
+        "snippet": "determines if the input ends with a 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific concrete example automaton is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "DFA is a special kind of NFA",
+      "anchor": {
+        "section": "Equivalence to DFA",
+        "snippet": "can be seen as a special kind of NFA"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DFA.toNFA",
+        "module": "Mathlib.Computability.NFA",
+        "match_kind": "exact"
+      },
+      "note": "`DFA.toNFA` embeds a DFA into an NFA with singleton transition sets, with `DFA.toNFA_correct` confirming equivalence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Every NFA has an equivalent DFA (powerset construction)",
+      "anchor": {
+        "section": "Equivalence to DFA",
+        "snippet": "for each NFA, there is a DFA such that it recognizes the same formal language"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NFA.toDFA_correct",
+        "module": "Mathlib.Computability.NFA",
+        "match_kind": "exact"
+      },
+      "note": "`NFA.toDFA` is the powerset/subset construction and `NFA.toDFA_correct` proves it recognizes the same language.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponential state blowup of powerset construction",
+      "anchor": {
+        "section": "Equivalence to DFA",
+        "snippet": "the resulting DFA may have up to 2 n states"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`NFA.toDFA` uses `Set σ` as states but no cardinality bound (2^n) on the resulting DFA is stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "NFA with ε-moves (NFA-ε)",
+      "anchor": {
+        "section": "NFA with ε-moves",
+        "snippet": "is a further generalization to NFA"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "εNFA",
+        "module": "Mathlib.Computability.EpsilonNFA",
+        "match_kind": "exact"
+      },
+      "note": "`εNFA` has a transition function on `Option α`, where `none` encodes ε-moves.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "NFA-ε as a 5-tuple",
+      "anchor": {
+        "section": "Formal definition (2)",
+        "snippet": "An NFA-ε is represented formally by a 5- tuple"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "εNFA",
+        "module": "Mathlib.Computability.EpsilonNFA",
+        "match_kind": "generalization"
+      },
+      "note": "The `εNFA` structure encodes the (Q, Σ, δ, q₀, F) tuple with ε-transitions via `Option`, generalized to a set of start states.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "ε-closure of a state",
+      "anchor": {
+        "section": "ε-closure of a state or set of states",
+        "snippet": "denote the set of states that are reachable from"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "εNFA.εClosure",
+        "module": "Mathlib.Computability.EpsilonNFA",
+        "match_kind": "generalization"
+      },
+      "note": "`εNFA.εClosure` of a singleton `{s}` gives the ε-closure of a single state; Mathlib defines it for any set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "ε-closure of a set of states",
+      "anchor": {
+        "section": "ε-closure of a state or set of states",
+        "snippet": "of states of an NFA is defined as the set of states reachable from any state in"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "εNFA.εClosure",
+        "module": "Mathlib.Computability.EpsilonNFA",
+        "match_kind": "exact"
+      },
+      "note": "`εNFA.εClosure S` is the inductively-defined set reachable from any state of `S` by ε-transitions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Extended transition function of NFA-ε",
+      "anchor": {
+        "section": "Extended transition function",
+        "snippet": "of an NFA-ε can be extended to strings"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "εNFA.evalFrom",
+        "module": "Mathlib.Computability.EpsilonNFA",
+        "match_kind": "exact"
+      },
+      "note": "`εNFA.evalFrom`/`εNFA.eval` extend the ε-step function to strings via folding `stepSet` after taking ε-closures.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Acceptance by an NFA-ε",
+      "anchor": {
+        "section": "Extended transition function",
+        "snippet": "The automaton is said to accept a string"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "εNFA.accepts",
+        "module": "Mathlib.Computability.EpsilonNFA",
+        "match_kind": "exact"
+      },
+      "note": "`εNFA.accepts` is the language of words whose evaluation reaches an accept state.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "NFA-ε for even number of 0s or 1s",
+      "anchor": {
+        "section": "Example (2)",
+        "snippet": "that determines if the input contains an even number of 0s or an even number of 1s"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific concrete ε-NFA example is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Every NFA-ε has an equivalent NFA",
+      "anchor": {
+        "section": "Equivalence to NFA",
+        "snippet": "for every NFA-ε, there exists an equivalent NFA"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "εNFA.toNFA_correct",
+        "module": "Mathlib.Computability.EpsilonNFA",
+        "match_kind": "exact"
+      },
+      "note": "`εNFA.toNFA` builds an equivalent ε-free NFA and `εNFA.toNFA_correct` proves the languages agree.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equality of extended transition functions by induction",
+      "anchor": {
+        "section": "Equivalence to NFA",
+        "snippet": "by induction on the length of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "εNFA.toNFA_evalFrom_match",
+        "module": "Mathlib.Computability.EpsilonNFA",
+        "match_kind": "exact"
+      },
+      "note": "`εNFA.toNFA_evalFrom_match` establishes the evalFrom (extended transition) functions of the ε-NFA and its constructed NFA coincide.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "NFA-ε is equivalent to DFA",
+      "anchor": {
+        "section": "Equivalence to NFA",
+        "snippet": "NFA-ε is also equivalent to DFA"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "εNFA.toNFA",
+        "module": "Mathlib.Computability.EpsilonNFA",
+        "match_kind": "invocation"
+      },
+      "note": "Obtainable by composing `εNFA.toNFA` with `NFA.toDFA`, but no single decl states ε-NFA/DFA equivalence directly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "NFA-recognized languages closed under operations",
+      "anchor": {
+        "section": "Closure properties",
+        "snippet": "The set of languages recognized by NFAs is closed under the following operations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Language.IsRegular",
+        "module": "Mathlib.Computability.DFA",
+        "match_kind": "invocation"
+      },
+      "note": "Closure under union, intersection, complement, and reversal is formalized for `Language.IsRegular`, but concatenation and Kleene star closure are not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closure under union",
+      "anchor": {
+        "section": "Closure properties",
+        "snippet": "an NFA A u can be constructed that accepts the language"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Language.IsRegular.add",
+        "module": "Mathlib.Computability.DFA",
+        "match_kind": "exact"
+      },
+      "note": "`Language.IsRegular.add` proves regular (NFA-recognizable) languages are closed under union.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closure under intersection",
+      "anchor": {
+        "section": "Closure properties",
+        "snippet": "an NFA A i can be constructed that accepts"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Language.IsRegular.inf",
+        "module": "Mathlib.Computability.DFA",
+        "match_kind": "exact"
+      },
+      "note": "`Language.IsRegular.inf` proves regular languages are closed under intersection (via the product DFA).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closure under concatenation",
+      "anchor": {
+        "section": "Closure properties",
+        "snippet": "Concatenation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma stating regular/NFA-recognizable languages are closed under concatenation (`*`) exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closure under negation",
+      "anchor": {
+        "section": "Closure properties",
+        "snippet": "an NFA A n can be constructed that accepts"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Language.IsRegular.compl",
+        "module": "Mathlib.Computability.DFA",
+        "match_kind": "exact"
+      },
+      "note": "`Language.IsRegular.compl` proves regular languages are closed under complement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closure under Kleene closure",
+      "anchor": {
+        "section": "Closure properties",
+        "snippet": "Kleene closure"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma stating regular/NFA-recognizable languages are closed under Kleene star exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Language accepted by an NFA is regular",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "This language is a regular language"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "NFA.toDFA_correct",
+        "module": "Mathlib.Computability.NFA",
+        "match_kind": "invocation"
+      },
+      "note": "Follows from `NFA.toDFA_correct` plus `Language.IsRegular`, but no direct `NFA.accepts.IsRegular` lemma is stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every NFA has an equivalent DFA",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "For every NFA a deterministic finite automaton (DFA) can be found that accepts the same language"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NFA.toDFA_correct",
+        "module": "Mathlib.Computability.NFA",
+        "match_kind": "exact"
+      },
+      "note": "`NFA.toDFA_correct` proves the constructed DFA accepts the same language as the NFA.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Time and space bound for NFA simulation",
+      "anchor": {
+        "section": "Implementation",
+        "snippet": "A string of length n can be processed in time"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no computational-complexity (time/space) analysis of NFA simulation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Emptiness problem solvable in linear time",
+      "anchor": {
+        "section": "Complexity",
+        "snippet": "One can solve in linear time the emptiness problem for NFA"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The NFA emptiness problem and its complexity are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Universality of NFA is PSPACE-complete",
+      "anchor": {
+        "section": "Complexity",
+        "snippet": "It is PSPACE -complete to test, given an NFA, whether it is universal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no PSPACE-completeness or complexity-class framework for NFA universality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inclusion problem is PSPACE-complete",
+      "anchor": {
+        "section": "Complexity",
+        "snippet": "the same is true of the inclusion problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The NFA language-inclusion problem and its PSPACE-completeness are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Counting accepted words is #P-hard",
+      "anchor": {
+        "section": "Complexity",
+        "snippet": "the counting problem of determining how many words of length n are accepted by A is intractable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Counting accepted words and #P-hardness are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "NFAs and DFAs are equivalent",
+      "anchor": {
+        "section": "Application of NFA",
+        "snippet": "NFAs and DFAs are equivalent in that if a language is recognized by an NFA"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NFA.toDFA_correct",
+        "module": "Mathlib.Computability.NFA",
+        "match_kind": "exact"
+      },
+      "note": "`NFA.toDFA_correct` and `DFA.toNFA_correct` together establish that NFAs and DFAs recognize exactly the same languages.",
+      "provenance": "ai"
+    }
+  ]
+}

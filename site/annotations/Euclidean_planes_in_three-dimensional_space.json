@@ -1,0 +1,651 @@
+{
+  "slug": "Euclidean_planes_in_three-dimensional_space",
+  "wikipedia_title": "Euclidean planes in three-dimensional space",
+  "display_title": "Euclidean planes in three-dimensional space",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Plane",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a plane is a flat two- dimensional surface that extends indefinitely"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Coplanar",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has `Coplanar` (a predicate on point sets via 2-dimensional vectorSpan) and general `AffineSubspace`, but no bundled `Plane` type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Plane segment / planar region",
+      "anchor": {
+        "section": "Derived concepts",
+        "snippet": "A plane segment or planar region"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `planeSegment`/`planarRegion` notion was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bivector",
+      "anchor": {
+        "section": "Derived concepts",
+        "snippet": "A bivector is an oriented plane segment"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Searching for `bivector`/`Bivector` returns no files in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Face",
+      "anchor": {
+        "section": "Derived concepts",
+        "snippet": "A face is a plane segment bounding a solid object"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of a `face` of a solid (only convex-polytope faces in unrelated combinatorial contexts).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Slab",
+      "anchor": {
+        "section": "Derived concepts",
+        "snippet": "A slab is a region bounded by two parallel planes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `slab`/`Slab` definition was located in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Parallelepiped",
+      "anchor": {
+        "section": "Derived concepts",
+        "snippet": "A parallelepiped is a region bounded by three pairs of parallel planes"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "parallelepiped",
+        "module": "Mathlib.MeasureTheory.Measure.Haar.OfBasis",
+        "match_kind": "exact"
+      },
+      "note": "`parallelepiped v` is defined as the closed parallelepiped spanned by a finite family of vectors.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cartesian plane",
+      "anchor": {
+        "section": "Background",
+        "snippet": "equipped with a chosen Cartesian coordinate system is called a Cartesian plane"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "generalization"
+      },
+      "note": "`EuclideanSpace ℝ (Fin 2)` plays the role of the Cartesian plane, but there is no dedicated `CartesianPlane` definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Polar plane",
+      "anchor": {
+        "section": "Background",
+        "snippet": "a non-Cartesian Euclidean plane equipped with a polar coordinate system would be called a polar plane"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "polarCoord",
+        "module": "Mathlib.Analysis.SpecialFunctions.PolarCoord",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `polarCoord` as a chart on ℝ², but does not bundle a `PolarPlane` structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Plane is a ruled surface",
+      "anchor": {
+        "section": "Background",
+        "snippet": "A plane is a ruled surface"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of `ruled surface`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euclidean plane",
+      "anchor": {
+        "section": "Euclidean plane",
+        "snippet": "a Euclidean plane is a Euclidean space of dimension two"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "generalization"
+      },
+      "note": "`EuclideanSpace ℝ (Fin 2)` realizes the Euclidean plane, but there's no named `EuclideanPlane` abbreviation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Standard Euclidean plane",
+      "anchor": {
+        "section": "Euclidean plane",
+        "snippet": "the ordered pairs of real numbers (the real coordinate plane ), equipped with the dot product , is often called the Euclidean plane or standard Euclidean plane"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "special_case"
+      },
+      "note": "`EuclideanSpace ℝ (Fin 2)` is `PiLp 2 (Fin 2 → ℝ)` with the dot product, realizing the standard Euclidean plane.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Determination of a plane",
+      "anchor": {
+        "section": "Determination by contained points and lines",
+        "snippet": "a plane is uniquely determined by any of the following"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem characterizing the unique affine 2-plane through three non-collinear points (etc.) was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Two planes parallel or intersect in a line",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Two distinct planes are either parallel or they intersect in a line"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`AffineSubspace.Parallel` exists but no theorem stating two distinct 2-dimensional subspaces in 3-space are parallel or meet in a line.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Line-plane configurations",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "A line is either parallel to a plane, intersects it at a single point, or is contained in the plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem classifying line-plane intersection cases in 3-space was located.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lines perpendicular to same plane are parallel",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Two distinct lines perpendicular to the same plane must be parallel to each other"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No such perpendicularity-parallel theorem for lines/planes was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Planes perpendicular to same line are parallel",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Two distinct planes perpendicular to the same line must be parallel to each other"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem about two planes perpendicular to a common line being parallel was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Point–normal form of a plane",
+      "anchor": {
+        "section": "Point–normal form and general form of the equation of a plane",
+        "snippet": "which is the point–normal form of the equation of a plane"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "signedDist",
+        "module": "Mathlib.Geometry.Euclidean.SignedDist",
+        "match_kind": "generalization"
+      },
+      "note": "`signedDist v p q = ⟪normalize v, q -ᵥ p⟫` captures the point-normal expression, but Mathlib has no dedicated `pointNormalForm` definition.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Point–normal form and general form of the equation of a plane",
+          "snippet": "which is the point–normal form of the equation of a plane"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\boldsymbol {n}}\\cdot ({\\boldsymbol {r}}-{\\boldsymbol {r}}_{0})=0.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a(x-x_{0})+b(y-y_{0})+c(z-z_{0})=0,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle ax+by+cz+d=0,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d=-(ax_{0}+by_{0}+cz_{0}),}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Converse: linear equation defines a plane",
+      "anchor": {
+        "section": "Point–normal form and general form of the equation of a plane",
+        "snippet": "Conversely, it is easily shown that if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No converse statement identifying solution sets of linear equations with hyperplanes in this form was found.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Point–normal form and general form of the equation of a plane",
+          "snippet": "Conversely, it is easily shown that if"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle ax+by+cz+d=0,}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "General form of the plane equation",
+      "anchor": {
+        "section": "Point–normal form and general form of the equation of a plane",
+        "snippet": "This familiar equation for a plane is called the general form of the equation of the plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `ax+by+cz+d=0` general-form-of-a-plane definition was found in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Point–normal form and general form of the equation of a plane",
+          "snippet": "This familiar equation for a plane is called the general form of the equation of the plane"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle ax+by+cz+d=0,}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Regression best-fit plane",
+      "anchor": {
+        "section": "Point–normal form and general form of the equation of a plane",
+        "snippet": "Thus for example a regression equation of the form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Linear regression / best-fit plane is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Parametric description of a plane",
+      "anchor": {
+        "section": "Describing a plane with a point and two vectors lying on it",
+        "snippet": "a plane may be described parametrically as the set of all points of the form"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "affineSpan",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The parametric form is the image of an affine map / `affineSpan` of three points, but no dedicated parametric-plane definition exists.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Describing a plane with a point and two vectors lying on it",
+          "snippet": "a plane may be described parametrically as the set of all points of the form"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\boldsymbol {r}}={\\boldsymbol {r}}_{0}+s{\\boldsymbol {v}}+t{\\boldsymbol {w}},}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Three non-collinear points",
+      "anchor": {
+        "section": "Describing a plane through three points",
+        "snippet": "be non-collinear points"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Collinear",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has `Collinear` (and its negation expresses non-collinearity), but no dedicated `nonCollinear` predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Plane through three points (determinant)",
+      "anchor": {
+        "section": "Method 1",
+        "snippet": "The plane passing through"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No determinant-equation characterization of a plane through three points was found.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Method 1",
+          "snippet": "The plane passing through"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{vmatrix}x-x_{1}&amp;y-y_{1}&amp;z-z_{1}\\\\x_{2}-x_{1}&amp;y_{2}-y_{1}&amp;z_{2}-z_{1}\\\\x_{3}-x_{1}&amp;y_{3}-y_{1}&amp;z_{3}-z_{1}\\end{vmatrix}}={\\begin{vmatrix}x-x_{1}&amp;y-y_{1}&amp;z-z_{1}\\\\x-x_{2}&amp;y-y_{2}&amp;z-z_{2}\\\\x-x_{3}&amp;y-y_{3}&amp;z-z_{3}\\end{vmatrix}}=0.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Plane through three points (Cramer's rule)",
+      "anchor": {
+        "section": "Method 2",
+        "snippet": "This system can be solved using Cramer's rule"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cramer's rule exists in Mathlib (`Matrix.cramer`) but its application to the plane-through-three-points system is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Method 2",
+          "snippet": "This system can be solved using Cramer's rule"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle D={\\begin{vmatrix}x_{1}&amp;y_{1}&amp;z_{1}\\\\x_{2}&amp;y_{2}&amp;z_{2}\\\\x_{3}&amp;y_{3}&amp;z_{3}\\end{vmatrix}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Plane through three points (normal via cross product)",
+      "anchor": {
+        "section": "Method 3",
+        "snippet": "A suitable normal vector is given by the cross product"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "crossProduct",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": "generalization"
+      },
+      "note": "`crossProduct` is defined in ℝ³ and `crossProduct_ne_zero_iff_linearIndependent` is available, but the explicit construction of the plane-through-three-points normal is not stated.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Method 3",
+          "snippet": "A suitable normal vector is given by the cross product"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\boldsymbol {n}}=({\\boldsymbol {p}}_{2}-{\\boldsymbol {p}}_{1})\\times ({\\boldsymbol {p}}_{3}-{\\boldsymbol {p}}_{1}),}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Distance from a point to a plane",
+      "anchor": {
+        "section": "Distance from a point to a plane",
+        "snippet": "the distance from a point to a plane is the distance between a given point and its orthogonal projection on the plane"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.orthogonalProjection",
+        "module": "Mathlib.Geometry.Euclidean.Projection",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines orthogonal projection onto an affine subspace and `signedDist`, from which point-to-plane distance follows, but no dedicated `distToPlane` lemma is given.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Distance formula via shifted plane",
+      "anchor": {
+        "section": "Distance from a point to a plane",
+        "snippet": "The distance between the origin and the point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No closed-form `|ax+by+cz+d|/√(a²+b²+c²)` distance formula was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Line–plane intersection cases",
+      "anchor": {
+        "section": "Line–plane intersection",
+        "snippet": "the intersection of a line and a plane in three-dimensional space can be the empty set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem enumerating the three line-plane intersection cases was located.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Intersection of two planes",
+      "anchor": {
+        "section": "Line of intersection between two planes",
+        "snippet": "the intersection of two planes in three-dimensional space is a line or the empty set for parallel planes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement classifying the intersection of two affine 2-planes in 3-space was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sphere–plane intersection is a circle",
+      "anchor": {
+        "section": "Sphere–plane intersection",
+        "snippet": "When the intersection of a sphere and a plane is not empty or a single point, it is a circle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Although `EuclideanGeometry.Sphere` exists, the theorem that a sphere-plane intersection (when more than a point) is a circle is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unique circle through three points on a sphere",
+      "anchor": {
+        "section": "Sphere–plane intersection",
+        "snippet": "on a sphere there is exactly one circle that can be drawn through three given points"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem asserting uniqueness of a circle through three given points on a sphere was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Points of a circle equidistant from its poles",
+      "anchor": {
+        "section": "Sphere–plane intersection",
+        "snippet": "the points on a circle are all a common angular distance from one of its poles"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Spherical poles and angular distance to a small circle are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Attitude / Miller indices",
+      "anchor": {
+        "section": "Miller indices",
+        "snippet": "The attitude of a lattice plane is the orientation of the line normal to the plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Miller indices and crystallographic lattice planes have no formalization in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Trend and plunge",
+      "anchor": {
+        "section": "Strike and dip",
+        "snippet": "The trend is the compass direction of the line"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Geological `trend`/`plunge` notions are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Strike and dip",
+      "anchor": {
+        "section": "Strike and dip",
+        "snippet": "A strike line is the intersection of a horizontal plane with the observed planar feature"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Geological `strike`/`dip` notions are not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

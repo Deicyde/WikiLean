@@ -1,0 +1,537 @@
+{
+  "slug": "Polytope",
+  "wikipedia_title": "Polytope",
+  "display_title": "Polytope",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Polytope",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a polytope is a geometric object with flat sides"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "convexHull",
+        "module": "Mathlib.Analysis.Convex.Hull",
+        "match_kind": null
+      },
+      "note": "Mathlib has no general `Polytope` object; only the convex-hull operator underlying convex polytopes exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Polygon and polyhedron as polytopes",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a two-dimensional polygon is a 2-polytope and a three-dimensional polyhedron is a 3-polytope"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dimension-indexed `n`-polytope notion exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Polytope via simplicial decomposition",
+      "anchor": {
+        "section": "Definitions and terminology",
+        "snippet": "a polytope is the union of finitely many simplices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `Affine.Simplex` but no definition of a polytope as a finite union of simplices.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Polytope as bounded polyhedron (alternate terminology)",
+      "anchor": {
+        "section": "Definitions and terminology",
+        "snippet": "polytope means a bounded polyhedron"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Polyhedron`/`Polytope` definitions exist to support this terminological convention.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convex polyhedron vs convex polytope",
+      "anchor": {
+        "section": "Definitions and terminology",
+        "snippet": "a convex polyhedron is the intersection of a finite number of halfspaces"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PointedCone.DualFG",
+        "module": "Mathlib.Geometry.Convex.Cone.DualFinite",
+        "match_kind": null
+      },
+      "note": "Intersection-of-finitely-many-halfspaces is formalized only for cones (`PointedCone.DualFG`), not general convex polyhedra.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Facets and ridges",
+      "anchor": {
+        "section": "Elements",
+        "snippet": "An n -dimensional polytope is bounded by a number of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no polytope face lattice, so codimension-1 facets and codimension-2 ridges are undefined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vertex, edge, face, cell",
+      "anchor": {
+        "section": "Elements",
+        "snippet": "A 0-dimensional face is called a vertex"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Set.extremePoints",
+        "module": "Mathlib.Analysis.Convex.Extreme",
+        "match_kind": null
+      },
+      "note": "Vertices correspond to `Set.extremePoints`/exposed points, but graded faces of higher dimension (edge, face, cell) are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convex polytope",
+      "anchor": {
+        "section": "Convex polytopes",
+        "snippet": "A convex polytope is sometimes defined as the intersection of a set of half-spaces"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "convexHull",
+        "module": "Mathlib.Analysis.Convex.Hull",
+        "match_kind": null
+      },
+      "note": "The convex-hull-of-finite-set description appears informally (e.g. in `Convex.exists_subset_interior_convexHull_finset_of_isCompact`), but no bundled convex-polytope type exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bounded polytope",
+      "anchor": {
+        "section": "Convex polytopes",
+        "snippet": "A polytope is bounded if there is a ball of finite radius that contains it"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "isBounded_iff_subset_closedBall",
+        "module": "Mathlib.Topology.MetricSpace.Bounded",
+        "match_kind": null
+      },
+      "note": "The general notion of a bounded set (contained in a ball) is formalized, but not as a polytope property.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pointed polytope",
+      "anchor": {
+        "section": "Convex polytopes",
+        "snippet": "A polytope is said to be pointed if it contains at least one vertex"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of a pointed polytope exists (the unrelated `PointedCone` concerns cones, not vertex-possession).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bounded nonempty polytope is pointed",
+      "anchor": {
+        "section": "Convex polytopes",
+        "snippet": "Every bounded nonempty polytope is pointed"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsCompact.extremePoints_nonempty",
+        "module": "Mathlib.Analysis.Convex.KreinMilman",
+        "match_kind": null
+      },
+      "note": "The Krein–Milman lemma shows a nonempty compact set has an extreme point, the closest analogue, but the polytope-specific statement is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Non-pointed polytope",
+      "anchor": {
+        "section": "Convex polytopes",
+        "snippet": "An example of a non-pointed polytope is the set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No polytope theory exists in which to state this example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Finite polytope",
+      "anchor": {
+        "section": "Convex polytopes",
+        "snippet": "A polytope is finite if it is defined in terms of a finite number of objects"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Polytope` definition exists, so finiteness of a polytope is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Integral polytope",
+      "anchor": {
+        "section": "Convex polytopes",
+        "snippet": "It is an integral polytope if all of its vertices have integer coordinates"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lattice/integral-polytope notion exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Reflexive polytope",
+      "anchor": {
+        "section": "Convex polytopes",
+        "snippet": "A certain class of convex polytopes are reflexive polytopes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Reflexive polytopes are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reflexive lattice-point criterion",
+      "anchor": {
+        "section": "Convex polytopes",
+        "snippet": "It follows from this definition that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No reflexive-polytope theory, so this lattice-point criterion is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reflexive iff dual is integral",
+      "anchor": {
+        "section": "Convex polytopes",
+        "snippet": "is reflexive if and only if its dual polytope"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither reflexive polytopes nor dual polytopes are formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Regular polytope flag-transitivity and self-dual regularity",
+      "anchor": {
+        "section": "Regular polytopes",
+        "snippet": "acts transitively on its flags"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Regular polytopes and their flag-transitive symmetry groups are not formalized as polytopes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Three main classes of regular polytope",
+      "anchor": {
+        "section": "Regular polytopes",
+        "snippet": "There are three main classes of regular polytope which occur in any number of dimensions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Coxeter matrices (`CoxeterMatrix.Aₙ`, `Bₙ`) name the symmetry types but the simplex/hypercube/cross-polytope families and their classification are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "No other regular polytopes in higher dimensions",
+      "anchor": {
+        "section": "Regular polytopes",
+        "snippet": "But in higher dimensions there are no other regular polytopes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classification theorem for regular polytopes is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Nine regular polyhedra in three dimensions",
+      "anchor": {
+        "section": "Regular polytopes",
+        "snippet": "bringing the total to nine regular polyhedra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The enumeration of the nine regular polyhedra (Platonic plus Kepler–Poinsot) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sixteen regular 4-polytopes",
+      "anchor": {
+        "section": "Regular polytopes",
+        "snippet": "giving in all sixteen regular 4-polytopes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The enumeration of regular 4-polytopes is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Star polytope",
+      "anchor": {
+        "section": "Star polytopes",
+        "snippet": "this class of polytopes include the star polytopes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Star polytopes are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler characteristic of polytope boundary",
+      "anchor": {
+        "section": "Euler characteristic",
+        "snippet": "dimensions is contractible to a point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `Algebra.Homology.EulerCharacteristic` is homological and unconnected to a polytope's face-count V−E+F formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gram–Euler theorem",
+      "anchor": {
+        "section": "Internal angles",
+        "snippet": "The Gram–Euler theorem similarly generalizes the alternating sum of internal angles"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Gram–Euler theorem on alternating sums of internal angles is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Apeirotopes (infinite polytopes)",
+      "anchor": {
+        "section": "Infinite polytopes",
+        "snippet": "and are sometimes called apeirotopes because they have infinitely many cells"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Apeirotopes/infinite polytopes are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Abstract polytope",
+      "anchor": {
+        "section": "Abstract polytopes",
+        "snippet": "An abstract polytope is a partially ordered set of elements or members"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "GradeOrder",
+        "module": "Mathlib.Order.Grade",
+        "match_kind": null
+      },
+      "note": "Mathlib has graded/ranked orders (`GradeOrder`, noted as the `Fin n`-graded setting of polytopes) but not the diamond/connectivity axioms defining an abstract polytope.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Realization of an abstract polytope",
+      "anchor": {
+        "section": "Abstract polytopes",
+        "snippet": "A geometric polytope is said to be a realization in some real space of the associated abstract polytope"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Realizations of abstract polytopes are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complex polytope",
+      "anchor": {
+        "section": "Complex polytopes",
+        "snippet": "Structures analogous to polytopes exist in complex Hilbert spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Complex polytopes are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dual polytope",
+      "anchor": {
+        "section": "Duality",
+        "snippet": "Every n -polytope has a dual structure, obtained by interchanging its vertices for facets"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Polytope duality (interchanging vertices and facets) is not formalized; only order/cone duals exist.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Polytopes exist in dual pairs",
+      "anchor": {
+        "section": "Duality",
+        "snippet": "Thus, polytopes exist in dual pairs"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without polytope duality, the dual-pair statement is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Self-dual polytope",
+      "anchor": {
+        "section": "Self-dual polytopes",
+        "snippet": "the dual figure will be similar to the original and the polytope is self-dual"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Self-dual polytopes are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Common self-dual polytopes",
+      "anchor": {
+        "section": "Self-dual polytopes",
+        "snippet": "Some common self-dual polytopes include"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No examples of self-dual polytopes are formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

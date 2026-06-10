@@ -1,0 +1,1331 @@
+{
+  "slug": "Chern_class",
+  "wikipedia_title": "Chern class",
+  "display_title": "Chern class",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Chern classes as topological invariants",
+      "anchor": {
+        "section": "Basic idea and motivation",
+        "snippet": "They are topological invariants associated with vector bundles on a smooth manifold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Vector bundles are formalized (Mathlib.Topology.VectorBundle.Basic) but Chern classes as their topological invariants do not exist in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chern classes distinguish bundles",
+      "anchor": {
+        "section": "Basic idea and motivation",
+        "snippet": "if the Chern classes of a pair of vector bundles do not agree, then the vector bundles are different"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Chern class invariant exists in Mathlib, so this distinguishing property is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chern classes as curvature polynomials",
+      "anchor": {
+        "section": "Basic idea and motivation",
+        "snippet": "the Chern classes can be expressed as polynomials in the coefficients of the curvature form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither Chern classes nor curvature forms of connections on bundles are formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Chern classes via pullback of universal bundle",
+      "anchor": {
+        "section": "Construction",
+        "snippet": "the Chern classes of V can therefore be defined as the pullback of the Chern classes of the universal bundle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Classifying spaces, universal bundles, and Chern classes are not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Homotopy of classifying maps",
+      "anchor": {
+        "section": "Construction",
+        "snippet": "the maps must be homotopic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Homotopy exists in Mathlib but the statement about classifying maps to a universal bundle is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hairy ball theorem motivation",
+      "anchor": {
+        "section": "Construction",
+        "snippet": "the theorem saying one can't comb a hairy ball flat"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The hairy ball / Poincaré–Hopf theorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "First Chern class of a line bundle",
+      "anchor": {
+        "section": "The Chern class of line bundles",
+        "snippet": "the only nontrivial Chern class is the first Chern class, which is an element of the second cohomology group of X"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The first Chern class of a complex line bundle does not exist in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "First Chern class equals Euler class (line bundle)",
+      "anchor": {
+        "section": "The Chern class of line bundles",
+        "snippet": "As it is the top Chern class, it equals the Euler class of the bundle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither Chern classes nor the Euler class of a bundle are defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Classification of line bundles by first Chern class",
+      "anchor": {
+        "section": "The Chern class of line bundles",
+        "snippet": "The first Chern class turns out to be a complete invariant with which to classify complex line bundles"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CommRing.Pic",
+        "module": "Mathlib.RingTheory.PicardGroup",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes the algebraic Picard group classifying invertible modules/line bundles, but not the topological classification via the first Chern class in H².",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "The Chern class of line bundles",
+          "snippet": "The first Chern class turns out to be a complete invariant with which to classify complex line bundles"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c_{1}(L\\otimes L')=c_{1}(L)+c_{1}(L');}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Tensor product corresponds to addition",
+      "anchor": {
+        "section": "The Chern class of line bundles",
+        "snippet": "the tensor product of complex line bundles corresponds to the addition in the second cohomology group"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CommRing.Pic",
+        "module": "Mathlib.RingTheory.PicardGroup",
+        "match_kind": null
+      },
+      "note": "The Picard group's group law is tensor product (its CommGroup instance), but the isomorphism to additive H²(X;ℤ) via the first Chern class is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "The Chern class of line bundles",
+          "snippet": "the tensor product of complex line bundles corresponds to the addition in the second cohomology group"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c_{1}(L\\otimes L')=c_{1}(L)+c_{1}(L');}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Chern classes not complete in higher rank",
+      "anchor": {
+        "section": "The Chern class of line bundles",
+        "snippet": "For complex vector bundles of dimension greater than one, the Chern classes are not a complete invariant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chern classes are absent from Mathlib, so this incompleteness statement is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Chern form via characteristic polynomial",
+      "anchor": {
+        "section": "Via the Chern–Weil theory",
+        "snippet": "given as the coefficients of the characteristic polynomial of the curvature form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chern–Weil theory and Chern forms are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Curvature form",
+      "anchor": {
+        "section": "Via the Chern–Weil theory",
+        "snippet": "with ω the connection form and d the exterior derivative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The curvature form of a connection on a vector bundle is not defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Via the Chern–Weil theory",
+          "snippet": "with ω the connection form and d the exterior derivative"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Omega =d\\omega +{\\frac {1}{2}}[\\omega ,\\omega ]}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Chern classes independent of connection",
+      "anchor": {
+        "section": "Via the Chern–Weil theory",
+        "snippet": "It can be shown that the cohomology classes of the Chern forms do not depend on the choice of connection"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This Chern–Weil invariance result is not formalized since Chern forms are absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Top Chern class as Euler class",
+      "anchor": {
+        "section": "Via an Euler class",
+        "snippet": "one simply defines the top Chern class of the bundle to be its Euler class"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Euler class of a bundle is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lower Chern classes via base change",
+      "anchor": {
+        "section": "Via an Euler class",
+        "snippet": "The idea is to do base change to get a bundle of one-less rank"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This inductive construction of Chern classes via base change is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Via an Euler class",
+          "snippet": "The idea is to do base change to get a bundle of one-less rank"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle E'\\to B'}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\cdots \\to \\operatorname {H} ^{k}(B;\\mathbb {Z} ){\\overset {\\pi |_{B'}^{*}}{\\to }}\\operatorname {H} ^{k}(B';\\mathbb {Z} )\\to \\cdots ,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c_{k}(E)={\\begin{cases}{\\pi |_{B'}^{*}}^{-1}c_{k}(E')&amp;k&lt;n\\\\e(E_{\\mathbb {R} })&amp;k=n\\\\0&amp;k&gt;n\\end{cases}}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Complex hairy ball theorem",
+      "anchor": {
+        "section": "The complex tangent bundle of the Riemann sphere",
+        "snippet": "We prove the complex version of the hairy ball theorem : V has no section which is everywhere nonzero"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This nonvanishing-section result for the Riemann sphere's tangent bundle is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "First Chern class of trivial bundle is zero",
+      "anchor": {
+        "section": "The complex tangent bundle of the Riemann sphere",
+        "snippet": "the first Chern class of a trivial bundle is zero"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chern classes are absent from Mathlib, so this vanishing for trivial bundles is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "The complex tangent bundle of the Riemann sphere",
+          "snippet": "the first Chern class of a trivial bundle is zero"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c_{1}(\\mathbb {CP} ^{1}\\times \\mathbb {C} )=0.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Euler sequence on projective space",
+      "anchor": {
+        "section": "Complex projective space",
+        "snippet": "There is an exact sequence of sheaves/bundles"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Euler exact sequence of bundles on projective space is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Complex projective space",
+          "snippet": "There is an exact sequence of sheaves/bundles"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 0\\to {\\mathcal {O}}_{\\mathbb {CP} ^{n}}\\to {\\mathcal {O}}_{\\mathbb {CP} ^{n}}(1)^{\\oplus (n+1)}\\to T\\mathbb {CP} ^{n}\\to 0}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Total Chern class of projective space",
+      "anchor": {
+        "section": "Complex projective space",
+        "snippet": "where a is the canonical generator of the cohomology group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The total Chern class computation for projective space is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Complex projective space",
+          "snippet": "where a is the canonical generator of the cohomology group"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c(\\mathbb {C} \\mathbb {P} ^{n}){\\overset {\\mathrm {def} }{=}}c(T\\mathbb {CP} ^{n})=c({\\mathcal {O}}_{\\mathbb {C} \\mathbb {P} ^{n}}(1))^{n+1}=(1+a)^{n+1},}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Chern polynomial",
+      "anchor": {
+        "section": "Chern polynomial",
+        "snippet": "the Chern polynomial c t of E is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Chern polynomial is not defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Chern polynomial",
+          "snippet": "the Chern polynomial c t of E is given by"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c_{t}(E)=1+c_{1}(E)t+\\cdots +c_{n}(E)t^{n}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Chern polynomial determined by total Chern class",
+      "anchor": {
+        "section": "Chern polynomial",
+        "snippet": "is completely determined by the total Chern class of E"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chern polynomials and total Chern classes are absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chern polynomial additivity (Whitney sum)",
+      "anchor": {
+        "section": "Chern polynomial",
+        "snippet": "says that c t is additive in the sense"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Whitney sum formula for Chern polynomials is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Chern polynomial",
+          "snippet": "says that c t is additive in the sense"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c_{t}(E\\oplus E')=c_{t}(E)c_{t}(E').}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c_{t}(E)=(1+a_{1}(E)t)\\cdots (1+a_{n}(E)t)}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c_{k}(E)=\\sigma _{k}(a_{1}(E),\\ldots ,a_{n}(E))}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Chern roots",
+      "anchor": {
+        "section": "Chern polynomial",
+        "snippet": "called the Chern roots of E"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chern roots are not defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Chern polynomial",
+          "snippet": "called the Chern roots of E"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c_{t}(E\\oplus E')=c_{t}(E)c_{t}(E').}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c_{t}(E)=(1+a_{1}(E)t)\\cdots (1+a_{n}(E)t)}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c_{k}(E)=\\sigma _{k}(a_{1}(E),\\ldots ,a_{n}(E))}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Splitting principle factorization",
+      "anchor": {
+        "section": "Chern polynomial",
+        "snippet": "factorizes into linear factors after enlarging the cohomology ring"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The splitting principle for Chern classes is not formalized; only generic symmetric-polynomial machinery exists.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Chern polynomial",
+          "snippet": "factorizes into linear factors after enlarging the cohomology ring"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c_{t}(E\\oplus E')=c_{t}(E)c_{t}(E').}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c_{t}(E)=(1+a_{1}(E)t)\\cdots (1+a_{n}(E)t)}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c_{k}(E)=\\sigma _{k}(a_{1}(E),\\ldots ,a_{n}(E))}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Chern character",
+      "anchor": {
+        "section": "Chern polynomial",
+        "snippet": "is called the Chern character of E"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Chern character is not defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Chern polynomial",
+          "snippet": "is called the Chern character of E"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle t_{1}^{k}+\\cdots +t_{n}^{k}=s_{k}(\\sigma _{1}(t_{1},\\ldots ,t_{n}),\\ldots ,\\sigma _{k}(t_{1},\\ldots ,t_{n}))}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {ch} (E)=e^{a_{1}(E)}+\\cdots +e^{a_{n}(E)}=\\sum s_{k}(c_{1}(E),\\ldots ,c_{n}(E))/k!}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {ch} (E)=\\operatorname {rk} +c_{1}+{\\frac {1}{2}}(c_{1}^{2}-2c_{2})+{\\frac {1}{6}}(c_{1}^{3}-3c_{1}c_{2}+3c_{3})+\\cdots .}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Todd class",
+      "anchor": {
+        "section": "Chern polynomial",
+        "snippet": "The Todd class of E is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Todd class is not defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Chern polynomial",
+          "snippet": "The Todd class of E is given by"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {td} (E)=\\prod _{1}^{n}{a_{i} \\over 1-e^{-a_{i}}}=1+{1 \\over 2}c_{1}+{1 \\over 12}(c_{1}^{2}+c_{2})+{\\frac {1}{24}}c_{1}c_{2}\\cdots .}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Classifying space with tautological bundle",
+      "anchor": {
+        "section": "Chern polynomial",
+        "snippet": "This space is equipped with a tautologous vector bundle of rank"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines the algebraic Grassmannian (Module.Grassmannian) but not the classifying space with its tautological bundle.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Chern polynomial",
+          "snippet": "This space is equipped with a tautologous vector bundle of rank"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f_{E}:X\\to G_{n}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f_{E}^{*}:\\mathbb {Z} [\\sigma _{1},\\ldots ,\\sigma _{n}]\\to H^{*}(X,\\mathbb {Z} ).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c_{k}(E)=f_{E}^{*}(\\sigma _{k}).}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Borel's theorem on cohomology of Grassmannian",
+      "anchor": {
+        "section": "Chern polynomial",
+        "snippet": "Borel's theorem says the cohomology ring of G n is exactly the ring of symmetric polynomials"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The cohomology ring of the Grassmannian is not computed in Mathlib, though symmetric polynomial theory exists.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Chern polynomial",
+          "snippet": "Borel's theorem says the cohomology ring of G n is exactly the ring of symmetric polynomials"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f_{E}:X\\to G_{n}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f_{E}^{*}:\\mathbb {Z} [\\sigma _{1},\\ldots ,\\sigma _{n}]\\to H^{*}(X,\\mathbb {Z} ).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c_{k}(E)=f_{E}^{*}(\\sigma _{k}).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Characteristic classes are polynomials in Chern classes",
+      "anchor": {
+        "section": "Chern polynomial",
+        "snippet": "Any characteristic class is a polynomial in Chern classes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Characteristic classes and Chern classes are not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Chern polynomial",
+          "snippet": "Any characteristic class is a polynomial in Chern classes"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Nat} ([-,G_{n}],H^{*}(-,\\mathbb {Z} ))=H^{*}(G_{n},\\mathbb {Z} )=\\mathbb {Z} [\\sigma _{1},\\ldots ,\\sigma _{n}].}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Characteristic class as natural transformation",
+      "anchor": {
+        "section": "Chern polynomial",
+        "snippet": "a characteristic class is a natural transformation from"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Characteristic classes as natural transformations of functors are not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Chern polynomial",
+          "snippet": "a characteristic class is a natural transformation from"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Nat} ([-,G_{n}],H^{*}(-,\\mathbb {Z} ))=H^{*}(G_{n},\\mathbb {Z} )=\\mathbb {Z} [\\sigma _{1},\\ldots ,\\sigma _{n}].}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Yoneda: ring of characteristic classes",
+      "anchor": {
+        "section": "Chern polynomial",
+        "snippet": "Yoneda's lemma says this ring of characteristic classes is exactly the cohomology ring of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Yoneda's lemma exists in Mathlib but this application to the ring of characteristic classes is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Chern polynomial",
+          "snippet": "Yoneda's lemma says this ring of characteristic classes is exactly the cohomology ring of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Nat} ([-,G_{n}],H^{*}(-,\\mathbb {Z} ))=H^{*}(G_{n},\\mathbb {Z} )=\\mathbb {Z} [\\sigma _{1},\\ldots ,\\sigma _{n}].}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Chern classes of dual bundle",
+      "anchor": {
+        "section": "Computation formulae",
+        "snippet": "For the dual bundle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Chern class formula for dual bundles is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chern class formula for line bundle tensor",
+      "anchor": {
+        "section": "Computation formulae",
+        "snippet": "If L is a line bundle, then"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chern class formulae for tensoring with a line bundle are not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Computation formulae",
+          "snippet": "If L is a line bundle, then"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c_{t}(E\\otimes L)=\\sum _{i=0}^{r}c_{i}(E)c_{t}(L)^{r-i}t^{i}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c_{1}(E)+rc_{1}(L),\\dots ,\\sum _{j=0}^{i}{\\binom {r-i+j}{j}}c_{i-j}(E)c_{1}(L)^{j},\\dots ,\\sum _{j=0}^{r}c_{r-j}(E)c_{1}(L)^{j}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Chern classes via Chern roots",
+      "anchor": {
+        "section": "Computation formulae",
+        "snippet": "For the Chern roots"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Expressing Chern classes as symmetric functions of Chern roots is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Computation formulae",
+          "snippet": "For the Chern roots"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}c_{t}(\\operatorname {Sym} ^{p}E)&amp;=\\prod _{i_{1}\\leq \\cdots \\leq i_{p}}(1+(\\alpha _{i_{1}}+\\cdots +\\alpha _{i_{p}})t),\\\\c_{t}(\\wedge ^{p}E)&amp;=\\prod _{i_{1}&lt;\\cdots &lt;i_{p}}(1+(\\alpha _{i_{1}}+\\cdots +\\alpha _{i_{p}})t).\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Chern classes of line bundles on projective space",
+      "anchor": {
+        "section": "Applications of formulae",
+        "snippet": "using tensor powers, we can relate them to the chern classes of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chern class computations for line bundles on projective space are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "k-th Chern class",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The k -th Chern class of E , which is usually denoted c k ( E ), is an element of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The k-th Chern class is not defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Properties",
+          "snippet": "The k -th Chern class of E , which is usually denoted c k ( E ), is an element of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle H^{2k}(X;\\mathbb {Z} ),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c(E)=c_{0}(E)+c_{1}(E)+c_{2}(E)+\\cdots .}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Total Chern class",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "One can also define the total Chern class"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The total Chern class is not defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Properties",
+          "snippet": "One can also define the total Chern class"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle H^{2k}(X;\\mathbb {Z} ),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c(E)=c_{0}(E)+c_{1}(E)+c_{2}(E)+\\cdots .}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Classical Chern class axioms",
+      "anchor": {
+        "section": "Classical axiomatic definition",
+        "snippet": "The Chern classes satisfy the following four axioms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The axiomatic characterization of Chern classes is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Classical axiomatic definition",
+          "snippet": "The Chern classes satisfy the following four axioms"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c(E\\oplus F)=c(E)\\smile c(F);}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c_{k}(E\\oplus F)=\\sum _{i=0}^{k}c_{i}(E)\\smile c_{k-i}(F).}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Grothendieck's Chern class axioms",
+      "anchor": {
+        "section": "Grothendieck axiomatic approach",
+        "snippet": "replaced these with a slightly smaller set of axioms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grothendieck's axiomatic Chern class theory is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Leray–Hirsch theorem",
+      "anchor": {
+        "section": "Grothendieck axiomatic approach",
+        "snippet": "The Leray–Hirsch theorem then states that any class in"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Leray–Hirsch theorem on cohomology of fiber bundles is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Grothendieck axiomatic approach",
+          "snippet": "The Leray–Hirsch theorem then states that any class in"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 1,a,a^{2},\\ldots ,a^{n-1}\\in H^{*}(\\mathbb {P} (E))}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Grothendieck Chern classes via projectivization",
+      "anchor": {
+        "section": "Grothendieck axiomatic approach",
+        "snippet": "one may define the Chern classes of E in the sense of Grothendieck"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Grothendieck construction of Chern classes via projectivization is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Grothendieck axiomatic approach",
+          "snippet": "one may define the Chern classes of E in the sense of Grothendieck"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle -a^{n}=c_{1}(E)\\cdot a^{n-1}+\\cdots +c_{n-1}(E)\\cdot a+c_{n}(E).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Chern classes vanish above rank",
+      "anchor": {
+        "section": "The top Chern class",
+        "snippet": "for all k > n"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Vanishing of Chern classes above the rank is not formalized since Chern classes are absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Top Chern class equals Euler class",
+      "anchor": {
+        "section": "The top Chern class",
+        "snippet": "is always equal to the Euler class of the underlying real vector bundle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the top Chern class nor the Euler class is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Chern classes in the Chow ring",
+      "anchor": {
+        "section": "Axiomatic description",
+        "snippet": "there is a unique theory of Chern classes which assigns an algebraic vector bundle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chow rings and the algebraic theory of Chern classes are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Normal sequence of a smooth subvariety",
+      "anchor": {
+        "section": "Normal sequence",
+        "snippet": "there is the short exact sequence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The normal exact sequence of tangent/normal bundles for a smooth subvariety is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Normal sequence",
+          "snippet": "there is the short exact sequence"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 0\\to {\\mathcal {T}}_{X}\\to {\\mathcal {T}}_{\\mathbb {P} ^{n}}|_{X}\\to {\\mathcal {N}}_{X/\\mathbb {P} ^{n}}\\to 0}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Quintic threefold",
+      "anchor": {
+        "section": "Quintic threefold",
+        "snippet": "consider a nonsingular quintic threefold in"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chern class computations for the quintic threefold are not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Quintic threefold",
+          "snippet": "consider a nonsingular quintic threefold in"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 0\\to {\\mathcal {T}}_{X}\\to {\\mathcal {T}}_{\\mathbb {P} ^{4}}|_{X}\\to {\\mathcal {O}}_{X}(5)\\to 0}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Degree d hypersurfaces",
+      "anchor": {
+        "section": "Degree d hypersurfaces",
+        "snippet": "smooth hypersurface, we have the short exact sequence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chern class computations for degree-d hypersurfaces are not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Degree d hypersurfaces",
+          "snippet": "smooth hypersurface, we have the short exact sequence"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 0\\to {\\mathcal {T}}_{X}\\to {\\mathcal {T}}_{\\mathbb {P} ^{3}}|_{X}\\to {\\mathcal {O}}_{X}(d)\\to 0}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c({\\mathcal {T}}_{X})={\\frac {c({\\mathcal {T}}_{\\mathbb {P} ^{3}|_{X}})}{c({\\mathcal {O}}_{X}(d))}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}c({\\mathcal {T}}_{X})&amp;={\\frac {(1+[H])^{4}}{(1+d[H])}}\\\\&amp;=(1+4[H]+6[H]^{2})(1-d[H]+d^{2}[H]^{2})\\\\&amp;=1+(4-d)[H]+(6-4d+d^{2})[H]^{2}\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Even-degree hypersurfaces are spin",
+      "anchor": {
+        "section": "Degree d hypersurfaces",
+        "snippet": "is a spin manifold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Spin manifolds and this spin criterion for hypersurfaces are not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Degree d hypersurfaces",
+          "snippet": "is a spin manifold"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 0\\to {\\mathcal {T}}_{X}\\to {\\mathcal {T}}_{\\mathbb {P} ^{3}}|_{X}\\to {\\mathcal {O}}_{X}(d)\\to 0}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c({\\mathcal {T}}_{X})={\\frac {c({\\mathcal {T}}_{\\mathbb {P} ^{3}|_{X}})}{c({\\mathcal {O}}_{X}(d))}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}c({\\mathcal {T}}_{X})&amp;={\\frac {(1+[H])^{4}}{(1+d[H])}}\\\\&amp;=(1+4[H]+6[H]^{2})(1-d[H]+d^{2}[H]^{2})\\\\&amp;=1+(4-d)[H]+(6-4d+d^{2})[H]^{2}\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Chern character",
+      "anchor": {
+        "section": "The Chern character",
+        "snippet": "the Chern character ch is defined by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Chern character is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Chern character is a ring homomorphism",
+      "anchor": {
+        "section": "The Chern character",
+        "snippet": "so ch is a homomorphism of rings"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The ring-homomorphism property of the Chern character is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Chern number",
+      "anchor": {
+        "section": "Chern numbers",
+        "snippet": "can be paired with the orientation homology class"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chern numbers are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of Chern numbers equals partitions",
+      "anchor": {
+        "section": "Chern numbers",
+        "snippet": "the number of possible independent Chern numbers is the number of partitions of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Integer partitions exist in Mathlib (Nat.Partition) but this enumeration of independent Chern numbers is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Chern numbers of a manifold",
+      "anchor": {
+        "section": "Chern numbers",
+        "snippet": "are called the Chern numbers of the manifold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chern numbers of a manifold are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "First Chern class via formal group law",
+      "anchor": {
+        "section": "Generalized cohomology theories",
+        "snippet": "is not (ordinary) addition, but rather a formal group law"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FormalGroup",
+        "module": "Mathlib.RingTheory.FormalGroup.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib has formal group laws (FormalGroup) but not complex-oriented cohomology theories or the first Chern class governed by one.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "First Chern class on Chow groups",
+      "anchor": {
+        "section": "Algebraic geometry",
+        "snippet": "the first Chern class of a line bundle over a variety V is a homomorphism from CH( V ) to CH( V ) reducing degrees by 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chow groups and the first Chern class operator on them are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Chern classes of an almost complex manifold",
+      "anchor": {
+        "section": "Manifolds with structure",
+        "snippet": "The Chern classes of M are thus defined to be the Chern classes of its tangent bundle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Almost complex structures and Chern classes of manifolds are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cobordism and Chern numbers",
+      "anchor": {
+        "section": "Manifolds with structure",
+        "snippet": "it is cobordant to M if and only if the Chern numbers of M ′ coincide with those of M"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cobordism theory and Chern numbers are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chern class of symplectic manifolds",
+      "anchor": {
+        "section": "Manifolds with structure",
+        "snippet": "symplectic manifolds have a well-defined Chern class"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Symplectic manifolds with compatible almost complex structures and their Chern classes are not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

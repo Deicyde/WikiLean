@@ -1,0 +1,425 @@
+{
+  "slug": "Conditional_probability",
+  "wikipedia_title": "Conditional probability",
+  "display_title": "Conditional probability",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Conditional probability (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "conditional probability is a measure of the probability of an event occurring, given that another event"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.cond",
+        "module": "Mathlib.Probability.ConditionalProbability",
+        "match_kind": "exact"
+      },
+      "note": "`ProbabilityTheory.cond μ s = (μ s)⁻¹ • μ.restrict s` is the standard formal counterpart of the informal lead definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cough given sick",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the probability that any given person has a cough on any given day may be only 5%"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal illustrative example with no formal counterpart in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Independent events (via conditional probability)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "then events A and B are said to be independent"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.IndepSet",
+        "module": "Mathlib.Probability.Independence.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `IndepSet` via the product rule `μ(s∩t)=μ(s)μ(t)` (`indepSet_iff_measure_inter_eq_mul`) rather than via the conditional-probability characterization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Dengue fever test",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "if a person has dengue fever"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal medical-test example, no Mathlib formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Kolmogorov definition of conditional probability",
+      "anchor": {
+        "section": "Kolmogorov definition",
+        "snippet": "the conditional probability can be found by the quotient of the probability of the joint intersection"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.cond_apply",
+        "module": "Mathlib.Probability.ConditionalProbability",
+        "match_kind": "exact"
+      },
+      "note": "`cond_apply` gives `μ[t|s] = (μ s)⁻¹ * μ (s ∩ t)`, exactly Kolmogorov's quotient definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conditional probability as an axiom (de Finetti)",
+      "anchor": {
+        "section": "As an axiom of probability",
+        "snippet": "prefer to introduce conditional probability as an axiom of probability"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib derives conditional probability from a base measure rather than axiomatizing it à la de Finetti.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Goodman–Nguyen–Van Fraassen conditional event",
+      "anchor": {
+        "section": "As the probability of a conditional event",
+        "snippet": "The Goodman–Nguyen–Van Fraassen conditional event can be defined as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of conditional events as nested infinite sequences in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conditional event probability meets Kolmogorov definition",
+      "anchor": {
+        "section": "As the probability of a conditional event",
+        "snippet": "which meets the Kolmogorov definition of conditional probability"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Depends on the Goodman–Nguyen–Van Fraassen construction, which is absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conditioning on probability-zero event is undefined",
+      "anchor": {
+        "section": "Conditioning on an event of probability zero",
+        "snippet": "then according to the definition,"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.cond_eq_zero",
+        "module": "Mathlib.Probability.ConditionalProbability",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib sets `μ[|s] = 0` when `μ s = 0` (`cond_eq_zero`), reflecting that the conditional measure carries no meaningful information rather than being literally undefined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conditional density via limit (continuous case)",
+      "anchor": {
+        "section": "Conditioning on an event of probability zero",
+        "snippet": "if two continuous random variables X and Y have a joint density"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.condDistrib",
+        "module": "Mathlib.Probability.Kernel.CondDistrib",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `condDistrib` provides a regular conditional distribution via disintegration on standard Borel spaces, not via the limit construction described.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inconsistency of limit-based conditional probability",
+      "anchor": {
+        "section": "Conditioning on an event of probability zero",
+        "snippet": "but this cannot be done in a consistent manner"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Meta-statement about non-existence of a coherent limit-based definition; not stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Borel–Kolmogorov paradox",
+      "anchor": {
+        "section": "Conditioning on an event of probability zero",
+        "snippet": "The Borel–Kolmogorov paradox demonstrates this with a geometrical argument"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The geometric paradox is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conditional probability given a discrete random variable",
+      "anchor": {
+        "section": "Conditioning on a discrete random variable",
+        "snippet": "For a value x in V and an event A , the conditional probability is given by"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.cond",
+        "module": "Mathlib.Probability.ConditionalProbability",
+        "match_kind": "invocation"
+      },
+      "note": "Expressible as `μ[A | X ⁻¹' {x}]` using `cond` applied to a fiber (as in `sum_meas_smul_cond_fiber`), but there is no dedicated definition wrapping it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Expected value of conditional probability equals unconditional",
+      "anchor": {
+        "section": "Conditioning on a discrete random variable",
+        "snippet": "From the law of total probability , its expected value is equal to the unconditional probability of A"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.sum_meas_smul_cond_fiber",
+        "module": "Mathlib.Probability.ConditionalProbability",
+        "match_kind": "exact"
+      },
+      "note": "`sum_meas_smul_cond_fiber` states the law of total probability over fibers of a finite-valued random variable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Partial conditional probability",
+      "anchor": {
+        "section": "Partial conditional probability",
+        "snippet": "is about the probability of event"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Partial conditional probabilities (à la Draheim) are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Jeffrey conditionalization",
+      "anchor": {
+        "section": "Partial conditional probability",
+        "snippet": "Jeffrey conditionalization"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Jeffrey's rule of updating on uncertain evidence has no Mathlib formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Two dice conditional probability",
+      "anchor": {
+        "section": "Example",
+        "snippet": "Suppose that somebody secretly rolls two fair six-sided dice"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Worked dice example not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conditional probability as update of probability",
+      "anchor": {
+        "section": "Use in inference",
+        "snippet": "the conditional probability is an update of the probability of an event based on new information"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Philosophical/epistemic characterization; Mathlib's `cond` is the measure-theoretic object without an explicit update-interpretation lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Morse code transmission errors",
+      "anchor": {
+        "section": "Example (2)",
+        "snippet": "When Morse code is transmitted, there is a certain probability that the"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Channel-coding example not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Statistical independence of events",
+      "anchor": {
+        "section": "Statistical independence",
+        "snippet": "Events A and B are defined to be statistically independent if the probability of the intersection of A and B is equal to the product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.indepSet_iff_measure_inter_eq_mul",
+        "module": "Mathlib.Probability.Independence.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IndepSet` together with `indepSet_iff_measure_inter_eq_mul` gives the product-measure characterization of independence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conditional independence",
+      "anchor": {
+        "section": "Statistical independence",
+        "snippet": "the pair is defined to be conditionally independent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.CondIndepSet",
+        "module": "Mathlib.Probability.Independence.Conditional",
+        "match_kind": "exact"
+      },
+      "note": "`CondIndepSet` (and companions `CondIndep`, `CondIndepFun`) formalize conditional independence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mutually exclusive events are not independent",
+      "anchor": {
+        "section": "Statistical independence",
+        "snippet": "mutually exclusive events cannot be statistically independent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No direct lemma found stating that disjoint nontrivial events are never independent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Relating P(A|B) and P(B|A) via Bayes' theorem",
+      "anchor": {
+        "section": "Assuming conditional probability is of similar size to its inverse",
+        "snippet": "The relationship between P ( A | B ) and P ( B | A ) is given by Bayes' theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.cond_eq_inv_mul_cond_mul",
+        "module": "Mathlib.Probability.ConditionalProbability",
+        "match_kind": "exact"
+      },
+      "note": "`cond_eq_inv_mul_cond_mul` is Bayes' theorem: `μ[t|s] = (μ s)⁻¹ * μ[s|t] * μ t`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Marginal and conditional linked by law of total probability",
+      "anchor": {
+        "section": "Assuming marginal and conditional probabilities are of similar size",
+        "snippet": "These probabilities are linked through the law of total probability"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.cond_add_cond_compl_eq",
+        "module": "Mathlib.Probability.ConditionalProbability",
+        "match_kind": "exact"
+      },
+      "note": "`cond_add_cond_compl_eq` states `μ[t|s]·μ s + μ[t|sᶜ]·μ sᶜ = μ t`, the two-set law of total probability.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Selection bias in medical claim",
+      "anchor": {
+        "section": "Assuming marginal and conditional probabilities are of similar size",
+        "snippet": "in the context of a medical claim"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal example illustrating base-rate confusion; no formal counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Formal derivation of conditional probability",
+      "anchor": {
+        "section": "Formal derivation",
+        "snippet": "Formally, P ( A | B ) is defined as the probability of A according to a new probability function on the sample space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.cond",
+        "module": "Mathlib.Probability.ConditionalProbability",
+        "match_kind": "exact"
+      },
+      "note": "`ProbabilityTheory.cond` realizes this construction as `(μ s)⁻¹ • μ.restrict s`, a probability measure when `μ s` is finite and nonzero (`cond_isProbabilityMeasure`).",
+      "provenance": "ai"
+    }
+  ]
+}

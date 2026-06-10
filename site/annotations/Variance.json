@@ -1,0 +1,1539 @@
+{
+  "slug": "Variance",
+  "wikipedia_title": "Variance",
+  "display_title": "Variance",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Variance",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The variance of a random variable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "exact"
+      },
+      "note": "`ProbabilityTheory.variance X μ = (∫⁻ ω, ‖X ω - μ[X]‖ₑ ^ 2 ∂μ).toReal` matches the Wikipedia definition Var[X] = E[(X - E[X])²].",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "The variance of a random variable"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} (X)=\\operatorname {E} \\left[(X-\\mu )^{2}\\right].}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} (X)=\\operatorname {Cov} (X,X).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Variance as covariance with itself",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The variance can also be thought of as the covariance of a random variable with itself"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.covariance_self",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "exact"
+      },
+      "note": "`covariance_self : cov[X, X; μ] = Var[X; μ]` directly captures this identity.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "The variance can also be thought of as the covariance of a random variable with itself"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} (X)=\\operatorname {E} \\left[(X-\\mu )^{2}\\right].}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} (X)=\\operatorname {Cov} (X,X).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Variance as second cumulant",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The variance is also equivalent to the second cumulant of a probability distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines `cgf` (cumulant generating function) but has no named decl for individual cumulants κ_n, so the identity Var = κ₂ is not stated.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "The variance is also equivalent to the second cumulant of a probability distribution"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\operatorname {Var} (X)&amp;=\\operatorname {E} \\left[{\\left(X-\\operatorname {E} [X]\\right)}^{2}\\right]\\\\[4pt]&amp;=\\operatorname {E} \\left[X^{2}-2X\\operatorname {E} [X]+\\operatorname {E} [X]^{2}\\right]\\\\[4pt]&amp;=\\operatorname {E} \\left[X^{2}\\right]-2\\operatorname {E} [X]\\operatorname {E} [X]+\\operatorname {E} [X]^{2}\\\\[4pt]&amp;=\\operatorname {E} \\left[X^{2}\\right]-2\\operatorname {E} [X]^{2}+\\operatorname {E} [X]^{2}\\\\[4pt]&amp;=\\operatorname {E} \\left[X^{2}\\right]-\\operatorname {E} [X]^{2}\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Computational formula for variance",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "the variance of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance_eq_sub",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "exact"
+      },
+      "note": "`variance_eq_sub` states `variance X μ = μ[X^2] - μ[X]^2` under `MemLp X 2 μ` and a probability measure.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "the variance of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} (X)=\\operatorname {E} \\left[(X-\\mu )^{2}\\right].}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} (X)=\\operatorname {Cov} (X,X).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Variance of a discrete random variable",
+      "anchor": {
+        "section": "Discrete random variable",
+        "snippet": "If the generator of random variable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "generalization"
+      },
+      "note": "The general `variance` specialises to the discrete case via a discrete (e.g. counting/Dirac) measure, but there is no dedicated discrete-variance decl.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Discrete random variable",
+          "snippet": "If the generator of random variable"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} (X)=\\sum _{i=1}^{n}p_{i}\\cdot {\\left(x_{i}-\\mu \\right)}^{2},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mu =\\sum _{i=1}^{n}p_{i}x_{i}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Variance of equally likely values",
+      "anchor": {
+        "section": "Discrete random variable",
+        "snippet": "The variance of a collection of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated lemma for the variance of a uniform finite distribution `(1/n)∑(x_i - μ)²` in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Discrete random variable",
+          "snippet": "The variance of a collection of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} (X)={\\frac {1}{n}}\\sum _{i=1}^{n}(x_{i}-\\mu )^{2},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mu ={\\frac {1}{n}}\\sum _{i=1}^{n}x_{i}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Pairwise-distance form of variance",
+      "anchor": {
+        "section": "Discrete random variable",
+        "snippet": "can be equivalently expressed, without directly referring to the mean, in terms of squared deviations of all pairwise squared distances"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No grep hit for the pairwise-distance identity `(1/(2n²))∑∑(x_i - x_j)²` in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Discrete random variable",
+          "snippet": "can be equivalently expressed, without directly referring to the mean, in terms of squared deviations of all pairwise squared distances"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} (X)={\\frac {1}{n^{2}}}\\sum _{i=1}^{n}\\sum _{j=1}^{n}{\\frac {1}{2}}{\\left(x_{i}-x_{j}\\right)}^{2}={\\frac {1}{n^{2}}}\\sum _{i}\\sum _{j&gt;i}{\\left(x_{i}-x_{j}\\right)}^{2}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Variance of an absolutely continuous random variable",
+      "anchor": {
+        "section": "Absolutely continuous random variable",
+        "snippet": "has a probability density function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's variance is defined for any measure (including ones with densities), but there is no specific decl giving `∫(x - μ)² f(x) dx`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Absolutely continuous random variable",
+          "snippet": "has a probability density function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\operatorname {Var} (X)=\\sigma ^{2}&amp;=\\int _{\\mathbb {R} }{\\left(x-\\mu \\right)}^{2}f(x)\\,dx\\\\[4pt]&amp;=\\int _{\\mathbb {R} }x^{2}f(x)\\,dx-2\\mu \\int _{\\mathbb {R} }xf(x)\\,dx+\\mu ^{2}\\int _{\\mathbb {R} }f(x)\\,dx\\\\[4pt]&amp;=\\int _{\\mathbb {R} }x^{2}\\,dF(x)-2\\mu \\int _{\\mathbb {R} }x\\,dF(x)+\\mu ^{2}\\int _{\\mathbb {R} }\\,dF(x)\\\\[4pt]&amp;=\\int _{\\mathbb {R} }x^{2}\\,dF(x)-2\\mu \\cdot \\mu +\\mu ^{2}\\cdot 1\\\\[4pt]&amp;=\\int _{\\mathbb {R} }x^{2}\\,dF(x)-\\mu ^{2},\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} (X)=\\int _{\\mathbb {R} }x^{2}f(x)\\,dx-\\mu ^{2},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mu =\\int _{\\mathbb {R} }xf(x)\\,dx=\\int _{\\mathbb {R} }x\\,dF(x).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Variance via improper Riemann integral",
+      "anchor": {
+        "section": "Absolutely continuous random variable",
+        "snippet": "is Riemann-integrable on every finite interval"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No decl relates variance specifically to a Riemann improper integral.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Absolutely continuous random variable",
+          "snippet": "is Riemann-integrable on every finite interval"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} (X)=\\int _{-\\infty }^{+\\infty }x^{2}f(x)\\,dx-\\mu ^{2},}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Variance of the exponential distribution",
+      "anchor": {
+        "section": "Exponential distribution",
+        "snippet": "The exponential distribution with parameter"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`Mathlib/Probability/Distributions/Exponential.lean` defines the exponential PDF but does not compute its variance.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Exponential distribution",
+          "snippet": "The exponential distribution with parameter"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)=\\lambda e^{-\\lambda x}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {E} [X]=\\int _{0}^{\\infty }x\\lambda e^{-\\lambda x}\\,dx={\\frac {1}{\\lambda }}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Variance of a fair six-sided die",
+      "anchor": {
+        "section": "Fair die",
+        "snippet": "A fair six-sided die can be modeled as a discrete random variable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No die-specific variance example exists in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Fair die",
+          "snippet": "A fair six-sided die can be modeled as a discrete random variable"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\operatorname {Var} (X)&amp;=\\sum _{i=1}^{6}{\\frac {1}{6}}\\left(i-{\\frac {7}{2}}\\right)^{2}\\\\[5pt]&amp;={\\frac {1}{6}}\\left((-5/2)^{2}+(-3/2)^{2}+(-1/2)^{2}+(1/2)^{2}+(3/2)^{2}+(5/2)^{2}\\right)\\\\[5pt]&amp;={\\frac {35}{12}}\\approx 2.92.\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Variance of an n-sided die",
+      "anchor": {
+        "section": "Fair die",
+        "snippet": "The general formula for the variance of the outcome"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The formula `(n² - 1)/12` for uniform-die variance is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Fair die",
+          "snippet": "The general formula for the variance of the outcome"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\operatorname {Var} (X)&amp;=\\operatorname {E} \\left(X^{2}\\right)-(\\operatorname {E} (X))^{2}\\\\[5pt]&amp;={\\frac {1}{n}}\\sum _{i=1}^{n}i^{2}-\\left({\\frac {1}{n}}\\sum _{i=1}^{n}i\\right)^{2}\\\\[5pt]&amp;={\\frac {(n+1)(2n+1)}{6}}-\\left({\\frac {n+1}{2}}\\right)^{2}\\\\[4pt]&amp;={\\frac {n^{2}-1}{12}}.\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-negativity of variance",
+      "anchor": {
+        "section": "Basic properties",
+        "snippet": "Variance is non-negative because the squares are positive or zero"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance_nonneg",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "exact"
+      },
+      "note": "`variance_nonneg : 0 ≤ variance X μ` is in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Basic properties",
+          "snippet": "Variance is non-negative because the squares are positive or zero"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} (X)\\geq 0.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Variance of a constant",
+      "anchor": {
+        "section": "Basic properties",
+        "snippet": "The variance of a constant is zero."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance_zero",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "special_case"
+      },
+      "note": "`variance_zero : variance 0 μ = 0` covers the zero constant; no general `variance_const : Var[fun _ ↦ c] = 0` decl was found (but `variance_const_add`/`covariance_const_left` give the result indirectly).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Basic properties",
+          "snippet": "The variance of a constant is zero."
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} (a)=0.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero variance implies almost surely constant",
+      "anchor": {
+        "section": "Basic properties",
+        "snippet": "if the variance of a random variable is 0, then it is almost surely a constant"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.ae_eq_integral_of_variance_eq_zero",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "exact"
+      },
+      "note": "`ae_eq_integral_of_variance_eq_zero` gives `∀ᵐ ω ∂μ, X ω = μ[X]` from `Var[X;μ] = 0`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Basic properties",
+          "snippet": "if the variance of a random variable is 0, then it is almost surely a constant"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} (X)=0\\iff \\exists a:P(X=a)=1.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Finiteness of variance",
+      "anchor": {
+        "section": "Issues of finiteness",
+        "snippet": "If a distribution does not have a finite expected value"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.evariance_lt_top_iff_memLp",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "generalization"
+      },
+      "note": "`evariance_lt_top_iff_memLp` characterises finite variance as `MemLp X 2 μ`; the Wikipedia discussion of pathological non-finite moments is not phrased exactly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Law of total variance",
+      "anchor": {
+        "section": "Decomposition",
+        "snippet": "The general formula for variance decomposition or the law of total variance"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.integral_condVar_add_variance_condExp",
+        "module": "Mathlib.Probability.CondVar",
+        "match_kind": "exact"
+      },
+      "note": "`integral_condVar_add_variance_condExp` states `μ[Var[X;μ|m]] + Var[μ[X|m]; μ] = Var[X; μ]`, the law of total variance.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Decomposition",
+          "snippet": "The general formula for variance decomposition or the law of total variance"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} [X]=\\operatorname {E} (\\operatorname {Var} [X\\mid Y])+\\operatorname {Var} (\\operatorname {E} [X\\mid Y]).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Variance from the CDF",
+      "anchor": {
+        "section": "Calculation from the CDF",
+        "snippet": "The population variance for a non-negative random variable can be expressed in terms of the cumulative distribution function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No grep hit relating variance to a CDF-based integral.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Calculation from the CDF",
+          "snippet": "The population variance for a non-negative random variable can be expressed in terms of the cumulative distribution function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 2\\int _{0}^{\\infty }u(1-F(u))\\,du-{\\left[\\int _{0}^{\\infty }(1-F(u))\\,du\\right]}^{2}.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Characteristic property of variance",
+      "anchor": {
+        "section": "Characteristic property",
+        "snippet": "The second moment of a random variable attains the minimum value when taken around the first moment"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No decl stating that `c ↦ E[(X - c)²]` is minimised at `c = E[X]` was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Translation invariance of variance",
+      "anchor": {
+        "section": "Addition and multiplication by a constant",
+        "snippet": "Variance is invariant with respect to changes in a location parameter"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance_add_const",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "exact"
+      },
+      "note": "`variance_add_const : Var[fun ω ↦ X ω + c; μ] = Var[X; μ]` (with `variance_const_add` and `variance_sub_const` siblings).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Addition and multiplication by a constant",
+          "snippet": "Variance is invariant with respect to changes in a location parameter"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} (X+a)=\\operatorname {Var} (X).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Scaling of variance by a constant",
+      "anchor": {
+        "section": "Addition and multiplication by a constant",
+        "snippet": "If all values are scaled by a constant, the variance is scaled by the square of that constant"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance_const_mul",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "exact"
+      },
+      "note": "`variance_const_mul : variance (fun ω => c * X ω) μ = c^2 * variance X μ`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Addition and multiplication by a constant",
+          "snippet": "If all values are scaled by a constant, the variance is scaled by the square of that constant"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} (aX)=a^{2}\\operatorname {Var} (X).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Variance of a sum of two variables",
+      "anchor": {
+        "section": "Addition and multiplication by a constant",
+        "snippet": "The variance of a sum of two random variables is given by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance_add",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "exact"
+      },
+      "note": "`variance_add : Var[X + Y; μ] = Var[X; μ] + 2 * cov[X, Y; μ] + Var[Y; μ]`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Addition and multiplication by a constant",
+          "snippet": "The variance of a sum of two random variables is given by"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\operatorname {Var} (aX+bY)&amp;=a^{2}\\operatorname {Var} (X)+b^{2}\\operatorname {Var} (Y)+2ab\\,\\operatorname {Cov} (X,Y)\\\\[1ex]\\operatorname {Var} (aX-bY)&amp;=a^{2}\\operatorname {Var} (X)+b^{2}\\operatorname {Var} (Y)-2ab\\,\\operatorname {Cov} (X,Y)\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Variance of a sum of n variables",
+      "anchor": {
+        "section": "Linear combinations",
+        "snippet": "for the sum of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance_sum",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "exact"
+      },
+      "note": "`variance_sum : Var[∑ i, X i; μ] = ∑ i, ∑ j, cov[X i, X j; μ]`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Linear combinations",
+          "snippet": "for the sum of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} \\left(\\sum _{i=1}^{N}X_{i}\\right)=\\sum _{i,j=1}^{N}\\operatorname {Cov} (X_{i},X_{j})=\\sum _{i=1}^{N}\\operatorname {Var} (X_{i})+\\sum _{i,j=1,i\\neq j}^{N}\\operatorname {Cov} (X_{i},X_{j}),}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Variance of a linear combination",
+      "anchor": {
+        "section": "Linear combinations",
+        "snippet": "These results lead to the variance of a linear combination as"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance_sum",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "generalization"
+      },
+      "note": "Combining `variance_sum` with `variance_const_mul`/`covariance_const_mul_*` yields the formula for `Var[∑ a_i X_i]`, but no single decl writes it directly.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Linear combinations",
+          "snippet": "These results lead to the variance of a linear combination as"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\operatorname {Var} \\left(\\sum _{i=1}^{N}a_{i}X_{i}\\right)&amp;=\\sum _{i,j=1}^{N}a_{i}a_{j}\\operatorname {Cov} (X_{i},X_{j})\\\\&amp;=\\sum _{i=1}^{N}a_{i}^{2}\\operatorname {Var} (X_{i})+\\sum _{i\\neq j}a_{i}a_{j}\\operatorname {Cov} (X_{i},X_{j})\\\\&amp;=\\sum _{i=1}^{N}a_{i}^{2}\\operatorname {Var} (X_{i})+2\\sum _{1\\leq i&lt;j\\leq N}a_{i}a_{j}\\operatorname {Cov} (X_{i},X_{j}).\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Uncorrelated random variables",
+      "anchor": {
+        "section": "Linear combinations",
+        "snippet": "then they are said to be uncorrelated"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib expresses uncorrelatedness as `cov[X, Y; μ] = 0` (or `μ[X * Y] = μ[X] * μ[Y]`) but has no named `Uncorrelated` definition.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Linear combinations",
+          "snippet": "then they are said to be uncorrelated"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Cov} (X_{i},X_{j})=0\\ ,\\ \\forall \\ (i\\neq j),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} \\left(\\sum _{i=1}^{N}X_{i}\\right)=\\sum _{i=1}^{N}\\operatorname {Var} (X_{i}).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Variance of sum of uncorrelated variables",
+      "anchor": {
+        "section": "Linear combinations",
+        "snippet": "if the random variables"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance_sum",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "generalization"
+      },
+      "note": "`variance_sum` reduces to `∑ Var[X_i]` when off-diagonal covariances vanish, but there is no dedicated uncorrelated-hypothesis form; `IndepFun.variance_sum` covers the stronger independent case.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Linear combinations",
+          "snippet": "if the random variables"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Cov} (X_{i},X_{j})=0\\ ,\\ \\forall \\ (i\\neq j),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} \\left(\\sum _{i=1}^{N}X_{i}\\right)=\\sum _{i=1}^{N}\\operatorname {Var} (X_{i}).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Independence implies uncorrelated",
+      "anchor": {
+        "section": "Linear combinations",
+        "snippet": "Since independent random variables are always uncorrelated"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.IndepFun.covariance_eq_zero",
+        "module": "Mathlib.Probability.Moments.Covariance",
+        "match_kind": "exact"
+      },
+      "note": "`IndepFun.covariance_eq_zero` shows `X ⟂ᵢ[μ] Y → cov[X, Y; μ] = 0` under `MemLp` hypotheses.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Matrix form of variance of linear combination",
+      "anchor": {
+        "section": "Matrix notation for the variance of a linear combination",
+        "snippet": "is a linear combination of these random variables"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.covarianceBilin",
+        "module": "Mathlib.Probability.Moments.CovarianceBilin",
+        "match_kind": "generalization"
+      },
+      "note": "`covarianceBilin`/`covarianceOperator` represent the covariance bilinear form over a normed space (generalising the matrix form), but no explicit `cᵀ Σ c` matrix identity decl was found.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Matrix notation for the variance of a linear combination",
+          "snippet": "is a linear combination of these random variables"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} \\left(c^{\\mathsf {T}}X\\right)=c^{\\mathsf {T}}\\Sigma c.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Variance of the mean (matrix form)",
+      "anchor": {
+        "section": "Matrix notation for the variance of a linear combination",
+        "snippet": "This implies that the variance of the mean can be written as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No decl writes the variance of the sample mean as `(1/n²) 1ᵀ Σ 1`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Matrix notation for the variance of a linear combination",
+          "snippet": "This implies that the variance of the mean can be written as"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} \\left({\\bar {x}}\\right)=\\operatorname {Var} \\left({\\frac {1}{n}}1'X\\right)={\\frac {1}{n^{2}}}1'\\Sigma 1.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Bienaymé formula",
+      "anchor": {
+        "section": "Sum of uncorrelated variables",
+        "snippet": "This statement is called the Bienaymé formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.IndepFun.variance_sum",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "exact"
+      },
+      "note": "`IndepFun.variance_sum : Var[∑ X_i] = ∑ Var[X_i]` for pairwise independent variables — the Bienaymé identity (under stronger independence).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Sum of uncorrelated variables",
+          "snippet": "This statement is called the Bienaymé formula"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} \\left({\\overline {X}}\\right)=\\operatorname {Var} \\left({\\frac {1}{n}}\\sum _{i=1}^{n}X_{i}\\right)={\\frac {1}{n^{2}}}\\sum _{i=1}^{n}\\operatorname {Var} \\left(X_{i}\\right)={\\frac {1}{n^{2}}}n\\sigma ^{2}={\\frac {\\sigma ^{2}}{n}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Variance of the sample mean",
+      "anchor": {
+        "section": "Sum of uncorrelated variables",
+        "snippet": "this formula immediately implies that the variance of their mean is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit `Var[X̄] = σ²/n` lemma was found in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Sum of uncorrelated variables",
+          "snippet": "this formula immediately implies that the variance of their mean is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} \\left({\\overline {X}}\\right)=\\operatorname {Var} \\left({\\frac {1}{n}}\\sum _{i=1}^{n}X_{i}\\right)={\\frac {1}{n^{2}}}\\sum _{i=1}^{n}\\operatorname {Var} \\left(X_{i}\\right)={\\frac {1}{n^{2}}}n\\sigma ^{2}={\\frac {\\sigma ^{2}}{n}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Variance of sum equals sum of covariances",
+      "anchor": {
+        "section": "Sum of correlated variables",
+        "snippet": "the variance of the sum of n variables is the sum of their covariances"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance_sum",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "exact"
+      },
+      "note": "`variance_sum : Var[∑ i, X i; μ] = ∑ i, ∑ j, cov[X i, X j; μ]` is exactly this identity.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Sum of correlated variables",
+          "snippet": "the variance of the sum of n variables is the sum of their covariances"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} \\left(\\sum _{i=1}^{n}X_{i}\\right)=\\sum _{i=1}^{n}\\sum _{j=1}^{n}\\operatorname {Cov} \\left(X_{i},X_{j}\\right)=\\sum _{i=1}^{n}\\operatorname {Var} \\left(X_{i}\\right)+2\\sum _{1\\leq i&lt;j\\leq n}\\operatorname {Cov} \\left(X_{i},X_{j}\\right).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Variance of the mean with average correlation",
+      "anchor": {
+        "section": "Sum of correlated variables",
+        "snippet": "if the variables have equal variance"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No grep hit for the average-correlation/equal-variance formula `σ²/n + ((n-1)/n)·σ²·ρ̄`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Sum of correlated variables",
+          "snippet": "if the variables have equal variance"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} \\left({\\overline {X}}\\right)={\\frac {\\sigma ^{2}}{n}}+{\\frac {n-1}{n}}\\rho \\sigma ^{2}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Variance of mean of standardized variables",
+      "anchor": {
+        "section": "Sum of correlated variables",
+        "snippet": "if the variables have unit variance, for example if they are standardized"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized; standardised-variable sample mean variance is not stated.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Sum of correlated variables",
+          "snippet": "if the variables have unit variance, for example if they are standardized"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} \\left({\\overline {X}}\\right)={\\frac {1}{n}}+{\\frac {n-1}{n}}\\rho .}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Random sample size variance",
+      "anchor": {
+        "section": "Sum of correlated variables",
+        "snippet": "the sample size N is a random variable whose variation adds to the variation of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Wald-type variance decomposition `Var[∑_{i=1}^N X_i] = E[N]Var[X] + Var[N](E[X])²` is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Sum of correlated variables",
+          "snippet": "the sample size N is a random variable whose variation adds to the variation of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} \\left(\\sum _{i=1}^{N}X_{i}\\right)=\\operatorname {E} \\left[N\\right]\\operatorname {Var} (X)+\\operatorname {Var} (N)(\\operatorname {E} \\left[X\\right])^{2}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Poisson-distributed sample size",
+      "anchor": {
+        "section": "Sum of correlated variables",
+        "snippet": "If N has a Poisson distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specialisation of the Wald formula to Poisson N is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Weighted sum variance",
+      "anchor": {
+        "section": "Weighted sum of variables",
+        "snippet": "The scaling property and the Bienaymé formula"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance_sum",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "generalization"
+      },
+      "note": "Derivable by composing `variance_sum`/`variance_const_mul`, but there is no single weighted-sum decl.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Weighted sum of variables",
+          "snippet": "The scaling property and the Bienaymé formula"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} (aX\\pm bY)=a^{2}\\operatorname {Var} (X)+b^{2}\\operatorname {Var} (Y)\\pm 2ab\\,\\operatorname {Cov} (X,Y).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Weighted sum of multiple variables",
+      "anchor": {
+        "section": "Weighted sum of variables",
+        "snippet": "The expression above can be extended to a weighted sum of multiple variables"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance_sum",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "generalization"
+      },
+      "note": "Same as above: formula obtainable from `variance_sum` and scaling lemmas, but not stated directly.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Weighted sum of variables",
+          "snippet": "The expression above can be extended to a weighted sum of multiple variables"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} \\left(\\sum _{i}^{n}a_{i}X_{i}\\right)=\\sum _{i=1}^{n}a_{i}^{2}\\operatorname {Var} (X_{i})+2\\sum _{1\\leq i}\\sum _{&lt;j\\leq n}a_{i}a_{j}\\operatorname {Cov} (X_{i},X_{j})}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Variance of product of independent variables",
+      "anchor": {
+        "section": "Product of independent variables",
+        "snippet": "If two variables X and Y are independent , the variance of their product is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No decl computes `Var[XY]` for independent X, Y was found.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Product of independent variables",
+          "snippet": "If two variables X and Y are independent , the variance of their product is given by"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} (XY)=[\\operatorname {E} (X)]^{2}\\operatorname {Var} (Y)+[\\operatorname {E} (Y)]^{2}\\operatorname {Var} (X)+\\operatorname {Var} (X)\\operatorname {Var} (Y).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Variance of product (expectation form)",
+      "anchor": {
+        "section": "Product of independent variables",
+        "snippet": "Equivalently, using the basic properties of expectation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Product of independent variables",
+          "snippet": "Equivalently, using the basic properties of expectation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} (XY)=\\operatorname {E} \\left(X^{2}\\right)\\operatorname {E} \\left(Y^{2}\\right)-[\\operatorname {E} (X)]^{2}[\\operatorname {E} (Y)]^{2}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Variance of product of dependent variables",
+      "anchor": {
+        "section": "Product of statistically dependent variables",
+        "snippet": "if two variables are statistically dependent, then the variance of their product is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Delta method variance approximation",
+      "anchor": {
+        "section": "Arbitrary functions",
+        "snippet": "The delta method uses second-order Taylor expansions to approximate the variance of a function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No grep hit for the delta method in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Arbitrary functions",
+          "snippet": "The delta method uses second-order Taylor expansions to approximate the variance of a function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} \\left[f(X)\\right]\\approx \\left(f'(\\operatorname {E} \\left[X\\right])\\right)^{2}\\operatorname {Var} \\left[X\\right]}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Population variance",
+      "anchor": {
+        "section": "Population variance",
+        "snippet": "the population variance of a finite population of size"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has no separate finite-population variance; specialising `variance` to a uniform counting measure recovers it.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Population variance",
+          "snippet": "the population variance of a finite population of size"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\sigma ^{2}&amp;={\\frac {1}{N}}\\sum _{i=1}^{N}{\\left(x_{i}-\\mu \\right)}^{2}={\\frac {1}{N}}\\sum _{i=1}^{N}\\left(x_{i}^{2}-2\\mu x_{i}+\\mu ^{2}\\right)\\\\[5pt]&amp;=\\left({\\frac {1}{N}}\\sum _{i=1}^{N}x_{i}^{2}\\right)-2\\mu \\left({\\frac {1}{N}}\\sum _{i=1}^{N}x_{i}\\right)+\\mu ^{2}\\\\[5pt]&amp;=\\operatorname {E} [x_{i}^{2}]-\\mu ^{2},\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Alternative population variance formula",
+      "anchor": {
+        "section": "Population variance",
+        "snippet": "The population variance can also be computed using"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance_eq_sub",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "generalization"
+      },
+      "note": "Same as the computational formula; specialising `variance_eq_sub` to the uniform measure gives the alternative form.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Population variance",
+          "snippet": "The population variance can also be computed using"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sigma ^{2}={\\frac {1}{N^{2}}}\\sum _{i&lt;j}\\left(x_{i}-x_{j}\\right)^{2}={\\frac {1}{2N^{2}}}\\sum _{i,j=1}^{N}\\left(x_{i}-x_{j}\\right)^{2}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Biased sample variance",
+      "anchor": {
+        "section": "Biased sample variance",
+        "snippet": "Directly taking the variance of the sample data gives the average of the squared deviations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No grep hit for `biasedSampleVariance` or analogous sample-statistic definitions.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Biased sample variance",
+          "snippet": "Directly taking the variance of the sample data gives the average of the squared deviations"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\tilde {S}}_{Y}^{2}={\\frac {1}{n}}\\sum _{i=1}^{n}\\left(Y_{i}-{\\overline {Y}}\\right)^{2}=\\left({\\frac {1}{n}}\\sum _{i=1}^{n}Y_{i}^{2}\\right)-{\\overline {Y}}^{2}={\\frac {1}{n^{2}}}\\sum _{i,j\\,:\\,i&lt;j}\\left(Y_{i}-Y_{j}\\right)^{2}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\overline {Y}}={\\frac {1}{n}}\\sum _{i=1}^{n}Y_{i}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Bias of the sample variance",
+      "anchor": {
+        "section": "Biased sample variance",
+        "snippet": "gives an estimate of the population variance"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bias factor `(n-1)/n` of the biased sample variance is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unbiased sample variance",
+      "anchor": {
+        "section": "Unbiased sample variance",
+        "snippet": "Correcting for this bias yields the unbiased sample variance"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No grep hit for `sampleVariance` / Bessel-corrected estimator.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Unbiased sample variance",
+          "snippet": "Correcting for this bias yields the unbiased sample variance"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle S^{2}={\\frac {n}{n-1}}{\\tilde {S}}_{Y}^{2}={\\frac {n}{n-1}}\\left[{\\frac {1}{n}}\\sum _{i=1}^{n}\\left(Y_{i}-{\\overline {Y}}\\right)^{2}\\right]={\\frac {1}{n-1}}\\sum _{i=1}^{n}\\left(Y_{i}-{\\overline {Y}}\\right)^{2}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Unbiased sample variance as U-statistic",
+      "anchor": {
+        "section": "Unbiased sample variance",
+        "snippet": "The unbiased sample variance is a U-statistic for the function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "U-statistics are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sample variance numerical example",
+      "anchor": {
+        "section": "Unbiased sample variance",
+        "snippet": "For a set of numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No numerical worked example in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Distribution of sample variance (Cochran)",
+      "anchor": {
+        "section": "Distribution of the sample variance",
+        "snippet": "Cochran's theorem shows that the unbiased sample variance"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Cochran` returned no results.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Distribution of the sample variance",
+          "snippet": "Cochran's theorem shows that the unbiased sample variance"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (n-1){\\frac {S^{2}}{\\sigma ^{2}}}\\sim \\chi _{n-1}^{2},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {E} \\left(S^{2}\\right)=\\operatorname {E} \\left({\\frac {\\sigma ^{2}}{n-1}}\\chi _{n-1}^{2}\\right)=\\sigma ^{2},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} \\left[S^{2}\\right]=\\operatorname {Var} \\left({\\frac {\\sigma ^{2}}{n-1}}\\chi _{n-1}^{2}\\right)={\\frac {\\sigma ^{4}}{{\\left(n-1\\right)}^{2}}}\\operatorname {Var} \\left(\\chi _{n-1}^{2}\\right)={\\frac {2\\sigma ^{4}}{n-1}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Sample variance for non-normal i.i.d.",
+      "anchor": {
+        "section": "Distribution of the sample variance",
+        "snippet": "are independent and identically distributed, but not necessarily normally distributed"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Distribution of the sample variance",
+          "snippet": "are independent and identically distributed, but not necessarily normally distributed"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {E} \\left[S^{2}\\right]=\\sigma ^{2};\\quad \\operatorname {Var} \\left[S^{2}\\right]={\\frac {\\sigma ^{4}}{n}}\\left(\\kappa -1+{\\frac {2}{n-1}}\\right)={\\frac {1}{n}}\\left(\\mu _{4}-{\\frac {n-3}{n-1}}\\sigma ^{4}\\right),}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Consistency of sample variance",
+      "anchor": {
+        "section": "Distribution of the sample variance",
+        "snippet": "If the conditions of the law of large numbers hold for the squared observations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Consistency of the sample-variance estimator is not formalized (sample variance itself is absent).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Samuelson's inequality",
+      "anchor": {
+        "section": "Samuelson's inequality",
+        "snippet": "Samuelson's inequality is a result that states bounds on the values that individual observations in a sample can take"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Samuelson` returned no results.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Recursive update of variance with one new observation",
+      "anchor": {
+        "section": "Effect of adding one observation on variance",
+        "snippet": "the new variance"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Welford-style update formula is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Harmonic-arithmetic mean variance bound",
+      "anchor": {
+        "section": "Relations with the harmonic and arithmetic means",
+        "snippet": "for a sample"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Relations with the harmonic and arithmetic means",
+          "snippet": "for a sample"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sigma _{y}^{2}\\leq 2y_{\\max }(A-H),}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Improved variance bound",
+      "anchor": {
+        "section": "Relations with the harmonic and arithmetic means",
+        "snippet": "This bound has been improved, and it is known that variance is bounded by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Relations with the harmonic and arithmetic means",
+          "snippet": "This bound has been improved, and it is known that variance is bounded by"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\sigma _{y}^{2}&amp;\\leq {\\frac {y_{\\max }(A-H)(y_{\\max }-A)}{y_{\\max }-H}},\\\\[1ex]\\sigma _{y}^{2}&amp;\\geq {\\frac {y_{\\min }(A-H)(A-y_{\\min })}{H-y_{\\min }}},\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Variance as moment of inertia analogy",
+      "anchor": {
+        "section": "Moment of inertia",
+        "snippet": "The variance of a probability distribution is analogous to the moment of inertia"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a physical analogy; not a formalised result.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Moment of inertia",
+          "snippet": "The variance of a probability distribution is analogous to the moment of inertia"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle I=n\\left(\\mathbf {1} _{3\\times 3}\\operatorname {tr} (\\Sigma )-\\Sigma \\right).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Semivariance",
+      "anchor": {
+        "section": "Semivariance",
+        "snippet": "The semivariance is calculated in the same manner as the variance but only those observations that fall below the mean are included"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `semivariance` returned no results.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Semivariance",
+          "snippet": "The semivariance is calculated in the same manner as the variance but only those observations that fall below the mean are included"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\text{Semivariance}}={\\frac {1}{n}}\\sum _{i:x_{i}&lt;\\mu }{\\left(x_{i}-\\mu \\right)}^{2}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Variance of a complex random variable",
+      "anchor": {
+        "section": "For complex variables",
+        "snippet": "is a scalar complex -valued random variable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`ProbabilityTheory.variance` is only defined for `ℝ`-valued random variables; no complex variant was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Variance-covariance matrix",
+      "anchor": {
+        "section": "As a matrix",
+        "snippet": "is a vector -valued random variable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.covarianceBilin",
+        "module": "Mathlib.Probability.Moments.CovarianceBilin",
+        "match_kind": "generalization"
+      },
+      "note": "`covarianceBilin`/`covarianceOperator` give the covariance as a bilinear form/operator on a normed space, generalising the matrix; no concrete matrix-form decl found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Covariance matrix of complex vector-valued variable",
+      "anchor": {
+        "section": "As a matrix",
+        "snippet": "is a vector- and complex-valued random variable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no complex-vector-valued covariance matrix.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generalized variance",
+      "anchor": {
+        "section": "As a scalar",
+        "snippet": "is the generalized variance"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Determinant of the covariance matrix as a scalar `generalized variance` is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Total variance (trace of covariance matrix)",
+      "anchor": {
+        "section": "As a scalar",
+        "snippet": "is the generalized variance"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Trace-of-covariance `total variation` is not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

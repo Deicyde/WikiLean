@@ -1,0 +1,775 @@
+{
+  "slug": "Analytic_geometry",
+  "wikipedia_title": "Analytic geometry",
+  "display_title": "Analytic geometry",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Analytic geometry",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is the study of geometry using a coordinate system"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Analytic geometry as a discipline is meta-mathematical and has no single formalizing declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coordinate system on the plane",
+      "anchor": {
+        "section": "Coordinates",
+        "snippet": "the plane is given a coordinate system, by which every point has a pair of real number coordinates"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": null
+      },
+      "note": "The plane with real coordinates is modeled by `EuclideanSpace ℝ (Fin 2)`, but a general 'coordinate system' concept is not a dedicated decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cartesian coordinates",
+      "anchor": {
+        "section": "Cartesian coordinates (in a plane or space)",
+        "snippet": "where each point has an x -coordinate representing its horizontal position"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": null
+      },
+      "note": "Cartesian coordinates are captured by `EuclideanSpace ℝ (Fin n)` with componentwise projections, but not named as 'Cartesian coordinates'.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Polar coordinates",
+      "anchor": {
+        "section": "Polar coordinates (in a plane)",
+        "snippet": "every point of the plane is represented by its distance r from the origin and its angle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "polarCoord",
+        "module": "Mathlib.Analysis.SpecialFunctions.PolarCoord",
+        "match_kind": "exact"
+      },
+      "note": "`polarCoord` is the partial homeomorphism on ℝ² mapping (r cos θ, r sin θ) ↦ (r, θ).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Polar coordinates (in a plane)",
+          "snippet": "every point of the plane is represented by its distance r from the origin and its angle"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x=r\\,\\cos \\theta ,\\,y=r\\,\\sin \\theta ;\\,r={\\sqrt {x^{2}+y^{2}}},\\,\\theta =\\arctan(y/x).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Cylindrical coordinates",
+      "anchor": {
+        "section": "Cylindrical coordinates (in a space)",
+        "snippet": "every point of space is represented by its height z , its radius r from the z -axis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A grep for cylindrical coordinates found no declaration in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Spherical coordinates",
+      "anchor": {
+        "section": "Spherical coordinates (in a space)",
+        "snippet": "every point in space is represented by its distance"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no spherical-coordinate chart; 'spherical' matches only refer to geometric spheres.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Locus of an equation",
+      "anchor": {
+        "section": "Equations and curves",
+        "snippet": "any equation involving the coordinates specifies a subset of the plane, namely the solution set for the equation, or locus"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The locus/solution set of an equation is expressed via generic set-builder notation `{x | p x}` or `f ⁻¹' {0}`, with no dedicated 'locus' concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Line y = x",
+      "anchor": {
+        "section": "Equations and curves",
+        "snippet": "corresponds to the set of all the points on the plane whose"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Set.diagonal",
+        "module": "Mathlib.Data.Set.Operations",
+        "match_kind": "generalization"
+      },
+      "note": "`Set.diagonal α = {p | p.1 = p.2}` is exactly the line y = x for α = ℝ, generalized to any type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linear/quadratic equations specify lines/conics",
+      "anchor": {
+        "section": "Equations and curves",
+        "snippet": "linear equations involving x and y specify lines, quadratic equations specify conic sections"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Conic sections are not formalized in Mathlib, so this classification proposition has no declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Trivial and single-point loci",
+      "anchor": {
+        "section": "Equations and curves",
+        "snippet": "the trivial equation x = x specifies the entire plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "These are illustrative examples (`Set.univ`, singletons) rather than stated theorems with a formalizing decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equation of a circle",
+      "anchor": {
+        "section": "Equations and curves",
+        "snippet": "is the equation for any circle centered at the origin"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.sphere_zero_eq",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "generalization"
+      },
+      "note": "`EuclideanSpace.sphere_zero_eq` proves `sphere 0 r = {x | ∑ x i ^ 2 = r ^ 2}`, the circle equation for n = 2.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Slope-intercept form of a line",
+      "anchor": {
+        "section": "Lines and planes",
+        "snippet": "the equation for non-vertical lines is often given in the slope-intercept form"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineMap",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineMap",
+        "match_kind": null
+      },
+      "note": "A non-vertical line y = mx + b is an affine map ℝ → ℝ, but the slope-intercept form itself is not a named decl.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Lines and planes",
+          "snippet": "the equation for non-vertical lines is often given in the slope-intercept form"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle y=mx+b}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Point-normal form of a plane",
+      "anchor": {
+        "section": "Lines and planes",
+        "snippet": "which is the point-normal form of the equation of a plane"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Submodule.orthogonal",
+        "module": "Mathlib.Analysis.InnerProductSpace.Orthogonal",
+        "match_kind": null
+      },
+      "note": "Orthogonality `⟪n, x - p⟫ = 0` infrastructure exists, but the point-normal plane equation is not a dedicated declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linear equation graphs a plane",
+      "anchor": {
+        "section": "Lines and planes",
+        "snippet": "if a , b , c and d are constants and a , b , and c are not all zero, then the graph of the equation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineSubspace",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Defs",
+        "match_kind": null
+      },
+      "note": "The solution set of a nonzero affine equation is an `AffineSubspace` (hyperplane), but the specific 3D-plane statement is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Lines and planes",
+          "snippet": "if a , b , c and d are constants and a , b , and c are not all zero, then the graph of the equation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {n} \\cdot (\\mathbf {r} -\\mathbf {r} _{0})=0.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a(x-x_{0})+b(y-y_{0})+c(z-z_{0})=0,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle ax+by+cz+d=0,{\\text{ where }}d=-(ax_{0}+by_{0}+cz_{0}).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle ax+by+cz+d=0,}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "General form of a plane",
+      "anchor": {
+        "section": "Lines and planes",
+        "snippet": "is called the general form of the equation of the plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The 'general form' is terminology for the plane equation and has no formalizing declaration.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Lines and planes",
+          "snippet": "is called the general form of the equation of the plane"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {n} \\cdot (\\mathbf {r} -\\mathbf {r} _{0})=0.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a(x-x_{0})+b(y-y_{0})+c(z-z_{0})=0,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle ax+by+cz+d=0,{\\text{ where }}d=-(ax_{0}+by_{0}+cz_{0}).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle ax+by+cz+d=0,}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Parametric equations of a line in 3D",
+      "anchor": {
+        "section": "Lines and planes",
+        "snippet": "lines can not be described by a single linear equation, so they are frequently described by parametric equations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineMap.lineMap",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineMap",
+        "match_kind": "generalization"
+      },
+      "note": "`AffineMap.lineMap p₀ p₁ c = c • (p₁ -ᵥ p₀) +ᵥ p₀` is the parametric line, generalized to any affine space.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Lines and planes",
+          "snippet": "lines can not be described by a single linear equation, so they are frequently described by parametric equations"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x=x_{0}+at}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle y=y_{0}+bt}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle z=z_{0}+ct}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Quadratic equations graph conic sections",
+      "anchor": {
+        "section": "Conic sections",
+        "snippet": "the graph of a quadratic equation in two variables is always a conic section"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Conic sections are not formalized in Mathlib, so this theorem has no declaration.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Conic sections",
+          "snippet": "the graph of a quadratic equation in two variables is always a conic section"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle Ax^{2}+Bxy+Cy^{2}+Dx+Ey+F=0{\\text{ with }}A,B,C{\\text{ not all zero.}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Classification of conics by discriminant",
+      "anchor": {
+        "section": "Conic sections",
+        "snippet": "The conic sections described by this equation can be classified using the discriminant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The discriminant classification of conics is absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quadric surface",
+      "anchor": {
+        "section": "Quadric surfaces",
+        "snippet": "is a 2 -dimensional surface in 3-dimensional space defined as the locus of zeros of a quadratic polynomial"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "QuadraticForm",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Basic",
+        "match_kind": null
+      },
+      "note": "`QuadraticForm`/`QuadraticMap` formalizes the quadratic polynomial, but its zero locus as a geometric quadric surface is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Examples of quadric surfaces",
+      "anchor": {
+        "section": "Quadric surfaces",
+        "snippet": "Quadric surfaces include ellipsoids"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ellipsoids, paraboloids and other named quadric surfaces are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Distance between two points",
+      "anchor": {
+        "section": "Distance and angle",
+        "snippet": "the distance between two points ( x 1 , y 1 ) and ( x 2 , y 2 ) is defined by the formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.dist_eq",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "generalization"
+      },
+      "note": "`EuclideanSpace.dist_eq` gives `dist x y = √(∑ dist (x i) (y i) ^ 2)`, the planar distance formula for n = 2.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Distance and angle",
+          "snippet": "the distance between two points ( x 1 , y 1 ) and ( x 2 , y 2 ) is defined by the formula"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d={\\sqrt {(x_{2}-x_{1})^{2}+(y_{2}-y_{1})^{2}}},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\theta =\\arctan(m),}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Angle of a line with the horizontal",
+      "anchor": {
+        "section": "Distance and angle",
+        "snippet": "the angle that a line makes with the horizontal can be defined by the formula"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.arctan",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Arctan",
+        "match_kind": null
+      },
+      "note": "`Real.arctan` provides the inverse tangent used in θ = arctan(slope), but the angle-of-a-line definition itself is not a decl.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Distance and angle",
+          "snippet": "the angle that a line makes with the horizontal can be defined by the formula"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d={\\sqrt {(x_{2}-x_{1})^{2}+(y_{2}-y_{1})^{2}}},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\theta =\\arctan(m),}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Distance in three dimensions",
+      "anchor": {
+        "section": "Distance and angle",
+        "snippet": "distance is given by the generalization of the Pythagorean theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.dist_eq",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "generalization"
+      },
+      "note": "`EuclideanSpace.dist_eq` is the n-dimensional Euclidean distance formula, specializing to n = 3.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Distance and angle",
+          "snippet": "distance is given by the generalization of the Pythagorean theorem"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d={\\sqrt {(x_{2}-x_{1})^{2}+(y_{2}-y_{1})^{2}+(z_{2}-z_{1})^{2}}},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {A} \\cdot \\mathbf {B} {\\stackrel {\\mathrm {def} }{=}}\\left\\|\\mathbf {A} \\right\\|\\left\\|\\mathbf {B} \\right\\|\\cos \\theta ,}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Dot product",
+      "anchor": {
+        "section": "Distance and angle",
+        "snippet": "The dot product of two Euclidean vectors A and B is defined by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.dotProduct",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "generalization"
+      },
+      "note": "`Matrix.dotProduct v w = ∑ i, v i * w i` is exactly the dot product, generalized to any ring and index type.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Distance and angle",
+          "snippet": "The dot product of two Euclidean vectors A and B is defined by"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d={\\sqrt {(x_{2}-x_{1})^{2}+(y_{2}-y_{1})^{2}+(z_{2}-z_{1})^{2}}},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {A} \\cdot \\mathbf {B} {\\stackrel {\\mathrm {def} }{=}}\\left\\|\\mathbf {A} \\right\\|\\left\\|\\mathbf {B} \\right\\|\\cos \\theta ,}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Transformation of a parent function",
+      "anchor": {
+        "section": "Transformations",
+        "snippet": "Transformations are applied to a parent function to turn it into a new function with similar characteristics"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The pedagogical notion of transforming a 'parent function' has no formalizing declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Standard graph transformations",
+      "anchor": {
+        "section": "Transformations",
+        "snippet": "is changed by standard transformations as follows"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Standard shifts/scalings/reflections of graphs are not collected as a formalized transformation table.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Reciprocal parent function",
+      "anchor": {
+        "section": "Transformations",
+        "snippet": "has a horizontal and a vertical asymptote, and occupies the first and third quadrant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The reciprocal function y = 1/x and its asymptote/quadrant description are not a formalized statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Unit circle relation",
+      "anchor": {
+        "section": "Transformations",
+        "snippet": "is the relation that describes the unit circle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.sphere_zero_eq",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "generalization"
+      },
+      "note": "x² + y² = 1 is the r = 1, n = 2 case of `EuclideanSpace.sphere_zero_eq`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Transformations",
+          "snippet": "is the relation that describes the unit circle"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x^{2}+y^{2}-1=0}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Intersection of geometric objects",
+      "anchor": {
+        "section": "Finding intersections of geometric objects",
+        "snippet": "the intersection is the collection of all points"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Intersection of geometric objects is modeled by generic set intersection `∩`, with no dedicated geometric decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Intersection of two circles",
+      "anchor": {
+        "section": "Finding intersections of geometric objects",
+        "snippet": "might be the circle with radius 1 and center"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Solving for the common points of two specific circles is an example with no formalizing declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Intercepts with coordinate axes",
+      "anchor": {
+        "section": "Finding intercepts",
+        "snippet": "the intersection of a geometric object with the"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of axis intercepts is not formalized as a dedicated concept in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "y-intercept of a line",
+      "anchor": {
+        "section": "Finding intercepts",
+        "snippet": "specifies the point where the line crosses the"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The y-intercept of a line has no dedicated formalizing declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Geometric axis",
+      "anchor": {
+        "section": "Geometric axis",
+        "snippet": "Axis in geometry is the perpendicular line to any line, object or a surface"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A geometric 'axis' (perpendicular/symmetry line) is not formalized as such in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Normal",
+      "anchor": {
+        "section": "Geometric axis",
+        "snippet": "a normal is an object such as a line or vector that is perpendicular to a given object"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Submodule.orthogonal",
+        "module": "Mathlib.Analysis.InnerProductSpace.Orthogonal",
+        "match_kind": null
+      },
+      "note": "Perpendicularity via `Submodule.orthogonal` and `⟪x, y⟫ = 0` exists, but 'normal vector/line' is not a named geometric decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Surface normal",
+      "anchor": {
+        "section": "Geometric axis",
+        "snippet": "a surface normal , or simply normal , to a surface at a point P is a vector that is perpendicular to the tangent plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A surface normal requires a tangent plane to an embedded surface, which is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tangent as linear approximation",
+      "anchor": {
+        "section": "Spherical and nonlinear planes and their tangents",
+        "snippet": "Tangent is the linear approximation of a spherical or other curved or twisted line of a function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "fderiv",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Defs",
+        "match_kind": null
+      },
+      "note": "The Fréchet derivative `fderiv` is precisely the best linear approximation, though 'tangent' is not itself a decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tangent line",
+      "anchor": {
+        "section": "Tangent lines and planes",
+        "snippet": "the tangent line (or simply tangent ) to a plane curve at a given point is the straight line that"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "tangentConeAt",
+        "module": "Mathlib.Analysis.Calculus.TangentCone.Defs",
+        "match_kind": null
+      },
+      "note": "`tangentConeAt` provides tangent-direction infrastructure, but the tangent line as a geometric object is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tangent plane",
+      "anchor": {
+        "section": "Tangent lines and planes",
+        "snippet": "the tangent plane to a surface at a given point is the plane that"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TangentSpace",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": null
+      },
+      "note": "`TangentSpace` formalizes the tangent space to a manifold, the abstract analogue of a tangent plane to a surface.",
+      "provenance": "ai"
+    }
+  ]
+}

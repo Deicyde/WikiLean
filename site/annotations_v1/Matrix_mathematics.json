@@ -1,0 +1,539 @@
+{
+  "slug": "Matrix_mathematics",
+  "wikipedia_title": "Matrix (mathematics)",
+  "display_title": "Matrix (mathematics)",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{bmatrix}1&9&-13\\\\20&5&-6\\end{bmatrix}}}"
+      },
+      "status": "partial",
+      "decl": "Matrix",
+      "module": "Mathlib.LinearAlgebra.Matrix.Defs",
+      "note": "Concrete numeric example; the underlying Matrix type is formalized but specific entries are illustrative."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {A} ={\\begin{bmatrix}-1.3&0.6\\\\20.4&5.5\\\\9.7&-6.2\\end{bmatrix}}.}"
+      },
+      "status": "partial",
+      "decl": "Matrix",
+      "module": "Mathlib.LinearAlgebra.Matrix.Defs",
+      "note": "Specific real-matrix example illustrating the Matrix type which is formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {A} ={\\begin{bmatrix}a_{11}&a_{12}&\\cdots &a_{1n}\\\\a_{21}&a_{22}&\\cdots &a_{2n}\\\\\\vdots &\\vdots &\\ddots &\\vdots \\\\a_{m1}&a_{m2}&\\cdots &a_{mn}\\end{bmatrix}}={\\begin{pmatrix}a_{11}&a_{12}&\\cdots &a_{1n}\\\\a_{21}&a_{22}&\\cdots &a_{2n}\\\\\\vdots &\\vdots &\\ddots &\\vdots \\\\a_{m1}&a_{m2}&\\cdots &a_{mn}\\end{pmatrix}}.}"
+      },
+      "status": "formalized",
+      "decl": "Matrix",
+      "module": "Mathlib.LinearAlgebra.Matrix.Defs",
+      "note": "Generic m×n matrix notation directly corresponds to Mathlib's Matrix definition as curried function m → n → α."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {A} =\\left(a_{ij}\\right),\\quad \\left[a_{ij}\\right],\\quad {\\text{or}}\\quad \\left(a_{ij}\\right)_{1\\leq i\\leq m,\\;1\\leq j\\leq n}}"
+      },
+      "status": "formalized",
+      "decl": "Matrix.of",
+      "module": "Mathlib.LinearAlgebra.Matrix.Defs",
+      "note": "Indexed-entry notation matches Matrix.of which constructs a matrix from a function on indices."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {A} ={\\begin{bmatrix}4&-7&\\color {red}{5}&0\\\\-2&0&11&8\\\\19&1&-3&12\\end{bmatrix}}}"
+      },
+      "status": "partial",
+      "decl": "Matrix",
+      "module": "Mathlib.LinearAlgebra.Matrix.Defs",
+      "note": "Concrete numeric matrix illustrating entry indexing; only the general Matrix type is in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {A} ={\\begin{bmatrix}0&-1&-2&-3\\\\1&0&-1&-2\\\\2&1&0&-1\\end{bmatrix}}}"
+      },
+      "status": "partial",
+      "decl": "Matrix.of",
+      "module": "Mathlib.LinearAlgebra.Matrix.Defs",
+      "note": "Specific matrix defined by entry formula a_ij = i-j; Matrix.of formalizes the general construction."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}({\\mathbf {A}}+{\\mathbf {B}})_{i,j}={\\mathbf {A}}_{i,j}+{\\mathbf {B}}_{i,j},\\quad 1\\leq i\\leq m,\\quad 1\\leq j\\leq n.\\\\({\\mathbf {A}}-{\\mathbf {B}})_{i,j}={\\mathbf {A}}_{i,j}-{\\mathbf {B}}_{i,j},\\quad 1\\leq i\\leq m,\\quad 1\\leq j\\leq n.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Entrywise addition/subtraction formulas; no specific decl provided in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{bmatrix}1&3&1\\\\1&0&0\\end{bmatrix}}+{\\begin{bmatrix}0&0&5\\\\7&5&0\\end{bmatrix}}={\\begin{bmatrix}1+0&3+0&1+5\\\\1+7&0+5&0+0\\end{bmatrix}}={\\begin{bmatrix}1&3&6\\\\8&5&0\\end{bmatrix}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Numerical example of matrix addition; not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (c{\\mathbf {A}})_{i,j}=c\\cdot {\\mathbf {A}}_{i,j}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Scalar multiplication entrywise; no decl provided in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 2\\cdot {\\begin{bmatrix}1&8&-3\\\\4&-2&5\\end{bmatrix}}={\\begin{bmatrix}2\\cdot 1&2\\cdot 8&2\\cdot -3\\\\2\\cdot 4&2\\cdot -2&2\\cdot 5\\end{bmatrix}}={\\begin{bmatrix}2&16&-6\\\\8&-4&10\\end{bmatrix}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Numerical scalar multiplication example; no specific decl in list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {A} -\\mathbf {B} =\\mathbf {A} +(-1)\\cdot \\mathbf {B} }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Identity defining subtraction via additive inverse; no decl in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left({\\mathbf {A}}^{\\rm {T}}\\right)_{i,j}={\\mathbf {A}}_{j,i}.}"
+      },
+      "status": "formalized",
+      "decl": "Matrix.transpose",
+      "module": "Mathlib.LinearAlgebra.Matrix.Defs",
+      "note": "Defining equation of the transpose, exactly Matrix.transpose in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{bmatrix}1&2&3\\\\0&-6&7\\end{bmatrix}}^{\\mathrm {T} }={\\begin{bmatrix}1&0\\\\2&-6\\\\3&7\\end{bmatrix}}}"
+      },
+      "status": "partial",
+      "decl": "Matrix.transpose",
+      "module": "Mathlib.LinearAlgebra.Matrix.Defs",
+      "note": "Numeric example of transposition illustrating Matrix.transpose."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle [\\mathbf {AB} ]_{i,j}=a_{i,1}b_{1,j}+a_{i,2}b_{2,j}+\\cdots +a_{i,n}b_{n,j}=\\sum _{r=1}^{n}a_{i,r}b_{r,j},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Matrix multiplication formula; no Matrix.mul decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}{\\begin{bmatrix}{\\underline {2}}&{\\underline {3}}&{\\underline {4}}\\\\1&0&0\\\\\\end{bmatrix}}{\\begin{bmatrix}0&{\\underline {1000}}\\\\1&{\\underline {100}}\\\\0&{\\underline {10}}\\\\\\end{bmatrix}}&={\\begin{bmatrix}3&{\\underline {2340}}\\\\0&1000\\\\\\end{bmatrix}}.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Numerical example of matrix multiplication; no decl in list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathbf {AB}}\\neq {\\mathbf {BA}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Statement of non-commutativity; no specific decl in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{bmatrix}1&2\\\\3&4\\\\\\end{bmatrix}}{\\begin{bmatrix}0&1\\\\0&0\\\\\\end{bmatrix}}={\\begin{bmatrix}0&1\\\\0&3\\\\\\end{bmatrix}},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Numerical counterexample for matrix non-commutativity; no decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{bmatrix}0&1\\\\0&0\\\\\\end{bmatrix}}{\\begin{bmatrix}1&2\\\\3&4\\\\\\end{bmatrix}}={\\begin{bmatrix}3&4\\\\0&0\\\\\\end{bmatrix}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Continuation of numerical counterexample; not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {A} ={\\begin{bmatrix}1&\\color {red}{2}&3&4\\\\5&\\color {red}{6}&7&8\\\\\\color {red}{9}&\\color {red}{10}&\\color {red}{11}&\\color {red}{12}\\end{bmatrix}}\\rightarrow {\\begin{bmatrix}1&3&4\\\\5&7&8\\end{bmatrix}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Submatrix illustration via row/column removal; no decl in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {Ax} =\\mathbf {b} }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Matrix equation for linear systems; no specific decl in list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}a_{1,1}x_{1}+a_{1,2}x_{2}+&\\cdots +a_{1,n}x_{n}=b_{1}\\\\&\\ \\ \\vdots \\\\a_{m,1}x_{1}+a_{m,2}x_{2}+&\\cdots +a_{m,n}x_{n}=b_{m}\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Expanded system of linear equations; no decl provided."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {x} =\\mathbf {A} ^{-1}\\mathbf {b} }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Solution via matrix inverse; no inverse decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {A} ={\\begin{bmatrix}a&c\\\\b&d\\end{bmatrix}}}"
+      },
+      "status": "partial",
+      "decl": "Matrix",
+      "module": "Mathlib.LinearAlgebra.Matrix.Defs",
+      "note": "Generic 2×2 matrix representing a linear map; only the underlying Matrix type is in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (g\\circ f)({\\mathbf {x}})=g(f({\\mathbf {x}}))=g({\\mathbf {Ax}})={\\mathbf {B}}({\\mathbf {Ax}})=({\\mathbf {BA}}){\\mathbf {x}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Composition of linear maps corresponds to matrix product; no decl in list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\mathbf {I} _{1}&={\\begin{bmatrix}1\\end{bmatrix}},\\\\[4pt]\\mathbf {I} _{2}&={\\begin{bmatrix}1&0\\\\0&1\\end{bmatrix}},\\\\[4pt]\\vdots &\\\\[4pt]\\mathbf {I} _{n}&={\\begin{bmatrix}1&0&\\cdots &0\\\\0&1&\\cdots &0\\\\\\vdots &\\vdots &\\ddots &\\vdots \\\\0&0&\\cdots &1\\end{bmatrix}}\\end{aligned}}}"
+      },
+      "status": "partial",
+      "decl": "Matrix.diagonal",
+      "module": "Mathlib.Data.Matrix.Diagonal",
+      "note": "Identity matrix; diagonal is in list but Matrix.one not provided, so partial via diagonal."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathbf {AI}}_{n}={\\mathbf {I}}_{m}{\\mathbf {A}}={\\mathbf {A}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Multiplicative identity property of I; no specific decl in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathbf {AB}}={\\mathbf {BA}}={\\mathbf {I}}_{n},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Defining condition for the matrix inverse; no inverse decl in list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f({\\mathbf {x}})={\\mathbf {x}}^{\\rm {T}}{\\mathbf {Ax}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Quadratic form definition; no decl provided in list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle B_{\\mathbf {A}}({\\mathbf {x}},{\\mathbf {y}})={\\mathbf {x}}^{\\rm {T}}{\\mathbf {Ay}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Bilinear form associated to a matrix; no decl provided."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {A} ^{\\mathrm {T} }=\\mathbf {A} ^{-1},\\,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Orthogonality condition; no inverse/orthogonal decl in list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {A} ^{\\mathrm {T} }\\mathbf {A} =\\mathbf {A} \\mathbf {A} ^{\\mathrm {T} }=\\mathbf {I} _{n},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Equivalent orthogonality condition; no decl in list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {tr} (\\mathbf {AB} )=\\operatorname {tr} (\\mathbf {BA} ).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Cyclic trace property; no trace decl in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {tr} (\\mathbf {AB} )=\\sum _{i=1}^{m}\\sum _{j=1}^{n}a_{ij}b_{ji}=\\operatorname {tr} (\\mathbf {BA} ).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Explicit double-sum form of tr(AB); no decl in list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {tr} ({\\mathbf {A}})=\\operatorname {tr} ({\\mathbf {A}}^{\\rm {T}}).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Trace equals trace of transpose; no decl in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\det {\\begin{bmatrix}a&b\\\\c&d\\end{bmatrix}}=ad-bc.}"
+      },
+      "status": "partial",
+      "decl": "Matrix.det",
+      "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+      "note": "2×2 determinant formula; the general Matrix.det subsumes this case."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\det({\\mathbf {AB}})=\\det({\\mathbf {A}})\\cdot \\det({\\mathbf {B}}),}"
+      },
+      "status": "partial",
+      "decl": "Matrix.det",
+      "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+      "note": "Multiplicativity of determinant; not in the provided decl list but Matrix.det is given."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle |{\\mathbf {AB}}|=|{\\mathbf {A}}|\\cdot |{\\mathbf {B}}|.}"
+      },
+      "status": "partial",
+      "decl": "Matrix.det",
+      "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+      "note": "Alternative notation for det multiplicativity; relies on Matrix.det."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {A} \\mathbf {v} =\\lambda \\mathbf {v} }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Eigenvalue equation; no eigenvalue decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathbf {A}}^{-1}=\\operatorname {adj} ({\\mathbf {A}})/\\det({\\mathbf {A}}).}"
+      },
+      "status": "partial",
+      "decl": "Matrix.det",
+      "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+      "note": "Adjugate formula for inverse; uses Matrix.det but adjugate decl not in list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathbf {A}}^{n}=({\\mathbf {VDV}}^{-1})^{n}={\\mathbf {VDV}}^{-1}{\\mathbf {VDV}}^{-1}\\ldots {\\mathbf {VDV}}^{-1}={\\mathbf {VD}}^{n}{\\mathbf {V}}^{-1}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Eigendecomposition power formula; no decl in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(\\mathbf {v} _{j})=\\sum _{i=1}^{m}a_{i,j}\\mathbf {w} _{i}\\qquad {\\mbox{for}}\\ j=1,\\ldots ,n.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Matrix-of-linear-map definition; no linear-map decl in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathbf {M}}^{\\rm {T}}{\\mathbf {M}}={\\mathbf {I}},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Orthogonal-matrix defining condition; no decl in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\coprod _{i\\in I}(X\\otimes Y_{i})\\to X\\otimes \\coprod _{i\\in I}Y_{i}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Categorical distributivity morphism; no decl in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\coprod _{i\\in I}(Y_{i}\\otimes X)\\to \\left(\\coprod _{i\\in I}Y_{i}\\right)\\otimes X}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Categorical distributivity morphism; no decl in list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (N\\circ M)(a,c)=\\coprod _{b\\in B}M(a,b)\\otimes N(b,c).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Categorical matrix composition; no decl in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {id} _{A}(a,b)={\\begin{cases}I&a=b\\\\\\varnothing &a\\neq b\\end{cases}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Categorical identity-matrix definition; no decl in list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle a+ib\\leftrightarrow {\\begin{bmatrix}a&-b\\\\b&a\\end{bmatrix}},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Embedding of complex numbers as 2×2 real matrices; no decl in list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{bmatrix}1&1&0\\\\1&0&1\\\\0&1&0\\end{bmatrix}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Adjacency-matrix example; no decl in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle H(f)=\\left[{\\frac {\\partial ^{2}f}{\\partial x_{i}\\,\\partial x_{j}}}\\right].}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Hessian matrix definition; no Hessian decl in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle J(f)=\\left[{\\frac {\\partial f_{i}}{\\partial x_{j}}}\\right]_{1\\leq i\\leq m,1\\leq j\\leq n}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Jacobian matrix definition; no Jacobian decl in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle y_{i}\\approx ax_{i}+b,\\quad i=1,\\ldots ,N}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Linear-regression model; no decl in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle a_{1}a_{2}\\cdots a_{n}\\prod _{i<j}(a_{j}-a_{i}),}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Historical polynomial used to define the determinant; no decl in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\forall b_{j}\\forall a_{i}\\colon \\phi (a_{i},b_{j}).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Historical logical usage of 'matrix'; not a Mathlib concept."
+    }
+  ]
+}

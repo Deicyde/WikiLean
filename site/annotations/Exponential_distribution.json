@@ -1,0 +1,1475 @@
+{
+  "slug": "Exponential_distribution",
+  "wikipedia_title": "Exponential distribution",
+  "display_title": "Exponential distribution",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Exponential distribution",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the exponential distribution or negative exponential distribution is the probability distribution of the distance between events in a Poisson point process"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.expMeasure",
+        "module": "Mathlib.Probability.Distributions.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "`expMeasure r` is the exponential measure on ℝ with rate `r`, defined via `gammaMeasure 1 r`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "PDF of exponential distribution",
+      "anchor": {
+        "section": "Probability density function",
+        "snippet": "The probability density function (pdf) of an exponential distribution is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.exponentialPDFReal",
+        "module": "Mathlib.Probability.Distributions.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "`exponentialPDFReal r x = r * exp (-(r*x))` for `0 ≤ x` and `0` otherwise (via `exponentialPDF_eq`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rate parameter",
+      "anchor": {
+        "section": "Probability density function",
+        "snippet": "Here λ > 0 is the parameter of the distribution, often called the rate parameter"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.exponentialPDFReal",
+        "module": "Mathlib.Probability.Distributions.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "The rate parameter is the `r : ℝ` argument of `exponentialPDFReal`/`expMeasure`, with positivity assumed via `hr : 0 < r`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Infinite divisibility",
+      "anchor": {
+        "section": "Probability density function",
+        "snippet": "The exponential distribution exhibits infinite divisibility"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of infinite divisibility or its instance for the exponential distribution was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "CDF of exponential distribution",
+      "anchor": {
+        "section": "Cumulative distribution function",
+        "snippet": "The cumulative distribution function is given by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.cdf_expMeasure_eq",
+        "module": "Mathlib.Probability.Distributions.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "`cdf_expMeasure_eq` proves `cdf (expMeasure r) x = 1 - exp (-(r*x))` for `0 ≤ x` and `0` else.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Scale parameter parametrization",
+      "anchor": {
+        "section": "Alternative parametrization",
+        "snippet": "The exponential distribution is sometimes parametrized in terms of the scale parameter"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib only provides the rate-parameter form; no scale-parameter alternative parametrization is defined.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Alternative parametrization",
+          "snippet": "The exponential distribution is sometimes parametrized in terms of the scale parameter"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x;\\beta )={\\begin{cases}{\\frac {1}{\\beta }}e^{-x/\\beta }&amp;x\\geq 0,\\\\0&amp;x&lt;0.\\end{cases}}\\qquad \\qquad F(x;\\beta )={\\begin{cases}1-e^{-x/\\beta }&amp;x\\geq 0,\\\\0&amp;x&lt;0.\\end{cases}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Mean of exponential distribution",
+      "anchor": {
+        "section": "Mean, variance, moments, and median",
+        "snippet": "The mean or expected value of an exponentially distributed random variable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No computation of `∫ x ∂(expMeasure r) = 1/r` is present in `Mathlib/Probability/Distributions/Exponential.lean`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Mean, variance, moments, and median",
+          "snippet": "The mean or expected value of an exponentially distributed random variable"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {E} [X]={\\frac {1}{\\lambda }}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Variance of exponential distribution",
+      "anchor": {
+        "section": "Mean, variance, moments, and median",
+        "snippet": "The variance of X is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No variance formula for `expMeasure` was found.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Mean, variance, moments, and median",
+          "snippet": "The variance of X is given by"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Var} [X]={\\frac {1}{\\lambda ^{2}}},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Moments of exponential distribution",
+      "anchor": {
+        "section": "Mean, variance, moments, and median",
+        "snippet": "The moments of X , for"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general moment formula `E[X^n] = n!/λ^n` for the exponential distribution was found.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Mean, variance, moments, and median",
+          "snippet": "The moments of X , for"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {E} \\left[X^{n}\\right]={\\frac {n!}{\\lambda ^{n}}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Central moments of exponential distribution",
+      "anchor": {
+        "section": "Mean, variance, moments, and median",
+        "snippet": "The central moments of X , for"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No central moment formula for the exponential distribution was found.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Mean, variance, moments, and median",
+          "snippet": "The central moments of X , for"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mu _{n}={\\frac {!n}{\\lambda ^{n}}}={\\frac {n!}{\\lambda ^{n}}}\\sum _{k=0}^{n}{\\frac {(-1)^{k}}{k!}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Median of exponential distribution",
+      "anchor": {
+        "section": "Mean, variance, moments, and median",
+        "snippet": "The median of X is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general notion of `median` of a measure was found in `Mathlib/Probability`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Mean, variance, moments, and median",
+          "snippet": "The median of X is given by"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {m} [X]={\\frac {\\ln(2)}{\\lambda }}&lt;\\operatorname {E} [X],}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left|\\operatorname {E} \\left[X\\right]-\\operatorname {m} \\left[X\\right]\\right|={\\frac {1-\\ln(2)}{\\lambda }}&lt;{\\frac {1}{\\lambda }}=\\operatorname {\\sigma } [X],}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Memorylessness relation",
+      "anchor": {
+        "section": "Memorylessness property of exponential random variable",
+        "snippet": "An exponentially distributed random variable T obeys the relation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `memoryless` predicate or proof for the exponential distribution was found in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Memorylessness property of exponential random variable",
+          "snippet": "An exponentially distributed random variable T obeys the relation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Pr \\left(T&gt;s+t\\mid T&gt;s\\right)=\\Pr(T&gt;t),\\qquad \\forall s,t\\geq 0.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Characterization of memoryless distributions",
+      "anchor": {
+        "section": "Memorylessness property of exponential random variable",
+        "snippet": "The exponential distribution and the geometric distribution are the only memoryless probability distributions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Memorylessness is not formalized, so no such characterization exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Constant failure rate characterization",
+      "anchor": {
+        "section": "Memorylessness property of exponential random variable",
+        "snippet": "The exponential distribution is consequently also necessarily the only continuous probability distribution that has a constant failure rate"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of hazard/failure rate or its characterization is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quantile function",
+      "anchor": {
+        "section": "Quantiles",
+        "snippet": "The quantile function (inverse cumulative distribution function) for Exp"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No quantile-function formula for the exponential distribution was found.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Quantiles",
+          "snippet": "The quantile function (inverse cumulative distribution function) for Exp"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F^{-1}(p;\\lambda )={\\frac {-\\ln(1-p)}{\\lambda }},\\qquad 0\\leq p&lt;1}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Quartiles of exponential distribution",
+      "anchor": {
+        "section": "Quantiles",
+        "snippet": "The quartiles are therefore"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No quartile computation for the exponential distribution was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Interquartile range",
+      "anchor": {
+        "section": "Quantiles",
+        "snippet": "And as a consequence the interquartile range is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No interquartile range result for the exponential distribution was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conditional Value at Risk",
+      "anchor": {
+        "section": "Conditional Value at Risk (Expected Shortfall)",
+        "snippet": "The conditional value at risk (CVaR) also known as the expected shortfall or superquantile for Exp"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No CVaR/expected-shortfall definitions appear anywhere in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Buffered Probability of Exceedance",
+      "anchor": {
+        "section": "Buffered Probability of Exceedance (bPOE)",
+        "snippet": "The buffered probability of exceedance is one minus the probability level at which the CVaR equals the threshold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No buffered probability of exceedance is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Kullback–Leibler divergence of exponentials",
+      "anchor": {
+        "section": "Kullback–Leibler divergence",
+        "snippet": "The directed Kullback–Leibler divergence in nats of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.klDiv",
+        "module": "Mathlib.InformationTheory.KullbackLeibler.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "General KL divergence is formalized but the closed-form formula `λ₀/λ₁ − 1 − log(λ₀/λ₁)` for two exponentials is not.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Kullback–Leibler divergence",
+          "snippet": "The directed Kullback–Leibler divergence in nats of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\Delta (\\lambda _{0}\\parallel \\lambda )&amp;=\\mathbb {E} _{\\lambda _{0}}\\left(\\log {\\frac {p_{\\lambda _{0}}(x)}{p_{\\lambda }(x)}}\\right)\\\\&amp;=\\mathbb {E} _{\\lambda _{0}}\\left(\\log {\\frac {\\lambda _{0}e^{\\lambda _{0}x}}{\\lambda e^{\\lambda x}}}\\right)\\\\&amp;=\\log(\\lambda _{0})-\\log(\\lambda )-(\\lambda _{0}-\\lambda )E_{\\lambda _{0}}(x)\\\\&amp;=\\log(\\lambda _{0})-\\log(\\lambda )+{\\frac {\\lambda }{\\lambda _{0}}}-1.\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Maximum entropy distribution",
+      "anchor": {
+        "section": "Maximum entropy distribution",
+        "snippet": "Among all continuous probability distributions with support"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No maximum-entropy characterization is found for the exponential distribution in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Minimum of independent exponentials",
+      "anchor": {
+        "section": "Distribution of the minimum of exponential random variables",
+        "snippet": "Let X 1 , ..., X n be independent exponentially distributed random variables with rate parameters"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem that `min Xᵢ ∼ Exp(∑ λᵢ)` was found.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Distribution of the minimum of exponential random variables",
+          "snippet": "Let X 1 , ..., X n be independent exponentially distributed random variables with rate parameters"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\min \\left\\{X_{1},\\dotsc ,X_{n}\\right\\}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lambda =\\lambda _{1}+\\dotsb +\\lambda _{n}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Index of minimum is categorical",
+      "anchor": {
+        "section": "Distribution of the minimum of exponential random variables",
+        "snippet": "The index of the variable which achieves the minimum is distributed according to the categorical distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the categorical distribution nor this index theorem is formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Distribution of the minimum of exponential random variables",
+          "snippet": "The index of the variable which achieves the minimum is distributed according to the categorical distribution"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Pr \\left(X_{k}=\\min\\{X_{1},\\dotsc ,X_{n}\\}\\right)={\\frac {\\lambda _{k}}{\\lambda _{1}+\\dotsb +\\lambda _{n}}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Difference not exponential",
+      "anchor": {
+        "section": "Distribution of the minimum of exponential random variables",
+        "snippet": "is not exponentially distributed, if X 1 , ..., X n do not all have parameter 0"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No negative result on the distribution of differences of exponentials was found.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Distribution of the minimum of exponential random variables",
+          "snippet": "is not exponentially distributed, if X 1 , ..., X n do not all have parameter 0"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\max\\{X_{1},\\dotsc ,X_{n}\\}}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Joint moments of order statistics",
+      "anchor": {
+        "section": "Joint moments of i.i.d. exponential order statistics",
+        "snippet": "the joint moment"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No order-statistic theory for exponential samples was found.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Joint moments of i.i.d. exponential order statistics",
+          "snippet": "the joint moment"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\operatorname {E} \\left[X_{(i)}X_{(j)}\\right]&amp;=\\sum _{k=0}^{j-1}{\\frac {1}{(n-k)\\lambda }}\\operatorname {E} \\left[X_{(i)}\\right]+\\operatorname {E} \\left[X_{(i)}^{2}\\right]\\\\&amp;=\\sum _{k=0}^{j-1}{\\frac {1}{(n-k)\\lambda }}\\sum _{k=0}^{i-1}{\\frac {1}{(n-k)\\lambda }}+\\sum _{k=0}^{i-1}{\\frac {1}{((n-k)\\lambda )^{2}}}+\\left(\\sum _{k=0}^{i-1}{\\frac {1}{(n-k)\\lambda }}\\right)^{2}.\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum of two independent exponentials density",
+      "anchor": {
+        "section": "Sum of two independent exponential random variables",
+        "snippet": "are independent exponential random variables with respective rate parameters"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No convolution formula for two exponentials with different rates was found.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Sum of two independent exponential random variables",
+          "snippet": "are independent exponential random variables with respective rate parameters"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}f_{Z}(z)&amp;=\\int _{-\\infty }^{\\infty }f_{X_{1}}(x_{1})f_{X_{2}}(z-x_{1})\\,dx_{1}\\\\&amp;=\\int _{0}^{z}\\lambda _{1}e^{-\\lambda _{1}x_{1}}\\lambda _{2}e^{-\\lambda _{2}(z-x_{1})}\\,dx_{1}\\\\&amp;=\\lambda _{1}\\lambda _{2}e^{-\\lambda _{2}z}\\int _{0}^{z}e^{(\\lambda _{2}-\\lambda _{1})x_{1}}\\,dx_{1}\\\\&amp;={\\begin{cases}{\\dfrac {\\lambda _{1}\\lambda _{2}}{\\lambda _{2}-\\lambda _{1}}}\\left(e^{-\\lambda _{1}z}-e^{-\\lambda _{2}z}\\right)&amp;{\\text{ if }}\\lambda _{1}\\neq \\lambda _{2}\\\\[4pt]\\lambda ^{2}ze^{-\\lambda z}&amp;{\\text{ if }}\\lambda _{1}=\\lambda _{2}=\\lambda .\\end{cases}}\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}H(Z)&amp;=1+\\gamma +\\ln \\left({\\frac {\\lambda _{1}-\\lambda _{2}}{\\lambda _{1}\\lambda _{2}}}\\right)+\\psi \\left({\\frac {\\lambda _{1}}{\\lambda _{1}-\\lambda _{2}}}\\right),\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Equal rate parameters yield Erlang",
+      "anchor": {
+        "section": "Sum of two independent exponential random variables",
+        "snippet": "In the case of equal rate parameters, the result is an Erlang distribution with shape 2"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.gammaMeasure",
+        "module": "Mathlib.Probability.Distributions.Gamma",
+        "match_kind": "generalization"
+      },
+      "note": "The Gamma distribution (which subsumes Erlang) is defined, but no theorem connects the sum of two exponentials to it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sum of n i.i.d. exponentials",
+      "anchor": {
+        "section": "Sum of two independent exponential random variables",
+        "snippet": "The sum of n independent Exp"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.gammaMeasure",
+        "module": "Mathlib.Probability.Distributions.Gamma",
+        "match_kind": "generalization"
+      },
+      "note": "The Gamma target distribution exists in Mathlib, but the convolution identity sum of n iid Exp(λ) = Gamma(n,λ) is not proven.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Laplace absolute value",
+      "anchor": {
+        "section": "Related distributions",
+        "snippet": "If X ~ Laplace"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Laplace distribution is not defined in Mathlib (no matching files found).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniform to exponential",
+      "anchor": {
+        "section": "Related distributions",
+        "snippet": "If X ~ U (0, 1) then −log"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem stating that `-log U/λ ∼ Exp(λ)` for uniform `U` was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Log of Pareto",
+      "anchor": {
+        "section": "Related distributions",
+        "snippet": "If X ~ Pareto"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.paretoMeasure",
+        "module": "Mathlib.Probability.Distributions.Pareto",
+        "match_kind": "generalization"
+      },
+      "note": "The Pareto distribution is formalized but no transformation result linking it to the exponential is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Limit of scaled beta",
+      "anchor": {
+        "section": "Related distributions",
+        "snippet": "The exponential distribution is a limit of a scaled beta distribution"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.betaPDF",
+        "module": "Mathlib.Probability.Distributions.Beta",
+        "match_kind": "generalization"
+      },
+      "note": "Beta distribution exists in Mathlib but no convergence-to-exponential limit theorem was found.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Related distributions",
+          "snippet": "The exponential distribution is a limit of a scaled beta distribution"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{n\\to \\infty }n\\operatorname {Beta} (1,n)=\\operatorname {Exp} (1).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Special case of Pearson type 3",
+      "anchor": {
+        "section": "Related distributions",
+        "snippet": "The exponential distribution is a special case of type 3 Pearson distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pearson distributions are not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Special case of Gamma",
+      "anchor": {
+        "section": "Related distributions",
+        "snippet": "The exponential distribution is the special case of a Gamma distribution with shape parameter 1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.exponentialPDFReal",
+        "module": "Mathlib.Probability.Distributions.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "By definition `exponentialPDFReal r x = gammaPDFReal 1 r x` and `expMeasure r = gammaMeasure 1 r`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closure under scaling",
+      "anchor": {
+        "section": "Related distributions",
+        "snippet": "closure under scaling by a positive factor"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem stating that `kX ∼ Exp(λ/k)` for `X ∼ Exp(λ)` was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Benktander Weibull relation",
+      "anchor": {
+        "section": "Related distributions",
+        "snippet": "1 + X ~ BenktanderWeibull"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Benktander–Weibull distribution is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponential of exponential is Pareto",
+      "anchor": {
+        "section": "Related distributions",
+        "snippet": "ke X ~ Pareto"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No transformation theorem relating `k·e^X` of an exponential to Pareto was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "e to minus lambda X uniform",
+      "anchor": {
+        "section": "Related distributions",
+        "snippet": "e −λX ~ U (0, 1)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No such transformation theorem from exponential to uniform was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "e to minus X is Beta",
+      "anchor": {
+        "section": "Related distributions",
+        "snippet": "e −X ~ Beta"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `e^{-X} ∼ Beta` transformation result was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Power law relation",
+      "anchor": {
+        "section": "Related distributions",
+        "snippet": "e X ~ PowerLaw"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Power-law distributions are not separately formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gumbel relation",
+      "anchor": {
+        "section": "Related distributions",
+        "snippet": "~ Gumbel"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gumbel distribution is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Laplace from difference",
+      "anchor": {
+        "section": "Related distributions",
+        "snippet": "~ Laplace(0, 1)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Laplace distribution is absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Minimum of exponentials related",
+      "anchor": {
+        "section": "Related distributions",
+        "snippet": "min{ X 1 , ..., X n } ~ Exp"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No min-of-exponentials theorem is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Difference of exponentials Laplace",
+      "anchor": {
+        "section": "Related distributions",
+        "snippet": "X i − X j ~ Laplace"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Laplace distribution and this transformation result are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chi-squared relation",
+      "anchor": {
+        "section": "Related distributions",
+        "snippet": "X has a chi-squared distribution with 2 degrees of freedom"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chi-squared distribution is not present in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Related distributions",
+          "snippet": "X has a chi-squared distribution with 2 degrees of freedom"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {Exp} (\\lambda )={\\frac {1}{2\\lambda }}\\operatorname {Exp} \\left({\\frac {1}{2}}\\right)\\sim {\\frac {1}{2\\lambda }}\\chi _{2}^{2}\\Rightarrow \\sum _{i=1}^{n}\\operatorname {Exp} (\\lambda )\\sim {\\frac {1}{2\\lambda }}\\chi _{2n}^{2}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Hoyt from exponential and arcsine",
+      "anchor": {
+        "section": "Related distributions",
+        "snippet": "The Hoyt distribution can be obtained from exponential distribution and arcsine distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither Hoyt nor arcsine distributions appear in Mathlib's probability distributions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Limit of kappa-exponential",
+      "anchor": {
+        "section": "Related distributions",
+        "snippet": "The exponential distribution is a limit of the κ -exponential distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Kappa-exponential distribution is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Limit of kappa-Generalized Gamma",
+      "anchor": {
+        "section": "Related distributions",
+        "snippet": "Exponential distribution is a limit of the κ-Generalized Gamma distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Kappa-generalized Gamma is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Likelihood function",
+      "anchor": {
+        "section": "Parameter estimation",
+        "snippet": "The likelihood function for λ, given an independent and identically distributed sample"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.llr",
+        "module": "Mathlib.MeasureTheory.Measure.LogLikelihoodRatio",
+        "match_kind": "generalization"
+      },
+      "note": "A general log-likelihood-ratio is formalized but no exponential-distribution-specific likelihood function is.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Parameter estimation",
+          "snippet": "The likelihood function for λ, given an independent and identically distributed sample"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle L(\\lambda )=\\prod _{i=1}^{n}\\lambda \\exp(-\\lambda x_{i})=\\lambda ^{n}\\exp \\left(-\\lambda \\sum _{i=1}^{n}x_{i}\\right)=\\lambda ^{n}\\exp \\left(-\\lambda n{\\overline {x}}\\right),}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Maximum likelihood estimator",
+      "anchor": {
+        "section": "Parameter estimation",
+        "snippet": "the maximum likelihood estimate for the rate parameter is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No MLE for the exponential rate parameter is formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Parameter estimation",
+          "snippet": "the maximum likelihood estimate for the rate parameter is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\widehat {\\lambda }}_{\\text{mle}}={\\frac {1}{\\overline {x}}}={\\frac {n}{\\sum _{i}x_{i}}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "MLE bias",
+      "anchor": {
+        "section": "Parameter estimation",
+        "snippet": "This is not an unbiased estimator of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Statistical bias of the MLE is not discussed in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bias-corrected MLE",
+      "anchor": {
+        "section": "Parameter estimation",
+        "snippet": "which yields the bias-corrected maximum likelihood estimator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bias-correction of estimators is not in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Parameter estimation",
+          "snippet": "which yields the bias-corrected maximum likelihood estimator"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle B\\equiv \\operatorname {E} \\left[\\left({\\widehat {\\lambda }}_{\\text{mle}}-\\lambda \\right)\\right]={\\frac {\\lambda }{n-1}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\widehat {\\lambda }}_{\\text{mle}}^{*}={\\widehat {\\lambda }}_{\\text{mle}}-B.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "MSE-minimizing correction",
+      "anchor": {
+        "section": "Parameter estimation",
+        "snippet": "An approximate minimizer of mean squared error"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "MSE-minimizing estimator corrections are not in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Parameter estimation",
+          "snippet": "An approximate minimizer of mean squared error"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\widehat {\\lambda }}=\\left({\\frac {n-2}{n}}\\right)\\left({\\frac {1}{\\bar {x}}}\\right)={\\frac {n-2}{\\sum _{i}x_{i}}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Fisher information",
+      "anchor": {
+        "section": "Fisher information",
+        "snippet": "The Fisher information , denoted"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Fisher information definition is found in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Fisher information",
+          "snippet": "The Fisher information , denoted"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathcal {I}}(\\lambda )=\\operatorname {E} \\left[\\left.\\left({\\frac {\\partial }{\\partial \\lambda }}\\log f(x;\\lambda )\\right)^{2}\\right|\\lambda \\right]=\\int \\left({\\frac {\\partial }{\\partial \\lambda }}\\log f(x;\\lambda )\\right)^{2}f(x;\\lambda )\\,dx}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Exact confidence interval",
+      "anchor": {
+        "section": "Confidence intervals",
+        "snippet": "An exact 100(1 − α)% confidence interval for the rate parameter of an exponential distribution is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Confidence intervals are not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Confidence intervals",
+          "snippet": "An exact 100(1 − α)% confidence interval for the rate parameter of an exponential distribution is given by"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {2n}{{\\widehat {\\lambda }}_{\\textrm {mle}}\\chi _{{\\frac {\\alpha }{2}},2n}^{2}}}&lt;{\\frac {1}{\\lambda }}&lt;{\\frac {2n}{{\\widehat {\\lambda }}_{\\textrm {mle}}\\chi _{1-{\\frac {\\alpha }{2}},2n}^{2}}}\\,,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {2n{\\overline {x}}}{\\chi _{{\\frac {\\alpha }{2}},2n}^{2}}}&lt;{\\frac {1}{\\lambda }}&lt;{\\frac {2n{\\overline {x}}}{\\chi _{1-{\\frac {\\alpha }{2}},2n}^{2}}}\\,,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\lambda _{\\text{lower}}&amp;={\\widehat {\\lambda }}\\left(1-{\\frac {1.96}{\\sqrt {n}}}\\right)\\\\\\lambda _{\\text{upper}}&amp;={\\widehat {\\lambda }}\\left(1+{\\frac {1.96}{\\sqrt {n}}}\\right)\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Normal approximation CI",
+      "anchor": {
+        "section": "Confidence intervals",
+        "snippet": "A simple approximation to the exact interval endpoints can be derived using a normal approximation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Normal-approximation CIs are not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Confidence intervals",
+          "snippet": "A simple approximation to the exact interval endpoints can be derived using a normal approximation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {2n}{{\\widehat {\\lambda }}_{\\textrm {mle}}\\chi _{{\\frac {\\alpha }{2}},2n}^{2}}}&lt;{\\frac {1}{\\lambda }}&lt;{\\frac {2n}{{\\widehat {\\lambda }}_{\\textrm {mle}}\\chi _{1-{\\frac {\\alpha }{2}},2n}^{2}}}\\,,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {2n{\\overline {x}}}{\\chi _{{\\frac {\\alpha }{2}},2n}^{2}}}&lt;{\\frac {1}{\\lambda }}&lt;{\\frac {2n{\\overline {x}}}{\\chi _{1-{\\frac {\\alpha }{2}},2n}^{2}}}\\,,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\lambda _{\\text{lower}}&amp;={\\widehat {\\lambda }}\\left(1-{\\frac {1.96}{\\sqrt {n}}}\\right)\\\\\\lambda _{\\text{upper}}&amp;={\\widehat {\\lambda }}\\left(1+{\\frac {1.96}{\\sqrt {n}}}\\right)\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Conjugate gamma prior",
+      "anchor": {
+        "section": "Bayesian inference with a conjugate prior",
+        "snippet": "The conjugate prior for the exponential distribution is the gamma distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bayesian conjugate-prior theory is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Posterior distribution",
+      "anchor": {
+        "section": "Bayesian inference with a conjugate prior",
+        "snippet": "The posterior distribution p can then be expressed in terms of the likelihood function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No posterior-distribution derivation appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Posterior mean",
+      "anchor": {
+        "section": "Bayesian inference with a conjugate prior",
+        "snippet": "The posterior mean here is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No posterior-mean computation for the exponential model exists in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Bayesian inference with a conjugate prior",
+          "snippet": "The posterior mean here is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {\\alpha +n}{\\beta +n{\\overline {x}}}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Haar measure for exponential",
+      "anchor": {
+        "section": "Bayesian inference with a calibrating prior",
+        "snippet": "the exponential has an associated Haar measure"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Although Haar measure exists in Mathlib generally, the Bayesian Haar prior for the exponential distribution is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bayesian prediction with Haar prior",
+      "anchor": {
+        "section": "Bayesian inference with a calibrating prior",
+        "snippet": "there is an exact expression for Bayesian predictions generated using the Haar prior"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bayesian predictive distributions are not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Inter-arrival times in Poisson process",
+      "anchor": {
+        "section": "Occurrence of events",
+        "snippet": "The exponential distribution occurs naturally when describing the lengths of the inter-arrival times in a homogeneous Poisson process"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Poisson point process theory and inter-arrival theorems are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Continuous counterpart of geometric",
+      "anchor": {
+        "section": "Occurrence of events",
+        "snippet": "The exponential distribution may be viewed as a continuous counterpart of the geometric distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Both distributions exist (`geometricPMFReal`, `expMeasure`) but no result connects them as continuous/discrete analogues.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Phone calls and radioactive decay",
+      "anchor": {
+        "section": "Occurrence of events",
+        "snippet": "Similar caveats apply to the following examples which yield approximately exponentially distributed variables"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Applied examples like phone calls and radioactive decay are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Constant probability per unit length",
+      "anchor": {
+        "section": "Occurrence of events",
+        "snippet": "Exponential variables can also be used to model situations where certain events occur with a constant probability per unit length"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Applied modelling examples are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Queuing theory service times",
+      "anchor": {
+        "section": "Occurrence of events",
+        "snippet": "In queuing theory , the service times of agents in a system"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Queueing-theory applications are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Reliability theory bathtub curve",
+      "anchor": {
+        "section": "Occurrence of events",
+        "snippet": "Reliability theory and reliability engineering also make extensive use of the exponential distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Reliability theory is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Barometric formula",
+      "anchor": {
+        "section": "Occurrence of events",
+        "snippet": "the heights of the various molecules also follow an approximate exponential distribution, known as the Barometric formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Barometric/physics examples are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hydrology extreme values",
+      "anchor": {
+        "section": "Occurrence of events",
+        "snippet": "In hydrology , the exponential distribution is used to analyze extreme values"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hydrology/extreme-value applications are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Surgery duration",
+      "anchor": {
+        "section": "Occurrence of events",
+        "snippet": "In operating-rooms management, the distribution of surgery duration"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Operations-research applications are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Plug-in predictive distribution",
+      "anchor": {
+        "section": "Prediction",
+        "snippet": "the so-called plug-in distribution, formed by plugging a suitable estimate for the rate parameter"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Plug-in predictive distributions are not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Prediction",
+          "snippet": "the so-called plug-in distribution, formed by plugging a suitable estimate for the rate parameter"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle p_{\\rm {ML}}(x_{n+1}\\mid x_{1},\\ldots ,x_{n})=\\left({\\frac {1}{\\overline {x}}}\\right)\\exp \\left(-{\\frac {x_{n+1}}{\\overline {x}}}\\right).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "CNML predictive superiority",
+      "anchor": {
+        "section": "Prediction",
+        "snippet": "the CNML predictive distribution is strictly superior to the maximum likelihood plug-in distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "CNML and predictive comparison theorems are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverse transform sampling",
+      "anchor": {
+        "section": "Random variate generation",
+        "snippet": "A conceptually very simple method for generating exponential variates is based on inverse transform sampling"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Inverse transform sampling is not formalized for the exponential distribution in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniform symmetry trick",
+      "anchor": {
+        "section": "Random variate generation",
+        "snippet": "Moreover, if U is uniform on (0, 1), then so is 1 − U"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem stating `1 − U` is uniform on `(0,1)` for uniform `U` was found in `Mathlib/Probability/Distributions/Uniform.lean`.",
+      "provenance": "ai"
+    }
+  ]
+}

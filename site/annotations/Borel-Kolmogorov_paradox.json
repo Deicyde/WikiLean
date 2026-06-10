@@ -1,0 +1,361 @@
+{
+  "slug": "Borel-Kolmogorov_paradox",
+  "wikipedia_title": "Borel–Kolmogorov paradox",
+  "display_title": "Borel–Kolmogorov paradox",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "example",
+      "label": "Great circle puzzle setup",
+      "anchor": {
+        "section": "A great circle puzzle",
+        "snippet": "Suppose that a random variable has a uniform distribution on a unit sphere"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.toSphere",
+        "module": "Mathlib.MeasureTheory.Constructions.HaarToSphere",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has `Measure.toSphere` giving a measure on the unit sphere, but no specific setup of the Borel-Kolmogorov great-circle puzzle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Conditional density on the equator",
+      "anchor": {
+        "section": "A great circle puzzle",
+        "snippet": "If the coordinates are chosen so that the great circle is an equator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific computation of a uniform conditional density on the equator of a sphere appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Conditional density on a line of longitude",
+      "anchor": {
+        "section": "A great circle puzzle",
+        "snippet": "If the great circle is a line of longitude"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the conditional density along a line of longitude on a sphere.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conditional probability via limit of rings",
+      "anchor": {
+        "section": "Explanation and implications",
+        "snippet": "Measure theory provides a way to define a conditional probability, using the limit of events"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.condDistrib",
+        "module": "Mathlib.Probability.Kernel.CondDistrib",
+        "match_kind": "generalization"
+      },
+      "note": "General conditional distribution via disintegration is in `condDistrib`, but the specific limit-of-rings construction on the sphere is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conditional probability via limit of lunes",
+      "anchor": {
+        "section": "Explanation and implications",
+        "snippet": "is defined using a limit of the events"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.condDistrib",
+        "module": "Mathlib.Probability.Kernel.CondDistrib",
+        "match_kind": "generalization"
+      },
+      "note": "Same general disintegration tool exists, but no limit-of-lunes construction is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Random variables Φ and Λ on the sphere",
+      "anchor": {
+        "section": "Measure theoretic perspective",
+        "snippet": "denote two random variables taking values in"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has random variables generically but no specific definition of spherical-coordinate random variables Φ, Λ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Volume element from coordinate transform",
+      "anchor": {
+        "section": "Measure theoretic perspective",
+        "snippet": "for which we obtain the volume element"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No spherical-coordinate volume element `sin φ dφ dλ` is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Volume elements with one coordinate fixed",
+      "anchor": {
+        "section": "Measure theoretic perspective",
+        "snippet": "if either φ or λ is fixed, we get the volume elements"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Conditional volume elements on great circles / longitudes are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniform density yields different reference measures",
+      "anchor": {
+        "section": "Measure theoretic perspective",
+        "snippet": "has a uniform density with respect to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The observation that conditional uniform densities differ by reference-measure choice is not formalized as a Mathlib lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Uniformly distributed random vector on the unit sphere",
+      "anchor": {
+        "section": "Proof of contradiction",
+        "snippet": "Consider a random vector"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.toSphere",
+        "module": "Mathlib.MeasureTheory.Constructions.HaarToSphere",
+        "match_kind": "generalization"
+      },
+      "note": "`Measure.toSphere` produces a natural rotation-invariant measure on the unit sphere, generalizing the uniform random vector, but no `IsUniform`-style declaration on the sphere is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Spherical polar parametrization",
+      "anchor": {
+        "section": "Proof of contradiction",
+        "snippet": "We begin by parametrizing the sphere with the usual spherical polar coordinates"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Only 2D `polarCoord` exists in Mathlib; spherical polar coordinates on the 2-sphere are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Random variables via arctan2",
+      "anchor": {
+        "section": "Proof of contradiction",
+        "snippet": "We can define random variables"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no `arctan2` function and no construction of Φ, Λ random variables from a sphere vector.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Surface of a spherical cap wedge",
+      "anchor": {
+        "section": "Proof of contradiction",
+        "snippet": "Using the formulas for the surface area spherical cap and the spherical wedge"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Surface-area formulas for spherical caps and wedges are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Joint cumulative distribution function",
+      "anchor": {
+        "section": "Proof of contradiction",
+        "snippet": "the probability is proportional to the surface area, giving the joint cumulative distribution function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific joint CDF of (Φ, Λ) derived from spherical area is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Joint probability density function",
+      "anchor": {
+        "section": "Proof of contradiction",
+        "snippet": "The joint probability density function is then given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The corresponding joint PDF `(1/4π) sin φ` for spherical coordinates is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Independence of the coordinate random variables",
+      "anchor": {
+        "section": "Proof of contradiction",
+        "snippet": "are independent random variables"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.IndepFun",
+        "module": "Mathlib.Probability.Independence.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has `IndepFun` generally, but no specific lemma showing Φ and Λ are independent for the spherical parametrization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Conditional probability on the first octant",
+      "anchor": {
+        "section": "Proof of contradiction",
+        "snippet": "only the probability that the random vector lies in the first octant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No first-octant conditional probability computation on the sphere is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conditional probability via limit using independence",
+      "anchor": {
+        "section": "Proof of contradiction",
+        "snippet": "We attempt to evaluate the conditional probability as a limit of conditioning on the events"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The argument computing a conditional probability as a limit using independence of Φ, Λ is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Alternate parametrization rotated by 90 degrees",
+      "anchor": {
+        "section": "Proof of contradiction",
+        "snippet": "Now we repeat the process with a different parametrization of the sphere"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No rotated spherical parametrization construction exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rotation preserves the joint density",
+      "anchor": {
+        "section": "Proof of contradiction",
+        "snippet": "Rotation is measure preserving so the density"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.toSphere",
+        "module": "Mathlib.MeasureTheory.Constructions.HaarToSphere",
+        "match_kind": "generalization"
+      },
+      "note": "Rotation invariance follows from Haar/`toSphere` infrastructure, but no specific lemma about invariance of this joint density is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Contradictory conditional probability via L'Hôpital",
+      "anchor": {
+        "section": "Proof of contradiction",
+        "snippet": "Using L'Hôpital's rule and differentiation under the integral sign"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "deriv.lhopital_zero_atTop",
+        "module": "Mathlib.Analysis.Calculus.LHopital",
+        "match_kind": "invocation"
+      },
+      "note": "L'Hôpital's rule is in Mathlib, but the specific contradictory limit computation in the Borel-Kolmogorov proof is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Conditional density not from event of probability zero",
+      "anchor": {
+        "section": "Proof of contradiction",
+        "snippet": "This shows that the conditional density cannot be treated as conditioning on an event of probability zero"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The qualitative conclusion of the Borel-Kolmogorov paradox itself is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

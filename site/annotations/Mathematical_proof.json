@@ -1,0 +1,409 @@
+{
+  "slug": "Mathematical_proof",
+  "wikipedia_title": "Mathematical proof",
+  "display_title": "Mathematical proof",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Mathematical proof",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A mathematical proof is a deductive argument for a mathematical statement"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Meta-mathematical concept describing what a proof is; not a mathematical statement to formalize.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conjecture / hypothesis",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A proposition that has not been proved but is believed to be true is known as a conjecture"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal meta-mathematical notion with no formal counterpart in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Formal proof",
+      "anchor": {
+        "section": "Nature and purpose",
+        "snippet": "A formal proof is a sequence of formulas in a formal language"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The concept lives at the level of Lean's kernel; Mathlib has no named definition of 'formal proof' itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Direct proof",
+      "anchor": {
+        "section": "Direct proof",
+        "snippet": "In direct proof, the conclusion is established by logically combining the axioms, definitions, and earlier theorems"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Stylistic/meta description of a proof method, not a mathematical theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sum of two even integers is even",
+      "anchor": {
+        "section": "Direct proof",
+        "snippet": "Consider two even integers x and y"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Even.add",
+        "module": "Mathlib.Algebra.Group.Even",
+        "match_kind": "generalization"
+      },
+      "note": "Established as the additive `to_additive` version of `IsSquare.mul` in `Mathlib/Algebra/Group/Even.lean`, valid in any commutative semigroup.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Proof by mathematical induction",
+      "anchor": {
+        "section": "Proof by mathematical induction",
+        "snippet": "In proof by mathematical induction, a single \"base case\" is proved"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Proof technique itself is not a Mathlib declaration; the underlying recursor is Lean's builtin `Nat.rec`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Principle of mathematical induction",
+      "anchor": {
+        "section": "Proof by mathematical induction",
+        "snippet": "Let N = {1, 2, 3, 4, ... } be the set of natural numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.rec",
+        "module": "Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "The induction principle for ℕ is the core recursor `Nat.rec`, available throughout Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "2n − 1 is odd for all positive integers n",
+      "anchor": {
+        "section": "Proof by mathematical induction",
+        "snippet": "we can prove by induction that all positive integers of the form"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.two_not_dvd_two_mul_sub_one",
+        "module": "Mathlib.Algebra.Group.Nat.Even",
+        "match_kind": "special_case"
+      },
+      "note": "The equivalent statement ¬ 2 ∣ 2*n − 1 (i.e. 2*n − 1 is odd) is proven for positive n in `Mathlib/Algebra/Group/Nat/Even.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Proof by contraposition",
+      "anchor": {
+        "section": "Proof by contraposition",
+        "snippet": "Proof by contraposition infers the statement"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "not_imp_not",
+        "module": "Mathlib.Logic.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The contrapositive equivalence `¬a → ¬b ↔ b → a` (and its dot-notation form `Function.mtr`) underlies the technique.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "If n² is even then n is even (contraposition)",
+      "anchor": {
+        "section": "Proof by contraposition",
+        "snippet": "contraposition can be used to establish that, given an integer"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.even_pow",
+        "module": "Mathlib.Algebra.Group.Nat.Even",
+        "match_kind": "generalization"
+      },
+      "note": "The iff `Even (n^k) ↔ Even n ∧ k ≠ 0` covers the n² case (k = 2).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Proof by contradiction",
+      "anchor": {
+        "section": "Proof by contradiction",
+        "snippet": "In proof by contradiction, also known by the Latin phrase reductio ad absurdum"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A proof technique realized by the `by_contra` tactic and classical logic; not a Mathlib theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Irrationality of √2",
+      "anchor": {
+        "section": "Proof by contradiction",
+        "snippet": "Suppose that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "irrational_sqrt_two",
+        "module": "Mathlib.NumberTheory.Real.Irrational",
+        "match_kind": "exact"
+      },
+      "note": "Stated and proved as `irrational_sqrt_two : Irrational (√2)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Proof by construction",
+      "anchor": {
+        "section": "Proof by construction",
+        "snippet": "Proof by construction, or proof by example, is the construction of a concrete example"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Meta description of a proof style; not a mathematical statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Existence of transcendental numbers",
+      "anchor": {
+        "section": "Proof by construction",
+        "snippet": "Joseph Liouville , for instance, proved the existence of transcendental numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Liouville.transcendental",
+        "module": "Mathlib.NumberTheory.Transcendental.Liouville.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Liouville's construction of transcendental numbers is formalized via `Liouville.transcendental`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Proof by exhaustion",
+      "anchor": {
+        "section": "Proof by exhaustion",
+        "snippet": "In proof by exhaustion, the conclusion is established by dividing it into a finite number of cases"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Proof-by-cases is a meta technique (e.g. `decide`, `Fin.cases`); no named Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Four color theorem proof by exhaustion",
+      "anchor": {
+        "section": "Proof by exhaustion",
+        "snippet": "the first proof of the four color theorem was a proof by exhaustion with 1,936 cases"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No four-color-theorem statement was found in Mathlib (grep for `four_color` returns no hits).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Closed chain inference",
+      "anchor": {
+        "section": "Closed chain inference",
+        "snippet": "A closed chain inference shows that a collection of statements are pairwise equivalent"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "List.TFAE",
+        "module": "Mathlib.Data.List.TFAE",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib's `List.TFAE` ('the following are equivalent') captures the cyclic-equivalence pattern used in tactics like `tfae_cycle`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Probabilistic proof",
+      "anchor": {
+        "section": "Probabilistic proof",
+        "snippet": "A probabilistic proof is one in which an example is shown to exist, with certainty, by using methods of probability theory"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Meta description of a proof methodology, not a theorem statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Combinatorial proof",
+      "anchor": {
+        "section": "Combinatorial proof",
+        "snippet": "A combinatorial proof establishes the equivalence of different expressions by showing that they count the same object in different ways"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A style of argument (double-counting/bijection), not a single formal statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Nonconstructive proof",
+      "anchor": {
+        "section": "Nonconstructive proof",
+        "snippet": "A nonconstructive proof establishes that a mathematical object with a certain property exists"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Meta concept; classical logic in Lean enables nonconstructive proofs but there is no named declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Irrational a, b with a^b rational",
+      "anchor": {
+        "section": "Nonconstructive proof",
+        "snippet": "The following famous example of a nonconstructive proof shows that there exist two irrational numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Counterexample.not_irrational_rpow",
+        "module": "Counterexamples.IrrationalPowerOfIrrational",
+        "match_kind": "exact"
+      },
+      "note": "The √2^√2 argument is formalized as `not_irrational_rpow` in `Counterexamples/IrrationalPowerOfIrrational.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Undecidable statement",
+      "anchor": {
+        "section": "Undecidable statements",
+        "snippet": "A statement that is neither provable nor disprovable from a set of axioms is called undecidable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Meta-logical notion; Mathlib's model-theory library can express provability but there is no general 'undecidable' definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Parallel postulate undecidable",
+      "anchor": {
+        "section": "Undecidable statements",
+        "snippet": "One example is the parallel postulate"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no axiomatic treatment of Euclidean geometry establishing independence of the parallel postulate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gödel's first incompleteness theorem",
+      "anchor": {
+        "section": "Undecidable statements",
+        "snippet": "Gödel's (first) incompleteness theorem shows that many axiom systems of mathematical interest will have undecidable statements"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has model-theory infrastructure in `Mathlib/ModelTheory/Encoding.lean` but no proof of Gödel's first incompleteness theorem; `docs/1000.yaml` points to an external library.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Two-column proof",
+      "anchor": {
+        "section": "Two-column proof",
+        "snippet": "A particular way of organizing a proof using two parallel columns"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pedagogical proof presentation style with no formal counterpart in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

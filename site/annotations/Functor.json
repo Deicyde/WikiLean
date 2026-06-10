@@ -1,0 +1,537 @@
+{
+  "slug": "Functor",
+  "wikipedia_title": "Functor",
+  "display_title": "Functor",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Functor",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A functor F from C to D is a mapping that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor",
+        "module": "Mathlib.CategoryTheory.Functor.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The `Functor` structure bundles `obj`, `map`, `map_id` and `map_comp`, matching the article's definition exactly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Contravariant functor",
+      "anchor": {
+        "section": "Covariance and contravariance",
+        "snippet": "We then define a contravariant functor F from C to D as a mapping that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor",
+        "module": "Mathlib.CategoryTheory.Functor.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes a contravariant functor C→D as an ordinary functor `Cᵒᵖ ⥤ D` out of the opposite category, with no separate dedicated type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Variance of composite functors",
+      "anchor": {
+        "section": "Covariance and contravariance",
+        "snippet": "The composite of two functors of the same variance"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib handles variance via opposite categories rather than tracking variance, so the rule about composing covariant/contravariant functors is not stated as a proposition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Covariant functor",
+      "anchor": {
+        "section": "Covariance and contravariance",
+        "snippet": "Ordinary functors are also called covariant functors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor",
+        "module": "Mathlib.CategoryTheory.Functor.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Ordinary (covariant) functors are exactly `CategoryTheory.Functor`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cofunctor",
+      "anchor": {
+        "section": "Covariance and contravariance",
+        "snippet": "Contravariant functors are also occasionally called cofunctors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor",
+        "module": "Mathlib.CategoryTheory.Functor.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "A cofunctor is a contravariant functor, represented in Mathlib as a functor `Cᵒᵖ ⥤ D`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Opposite functor",
+      "anchor": {
+        "section": "Opposite functor",
+        "snippet": "induces the opposite functor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor.op",
+        "module": "Mathlib.CategoryTheory.Opposites",
+        "match_kind": "exact"
+      },
+      "note": "`Functor.op` sends `F : C ⥤ D` to the induced functor `Cᵒᵖ ⥤ Dᵒᵖ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bifunctor",
+      "anchor": {
+        "section": "Bifunctors and multifunctors",
+        "snippet": "A bifunctor (also known as a binary functor ) is a functor whose domain is a product category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.prod",
+        "module": "Mathlib.CategoryTheory.Products.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Bifunctors are functors `C × D ⥤ E` out of the product category `prod`, used throughout Mathlib (e.g. `Functor.uncurry`, `curriedTensor`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multifunctor",
+      "anchor": {
+        "section": "Bifunctors and multifunctors",
+        "snippet": "A multifunctor is a generalization of the functor concept to n variables"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has bifunctors (`C × D ⥤ E`) and some trifunctor constructions (`Localization.Trifunctor`) but no general n-ary multifunctor concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Consequences of functor axioms",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Two important consequences of the functor axioms are"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor.map_isIso",
+        "module": "Mathlib.CategoryTheory.Iso",
+        "match_kind": "exact"
+      },
+      "note": "The consequence that a functor preserves isomorphisms is `Functor.map_isIso`/`Functor.mapIso`; preservation of identities and composition are the axioms `map_id`/`map_comp` themselves.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Composition of functors",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "One can compose functors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor.comp",
+        "module": "Mathlib.CategoryTheory.Functor.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Functor.comp` (notation `⋙`) composes functors and is associative with identity `𝟭`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "One-object category as monoid",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "A small category with a single object is the same thing as a monoid"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.SingleObj",
+        "module": "Mathlib.CategoryTheory.SingleObj",
+        "match_kind": "exact"
+      },
+      "note": "`SingleObj M` is the one-object category whose endomorphism monoid is `M` (with `End (SingleObj.star M) ≃ M`), realizing the monoid–category correspondence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Diagram",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "a diagram of type J in C is a covariant functor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor",
+        "module": "Mathlib.CategoryTheory.Functor.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "A diagram of shape J is a functor `J ⥤ C`, the representation Mathlib uses throughout the limits library.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Presheaf",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "a J -presheaf on C is a contravariant functor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor",
+        "module": "Mathlib.CategoryTheory.Functor.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "A presheaf is a contravariant functor, represented in Mathlib as `Cᵒᵖ ⥤ D`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Presheaves on a space",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Contravariant functors on Open( X ) are called presheaves on X"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopCat.Presheaf",
+        "module": "Mathlib.Topology.Sheaves.Presheaf",
+        "match_kind": "exact"
+      },
+      "note": "`TopCat.Presheaf X` is defined as `(Opens X)ᵒᵖ ⥤ C`, exactly a presheaf on the space X.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Constant functor",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Such a functor is called a constant or selection functor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor.const",
+        "module": "Mathlib.CategoryTheory.Functor.Const",
+        "match_kind": "exact"
+      },
+      "note": "`Functor.const J : C ⥤ (J ⥤ C)` sends each object to the constant functor at it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Endofunctor",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "A functor that maps a category to that same category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor",
+        "module": "Mathlib.CategoryTheory.Functor.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "An endofunctor is a functor `C ⥤ C`; Mathlib uses these pervasively (e.g. for monads) without a dedicated type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Identity functor",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The identity functor is an endofunctor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor.id",
+        "module": "Mathlib.CategoryTheory.Functor.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Functor.id C` (notation `𝟭 C`) is the identity endofunctor.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Diagonal functor",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The diagonal functor is defined as the functor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor.diag",
+        "module": "Mathlib.CategoryTheory.Products.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Functor.diag : C ⥤ C × C` is the diagonal functor; the general diagonal into a functor category is `Functor.const`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Limit functor",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "assigns to each functor its limit"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Limits.lim",
+        "module": "Mathlib.CategoryTheory.Limits.HasLimits",
+        "match_kind": "exact"
+      },
+      "note": "`Limits.lim : (J ⥤ C) ⥤ C` assigns to each diagram its limit (given `HasLimitsOfShape`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Power set functor",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The power set functor P : Set → Set maps each set to its power set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `Set.powerset` but no categorical power-set functor `Type ⥤ Type` with its action on functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Dual space functor",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The map which assigns to every vector space its dual space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.dualMap",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": null
+      },
+      "note": "`Module.Dual` with the contravariant action `LinearMap.dualMap` (and `dualMap_id`/`dualMap_comp_dualMap`) exists, but is not packaged as a category-theoretic functor on a category of vector spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fundamental group functor",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Consider the category of pointed topological spaces"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FundamentalGroupoid.fundamentalGroupoidFunctor",
+        "module": "Mathlib.AlgebraicTopology.FundamentalGroupoid.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes the fundamental groupoid functor `TopCat ⥤ Grpd` (and `FundamentalGroup`), but not the pointed π₁ : Top* ⥤ Grp described here.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Continuous functions functor",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "A contravariant functor from the category of topological spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines `C(X, ℝ)` (`ContinuousMap`) but no contravariant functor on a category of spaces sending X to its ring of continuous functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Tangent bundle functor",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The map which sends every differentiable manifold to its tangent bundle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`TangentBundle` is defined, but there is no category of smooth manifolds nor a tangent-bundle functor in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Group as category / G-set",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Every group G can be considered as a category with a single object"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.SingleObj",
+        "module": "Mathlib.CategoryTheory.SingleObj",
+        "match_kind": "special_case"
+      },
+      "note": "A group G is realized as a one-object groupoid `SingleObj G`; G-sets correspond to functors `SingleObj G ⥤ Type` (cf. `CategoryTheory.Action`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Lie algebra functor",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Assigning to every real (complex) Lie group its real (complex) Lie algebra defines a functor"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Lie algebra of a Lie group is constructed via left-invariant derivations (`Mathlib.Geometry.Manifold.GroupLieAlgebra`), but not packaged as a functor from a category of Lie groups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Tensor product functor",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "defines a functor C × C → C which is covariant in both arguments"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.MonoidalCategory.tensor",
+        "module": "Mathlib.CategoryTheory.Monoidal.Category",
+        "match_kind": "generalization"
+      },
+      "note": "`MonoidalCategory.tensor : C × C ⥤ C` is the tensor bifunctor (covariant in both arguments) for any monoidal category, e.g. `ModuleCat`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Forgetful functor",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "are termed forgetful functors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.forget",
+        "module": "Mathlib.CategoryTheory.ConcreteCategory.Forget",
+        "match_kind": "exact"
+      },
+      "note": "`forget C : C ⥤ Type` (and `forget₂` between concrete categories) are the forgetful functors.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Free functor",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Going in the opposite direction of forgetful functors are free functors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MonCat.free",
+        "module": "Mathlib.Algebra.Category.MonCat.Adjunctions",
+        "match_kind": "special_case"
+      },
+      "note": "Free functors left-adjoint to forgetful functors are formalized, e.g. `MonCat.free : Type ⥤ MonCat` with its `adj` adjunction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hom functor (abelian groups)",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "To every pair A , B of abelian groups one can assign the abelian group Hom( A , B )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor.hom",
+        "module": "Mathlib.CategoryTheory.Functor.Hom",
+        "match_kind": "generalization"
+      },
+      "note": "The hom-bifunctor `Functor.hom : Cᵒᵖ × C ⥤ Type` is formalized for any category; the Ab-internal-hom-valued version is a special case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Representable functor",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Functors like these are called representable functors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor.IsRepresentable",
+        "module": "Mathlib.CategoryTheory.Yoneda",
+        "match_kind": "exact"
+      },
+      "note": "`Functor.IsRepresentable` (with data `Functor.RepresentableBy`) captures functors `Cᵒᵖ ⥤ Type` naturally isomorphic to a `yoneda.obj X`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Functor category",
+      "anchor": {
+        "section": "Relation to other categorical concepts",
+        "snippet": "The collection of all functors from C to D forms the objects of a category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor.category",
+        "module": "Mathlib.CategoryTheory.Functor.Category",
+        "match_kind": "exact"
+      },
+      "note": "`Functor.category` is the category structure on `C ⥤ D` whose morphisms are natural transformations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Functor in Haskell",
+      "anchor": {
+        "section": "Computer implementations",
+        "snippet": "the programming language Haskell has a class Functor"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Haskell-style `Functor` typeclass (`fmap`) is a programming construct; Lean's core `Functor` class lives outside `Mathlib/`, so it is not present in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

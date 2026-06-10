@@ -1,0 +1,705 @@
+{
+  "slug": "Quantum_computing",
+  "wikipedia_title": "Quantum computing",
+  "display_title": "Quantum computing",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Qubit",
+      "anchor": {
+        "section": "Quantum information",
+        "snippet": "the qubit is the fundamental unit of quantum information"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of qubit or quantum information; only generic complex vector-space infrastructure exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Superposition of states",
+      "anchor": {
+        "section": "Quantum information",
+        "snippet": "Such a combination is known as a superposition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Linear combinations of vectors are formalized generally, but the quantum notion of superposition is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Qubit state and probability amplitudes",
+      "anchor": {
+        "section": "Quantum information",
+        "snippet": "any qubit state takes the form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No qubit state or probability-amplitude representation is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Born rule for qubit measurement",
+      "anchor": {
+        "section": "Quantum information",
+        "snippet": "The Born rule describes the norm-squared correspondence between amplitudes and probabilities"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize quantum measurement or the Born rule.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Normalization of amplitudes",
+      "anchor": {
+        "section": "Quantum information",
+        "snippet": "Any valid qubit state has coefficients"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Unit-norm vectors in inner-product spaces exist generally, but the qubit normalization condition |α|²+|β|²=1 is not a stated result in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Measuring an equal-superposition qubit",
+      "anchor": {
+        "section": "Quantum information",
+        "snippet": "As an example, measuring the qubit"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quantum measurement outcomes and their probabilities are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Plus and minus states",
+      "anchor": {
+        "section": "Quantum information",
+        "snippet": "Two particularly important superposition states are the plus state"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The |+⟩/|−⟩ qubit basis states are not defined anywhere in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hadamard gate",
+      "anchor": {
+        "section": "Quantum information",
+        "snippet": "they behave differently under operations such as the Hadamard gate"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's 'Hadamard' refers to the three-lines theorem and the matrix Hadamard product, not the quantum Hadamard gate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Each qubit doubles the state-space dimension",
+      "anchor": {
+        "section": "Quantum information",
+        "snippet": "Each additional qubit doubles the dimension of the state space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.finrank_tensorProduct",
+        "module": "Mathlib.LinearAlgebra.Dimension.Constructions",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves dim(M ⊗ N) = dim M · dim N, which generalizes dimension-doubling when tensoring with a 2-dimensional space, but says nothing about qubits.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Two-qubit tensor product state",
+      "anchor": {
+        "section": "Quantum information",
+        "snippet": "represents a two-qubit state, a tensor product of the qubit"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TensorProduct",
+        "module": "Mathlib.LinearAlgebra.TensorProduct.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The tensor product of modules/vector spaces is fully formalized, generalizing the construction of multi-qubit states, though qubits themselves are absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponential dimension of n-qubit space",
+      "anchor": {
+        "section": "Quantum information",
+        "snippet": "the vector space for an n -qubit system is 2 n -dimensional"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.finrank_tensorProduct",
+        "module": "Mathlib.LinearAlgebra.Dimension.Constructions",
+        "match_kind": "generalization"
+      },
+      "note": "The dimension of a tensor product being the product of dimensions yields 2^n as a special case, but the n-qubit statement is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "NOT gate",
+      "anchor": {
+        "section": "Unitary operators",
+        "snippet": "One important gate for both classical and quantum computation is the NOT gate"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Pauli-X / NOT gate is not defined; only generic unitary matrices (Matrix.unitaryGroup) exist.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Unitary operators",
+          "snippet": "One important gate for both classical and quantum computation is the NOT gate"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle X:={\\begin{pmatrix}0&amp;1\\\\1&amp;0\\end{pmatrix}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Controlled NOT (CNOT) gate",
+      "anchor": {
+        "section": "Unitary operators",
+        "snippet": "The controlled NOT (CNOT) gate can then be represented using the following matrix"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The CNOT gate is not defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Unitary operators",
+          "snippet": "The controlled NOT (CNOT) gate can then be represented using the following matrix"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle |00\\rangle :={\\begin{pmatrix}1\\\\0\\\\0\\\\0\\end{pmatrix}};\\quad |01\\rangle :={\\begin{pmatrix}0\\\\1\\\\0\\\\0\\end{pmatrix}};\\quad |10\\rangle :={\\begin{pmatrix}0\\\\0\\\\1\\\\0\\end{pmatrix}};\\quad |11\\rangle :={\\begin{pmatrix}0\\\\0\\\\0\\\\1\\end{pmatrix}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {CNOT} :={\\begin{pmatrix}1&amp;0&amp;0&amp;0\\\\0&amp;1&amp;0&amp;0\\\\0&amp;0&amp;0&amp;1\\\\0&amp;0&amp;1&amp;0\\end{pmatrix}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Deferred measurement",
+      "anchor": {
+        "section": "Unitary operators",
+        "snippet": "any measurement can be deferred to the end of quantum computation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The deferred-measurement principle of quantum circuits is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quantum parallelism",
+      "anchor": {
+        "section": "Quantum parallelism",
+        "snippet": "Quantum parallelism is the heuristic that quantum computers can be thought of as evaluating a function for multiple input values simultaneously"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quantum parallelism is not a concept present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Universal gate set",
+      "anchor": {
+        "section": "Gate array",
+        "snippet": "A choice of gate family that enables this construction is known as a universal gate set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quantum gates and universal gate sets are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Solovay–Kitaev theorem",
+      "anchor": {
+        "section": "Gate array",
+        "snippet": "it can be replaced with a finite gate set by appealing to the Solovay-Kitaev theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Solovay–Kitaev theorem is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Measurement-based quantum computer",
+      "anchor": {
+        "section": "Measurement-based quantum computing",
+        "snippet": "A measurement-based quantum computer decomposes computation into a sequence of Bell state measurements"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Measurement-based quantum computing and Bell-state measurements are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Adiabatic quantum computer",
+      "anchor": {
+        "section": "Adiabatic quantum computing",
+        "snippet": "based on quantum annealing , decomposes computation into a slow continuous transformation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Adiabatic quantum computing is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Neuromorphic quantum computing",
+      "anchor": {
+        "section": "Neuromorphic quantum computing",
+        "snippet": "Neuromorphic quantum computing (abbreviated 'n.quantum computing') is an unconventional process of computing"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neuromorphic quantum computing has no representation in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Topological quantum computer",
+      "anchor": {
+        "section": "Topological quantum computing",
+        "snippet": "A topological quantum computer decomposes computation into the braiding of anyons"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Anyons and topological quantum computation are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quantum Turing machine",
+      "anchor": {
+        "section": "Quantum Turing machine",
+        "snippet": "A quantum Turing machine is the quantum analog of a Turing machine"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes classical Turing machines (Mathlib.Computability.TuringMachine) but not the quantum analog.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Equivalence of quantum computation models",
+      "anchor": {
+        "section": "Quantum Turing machine",
+        "snippet": "have been shown to be equivalent to the quantum Turing machine"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Equivalence of quantum models of computation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Threshold theorem",
+      "anchor": {
+        "section": "Noisy intermediate-scale quantum computing",
+        "snippet": "The threshold theorem shows how increasing the number of qubits can mitigate errors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The quantum fault-tolerance threshold theorem is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quantum teleportation",
+      "anchor": {
+        "section": "Quantum communication protocols",
+        "snippet": "Quantum teleportation is a protocol by which Alice can transmit the quantum state of a qubit to Bob"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quantum teleportation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Superdense coding",
+      "anchor": {
+        "section": "Quantum communication protocols",
+        "snippet": "Superdense coding is the complementary protocol"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Superdense coding is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Holevo's theorem",
+      "anchor": {
+        "section": "Quantum communication protocols",
+        "snippet": "This appears to violate Holevo's theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Holevo's theorem and quantum information bounds are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Super-polynomial speedup of Shor's algorithm",
+      "anchor": {
+        "section": "Algorithms",
+        "snippet": "include Shor's algorithm for factoring"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Shor's algorithm and its complexity are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "BQP-complete problems",
+      "anchor": {
+        "section": "Algorithms",
+        "snippet": "have quantum algorithms appearing to give super-polynomial speedups and are BQP -complete"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The complexity class BQP and BQP-completeness are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Polynomial speedup of Grover's algorithm",
+      "anchor": {
+        "section": "Algorithms",
+        "snippet": "give polynomial speedups over corresponding classical algorithms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grover's algorithm and its speedup are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Unstructured search speedup",
+      "anchor": {
+        "section": "Search problems",
+        "snippet": "The most well-known example of a problem that allows for a polynomial quantum speedup is unstructured search"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quantum unstructured-search speedup is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Optimality of Grover's algorithm",
+      "anchor": {
+        "section": "Search problems",
+        "snippet": "the advantage is not only provable but also optimal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The optimality (BBBV lower bound) of Grover's algorithm is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conditions for applying Grover's algorithm",
+      "anchor": {
+        "section": "Search problems",
+        "snippet": "Problems that can be efficiently addressed with Grover's algorithm have the following properties"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Conditions for applying Grover's algorithm are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Shor's algorithm factors integers exponentially faster",
+      "anchor": {
+        "section": "Post-quantum cryptography",
+        "snippet": "a quantum computer could solve this problem exponentially faster using Shor's algorithm to factor the integer"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Shor's integer-factoring speedup is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Grover speedup on symmetric ciphers",
+      "anchor": {
+        "section": "Post-quantum cryptography",
+        "snippet": "applying Grover's algorithm to break a symmetric (secret-key) algorithm by brute force requires time equal to roughly"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The application of Grover's algorithm to symmetric-key brute force is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quantum annealing",
+      "anchor": {
+        "section": "Quantum annealing",
+        "snippet": "Quantum annealing uses the adiabatic theorem to perform calculations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quantum annealing is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Adiabatic theorem",
+      "anchor": {
+        "section": "Quantum annealing",
+        "snippet": "The adiabatic theorem states that if the evolution is slow enough, the system will stay in its ground state"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The quantum adiabatic theorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Classical problems are quantum-solvable",
+      "anchor": {
+        "section": "Computability",
+        "snippet": "Any computational problem solvable by a classical computer is also solvable by a quantum computer"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has classical computability but no quantum model, so this classical-to-quantum simulation claim is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quantum problems are classically solvable",
+      "anchor": {
+        "section": "Computability",
+        "snippet": "any problem solvable by a quantum computer is also solvable by a classical computer"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No quantum computation model exists in Mathlib, so this quantum-to-classical simulation claim is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "BQP complexity class",
+      "anchor": {
+        "section": "Complexity",
+        "snippet": "The class of problems that can be efficiently solved by a quantum computer with bounded error is called BQP"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The complexity class BQP is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "P ⊆ BQP ⊆ PSPACE",
+      "anchor": {
+        "section": "Complexity",
+        "snippet": "all problems that can be efficiently solved by a deterministic classical computer can also be efficiently solved by a quantum computer"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize the complexity classes P, BQP, or PSPACE or their inclusions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quantum supremacy",
+      "anchor": {
+        "section": "Quantum supremacy",
+        "snippet": "coined the term quantum supremacy to describe the engineering feat"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quantum supremacy is not a formalized concept in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

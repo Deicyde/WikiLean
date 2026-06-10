@@ -1,0 +1,489 @@
+{
+  "slug": "Geometric_group_theory",
+  "wikipedia_title": "Geometric group theory",
+  "display_title": "Geometric group theory",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Geometric group theory",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Geometric group theory is an area in mathematics devoted to the study of finitely generated groups"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Group.FG",
+        "module": "Mathlib.GroupTheory.Finiteness",
+        "match_kind": null
+      },
+      "note": "The field itself is not formalized, but its central object—finitely generated groups—is captured by the `Group.FG` class.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cayley graph and word metric",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "studying the Cayley graphs of groups"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.mulCayley",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Cayley",
+        "match_kind": "exact"
+      },
+      "note": "`SimpleGraph.mulCayley` directly defines the Cayley graph from a generating set, though the word metric is not separately packaged.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hyperbolic group",
+      "anchor": {
+        "section": "History",
+        "snippet": "introduced the notion of a hyperbolic group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's only 'hyperbolic' references are to hyperbolic functions/geometry, not Gromov-hyperbolic groups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quasi-isometric classification of groups",
+      "anchor": {
+        "section": "Modern themes and developments",
+        "snippet": "classifying finitely generated groups with their word metric up to quasi-isometry"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of quasi-isometry appears anywhere in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gromov's polynomial growth theorem",
+      "anchor": {
+        "section": "Modern themes and developments",
+        "snippet": "Gromov's polynomial growth theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of group growth or Gromov's theorem exists (the only 'polynomial growth' is Akra–Bazzi function asymptotics).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Stallings' ends theorem",
+      "anchor": {
+        "section": "Modern themes and developments",
+        "snippet": "Stallings' ends theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the ends of groups nor Stallings' theorem is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Mostow rigidity theorem",
+      "anchor": {
+        "section": "Modern themes and developments",
+        "snippet": "Mostow rigidity theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mostow rigidity is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Relatively hyperbolic groups",
+      "anchor": {
+        "section": "Modern themes and developments",
+        "snippet": "The notion of a relatively hyperbolic groups was originally introduced by Gromov"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Relatively hyperbolic groups are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Automatic groups",
+      "anchor": {
+        "section": "Modern themes and developments",
+        "snippet": "the development of the theory of automatic groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Automatic groups are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Amenable groups",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Amenable groups"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsFoelner.amenable",
+        "module": "Mathlib.MeasureTheory.Group.FoelnerFilter",
+        "match_kind": null
+      },
+      "note": "Mathlib has Følner-filter amenability (`IsFoelner.amenable`) but, per its own docstring, no standalone definition of an amenable group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Free Burnside groups",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Free Burnside groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's 'Burnside' refers to Burnside's lemma/normal complement theorem, not the free Burnside groups B(m,n).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Infinite cyclic group Z",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The infinite cyclic group Z"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.instAddCommGroup",
+        "module": "Mathlib.Algebra.Group.Int.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The infinite cyclic group is exactly ℤ, whose additive group structure is `Int.instAddCommGroup`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Free groups",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Free groups"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FreeGroup",
+        "module": "Mathlib.GroupTheory.FreeGroup.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`FreeGroup α` is the free group on a generating type α.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Free products",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Free products"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Monoid.CoprodI",
+        "module": "Mathlib.GroupTheory.CoprodI",
+        "match_kind": "exact"
+      },
+      "note": "`Monoid.CoprodI` is the free product (coproduct) of a family of groups, with binary `Monoid.Coprod` as a special case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Outer automorphism groups Out(Fn)",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Outer automorphism groups Out(F n ) (via outer space )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `MulAut` and `FreeGroup` but no outer automorphism group (Aut/Inn) construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hyperbolic groups",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Hyperbolic groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gromov-hyperbolic groups are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Mapping class groups",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Mapping class groups (automorphisms of surfaces)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mapping class groups of surfaces are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Symmetric groups",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Symmetric groups"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm",
+        "module": "Mathlib.Logic.Equiv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv.Perm α` is the symmetric group of permutations of α.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Braid groups",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Braid groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's 'braid' references are to braided monoidal categories, not the braid groups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Coxeter groups",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Coxeter groups"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CoxeterSystem",
+        "module": "Mathlib.GroupTheory.Coxeter.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`CoxeterSystem` and the `IsCoxeterGroup` class formalize Coxeter groups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "General Artin groups",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "General Artin groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Artin groups are not defined; Mathlib only mentions the 'Artin–Tits relation' in a comment within the Coxeter files.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Thompson's group F",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Thompson's group F"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Thompson's group F is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "CAT(0) groups",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "CAT(0) groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "CAT(0) spaces/groups are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Arithmetic groups",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Arithmetic groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no notion of arithmetic group in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Automatic groups",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Automatic groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Automatic groups are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fuchsian and Kleinian groups",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Fuchsian groups , Kleinian groups , and other groups acting properly discontinuously on symmetric spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither Fuchsian nor Kleinian groups are formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Wallpaper groups",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Wallpaper groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Wallpaper (crystallographic) groups are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Baumslag–Solitar groups",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Baumslag–Solitar groups"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HNNExtension",
+        "module": "Mathlib.GroupTheory.HNNExtension",
+        "match_kind": null
+      },
+      "note": "Baumslag–Solitar groups are HNN extensions of ℤ; Mathlib has the general `HNNExtension` construction but not these specific groups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fundamental groups of graphs of groups",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Fundamental groups of graphs of groups"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Monoid.PushoutI",
+        "module": "Mathlib.GroupTheory.PushoutI",
+        "match_kind": null
+      },
+      "note": "The Bass–Serre building blocks—amalgamated products (`Monoid.PushoutI`) and HNN extensions—exist, but graph-of-groups fundamental groups are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Grigorchuk group",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Grigorchuk group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Grigorchuk group is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

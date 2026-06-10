@@ -1,0 +1,633 @@
+{
+  "slug": "Hausdorff_space",
+  "wikipedia_title": "Hausdorff space",
+  "display_title": "Hausdorff space",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Separated by neighbourhoods",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "can be separated by neighbourhoods if there exists a neighbourhood"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SeparatedNhds",
+        "module": "Mathlib.Topology.Separation.SeparatedNhds",
+        "match_kind": "generalization"
+      },
+      "note": "`SeparatedNhds` defines two sets being contained in disjoint open neighbourhoods, generalizing the two-point version (`Disjoint (𝓝 x) (𝓝 y)`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hausdorff space",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "is a Hausdorff space if any two distinct points in"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "T2Space",
+        "module": "Mathlib.Topology.Separation.Hausdorff",
+        "match_kind": "exact"
+      },
+      "note": "`T2Space` requires that any two distinct points have disjoint open neighbourhoods, exactly the Hausdorff definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Preregular space",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "is a preregular space if any two topologically distinguishable points"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "R1Space",
+        "module": "Mathlib.Topology.Separation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`R1Space` is defined so that topologically distinguishable (non-specializing) points have disjoint neighbourhoods, i.e. preregularity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hausdorff iff preregular and Kolmogorov",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "A topological space is Hausdorff if and only if it is both preregular"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "R1Space.t2Space_iff_t0Space",
+        "module": "Mathlib.Topology.Separation.Hausdorff",
+        "match_kind": "exact"
+      },
+      "note": "`R1Space.t2Space_iff_t0Space` gives that a preregular space is T₂ iff it is T₀ (Kolmogorov), and an instance `[R1Space][T0Space] : T2Space` supplies the converse.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Preregular iff Kolmogorov quotient is Hausdorff",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "A topological space is preregular if and only if its Kolmogorov quotient is Hausdorff"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SeparationQuotient.t2Space_iff",
+        "module": "Mathlib.Topology.Separation.Hausdorff",
+        "match_kind": "exact"
+      },
+      "note": "`SeparationQuotient.t2Space_iff : T2Space (SeparationQuotient X) ↔ R1Space X`, where `SeparationQuotient` is the Kolmogorov quotient.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Characterizations of Hausdorff spaces",
+      "anchor": {
+        "section": "Equivalences",
+        "snippet": "the following are equivalent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "t2_iff_isClosed_diagonal",
+        "module": "Mathlib.Topology.Separation.Hausdorff",
+        "match_kind": "exact"
+      },
+      "note": "The individual equivalences (closed diagonal, disjoint nhds `t2Space_iff_disjoint_nhds`, unique net/filter limits `t2_iff_nhds`/`t2_iff_ultrafilter`) are all formalized though not bundled as one TFAE.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Real numbers are Hausdorff",
+      "anchor": {
+        "section": "Examples of Hausdorff and non-Hausdorff spaces",
+        "snippet": "the real numbers (under the standard metric topology on real numbers) are a Hausdorff space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "t2Space_of_metrizableSpace",
+        "module": "Mathlib.Topology.Metrizable.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "ℝ carries a `MetricSpace`/`MetrizableSpace` structure, so `t2Space_of_metrizableSpace` yields a `T2Space ℝ` instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Metric spaces are Hausdorff",
+      "anchor": {
+        "section": "Examples of Hausdorff and non-Hausdorff spaces",
+        "snippet": "all metric spaces are Hausdorff"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "t2Space_of_metrizableSpace",
+        "module": "Mathlib.Topology.Metrizable.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Every `MetrizableSpace` (hence every `MetricSpace`) is a `T2Space` via `t2Space_of_metrizableSpace`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "T1 but not Hausdorff: cofinite/cocountable",
+      "anchor": {
+        "section": "Examples of Hausdorff and non-Hausdorff spaces",
+        "snippet": "A simple example of a topology that is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CofiniteTopology.instT1Space",
+        "module": "Mathlib.Topology.Separation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`CofiniteTopology X` has a `T1Space` instance and an `IrreducibleSpace` instance for infinite `X` (which precludes T₂), matching this example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Pseudometric spaces are preregular not Hausdorff",
+      "anchor": {
+        "section": "Examples of Hausdorff and non-Hausdorff spaces",
+        "snippet": "Pseudometric spaces typically are not Hausdorff"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PseudoMetrizableSpace.regularSpace",
+        "module": "Mathlib.Topology.Metrizable.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Pseudometrizable spaces are `RegularSpace`, hence `R1Space` (preregular) by the `RegularSpace → R1Space` instance; the non-T₀ (non-Hausdorff) aspect is not a separate lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Non-preregular spaces in algebra/geometry",
+      "anchor": {
+        "section": "Examples of Hausdorff and non-Hausdorff spaces",
+        "snippet": "non-preregular spaces are encountered much more frequently"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an informal remark about Zariski/scheme topologies, not a formal statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "US spaces",
+      "anchor": {
+        "section": "Examples of Hausdorff and non-Hausdorff spaces",
+        "snippet": "Such spaces are called US spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of US space (unique sequential limits) is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "US equals weakly Hausdorff for sequential spaces",
+      "anchor": {
+        "section": "Examples of Hausdorff and non-Hausdorff spaces",
+        "snippet": "this notion is equivalent to being weakly Hausdorff"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither US spaces nor weakly Hausdorff spaces are formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Subspaces and products of Hausdorff are Hausdorff",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Subspaces and products of Hausdorff spaces are Hausdorff"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Prod.t2Space",
+        "module": "Mathlib.Topology.Separation.Hausdorff",
+        "match_kind": "exact"
+      },
+      "note": "`Prod.t2Space`, `Pi.t2Space`, and the `T2Space (Subtype p)` instance cover products and subspaces of Hausdorff spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every space is a quotient of a Hausdorff space",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "every topological space can be realized as the quotient of some Hausdorff space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No such universal construction realizing an arbitrary space as a quotient of a Hausdorff space was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hausdorff spaces are T1",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "meaning that each singleton is a closed set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "T2Space.t1Space",
+        "module": "Mathlib.Topology.Separation.Hausdorff",
+        "match_kind": "exact"
+      },
+      "note": "`T2Space.t1Space` is the instance that every Hausdorff space is T₁.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Preregular spaces are R0",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Similarly, preregular spaces are R"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "R1Space.instR0Space",
+        "module": "Mathlib.Topology.Separation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "An anonymous instance `[R1Space X] : R0Space X` (Basic.lean:889) shows preregular spaces are R₀.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every Hausdorff space is sober",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Every Hausdorff space is a Sober space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "R1Space.quasiSober",
+        "module": "Mathlib.Topology.Sober",
+        "match_kind": "generalization"
+      },
+      "note": "`R1Space.quasiSober` makes every preregular (hence Hausdorff) space `QuasiSober`, and Hausdorff is also T₀, giving soberness (Mathlib states sober as `QuasiSober` + `T0Space`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compact sets are closed in Hausdorff spaces",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Another property of Hausdorff spaces is that each compact set is a closed set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompact.isClosed",
+        "module": "Mathlib.Topology.Separation.Hausdorff",
+        "match_kind": "exact"
+      },
+      "note": "`IsCompact.isClosed` states every compact set in a `T2Space` is closed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Disjoint compact sets separated by neighbourhoods",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "every pair of disjoint compact sets can also be separated by neighborhoods"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SeparatedNhds.of_isCompact_isCompact",
+        "module": "Mathlib.Topology.Separation.Hausdorff",
+        "match_kind": "exact"
+      },
+      "note": "`SeparatedNhds.of_isCompact_isCompact` gives `SeparatedNhds` for two disjoint compact sets in a `T2Space`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Locally compact preregular implies completely regular",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "any locally compact preregular space is completely regular"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "instRegularSpaceOfWeaklyLocallyCompactSpaceOfR1Space",
+        "module": "Mathlib.Topology.Separation.Regular",
+        "match_kind": null
+      },
+      "note": "Mathlib has `[WeaklyLocallyCompactSpace][R1Space] → RegularSpace` (Regular.lean:132) but not the stronger conclusion of complete regularity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compact preregular spaces are normal",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Compact preregular spaces are normal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormalSpace.of_compactSpace_r1Space",
+        "module": "Mathlib.Topology.Separation.Regular",
+        "match_kind": "exact"
+      },
+      "note": "`NormalSpace.of_compactSpace_r1Space` is the instance `[CompactSpace][R1Space] → NormalSpace`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Locally compact Hausdorff is Tychonoff",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "every locally compact Hausdorff space is Tychonoff"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "instRegularSpaceOfWeaklyLocallyCompactSpaceOfR1Space",
+        "module": "Mathlib.Topology.Separation.Regular",
+        "match_kind": null
+      },
+      "note": "Locally compact Hausdorff is shown regular (T₃) via Regular.lean:132 + `T2Space.r1Space`, but the Tychonoff/`T35Space` (completely regular) strengthening is not derived for this case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compact Hausdorff is normal Hausdorff",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "every compact Hausdorff space is normal Hausdorff"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormalSpace.of_compactSpace_r1Space",
+        "module": "Mathlib.Topology.Separation.Regular",
+        "match_kind": "special_case"
+      },
+      "note": "A compact `T2Space` is `R1Space`, so `NormalSpace.of_compactSpace_r1Space` gives normality (and T₁ persists, yielding `T4Space`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Graph of continuous map into Hausdorff is closed",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Then the graph of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "isClosed_eq",
+        "module": "Mathlib.Topology.Separation.Hausdorff",
+        "match_kind": null
+      },
+      "note": "No dedicated closed-graph lemma for continuous maps into T₂ spaces exists; it follows from `isClosed_eq` applied to `f ∘ Prod.fst` and `Prod.snd`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Kernel is closed when codomain Hausdorff",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "is continuous and"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "isClosed_eq",
+        "module": "Mathlib.Topology.Separation.Hausdorff",
+        "match_kind": null
+      },
+      "note": "The kernel {(x,x') | f x = f x'} being closed follows from `isClosed_eq` (and relates to `IsSeparatedMap.isClosed_eqLocus`), but is not stated as a standalone lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Open surjection with closed kernel implies Hausdorff",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "is an open surjection and"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "t2Space_iff_of_isOpenQuotientMap",
+        "module": "Mathlib.Topology.Separation.Hausdorff",
+        "match_kind": "special_case"
+      },
+      "note": "The `←` direction of `t2Space_iff_of_isOpenQuotientMap` gives that an open quotient (continuous open surjection) with closed kernel `{q | π q.1 = π q.2}` has Hausdorff codomain.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Open quotient: Hausdorff iff kernel closed",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "is a continuous, open surjection (i.e. an open quotient map)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "t2Space_iff_of_isOpenQuotientMap",
+        "module": "Mathlib.Topology.Separation.Hausdorff",
+        "match_kind": "exact"
+      },
+      "note": "`t2Space_iff_of_isOpenQuotientMap : T2Space Y ↔ IsClosed {q : X×X | π q.1 = π q.2}` for an open quotient map `π`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equalizer into Hausdorff space is closed",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "then the equalizer"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isClosed_eq",
+        "module": "Mathlib.Topology.Separation.Hausdorff",
+        "match_kind": "exact"
+      },
+      "note": "`isClosed_eq` states `{y | f y = g y}` is closed for continuous `f, g` into a `T2Space`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Maps to Hausdorff determined on dense subsets",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "continuous functions into Hausdorff spaces are determined by their values on dense subsets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Continuous.ext_on",
+        "module": "Mathlib.Topology.Separation.Hausdorff",
+        "match_kind": "exact"
+      },
+      "note": "`Continuous.ext_on` shows two continuous maps into a `T2Space` agreeing on a dense set are equal (see also `Set.EqOn.closure`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closed surjection with compact fibers preserves Hausdorff",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "be a closed surjection such that"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "isProperMap_iff_isClosedMap_and_compact_fibers",
+        "module": "Mathlib.Topology.Maps.Proper.Basic",
+        "match_kind": null
+      },
+      "note": "The proper-map infrastructure (closed + compact fibers) exists, but the conclusion that the Hausdorff property descends to the codomain is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quotient of compact Hausdorff equivalences",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "be a quotient map with"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsQuotientMap.of_surjective_continuous",
+        "module": "Mathlib.Topology.Separation.Hausdorff",
+        "match_kind": null
+      },
+      "note": "Related results exist (`IsQuotientMap.of_surjective_continuous` for compact-to-Hausdorff maps), but the TFAE for quotient maps out of a compact Hausdorff space is not formalized as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Regular and Hausdorff spaces are preregular",
+      "anchor": {
+        "section": "Preregularity versus regularity",
+        "snippet": "All regular spaces are preregular, as are all Hausdorff spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "T2Space.r1Space",
+        "module": "Mathlib.Topology.Separation.Hausdorff",
+        "match_kind": "exact"
+      },
+      "note": "`T2Space.r1Space` and the anonymous `RegularSpace → R1Space` instance (Regular.lean:165) cover both claims.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Locally compact Hausdorff is regular",
+      "anchor": {
+        "section": "Preregularity versus regularity",
+        "snippet": "a Hausdorff space that is also (say) locally compact will be regular"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "instRegularSpaceOfWeaklyLocallyCompactSpaceOfR1Space",
+        "module": "Mathlib.Topology.Separation.Regular",
+        "match_kind": "generalization"
+      },
+      "note": "The instance `[WeaklyLocallyCompactSpace][R1Space] → RegularSpace` (Regular.lean:132) applies since locally compact Hausdorff is weakly locally compact and R₁.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cauchy spaces are always preregular",
+      "anchor": {
+        "section": "Variants",
+        "snippet": "are always preregular"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "UniformSpace.to_regularSpace",
+        "module": "Mathlib.Topology.UniformSpace.Separation",
+        "match_kind": null
+      },
+      "note": "Mathlib has no Cauchy-space notion, but uniform spaces are regular (`UniformSpace.to_regularSpace`) hence preregular.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Complete iff every Cauchy net has a limit",
+      "anchor": {
+        "section": "Variants",
+        "snippet": "a space is complete if and only if every Cauchy net has at least one limit"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompleteSpace",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "generalization"
+      },
+      "note": "`CompleteSpace` is defined as every Cauchy filter converging (equivalent to, and more general than, the Cauchy-net formulation; cf. `completeSpace_iff_ultrafilter`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hausdorff iff Cauchy nets have at most one limit",
+      "anchor": {
+        "section": "Variants",
+        "snippet": "a space is Hausdorff if and only if every Cauchy net has at most one limit"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "t2_iff_ultrafilter",
+        "module": "Mathlib.Topology.Separation.Hausdorff",
+        "match_kind": null
+      },
+      "note": "`t2_iff_ultrafilter` (and `tendsto_nhds_unique`) characterize T₂ via uniqueness of filter/ultrafilter limits, the filter analogue of the Cauchy-net statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Continuous functions form a commutative C*-algebra",
+      "anchor": {
+        "section": "Algebra of functions",
+        "snippet": "is a commutative C*-algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.instCommCStarAlgebra",
+        "module": "Mathlib.Analysis.CStarAlgebra.ContinuousMap",
+        "match_kind": "generalization"
+      },
+      "note": "An instance `[CommCStarAlgebra A] : CommCStarAlgebra C(α, A)` (with `α` compact) makes `C(X, ℂ)` a commutative C*-algebra.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Banach–Stone theorem",
+      "anchor": {
+        "section": "Algebra of functions",
+        "snippet": "one can recover the topology of the space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Banach–Stone appears only in bibliography references, not as a proven theorem in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

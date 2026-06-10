@@ -1,0 +1,1139 @@
+{
+  "slug": "Spherical_coordinate_system",
+  "wikipedia_title": "Spherical coordinate system",
+  "display_title": "Spherical coordinate system",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Spherical coordinate system",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "specifies a given point in three-dimensional space by using a distance and two angles"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "polarCoord",
+        "module": "Mathlib.Analysis.SpecialFunctions.PolarCoord",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes only the 2-D polar coordinate homeomorphism, not a 3-D spherical (distance + two angles) coordinate system.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Radial distance",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the radial distance r along the line connecting the point to a fixed point called the origin"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanSpace.dist_eq",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": null
+      },
+      "note": "The radial distance is just the generic Euclidean norm/distance from the origin, which exists, but no spherical-coordinate radial coordinate is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Polar angle",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the polar angle θ between this radial line and a given polar axis"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductGeometry.angle",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.Basic",
+        "match_kind": null
+      },
+      "note": "The unsigned angle between two vectors (arccos of normalized inner product) exists generally, but the spherical polar angle is not defined as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Azimuthal angle",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the azimuthal angle φ , which is the angle of rotation of the radial line around the polar axis"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "polarCoord",
+        "module": "Mathlib.Analysis.SpecialFunctions.PolarCoord",
+        "match_kind": null
+      },
+      "note": "The azimuth corresponds to the planar argument (Complex.arg) used as polarCoord's angular component, but no 3-D azimuthal coordinate exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Spherical polar coordinates",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "provide a coordinate system on a sphere , typically called the spherical polar coordinates"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "polarCoord",
+        "module": "Mathlib.Analysis.SpecialFunctions.PolarCoord",
+        "match_kind": null
+      },
+      "note": "Only the 2-D polar coordinate chart exists; there is no spherical-coordinate chart on the sphere in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Reference plane",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is called the reference plane (sometimes fundamental plane )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of a reference/fundamental plane for spherical coordinates.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Elevation angle",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "the elevation angle (or altitude angle ), measured upward between the reference plane and the radial line"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No angle-between-line-and-plane elevation coordinate is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Depression angle",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "The depression angle is the negative of the elevation angle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a sign convention on elevation, which Mathlib does not formalize.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hyperspherical coordinate system",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "is then referred to as a hyperspherical coordinate system"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No n-dimensional hyperspherical coordinate system is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coordinate system setup",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "one must designate an origin point in space, O , and two orthogonal directions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Although orthonormal frames exist, this spherical-coordinate setup description has no corresponding Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Radius",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The radius or radial distance is the Euclidean distance from the origin O to P"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanSpace.dist_eq",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": null
+      },
+      "note": "The Euclidean distance from a point to the origin is fully formalized, but not as a named radial coordinate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inclination",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The inclination (or polar angle ) is the signed angle from the zenith reference direction to the line segment OP"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductGeometry.angle",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.Basic",
+        "match_kind": null
+      },
+      "note": "The generic angle between two vectors exists, but the inclination/polar coordinate from a zenith direction is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Azimuth",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The azimuth (or azimuthal angle ) is the signed angle measured from the azimuth reference direction"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "polarCoord",
+        "module": "Mathlib.Analysis.SpecialFunctions.PolarCoord",
+        "match_kind": null
+      },
+      "note": "The signed planar angle (Complex.arg) appears in polarCoord, but there is no spherical azimuth coordinate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sign of the azimuth",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The sign of the azimuth is determined by designating the rotation that is the positive sense of turning about the zenith"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This orientation convention for the azimuth is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Elevation",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The elevation is the signed angle from the x-y reference plane to the radial line segment OP"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No signed elevation angle from a reference plane is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Position vector",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "the vector from the origin O to the point P is often called the position vector of P"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The term position vector is just an element of the vector space (vsub of two points) and is not a named Mathlib concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-uniqueness of coordinates",
+      "anchor": {
+        "section": "Unique coordinates",
+        "snippet": "any single point has infinitely many equivalent spherical coordinates"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no spherical coordinate map in Mathlib and hence no theorem about non-uniqueness of its coordinates.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Negative radial distance convention",
+      "anchor": {
+        "section": "Unique coordinates",
+        "snippet": "It is convenient in many contexts to use negative radial distances"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The convention of allowing negative radial distances is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Range restriction for uniqueness",
+      "anchor": {
+        "section": "Unique coordinates",
+        "snippet": "the user must restrict the range, aka interval , of each coordinate"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "polarCoord",
+        "module": "Mathlib.Analysis.SpecialFunctions.PolarCoord",
+        "match_kind": null
+      },
+      "note": "The 2-D polarCoord restricts its target to (0,∞)×(−π,π) precisely to obtain a homeomorphism (unique coordinates), the planar analog of this idea.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inclination–elevation range equivalence",
+      "anchor": {
+        "section": "Unique coordinates",
+        "snippet": "the range (interval) for inclination is [0°, 180°] , which is equivalent to elevation range"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No inclination/elevation coordinates or their ranges are defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sphere equation r = c",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "can be described in spherical coordinates by the simple equation r = c"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.sphere",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Metric.sphere x ε = {y | dist y x = ε} is exactly the set described by r = c, generalized to any (pseudo)metric space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Latitude (elevation angle)",
+      "anchor": {
+        "section": "In geography",
+        "snippet": "the geographic coordinate system uses elevation angle (or latitude ), in the range"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Latitude as a geographic coordinate is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Colatitude",
+      "anchor": {
+        "section": "In geography",
+        "snippet": "is called colatitude in geography"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Colatitude is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Longitude (azimuth angle)",
+      "anchor": {
+        "section": "In geography",
+        "snippet": "The azimuth angle (or longitude ) of a given position on Earth, commonly denoted by λ"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Longitude as a geographic coordinate is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cartesian to spherical conversion",
+      "anchor": {
+        "section": "Cartesian coordinates",
+        "snippet": "can be obtained from its Cartesian coordinates ( x , y , z ) by the formulae"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "polarCoord",
+        "module": "Mathlib.Analysis.SpecialFunctions.PolarCoord",
+        "match_kind": null
+      },
+      "note": "polarCoord gives the 2-D forward formula (x,y) ↦ (√(x²+y²), arg), but the 3-D Cartesian-to-spherical formulas are absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Spherical to Cartesian conversion",
+      "anchor": {
+        "section": "Cartesian coordinates",
+        "snippet": "the Cartesian coordinates may be retrieved from the spherical coordinates"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "polarCoord",
+        "module": "Mathlib.Analysis.SpecialFunctions.PolarCoord",
+        "match_kind": null
+      },
+      "note": "polarCoord.symm gives the 2-D inverse (r,θ) ↦ (r cos θ, r sin θ), but the 3-D spherical-to-Cartesian formula is not present.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Cartesian coordinates",
+          "snippet": "the Cartesian coordinates may be retrieved from the spherical coordinates"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}x&amp;=r\\sin \\theta \\,\\cos \\varphi ,\\\\y&amp;=r\\sin \\theta \\,\\sin \\varphi ,\\\\z&amp;=r\\cos \\theta .\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Cylindrical to spherical conversion",
+      "anchor": {
+        "section": "Cylindrical coordinates",
+        "snippet": "may be converted into spherical coordinates ( central radius r , inclination θ , azimuth φ ), by the formulas"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither cylindrical nor spherical coordinate systems are formalized, so this conversion is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Spherical to cylindrical conversion",
+      "anchor": {
+        "section": "Cylindrical coordinates",
+        "snippet": "the spherical coordinates may be converted into cylindrical coordinates by the formulae"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No spherical-to-cylindrical conversion exists since neither system is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ellipsoid level set",
+      "anchor": {
+        "section": "Ellipsoidal coordinates",
+        "snippet": "Let P be an ellipsoid specified by the level set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no definition of an ellipsoid as a level set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Modified spherical coordinates for ellipsoid",
+      "anchor": {
+        "section": "Ellipsoidal coordinates",
+        "snippet": "The modified spherical coordinates of a point in P in the ISO convention"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Modified spherical coordinates parametrizing an ellipsoid are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ellipsoidal infinitesimal volume element",
+      "anchor": {
+        "section": "Ellipsoidal coordinates",
+        "snippet": "An infinitesimal volume element is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The ellipsoidal volume element formula is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Line element",
+      "anchor": {
+        "section": "Integration and differentiation in spherical coordinates",
+        "snippet": "The line element for an infinitesimal displacement from ( r , θ , φ ) to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The spherical-coordinate line element ds² is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Integration and differentiation in spherical coordinates",
+          "snippet": "The line element for an infinitesimal displacement from ( r , θ , φ ) to"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathrm {d} \\mathbf {r} =\\mathrm {d} r\\,{\\hat {\\mathbf {r} }}+r\\,\\mathrm {d} \\theta \\,{\\hat {\\boldsymbol {\\theta }}}+r\\sin {\\theta }\\,\\mathrm {d} \\varphi \\,\\mathbf {\\hat {\\boldsymbol {\\varphi }}} ,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}{\\hat {\\mathbf {r} }}&amp;=\\sin \\theta \\cos \\varphi \\,{\\hat {\\mathbf {x} }}+\\sin \\theta \\sin \\varphi \\,{\\hat {\\mathbf {y} }}+\\cos \\theta \\,{\\hat {\\mathbf {z} }},\\\\{\\hat {\\boldsymbol {\\theta }}}&amp;=\\cos \\theta \\cos \\varphi \\,{\\hat {\\mathbf {x} }}+\\cos \\theta \\sin \\varphi \\,{\\hat {\\mathbf {y} }}-\\sin \\theta \\,{\\hat {\\mathbf {z} }},\\\\{\\hat {\\boldsymbol {\\varphi }}}&amp;=-\\sin \\varphi \\,{\\hat {\\mathbf {x} }}+\\cos \\varphi \\,{\\hat {\\mathbf {y} }}\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle R={\\begin{pmatrix}\\sin \\theta \\cos \\varphi &amp;\\sin \\theta \\sin \\varphi &amp;{\\hphantom {-}}\\cos \\theta \\\\\\cos \\theta \\cos \\varphi &amp;\\cos \\theta \\sin \\varphi &amp;-\\sin \\theta \\\\-\\sin \\varphi &amp;\\cos \\varphi &amp;{\\hphantom {-}}0\\end{pmatrix}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Rotation matrix transformation",
+      "anchor": {
+        "section": "Integration and differentiation in spherical coordinates",
+        "snippet": "The linear transformation to this right-handed coordinate triplet is a rotation matrix"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific rotation matrix to the spherical orthonormal frame is not in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Integration and differentiation in spherical coordinates",
+          "snippet": "The linear transformation to this right-handed coordinate triplet is a rotation matrix"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathrm {d} \\mathbf {r} =\\mathrm {d} r\\,{\\hat {\\mathbf {r} }}+r\\,\\mathrm {d} \\theta \\,{\\hat {\\boldsymbol {\\theta }}}+r\\sin {\\theta }\\,\\mathrm {d} \\varphi \\,\\mathbf {\\hat {\\boldsymbol {\\varphi }}} ,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}{\\hat {\\mathbf {r} }}&amp;=\\sin \\theta \\cos \\varphi \\,{\\hat {\\mathbf {x} }}+\\sin \\theta \\sin \\varphi \\,{\\hat {\\mathbf {y} }}+\\cos \\theta \\,{\\hat {\\mathbf {z} }},\\\\{\\hat {\\boldsymbol {\\theta }}}&amp;=\\cos \\theta \\cos \\varphi \\,{\\hat {\\mathbf {x} }}+\\cos \\theta \\sin \\varphi \\,{\\hat {\\mathbf {y} }}-\\sin \\theta \\,{\\hat {\\mathbf {z} }},\\\\{\\hat {\\boldsymbol {\\varphi }}}&amp;=-\\sin \\varphi \\,{\\hat {\\mathbf {x} }}+\\cos \\varphi \\,{\\hat {\\mathbf {y} }}\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle R={\\begin{pmatrix}\\sin \\theta \\cos \\varphi &amp;\\sin \\theta \\sin \\varphi &amp;{\\hphantom {-}}\\cos \\theta \\\\\\cos \\theta \\cos \\varphi &amp;\\cos \\theta \\sin \\varphi &amp;-\\sin \\theta \\\\-\\sin \\varphi &amp;\\cos \\varphi &amp;{\\hphantom {-}}0\\end{pmatrix}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Cartesian unit vectors in spherical basis",
+      "anchor": {
+        "section": "Integration and differentiation in spherical coordinates",
+        "snippet": "The Cartesian unit vectors are thus related to the spherical unit vectors by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The relation between Cartesian and spherical unit vectors is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Integration and differentiation in spherical coordinates",
+          "snippet": "The Cartesian unit vectors are thus related to the spherical unit vectors by"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{bmatrix}\\mathbf {\\hat {x}} \\\\\\mathbf {\\hat {y}} \\\\\\mathbf {\\hat {z}} \\end{bmatrix}}={\\begin{bmatrix}\\sin \\theta \\cos \\varphi &amp;\\cos \\theta \\cos \\varphi &amp;-\\sin \\varphi \\\\\\sin \\theta \\sin \\varphi &amp;\\cos \\theta \\sin \\varphi &amp;{\\hphantom {-}}\\cos \\varphi \\\\\\cos \\theta &amp;-\\sin \\theta &amp;{\\hphantom {-}}0\\end{bmatrix}}{\\begin{bmatrix}{\\boldsymbol {\\hat {r}}}\\\\{\\boldsymbol {\\hat {\\theta }}}\\\\{\\boldsymbol {\\hat {\\varphi }}}\\end{bmatrix}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Spherical surface element",
+      "anchor": {
+        "section": "Integration and differentiation in spherical coordinates",
+        "snippet": "The surface element spanning from θ to θ + d θ and φ to φ + d φ on a spherical surface at (constant) radius r"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The spherical surface element r² sin θ dθ dφ is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Integration and differentiation in spherical coordinates",
+          "snippet": "The surface element spanning from θ to θ + d θ and φ to φ + d φ on a spherical surface at (constant) radius r"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathrm {d} S_{r}=\\left\\|{\\frac {\\partial {\\mathbf {r} }}{\\partial \\theta }}\\times {\\frac {\\partial {\\mathbf {r} }}{\\partial \\varphi }}\\right\\|\\mathrm {d} \\theta \\,\\mathrm {d} \\varphi =\\left|r{\\hat {\\boldsymbol {\\theta }}}\\times r\\sin \\theta {\\boldsymbol {\\hat {\\varphi }}}\\right|\\mathrm {d} \\theta \\,\\mathrm {d} \\varphi =r^{2}\\sin \\theta \\,\\mathrm {d} \\theta \\,\\mathrm {d} \\varphi ~.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Differential solid angle",
+      "anchor": {
+        "section": "Integration and differentiation in spherical coordinates",
+        "snippet": "Thus the differential solid angle is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no notion of solid angle (sin θ dθ dφ) in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Integration and differentiation in spherical coordinates",
+          "snippet": "Thus the differential solid angle is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathrm {d} \\Omega ={\\frac {\\mathrm {d} S_{r}}{r^{2}}}=\\sin \\theta \\,\\mathrm {d} \\theta \\,\\mathrm {d} \\varphi .}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Surface element on cone (θ constant)",
+      "anchor": {
+        "section": "Integration and differentiation in spherical coordinates",
+        "snippet": "The surface element in a surface of polar angle θ constant (a cone with vertex at the origin) is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The surface element on a constant-θ cone is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Integration and differentiation in spherical coordinates",
+          "snippet": "The surface element in a surface of polar angle θ constant (a cone with vertex at the origin) is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathrm {d} S_{\\theta }=r\\sin \\theta \\,\\mathrm {d} \\varphi \\,\\mathrm {d} r.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Surface element on half-plane (φ constant)",
+      "anchor": {
+        "section": "Integration and differentiation in spherical coordinates",
+        "snippet": "The surface element in a surface of azimuth φ constant (a vertical half-plane) is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The surface element on a constant-φ half-plane is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Integration and differentiation in spherical coordinates",
+          "snippet": "The surface element in a surface of azimuth φ constant (a vertical half-plane) is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathrm {d} S_{\\varphi }=r\\,\\mathrm {d} r\\,\\mathrm {d} \\theta .}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Volume element",
+      "anchor": {
+        "section": "Integration and differentiation in spherical coordinates",
+        "snippet": "The volume element spanning from r to r + d r , θ to θ + d θ , and φ to φ + d φ"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The spherical volume element r² sin θ dr dθ dφ is absent; only the 2-D polar Jacobian (det_fderivPolarCoordSymm = r) exists.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Integration and differentiation in spherical coordinates",
+          "snippet": "The volume element spanning from r to r + d r , θ to θ + d θ , and φ to φ + d φ"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle J={\\frac {\\partial (x,y,z)}{\\partial (r,\\theta ,\\varphi )}}={\\begin{pmatrix}\\sin \\theta \\cos \\varphi &amp;r\\cos \\theta \\cos \\varphi &amp;-r\\sin \\theta \\sin \\varphi \\\\\\sin \\theta \\sin \\varphi &amp;r\\cos \\theta \\sin \\varphi &amp;{\\hphantom {-}}r\\sin \\theta \\cos \\varphi \\\\\\cos \\theta &amp;-r\\sin \\theta &amp;{\\hphantom {-}}0\\end{pmatrix}},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathrm {d} V=\\left|{\\frac {\\partial (x,y,z)}{\\partial (r,\\theta ,\\varphi )}}\\right|\\,\\mathrm {d} r\\,\\mathrm {d} \\theta \\,\\mathrm {d} \\varphi =r^{2}\\sin \\theta \\,\\mathrm {d} r\\,\\mathrm {d} \\theta \\,\\mathrm {d} \\varphi =r^{2}\\,\\mathrm {d} r\\,\\mathrm {d} \\Omega ~.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Triple integral over R^3",
+      "anchor": {
+        "section": "Integration and differentiation in spherical coordinates",
+        "snippet": "can be integrated over every point in R 3 by the triple integral"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "integral_fun_norm_addHaar",
+        "module": "Mathlib.MeasureTheory.Constructions.HaarToSphere",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes the n-dimensional radius/sphere decomposition ∫ f(‖x‖) = c·∫ rⁿ⁻¹ f(r) dr, but not the explicit (r,θ,φ) spherical triple integral.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Integration and differentiation in spherical coordinates",
+          "snippet": "can be integrated over every point in R 3 by the triple integral"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int \\limits _{0}^{2\\pi }\\int \\limits _{0}^{\\pi }\\int \\limits _{0}^{\\infty }f(r,\\theta ,\\varphi )r^{2}\\sin \\theta \\,\\mathrm {d} r\\,\\mathrm {d} \\theta \\,\\mathrm {d} \\varphi ~.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Gradient and Laplacian",
+      "anchor": {
+        "section": "Integration and differentiation in spherical coordinates",
+        "snippet": "leads to the following expressions for the gradient and Laplacian for scalar fields"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "gradient",
+        "module": "Mathlib.Analysis.Calculus.Gradient.Basic",
+        "match_kind": null
+      },
+      "note": "The gradient and Laplacian (Mathlib.Analysis.InnerProductSpace.Laplacian) operators exist generally, but their spherical-coordinate expressions are not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Integration and differentiation in spherical coordinates",
+          "snippet": "leads to the following expressions for the gradient and Laplacian for scalar fields"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\nabla f&amp;={\\partial f \\over \\partial r}{\\hat {\\mathbf {r} }}+{1 \\over r}{\\partial f \\over \\partial \\theta }{\\hat {\\boldsymbol {\\theta }}}+{1 \\over r\\sin \\theta }{\\partial f \\over \\partial \\varphi }{\\hat {\\boldsymbol {\\varphi }}},\\\\[8pt]\\nabla ^{2}f&amp;={1 \\over r^{2}}{\\partial  \\over \\partial r}\\left(r^{2}{\\partial f \\over \\partial r}\\right)+{1 \\over r^{2}\\sin \\theta }{\\partial  \\over \\partial \\theta }\\left(\\sin \\theta {\\partial f \\over \\partial \\theta }\\right)+{1 \\over r^{2}\\sin ^{2}\\theta }{\\partial ^{2}f \\over \\partial \\varphi ^{2}}\\\\[8pt]&amp;=\\left({\\frac {\\partial ^{2}}{\\partial r^{2}}}+{\\frac {2}{r}}{\\frac {\\partial }{\\partial r}}\\right)f+{1 \\over r^{2}\\sin \\theta }{\\partial  \\over \\partial \\theta }\\left(\\sin \\theta {\\frac {\\partial }{\\partial \\theta }}\\right)f+{\\frac {1}{r^{2}\\sin ^{2}\\theta }}{\\frac {\\partial ^{2}}{\\partial \\varphi ^{2}}}f~,\\\\[8pt]\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Divergence and curl",
+      "anchor": {
+        "section": "Integration and differentiation in spherical coordinates",
+        "snippet": "the following expressions for the divergence and curl of vector fields"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no general divergence operator (only the divergence theorem inline) or curl operator, let alone spherical-coordinate forms.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Integration and differentiation in spherical coordinates",
+          "snippet": "the following expressions for the divergence and curl of vector fields"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\nabla f&amp;={\\partial f \\over \\partial r}{\\hat {\\mathbf {r} }}+{1 \\over r}{\\partial f \\over \\partial \\theta }{\\hat {\\boldsymbol {\\theta }}}+{1 \\over r\\sin \\theta }{\\partial f \\over \\partial \\varphi }{\\hat {\\boldsymbol {\\varphi }}},\\\\[8pt]\\nabla ^{2}f&amp;={1 \\over r^{2}}{\\partial  \\over \\partial r}\\left(r^{2}{\\partial f \\over \\partial r}\\right)+{1 \\over r^{2}\\sin \\theta }{\\partial  \\over \\partial \\theta }\\left(\\sin \\theta {\\partial f \\over \\partial \\theta }\\right)+{1 \\over r^{2}\\sin ^{2}\\theta }{\\partial ^{2}f \\over \\partial \\varphi ^{2}}\\\\[8pt]&amp;=\\left({\\frac {\\partial ^{2}}{\\partial r^{2}}}+{\\frac {2}{r}}{\\frac {\\partial }{\\partial r}}\\right)f+{1 \\over r^{2}\\sin \\theta }{\\partial  \\over \\partial \\theta }\\left(\\sin \\theta {\\frac {\\partial }{\\partial \\theta }}\\right)f+{\\frac {1}{r^{2}\\sin ^{2}\\theta }}{\\frac {\\partial ^{2}}{\\partial \\varphi ^{2}}}f~,\\\\[8pt]\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverse Jacobian",
+      "anchor": {
+        "section": "Integration and differentiation in spherical coordinates",
+        "snippet": "the inverse Jacobian in Cartesian coordinates is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The spherical-coordinate inverse Jacobian is not present; only the 2-D polar derivative exists (fderivPolarCoordSymm).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Integration and differentiation in spherical coordinates",
+          "snippet": "the inverse Jacobian in Cartesian coordinates is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle J^{-1}={\\begin{pmatrix}{\\dfrac {x}{r}}&amp;{\\dfrac {y}{r}}&amp;{\\dfrac {z}{r}}\\\\\\\\{\\dfrac {xz}{r^{2}{\\sqrt {x^{2}+y^{2}}}}}&amp;{\\dfrac {yz}{r^{2}{\\sqrt {x^{2}+y^{2}}}}}&amp;{\\dfrac {-\\left(x^{2}+y^{2}\\right)}{r^{2}{\\sqrt {x^{2}+y^{2}}}}}\\\\\\\\{\\dfrac {-y}{x^{2}+y^{2}}}&amp;{\\dfrac {x}{x^{2}+y^{2}}}&amp;0\\end{pmatrix}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Metric tensor",
+      "anchor": {
+        "section": "Integration and differentiation in spherical coordinates",
+        "snippet": "The metric tensor in the spherical coordinate system is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The spherical-coordinate metric tensor diag(1, r², r² sin²θ) is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Integration and differentiation in spherical coordinates",
+          "snippet": "The metric tensor in the spherical coordinate system is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle J^{-1}={\\begin{pmatrix}{\\dfrac {x}{r}}&amp;{\\dfrac {y}{r}}&amp;{\\dfrac {z}{r}}\\\\\\\\{\\dfrac {xz}{r^{2}{\\sqrt {x^{2}+y^{2}}}}}&amp;{\\dfrac {yz}{r^{2}{\\sqrt {x^{2}+y^{2}}}}}&amp;{\\dfrac {-\\left(x^{2}+y^{2}\\right)}{r^{2}{\\sqrt {x^{2}+y^{2}}}}}\\\\\\\\{\\dfrac {-y}{x^{2}+y^{2}}}&amp;{\\dfrac {x}{x^{2}+y^{2}}}&amp;0\\end{pmatrix}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Distance between two points",
+      "anchor": {
+        "section": "Distance and angle in spherical coordinates",
+        "snippet": "The distance between the two points can be expressed as"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.law_cos",
+        "module": "Mathlib.Geometry.Euclidean.Triangle",
+        "match_kind": null
+      },
+      "note": "The Euclidean distance / law of cosines is formalized, of which the spherical-coordinate distance expression is a special case, but the spherical form is not stated.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Distance and angle in spherical coordinates",
+          "snippet": "The distance between the two points can be expressed as"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}{\\mathbf {r} }&amp;=(r,\\theta ,\\varphi ),\\\\{\\mathbf {r} '}&amp;=(r',\\theta ',\\varphi ')\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}D&amp;={\\sqrt {r^{2}+r'^{2}-2rr'(\\sin {\\theta }\\sin {\\theta '}\\cos {(\\varphi -\\varphi ')}+\\cos {\\theta }\\cos {\\theta '})}}\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Angle between two points",
+      "anchor": {
+        "section": "Distance and angle in spherical coordinates",
+        "snippet": "between the two points can be found from their dot product in Cartesian coordinates"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductGeometry.cos_angle",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "cos_angle x y = ⟪x,y⟫/(‖x‖‖y‖) formalizes the angle-from-dot-product generally, but the spherical-coordinate-expanded formula is not given.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Distance and angle in spherical coordinates",
+          "snippet": "between the two points can be found from their dot product in Cartesian coordinates"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\cos \\gamma =\\cos \\theta \\cos \\theta '+\\sin \\theta \\sin \\theta '(\\cos \\phi \\cos \\phi '+\\sin \\phi \\sin \\phi ')}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\cos \\gamma =\\cos \\theta \\cos \\theta '+\\sin \\theta \\sin \\theta '\\cos(\\phi -\\phi ')}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Position vector in spherical coordinates",
+      "anchor": {
+        "section": "Kinematics",
+        "snippet": "the position of a point or particle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The kinematic position vector in spherical coordinates is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Kinematics",
+          "snippet": "the position of a point or particle"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {r} =r\\mathbf {\\hat {r}} .}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {v} ={\\frac {\\mathrm {d} \\mathbf {r} }{\\mathrm {d} t}}={\\dot {r}}\\mathbf {\\hat {r}} +r\\,{\\dot {\\theta }}\\,{\\hat {\\boldsymbol {\\theta }}}+r\\,{\\dot {\\varphi }}\\sin \\theta \\,\\mathbf {\\hat {\\boldsymbol {\\varphi }}} }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\mathbf {a} ={}&amp;{\\frac {\\mathrm {d} \\mathbf {v} }{\\mathrm {d} t}}\\\\[1ex]={}&amp;{\\hphantom {+}}\\;\\left({\\ddot {r}}-r\\,{\\dot {\\theta }}^{2}-r\\,{\\dot {\\varphi }}^{2}\\sin ^{2}\\theta \\right)\\mathbf {\\hat {r}} \\\\&amp;{}+\\left(r\\,{\\ddot {\\theta }}+2{\\dot {r}}\\,{\\dot {\\theta }}-r\\,{\\dot {\\varphi }}^{2}\\sin \\theta \\cos \\theta \\right){\\hat {\\boldsymbol {\\theta }}}\\\\&amp;{}+\\left(r{\\ddot {\\varphi }}\\,\\sin \\theta +2{\\dot {r}}\\,{\\dot {\\varphi }}\\,\\sin \\theta +2r\\,{\\dot {\\theta }}\\,{\\dot {\\varphi }}\\,\\cos \\theta \\right){\\hat {\\boldsymbol {\\varphi }}}\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Velocity",
+      "anchor": {
+        "section": "Kinematics",
+        "snippet": "Its velocity is then"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The spherical-coordinate velocity expression is a physics result not present in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Kinematics",
+          "snippet": "Its velocity is then"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {r} =r\\mathbf {\\hat {r}} .}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {v} ={\\frac {\\mathrm {d} \\mathbf {r} }{\\mathrm {d} t}}={\\dot {r}}\\mathbf {\\hat {r}} +r\\,{\\dot {\\theta }}\\,{\\hat {\\boldsymbol {\\theta }}}+r\\,{\\dot {\\varphi }}\\sin \\theta \\,\\mathbf {\\hat {\\boldsymbol {\\varphi }}} }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\mathbf {a} ={}&amp;{\\frac {\\mathrm {d} \\mathbf {v} }{\\mathrm {d} t}}\\\\[1ex]={}&amp;{\\hphantom {+}}\\;\\left({\\ddot {r}}-r\\,{\\dot {\\theta }}^{2}-r\\,{\\dot {\\varphi }}^{2}\\sin ^{2}\\theta \\right)\\mathbf {\\hat {r}} \\\\&amp;{}+\\left(r\\,{\\ddot {\\theta }}+2{\\dot {r}}\\,{\\dot {\\theta }}-r\\,{\\dot {\\varphi }}^{2}\\sin \\theta \\cos \\theta \\right){\\hat {\\boldsymbol {\\theta }}}\\\\&amp;{}+\\left(r{\\ddot {\\varphi }}\\,\\sin \\theta +2{\\dot {r}}\\,{\\dot {\\varphi }}\\,\\sin \\theta +2r\\,{\\dot {\\theta }}\\,{\\dot {\\varphi }}\\,\\cos \\theta \\right){\\hat {\\boldsymbol {\\varphi }}}\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Acceleration",
+      "anchor": {
+        "section": "Kinematics",
+        "snippet": "and its acceleration is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The spherical-coordinate acceleration expression is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Kinematics",
+          "snippet": "and its acceleration is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {r} =r\\mathbf {\\hat {r}} .}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {v} ={\\frac {\\mathrm {d} \\mathbf {r} }{\\mathrm {d} t}}={\\dot {r}}\\mathbf {\\hat {r}} +r\\,{\\dot {\\theta }}\\,{\\hat {\\boldsymbol {\\theta }}}+r\\,{\\dot {\\varphi }}\\sin \\theta \\,\\mathbf {\\hat {\\boldsymbol {\\varphi }}} }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\mathbf {a} ={}&amp;{\\frac {\\mathrm {d} \\mathbf {v} }{\\mathrm {d} t}}\\\\[1ex]={}&amp;{\\hphantom {+}}\\;\\left({\\ddot {r}}-r\\,{\\dot {\\theta }}^{2}-r\\,{\\dot {\\varphi }}^{2}\\sin ^{2}\\theta \\right)\\mathbf {\\hat {r}} \\\\&amp;{}+\\left(r\\,{\\ddot {\\theta }}+2{\\dot {r}}\\,{\\dot {\\theta }}-r\\,{\\dot {\\varphi }}^{2}\\sin \\theta \\cos \\theta \\right){\\hat {\\boldsymbol {\\theta }}}\\\\&amp;{}+\\left(r{\\ddot {\\varphi }}\\,\\sin \\theta +2{\\dot {r}}\\,{\\dot {\\varphi }}\\,\\sin \\theta +2r\\,{\\dot {\\theta }}\\,{\\dot {\\varphi }}\\,\\cos \\theta \\right){\\hat {\\boldsymbol {\\varphi }}}\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Angular momentum",
+      "anchor": {
+        "section": "Kinematics",
+        "snippet": "The angular momentum is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Angular momentum in spherical coordinates is a physics quantity not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Kinematics",
+          "snippet": "The angular momentum is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {L} =\\mathbf {r} \\times \\mathbf {p} =\\mathbf {r} \\times m\\mathbf {v} =mr^{2}\\left(-{\\dot {\\varphi }}\\sin \\theta \\,\\mathbf {\\hat {\\boldsymbol {\\theta }}} +{\\dot {\\theta }}\\,{\\hat {\\boldsymbol {\\varphi }}}\\right)}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Angular momentum operator",
+      "anchor": {
+        "section": "Kinematics",
+        "snippet": "The corresponding angular momentum operator then follows from the phase-space reformulation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The quantum angular momentum operator is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Kinematics",
+          "snippet": "The corresponding angular momentum operator then follows from the phase-space reformulation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {L} =-i\\hbar ~\\mathbf {r} \\times \\nabla =i\\hbar \\left({\\frac {\\hat {\\boldsymbol {\\theta }}}{\\sin(\\theta )}}{\\frac {\\partial }{\\partial \\phi }}-{\\hat {\\boldsymbol {\\phi }}}{\\frac {\\partial }{\\partial \\theta }}\\right).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Torque",
+      "anchor": {
+        "section": "Kinematics",
+        "snippet": "The torque is given as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Torque in spherical coordinates is a physics result not present in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Kinematics",
+          "snippet": "The torque is given as"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {\\tau } ={\\frac {\\mathrm {d} \\mathbf {L} }{\\mathrm {d} t}}=\\mathbf {r} \\times \\mathbf {F} =-m\\left(2r{\\dot {r}}{\\dot {\\varphi }}\\sin \\theta +r^{2}{\\ddot {\\varphi }}\\sin {\\theta }+2r^{2}{\\dot {\\theta }}{\\dot {\\varphi }}\\cos {\\theta }\\right){\\hat {\\boldsymbol {\\theta }}}+m\\left(r^{2}{\\ddot {\\theta }}+2r{\\dot {r}}{\\dot {\\theta }}-r^{2}{\\dot {\\varphi }}^{2}\\sin \\theta \\cos \\theta \\right){\\hat {\\boldsymbol {\\varphi }}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Kinetic energy",
+      "anchor": {
+        "section": "Kinematics",
+        "snippet": "The kinetic energy is given as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The spherical-coordinate kinetic energy expression is a physics result not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Kinematics",
+          "snippet": "The kinetic energy is given as"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle E_{k}={\\frac {1}{2}}m\\left[\\left({\\dot {r}}\\right)^{2}+\\left(r{\\dot {\\theta }}\\right)^{2}+\\left(r{\\dot {\\varphi }}\\sin \\theta \\right)^{2}\\right]}"
+        }
+      ]
+    }
+  ]
+}

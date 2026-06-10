@@ -1,0 +1,361 @@
+{
+  "slug": "Minor_linear_algebra",
+  "wikipedia_title": "Minor (linear algebra)",
+  "display_title": "Minor (linear algebra)",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Minor of a matrix",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a minor of a matrix A is the determinant of some smaller square matrix generated from A by removing one or more of its rows and columns"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.submatrix",
+        "module": "Mathlib.LinearAlgebra.Matrix.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has `Matrix.submatrix` for reindexing/extracting submatrices but no named `minor` definition; one would take `det` of a submatrix.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "First minor (i,j)",
+      "anchor": {
+        "section": "First minors",
+        "snippet": "the minor of the entry in the i -th row and j -th column"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.submatrix",
+        "module": "Mathlib.LinearAlgebra.Matrix.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "The construction `A.submatrix i.succAbove j.succAbove` appears in `det_succ_row`, but Mathlib has no named `firstMinor` (i,j) definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "(i,j) cofactor",
+      "anchor": {
+        "section": "First minors",
+        "snippet": "The ( i , j ) cofactor is obtained by multiplying the minor by"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.det_succ_row",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Cofactors appear only inline in the Laplace-expansion formula `(-1)^(i+j) * det (A.submatrix i.succAbove j.succAbove)`; no standalone `cofactor` definition exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Computing M_{2,3} and C_{2,3}",
+      "anchor": {
+        "section": "First minors",
+        "snippet": "To compute the minor M 2,3 and the cofactor C 2,3"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No worked numerical example of a first minor/cofactor exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "k × k minor",
+      "anchor": {
+        "section": "General definition",
+        "snippet": "A k × k minor of A , also called minor determinant of order k of A"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.submatrix",
+        "module": "Mathlib.LinearAlgebra.Matrix.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "k×k minors are expressible as `det (A.submatrix r c)` for injections `r, c : Fin k → _`, but no named `Matrix.minor` concept exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Minor of order zero",
+      "anchor": {
+        "section": "General definition",
+        "snippet": "The minor of order zero is often defined to be 1"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.det_fin_zero",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`det_fin_zero` gives `det = 1` for the empty matrix, which is the order-zero minor convention, though not framed as a minor.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Minor indexed by I and J",
+      "anchor": {
+        "section": "General definition",
+        "snippet": "The minor"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.submatrix",
+        "module": "Mathlib.LinearAlgebra.Matrix.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `submatrix` is reindex-based rather than index-set-based; no `[A]_{I,J}` notation/definition is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complement of a minor",
+      "anchor": {
+        "section": "Complement",
+        "snippet": "is formed by the determinant of the matrix A from which all the rows"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of the complementary minor (deleting the chosen rows/columns) exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Laplace cofactor expansion",
+      "anchor": {
+        "section": "Cofactor expansion of the determinant",
+        "snippet": "the determinant of A , denoted det( A ) , can be written as the sum of the cofactors of any row or column of the matrix multiplied by the entries that generated them"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_succ_row",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.det_succ_row` and `Matrix.det_succ_column` give the Laplace cofactor expansion along any row or column of an (n+1)×(n+1) matrix.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cofactor matrix",
+      "anchor": {
+        "section": "Inverse of a matrix",
+        "snippet": "The matrix formed by all of the cofactors of a square matrix A is called the cofactor matrix"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.adjugate",
+        "module": "Mathlib.LinearAlgebra.Matrix.Adjugate",
+        "match_kind": "invocation"
+      },
+      "note": "The cofactor matrix isn't given a name; only its transpose `Matrix.adjugate` is defined (via Cramer's rule rather than minors).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Inverse via adjugate",
+      "anchor": {
+        "section": "Inverse of a matrix",
+        "snippet": "Then the inverse of A is the transpose of the cofactor matrix times the reciprocal of the determinant of A"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.inv_def",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.inv_def` states `A⁻¹ = A.det⁻¹ʳ • A.adjugate`, matching the adjugate inverse formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Adjugate matrix",
+      "anchor": {
+        "section": "Inverse of a matrix",
+        "snippet": "The transpose of the cofactor matrix is called the adjugate matrix"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.adjugate",
+        "module": "Mathlib.LinearAlgebra.Matrix.Adjugate",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.adjugate` is defined via the Cramer map and documented as the transpose of the cofactor matrix.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Generalized inverse formula via minors",
+      "anchor": {
+        "section": "Inverse of a matrix",
+        "snippet": "The above formula can be generalized as follows"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no expression of the inverse in terms of higher-order minors of the matrix.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rank characterized by nonzero minor",
+      "anchor": {
+        "section": "Other applications",
+        "snippet": "then there exists at least one non-zero r × r minor, while all larger minors are zero"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No characterization of `Matrix.rank` via existence of a nonzero r×r minor is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Principal minor",
+      "anchor": {
+        "section": "Other applications",
+        "snippet": "If A is square and I = J , then [ A ] I , J is called a principal minor"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `principalMinor` definition appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Leading principal minor",
+      "anchor": {
+        "section": "Other applications",
+        "snippet": "the principal minor [ A ] I , J is called a leading principal minor"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `leadingPrincipalMinor` definition appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Basic minor",
+      "anchor": {
+        "section": "Other applications",
+        "snippet": "A basic minor of a matrix with rank r is an r × r minor with nonzero value"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of a `basicMinor`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sylvester's criterion application",
+      "anchor": {
+        "section": "Other applications",
+        "snippet": "the leading principal minors can be used to test for positive definiteness and the principal minors can be used to test for positive semidefiniteness"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Sylvester's criterion is not present in `Mathlib/LinearAlgebra/Matrix/PosDef.lean` or elsewhere.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cauchy–Binet generalized formula for minors of a product",
+      "anchor": {
+        "section": "Other applications",
+        "snippet": "are special cases of the following general statement about the minors of a product of two matrices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Only the square-case `Matrix.det_mul` is in Mathlib; the general Cauchy–Binet formula for minors of a product is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Minors as components of exterior power",
+      "anchor": {
+        "section": "Multilinear algebra approach",
+        "snippet": "the k -minors of a matrix are the entries in the k -th exterior power map"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "While Mathlib has exterior powers and even `exteriorPower.cofactorLinear` in a stably-free setup, no result identifies k-minors of a matrix with entries of its k-th exterior power.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "2 × 2 minors via wedge product",
+      "anchor": {
+        "section": "Multilinear algebra approach",
+        "snippet": "are −13 (from the first two rows), −7 (from the first and last row), and 5 (from the last two rows)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No worked wedge-product computation of 2×2 minors is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Adjunct (alternative term)",
+      "anchor": {
+        "section": "A remark about different notation",
+        "snippet": "instead of cofactor the term adjunct is used"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib uses `adjugate` exclusively and does not introduce `adjunct` terminology.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,1785 @@
+{
+  "slug": "General_topology",
+  "wikipedia_title": "General topology",
+  "display_title": "General topology",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "General topology",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is the branch of topology that deals with the basic set-theoretic definitions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A branch of mathematics, not a formalizable mathematical statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Topology on a set",
+      "anchor": {
+        "section": "A topology on a set",
+        "snippet": "is called a topology on X if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace",
+        "module": "Mathlib.Topology.Defs.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The TopologicalSpace class bundles the set of open sets with the topology axioms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Topological space",
+      "anchor": {
+        "section": "A topology on a set",
+        "snippet": "is called a topological space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace",
+        "module": "Mathlib.Topology.Defs.Basic",
+        "match_kind": "exact"
+      },
+      "note": "A topological space is a type with a TopologicalSpace instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Open and closed sets",
+      "anchor": {
+        "section": "A topology on a set",
+        "snippet": "are called open sets in X"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsOpen",
+        "module": "Mathlib.Topology.Defs.Basic",
+        "match_kind": "exact"
+      },
+      "note": "IsOpen (and dually IsClosed) are the membership predicates for the topology.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Base (basis) for a topology",
+      "anchor": {
+        "section": "Basis for a topology",
+        "snippet": "A base (or basis ) B for a topological space X with topology T is a collection of open sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace.IsTopologicalBasis",
+        "module": "Mathlib.Topology.Bases",
+        "match_kind": "exact"
+      },
+      "note": "IsTopologicalBasis expresses that a collection of open sets generates the topology.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Subspace topology",
+      "anchor": {
+        "section": "Subspace and quotient",
+        "snippet": "can be given the subspace topology in which the open sets are the intersections"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "instTopologicalSpaceSubtype",
+        "module": "Mathlib.Topology.Constructions",
+        "match_kind": "exact"
+      },
+      "note": "The subtype instance is the topology induced by the inclusion map.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Product topology",
+      "anchor": {
+        "section": "Subspace and quotient",
+        "snippet": "the product can be given the product topology"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "instTopologicalSpaceProd",
+        "module": "Mathlib.Topology.Constructions",
+        "match_kind": "exact"
+      },
+      "note": "The product topology on a binary product is the inf of the two induced topologies.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quotient topology",
+      "anchor": {
+        "section": "Subspace and quotient",
+        "snippet": "the quotient topology on Y is the collection of subsets of Y that have open inverse images under f"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace.coinduced",
+        "module": "Mathlib.Topology.Defs.Induced",
+        "match_kind": "exact"
+      },
+      "note": "The quotient/coinduced topology declares a set open iff its preimage is open.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Discrete topology",
+      "anchor": {
+        "section": "Discrete and trivial topologies",
+        "snippet": "Any set can be given the discrete topology , in which every subset is open"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DiscreteTopology",
+        "module": "Mathlib.Topology.Order",
+        "match_kind": "exact"
+      },
+      "note": "DiscreteTopology asserts the topology equals the bottom (every set open).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Trivial (indiscrete) topology",
+      "anchor": {
+        "section": "Discrete and trivial topologies",
+        "snippet": "any set can be given the trivial topology"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IndiscreteTopology",
+        "module": "Mathlib.Topology.Order",
+        "match_kind": "exact"
+      },
+      "note": "IndiscreteTopology asserts the topology equals the top (only ∅ and univ open).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cofinite topology",
+      "anchor": {
+        "section": "Cofinite and cocountable topologies",
+        "snippet": "Any set can be given the cofinite topology"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CofiniteTopology",
+        "module": "Mathlib.Topology.Constructions",
+        "match_kind": "exact"
+      },
+      "note": "CofiniteTopology is a type synonym carrying the topology whose open sets are cofinite sets and ∅.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cocountable topology",
+      "anchor": {
+        "section": "Cofinite and cocountable topologies",
+        "snippet": "Any set can be given the cocountable topology"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No cocountable-topology construction was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Standard topology on R",
+      "anchor": {
+        "section": "Topologies on the real and complex numbers",
+        "snippet": "The standard topology on R is generated by the open intervals"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.pseudoMetricSpace",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "ℝ carries its standard topology via the (pseudo)metric/order topology instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Lower limit topology",
+      "anchor": {
+        "section": "Topologies on the real and complex numbers",
+        "snippet": "The real line can also be given the lower limit topology"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Sorgenfrey/lower-limit line exists only in Counterexamples, not within Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Metric topology",
+      "anchor": {
+        "section": "The metric topology",
+        "snippet": "Every metric space can be given a metric topology"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PseudoMetricSpace",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "PseudoMetricSpace extends UniformSpace/TopologicalSpace, equipping every metric space with its metric topology.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Finite topological spaces",
+      "anchor": {
+        "section": "Further examples",
+        "snippet": "Such spaces are called finite topological spaces"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Finite and TopologicalSpace but no dedicated finite-topological-space theory.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Natural topology on a manifold",
+      "anchor": {
+        "section": "Further examples",
+        "snippet": "Every manifold has a natural topology , since it is locally Euclidean"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ChartedSpace",
+        "module": "Mathlib.Geometry.Manifold.ChartedSpace",
+        "match_kind": "invocation"
+      },
+      "note": "Manifolds are defined as ChartedSpaces requiring a topology as input, rather than deriving it from being locally Euclidean.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Zariski topology",
+      "anchor": {
+        "section": "Further examples",
+        "snippet": "The Zariski topology is defined algebraically on the spectrum of a ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PrimeSpectrum.zariskiTopology",
+        "module": "Mathlib.RingTheory.Spectrum.Prime.Topology",
+        "match_kind": "exact"
+      },
+      "note": "zariskiTopology is the topology instance on the prime spectrum of a commutative ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sierpiński space",
+      "anchor": {
+        "section": "Further examples",
+        "snippet": "The Sierpiński space is the simplest non-discrete topological space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "sierpinskiSpace",
+        "module": "Mathlib.Topology.Order",
+        "match_kind": "exact"
+      },
+      "note": "sierpinskiSpace is the topology on Prop generated by {True}.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Order topology on an ordinal",
+      "anchor": {
+        "section": "Further examples",
+        "snippet": "may be endowed with the order topology generated by the intervals"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "OrderTopology",
+        "module": "Mathlib.Topology.Order.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Ordinals carry the order topology via a Preorder.topology + OrderTopology instance (Mathlib.SetTheory.Ordinal.Topology).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Continuity (neighborhood)",
+      "anchor": {
+        "section": "Continuous functions",
+        "snippet": "Continuity is expressed in terms of neighborhoods"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousAt",
+        "module": "Mathlib.Topology.Defs.Filter",
+        "match_kind": "exact"
+      },
+      "note": "ContinuousAt is defined as Tendsto f (𝓝 x) (𝓝 (f x)), i.e. via neighborhoods.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Functions out of a discrete space are continuous",
+      "anchor": {
+        "section": "Continuous functions",
+        "snippet": "if a set X is given the discrete topology , all functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "continuous_of_discreteTopology",
+        "module": "Mathlib.Topology.Order",
+        "match_kind": "exact"
+      },
+      "note": "Any function from a discrete-topology space is continuous.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Functions out of an indiscrete space",
+      "anchor": {
+        "section": "Continuous functions",
+        "snippet": "the only continuous functions are the constant functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma stating continuous maps out of an indiscrete space are exactly the constant functions was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Neighborhood definition of continuity",
+      "anchor": {
+        "section": "Neighborhood definition",
+        "snippet": "The following criterion expresses continuity in terms of neighborhoods"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "continuousAt_def",
+        "module": "Mathlib.Topology.Continuous",
+        "match_kind": "exact"
+      },
+      "note": "continuousAt_def characterizes continuity at x by preimages of neighborhoods being neighborhoods.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuity via limit (Hausdorff target)",
+      "anchor": {
+        "section": "Neighborhood definition",
+        "snippet": "if the target space is Hausdorff"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific 'continuity equals limit-preservation given a Hausdorff target' lemma was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuity at isolated points",
+      "anchor": {
+        "section": "Neighborhood definition",
+        "snippet": "At an isolated point , every function is continuous"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma asserting every function is continuous at an isolated point was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuity and limits",
+      "anchor": {
+        "section": "Sequences and nets",
+        "snippet": "A function is continuous only if it takes limits of sequences to limits of sequences"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Continuous.tendsto",
+        "module": "Mathlib.Topology.Continuous",
+        "match_kind": "exact"
+      },
+      "note": "Continuous.tendsto shows a continuous function preserves filter limits at every point.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sequentially continuous function",
+      "anchor": {
+        "section": "Sequences and nets",
+        "snippet": "is sequentially continuous if whenever a sequence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SeqContinuous",
+        "module": "Mathlib.Topology.Defs.Sequences",
+        "match_kind": "exact"
+      },
+      "note": "SeqContinuous is defined by preservation of convergent sequences.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuous implies sequentially continuous",
+      "anchor": {
+        "section": "Sequences and nets",
+        "snippet": "Every continuous function is sequentially continuous"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Continuous.seqContinuous",
+        "module": "Mathlib.Topology.Sequences",
+        "match_kind": "exact"
+      },
+      "note": "Continuous.seqContinuous gives that continuity implies sequential continuity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Converse for first-countable spaces",
+      "anchor": {
+        "section": "Sequences and nets",
+        "snippet": "If X is a first-countable space and countable choice holds, then the converse also holds"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "continuous_iff_seqContinuous",
+        "module": "Mathlib.Topology.Sequences",
+        "match_kind": "special_case"
+      },
+      "note": "continuous_iff_seqContinuous holds in any SequentialSpace, which first-countable spaces are.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuity characterized by nets",
+      "anchor": {
+        "section": "Sequences and nets",
+        "snippet": "Continuous functions preserve limits of nets, and in fact this property characterizes continuous functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "continuous_iff_continuousAt",
+        "module": "Mathlib.Topology.Continuous",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib characterizes continuity via filter convergence (Tendsto), which subsumes nets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Closure and interior operators",
+      "anchor": {
+        "section": "Closure operator definition",
+        "snippet": "the topology can also be determined by a closure operator"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "closure",
+        "module": "Mathlib.Topology.Defs.Basic",
+        "match_kind": "exact"
+      },
+      "note": "closure and interior are defined as the standard topological operators.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuity via closure operator",
+      "anchor": {
+        "section": "Closure operator definition",
+        "snippet": "is continuous in the sense above if and only if for all subsets A of X"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "continuous_iff_image_closure_subset_closure_image",
+        "module": "Mathlib.Topology.Continuous",
+        "match_kind": "exact"
+      },
+      "note": "This lemma states f is continuous iff f(closure A) ⊆ closure(f A) for all A.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Composition of continuous functions",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "then so is the composition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Continuous.comp",
+        "module": "Mathlib.Topology.Continuous",
+        "match_kind": "exact"
+      },
+      "note": "Continuous.comp gives continuity of the composition of continuous functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuous image of compact space",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "then f ( X ) is compact"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompact.image",
+        "module": "Mathlib.Topology.Compactness.Compact",
+        "match_kind": "exact"
+      },
+      "note": "IsCompact.image shows the continuous image of a compact set is compact.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuous image of connected space",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "then f ( X ) is connected"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsConnected.image",
+        "module": "Mathlib.Topology.Connected.Basic",
+        "match_kind": "exact"
+      },
+      "note": "IsConnected.image (and IsPreconnected.image) give continuous images of connected sets are connected.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuous image of path-connected space",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "then f ( X ) is path-connected"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsPathConnected.image",
+        "module": "Mathlib.Topology.Connected.PathConnected",
+        "match_kind": "exact"
+      },
+      "note": "IsPathConnected.image gives the continuous image of a path-connected set is path-connected.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuous image of Lindelöf space",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "then f ( X ) is Lindelöf"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLindelof.image",
+        "module": "Mathlib.Topology.Compactness.Lindelof",
+        "match_kind": "exact"
+      },
+      "note": "IsLindelof.image gives the continuous image of a Lindelöf set is Lindelöf.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuous image of separable space",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "then f ( X ) is separable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousOn.isSeparable_image",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "The continuous image of a separable set is separable, verified for (pseudo)metrizable spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coarser and finer topologies",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "is said to be coarser than another topology"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace.le_def",
+        "module": "Mathlib.Topology.Order",
+        "match_kind": "exact"
+      },
+      "note": "The partial order ≤ on TopologicalSpace encodes the coarser/finer relation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Identity map and comparison of topologies",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "see also comparison of topologies"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "continuous_id_iff_le",
+        "module": "Mathlib.Topology.Order",
+        "match_kind": "exact"
+      },
+      "note": "continuous_id_iff_le states the identity is continuous iff the domain topology is finer.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Open map",
+      "anchor": {
+        "section": "Homeomorphisms",
+        "snippet": "is an open map , for which images of open sets are open"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsOpenMap",
+        "module": "Mathlib.Topology.Maps.Basic",
+        "match_kind": "exact"
+      },
+      "note": "IsOpenMap is the predicate that images of open sets are open.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homeomorphism",
+      "anchor": {
+        "section": "Homeomorphisms",
+        "snippet": "A bijective continuous function with continuous inverse function is called a homeomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Homeomorph",
+        "module": "Mathlib.Topology.Homeomorph.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Homeomorph is a bijection continuous in both directions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuous bijection compact to Hausdorff is homeomorphism",
+      "anchor": {
+        "section": "Homeomorphisms",
+        "snippet": "If a continuous bijection has as its domain a compact space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Continuous.homeoOfEquivCompactToT2",
+        "module": "Mathlib.Topology.Homeomorph.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "A continuous bijection from a compact space to a T2 space is a homeomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Final topology",
+      "anchor": {
+        "section": "Defining topologies via continuous functions",
+        "snippet": "the final topology on S is defined by letting the open sets of S"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace.coinduced",
+        "module": "Mathlib.Topology.Defs.Induced",
+        "match_kind": "special_case"
+      },
+      "note": "coinduced gives the finest topology making a map continuous; family final topologies are sup of coinduced.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Initial topology",
+      "anchor": {
+        "section": "Defining topologies via continuous functions",
+        "snippet": "the initial topology on S has a basis of open sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace.induced",
+        "module": "Mathlib.Topology.Defs.Induced",
+        "match_kind": "special_case"
+      },
+      "note": "induced gives the coarsest topology making a map continuous; family initial topologies are inf of induced.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Topology determined by continuous functions",
+      "anchor": {
+        "section": "Defining topologies via continuous functions",
+        "snippet": "A topology on a set S is uniquely determined by the class of all continuous functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No uniqueness theorem framed as 'topology determined by the class of all continuous functions' was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Compact space",
+      "anchor": {
+        "section": "Compact sets",
+        "snippet": "is called compact if each of its open covers has a finite subcover"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompactSpace",
+        "module": "Mathlib.Topology.Defs.Filter",
+        "match_kind": "exact"
+      },
+      "note": "CompactSpace/IsCompact capture the finite-subcover property (via filters).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quasi-compact (Bourbaki terminology)",
+      "anchor": {
+        "section": "Compact sets",
+        "snippet": "use the term quasi-compact for the general notion"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompact",
+        "module": "Mathlib.Topology.Defs.Filter",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's IsCompact does not require Hausdorff, matching the Bourbaki quasi-compact notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closed intervals in R are compact",
+      "anchor": {
+        "section": "Compact sets",
+        "snippet": "Every closed interval in R of finite length is compact"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isCompact_Icc",
+        "module": "Mathlib.Topology.Order.IsLUB",
+        "match_kind": "generalization"
+      },
+      "note": "isCompact_Icc proves Icc compact for any conditionally complete linear order with order topology, ℝ included.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Heine–Borel theorem",
+      "anchor": {
+        "section": "Compact sets",
+        "snippet": "a set is compact if and only if it is closed and bounded"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isCompact_iff_isClosed_bounded",
+        "module": "Mathlib.Topology.MetricSpace.Bounded",
+        "match_kind": "generalization"
+      },
+      "note": "Heine–Borel is proved for proper metric spaces (subsuming ℝⁿ): compact iff closed and bounded.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuous image of compact is compact",
+      "anchor": {
+        "section": "Compact sets",
+        "snippet": "Every continuous image of a compact space is compact"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompact.image",
+        "module": "Mathlib.Topology.Compactness.Compact",
+        "match_kind": "exact"
+      },
+      "note": "IsCompact.image gives the continuous image of a compact set is compact.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compact subset of Hausdorff is closed",
+      "anchor": {
+        "section": "Compact sets",
+        "snippet": "A compact subset of a Hausdorff space is closed"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompact.isClosed",
+        "module": "Mathlib.Topology.Separation.Hausdorff",
+        "match_kind": "exact"
+      },
+      "note": "IsCompact.isClosed shows compact subsets of a T2 space are closed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuous bijection compact to Hausdorff",
+      "anchor": {
+        "section": "Compact sets",
+        "snippet": "Every continuous bijection from a compact space to a Hausdorff space is necessarily a homeomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Continuous.homeoOfEquivCompactToT2",
+        "module": "Mathlib.Topology.Homeomorph.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "A continuous bijection from a compact space to a T2 space is a homeomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sequential compactness of compact metric spaces",
+      "anchor": {
+        "section": "Compact sets",
+        "snippet": "Every sequence of points in a compact metric space has a convergent subsequence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompact.tendsto_subseq",
+        "module": "Mathlib.Topology.Sequences",
+        "match_kind": "generalization"
+      },
+      "note": "IsCompact.tendsto_subseq extracts a convergent subsequence from any sequence in a compact set (metric is a special case).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Embedding of compact manifolds",
+      "anchor": {
+        "section": "Compact sets",
+        "snippet": "Every compact finite-dimensional manifold can be embedded in some Euclidean space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_embedding_euclidean_of_compact",
+        "module": "Mathlib.Geometry.Manifold.WhitneyEmbedding",
+        "match_kind": "special_case"
+      },
+      "note": "The weak Whitney embedding theorem embeds compact manifolds into some EuclideanSpace.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Connected and disconnected spaces",
+      "anchor": {
+        "section": "Connected sets",
+        "snippet": "is said to be disconnected if it is the union of two disjoint nonempty open sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ConnectedSpace",
+        "module": "Mathlib.Topology.Connected.Basic",
+        "match_kind": "exact"
+      },
+      "note": "ConnectedSpace/IsPreconnected capture connectedness; disconnection is its negation rather than a named predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalent conditions for connectedness",
+      "anchor": {
+        "section": "Connected sets",
+        "snippet": "the following conditions are equivalent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isPreconnected_iff_subset_of_disjoint",
+        "module": "Mathlib.Topology.Connected.Clopen",
+        "match_kind": "exact"
+      },
+      "note": "Several equivalent characterizations exist (e.g. via disjoint opens, clopen sets in preconnectedSpace_iff_clopen).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Intervals in R are connected",
+      "anchor": {
+        "section": "Connected sets",
+        "snippet": "Every interval in R is connected"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isPreconnected_Icc",
+        "module": "Mathlib.Topology.Order.IntermediateValue",
+        "match_kind": "generalization"
+      },
+      "note": "Intervals are preconnected in any densely ordered space with order topology, ℝ included.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuous image of connected space",
+      "anchor": {
+        "section": "Connected sets",
+        "snippet": "The continuous image of a connected space is connected"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsPreconnected.image",
+        "module": "Mathlib.Topology.Connected.Basic",
+        "match_kind": "exact"
+      },
+      "note": "IsPreconnected.image gives the continuous image of a connected set is connected.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Connected components",
+      "anchor": {
+        "section": "Connected components",
+        "snippet": "are called the connected components of the space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "connectedComponent",
+        "module": "Mathlib.Topology.Connected.Basic",
+        "match_kind": "exact"
+      },
+      "note": "connectedComponent x is the union of all preconnected sets containing x.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Components form a partition",
+      "anchor": {
+        "section": "Connected components",
+        "snippet": "form a partition of X"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "connectedComponentSetoid",
+        "module": "Mathlib.Topology.Connected.Clopen",
+        "match_kind": "special_case"
+      },
+      "note": "connectedComponentSetoid makes the components equivalence classes, hence a partition of X.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quasi-component equals component under conditions",
+      "anchor": {
+        "section": "Connected components",
+        "snippet": "the equality holds if X is compact Hausdorff or locally connected"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quasi-components are not defined in Mathlib, so this equality is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Totally disconnected space",
+      "anchor": {
+        "section": "Disconnected spaces",
+        "snippet": "is called totally disconnected"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TotallyDisconnectedSpace",
+        "module": "Mathlib.Topology.Connected.TotallyDisconnected",
+        "match_kind": "exact"
+      },
+      "note": "TotallyDisconnectedSpace requires all connected components to be singletons.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Totally separated space",
+      "anchor": {
+        "section": "Disconnected spaces",
+        "snippet": "a space X is called totally separated if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TotallySeparatedSpace",
+        "module": "Mathlib.Topology.Connected.TotallyDisconnected",
+        "match_kind": "exact"
+      },
+      "note": "TotallySeparatedSpace requires any two points to be separated by a clopen partition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Totally separated implies totally disconnected",
+      "anchor": {
+        "section": "Disconnected spaces",
+        "snippet": "Clearly any totally separated space is totally disconnected"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TotallySeparatedSpace.totallyDisconnectedSpace",
+        "module": "Mathlib.Topology.Connected.TotallyDisconnected",
+        "match_kind": "exact"
+      },
+      "note": "This instance derives total disconnectedness from total separatedness.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Path",
+      "anchor": {
+        "section": "Path-connected sets",
+        "snippet": "A path from a point x to a point y in a topological space X is a continuous function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Path",
+        "module": "Mathlib.Topology.Path",
+        "match_kind": "exact"
+      },
+      "note": "Path is the bundled continuous map from [0,1] with given endpoints.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Path-component",
+      "anchor": {
+        "section": "Path-connected sets",
+        "snippet": "A path-component of X is an equivalence class"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "pathComponent",
+        "module": "Mathlib.Topology.Connected.PathConnected",
+        "match_kind": "exact"
+      },
+      "note": "pathComponent x is the set of points joined to x by a path.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Path-connected space",
+      "anchor": {
+        "section": "Path-connected sets",
+        "snippet": "The space X is said to be path-connected"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PathConnectedSpace",
+        "module": "Mathlib.Topology.Connected.PathConnected",
+        "match_kind": "exact"
+      },
+      "note": "PathConnectedSpace requires nonemptiness and that any two points be joined by a path.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Path-connected implies connected",
+      "anchor": {
+        "section": "Path-connected sets",
+        "snippet": "Every path-connected space is connected"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PathConnectedSpace.connectedSpace",
+        "module": "Mathlib.Topology.Connected.PathConnected",
+        "match_kind": "exact"
+      },
+      "note": "This instance shows path-connected spaces are connected (also IsPathConnected.isConnected).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Connected but not path-connected spaces",
+      "anchor": {
+        "section": "Path-connected sets",
+        "snippet": "examples of connected spaces that are not path-connected include the extended long line"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The long line is absent and the topologist's sine curve lives in Counterexamples, outside Mathlib/.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Connected iff path-connected for subsets of R",
+      "anchor": {
+        "section": "Path-connected sets",
+        "snippet": "subsets of the real line R are connected if and only if they are path-connected"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No equivalence of connectedness and path-connectedness specialized to subsets of ℝ was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Connectedness equals path-connectedness for finite spaces",
+      "anchor": {
+        "section": "Path-connected sets",
+        "snippet": "connectedness and path-connectedness are the same for finite topological spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No result equating connectedness and path-connectedness for finite spaces was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Product topology",
+      "anchor": {
+        "section": "Products of spaces",
+        "snippet": "the product topology on X is defined as the coarsest topology"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Pi.topologicalSpace",
+        "module": "Mathlib.Topology.Constructions",
+        "match_kind": "exact"
+      },
+      "note": "Pi.topologicalSpace is the inf of the topologies induced by the projections, i.e. the coarsest making them continuous.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Basis for finite products",
+      "anchor": {
+        "section": "Products of spaces",
+        "snippet": "the products of base elements of the X i gives a basis for the product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsTopologicalBasis.prod",
+        "module": "Mathlib.Topology.Bases",
+        "match_kind": "special_case"
+      },
+      "note": "IsTopologicalBasis.prod shows products of basis elements form a basis (binary; isTopologicalBasis_pi for the indexed case).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Subbase for product topology",
+      "anchor": {
+        "section": "Products of spaces",
+        "snippet": "form a subbase for the topology on X"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Pi.topologicalSpace",
+        "module": "Mathlib.Topology.Constructions",
+        "match_kind": null
+      },
+      "note": "The product topology is defined as inf of induced topologies (the subbase content) but no explicit subbase lemma was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Box topology",
+      "anchor": {
+        "section": "Products of spaces",
+        "snippet": "forms a basis for what is called the box topology on X"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The box topology is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Box topology finer than product topology",
+      "anchor": {
+        "section": "Products of spaces",
+        "snippet": "the box topology is finer than the product topology"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a box topology, this comparison is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Tychonoff's theorem",
+      "anchor": {
+        "section": "Products of spaces",
+        "snippet": "the (arbitrary) product of compact spaces is compact"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isCompact_pi_infinite",
+        "module": "Mathlib.Topology.Compactness.Compact",
+        "match_kind": "exact"
+      },
+      "note": "isCompact_pi_infinite (and instance Pi.compactSpace) give Tychonoff's theorem for arbitrary products.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "T0 (Kolmogorov) space",
+      "anchor": {
+        "section": "Separation axioms",
+        "snippet": "X is T 0 , or Kolmogorov"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "T0Space",
+        "module": "Mathlib.Topology.Separation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "T0Space states topologically indistinguishable points are equal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "T1 (Fréchet) space",
+      "anchor": {
+        "section": "Separation axioms",
+        "snippet": "X is T 1 , or accessible or Fréchet"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "T1Space",
+        "module": "Mathlib.Topology.Separation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "T1Space states every singleton is closed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hausdorff (T2) space",
+      "anchor": {
+        "section": "Separation axioms",
+        "snippet": "X is Hausdorff , or T 2 or separated"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "T2Space",
+        "module": "Mathlib.Topology.Separation.Hausdorff",
+        "match_kind": "exact"
+      },
+      "note": "T2Space separates distinct points by disjoint open neighborhoods.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Urysohn (T2½) space",
+      "anchor": {
+        "section": "Separation axioms",
+        "snippet": "X is T 2½ , or Urysohn"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "T25Space",
+        "module": "Mathlib.Topology.Separation.Hausdorff",
+        "match_kind": "exact"
+      },
+      "note": "T25Space separates distinct points by neighborhoods with disjoint closures.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Regular (T3) space",
+      "anchor": {
+        "section": "Separation axioms",
+        "snippet": "X is regular , or T 3"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RegularSpace",
+        "module": "Mathlib.Topology.Separation.Regular",
+        "match_kind": "exact"
+      },
+      "note": "RegularSpace separates points from closed sets; T3Space adds T0 (regular form is exactly captured).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tychonoff (T3½) space",
+      "anchor": {
+        "section": "Separation axioms",
+        "snippet": "X is Tychonoff , or T 3½"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompletelyRegularSpace",
+        "module": "Mathlib.Topology.Separation.CompletelyRegular",
+        "match_kind": "exact"
+      },
+      "note": "CompletelyRegularSpace separates points from closed sets via continuous functions; T35Space adds T0.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Normal (T4) space",
+      "anchor": {
+        "section": "Separation axioms",
+        "snippet": "X is normal , or T 4"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormalSpace",
+        "module": "Mathlib.Topology.Separation.Regular",
+        "match_kind": "exact"
+      },
+      "note": "NormalSpace separates disjoint closed sets by disjoint open sets; T4Space adds T1.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Urysohn's lemma",
+      "anchor": {
+        "section": "Separation axioms",
+        "snippet": "this is Urysohn's lemma"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_continuous_zero_one_of_isClosed",
+        "module": "Mathlib.Topology.UrysohnsLemma",
+        "match_kind": "exact"
+      },
+      "note": "This is Urysohn's lemma: disjoint closed sets in a normal space are separated by a [0,1]-valued continuous function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Completely normal (T5) space",
+      "anchor": {
+        "section": "Separation axioms",
+        "snippet": "X is completely normal , or T 5 or completely T 4"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompletelyNormalSpace",
+        "module": "Mathlib.Topology.Separation.Regular",
+        "match_kind": "exact"
+      },
+      "note": "CompletelyNormalSpace separates separated sets; T5Space adds T1.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Perfectly normal (T6) space",
+      "anchor": {
+        "section": "Separation axioms",
+        "snippet": "X is perfectly normal , or T 6 or perfectly T 4"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PerfectlyNormalSpace",
+        "module": "Mathlib.Topology.Separation.GDelta",
+        "match_kind": "exact"
+      },
+      "note": "PerfectlyNormalSpace is normal with closed sets being Gδ; T6Space adds T0.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Tietze extension theorem",
+      "anchor": {
+        "section": "Separation axioms",
+        "snippet": "The Tietze extension theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.exists_restrict_eq",
+        "module": "Mathlib.Topology.TietzeExtension",
+        "match_kind": "exact"
+      },
+      "note": "This is the Tietze extension theorem extending continuous functions off a closed set in a normal space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Axiom of countability",
+      "anchor": {
+        "section": "Countability axioms",
+        "snippet": "An axiom of countability is a property of certain mathematical objects"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a meta-classification of properties, not itself a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sequential space",
+      "anchor": {
+        "section": "Countability axioms",
+        "snippet": "a set is open if every sequence convergent to a point in the set is eventually in the set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SequentialSpace",
+        "module": "Mathlib.Topology.Defs.Sequences",
+        "match_kind": "exact"
+      },
+      "note": "SequentialSpace requires sequentially closed sets to be closed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "First-countable space",
+      "anchor": {
+        "section": "Countability axioms",
+        "snippet": "every point has a countable neighbourhood basis"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstCountableTopology",
+        "module": "Mathlib.Topology.Bases",
+        "match_kind": "exact"
+      },
+      "note": "FirstCountableTopology requires each neighborhood filter to be countably generated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Second-countable space",
+      "anchor": {
+        "section": "Countability axioms",
+        "snippet": "the topology has a countable base"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SecondCountableTopology",
+        "module": "Mathlib.Topology.Bases",
+        "match_kind": "exact"
+      },
+      "note": "SecondCountableTopology requires a countable topological basis.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Separable space",
+      "anchor": {
+        "section": "Countability axioms",
+        "snippet": "there exists a countable dense subspace"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SeparableSpace",
+        "module": "Mathlib.Topology.Bases",
+        "match_kind": "exact"
+      },
+      "note": "SeparableSpace requires a countable dense subset.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lindelöf space",
+      "anchor": {
+        "section": "Countability axioms",
+        "snippet": "every open cover has a countable subcover"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LindelofSpace",
+        "module": "Mathlib.Topology.Compactness.Lindelof",
+        "match_kind": "exact"
+      },
+      "note": "LindelofSpace requires every open cover to have a countable subcover.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "σ-compact space",
+      "anchor": {
+        "section": "Countability axioms",
+        "snippet": "there exists a countable cover by compact spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SigmaCompactSpace",
+        "module": "Mathlib.Topology.Compactness.SigmaCompact",
+        "match_kind": "exact"
+      },
+      "note": "SigmaCompactSpace requires the space to be a countable union of compact sets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "First-countable implies sequential",
+      "anchor": {
+        "section": "Countability axioms",
+        "snippet": "Every first countable space is sequential"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstCountableTopology.frechetUrysohnSpace",
+        "module": "Mathlib.Topology.Sequences",
+        "match_kind": "generalization"
+      },
+      "note": "First-countable spaces are Fréchet–Urysohn, hence sequential.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Second-countable implications",
+      "anchor": {
+        "section": "Countability axioms",
+        "snippet": "Every second-countable space is first-countable, separable, and Lindelöf"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SecondCountableTopology.to_firstCountableTopology",
+        "module": "Mathlib.Topology.Bases",
+        "match_kind": "exact"
+      },
+      "note": "Instances give second-countable ⇒ first-countable, ⇒ separable (to_separableSpace), and ⇒ Lindelöf.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "σ-compact implies Lindelöf",
+      "anchor": {
+        "section": "Countability axioms",
+        "snippet": "Every σ-compact space is Lindelöf"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsSigmaCompact.isLindelof",
+        "module": "Mathlib.Topology.Compactness.Lindelof",
+        "match_kind": "exact"
+      },
+      "note": "IsSigmaCompact.isLindelof shows σ-compact sets are Lindelöf.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Metric space is first-countable",
+      "anchor": {
+        "section": "Countability axioms",
+        "snippet": "A metric space is first-countable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UniformSpace.firstCountableTopology",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "generalization"
+      },
+      "note": "Any uniform space with countably generated uniformity (so any metric space) is first-countable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalences for metric spaces",
+      "anchor": {
+        "section": "Countability axioms",
+        "snippet": "For metric spaces second-countability, separability, and the Lindelöf property are all equivalent"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "UniformSpace.secondCountable_of_separable",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "special_case"
+      },
+      "note": "The key direction separable ⇒ second-countable for metric spaces is formalized, but the triple equivalence is not bundled in one decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Metric space",
+      "anchor": {
+        "section": "Metric spaces",
+        "snippet": "is an ordered pair"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MetricSpace",
+        "module": "Mathlib.Topology.MetricSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "MetricSpace bundles a distance function with the metric axioms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Metric spaces are paracompact, Hausdorff, normal",
+      "anchor": {
+        "section": "Metric spaces",
+        "snippet": "is paracompact and Hausdorff , and thus normal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EMetric.instParacompactSpace",
+        "module": "Mathlib.Topology.EMetricSpace.Paracompact",
+        "match_kind": "generalization"
+      },
+      "note": "Metric spaces are paracompact and T2, hence normal (T4Space.of_paracompactSpace_t2Space).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Metrization theorems",
+      "anchor": {
+        "section": "Metric spaces",
+        "snippet": "The metrization theorems provide necessary and sufficient conditions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "metrizableSpace_of_t3_secondCountable",
+        "module": "Mathlib.Topology.Metrizable.Urysohn",
+        "match_kind": "special_case"
+      },
+      "note": "Urysohn's metrization theorem (T3 + second-countable ⇒ metrizable) is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Baire category theorem",
+      "anchor": {
+        "section": "Baire category theorem",
+        "snippet": "The Baire category theorem says"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dense_sInter_of_isOpen",
+        "module": "Mathlib.Topology.Baire.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "In a BaireSpace a countable intersection of dense open sets is dense (complete metric spaces are BaireSpaces).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Open subspace of a Baire space",
+      "anchor": {
+        "section": "Baire category theorem",
+        "snippet": "Any open subspace of a Baire space is itself a Baire space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsOpen.baireSpace",
+        "module": "Mathlib.Topology.Baire.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "IsOpen.baireSpace shows open subspaces of a Baire space are Baire.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Continuum",
+      "anchor": {
+        "section": "Continuum theory",
+        "snippet": "A continuum (pl continua ) is a nonempty compact connected metric space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No topological 'continuum' (compact connected metric space) definition exists; Cardinal.continuum is unrelated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Topological algebra",
+      "anchor": {
+        "section": "Topological algebras",
+        "snippet": "A topological algebra A over a topological field K is a topological vector space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.Topology.Algebra.Algebra",
+        "match_kind": null
+      },
+      "note": "Mathlib models topological algebras via Algebra plus ContinuousSMul rather than a bundled TopologicalAlgebra class.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unital associative topological algebra is a topological ring",
+      "anchor": {
+        "section": "Topological algebras",
+        "snippet": "A unital associative topological algebra is a topological ring"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem deriving a topological ring structure from a unital associative topological algebra was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Metrizable space",
+      "anchor": {
+        "section": "Metrizability theory",
+        "snippet": "a metrizable space is a topological space that is homeomorphic to a metric space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace.MetrizableSpace",
+        "module": "Mathlib.Topology.Metrizable.Basic",
+        "match_kind": "exact"
+      },
+      "note": "MetrizableSpace asserts the topology comes from a metric (PseudoMetrizableSpace for the pseudometric case).",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,969 @@
+{
+  "slug": "Surface_topology",
+  "wikipedia_title": "Surface (topology)",
+  "display_title": "Surface (topology)",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Surface as two-dimensional manifold",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a surface is a two-dimensional manifold"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsManifold",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes general manifolds via `IsManifold`/`ChartedSpace` but has no dedicated two-dimensional surface notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Klein bottle not embeddable in 3-space",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the Klein bottle is a surface that cannot be embedded in three-dimensional Euclidean space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Klein bottle is not defined anywhere in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Surface as deformed plane",
+      "anchor": {
+        "section": "In general",
+        "snippet": "a surface is a geometrical shape that resembles a deformed plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an informal intuitive description with no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Surface as two-dimensional space",
+      "anchor": {
+        "section": "In general",
+        "snippet": "A surface is a two-dimensional space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal lead description; the precise topological-manifold version is captured by `ChartedSpace` (see the topological-surface entry).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Topological surface",
+      "anchor": {
+        "section": "Definitions and first examples",
+        "snippet": "A (topological) surface is a topological space in which every point has an open neighbourhood"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ChartedSpace",
+        "module": "Mathlib.Geometry.Manifold.ChartedSpace",
+        "match_kind": "generalization"
+      },
+      "note": "A topological manifold is a `ChartedSpace` over a model space, but the 2-dimensional (surface) specialization is not separately defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coordinate chart",
+      "anchor": {
+        "section": "Definitions and first examples",
+        "snippet": "together with the corresponding homeomorphism, is known as a (coordinate) chart"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "chartAt",
+        "module": "Mathlib.Geometry.Manifold.ChartedSpace",
+        "match_kind": "generalization"
+      },
+      "note": "Charts are formalized as atlas members / `chartAt`, homeomorphisms onto open subsets of a general model space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Surface with boundary",
+      "anchor": {
+        "section": "Definitions and first examples",
+        "snippet": "a (topological) surface with boundary is a Hausdorff topological space in which every point has an open neighbourhood"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsManifold",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Manifolds-with-boundary are supported via `ModelWithCorners`/Euclidean half-space models, but not a 2D surface-with-boundary notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Boundary point",
+      "anchor": {
+        "section": "Definitions and first examples",
+        "snippet": "A point on the surface mapped via a chart to the x -axis is termed a boundary point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ModelWithCorners.IsBoundaryPoint",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary",
+        "match_kind": "generalization"
+      },
+      "note": "`ModelWithCorners.IsBoundaryPoint` defines boundary points for general manifolds with corners.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Interior point",
+      "anchor": {
+        "section": "Definitions and first examples",
+        "snippet": "a point mapped to above the x -axis is an interior point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ModelWithCorners.IsInteriorPoint",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary",
+        "match_kind": "generalization"
+      },
+      "note": "`ModelWithCorners.IsInteriorPoint` defines interior points for general manifolds with corners.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Closed disk as surface with boundary",
+      "anchor": {
+        "section": "Definitions and first examples",
+        "snippet": "The closed disk is a simple example of a surface with boundary"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Manifold-with-boundary infrastructure exists, but the closed disk is not given such a structure in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Closed surface",
+      "anchor": {
+        "section": "Definitions and first examples",
+        "snippet": "A surface with empty boundary which is compact is known as a 'closed' surface"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "BoundarylessManifold",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary",
+        "match_kind": "generalization"
+      },
+      "note": "Compactness plus `BoundarylessManifold` capture this, but there is no dedicated closed-surface (2D) notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Examples of closed surfaces",
+      "anchor": {
+        "section": "Definitions and first examples",
+        "snippet": "The two-dimensional sphere, the two-dimensional torus , and the real projective plane are examples of closed surfaces"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanSpace.instIsManifoldSphere",
+        "module": "Mathlib.Geometry.Manifold.Instances.Sphere",
+        "match_kind": "special_case"
+      },
+      "note": "The sphere has a (compact) manifold instance, but the torus and real projective plane are not formalized as surfaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orientable surface",
+      "anchor": {
+        "section": "Definitions and first examples",
+        "snippet": "a surface is said to be orientable if it does not contain a homeomorphic copy of the Möbius strip"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Manifold orientability (and the Möbius strip) is not defined in Mathlib; only vector-space orientation exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Extrinsic surface",
+      "anchor": {
+        "section": "Extrinsically defined surfaces and embeddings",
+        "snippet": "as such was termed extrinsic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of an extrinsically/embedded-defined surface.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Intrinsic surface",
+      "anchor": {
+        "section": "Extrinsically defined surfaces and embeddings",
+        "snippet": "which is the definition that mathematicians use at present, is intrinsic"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ChartedSpace",
+        "module": "Mathlib.Geometry.Manifold.ChartedSpace",
+        "match_kind": "generalization"
+      },
+      "note": "The intrinsic/abstract manifold definition corresponds to `ChartedSpace`, though not specialized to surfaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Whitney embedding theorem",
+      "anchor": {
+        "section": "Extrinsically defined surfaces and embeddings",
+        "snippet": "the Whitney embedding theorem asserts every surface can in fact be embedded homeomorphically into Euclidean space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SmoothBumpCovering.exists_embedding_euclidean_of_compact",
+        "module": "Mathlib.Geometry.Manifold.WhitneyEmbedding",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves a Whitney embedding theorem for compact smooth manifolds of any dimension into Euclidean space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Embedding compact surfaces in E^3",
+      "anchor": {
+        "section": "Extrinsically defined surfaces and embeddings",
+        "snippet": "any compact surface that is either orientable or has a boundary can be embedded in E 3"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This surface-specific embedding result into E³ is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Steiner surfaces",
+      "anchor": {
+        "section": "Extrinsically defined surfaces and embeddings",
+        "snippet": "Steiner surfaces , including Boy's surface , the Roman surface and the cross-cap , are models of the real projective plane in E 3"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Steiner/Boy/Roman surfaces are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Alexander horned sphere",
+      "anchor": {
+        "section": "Extrinsically defined surfaces and embeddings",
+        "snippet": "The Alexander horned sphere is a well-known pathological embedding of the two-sphere into the three-sphere"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Alexander horned sphere is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Homeomorphic but non-isotopic tori",
+      "anchor": {
+        "section": "Extrinsically defined surfaces and embeddings",
+        "snippet": "The two embedded tori are homeomorphic, but not isotopic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Isotopy of embeddings and embedded tori are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Parametric surface",
+      "anchor": {
+        "section": "Extrinsically defined surfaces and embeddings",
+        "snippet": "is said to be a parametric surface"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of parametric surface exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Implicit surface",
+      "anchor": {
+        "section": "Extrinsically defined surfaces and embeddings",
+        "snippet": "the locus of zeros of f does define a surface, known as an implicit surface"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of an implicit surface (zero locus as a manifold) is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Construction from fundamental polygon",
+      "anchor": {
+        "section": "Construction from polygons",
+        "snippet": "Each closed surface can be constructed from an oriented polygon with an even number of sides, called a fundamental polygon of the surface"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fundamental polygons and surface construction from them are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fundamental group presentation from polygon",
+      "anchor": {
+        "section": "Construction from polygons",
+        "snippet": "turns out to be the sole relation in a presentation of the fundamental group of the surface"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The fundamental-group presentation of a surface from its polygon is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Projective plane as quotient of sphere",
+      "anchor": {
+        "section": "Construction from polygons",
+        "snippet": "the real projective plane can be obtained as the quotient of the sphere by identifying all pairs of opposite points on the sphere"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The real projective plane as a quotient of the sphere is not formalized as a surface in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Connected sum",
+      "anchor": {
+        "section": "Connected sums",
+        "snippet": "The connected sum of two surfaces M and N , denoted M # N , is obtained by removing a disk from each of them"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The connected sum of surfaces/manifolds is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euler characteristic of connected sum",
+      "anchor": {
+        "section": "Connected sums",
+        "snippet": "is the sum of the Euler characteristics of the summands, minus two"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the connected sum nor the Euler characteristic of surfaces is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sphere is identity for connected sum",
+      "anchor": {
+        "section": "Connected sums",
+        "snippet": "The sphere S is an identity element for the connected sum"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The connected sum operation is not formalized, so this identity property is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Associativity of connected sum",
+      "anchor": {
+        "section": "Connected sums",
+        "snippet": "The connected sum is associative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The connected sum operation is not formalized, so its associativity is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "P # P is the Klein bottle",
+      "anchor": {
+        "section": "Connected sums",
+        "snippet": "The connected sum of two real projective planes, P # P , is the Klein bottle K"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Connected sums, projective planes, and the Klein bottle are all unformalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Connected sum with projective plane is nonorientable",
+      "anchor": {
+        "section": "Connected sums",
+        "snippet": "Any connected sum involving a real projective plane is nonorientable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Connected sums and surface orientability are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Closed surface",
+      "anchor": {
+        "section": "Closed surfaces",
+        "snippet": "A closed surface is a surface that is compact and without boundary"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "BoundarylessManifold",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary",
+        "match_kind": "generalization"
+      },
+      "note": "Compactness plus `BoundarylessManifold` express this, but there is no dedicated closed-surface (2D) notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Examples of closed surfaces",
+      "anchor": {
+        "section": "Closed surfaces",
+        "snippet": "Examples of closed surfaces include the sphere , the torus and the Klein bottle"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanSpace.instIsManifoldSphere",
+        "module": "Mathlib.Geometry.Manifold.Instances.Sphere",
+        "match_kind": "special_case"
+      },
+      "note": "The sphere has a manifold instance, but the torus and Klein bottle are not formalized as surfaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closed iff boundary of a solid",
+      "anchor": {
+        "section": "Closed surfaces",
+        "snippet": "A surface embedded in three-dimensional space is closed if and only if it is the boundary of a solid"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This characterization of closed embedded surfaces is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Classification theorem of closed surfaces",
+      "anchor": {
+        "section": "Classification of closed surfaces",
+        "snippet": "The classification theorem of closed surfaces states that any connected closed surface is homeomorphic to some member of one of these three families"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classification of closed surfaces is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Genus of a surface",
+      "anchor": {
+        "section": "Classification of closed surfaces",
+        "snippet": "The number g of tori involved is called the genus of the surface"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The genus of a surface is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euler characteristic of connected sum of g tori",
+      "anchor": {
+        "section": "Classification of closed surfaces",
+        "snippet": "the Euler characteristic of the connected sum of g tori is 2 − 2 g"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Euler characteristic of surfaces and connected sums is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euler characteristic of connected sum of projective planes",
+      "anchor": {
+        "section": "Classification of closed surfaces",
+        "snippet": "the Euler characteristic of the connected sum of k of them is 2 − k"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Euler characteristic of surfaces and connected sums is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Closed surfaces classified by Euler characteristic and orientability",
+      "anchor": {
+        "section": "Classification of closed surfaces",
+        "snippet": "a closed surface is determined, up to homeomorphism, by two pieces of information"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The surface classification by Euler characteristic and orientability is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Monoid of closed surfaces under connected sum",
+      "anchor": {
+        "section": "Monoid structure",
+        "snippet": "the closed surfaces up to homeomorphism form a commutative monoid under the operation of connected sum"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The monoid of closed surfaces under connected sum is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Dyck's theorem",
+      "anchor": {
+        "section": "Monoid structure",
+        "snippet": "This relation is sometimes known as Dyck's theorem after Walther von Dyck"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dyck's theorem on connected sums of surfaces is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Compact 2-manifolds are triangulable",
+      "anchor": {
+        "section": "Proof",
+        "snippet": "every compact 2-manifold is homeomorphic to a simplicial complex"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has simplicial complexes but no triangulation theorem for compact 2-manifolds.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compact surfaces with boundary as closed surfaces with holes",
+      "anchor": {
+        "section": "Surfaces with boundary",
+        "snippet": "Compact surfaces with boundary are closed surfaces with a finite number of holes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This structural result about surfaces with boundary is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Classification of compact surfaces with boundary",
+      "anchor": {
+        "section": "Surfaces with boundary",
+        "snippet": "A compact connected surface with boundary is classified by the orientability and Euler characteristic of the corresponding closed surface and the number of boundary components"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classification of compact surfaces with boundary is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Genus of compact surface with boundary",
+      "anchor": {
+        "section": "Surfaces with boundary",
+        "snippet": "The genus of a compact surface is defined as the genus of the corresponding closed surface"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Surface genus is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Jacob's ladder and Loch Ness monster",
+      "anchor": {
+        "section": "Non-compact surfaces",
+        "snippet": "two canonical counterexamples are the Jacob's ladder and the Loch Ness monster"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "These non-compact surface examples are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Space of ends of a non-compact surface",
+      "anchor": {
+        "section": "Non-compact surfaces",
+        "snippet": "A non-compact surface M has a non-empty space of ends E ( M )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The topological space of ends is not formalized (only graph ends and categorical ends exist).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Space of ends is a closed subspace of the Cantor set",
+      "anchor": {
+        "section": "Non-compact surfaces",
+        "snippet": "The space E ( M ) is always topologically equivalent to a closed subspace of the Cantor set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Although `cantorSet` exists, the space of ends and this embedding result are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Classification of non-compact surfaces with finite handles/planes",
+      "anchor": {
+        "section": "Non-compact surfaces",
+        "snippet": "classify the surface M up to topological equivalence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classification of non-compact surfaces is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Long line product, non-second-countable surface",
+      "anchor": {
+        "section": "Assumption of second-countability",
+        "snippet": "the Cartesian product of the long line with the space of real numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The long line is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Prüfer manifold",
+      "anchor": {
+        "section": "Assumption of second-countability",
+        "snippet": "is the Prüfer manifold , which can be described by simple equations that show it to be a real-analytic surface"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Prüfer manifold is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Radó's theorem",
+      "anchor": {
+        "section": "Assumption of second-countability",
+        "snippet": "Tibor Radó proved that all Riemann surfaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Radó's theorem on triangulability of Riemann surfaces is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Polyhedra as surfaces",
+      "anchor": {
+        "section": "Surfaces in geometry",
+        "snippet": "Polyhedra , such as the boundary of a cube , are among the first surfaces encountered in geometry"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Polyhedron boundaries are not formalized as surfaces in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Smooth surface",
+      "anchor": {
+        "section": "Surfaces in geometry",
+        "snippet": "It is also possible to define smooth surfaces , in which each point has a neighborhood diffeomorphic to some open set in E 2"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsManifold",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Smooth manifolds (`IsManifold I ∞ M`) are formalized generally, not specialized to 2D surfaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Smooth surfaces diffeomorphic iff homeomorphic",
+      "anchor": {
+        "section": "Surfaces in geometry",
+        "snippet": "Two smooth surfaces are diffeomorphic if and only if they are homeomorphic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This smoothing/equivalence result for surfaces is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gauss–Bonnet theorem",
+      "anchor": {
+        "section": "Surfaces in geometry",
+        "snippet": "the famous Gauss–Bonnet theorem for closed surfaces states that the integral of the Gaussian curvature K over the entire surface S is determined by the Euler characteristic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Gauss–Bonnet theorem appears only as a target in docs/1000.yaml, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Riemann surface",
+      "anchor": {
+        "section": "Surfaces in geometry",
+        "snippet": "A complex one-manifold is a smooth oriented surface, also called a Riemann surface"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsManifold",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Complex manifolds exist as `IsManifold` over ℂ, but there is no dedicated Riemann surface (1-dim complex manifold) definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compact orientable surfaces as Riemann surfaces",
+      "anchor": {
+        "section": "Surfaces in geometry",
+        "snippet": "every compact orientable surface is realizable as a Riemann surface"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Realization of compact orientable surfaces as Riemann surfaces is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Uniformization theorem",
+      "anchor": {
+        "section": "Surfaces in geometry",
+        "snippet": "One version of the uniformization theorem (due to Poincaré ) states that any Riemannian metric on an oriented, closed surface is conformally equivalent to an essentially unique metric of constant curvature"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The uniformization theorem appears only as a target in docs/1000.yaml, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complex surface",
+      "anchor": {
+        "section": "Surfaces in geometry",
+        "snippet": "A complex surface is a complex two-manifold and thus a real four-manifold"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsManifold",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Complex manifolds are formalized as `IsManifold` over ℂ; the specific 2-complex-dimensional surface notion isn't separately defined.",
+      "provenance": "ai"
+    }
+  ]
+}

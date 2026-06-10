@@ -1,0 +1,451 @@
+{
+  "slug": "Cauchys_integral_formula",
+  "wikipedia_title": "Cauchy's integral formula",
+  "display_title": "Cauchy's integral formula",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "theorem",
+      "label": "Cauchy's integral formula",
+      "anchor": {
+        "section": "Theorem",
+        "snippet": "suppose the closed disk"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DiffContOnCl.circleIntegral_sub_inv_smul",
+        "module": "Mathlib.Analysis.Complex.CauchyIntegral",
+        "match_kind": "generalization"
+      },
+      "note": "Gives ∮ (z-w)⁻¹•f z = 2πi•f w under continuity on the closed disc and differentiability on the interior, which is more general than the article's holomorphic-on-an-open-set hypothesis.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Theorem",
+          "snippet": "suppose the closed disk"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle D={\\bigl \\{}z\\in \\mathbb {C} :|z-z_{0}|\\leq r{\\bigr \\}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(a)={\\frac {1}{2\\pi i}}\\oint _{\\gamma }{\\frac {f(z)}{z-a}}\\,dz.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Cauchy's differentiation formula (analyticity)",
+      "anchor": {
+        "section": "Theorem",
+        "snippet": "it follows that holomorphic functions are analytic"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DifferentiableOn.analyticOnNhd",
+        "module": "Mathlib.Analysis.Complex.CauchyIntegral",
+        "match_kind": "exact"
+      },
+      "note": "States that a function differentiable on an open set in ℂ is analytic (admits a power series) on that set.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Theorem",
+          "snippet": "it follows that holomorphic functions are analytic"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {1}{z-a}}={\\frac {1+{\\frac {a}{z}}+\\left({\\frac {a}{z}}\\right)^{2}+\\cdots }{z}},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f^{(n)}(a)={\\frac {n!}{2\\pi i}}\\oint _{\\gamma }{\\frac {f(z)}{\\left(z-a\\right)^{n+1}}}\\,dz.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Generalization to rectifiable curves",
+      "anchor": {
+        "section": "Theorem",
+        "snippet": "can be replaced by any closed rectifiable curve in"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's Cauchy formula is stated only for circles via circleIntegral, with no version for arbitrary closed rectifiable curves and winding numbers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Not every boundary function arises",
+      "anchor": {
+        "section": "Theorem",
+        "snippet": "not every continuous function on the boundary can be used to produce a function inside the boundary"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This remark about boundary functions not all extending holomorphically has no corresponding statement in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Evaluating a contour integral",
+      "anchor": {
+        "section": "Example",
+        "snippet": "the circle of radius 2"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "circleIntegral.integral_sub_inv_of_mem_ball",
+        "module": "Mathlib.MeasureTheory.Integral.CircleIntegral",
+        "match_kind": null
+      },
+      "note": "The general machinery (∮ (z-w)⁻¹ = 2πi and the Cauchy formula) exists, but this specific worked numerical example on the circle of radius 2 is not present.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Example",
+          "snippet": "the circle of radius 2"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle g(z)={\\frac {z^{2}}{z^{2}+2z+2}},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Holomorphic implies infinitely differentiable",
+      "anchor": {
+        "section": "Consequences",
+        "snippet": "a function that is holomorphic in an open set is in fact infinitely differentiable there"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DifferentiableOn.contDiffOn",
+        "module": "Mathlib.Analysis.Complex.CauchyIntegral",
+        "match_kind": "exact"
+      },
+      "note": "Shows a function differentiable on an open set in ℂ is ContDiffOn of any order n (including ∞), i.e. infinitely differentiable there.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Consequences",
+          "snippet": "a function that is holomorphic in an open set is in fact infinitely differentiable there"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(\\zeta )={\\frac {1}{2\\pi i}}\\int _{C}{\\frac {f(z)}{z-\\zeta }}\\,dz.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniform limit of holomorphic functions",
+      "anchor": {
+        "section": "Consequences",
+        "snippet": "the uniform limit of holomorphic functions is holomorphic"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TendstoLocallyUniformlyOn.differentiableOn",
+        "module": "Mathlib.Analysis.Complex.LocallyUniformLimit",
+        "match_kind": "generalization"
+      },
+      "note": "Establishes that a locally uniform limit of holomorphic functions on an open set is holomorphic, generalizing the uniform-limit statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cauchy's estimate",
+      "anchor": {
+        "section": "Consequences",
+        "snippet": "satisfy Cauchy's estimate"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le",
+        "module": "Mathlib.Analysis.Complex.Liouville",
+        "match_kind": "exact"
+      },
+      "note": "Bounds the n-th derivative at the center by n!·C/Rⁿ given a bound C on the boundary circle, exactly Cauchy's estimate.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Consequences",
+          "snippet": "satisfy Cauchy's estimate"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle |a_{n}|\\leq r^{-n}\\sup _{|z|=r}|f(z)|.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Liouville's theorem",
+      "anchor": {
+        "section": "Consequences",
+        "snippet": "every bounded entire function must be constant"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Differentiable.exists_const_forall_eq_of_bounded",
+        "module": "Mathlib.Analysis.Complex.Liouville",
+        "match_kind": "generalization"
+      },
+      "note": "Proves a complex-differentiable function with bounded range is constant, stated for Banach-space-valued maps and hence more general than entire ℂ→ℂ functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gauss's mean-value theorem",
+      "anchor": {
+        "section": "Consequences",
+        "snippet": "derive Gauss's mean-value theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DiffContOnCl.circleAverage",
+        "module": "Mathlib.Analysis.Complex.MeanValue",
+        "match_kind": "exact"
+      },
+      "note": "States that the circle average of a holomorphic function equals its value at the center, i.e. Gauss's mean-value property.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Consequences",
+          "snippet": "derive Gauss's mean-value theorem"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(z)={\\frac {1}{2\\pi }}\\int _{0}^{2\\pi }f(z+re^{i\\theta })\\,d\\theta .}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Cauchy–Pompeiu formula",
+      "anchor": {
+        "section": "Smooth functions",
+        "snippet": "is a complex-valued C 1 function on the closure of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.integral_boundary_rect_of_hasFDerivAt_real_off_countable",
+        "module": "Mathlib.Analysis.Complex.CauchyIntegral",
+        "match_kind": null
+      },
+      "note": "Mathlib has the boundary-integral-to-area-integral relation involving ∂f/∂z̄ on rectangles, but not the disc-based Cauchy–Pompeiu formula with the 1/(z-w) kernel.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Smooth functions",
+          "snippet": "is a complex-valued C 1 function on the closure of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(\\zeta )={\\frac {1}{2\\pi i}}\\int _{\\partial D}{\\frac {f(z)\\,dz}{z-\\zeta }}-{\\frac {1}{\\pi }}\\iint _{D}{\\frac {\\partial f}{\\partial {\\bar {z}}}}(z){\\frac {dx\\wedge dy}{z-\\zeta }}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Solution of inhomogeneous Cauchy–Riemann equations",
+      "anchor": {
+        "section": "Smooth functions",
+        "snippet": "to solve the inhomogeneous Cauchy–Riemann equations in"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No solution operator for the inhomogeneous ∂/∂z̄ equation (the Cauchy transform) is formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Smooth functions",
+          "snippet": "to solve the inhomogeneous Cauchy–Riemann equations in"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d\\mu ={\\frac {1}{2\\pi i}}\\varphi \\,dz\\wedge d{\\bar {z}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {\\partial f}{\\partial {\\bar {z}}}}=\\varphi (z,{\\bar {z}}).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Cauchy kernel is a fundamental solution",
+      "anchor": {
+        "section": "Smooth functions",
+        "snippet": "the Cauchy kernel is a fundamental solution of the Cauchy–Riemann equations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib lacks a distributional/fundamental-solution statement for the Cauchy kernel of the ∂/∂z̄ operator.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Smooth functions",
+          "snippet": "the Cauchy kernel is a fundamental solution of the Cauchy–Riemann equations"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle k(z)=\\operatorname {p.v.} {\\frac {1}{z}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(\\zeta )={\\frac {1}{2\\pi i}}\\iint {\\frac {\\partial f}{\\partial {\\bar {z}}}}{\\frac {dz\\wedge d{\\bar {z}}}{z-\\zeta }},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Distributional derivative of characteristic function",
+      "anchor": {
+        "section": "Smooth functions",
+        "snippet": "the formula for the distributional derivative of the characteristic function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formula for the distributional derivative of a domain's characteristic function is present in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Smooth functions",
+          "snippet": "the formula for the distributional derivative of the characteristic function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {\\partial \\chi _{X}}{\\partial {\\bar {z}}}}={\\frac {i}{2}}\\oint _{\\partial X}\\,dz,}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Cauchy formula on polydiscs",
+      "anchor": {
+        "section": "Several variables",
+        "snippet": "the Cauchy integral formula can be generalized to polydiscs"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Polydiscs appear only in a comment in Mathlib; no several-variable Cauchy integral formula is formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Several variables",
+          "snippet": "the Cauchy integral formula can be generalized to polydiscs"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle D=\\prod _{j=1}^{n}D_{j}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Green's function of the derivative operator",
+      "anchor": {
+        "section": "In real algebras",
+        "snippet": "This particular derivative operator has a Green's function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Green's function for a Clifford-algebra Dirac-type derivative operator is formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "In real algebras",
+          "snippet": "This particular derivative operator has a Green's function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle G\\left(\\mathbf {r} ,\\mathbf {r} '\\right)={\\frac {1}{S_{n}}}{\\frac {\\mathbf {r} -\\mathbf {r} '}{\\left|\\mathbf {r} -\\mathbf {r} '\\right|^{n}}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\nabla G\\left(\\mathbf {r} ,\\mathbf {r} '\\right)=\\delta \\left(\\mathbf {r} -\\mathbf {r} '\\right).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Monogenic function",
+      "anchor": {
+        "section": "In real algebras",
+        "snippet": "is called a monogenic function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no definition of monogenic functions in Clifford/geometric algebra.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "In real algebras",
+          "snippet": "is called a monogenic function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\oint _{\\partial V'}G\\left(\\mathbf {r} ,\\mathbf {r} '\\right)\\;d\\mathbf {S} '\\;f\\left(\\mathbf {r} '\\right)=\\int _{V}\\left[\\nabla 'G\\left(\\mathbf {r} ,\\mathbf {r} '\\right)\\right]f\\left(\\mathbf {r} '\\right)=-\\int _{V}\\delta \\left(\\mathbf {r} -\\mathbf {r} '\\right)f\\left(\\mathbf {r} '\\right)\\;d\\mathbf {V} =-i_{n}f(\\mathbf {r} )}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(\\mathbf {r} )=-{\\frac {1}{i_{n}}}\\oint _{\\partial V}G\\left(\\mathbf {r} ,\\mathbf {r} '\\right)\\;d\\mathbf {S} \\;f\\left(\\mathbf {r} '\\right)=-{\\frac {1}{i_{n}}}\\oint _{\\partial V}{\\frac {\\mathbf {r} -\\mathbf {r} '}{S_{n}\\left|\\mathbf {r} -\\mathbf {r} '\\right|^{n}}}\\;d\\mathbf {S} \\;f\\left(\\mathbf {r} '\\right)}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Cauchy formula in real algebras",
+      "anchor": {
+        "section": "In real algebras",
+        "snippet": "the value of an analytic (monogenic) function at a point can be found by an integral over the surface surrounding the point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Clifford-analysis surface-integral Cauchy formula for monogenic functions is not present in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

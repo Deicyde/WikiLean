@@ -1,0 +1,1499 @@
+{
+  "slug": "Cardinal_number",
+  "wikipedia_title": "Cardinal number",
+  "display_title": "Cardinal number",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Cardinal number",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a cardinal number , or cardinal for short, is a kind of number that measures the cardinality of a set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal` is the quotient of types by equinumerosity, with `Cardinal.mk α` (#α) the cardinality of a type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Same cardinality (bijection)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "there is a one-to-one correspondence (bijection) between the elements of the two sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.eq",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.eq : #α = #β ↔ Nonempty (α ≃ β)` states equal cardinality means a bijection exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Naturals and rationals equinumerous",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "there exists a bijection between the set of all natural numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Rat.instDenumerable",
+        "module": "Mathlib.Data.Rat.Denumerable",
+        "match_kind": "special_case"
+      },
+      "note": "`Denumerable ℚ` provides a bijection ℚ ≃ ℕ, giving #ℚ = ℵ₀ = #ℕ via `Cardinal.mk_denumerable`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cantor: infinite sets can differ in cardinality",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a fundamental theorem due to Georg Cantor shows that it is possible for two infinite sets to have different cardinalities"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.cantor",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "generalization"
+      },
+      "note": "`Cardinal.cantor : a < 2 ^ a` applied to an infinite `a` produces two infinite sets of distinct cardinality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Aleph-null as smallest aleph",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "since it is the smallest aleph number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.aleph_zero",
+        "module": "Mathlib.SetTheory.Cardinal.Aleph",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.aleph_zero : ℵ_ 0 = ℵ₀` together with `aleph0_le_aleph` makes ℵ₀ the least aleph.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sameness of cardinality is an equivalence relation",
+      "anchor": {
+        "section": "Motivation",
+        "snippet": "Sameness of cardinality is an equivalence relation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.isEquivalent",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.isEquivalent : Setoid (Type u)` is exactly equinumerosity proven reflexive, symmetric, transitive.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalence class corresponds to a cardinal",
+      "anchor": {
+        "section": "Motivation",
+        "snippet": "Every equivalence class of sets under equinumerosity corresponds to a cardinal number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.mk",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal` is literally the quotient by `Cardinal.isEquivalent` and `mk` sends a type to its class.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hilbert's Grand Hotel bijection",
+      "anchor": {
+        "section": "Motivation",
+        "snippet": "A classic example is Hilbert's paradox of the Grand Hotel"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.add_one_eq",
+        "module": "Mathlib.SetTheory.Cardinal.Arithmetic",
+        "match_kind": null
+      },
+      "note": "The underlying identity `add_one_eq : ℵ₀ ≤ a → a + 1 = a` is formalized, but the Grand Hotel scenario itself is not named.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Plus-one need not give a new cardinal",
+      "anchor": {
+        "section": "Motivation",
+        "snippet": "does not always construct a new cardinal number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.add_one_eq",
+        "module": "Mathlib.SetTheory.Cardinal.Arithmetic",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.add_one_eq : ℵ₀ ≤ a → a + 1 = a` shows adding one to an infinite cardinal yields the same cardinal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Power set gives strictly greater cardinality",
+      "anchor": {
+        "section": "Motivation",
+        "snippet": "the power set operation always results in a strictly greater cardinality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.cantor",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.cantor : a < 2 ^ a`, with `mk_powerset`/`mk_set` giving #(𝒫 s) = 2 ^ #s.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "More reals than naturals",
+      "anchor": {
+        "section": "Motivation",
+        "snippet": "there are strictly more real numbers than natural numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.mk_real",
+        "module": "Mathlib.Analysis.Real.Cardinality",
+        "match_kind": "exact"
+      },
+      "note": "`mk_real : #ℝ = 𝔠` with `aleph0_lt_continuum : ℵ₀ < 𝔠` gives strictly more reals than naturals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cardinality function",
+      "anchor": {
+        "section": "Cardinality function",
+        "snippet": "The cardinality function is a cardinal function that takes in a set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.mk",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.mk : Type u → Cardinal` is the cardinality function (notation #).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Cardinality function",
+          "snippet": "The cardinality function is a cardinal function that takes in a set"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A\\sim B\\iff |A|=|B|.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Axiom of cardinality / Hume's principle",
+      "anchor": {
+        "section": "Cardinality function",
+        "snippet": "is sometimes called the axiom of cardinality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.eq",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.eq : #α = #β ↔ Nonempty (α ≃ β)` is exactly Hume's principle for the mk function.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Cardinality function",
+          "snippet": "is sometimes called the axiom of cardinality"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A\\sim B\\iff |A|=|B|.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Weak cardinal assignment (Moschovakis)",
+      "anchor": {
+        "section": "Cardinality function",
+        "snippet": "Moschovakis defines a (weak) cardinal assignment as an operation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.mk_congr",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": null
+      },
+      "note": "`Cardinal.mk` satisfies the weak-assignment properties (`mk_congr`, `outMkEquiv`), but Moschovakis's abstract notion is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Strong cardinal assignment",
+      "anchor": {
+        "section": "Cardinality function",
+        "snippet": "then it is a strong cardinal assignment"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.eq",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": null
+      },
+      "note": "`Cardinal.mk` is a strong cardinal assignment (`Cardinal.eq` gives the iff), but the general meta-notion is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Von Neumann cardinal assignment",
+      "anchor": {
+        "section": "Von Neumann cardinal assignment",
+        "snippet": "the von Neumann cardinal assignment , which represents the cardinality of a set"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.ord",
+        "module": "Mathlib.SetTheory.Ordinal.Basic",
+        "match_kind": null
+      },
+      "note": "`Cardinal.ord` maps a cardinal to its least (initial) ordinal, but Mathlib's cardinals are quotients, not von Neumann cardinals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Initial ordinal",
+      "anchor": {
+        "section": "Von Neumann cardinal assignment",
+        "snippet": "is also known as the initial ordinal of the cardinal number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ordinal.IsInitial",
+        "module": "Mathlib.SetTheory.Cardinal.Aleph",
+        "match_kind": "exact"
+      },
+      "note": "`Ordinal.IsInitial o ↔ o.card.ord = o` defines an initial ordinal as the least of its cardinality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "All finite ordinals are initial ordinals",
+      "anchor": {
+        "section": "Von Neumann cardinal assignment",
+        "snippet": "all finite ordinals have different cardinalities, and thus all finite ordinals are initial ordinals"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ordinal.isInitial_natCast",
+        "module": "Mathlib.SetTheory.Cardinal.Aleph",
+        "match_kind": "exact"
+      },
+      "note": "`Ordinal.isInitial_natCast (n : ℕ) : IsInitial n` states every finite ordinal is initial.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Many infinite ordinals share a cardinality",
+      "anchor": {
+        "section": "Von Neumann cardinal assignment",
+        "snippet": "many different infinite ordinal numbers can have the same cardinality"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ordinal.isInitial_succ",
+        "module": "Mathlib.SetTheory.Cardinal.Aleph",
+        "match_kind": null
+      },
+      "note": "`isInitial_succ : IsInitial (succ o) ↔ o < ω` implies successors of infinite ordinals share their cardinality, but no single decl asserts the general fact.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Aleph number notation",
+      "anchor": {
+        "section": "Von Neumann cardinal assignment",
+        "snippet": "infinite initial ordinal is written"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.aleph",
+        "module": "Mathlib.SetTheory.Cardinal.Aleph",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.aleph : Ordinal ↪o Cardinal` with notation `ℵ_ o` indexes the infinite cardinals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Smallest uncountable ordinal",
+      "anchor": {
+        "section": "Von Neumann cardinal assignment",
+        "snippet": "is the smallest uncountable ordinal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ordinal.omega",
+        "module": "Mathlib.SetTheory.Cardinal.Aleph",
+        "match_kind": "exact"
+      },
+      "note": "`ω₁ := Ordinal.omega 1` is the first uncountable ordinal, with `omega0_lt_omega_one`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Infinite initial ordinals are limit ordinals",
+      "anchor": {
+        "section": "Von Neumann cardinal assignment",
+        "snippet": "Infinite initial ordinals are limit ordinals"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.isSuccLimit_omega",
+        "module": "Mathlib.SetTheory.Cardinal.Aleph",
+        "match_kind": "exact"
+      },
+      "note": "`isSuccLimit_omega (o) : IsSuccLimit (ω_ o)`, and the infinite initial ordinals are exactly the `ω_ o`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cardinality as class of equinumerous sets",
+      "anchor": {
+        "section": "Scott cardinals",
+        "snippet": "is as the class [ X ] of all sets that are equinumerous with X"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.isEquivalent",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": null
+      },
+      "note": "Mathlib realizes the equinumerosity class via a quotient (small type) rather than a class of all equinumerous sets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "[X] is a proper class",
+      "anchor": {
+        "section": "Scott cardinals",
+        "snippet": "by the axiom of limitation of size , [ X ] is a proper class"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `Cardinal.{u}` is a (small) quotient type, so equinumerosity classes are never treated as proper classes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Scott's trick (least rank)",
+      "anchor": {
+        "section": "Scott cardinals",
+        "snippet": "if we restrict from this class to those equinumerous with X that have the least rank"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines cardinals as quotient types and does not use Scott's least-rank trick.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lévy mixed cardinal definition",
+      "anchor": {
+        "section": "Scott cardinals",
+        "snippet": "as the von Neumann cardinal when"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No mixed von-Neumann/Scott cardinal definition appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Order on cardinals",
+      "anchor": {
+        "section": "Cardinal comparison",
+        "snippet": "means that there exists an injective function from X to Y"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.le_def",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.le_def : #α ≤ #β ↔ Nonempty (α ↪ β)` defines the order via injections.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cantor–Bernstein–Schroeder theorem",
+      "anchor": {
+        "section": "Cardinal comparison",
+        "snippet": "The Cantor–Bernstein–Schroeder theorem states that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Embedding.schroeder_bernstein",
+        "module": "Mathlib.SetTheory.Cardinal.SchroederBernstein",
+        "match_kind": "exact"
+      },
+      "note": "`schroeder_bernstein` (and `Embedding.antisymm`) gives a bijection from mutual injections; this is `le_antisymm` for cardinals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "AC equivalent to cardinal comparability",
+      "anchor": {
+        "section": "Cardinal comparison",
+        "snippet": "The axiom of choice is equivalent to the statement that given two sets X and Y"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Function.Embedding.total",
+        "module": "Mathlib.SetTheory.Cardinal.SchroederBernstein",
+        "match_kind": null
+      },
+      "note": "Comparability (`Embedding.total`, `Cardinal.linearOrder`) is proved using Lean's built-in choice, but its equivalence to AC is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dedekind-infinite / Dedekind-finite",
+      "anchor": {
+        "section": "Cardinal comparison",
+        "snippet": "A set X is called Dedekind-infinite if there exists a proper subset Y of X"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has the `Infinite`/`Finite` typeclasses but no Dedekind-infinite definition for sets via proper-subset bijection.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Finite cardinals are the natural numbers",
+      "anchor": {
+        "section": "Cardinal comparison",
+        "snippet": "The finite cardinals are just the natural numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.lt_aleph0",
+        "module": "Mathlib.SetTheory.Cardinal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`lt_aleph0 : c < ℵ₀ ↔ ∃ n : ℕ, c = n` and `range_natCast` identify finite cardinals with ℕ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dedekind-infinite implies infinite",
+      "anchor": {
+        "section": "Cardinal comparison",
+        "snippet": "any Dedekind-infinite set is infinite"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no Dedekind-infinite notion in Mathlib, so this implication is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dedekind notions match standard under AC",
+      "anchor": {
+        "section": "Cardinal comparison",
+        "snippet": "the Dedekind notions correspond to the standard ones"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a Dedekind-finiteness definition, this equivalence under choice is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Aleph numbers",
+      "anchor": {
+        "section": "Aleph numbers",
+        "snippet": "The aleph numbers are the cardinalities of well-orderable infinite sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.aleph",
+        "module": "Mathlib.SetTheory.Cardinal.Aleph",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.aleph` enumerates the infinite cardinals indexed by ordinals.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Aleph numbers",
+          "snippet": "The aleph numbers are the cardinalities of well-orderable infinite sets"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\aleph _{0}=|\\mathbb {N} |,\\;\\aleph _{1},\\;\\aleph _{2},\\;\\ldots ,\\;\\aleph _{\\alpha },\\;\\ldots .}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "An aleph for every ordinal",
+      "anchor": {
+        "section": "Aleph numbers",
+        "snippet": "there exists an aleph number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.aleph",
+        "module": "Mathlib.SetTheory.Cardinal.Aleph",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.aleph : Ordinal ↪o Cardinal` is a total order embedding, giving an aleph for each ordinal.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Aleph numbers",
+          "snippet": "there exists an aleph number"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\aleph _{0}=|\\mathbb {N} |,\\;\\aleph _{1},\\;\\aleph _{2},\\;\\ldots ,\\;\\aleph _{\\alpha },\\;\\ldots .}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Under AC all infinite cardinals are alephs",
+      "anchor": {
+        "section": "Aleph numbers",
+        "snippet": "all infinite cardinal numbers are aleph numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.mem_range_aleph_iff",
+        "module": "Mathlib.SetTheory.Cardinal.Aleph",
+        "match_kind": "exact"
+      },
+      "note": "`mem_range_aleph_iff : c ∈ range aleph ↔ ℵ₀ ≤ c` (also `range_aleph = Ici ℵ₀`) holds since Lean assumes choice.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Aleph numbers",
+          "snippet": "all infinite cardinal numbers are aleph numbers"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\aleph _{0}=|\\mathbb {N} |,\\;\\aleph _{1},\\;\\aleph _{2},\\;\\ldots ,\\;\\aleph _{\\alpha },\\;\\ldots .}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Non-aleph cardinals incomparable (Hartogs)",
+      "anchor": {
+        "section": "Aleph numbers",
+        "snippet": "must be incomparable to some aleph number by Hartogs's theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hartogs's theorem is absent; with Lean's choice all cardinals are alephs and comparable, so this choice-free scenario is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite cardinal arithmetic agrees with naturals",
+      "anchor": {
+        "section": "Cardinal arithmetic",
+        "snippet": "these operations coincide with the usual operations for natural numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.power_natCast",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "The cast ℕ → Cardinal is a semiring hom (Nat.cast_add/mul) with `power_natCast`, so finite arithmetic matches ℕ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Successor cardinal",
+      "anchor": {
+        "section": "Successor cardinal",
+        "snippet": "every cardinal κ has a successor, denoted κ +"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Order.succ",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "Cardinals carry a `SuccOrder` instance, so `Order.succ c` is the least cardinal greater than `c`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Minimal successor cardinal without AC (Hartogs)",
+      "anchor": {
+        "section": "Successor cardinal",
+        "snippet": "using Hartogs' theorem , it can be shown that for any cardinal number κ , there is a minimal cardinal"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Order.succ",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": null
+      },
+      "note": "The minimal larger cardinal exists via the `SuccOrder Cardinal` instance, but the Hartogs-based choice-free construction is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cardinal addition via disjoint union",
+      "anchor": {
+        "section": "Cardinal addition",
+        "snippet": "addition is given by the union of X and Y"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.add_def",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`add_def : #α + #β = #(α ⊕ β)` defines addition via the disjoint union.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero is additive identity",
+      "anchor": {
+        "section": "Cardinal addition",
+        "snippet": "Zero is an additive identity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.commSemiring",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "The `CommSemiring Cardinal` instance proves `zero_add`/`add_zero`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Addition is associative",
+      "anchor": {
+        "section": "Cardinal addition",
+        "snippet": "Addition is associative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.commSemiring",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "`add_assoc` is provided by the `CommSemiring Cardinal` instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Addition is commutative",
+      "anchor": {
+        "section": "Cardinal addition",
+        "snippet": "Addition is commutative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.commSemiring",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "`add_comm` is provided by the `CommSemiring Cardinal` instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Addition is non-decreasing",
+      "anchor": {
+        "section": "Cardinal addition",
+        "snippet": "Addition is non-decreasing in both arguments"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.addLeftMono",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "`addLeftMono`/`addRightMono` instances give monotonicity of addition in both arguments.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Infinite cardinal addition under AC",
+      "anchor": {
+        "section": "Cardinal addition",
+        "snippet": "addition of infinite cardinal numbers is easy"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.add_eq_max",
+        "module": "Mathlib.SetTheory.Cardinal.Arithmetic",
+        "match_kind": "exact"
+      },
+      "note": "`add_eq_max : ℵ₀ ≤ a → a + b = max a b` computes infinite cardinal sums.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cardinal subtraction",
+      "anchor": {
+        "section": "Subtraction",
+        "snippet": "there exists a cardinal κ such that μ + κ = σ if and only if μ ≤ σ"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.canonicallyOrderedAdd",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "invocation"
+      },
+      "note": "The `CanonicallyOrderedAdd Cardinal` instance yields `le_iff_exists_add`: μ ≤ σ ↔ ∃ κ, σ = μ + κ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cardinal multiplication via Cartesian product",
+      "anchor": {
+        "section": "Cardinal multiplication",
+        "snippet": "The product of cardinals comes from the Cartesian product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.mul_def",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`mul_def : #α * #β = #(α × β)` defines multiplication via the Cartesian product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero is multiplicative absorbing element",
+      "anchor": {
+        "section": "Cardinal multiplication",
+        "snippet": "Zero is a multiplicative absorbing element"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.commSemiring",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "`zero_mul`/`mul_zero` come from the `CommSemiring Cardinal` instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "No nontrivial zero divisors",
+      "anchor": {
+        "section": "Cardinal multiplication",
+        "snippet": "There are no nontrivial zero divisors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.noZeroDivisors",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.noZeroDivisors` instance proves a * b = 0 → a = 0 ∨ b = 0.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "One is multiplicative identity",
+      "anchor": {
+        "section": "Cardinal multiplication",
+        "snippet": "One is a multiplicative identity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.commSemiring",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "`one_mul`/`mul_one` come from the `CommSemiring Cardinal` instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multiplication is associative",
+      "anchor": {
+        "section": "Cardinal multiplication",
+        "snippet": "Multiplication is associative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.commSemiring",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "`mul_assoc` is provided by the `CommSemiring Cardinal` instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multiplication is commutative",
+      "anchor": {
+        "section": "Cardinal multiplication",
+        "snippet": "Multiplication is commutative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.commSemiring",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "`mul_comm` is provided by the `CommSemiring Cardinal` instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multiplication is non-decreasing",
+      "anchor": {
+        "section": "Cardinal multiplication",
+        "snippet": "Multiplication is non-decreasing in both arguments"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.isOrderedRing",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "The ordered-semiring structure (`mul_le_mul'`) gives monotonicity of multiplication.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multiplication distributes over addition",
+      "anchor": {
+        "section": "Cardinal multiplication",
+        "snippet": "Multiplication distributes over addition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.commSemiring",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "`left_distrib`/`right_distrib` come from the `CommSemiring Cardinal` instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Infinite cardinal multiplication under AC",
+      "anchor": {
+        "section": "Cardinal multiplication",
+        "snippet": "multiplication of infinite cardinal numbers is also easy"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.mul_eq_max",
+        "module": "Mathlib.SetTheory.Cardinal.Arithmetic",
+        "match_kind": "exact"
+      },
+      "note": "`mul_eq_max : ℵ₀ ≤ a → ℵ₀ ≤ b → a * b = max a b` (built on `mul_eq_self`) computes infinite products.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Infinite product equals sum",
+      "anchor": {
+        "section": "Cardinal multiplication",
+        "snippet": "the product of two infinite cardinal numbers is equal to their sum"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.mul_eq_max",
+        "module": "Mathlib.SetTheory.Cardinal.Arithmetic",
+        "match_kind": null
+      },
+      "note": "`mul_eq_max` and `add_eq_max` both equal `max`, so a*b = a+b for infinite cardinals, but no single decl states the equality directly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cardinal division",
+      "anchor": {
+        "section": "Division",
+        "snippet": "there exists a cardinal κ such that μ · κ = π if and only if μ ≤ π"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.dvd_of_le_of_aleph0_le",
+        "module": "Mathlib.SetTheory.Cardinal.Divisibility",
+        "match_kind": "exact"
+      },
+      "note": "`dvd_of_le_of_aleph0_le` (μ ≠ 0, μ ≤ π, ℵ₀ ≤ π → μ ∣ π) with `le_of_dvd` gives the iff for infinite π.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cardinal exponentiation via function space",
+      "anchor": {
+        "section": "Cardinal exponentiation",
+        "snippet": "the set of all functions from Y to X"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.power_def",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`power_def : #α ^ #β = #(β → α)` defines exponentiation as the function space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "κ^0 = 1 (empty function)",
+      "anchor": {
+        "section": "Cardinal exponentiation",
+        "snippet": "see empty function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.power_zero",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`power_zero : a ^ 0 = 1`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "0^μ = 0 for μ ≥ 1",
+      "anchor": {
+        "section": "Cardinal exponentiation",
+        "snippet": "If μ ≥ 1, then 0 μ = 0"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.zero_power",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`zero_power : a ≠ 0 → (0:Cardinal) ^ a = 0`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "1^μ = 1",
+      "anchor": {
+        "section": "Cardinal exponentiation",
+        "snippet": "1 μ = 1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.one_power",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`one_power : (1:Cardinal) ^ a = 1`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "κ^1 = κ",
+      "anchor": {
+        "section": "Cardinal exponentiation",
+        "snippet": "κ 1 = κ"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.power_one",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`power_one : a ^ 1 = a`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponent addition law",
+      "anchor": {
+        "section": "Cardinal exponentiation",
+        "snippet": "κ μ + ν = κ μ · κ ν"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.power_add",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`power_add : a ^ (b + c) = a ^ b * a ^ c`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponent multiplication law",
+      "anchor": {
+        "section": "Cardinal exponentiation",
+        "snippet": "κ μ · ν = ( κ μ ) ν"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.power_mul",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "`power_mul : a ^ (b * c) = (a ^ b) ^ c`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product raised to a power",
+      "anchor": {
+        "section": "Cardinal exponentiation",
+        "snippet": "( κ · μ ) ν = κ ν · μ ν"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.mul_power",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`mul_power : (a * b) ^ c = a ^ c * b ^ c`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponentiation is non-decreasing",
+      "anchor": {
+        "section": "Cardinal exponentiation",
+        "snippet": "Exponentiation is non-decreasing in both arguments"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.power_le_power_right",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "`power_le_power_right` and `power_le_power_left` give monotonicity in base and exponent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cantor: 2^|X| > |X|",
+      "anchor": {
+        "section": "Cardinal exponentiation",
+        "snippet": "is the cardinality of the power set of the set X"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.cantor",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "`cantor : a < 2 ^ a`, with `mk_set : #(Set α) = 2 ^ #α`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "No largest cardinal",
+      "anchor": {
+        "section": "Cardinal exponentiation",
+        "snippet": "This proves that no largest cardinal exists"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.instNoMaxOrder",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "The `NoMaxOrder Cardinal` instance (via `cantor`) shows every cardinal has a strictly greater one.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cardinals form a proper class",
+      "anchor": {
+        "section": "Cardinal exponentiation",
+        "snippet": "the class of cardinals is a proper class"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `Cardinal.{u}` is a type in universe u+1, not a proper class; the closest fact is `mk_cardinal : #Cardinal = univ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite bases, infinite exponent equal",
+      "anchor": {
+        "section": "Cardinal exponentiation",
+        "snippet": "If κ and μ are both finite and greater than 1, and ν is infinite"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.nat_power_eq",
+        "module": "Mathlib.SetTheory.Cardinal.Arithmetic",
+        "match_kind": "exact"
+      },
+      "note": "`nat_power_eq : ℵ₀ ≤ c → 2 ≤ n → (n:Cardinal) ^ c = 2 ^ c` shows all finite bases ≥ 2 give the same value.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Infinite base, finite exponent",
+      "anchor": {
+        "section": "Cardinal exponentiation",
+        "snippet": "If κ is infinite and μ is finite and non-zero"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.power_nat_eq",
+        "module": "Mathlib.SetTheory.Cardinal.Arithmetic",
+        "match_kind": "exact"
+      },
+      "note": "`power_nat_eq : ℵ₀ ≤ c → 1 ≤ n → c ^ n = c`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bounds on κ^μ",
+      "anchor": {
+        "section": "Cardinal exponentiation",
+        "snippet": "at least one of them is infinite"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.power_eq_two_power",
+        "module": "Mathlib.SetTheory.Cardinal.Arithmetic",
+        "match_kind": null
+      },
+      "note": "Related bounds like `power_self_eq` and `power_eq_two_power` exist, but the exact max(κ,2^μ) ≤ κ^μ ≤ 2^max(κ,μ) double bound is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Kőnig's theorem inequalities",
+      "anchor": {
+        "section": "Cardinal exponentiation",
+        "snippet": "Using Kőnig's theorem , one can prove"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.lt_power_cof_ord",
+        "module": "Mathlib.SetTheory.Cardinal.Cofinality.Ordinal",
+        "match_kind": "exact"
+      },
+      "note": "`lt_power_cof_ord : ℵ₀ ≤ c → c < c ^ c.ord.cof` and `lt_cof_ord_power` are the König consequences (base `sum_lt_prod`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cardinal roots",
+      "anchor": {
+        "section": "Roots",
+        "snippet": "given an infinite cardinal κ and a finite cardinal μ greater than 0"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.power_nat_eq",
+        "module": "Mathlib.SetTheory.Cardinal.Arithmetic",
+        "match_kind": "exact"
+      },
+      "note": "`power_nat_eq : ℵ₀ ≤ κ → 1 ≤ n → κ ^ n = κ` shows the n-th root of an infinite κ is κ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence of cardinal logarithm",
+      "anchor": {
+        "section": "Logarithms",
+        "snippet": "there may or may not be a cardinal λ satisfying"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no cardinal logarithm in Mathlib (only `Ordinal.log` for ordinals).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Logarithm of an infinite cardinal",
+      "anchor": {
+        "section": "Logarithms",
+        "snippet": "The logarithm of an infinite cardinal number κ is defined as the least cardinal number μ"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Cardinal.log` is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Continuum hypothesis",
+      "anchor": {
+        "section": "The continuum hypothesis",
+        "snippet": "The continuum hypothesis (CH) states that there are no cardinals strictly between"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "CH (𝔠 = ℵ₁) is not defined as a proposition; only `aleph_one_le_continuum : ℵ₁ ≤ 𝔠` is available.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generalized continuum hypothesis",
+      "anchor": {
+        "section": "The continuum hypothesis",
+        "snippet": "the generalized continuum hypothesis (GCH) states that for every infinite cardinal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "GCH is only mentioned in a docstring; it is not formalized as a definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "CH and GCH independent of ZFC",
+      "anchor": {
+        "section": "The continuum hypothesis",
+        "snippet": "have been proved to be independent of the usual axioms of set theory"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize forcing or independence results about CH/GCH.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Easton's theorem",
+      "anchor": {
+        "section": "The continuum hypothesis",
+        "snippet": "Easton's theorem shows that, for regular cardinals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Easton's theorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Finite sets: bijection iff equal count",
+      "anchor": {
+        "section": "History",
+        "snippet": "there is a bijection between two finite sets if and only if they have the same number of elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fintype.card_eq",
+        "module": "Mathlib.Data.Fintype.EquivFin",
+        "match_kind": "exact"
+      },
+      "note": "`Fintype.card_eq : card α = card β ↔ Nonempty (α ≃ β)` for finite types.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Denumerable (countably infinite) sets",
+      "anchor": {
+        "section": "History",
+        "snippet": "he called all sets having a bijection with N denumerable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Denumerable",
+        "module": "Mathlib.Logic.Denumerable",
+        "match_kind": "exact"
+      },
+      "note": "`Denumerable α` is the class of types with an explicit bijection to ℕ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Transfinite cardinal numbers",
+      "anchor": {
+        "section": "History",
+        "snippet": "He called the cardinal numbers of infinite sets transfinite cardinal numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.aleph0_le_mk",
+        "module": "Mathlib.SetTheory.Cardinal.Basic",
+        "match_kind": null
+      },
+      "note": "Infinite cardinals are exactly those with `ℵ₀ ≤ #α` (`infinite_iff`), but no dedicated 'transfinite cardinal' definition exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Unbounded subset of N equinumerous with N",
+      "anchor": {
+        "section": "History",
+        "snippet": "any unbounded subset of N has the same cardinality as N"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.countable_infinite_iff_nonempty_denumerable",
+        "module": "Mathlib.SetTheory.Cardinal.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "An infinite (unbounded) subset of ℕ is countable and infinite, hence denumerable (cardinality ℵ₀ = #ℕ).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Ordered pairs of naturals are denumerable",
+      "anchor": {
+        "section": "History",
+        "snippet": "the set of all ordered pairs of natural numbers is denumerable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Denumerable.prod",
+        "module": "Mathlib.Logic.Denumerable",
+        "match_kind": "special_case"
+      },
+      "note": "`Denumerable.prod` gives `Denumerable (ℕ × ℕ)`; also `aleph0_mul_aleph0 : ℵ₀ * ℵ₀ = ℵ₀`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Real algebraic numbers are denumerable",
+      "anchor": {
+        "section": "History",
+        "snippet": "the set of all real algebraic numbers is also denumerable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebraic.countable",
+        "module": "Mathlib.Algebra.AlgebraicCard",
+        "match_kind": "generalization"
+      },
+      "note": "`Algebraic.countable : Set.Countable {x | IsAlgebraic R x}` gives countability of algebraic numbers over any countable base field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Reals exceed naturals in cardinality",
+      "anchor": {
+        "section": "History",
+        "snippet": "the set of real numbers has cardinality greater than that of N"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.mk_real",
+        "module": "Mathlib.Analysis.Real.Cardinality",
+        "match_kind": "exact"
+      },
+      "note": "`mk_real : #ℝ = 𝔠` with `aleph0_lt_continuum` (and `not_countable_real`) shows ℝ exceeds ℕ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Smallest transfinite cardinal and successors",
+      "anchor": {
+        "section": "History",
+        "snippet": "there is a smallest transfinite cardinal number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.aleph0",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "ℵ₀ is the least infinite cardinal (`aleph0_le_mk`), with successors via `aleph`/`Order.succ` (e.g. `succ_aleph0 = ℵ₁`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gödel and Cohen: independence of CH",
+      "anchor": {
+        "section": "History",
+        "snippet": "Kurt Gödel showed that the continuum hypothesis cannot be disproved from ZFC"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize the Gödel/Cohen consistency and independence results for CH.",
+      "provenance": "ai"
+    }
+  ]
+}

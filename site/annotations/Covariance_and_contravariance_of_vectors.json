@@ -1,0 +1,1001 @@
+{
+  "slug": "Covariance_and_contravariance_of_vectors",
+  "wikipedia_title": "Covariance and contravariance of vectors",
+  "display_title": "Covariance and contravariance of vectors",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Covariance and contravariance",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "describe how the quantitative description of certain geometric or physical entities changes with a change of basis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an informal umbrella description of transformation behavior, not a single formal definition in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Contravariant vs covariant vector",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a contravariant vector is a list of numbers that transforms oppositely to a change of basis"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.Dual",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": null
+      },
+      "note": "Vectors (elements of M) and covectors (Module.Dual R M) exist, but the 'transforms oppositely' characterization is not a single stated lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vector as contravariant tensor",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "has components that transform inversely to the transformation of the reference axes"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.Basis.toMatrix_mulVec_repr",
+        "module": "Mathlib.LinearAlgebra.Matrix.Basis",
+        "match_kind": null
+      },
+      "note": "The component change-of-basis law is captured by toMatrix_mulVec_repr, but the 'inverse to the axes' tensor framing is not stated as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Covector",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "a covector has components that transform like the reference axes"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Dual",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "A covector is exactly an element of Module.Dual R M = M →ₗ[R] R.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Scalar (invariant)",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "is an object that does not vary with the change in basis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Basis-independence of scalars is not formalized as a named object or statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Duality pairing",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "It is the duality pairing of vectors and covectors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.dualPairing",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Module.dualPairing R M is the evaluation pairing Dual R M →ₗ M →ₗ R (now deprecated as it is literally LinearMap.id/application).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Change of basis transformation",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "refers to how the components of a coordinate vector transform under a change of basis"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Basis.toMatrix",
+        "module": "Mathlib.LinearAlgebra.Matrix.Basis",
+        "match_kind": "exact"
+      },
+      "note": "Basis.toMatrix encodes the change-of-basis/transition matrix, with toMatrix_mulVec_repr giving the component transformation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Components of a vector in a basis",
+      "anchor": {
+        "section": "Contravariant transformation",
+        "snippet": "known as the components of v in the f basis"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Basis.repr",
+        "module": "Mathlib.LinearAlgebra.Basis.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Basis.repr gives the coordinate components of a vector in a basis.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Contravariant transformation rule",
+      "anchor": {
+        "section": "Contravariant transformation",
+        "snippet": "these components are said to transform contravariantly under a change of basis"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Basis.toMatrix_mulVec_repr",
+        "module": "Mathlib.LinearAlgebra.Matrix.Basis",
+        "match_kind": "generalization"
+      },
+      "note": "toMatrix_mulVec_repr states b'.toMatrix b *ᵥ b.repr m = b'.repr m, i.e. the contravariant transformation of components.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear functional components",
+      "anchor": {
+        "section": "Covariant transformation",
+        "snippet": "A linear functional α on V is expressed uniquely in terms of its components"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Basis.dualBasis",
+        "module": "Mathlib.LinearAlgebra.Dual.Basis",
+        "match_kind": "generalization"
+      },
+      "note": "A functional expands uniquely in the dual basis (Basis.dualBasis), with components given by its values on the basis.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Covariant transformation rule",
+      "anchor": {
+        "section": "Covariant transformation",
+        "snippet": "these components are said to transform covariantly under a change of basis"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.Basis.dualBasis",
+        "module": "Mathlib.LinearAlgebra.Dual.Basis",
+        "match_kind": null
+      },
+      "note": "Dual-basis infrastructure exists, but the explicit covariant (non-inverse) transformation law for covector components is not a stated lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coordinate functions",
+      "anchor": {
+        "section": "Coordinates",
+        "snippet": "defines uniquely a set of coordinate functions on V"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Basis.coord",
+        "module": "Mathlib.LinearAlgebra.Basis.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Basis.coord i : M →ₗ[R] R is the i-th coordinate function of a basis.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Coordinates",
+          "snippet": "defines uniquely a set of coordinate functions on V"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x^{i}[\\mathbf {f} ](v)=v^{i}[\\mathbf {f} ].}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x^{i}[\\mathbf {f} A]=\\sum _{k=1}^{n}{\\tilde {a}}_{k}^{i}x^{k}[\\mathbf {f} ].}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Contravariant vector (transforms like coordinates)",
+      "anchor": {
+        "section": "Coordinates",
+        "snippet": "defines a contravariant vector (or simply vector)"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.Basis.toMatrix_mulVec_repr",
+        "module": "Mathlib.LinearAlgebra.Matrix.Basis",
+        "match_kind": null
+      },
+      "note": "The vector object and its component transformation are present, but 'contravariant vector' as a transformation-defined notion is not a named definition.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Coordinates",
+          "snippet": "defines a contravariant vector (or simply vector)"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x^{i}[\\mathbf {f} ](v)=v^{i}[\\mathbf {f} ].}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x^{i}[\\mathbf {f} A]=\\sum _{k=1}^{n}{\\tilde {a}}_{k}^{i}x^{k}[\\mathbf {f} ].}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Covariant vector (covector)",
+      "anchor": {
+        "section": "Coordinates",
+        "snippet": "is then a covariant vector (or covector)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Dual",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "A covariant vector/covector is an element of Module.Dual R M.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Coordinates",
+          "snippet": "is then a covariant vector (or covector)"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x^{i}[\\mathbf {f} ](v)=v^{i}[\\mathbf {f} ].}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x^{i}[\\mathbf {f} A]=\\sum _{k=1}^{n}{\\tilde {a}}_{k}^{i}x^{k}[\\mathbf {f} ].}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Frame related by inverse Jacobian",
+      "anchor": {
+        "section": "Coordinates",
+        "snippet": "is related to the frame f by the inverse of the Jacobian matrix of the coordinate transition"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.Basis.toMatrix_mul_toMatrix",
+        "module": "Mathlib.LinearAlgebra.Matrix.Basis",
+        "match_kind": null
+      },
+      "note": "Transition matrices between bases are mutually inverse (toMatrix_mul_toMatrix), but the manifold coordinate-frame/Jacobian statement itself is not formalized this way.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Coordinates",
+          "snippet": "is related to the frame f by the inverse of the Jacobian matrix of the coordinate transition"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle Y_{1}={\\frac {\\partial }{\\partial y^{1}}},\\dots ,Y_{n}={\\frac {\\partial }{\\partial y^{n}}},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {f} '=\\mathbf {f} J^{-1},\\quad J=\\left({\\frac {\\partial y^{i}}{\\partial x^{j}}}\\right)_{i,j=1}^{n}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {\\partial }{\\partial y^{i}}}=\\sum _{j=1}^{n}{\\frac {\\partial x^{j}}{\\partial y^{i}}}{\\frac {\\partial }{\\partial x^{j}}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Tangent vector",
+      "anchor": {
+        "section": "Coordinates",
+        "snippet": "A tangent vector is by definition a vector that is a linear combination of the coordinate partials"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TangentSpace",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.Tangent",
+        "match_kind": "generalization"
+      },
+      "note": "Tangent vectors are elements of TangentSpace I x, though Mathlib defines this abstractly rather than via coordinate partials.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Coordinates",
+          "snippet": "A tangent vector is by definition a vector that is a linear combination of the coordinate partials"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle v=\\sum _{i=1}^{n}v^{i}[\\mathbf {f} ]X_{i}=\\mathbf {f} \\ \\mathbf {v} [\\mathbf {f} ].}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Contravariant vector on a manifold",
+      "anchor": {
+        "section": "Coordinates",
+        "snippet": "transform in this way on passing from one coordinate system to another is called a contravariant vector"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "tangentBundleCore",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.Tangent",
+        "match_kind": null
+      },
+      "note": "The tangent bundle (whose transition functions are coordinate Jacobians) exists, but 'contravariant vector' defined by its transformation law is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Metric identifies vectors with covectors",
+      "anchor": {
+        "section": "Covariant and contravariant components of a vector with a metric",
+        "snippet": "because the bilinear form allows covectors to be identified with vectors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.toDual",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Properties",
+        "match_kind": "exact"
+      },
+      "note": "BilinForm.toDual is the linear equivalence V ≃ₗ Module.Dual K V induced by a nondegenerate bilinear form.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Covariant and contravariant components of a vector with a metric",
+          "snippet": "because the bilinear form allows covectors to be identified with vectors"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\alpha (w)=g(v,w)}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Reciprocal basis",
+      "anchor": {
+        "section": "Covariant and contravariant components of a vector with a metric",
+        "snippet": "there is a unique reciprocal basis"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.dualBasis",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Properties",
+        "match_kind": "exact"
+      },
+      "note": "BilinForm.dualBasis is the unique reciprocal basis with B(dualBasis i)(b j) = δ_ij.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Covariant and contravariant components of a vector with a metric",
+          "snippet": "there is a unique reciprocal basis"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle g(Y^{i},X_{j})=\\delta _{j}^{i},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}v&amp;=\\sum _{i}v^{i}[\\mathbf {f} ]X_{i}=\\mathbf {f} \\,\\mathbf {v} [\\mathbf {f} ]\\\\&amp;=\\sum _{i}v_{i}[\\mathbf {f^{\\sharp }} ]Y^{i}=\\mathbf {f} ^{\\sharp }\\mathbf {v} ^{\\sharp }[\\mathbf {f} ].\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Contravariant and covariant components",
+      "anchor": {
+        "section": "Covariant and contravariant components of a vector with a metric",
+        "snippet": "are the contravariant components of the vector v in the basis f"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.dualBasis_repr_apply",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Properties",
+        "match_kind": "generalization"
+      },
+      "note": "Contravariant components are Basis.repr and covariant components are (B.dualBasis).repr x i = B x (b i) by dualBasis_repr_apply.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Covariant and contravariant components of a vector with a metric",
+          "snippet": "are the contravariant components of the vector v in the basis f"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle g(Y^{i},X_{j})=\\delta _{j}^{i},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}v&amp;=\\sum _{i}v^{i}[\\mathbf {f} ]X_{i}=\\mathbf {f} \\,\\mathbf {v} [\\mathbf {f} ]\\\\&amp;=\\sum _{i}v_{i}[\\mathbf {f^{\\sharp }} ]Y^{i}=\\mathbf {f} ^{\\sharp }\\mathbf {v} ^{\\sharp }[\\mathbf {f} ].\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Dual basis in Euclidean plane",
+      "anchor": {
+        "section": "Euclidean plane",
+        "snippet": "the dot product allows for vectors to be identified with covectors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDualMap",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "special_case"
+      },
+      "note": "toDualMap is the inner-product isometric embedding x ↦ ⟪x,·⟫ identifying vectors with covectors.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Euclidean plane",
+          "snippet": "the dot product allows for vectors to be identified with covectors"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\mathbf {e} ^{1}\\cdot \\mathbf {e} _{1}=1,&amp;\\quad \\mathbf {e} ^{1}\\cdot \\mathbf {e} _{2}=0\\\\\\mathbf {e} ^{2}\\cdot \\mathbf {e} _{1}=0,&amp;\\quad \\mathbf {e} ^{2}\\cdot \\mathbf {e} _{2}=1.\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Dual basis perpendicularity",
+      "anchor": {
+        "section": "Euclidean plane",
+        "snippet": "are perpendicular to each other"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.apply_dualBasis_left",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Properties",
+        "match_kind": "generalization"
+      },
+      "note": "apply_dualBasis_left gives B(dualBasis i)(b j) = δ_ij, encoding the orthogonality of reciprocal basis vectors to off-index basis vectors.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Dual basis of a 45° pair",
+      "anchor": {
+        "section": "Example",
+        "snippet": "consisting of a pair of vectors making a 45° angle with one another"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific 2D numerical worked example is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dual basis in 3D Euclidean space",
+      "anchor": {
+        "section": "Three-dimensional Euclidean space",
+        "snippet": "one can also determine explicitly the dual basis to a given set of basis vectors"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.dualBasis",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Properties",
+        "match_kind": null
+      },
+      "note": "The general reciprocal basis exists, but the explicit 3D cross-product/triple-product formula for it is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mutually reciprocal bases",
+      "anchor": {
+        "section": "Three-dimensional Euclidean space",
+        "snippet": "they are still mutually reciprocal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.dualBasis_dualBasis_flip",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Properties",
+        "match_kind": "generalization"
+      },
+      "note": "dualBasis_dualBasis_flip shows taking the reciprocal basis twice returns the original, i.e. the bases are mutually reciprocal.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Three-dimensional Euclidean space",
+          "snippet": "they are still mutually reciprocal"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {e} ^{i}\\cdot \\mathbf {e} _{j}=\\delta _{j}^{i},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Contravariant components via dot product",
+      "anchor": {
+        "section": "Three-dimensional Euclidean space",
+        "snippet": "the contravariant components of any vector v can be obtained by the dot product of v with the dual basis vectors"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.dualBasis",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Properties",
+        "match_kind": null
+      },
+      "note": "The reciprocal basis exists, but the identity v^i = B(v, dualBasis^i) for contravariant components is not stated as a named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Covariant components via dot product",
+      "anchor": {
+        "section": "Three-dimensional Euclidean space",
+        "snippet": "the covariant components of v can be obtained from the dot product of v with basis vectors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.dualBasis_repr_apply",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Properties",
+        "match_kind": "exact"
+      },
+      "note": "dualBasis_repr_apply states the covariant component (B.dualBasis).repr x i = B x (b i), i.e. v dotted with the basis vector.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orthonormal basis equals dual basis",
+      "anchor": {
+        "section": "Three-dimensional Euclidean space",
+        "snippet": "If the basis vectors are orthonormal , then they are the same as the dual basis vectors"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "OrthonormalBasis",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": null
+      },
+      "note": "OrthonormalBasis exists and satisfies ⟪e_i,e_j⟫=δ_ij, but a lemma stating its reciprocal basis equals itself was not found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Covariant basis (D.1)",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "Covariant basis of a vector space of dimension n"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Basis",
+        "module": "Mathlib.LinearAlgebra.Basis.Defs",
+        "match_kind": "exact"
+      },
+      "note": "A covariant basis is just a Module.Basis of the vector space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Contravariant components (D.2)",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "Contravariant components of a vector"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Basis.repr",
+        "module": "Mathlib.LinearAlgebra.Basis.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Contravariant components are the coordinates Basis.repr of a vector in the (covariant) basis.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dual (contravariant) basis (D.3)",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "Dual (contravariant) basis of a vector space of dimension n"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.dualBasis",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Properties",
+        "match_kind": "exact"
+      },
+      "note": "The metric/reciprocal dual basis is BilinForm.dualBasis (and the purely algebraic dual is Basis.dualBasis).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Covariant components (D.4)",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "Covariant components of a vector"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.dualBasis_repr_apply",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Properties",
+        "match_kind": "generalization"
+      },
+      "note": "Covariant components v_i = B x (b i) are given by dualBasis_repr_apply.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Covariant metric tensor (D.5)",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "Components of the covariant metric tensor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.toMatrix",
+        "module": "Mathlib.LinearAlgebra.Matrix.BilinearForm",
+        "match_kind": "exact"
+      },
+      "note": "g_ij = B(e_i, e_j) is exactly BilinForm.toMatrix (toMatrix_apply) of the metric bilinear form in a basis.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Contravariant metric tensor (D.6)",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "Components of the contravariant metric tensor"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.toMatrix",
+        "module": "Mathlib.LinearAlgebra.Matrix.BilinearForm",
+        "match_kind": null
+      },
+      "note": "The covariant metric matrix is BilinForm.toMatrix, but its inverse g^{ij} (contravariant metric) is not packaged as a named declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Corollary 1",
+      "anchor": {
+        "section": "Corollaries",
+        "snippet": "from the properties of the inverse matrix"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.dualBasis",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Properties",
+        "match_kind": null
+      },
+      "note": "Reciprocal-basis and metric-inverse infrastructure exists, but this specific index-calculus corollary is not an individually named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Corollary 2",
+      "anchor": {
+        "section": "Corollaries",
+        "snippet": "(2). Proof: let's suppose"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.dualBasis",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Properties",
+        "match_kind": null
+      },
+      "note": "Reciprocal-basis and metric-inverse infrastructure exists, but this specific index-calculus corollary is not an individually named lemma.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Corollaries",
+          "snippet": "(2). Proof: let's suppose"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}&amp;\\mathbf {e} ^{i}\\cdot \\mathbf {e} _{k}=(A^{ij}\\mathbf {e} _{j})\\cdot \\mathbf {e} _{k}\\\\\\xrightarrow {\\text{(D.3,D.5)}} {}&amp;A^{ij}g_{jk}=\\delta _{k}^{i};\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}&amp;g^{mk}A^{ij}g_{jk}=g^{mk}\\delta _{k}^{i}\\\\\\xrightarrow {\\text{(D.5)}} {}&amp;\\;g^{mk}g_{kj}A^{ij}=g^{mi}\\\\\\xrightarrow {\\text{(1)}} {}&amp;\\;\\delta _{j}^{m}A^{ij}=g^{mi}\\\\\\longrightarrow {}&amp;\\;A^{im}=g^{mi}{\\stackrel {\\text{(D.6)}}{=}}g^{im}.\\quad \\blacksquare \\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Corollary 3",
+      "anchor": {
+        "section": "Corollaries",
+        "snippet": "(3). Proof:"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.dualBasis",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Properties",
+        "match_kind": null
+      },
+      "note": "Reciprocal-basis and metric-inverse infrastructure exists, but this specific index-calculus corollary is not an individually named lemma.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Corollaries",
+          "snippet": "(3). Proof:"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}&amp;\\mathbf {e} ^{i}{\\stackrel {\\text{(2)}}{{}={}}}g^{ik}\\mathbf {e} _{k};\\\\&amp;\\mathbf {e} ^{j}{\\stackrel {\\text{(2)}}{{}={}}}g^{jm}\\mathbf {e} _{m}\\\\\\longrightarrow {}&amp;\\mathbf {e} ^{i}\\cdot \\mathbf {e} ^{j}=g^{ik}g^{jm}(\\mathbf {e} _{k}\\cdot \\mathbf {e} _{m}){\\stackrel {\\text{(D.5)}}{{}={}}}g^{ik}g^{jm}g_{km}{\\stackrel {\\text{(1)}}{{}={}}}\\delta _{m}^{i}g^{jm}=g^{ji}{\\stackrel {\\text{(D.6)}}{{}={}}}g^{ij}.\\quad \\blacksquare \\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Corollary 4",
+      "anchor": {
+        "section": "Corollaries",
+        "snippet": "(4). Proof: let's suppose"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.dualBasis",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Properties",
+        "match_kind": null
+      },
+      "note": "Reciprocal-basis and metric-inverse infrastructure exists, but this specific index-calculus corollary is not an individually named lemma.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Corollaries",
+          "snippet": "(4). Proof: let's suppose"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}&amp;g_{mk}B_{ij}g^{jk}=g_{mk}\\delta _{i}^{k}\\\\\\xrightarrow {\\text{(D.5)}} {}&amp;g_{mk}g^{kj}B_{ij}=g_{mi}\\\\\\xrightarrow {\\text{(1)}} {}&amp;\\delta _{m}^{j}B_{ij}=g_{mi}\\\\\\longrightarrow {}&amp;B_{im}=g_{mi}{\\stackrel {\\text{(D.5)}}{{}={}}}g_{im}.\\quad \\blacksquare \\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Corollary 5",
+      "anchor": {
+        "section": "Corollaries",
+        "snippet": "(5). Proof:"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.dualBasis",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Properties",
+        "match_kind": null
+      },
+      "note": "Reciprocal-basis and metric-inverse infrastructure exists, but this specific index-calculus corollary is not an individually named lemma.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Corollaries",
+          "snippet": "(5). Proof:"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}&amp;\\mathbf {v} {\\stackrel {\\text{(D.2)}}{=}}v^{i}\\mathbf {e} _{i};\\\\&amp;\\mathbf {v} {\\stackrel {\\text{(D.4)}}{=}}v_{j}\\mathbf {e} ^{j}{\\stackrel {\\text{(2)}}{=}}v_{j}(g^{ji}\\mathbf {e} _{i})\\\\\\longrightarrow {}&amp;v^{i}\\mathbf {e} _{i}=v_{j}g^{ji}\\mathbf {e} _{i},\\\\\\forall i&amp;:v^{i}=g^{ji}v_{j}{\\stackrel {\\text{(D.6)}}{=}}g^{ij}v_{j}.\\quad \\blacksquare \\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Corollary 6",
+      "anchor": {
+        "section": "Corollaries",
+        "snippet": "specular to (5)"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.dualBasis",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Properties",
+        "match_kind": null
+      },
+      "note": "Reciprocal-basis and metric-inverse infrastructure exists, but this specific index-calculus corollary is not an individually named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Corollary 7",
+      "anchor": {
+        "section": "Corollaries",
+        "snippet": "(7). Proof:"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.dualBasis",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Properties",
+        "match_kind": null
+      },
+      "note": "Reciprocal-basis and metric-inverse infrastructure exists, but this specific index-calculus corollary is not an individually named lemma.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Corollaries",
+          "snippet": "(7). Proof:"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\mathbf {v} \\cdot \\mathbf {e} _{i}{\\stackrel {\\text{(D.4)}}{{}={}}}(v_{j}\\mathbf {e} ^{j})\\cdot \\mathbf {e} _{i}{\\stackrel {\\text{(D.3)}}{{}={}}}v_{j}\\delta _{i}^{j}=v_{i}.\\quad \\blacksquare \\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Corollary 8",
+      "anchor": {
+        "section": "Corollaries",
+        "snippet": "specular to (7)"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.dualBasis",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Properties",
+        "match_kind": null
+      },
+      "note": "Reciprocal-basis and metric-inverse infrastructure exists, but this specific index-calculus corollary is not an individually named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Corollary 9",
+      "anchor": {
+        "section": "Corollaries",
+        "snippet": "(9). Proof:"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.toMatrix",
+        "module": "Mathlib.LinearAlgebra.Matrix.BilinearForm",
+        "match_kind": null
+      },
+      "note": "Metric-component infrastructure (g_ij = B(e_i,e_j)) exists, but this specific index-calculus corollary is not an individually named lemma.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Corollaries",
+          "snippet": "(9). Proof:"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {u} \\cdot \\mathbf {v} {\\stackrel {\\text{(D.2)}}{{}={}}}(u^{i}\\mathbf {e} _{i})\\cdot (v^{j}\\mathbf {e} _{j})=(\\mathbf {e} _{i}\\cdot \\mathbf {e} _{j})u^{i}v^{j}{\\stackrel {\\text{(D.5)}}{{}={}}}g_{ij}u^{i}v^{j}.\\quad \\blacksquare }"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Corollary 10",
+      "anchor": {
+        "section": "Corollaries",
+        "snippet": "specular to (9)"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.toMatrix",
+        "module": "Mathlib.LinearAlgebra.Matrix.BilinearForm",
+        "match_kind": null
+      },
+      "note": "Metric-component infrastructure exists, but this specific (contravariant) index-calculus corollary is not an individually named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Valence of a tensor",
+      "anchor": {
+        "section": "Use in tensor analysis",
+        "snippet": "The valence of a tensor is the number of covariant and contravariant terms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Tensor products exist, but the notion of tensor valence/type (p,q) is not formalized as a named concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Raising and lowering indices with the metric",
+      "anchor": {
+        "section": "Use in tensor analysis",
+        "snippet": "Contravariant indices can be turned into covariant indices by contracting with the metric tensor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.toDual",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Properties",
+        "match_kind": "generalization"
+      },
+      "note": "Lowering an index is the metric isomorphism BilinForm.toDual : V ≃ₗ Dual K V (raising is its inverse), though only the rank-1 case is packaged.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Contravariant vector (tensor analysis)",
+      "anchor": {
+        "section": "Use in tensor analysis",
+        "snippet": "A contravariant vector is one which transforms like"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.Basis.toMatrix_mulVec_repr",
+        "module": "Mathlib.LinearAlgebra.Matrix.Basis",
+        "match_kind": null
+      },
+      "note": "The component transformation law exists, but a 'contravariant vector' defined by transformation behavior is not a named definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Covariant vector (tensor analysis)",
+      "anchor": {
+        "section": "Use in tensor analysis",
+        "snippet": "A covariant vector is one which transforms like"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Dual",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": "exact"
+      },
+      "note": "A covariant vector is an element of the dual space Module.Dual R M.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Dual space as contravariant functor",
+      "anchor": {
+        "section": "Algebra and geometry",
+        "snippet": "The assignment of the dual space to a vector space is a standard example of a contravariant functor"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.Dual.transpose",
+        "module": "Mathlib.LinearAlgebra.Dual.Defs",
+        "match_kind": null
+      },
+      "note": "The contravariant action on morphisms (Dual.transpose / LinearMap.dualMap) exists, but it is not packaged as a categorical contravariant Functor on ModuleCat.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Covariant components in differential geometry",
+      "anchor": {
+        "section": "Algebra and geometry",
+        "snippet": "are covariant if they change with the same linear transformation as a change of basis"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.Basis.dualBasis",
+        "module": "Mathlib.LinearAlgebra.Dual.Basis",
+        "match_kind": null
+      },
+      "note": "Dual-basis infrastructure for covector components exists, but the covariant transformation characterization is not stated as a lemma.",
+      "provenance": "ai"
+    }
+  ]
+}

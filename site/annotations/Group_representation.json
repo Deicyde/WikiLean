@@ -1,0 +1,409 @@
+{
+  "slug": "Group_representation",
+  "wikipedia_title": "Group representation",
+  "display_title": "Group representation",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Representation as homomorphism to automorphism group",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a \"representation\" means a homomorphism from the group to the automorphism group of an object"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Action.ρAut",
+        "module": "Mathlib.CategoryTheory.Action.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Action.ρAut` gives the homomorphism `G →* Aut A.V` into the automorphism group of an object in an arbitrary category, exactly the general categorical notion of a representation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Representation of a group",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "A representation of a group G on a vector space V over a field K is a group homomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation",
+        "module": "Mathlib.RepresentationTheory.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Representation k G V := G →* V →ₗ[k] V` is the linear representation, generalized to any semiring/monoid/module, with `Representation.asGroupHom` landing in the units (GL) when `G` is a group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Representation space, dimension, degree",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "Here V is called the representation space and the dimension of V is called the dimension or degree"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FDRep",
+        "module": "Mathlib.RepresentationTheory.FDRep",
+        "match_kind": null
+      },
+      "note": "The representation space is the underlying module and finite-dimensional representations are bundled as `FDRep`, but the degree/dimension is only `Module.finrank` and is not a separately named notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Finite-dimensional matrix representation",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "In the case where V is of finite dimension n it is common to choose a basis"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FDRep",
+        "module": "Mathlib.RepresentationTheory.FDRep",
+        "match_kind": null
+      },
+      "note": "Finite-dimensional representations exist as `FDRep`, but the basis-dependent matrix form `G →* GLₙ(K)` is not separately defined as a matrix representation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Continuous representation",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "a continuous representation of G on V is a representation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Action.IsContinuous",
+        "module": "Mathlib.CategoryTheory.Action.Continuous",
+        "match_kind": "generalization"
+      },
+      "note": "`Action.IsContinuous` (giving the `ContAction` subcategory) requires the induced action `G ×  X → X` to satisfy `ContinuousSMul`, formalizing continuity of a representation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Kernel of a representation",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "The kernel of a representation ρ of a group G is defined as the normal subgroup"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MonoidHom.ker",
+        "module": "Mathlib.Algebra.Group.Subgroup.Ker",
+        "match_kind": "invocation"
+      },
+      "note": "Since `Representation` is a `MonoidHom`, its kernel is `MonoidHom.ker ρ`, which is a normal subgroup via the `MonoidHom.normal_ker` instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Faithful representation",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "A faithful representation is one in which the homomorphism"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Faithfulness is just injectivity of the representation as a monoid hom (`Function.Injective ⇑ρ`, equivalently `MonoidHom.ker_eq_bot_iff`), but there is no dedicated faithful-representation predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Map of representations (equivariant map)",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "Given two K vector spaces V and W , a map of two representations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation.IntertwiningMap",
+        "module": "Mathlib.RepresentationTheory.Intertwining",
+        "match_kind": "exact"
+      },
+      "note": "`Representation.IntertwiningMap` is a linear map commuting with the two `G`-actions, exactly an equivariant map of representations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isomorphism of representations",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "the map is called an isomorphism of representations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation.Equiv",
+        "module": "Mathlib.RepresentationTheory.Intertwining",
+        "match_kind": "exact"
+      },
+      "note": "`Representation.Equiv` bundles an intertwining map that is a linear isomorphism, i.e. an isomorphism of representations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Representation ρ of C3",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "This group has a representation ρ on"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific worked example of a representation of the cyclic group C₃ is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Isomorphic representation σ of C3",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "isomorphic to the previous one, is σ given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This particular example representation σ of C₃ is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Faithful representation τ of C3",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The group C 3 may also be faithfully represented on"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific faithful example representation τ of C₃ is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cyclic permutation matrix representation",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is given by the set of cyclic permutation matrices v"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This explicit cyclic-permutation-matrix example is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Action on homogeneous degree-3 polynomials",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "be the space of homogeneous degree-3 polynomials over the complex numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific representation on homogeneous degree-3 polynomials is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Subrepresentation",
+      "anchor": {
+        "section": "Reducibility",
+        "snippet": "A subspace W of V that is invariant under the group action is called a subrepresentation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subrepresentation",
+        "module": "Mathlib.RepresentationTheory.Subrepresentation",
+        "match_kind": "exact"
+      },
+      "note": "`Subrepresentation ρ` is a submodule stable under the `G`-action, exactly an invariant subspace/subrepresentation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Irreducible and reducible representations",
+      "anchor": {
+        "section": "Reducibility",
+        "snippet": "then the representation is said to be irreducible"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation.IsIrreducible",
+        "module": "Mathlib.RepresentationTheory.Irreducible",
+        "match_kind": "exact"
+      },
+      "note": "`Representation.IsIrreducible ρ := IsSimpleOrder (Subrepresentation ρ)` says ρ has no proper nontrivial subrepresentations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Maschke decomposition into irreducibles",
+      "anchor": {
+        "section": "Reducibility",
+        "snippet": "representations of finite groups can be decomposed into a direct sum of irreducible subrepresentations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation.IsSemisimpleRepresentation",
+        "module": "Mathlib.RepresentationTheory.Semisimple",
+        "match_kind": "generalization"
+      },
+      "note": "Maschke's theorem (`MonoidAlgebra.Submodule.exists_isCompl`) yields the instance `IsSemisimpleRepresentation ρ` for finite groups with `|G|` invertible, i.e. a decomposition into irreducible subrepresentations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Decomposability of the C3 examples",
+      "anchor": {
+        "section": "Reducibility",
+        "snippet": "the first two representations given (ρ and σ) are both decomposable into two 1-dimensional subrepresentations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This explicit decomposition of the C₃ examples into 1-dimensional pieces is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Set-theoretic representation",
+      "anchor": {
+        "section": "Set-theoretical representations",
+        "snippet": "A set-theoretic representation (also known as a group action or permutation representation ) of a group G on a set X is given by a function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction",
+        "module": "Mathlib.Algebra.Group.Action.Defs",
+        "match_kind": "exact"
+      },
+      "note": "A set-theoretic/permutation representation is precisely a `MulAction G X`, with the associated hom `MulAction.toPermHom : G →* Equiv.Perm X`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "ρ(g) is a bijection",
+      "anchor": {
+        "section": "Set-theoretical representations",
+        "snippet": "the axioms for a group imply that ρ( g ) is a bijection"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction.bijective",
+        "module": "Mathlib.Algebra.Group.Action.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`MulAction.bijective` proves that for a group acting, each `g • ·` is a bijection on the set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Representation in a category as a functor",
+      "anchor": {
+        "section": "Representations in other categories",
+        "snippet": "a representation of G in C is a functor from G to C"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Action.functorCategoryEquivalence",
+        "module": "Mathlib.CategoryTheory.Action.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Action.functorCategoryEquivalence : Action V G ≌ SingleObj G ⥤ V` identifies a representation with a functor from `G` (as a one-object category) into `V`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Representation in Vect_K is a linear representation",
+      "anchor": {
+        "section": "Representations in other categories",
+        "snippet": "this definition is equivalent to a linear representation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Rep",
+        "module": "Mathlib.RepresentationTheory.Rep.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Rep k G := Action (ModuleCat k) G`, and `Rep.ρ`/`Rep.of` give the equivalence between such objects and ordinary linear `Representation`s.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "G-modules from category Ab",
+      "anchor": {
+        "section": "Representations in other categories",
+        "snippet": "the objects obtained are called G -modules"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Rep",
+        "module": "Mathlib.RepresentationTheory.Rep.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "G-modules (representations in Ab ≃ ModuleCat ℤ) are the special case `Rep ℤ G`, i.e. abelian groups with a `G`-action.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Representations in Top",
+      "anchor": {
+        "section": "Representations in other categories",
+        "snippet": "Representations in Top are homomorphisms from G to the homeomorphism group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Action.ρAut",
+        "module": "Mathlib.CategoryTheory.Action.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Representations in Top are `Action TopCat G`, with `Action.ρAut : G →* Aut X` (homeomorphism group) and `ContAction` enforcing continuity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective and affine representations",
+      "anchor": {
+        "section": "Representations in other categories",
+        "snippet": "Two types of representations closely related to linear representations are"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither projective representations nor affine representations are defined in Mathlib's representation theory.",
+      "provenance": "ai"
+    }
+  ]
+}

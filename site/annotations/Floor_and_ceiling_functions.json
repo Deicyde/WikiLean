@@ -1,0 +1,1097 @@
+{
+  "slug": "Floor_and_ceiling_functions",
+  "wikipedia_title": "Floor and ceiling functions",
+  "display_title": "Floor and ceiling functions",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Floor function",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the floor function is the function that takes a real number x as input and returns the greatest integer less than or equal to x"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.floor",
+        "module": "Mathlib.Algebra.Order.Floor.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Int.floor a` is defined as the greatest integer z with z ≤ a via the FloorRing class.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ceiling function",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the ceiling function returns the least integer greater than or equal to x"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.ceil",
+        "module": "Mathlib.Algebra.Order.Floor.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Int.ceil a` is defined as the smallest integer z with a ≤ z via the FloorRing class.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Floor and ceiling of ±2.4",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "For example, for floor:"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific numeric examples on 2.4 are not stated as named lemmas in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Floor and ceiling agree on integers",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "For an integer n"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.floor_intCast",
+        "module": "Mathlib.Algebra.Order.Floor.Ring",
+        "match_kind": "exact"
+      },
+      "note": "`Int.floor_intCast` and `Int.ceil_intCast` show ⌊(z:α)⌋ = z and ⌈(z:α)⌉ = z for integer z.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "floor(x+1) vs ceil(x) at integers",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Although floor( x + 1) and ceil( x ) are equal for non-integer values"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Int.ceil_eq_floor_add_one_iff_notMem",
+        "module": "Mathlib.Algebra.Order.Floor.Ring",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has `ceil_eq_floor_add_one_iff_notMem` characterizing exactly the case where ⌈x⌉ = ⌊x⌋+1, i.e. x is not an integer.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fractional part",
+      "anchor": {
+        "section": "Notation",
+        "snippet": "The fractional part is the sawtooth function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.fract",
+        "module": "Mathlib.Algebra.Order.Floor.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Int.fract a := a - ⌊a⌋` is the fractional part.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bounds on fractional part",
+      "anchor": {
+        "section": "Notation",
+        "snippet": "For all x"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.fract_nonneg",
+        "module": "Mathlib.Algebra.Order.Floor.Ring",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib provides `Int.fract_nonneg` (0 ≤ fract a) and `Int.fract_lt_one` (fract a < 1).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Floor and ceiling via defining equations",
+      "anchor": {
+        "section": "Definition and properties",
+        "snippet": "floor and ceiling may be defined by the equations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.floor_eq_iff",
+        "module": "Mathlib.Algebra.Order.Floor.Ring",
+        "match_kind": "exact"
+      },
+      "note": "`Int.floor_eq_iff` and `Int.ceil_eq_iff` characterize the floor/ceiling exactly by the defining inequalities.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unique integers in half-open interval",
+      "anchor": {
+        "section": "Definition and properties",
+        "snippet": "Since there is exactly one integer in a half-open interval of length one"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Int.floor_eq_on_Ico",
+        "module": "Mathlib.Algebra.Order.Floor.Ring",
+        "match_kind": "invocation"
+      },
+      "note": "`Int.floor_eq_on_Ico` says ⌊a⌋ = n for all a ∈ [n, n+1), expressing uniqueness of the integer in a half-open interval of length one.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence formulas for floor/ceiling",
+      "anchor": {
+        "section": "Equivalences",
+        "snippet": "These formulas can be used to simplify expressions involving floors and ceilings"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.le_floor",
+        "module": "Mathlib.Algebra.Order.Floor.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The pairs `Int.le_floor`, `Int.floor_lt`, `Int.ceil_le`, `Int.lt_ceil` give the standard equivalence formulas.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Floor as residuated mapping / Galois connection",
+      "anchor": {
+        "section": "Equivalences",
+        "snippet": "the floor function is a residuated mapping"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.gc_coe_floor",
+        "module": "Mathlib.Algebra.Order.Floor.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Int.gc_coe_floor : GaloisConnection ((↑) : ℤ → α) floor` records the Galois (residuated) connection.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Adding an integer to the argument",
+      "anchor": {
+        "section": "Equivalences",
+        "snippet": "These formulas show how adding an integer n to the arguments affects the functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.floor_add_intCast",
+        "module": "Mathlib.Algebra.Order.Floor.Ring",
+        "match_kind": "exact"
+      },
+      "note": "`Int.floor_add_intCast`, `Int.ceil_add_intCast`, `Int.fract_add_intCast` cover the integer shift identities.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inequalities for non-integer shifts",
+      "anchor": {
+        "section": "Equivalences",
+        "snippet": "The above are never true if n is not an integer"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma directly states that the integer-shift identities fail when the shift is non-integer.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Monotonicity of floor and ceiling",
+      "anchor": {
+        "section": "Monotonicity",
+        "snippet": "Both floor and ceiling functions are monotonically non-decreasing functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.floor_mono",
+        "module": "Mathlib.Algebra.Order.Floor.Ring",
+        "match_kind": "exact"
+      },
+      "note": "`Int.floor_mono` and `Int.ceil_mono` state monotonicity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Floor ≤ ceiling, equality iff integer",
+      "anchor": {
+        "section": "Relations among the functions",
+        "snippet": "with equality if and only if x is an integer"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.floor_le_ceil",
+        "module": "Mathlib.Algebra.Order.Floor.Ring",
+        "match_kind": "exact"
+      },
+      "note": "`Int.floor_le_ceil` gives ⌊a⌋ ≤ ⌈a⌉, and `floor_eq_self_iff_mem`/`ceil_eq_self_iff_mem` characterize equality with integers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Floor and ceiling are identity on integers",
+      "anchor": {
+        "section": "Relations among the functions",
+        "snippet": "for integers n , both floor and ceiling functions are the identity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.floor_intCast",
+        "module": "Mathlib.Algebra.Order.Floor.Ring",
+        "match_kind": "exact"
+      },
+      "note": "`Int.floor_intCast` and `Int.ceil_intCast` confirm both are identity on integers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Negation swaps floor and ceiling",
+      "anchor": {
+        "section": "Relations among the functions",
+        "snippet": "Negating the argument switches floor and ceiling and changes the sign"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.floor_neg",
+        "module": "Mathlib.Algebra.Order.Floor.Ring",
+        "match_kind": "exact"
+      },
+      "note": "`Int.floor_neg` and `Int.ceil_neg` state ⌊-a⌋ = -⌈a⌉ and ⌈-a⌉ = -⌊a⌋.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Negation complements fractional part",
+      "anchor": {
+        "section": "Relations among the functions",
+        "snippet": "Negating the argument complements the fractional part"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.fract_neg",
+        "module": "Mathlib.Algebra.Order.Floor.Ring",
+        "match_kind": "exact"
+      },
+      "note": "`Int.fract_neg` shows fract(-x) = 1 - fract x when fract x ≠ 0.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Idempotence of floor, ceiling, fractional part",
+      "anchor": {
+        "section": "Relations among the functions",
+        "snippet": "The floor, ceiling, and fractional part functions are idempotent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.fract_fract",
+        "module": "Mathlib.Algebra.Order.Floor.Ring",
+        "match_kind": "exact"
+      },
+      "note": "`Int.fract_fract` shows fract idempotent; `floor_intCast`/`ceil_intCast` give idempotence on integer outputs.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Nested floor/ceiling collapse to innermost",
+      "anchor": {
+        "section": "Relations among the functions",
+        "snippet": "The result of nested floor or ceiling functions is the innermost function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Int.floor_intCast",
+        "module": "Mathlib.Algebra.Order.Floor.Ring",
+        "match_kind": "invocation"
+      },
+      "note": "Follows immediately from `floor_intCast`/`ceil_intCast` since the inner value is already an integer, but is not stated as a separate lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Integer quotient floor identity",
+      "anchor": {
+        "section": "Quotients",
+        "snippet": "If m and n are integers and n ≠ 0"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Rat.floor_intCast_div_natCast",
+        "module": "Mathlib.Data.Rat.Floor",
+        "match_kind": "special_case"
+      },
+      "note": "`Rat.floor_intCast_div_natCast` and `Int.floor_div_natCast` cover floor of integer-division-style quotients for nonneg denominators.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Identity for positive n",
+      "anchor": {
+        "section": "Quotients",
+        "snippet": "If n is positive"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.floor_div_natCast",
+        "module": "Mathlib.Algebra.Order.Floor.Ring",
+        "match_kind": "exact"
+      },
+      "note": "`Int.floor_div_natCast` states ⌊a/n⌋ = ⌊a⌋/n for a in a linearly ordered field and natural n.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Identity for positive m",
+      "anchor": {
+        "section": "Quotients",
+        "snippet": "If m is positive"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma was found for this specific identity (a dual partition formula for positive m).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Case m = 2",
+      "anchor": {
+        "section": "Quotients",
+        "snippet": "For m = 2 these imply"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The m=2 specialization (⌊n/2⌋ + ⌈n/2⌉ = n) is not present as a named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hermite's identity",
+      "anchor": {
+        "section": "Quotients",
+        "snippet": "More generally,"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hermite's identity ∑_{k=0}^{m-1} ⌊x + k/m⌋ = ⌊m x⌋ does not appear in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Converting floors to ceilings",
+      "anchor": {
+        "section": "Quotients",
+        "snippet": "The following can be used to convert floors to ceilings and vice versa"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Int.floor_neg",
+        "module": "Mathlib.Algebra.Order.Floor.Ring",
+        "match_kind": "invocation"
+      },
+      "note": "The conversion ⌈n/m⌉ = -⌊-n/m⌋ follows from `Int.floor_neg`/`ceil_neg`, but the integer-quotient version is not stated separately.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Identity for strictly positive integers",
+      "anchor": {
+        "section": "Quotients",
+        "snippet": "For all m and n strictly positive integers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The general Gauss-style sum identity is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reduction for coprime m and n",
+      "anchor": {
+        "section": "Quotients",
+        "snippet": "which, for positive and coprime m and n , reduces to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Coprime reduction formula for the floor-sum is not stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Coprime ceiling and fractional part identities",
+      "anchor": {
+        "section": "Quotients",
+        "snippet": "and similarly for the ceiling and fractional part functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No corresponding ceiling/fractional-part coprime sum identities found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Symmetry implication",
+      "anchor": {
+        "section": "Quotients",
+        "snippet": "Since the right-hand side of the general case is symmetrical in m and n"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Reciprocity law for positive m, n",
+      "anchor": {
+        "section": "Quotients",
+        "snippet": "More generally, if m and n are positive"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The floor-sum reciprocity law is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Division by positive integers property",
+      "anchor": {
+        "section": "Quotients",
+        "snippet": "Division by positive integers gives rise to an interesting and sometimes useful property"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Int.floor_div_natCast",
+        "module": "Mathlib.Algebra.Order.Floor.Ring",
+        "match_kind": "invocation"
+      },
+      "note": "`Int.floor_div_natCast` captures the basic division-by-positive-integer floor property.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Remainder identity for d positive integer",
+      "anchor": {
+        "section": "Quotients",
+        "snippet": "For d being a positive integer with x greater than d"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific remainder-style identity not located.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Nested divisions identity",
+      "anchor": {
+        "section": "Nested divisions",
+        "snippet": "For a positive integer n , and arbitrary real numbers m and x"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.floor_div_eq_div",
+        "module": "Mathlib.Algebra.Order.Floor.Semifield",
+        "match_kind": "special_case"
+      },
+      "note": "`Nat.floor_div_eq_div` and `Int.floor_div_natCast` handle the integer case; nested-division identities like ⌊⌊x/m⌋/n⌋ = ⌊x/(mn)⌋ are not stated explicitly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Discontinuity and semi-continuity",
+      "anchor": {
+        "section": "Continuity and series expansions",
+        "snippet": "None of the functions discussed in this article are continuous"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "continuousOn_floor",
+        "module": "Mathlib.Topology.Algebra.Order.Floor",
+        "match_kind": "invocation"
+      },
+      "note": "`continuousOn_floor`/`continuousOn_ceil`/`continuousOn_fract` establish piecewise continuity (hence non-continuity globally), but discontinuity is not stated as a single lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Upper/lower semi-continuity",
+      "anchor": {
+        "section": "Continuity and series expansions",
+        "snippet": "is upper semi-continuous and"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No upper/lower-semicontinuity lemma for floor/ceiling was located in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fourier series of fractional part",
+      "anchor": {
+        "section": "Continuity and series expansions",
+        "snippet": "The fractional part function has Fourier series expansion"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fourier expansion of the sawtooth fract function is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convergence at discontinuities",
+      "anchor": {
+        "section": "Continuity and series expansions",
+        "snippet": "At points of discontinuity, a Fourier series converges to a value that is the average of its limits"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dirichlet's theorem on Fourier series convergence at jump discontinuities is not stated for floor/fract.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Floor Fourier expression",
+      "anchor": {
+        "section": "Continuity and series expansions",
+        "snippet": "Using the formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fourier expansion of floor is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Modulo operation extended to reals",
+      "anchor": {
+        "section": "Mod operator",
+        "snippet": "the modulo operation , denoted by x mod y , gives the value of the remainder when x is divided by y"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "toIcoMod",
+        "module": "Mathlib.Algebra.Order.ToIntervalMod",
+        "match_kind": "generalization"
+      },
+      "note": "`toIcoMod` generalises the x mod y operation to any ordered additive group with a positive period.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "x mod y bounded by y",
+      "anchor": {
+        "section": "Mod operator",
+        "snippet": "x mod y is always between 0 and y"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "toIcoMod_mem_Ico",
+        "module": "Mathlib.Algebra.Order.ToIntervalMod",
+        "match_kind": "generalization"
+      },
+      "note": "`toIcoMod_mem_Ico` shows the reduced value lies in [a, a+p), which is the natural generalization of 0 ≤ x mod y < y.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Quadratic reciprocity via floor",
+      "anchor": {
+        "section": "Quadratic reciprocity",
+        "snippet": "Gauss's third proof of quadratic reciprocity , as modified by Eisenstein, has two basic steps"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ZMod.quadratic_reciprocity",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.QuadraticReciprocity",
+        "match_kind": "invocation"
+      },
+      "note": "`ZMod.quadratic_reciprocity` (and `ZMod.eisenstein_lemma`) formalize quadratic reciprocity via the Eisenstein floor-sum method.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Floor formulas for quadratic character",
+      "anchor": {
+        "section": "Quadratic reciprocity",
+        "snippet": "There are formulas that use floor to express the quadratic character of small numbers mod odd primes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific floor-expressions for small-prime quadratic characters are not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rounding to nearest integer (ties up)",
+      "anchor": {
+        "section": "Rounding",
+        "snippet": "rounding"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "round",
+        "module": "Mathlib.Algebra.Order.Round",
+        "match_kind": "exact"
+      },
+      "note": "`round x := ⌊x + 1/2⌋`-style definition in `Mathlib.Algebra.Order.Round` rounds ties towards +∞.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rounding towards negative infinity",
+      "anchor": {
+        "section": "Rounding",
+        "snippet": "rounding towards negative infinity is given as"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.floor",
+        "module": "Mathlib.Algebra.Order.Floor.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Rounding toward -∞ is exactly `Int.floor`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rounding away from 0",
+      "anchor": {
+        "section": "Rounding",
+        "snippet": "If tie-breaking is away from 0, then the rounding function is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Round-half-away-from-zero is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rounding towards even",
+      "anchor": {
+        "section": "Rounding",
+        "snippet": "and rounding towards even can be expressed with the more cumbersome"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Banker's rounding (round-half-to-even) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Uniform quantizer",
+      "anchor": {
+        "section": "Rounding",
+        "snippet": "Rounding a real number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Uniform quantizer definition is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of digits in base b",
+      "anchor": {
+        "section": "Number of digits",
+        "snippet": "The number of digits in base b of a positive integer k is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.length_digits",
+        "module": "Mathlib.Data.Nat.Digits.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.length_digits` states (b.digits n).length = Nat.log b n + 1 for 1 < b and n ≠ 0.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of strings without repeated characters",
+      "anchor": {
+        "section": "Number of strings without repeated characters",
+        "snippet": "The number of possible strings of arbitrary length that doesn't use any character twice is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This combinatorial floor identity is not stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "n = 26 alphabet count",
+      "anchor": {
+        "section": "Number of strings without repeated characters",
+        "snippet": "For n = 26, this comes out to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific numeric example not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Legendre's formula for factorials",
+      "anchor": {
+        "section": "Factors of factorials",
+        "snippet": "The exponent of the highest power of p that divides n ! is given by a version of Legendre's formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Prime.emultiplicity_factorial",
+        "module": "Mathlib.Data.Nat.Multiplicity",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Prime.emultiplicity_factorial` is Legendre's theorem expressing emultiplicity p n! as ∑ n/p^i.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Beatty sequence partition",
+      "anchor": {
+        "section": "Beatty sequence",
+        "snippet": "The Beatty sequence shows how every positive irrational number gives rise to a partition of the natural numbers into two sequences via the floor function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Irrational.beattySeq_symmDiff_beattySeq_pos",
+        "module": "Mathlib.NumberTheory.Rayleigh",
+        "match_kind": "exact"
+      },
+      "note": "`Irrational.beattySeq_symmDiff_beattySeq_pos` formalizes Rayleigh/Beatty's theorem on partitioning positive integers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Formulas for Euler's constant",
+      "anchor": {
+        "section": "Euler's constant (γ)",
+        "snippet": "There are formulas for Euler's constant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Floor-based formulas for the Euler-Mascheroni constant are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Integral identity for continuous derivative",
+      "anchor": {
+        "section": "Riemann zeta function (ζ)",
+        "snippet": "It is straightforward to prove (using integration by parts )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Integration-by-parts identity involving floor is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zeta function representation",
+      "anchor": {
+        "section": "Riemann zeta function (ζ)",
+        "snippet": "Letting"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Floor/fract-based representation of ζ(s) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Validity and extension of zeta formula",
+      "anchor": {
+        "section": "Riemann zeta function (ζ)",
+        "snippet": "This formula is valid for all s with real part greater than"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Domain of validity for the floor-integral zeta representation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zeta in critical strip",
+      "anchor": {
+        "section": "Riemann zeta function (ζ)",
+        "snippet": "For s = σ + it in the critical strip"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Critical-strip floor-integral formula not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Primality test via floor",
+      "anchor": {
+        "section": "Formulas for prime numbers",
+        "snippet": "a positive integer n is a prime if and only if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Floor-based primality criteria are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Formula for n-th prime via α",
+      "anchor": {
+        "section": "Formulas for prime numbers",
+        "snippet": "let p n be the n -th prime, and for any integer r > 1, define the real number α by the sum"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The transcendental-α formula for the n-th prime is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Mills' constant",
+      "anchor": {
+        "section": "Formulas for prime numbers",
+        "snippet": "A similar result is that there is a number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mills' constant is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Number ω generating primes",
+      "anchor": {
+        "section": "Formulas for prime numbers",
+        "snippet": "There is also a number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The ω-floor prime formula is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Prime counting via Wilson's theorem",
+      "anchor": {
+        "section": "Formulas for prime numbers",
+        "snippet": "It is a straightforward deduction from Wilson's theorem that"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.prime_iff_fac_equiv_neg_one",
+        "module": "Mathlib.NumberTheory.Wilson",
+        "match_kind": "invocation"
+      },
+      "note": "Wilson's theorem is formalized as `Nat.prime_iff_fac_equiv_neg_one`, but its floor-based prime-counting consequence is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Prime counting formula for n ≥ 2",
+      "anchor": {
+        "section": "Formulas for prime numbers",
+        "snippet": "Also, if n ≥ 2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Floor-formula for π(n) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Ramanujan's floor function problems",
+      "anchor": {
+        "section": "Solved problems",
+        "snippet": "If n is a positive integer, prove that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ramanujan's floor identities are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Waring's problem unsolved floor identity",
+      "anchor": {
+        "section": "Unsolved problem",
+        "snippet": "Are there any positive integers k ≥ 6 such that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The open Waring/floor problem is not stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Mahler finiteness result",
+      "anchor": {
+        "section": "Unsolved problem",
+        "snippet": "Mahler has proved there can only be a finite number of such k"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mahler's finiteness theorem on this problem is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Arithmetic right-shift equals floor division",
+      "anchor": {
+        "section": "Computer implementations",
+        "snippet": "An arithmetic right-shift of a signed integer"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.shiftRight_eq_div_pow",
+        "module": "Mathlib.Data.Nat.Bits",
+        "match_kind": "special_case"
+      },
+      "note": "`Nat.shiftRight_eq_div_pow` gives the unsigned case n >>> k = n / 2^k; the signed/arithmetic-shift version is not stated as a named Mathlib lemma.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,399 @@
+{
+  "slug": "Cauchys_integral_formula",
+  "wikipedia_title": "Cauchy's integral formula",
+  "display_title": "Cauchy's integral formula",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle D={\\bigl \\{}z\\in \\mathbb {C} :|z-z_{0}|\\leq r{\\bigr \\}}}"
+      },
+      "status": "partial",
+      "decl": "Metric.closedBall",
+      "module": "Mathlib.Topology.MetricSpace.Basic",
+      "note": "Closed disk is the metric closed ball; just a domain definition, not a named theorem."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(a)={\\frac {1}{2\\pi i}}\\oint _{\\gamma }{\\frac {f(z)}{z-a}}\\,dz.}"
+      },
+      "status": "formalized",
+      "decl": "DiffContOnCl.circleIntegral_sub_inv_smul",
+      "module": "Mathlib.Analysis.Complex.CauchyIntegral",
+      "note": "This is the Cauchy integral formula, formalized for DiffContOnCl on a ball."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {1}{z-a}}={\\frac {1+{\\frac {a}{z}}+\\left({\\frac {a}{z}}\\right)^{2}+\\cdots }{z}},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Proof-sketch geometric-series step rewriting 1/(z-a); not a standalone Mathlib lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f^{(n)}(a)={\\frac {n!}{2\\pi i}}\\oint _{\\gamma }{\\frac {f(z)}{\\left(z-a\\right)^{n+1}}}\\,dz.}"
+      },
+      "status": "formalized",
+      "decl": "circleIntegral_one_div_sub_center_pow_smul_of_differentiable_on_off_countable",
+      "module": "Mathlib.Analysis.Complex.CauchyIntegral",
+      "note": "Cauchy integral formula for the nth derivative, formalized at the center."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\oint _{C}{\\frac {1}{z-a}}\\,dz=2\\pi i,}"
+      },
+      "status": "formalized",
+      "decl": "circleIntegral.integral_sub_inv_of_mem_ball",
+      "module": "Mathlib.MeasureTheory.Integral.CircleIntegral",
+      "note": "Mathlib has ∮ (z-w)⁻¹ dz = 2πi when w lies inside the circle."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\left|{\\frac {1}{2\\pi i}}\\oint _{C}{\\frac {f(z)}{z-a}}\\,dz-f(a)\\right|&=\\left|{\\frac {1}{2\\pi i}}\\oint _{C}{\\frac {f(z)-f(a)}{z-a}}\\,dz\\right|\\\\[1ex]&=\\left|{\\frac {1}{2\\pi i}}\\int _{0}^{2\\pi }\\left({\\frac {f{\\bigl (}z(t){\\bigr )}-f(a)}{\\varepsilon e^{it}}}\\cdot \\varepsilon e^{it}i\\right)\\,dt\\right|\\\\[1ex]&\\leq {\\frac {1}{2\\pi }}\\int _{0}^{2\\pi }{\\frac {\\left|f{\\bigl (}z(t){\\bigr )}-f(a)\\right|}{\\varepsilon }}\\,\\varepsilon \\,dt\\\\[1ex]&\\leq \\max _{|z-a|=\\varepsilon }\\left|f(z)-f(a)\\right|~~{\\xrightarrow[{\\varepsilon \\to 0}]{}}~~0.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Proof-sketch estimate; Mathlib has the conclusion but not this intermediate inequality chain."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle g(z)={\\frac {z^{2}}{z^{2}+2z+2}},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific example function definition, not a Mathlib declaration."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle g(z)={\\frac {z^{2}}{(z-z_{1})(z-z_{2})}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Rewritten example function, not a Mathlib lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f_{1}(z)={\\frac {z^{2}}{z-z_{2}}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Example-specific auxiliary function definition."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle g(z)={\\frac {f_{1}(z)}{z-z_{1}}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Example-specific factoring step."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\oint _{C}{\\frac {f_{1}(z)}{z-a}}\\,dz=2\\pi i\\cdot f_{1}(a),}"
+      },
+      "status": "formalized",
+      "decl": "circleIntegral_sub_inv_smul_of_differentiable_on_off_countable",
+      "module": "Mathlib.Analysis.Complex.CauchyIntegral",
+      "note": "Restated Cauchy integral formula applied to f₁, already formalized."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\oint _{C_{1}}g(z)\\,dz=\\oint _{C_{1}}{\\frac {f_{1}(z)}{z-z_{1}}}\\,dz=2\\pi i{\\frac {z_{1}^{2}}{z_{1}-z_{2}}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Numerical computation in worked example, not a standalone result."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f_{2}(z)={\\frac {z^{2}}{z-z_{1}}},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Example-specific auxiliary function definition."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\oint _{C_{2}}g(z)\\,dz=\\oint _{C_{2}}{\\frac {f_{2}(z)}{z-z_{2}}}\\,dz=2\\pi i{\\frac {z_{2}^{2}}{z_{2}-z_{1}}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Numerical computation in worked example."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\oint _{C}g(z)\\,dz&{}=\\oint _{C_{1}}g(z)\\,dz+\\oint _{C_{2}}g(z)\\,dz\\\\[.5em]&{}=2\\pi i\\left({\\frac {z_{1}^{2}}{z_{1}-z_{2}}}+{\\frac {z_{2}^{2}}{z_{2}-z_{1}}}\\right)\\\\[.5em]&{}=2\\pi i(-2)\\\\[.3em]&{}=-4\\pi i.\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Sum-of-residues computation in worked example."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\oint _{C}g(z)\\,dz=\\oint _{C}\\left(1-{\\frac {1}{z-z_{1}}}-{\\frac {1}{z-z_{2}}}\\right)\\,dz=0-2\\pi i-2\\pi i=-4\\pi i}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Partial-fraction trick in worked example, not a generic lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(\\zeta )={\\frac {1}{2\\pi i}}\\int _{C}{\\frac {f(z)}{z-\\zeta }}\\,dz.}"
+      },
+      "status": "formalized",
+      "decl": "two_pi_I_inv_smul_circleIntegral_sub_inv_smul_of_differentiable_on_off_countable",
+      "module": "Mathlib.Analysis.Complex.CauchyIntegral",
+      "note": "Cauchy integral formula reused to derive power-series representation."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle |a_{n}|\\leq r^{-n}\\sup _{|z|=r}|f(z)|.}"
+      },
+      "status": "partial",
+      "decl": "Complex.norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le",
+      "module": "Mathlib.Analysis.Complex.Liouville",
+      "note": "Mathlib bounds ‖f⁽ⁿ⁾(c)‖ ≤ n! C/Rⁿ; equivalent to |aₙ| ≤ C/Rⁿ via aₙ = f⁽ⁿ⁾/n!."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(z)={\\frac {1}{2\\pi }}\\int _{0}^{2\\pi }f(z+re^{i\\theta })\\,d\\theta .}"
+      },
+      "status": "formalized",
+      "decl": "circleAverage_of_differentiable_on_off_countable",
+      "module": "Mathlib.Analysis.Complex.MeanValue",
+      "note": "Gauss mean-value theorem formalized as circle-average equal to centre value."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(\\zeta )={\\frac {1}{2\\pi i}}\\int _{\\partial D}{\\frac {f(z)\\,dz}{z-\\zeta }}-{\\frac {1}{\\pi }}\\iint _{D}{\\frac {\\partial f}{\\partial {\\bar {z}}}}(z){\\frac {dx\\wedge dy}{z-\\zeta }}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Cauchy–Pompeiu formula for smooth (non-holomorphic) functions is not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle d\\mu ={\\frac {1}{2\\pi i}}\\varphi \\,dz\\wedge d{\\bar {z}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Auxiliary measure definition for dbar-equation solution; not formalized."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {\\partial f}{\\partial {\\bar {z}}}}=\\varphi (z,{\\bar {z}}).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Inhomogeneous Cauchy–Riemann (dbar) equation; Mathlib lacks a named decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle k(z)=\\operatorname {p.v.} {\\frac {1}{z}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Principal-value Cauchy kernel distribution is not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(\\zeta )={\\frac {1}{2\\pi i}}\\iint {\\frac {\\partial f}{\\partial {\\bar {z}}}}{\\frac {dz\\wedge d{\\bar {z}}}{z-\\zeta }},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Compactly-supported smooth Cauchy-Pompeiu specialization; not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {\\partial \\chi _{X}}{\\partial {\\bar {z}}}}={\\frac {i}{2}}\\oint _{\\partial X}\\,dz,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Distributional dbar of indicator of a region; not formalized."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\left\\langle {\\frac {\\partial }{\\partial {\\bar {z}}}}\\left(\\chi _{X}\\right),\\varphi \\right\\rangle &=-\\int _{X}{\\frac {\\partial \\varphi }{\\partial {\\bar {z}}}}\\mathrm {~d} (x,y)\\\\&=-{\\frac {1}{2}}\\int _{X}\\left(\\partial _{x}\\varphi +\\mathrm {i} \\partial _{y}\\varphi \\right)\\mathrm {d} (x,y).\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Distributional derivation step in proof of Cauchy-Pompeiu; not standalone."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}-{\\frac {1}{2}}\\int _{X}\\left(\\partial _{x}\\varphi +\\mathrm {i} \\partial _{y}\\varphi \\right)\\mathrm {d} (x,y)&=-{\\frac {1}{2}}\\int _{\\partial X}V\\cdot \\nu \\mathrm {d} S\\\\&=-{\\frac {1}{2}}\\int _{0}^{\\ell }\\left(\\varphi \\nu _{1}+\\mathrm {i} \\varphi \\nu _{2}\\right)\\mathrm {d} s\\\\&=-{\\frac {1}{2}}\\int _{0}^{\\ell }\\varphi (x(s),y(s))\\left(y'(s)-\\mathrm {i} x'(s)\\right)\\mathrm {d} s\\\\&={\\frac {1}{2}}\\int _{0}^{\\ell }\\mathrm {i} \\varphi (x(s),y(s))\\left(x'(s)+\\mathrm {i} y'(s)\\right)\\mathrm {d} s\\\\&={\\frac {1}{2}}\\int _{\\partial X}\\varphi \\mathrm {d} z\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Divergence-theorem computation in proof; not formalized as a standalone result."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {\\partial u}{\\partial {\\bar {z}}}}={\\frac {\\partial }{\\partial {\\bar {z}}}}\\left({\\frac {1}{\\pi \\left(z-z_{0}\\right)}}\\right)\\chi _{X}+{\\frac {1}{\\pi \\left(z-z_{0}\\right)}}{\\frac {\\partial }{\\partial {\\bar {z}}}}\\left(\\chi _{X}\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Leibniz step in distributional computation; proof intermediate."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {\\partial u}{\\partial {\\bar {z}}}}=\\delta _{z_{0}}+{\\frac {1}{\\pi \\left(z-z_{0}\\right)}}{\\frac {\\partial }{\\partial {\\bar {z}}}}\\left(\\chi _{X}\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Distributional identity for the Cauchy kernel; not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\left\\langle {\\frac {\\partial }{\\partial {\\bar {z}}}}\\left({\\frac {\\chi _{X}}{\\pi \\left(z-z_{0}\\right)}}\\right),\\phi \\right\\rangle &=\\phi \\left(z_{0}\\right)+\\left\\langle {\\frac {1}{\\pi \\left(z-z_{0}\\right)}}{\\frac {\\partial }{\\partial {\\bar {z}}}}\\left(\\chi _{X}\\right),\\phi \\right\\rangle \\\\&=\\phi \\left(z_{0}\\right)+\\left\\langle {\\frac {\\partial }{\\partial {\\bar {z}}}}\\left(\\chi _{X}\\right),{\\frac {\\phi }{\\pi \\left(z-z_{0}\\right)}}\\right\\rangle \\\\&=\\phi \\left(z_{0}\\right)+{\\frac {\\mathrm {i} }{2}}\\int _{\\partial X}{\\frac {\\phi (z)}{\\pi \\left(z-z_{0}\\right)}}\\mathrm {d} z\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Distributional pairing computation, proof intermediate."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\phi (z_{0})={\\frac {1}{2\\pi i}}\\int _{\\partial X}{\\frac {\\phi (z)\\,dz}{z-z_{0}}}-{\\frac {1}{\\pi }}\\iint _{X}{\\frac {\\partial \\phi }{\\partial {\\bar {z}}}}(z){\\frac {dx\\wedge dy}{z-z_{0}}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Cauchy–Pompeiu formula restated for test functions; not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle D=\\prod _{j=1}^{n}D_{j}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Polydisk definition for several complex variables; no specific Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(\\zeta )={\\frac {1}{\\left(2\\pi i\\right)^{n}}}\\int \\cdots \\iint _{\\partial D_{1}\\times \\cdots \\times \\partial D_{n}}{\\frac {f(z_{1},\\ldots ,z_{n})}{(z_{1}-\\zeta _{1})\\cdots (z_{n}-\\zeta _{n})}}\\,dz_{1}\\cdots dz_{n}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Cauchy integral formula on a polydisk in several variables; not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle G\\left(\\mathbf {r} ,\\mathbf {r} '\\right)={\\frac {1}{S_{n}}}{\\frac {\\mathbf {r} -\\mathbf {r} '}{\\left|\\mathbf {r} -\\mathbf {r} '\\right|^{n}}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Green's function for the Dirac operator in Clifford analysis; not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\nabla G\\left(\\mathbf {r} ,\\mathbf {r} '\\right)=\\delta \\left(\\mathbf {r} -\\mathbf {r} '\\right).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Defining distributional property of the Green's function; not formalized."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\oint _{\\partial V}d\\mathbf {S} \\;f(\\mathbf {r} )=\\int _{V}d\\mathbf {V} \\;\\nabla f(\\mathbf {r} )}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Geometric-algebra form of Stokes' theorem; not represented in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\oint _{\\partial V'}G\\left(\\mathbf {r} ,\\mathbf {r} '\\right)\\;d\\mathbf {S} '\\;f\\left(\\mathbf {r} '\\right)=\\int _{V}\\left(\\left[\\nabla 'G\\left(\\mathbf {r} ,\\mathbf {r} '\\right)\\right]f\\left(\\mathbf {r} '\\right)+G\\left(\\mathbf {r} ,\\mathbf {r} '\\right)\\nabla 'f\\left(\\mathbf {r} '\\right)\\right)\\;d\\mathbf {V} }"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Product-rule application in Clifford-algebra derivation; proof intermediate."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\oint _{\\partial V'}G\\left(\\mathbf {r} ,\\mathbf {r} '\\right)\\;d\\mathbf {S} '\\;f\\left(\\mathbf {r} '\\right)=\\int _{V}\\left[\\nabla 'G\\left(\\mathbf {r} ,\\mathbf {r} '\\right)\\right]f\\left(\\mathbf {r} '\\right)=-\\int _{V}\\delta \\left(\\mathbf {r} -\\mathbf {r} '\\right)f\\left(\\mathbf {r} '\\right)\\;d\\mathbf {V} =-i_{n}f(\\mathbf {r} )}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Step in Clifford-algebra Cauchy formula derivation; not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(\\mathbf {r} )=-{\\frac {1}{i_{n}}}\\oint _{\\partial V}G\\left(\\mathbf {r} ,\\mathbf {r} '\\right)\\;d\\mathbf {S} \\;f\\left(\\mathbf {r} '\\right)=-{\\frac {1}{i_{n}}}\\oint _{\\partial V}{\\frac {\\mathbf {r} -\\mathbf {r} '}{S_{n}\\left|\\mathbf {r} -\\mathbf {r} '\\right|^{n}}}\\;d\\mathbf {S} \\;f\\left(\\mathbf {r} '\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Cauchy integral formula in Clifford/geometric algebra; not formalized in Mathlib."
+    }
+  ]
+}

@@ -1,0 +1,1273 @@
+{
+  "slug": "Simple_continued_fraction",
+  "wikipedia_title": "Simple continued fraction",
+  "display_title": "Simple continued fraction",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Simple continued fraction",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A simple or regular continued fraction is a continued fraction with numerators all equal to one"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpContFract",
+        "module": "Mathlib.Algebra.ContinuedFractions.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`SimpContFract` is defined as a `GenContFract` whose partial numerators are all 1.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coefficients/terms of a continued fraction",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "are called the coefficients or terms of the continued fraction"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GenContFract.partDens",
+        "module": "Mathlib.Algebra.ContinuedFractions.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`partNums`/`partDens` and the head term `h` formalize the coefficients of a (generalized) continued fraction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rational has two finite continued fraction expressions",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "has two closely related expressions as a finite continued fraction"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "GenContFract.terminates_iff_rat",
+        "module": "Mathlib.Algebra.ContinuedFractions.Computation.TerminatesIffRat",
+        "match_kind": "generalization"
+      },
+      "note": "Termination ↔ rationality is formalized, but the dual-representation (`[…;a]` vs `[…;a−1,1]`) uniqueness fact for rationals is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Irrationality of infinite continued fraction value",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The numerical value of an infinite continued fraction is irrational"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "GenContFract.terminates_iff_rat",
+        "module": "Mathlib.Algebra.ContinuedFractions.Computation.TerminatesIffRat",
+        "match_kind": "special_case"
+      },
+      "note": "The contrapositive for the canonical expansion `of v` is captured by `terminates_iff_rat`, but no statement covers value-of-an-arbitrary-infinite-SCF being irrational.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unique infinite continued fraction for irrationals",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "every irrational number"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "GenContFract.of",
+        "module": "Mathlib.Algebra.ContinuedFractions.Computation.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The canonical expansion `GenContFract.of v` is constructed and shown to converge to `v`, but uniqueness among all infinite SCFs is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Continued fraction of 415/93",
+      "anchor": {
+        "section": "Motivation and notation",
+        "snippet": "Consider, for example, the rational number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific numeric example of 415/93's continued fraction in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bracket notation for continued fractions",
+      "anchor": {
+        "section": "Motivation and notation",
+        "snippet": "This can be represented by the abbreviated notation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bracket notation `[a₀; a₁, a₂, …]` is mentioned only informally in docstrings; no Lean notation is registered.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Continued fractions of √19, e, π, φ, γ",
+      "anchor": {
+        "section": "Motivation and notation",
+        "snippet": "Examples of continued fraction representations of irrational numbers are"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No closed-form CF expansions for √19, e, π, φ, or γ are formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite iff rational",
+      "anchor": {
+        "section": "Motivation and notation",
+        "snippet": "The continued fraction representation for a real number is finite if and only if it is a rational number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GenContFract.terminates_iff_rat",
+        "module": "Mathlib.Algebra.ContinuedFractions.Computation.TerminatesIffRat",
+        "match_kind": "exact"
+      },
+      "note": "`(of v).Terminates ↔ ∃ q : ℚ, v = q` is `terminates_iff_rat`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Two representations of a rational",
+      "anchor": {
+        "section": "Motivation and notation",
+        "snippet": "Each rational can be represented in exactly two ways"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The fact that every rational has exactly two finite SCF representations (related by splitting the last term) is not stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness for irrationals",
+      "anchor": {
+        "section": "Motivation and notation",
+        "snippet": "The simple continued fraction representation of an irrational number is unique"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No uniqueness statement for the SCF expansion of an irrational is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Eventually periodic iff quadratic irrational",
+      "anchor": {
+        "section": "Motivation and notation",
+        "snippet": "The real numbers whose continued fraction eventually repeats are precisely the quadratic irrationals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lagrange's periodicity theorem is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Canonical form of a continued fraction",
+      "anchor": {
+        "section": "Formulation",
+        "snippet": "A continued fraction in canonical form is an expression of the form"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContFract",
+        "module": "Mathlib.Algebra.ContinuedFractions.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ContFract` = SCF with positive partial denominators is the canonical (regular) form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Finite, infinite, periodic continued fraction",
+      "anchor": {
+        "section": "Formulation",
+        "snippet": "When the expression contains finitely many terms, it is called a finite continued fraction"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "GenContFract.Terminates",
+        "module": "Mathlib.Algebra.ContinuedFractions.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`Terminates`/`TerminatedAt` formalize finiteness vs. infiniteness; periodicity is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Recursive definition of terms",
+      "anchor": {
+        "section": "Formulation",
+        "snippet": "the"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GenContFract.contsAux",
+        "module": "Mathlib.Algebra.ContinuedFractions.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`contsAux` gives the recursive computation of the numerator/denominator continuants.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Limit definition of infinite simple continued fraction",
+      "anchor": {
+        "section": "Notations",
+        "snippet": "One may also define infinite simple continued fractions as limits"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GenContFract.of_convergence",
+        "module": "Mathlib.Algebra.ContinuedFractions.Computation.ApproximationCorollaries",
+        "match_kind": "exact"
+      },
+      "note": "`of_convergence` shows convergents of `of v` tend to `v`, providing the limit definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Recursive definition of continued fraction representation",
+      "anchor": {
+        "section": "Calculating continued fraction representations",
+        "snippet": "Consider a real number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GenContFract.IntFractPair.stream",
+        "module": "Mathlib.Algebra.ContinuedFractions.Computation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IntFractPair.stream` recursively builds ⟨⌊v⌋, fract v⟩ then ⌊(fract v)⁻¹⌋, … exactly as in the article.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Algorithm for continued fraction representation",
+      "anchor": {
+        "section": "Calculating continued fraction representations",
+        "snippet": "In order to calculate a continued fraction representation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GenContFract.of",
+        "module": "Mathlib.Algebra.ContinuedFractions.Computation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`GenContFract.of` implements the floor/reciprocal algorithm; its correctness is `of_correctness_of_terminatedAt` and `of_convergence`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reciprocal shift property",
+      "anchor": {
+        "section": "Reciprocals",
+        "snippet": "The continued fraction representations of a positive rational number and its reciprocal are identical except for a shift one place left or right"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general reciprocal-shift lemma for `GenContFract.of` is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Reciprocal with integer leading term",
+      "anchor": {
+        "section": "Reciprocals",
+        "snippet": "For instance if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A specific reciprocal example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Last term equal for number and reciprocal",
+      "anchor": {
+        "section": "Reciprocals",
+        "snippet": "The last number that generates the remainder of the continued fraction is the same for both"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement about the last term being equal under reciprocation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Finite continued fractions represent rationals (two ways)",
+      "anchor": {
+        "section": "Finite continued fractions",
+        "snippet": "Every finite continued fraction represents a rational number"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "GenContFract.terminates_iff_rat",
+        "module": "Mathlib.Algebra.ContinuedFractions.Computation.TerminatesIffRat",
+        "match_kind": "special_case"
+      },
+      "note": "Termination ↔ rationality is formalized, but the article's stronger claim that every finite SCF evaluates to a rational (and dually) is not stated for arbitrary SCFs.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Infinite continued fraction iff irrational",
+      "anchor": {
+        "section": "Infinite continued fractions and convergents",
+        "snippet": "Every infinite continued fraction is irrational"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "GenContFract.terminates_iff_rat",
+        "module": "Mathlib.Algebra.ContinuedFractions.Computation.TerminatesIffRat",
+        "match_kind": "special_case"
+      },
+      "note": "Captured for the canonical `of v`; no theorem about arbitrary infinite SCFs evaluating to irrationals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convergents",
+      "anchor": {
+        "section": "Infinite continued fractions and convergents",
+        "snippet": "These rational numbers are called the convergents of the continued fraction"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GenContFract.convs",
+        "module": "Mathlib.Algebra.ContinuedFractions.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`convs n = nums n / dens n` is the convergent sequence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gaussian bracket recurrence for convergents",
+      "anchor": {
+        "section": "Infinite continued fractions and convergents",
+        "snippet": "the relevant recursive relation is that of Gaussian brackets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GenContFract.conts_recurrence",
+        "module": "Mathlib.Algebra.ContinuedFractions.ContinuantsRecurrence",
+        "match_kind": "exact"
+      },
+      "note": "`conts_recurrence`, `nums_recurrence`, `dens_recurrence` give Aₙ = bₙAₙ₋₁ + aₙAₙ₋₂ etc.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Even/odd convergents bound the value",
+      "anchor": {
+        "section": "Infinite continued fractions and convergents",
+        "snippet": "Even-numbered convergents are smaller than the original number, while odd-numbered ones are larger"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Parity-based bounding of convergents around `v` is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Babylonian method approximants appear as convergents",
+      "anchor": {
+        "section": "Infinite continued fractions and convergents",
+        "snippet": "When using the Babylonian method to generate successive approximations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Babylonian method/CF link not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Baire space homeomorphism",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The infinite continued fraction provides a homeomorphism from the Baire space to the space of irrational real numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No CF-Baire-space homeomorphism in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Minkowski question-mark mapping",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "this map is called the Minkowski question-mark function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Minkowski's `?` function is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gauss–Kuzmin distribution",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "is the Gauss–Kuzmin distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gauss–Kuzmin distribution is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Theorem 1 (value of continued fraction)",
+      "anchor": {
+        "section": "Some useful theorems",
+        "snippet": "Theorem 1. For any positive real number"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "GenContFract.of_convergence",
+        "module": "Mathlib.Algebra.ContinuedFractions.Computation.ApproximationCorollaries",
+        "match_kind": "generalization"
+      },
+      "note": "Value-of-CF equality is captured via convergence of `(of v).convs` to `v`; precise Theorem-1 form not directly stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Theorem 2 (convergent formula)",
+      "anchor": {
+        "section": "Some useful theorems",
+        "snippet": "Theorem 2. The convergents of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GenContFract.conts_recurrence",
+        "module": "Mathlib.Algebra.ContinuedFractions.ContinuantsRecurrence",
+        "match_kind": "exact"
+      },
+      "note": "The convergent-formula recurrence is `conts_recurrence`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Theorem 3 (convergent identity)",
+      "anchor": {
+        "section": "Some useful theorems",
+        "snippet": "Theorem 3. If the"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpContFract.determinant",
+        "module": "Mathlib.Algebra.ContinuedFractions.Determinant",
+        "match_kind": "exact"
+      },
+      "note": "The determinant identity `AₙBₙ₊₁ − BₙAₙ₊₁ = (−1)^(n+1)` is `SimpContFract.determinant`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Corollary 1: convergents in lowest terms",
+      "anchor": {
+        "section": "Some useful theorems",
+        "snippet": "Corollary 1: Each convergent is in its lowest terms"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SimpContFract.determinant",
+        "module": "Mathlib.Algebra.ContinuedFractions.Determinant",
+        "match_kind": "invocation"
+      },
+      "note": "Determinant formula gives coprimality, but `gcd(Aₙ,Bₙ)=1` is not stated as a separate Mathlib lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Corollary 2: difference of successive convergents",
+      "anchor": {
+        "section": "Some useful theorems",
+        "snippet": "Corollary 2: The difference between successive convergents is a fraction whose numerator is unity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpContFract.determinant",
+        "module": "Mathlib.Algebra.ContinuedFractions.Determinant",
+        "match_kind": "exact"
+      },
+      "note": "Equivalent rearrangement of the determinant formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Corollary 3: alternating series form",
+      "anchor": {
+        "section": "Some useful theorems",
+        "snippet": "Corollary 3: The continued fraction is equivalent to a series of alternating terms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No alternating-series identity for CFs in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Corollary 4: unimodular matrix",
+      "anchor": {
+        "section": "Some useful theorems",
+        "snippet": "Corollary 4: The matrix"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The unimodular matrix viewpoint is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Corollary 5: odd/even term monotonicity",
+      "anchor": {
+        "section": "Some useful theorems",
+        "snippet": "Corollary 5: The matrix"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Parity-monotonicity of convergent matrix is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Corollary 6: denominator recurrence and growth",
+      "anchor": {
+        "section": "Some useful theorems",
+        "snippet": "Corollary 6: The denominator sequence"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "GenContFract.succ_nth_fib_le_of_nth_den",
+        "module": "Mathlib.Algebra.ContinuedFractions.Computation.Approximations",
+        "match_kind": "special_case"
+      },
+      "note": "Recurrence is `dens_recurrence`; growth `fib (n+1) ≤ dens n` is `succ_nth_fib_le_of_nth_den`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Theorem 4 (convergents get closer)",
+      "anchor": {
+        "section": "Some useful theorems",
+        "snippet": "Theorem 4. Each"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "GenContFract.abs_sub_convs_le",
+        "module": "Mathlib.Algebra.ContinuedFractions.Computation.Approximations",
+        "match_kind": "generalization"
+      },
+      "note": "`|v − Aₙ/Bₙ| ≤ 1/(BₙBₙ₊₁)` is `abs_sub_convs_le`; the monotone-closer statement isn't isolated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Corollary 1 to Theorem 4: even convergents increase",
+      "anchor": {
+        "section": "Some useful theorems",
+        "snippet": "Corollary 1: The even convergents"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Monotonicity of even convergents is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Corollary 2 to Theorem 4: odd convergents decrease",
+      "anchor": {
+        "section": "Some useful theorems",
+        "snippet": "Corollary 2: The odd convergents"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Monotonicity of odd convergents is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Theorem 5",
+      "anchor": {
+        "section": "Some useful theorems",
+        "snippet": "Theorem 5."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Best-approximation Theorem 5 in this form is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Corollary 1 to Theorem 5: best approximation property",
+      "anchor": {
+        "section": "Some useful theorems",
+        "snippet": "Corollary 1: A convergent is nearer to the limit of the continued fraction than any fraction whose denominator is less"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Strong best-approximation property is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Corollary 2 to Theorem 5: large term gives close approximation",
+      "anchor": {
+        "section": "Some useful theorems",
+        "snippet": "Corollary 2: A convergent obtained by terminating the continued fraction just before a large term"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement linking large coefficients to approximation quality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Theorem 6 (open intervals basis)",
+      "anchor": {
+        "section": "Some useful theorems",
+        "snippet": "Theorem 6: Consider the set of all open intervals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "CF-derived topology basis is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Corollary to Theorem 6: Baire space homeomorphism",
+      "anchor": {
+        "section": "Some useful theorems",
+        "snippet": "Corollary: The infinite continued fraction provides a homeomorphism"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Baire-space homeomorphism is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Semiconvergent",
+      "anchor": {
+        "section": "Semiconvergents",
+        "snippet": "are called semiconvergents , secondary convergents , or intermediate fractions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Semiconvergents are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Monotonic sequence of semiconvergents",
+      "anchor": {
+        "section": "Semiconvergents",
+        "snippet": "It follows that semiconvergents represent a monotonic sequence of fractions between the convergents"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Semiconvergents monotonicity not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Best rational approximation is a semiconvergent",
+      "anchor": {
+        "section": "Semiconvergents",
+        "snippet": "If a rational approximation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement that best approximations are semiconvergents.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Best rational approximation",
+      "anchor": {
+        "section": "Best rational approximations",
+        "snippet": "One can choose to define a best rational approximation to a real number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of `BestRationalApproximation` in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Best approximations of 0.84375",
+      "anchor": {
+        "section": "Best rational approximations",
+        "snippet": "For example, 0.84375 has continued fraction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific best-approximation example not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Half rule for semiconvergent admissibility",
+      "anchor": {
+        "section": "Best rational approximations",
+        "snippet": "The \"half rule\" mentioned above requires that when"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Half-rule criterion not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convergents are best approximations in strong sense",
+      "anchor": {
+        "section": "Best rational approximations",
+        "snippet": "The convergents to"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.exists_convs_eq_rat",
+        "module": "Mathlib.NumberTheory.DiophantineApproximation.ContinuedFractions",
+        "match_kind": "special_case"
+      },
+      "note": "Legendre's theorem gives a converse (any sufficiently good rational is a convergent), but the strong best-approximation characterization is not separately formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Best rational within an interval",
+      "anchor": {
+        "section": "Best rational within an interval",
+        "snippet": "A rational that falls within the interval"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Interval-based best-rational construction is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Best rational extension to rational endpoints",
+      "anchor": {
+        "section": "Best rational within an interval",
+        "snippet": "If x is rational, it will have two continued fraction representations that are finite"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Best rational rounding to 3.1416",
+      "anchor": {
+        "section": "Best rational within an interval",
+        "snippet": "For example, the decimal representation 3.1416 could be rounded from any number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Example not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Interval characterization for a convergent",
+      "anchor": {
+        "section": "Interval for a convergent",
+        "snippet": "will be one of the convergents for the continued fraction expansion of a number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Interval characterization is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Convergent interval for 355/113",
+      "anchor": {
+        "section": "Interval for a convergent",
+        "snippet": "For example, the number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific example not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Legendre's theorem on continued fractions",
+      "anchor": {
+        "section": "Legendre's theorem on continued fractions",
+        "snippet": "Theorem . If α is a real number and"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.exists_convs_eq_rat",
+        "module": "Mathlib.NumberTheory.DiophantineApproximation.ContinuedFractions",
+        "match_kind": "exact"
+      },
+      "note": "`Real.exists_convs_eq_rat` (and `exists_rat_eq_convergent`) state Legendre's theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Comparison of continued fractions",
+      "anchor": {
+        "section": "Comparison",
+        "snippet": "If k is the smallest index for which"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lexicographic comparison rule for CFs is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Comparison when one expansion is shorter",
+      "anchor": {
+        "section": "Comparison",
+        "snippet": "If there is no such k , but one expansion is shorter than the other"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Convergents of π",
+      "anchor": {
+        "section": "Continued fraction expansion of π and its convergents",
+        "snippet": "To calculate the convergents of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific convergents of π are computed in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convergent error bound for π",
+      "anchor": {
+        "section": "Continued fraction expansion of π and its convergents",
+        "snippet": "The difference between a given convergent and"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "GenContFract.abs_sub_convs_le",
+        "module": "Mathlib.Algebra.ContinuedFractions.Computation.Approximations",
+        "match_kind": "generalization"
+      },
+      "note": "The bound `|v − Aₙ/Bₙ| ≤ 1/(BₙBₙ₊₁)` is formalized in general but not specialized to π.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Non-simple continued fraction",
+      "anchor": {
+        "section": "Non-simple continued fraction",
+        "snippet": "A non-simple continued fraction is an expression of the form"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GenContFract",
+        "module": "Mathlib.Algebra.ContinuedFractions.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`GenContFract` allows arbitrary partial numerators, i.e. is the generalized (non-simple) CF.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Regular non-simple continued fractions for π",
+      "anchor": {
+        "section": "Non-simple continued fraction",
+        "snippet": "several non-simple continued fractions for"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No GCF formulas for π formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Periodic expansions = quadratic irrationals",
+      "anchor": {
+        "section": "Periodic continued fractions",
+        "snippet": "The numbers with periodic continued fraction expansion are precisely the irrational solutions of quadratic equations with rational coefficients"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lagrange's theorem on periodic CFs is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Symmetric period of √n",
+      "anchor": {
+        "section": "Periodic continued fractions",
+        "snippet": "All irrational square roots of integers have a special form for the period"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Symmetric-period structure of √n is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hurwitz's theorem",
+      "anchor": {
+        "section": "A property of the golden ratio φ",
+        "snippet": "Hurwitz's theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hurwitz's approximation theorem (1/√5 bound) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Golden ratio extremal approximation property",
+      "anchor": {
+        "section": "A property of the golden ratio φ",
+        "snippet": "every real number of the form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Golden-ratio extremal statement is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Continued fraction pattern for e",
+      "anchor": {
+        "section": "Regular patterns in continued fractions",
+        "snippet": "there is one for"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "CF pattern for e is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Bessel function continued fraction",
+      "anchor": {
+        "section": "Regular patterns in continued fractions",
+        "snippet": "If I n ( x ) is the modified, or hyperbolic, Bessel function of the first kind"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bessel-function CF identity is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Arithmetic average of coefficients diverges",
+      "anchor": {
+        "section": "Typical continued fractions",
+        "snippet": "The arithmetic average diverges"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Khinchin's theorem",
+      "anchor": {
+        "section": "Typical continued fractions",
+        "snippet": "Khinchin proved that the geometric mean"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Khinchin's constant theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lévy's theorem",
+      "anchor": {
+        "section": "Typical continued fractions",
+        "snippet": "Paul Lévy proved that the"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lévy's constant theorem is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lochs' theorem",
+      "anchor": {
+        "section": "Typical continued fractions",
+        "snippet": "Lochs' theorem states that the convergents converge exponentially"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lochs' theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pell's equation and convergents",
+      "anchor": {
+        "section": "Pell's equation",
+        "snippet": "for positive integers p and q , and non-square n"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Pell.exists_of_not_isSquare",
+        "module": "Mathlib.NumberTheory.Pell",
+        "match_kind": "invocation"
+      },
+      "note": "Pell solutions exist (`Pell.exists_of_not_isSquare`) but the link to convergents of √n is explicitly listed in the file's TODO.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Gauss map (backwards shift)",
+      "anchor": {
+        "section": "Dynamical systems",
+        "snippet": "The backwards shift operator for continued fractions is the map"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "GenContFract.of_s_tail",
+        "module": "Mathlib.Algebra.ContinuedFractions.Computation.Translations",
+        "match_kind": "invocation"
+      },
+      "note": "The fact `(of v).s.tail = (of (fract v)⁻¹).s` realizes the Gauss-map shift but `x ↦ {1/x}` is not packaged as a named map.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Gauss–Kuzmin–Wirsing operator",
+      "anchor": {
+        "section": "Dynamical systems",
+        "snippet": "The transfer operator of this map is called the Gauss–Kuzmin–Wirsing operator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gauss–Kuzmin–Wirsing transfer operator is not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,119 @@
+{
+  "slug": "Representation_theory",
+  "wikipedia_title": "Representation theory",
+  "display_title": "Representation theory",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\Phi \\colon G\\times V\\to V\\quad {\\text{or}}\\quad \\Phi \\colon A\\times V\\to V}"
+      },
+      "status": "partial",
+      "decl": "Representation",
+      "module": "Mathlib.RepresentationTheory.Basic",
+      "note": "Mathlib's Representation packages a G-action V→V as a monoid hom; the algebra-action analogue is the Module structure."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\Phi (g)\\colon V&\\to V\\\\v&\\mapsto \\Phi (g,v)\\end{aligned}}}"
+      },
+      "status": "formalized",
+      "decl": "Representation",
+      "module": "Mathlib.RepresentationTheory.Basic",
+      "note": "The curried action map Φ(g):V→V is literally the value ρ g of `Representation k G V := G →* V →ₗ[k] V`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (2.1)\\quad e\\cdot v=v}"
+      },
+      "status": "formalized",
+      "decl": "one_smul",
+      "module": "Mathlib.Algebra.Group.Action.Defs",
+      "note": "The MulAction axiom `one_smul : (1 : M) • b = b` states exactly that the identity acts trivially."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (2.2)\\quad g_{1}\\cdot (g_{2}\\cdot v)=(g_{1}g_{2})\\cdot v}"
+      },
+      "status": "formalized",
+      "decl": "mul_smul",
+      "module": "Mathlib.Algebra.Group.Action.Defs",
+      "note": "MulAction's `mul_smul` axiom encodes the associativity g₁·(g₂·v) = (g₁g₂)·v of a group action."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (2.2')\\quad x_{1}\\cdot (x_{2}\\cdot v)-x_{2}\\cdot (x_{1}\\cdot v)=[x_{1},x_{2}]\\cdot v}"
+      },
+      "status": "formalized",
+      "decl": "LieRingModule",
+      "module": "Mathlib.Algebra.Lie.Basic",
+      "note": "LieRingModule's `leibniz_lie` axiom is the equivalent rearrangement of the commutator action condition for a Lie module."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\alpha (g\\cdot v)=g\\cdot \\alpha (v)}"
+      },
+      "status": "formalized",
+      "decl": "Representation.IntertwiningMap",
+      "module": "Mathlib.RepresentationTheory.Intertwining",
+      "note": "An IntertwiningMap is exactly a linear map satisfying α(ρ g v) = σ g (α v), i.e. an equivariant map."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\alpha \\circ \\varphi (g)=\\psi (g)\\circ \\alpha }"
+      },
+      "status": "formalized",
+      "decl": "Representation.IntertwiningMap",
+      "module": "Mathlib.RepresentationTheory.Intertwining",
+      "note": "The composition form α ∘ φ(g) = ψ(g) ∘ α is the defining property of an IntertwiningMap between two representations."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\phi :G\\to {\\text{Aut}}(W)}"
+      },
+      "status": "formalized",
+      "decl": "Subrepresentation",
+      "module": "Mathlib.RepresentationTheory.Subrepresentation",
+      "note": "Mathlib's Subrepresentation packages an invariant submodule W together with the restricted action G → Aut(W)."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\alpha :(V,\\psi )\\to (V',\\psi ')}"
+      },
+      "status": "formalized",
+      "decl": "FDRep.finrank_hom_simple_simple",
+      "module": "Mathlib.RepresentationTheory.FDRep",
+      "note": "Schur's lemma between two irreducible representations is formalized as `finrank_hom_simple_simple` on FDRep."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\phi (a)={\\begin{bmatrix}1&a\\\\0&1\\end{bmatrix}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "This ad-hoc 2-dimensional representation of the additive reals serving as an example is not a standalone Mathlib declaration."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{bmatrix}0\\\\1\\end{bmatrix}}\\mapsto {\\begin{bmatrix}a\\\\1\\end{bmatrix}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Computation showing the complement subspace is not invariant under this specific example representation; not its own Mathlib decl."
+    }
+  ]
+}

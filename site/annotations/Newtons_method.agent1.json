@@ -1,0 +1,476 @@
+{
+  "slug": "Newtons_method",
+  "wikipedia_title": "Newton's method",
+  "display_title": "Newton's method",
+  "schema_version": 3,
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Newton's method (root-finding algorithm)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a root-finding algorithm which produces successively better approximations to the roots"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Geometric interpretation as tangent x-intercept",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is the x-intercept of the tangent to the graph of f"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Tangent-line linear approximation",
+      "anchor": {
+        "section": "Description",
+        "snippet": "The best linear approximation to an arbitrary differentiable function"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quadratic convergence at simple root",
+      "anchor": {
+        "section": "Description",
+        "snippet": "for a root of multiplicity 1, the convergence is at least quadratic"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Modified algorithm for known multiplicity m",
+      "anchor": {
+        "section": "Slow convergence for roots of multiplicity greater than 1",
+        "snippet": "if the multiplicity m of the root is known, the following modified algorithm preserves the quadratic convergence rate"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "g(x)=f/f' has simple root at same location",
+      "anchor": {
+        "section": "Slow convergence for roots of multiplicity greater than 1",
+        "snippet": "will have a root at the same location with multiplicity 1"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "f(x)=x^2 — linear convergence",
+      "anchor": {
+        "section": "Slow convergence",
+        "snippet": "The function f ( x ) = x 2 has a root at 0"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "f(x)=x+x^{4/3} — superlinear subquadratic",
+      "anchor": {
+        "section": "Slow convergence",
+        "snippet": "The function f ( x ) = x + x 4/3 also has a root at 0"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "f(x)=x^{20}-1 — slow start then quadratic",
+      "anchor": {
+        "section": "Slow convergence",
+        "snippet": "the function f ( x ) = x 20 − 1 has a root at 1"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "f(x)=x(1+x^2)^{-1/2} — trichotomy of behavior",
+      "anchor": {
+        "section": "Convergence dependent on initialization",
+        "snippet": "The function f ( x ) = x (1 + x 2 ) −1/2 has a root at 0"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Subtle initialization dependence with multiple roots",
+      "anchor": {
+        "section": "Convergence dependent on initialization",
+        "snippet": "has roots at −1, 0, 1, and 3"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "f(x)=x^{1/3} — divergence near root",
+      "anchor": {
+        "section": "Divergence even when initialization is close to the root",
+        "snippet": "Consider the problem of finding a root of f ( x ) = x 1/3"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "f(x)=x^{1/3}e^{-x^2} — false stopping-criterion failure",
+      "anchor": {
+        "section": "Divergence even when initialization is close to the root",
+        "snippet": "also has a root at 0"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Oscillation for f(x)=x^3-2x+2",
+      "anchor": {
+        "section": "Oscillatory behavior",
+        "snippet": "if f ( x ) = x 3 − 2 x + 2"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Undefined iterate for f(x)=x^2-1 at 0",
+      "anchor": {
+        "section": "Undefinedness of Newton's method",
+        "snippet": "if f ( x ) = x 2 − 1 , then the Newton iteration is defined by"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Natural logarithm — domain escape",
+      "anchor": {
+        "section": "Undefinedness of Newton's method",
+        "snippet": "the natural logarithm function f ( x ) = ln x has a root at 1"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Local convergence with nonzero derivative",
+      "anchor": {
+        "section": "Analysis",
+        "snippet": "there exists a neighborhood of α such that for all starting values"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Quadratic-or-faster convergence under C^2",
+      "anchor": {
+        "section": "Analysis",
+        "snippet": "If f is continuously differentiable, its derivative is nonzero at α , and it has a second derivative at α , then the convergence is quadratic or faster"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Linear convergence with rate 1/2 when f'(α)=0",
+      "anchor": {
+        "section": "Analysis",
+        "snippet": "the sequence of iterates converges linearly, with rate"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Linear convergence for zero of multiplicity r",
+      "anchor": {
+        "section": "Analysis",
+        "snippet": "α being a zero of multiplicity r"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Global monotonic convergence on right neighborhood",
+      "anchor": {
+        "section": "Analysis",
+        "snippet": "given a right neighborhood"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Quadratic convergence proof via Taylor's theorem",
+      "anchor": {
+        "section": "Proof of quadratic convergence for Newton's iterative method",
+        "snippet": "the order of convergence is at least quadratic if the following conditions are satisfied"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fourier — Newton iteration converges from left endpoint",
+      "anchor": {
+        "section": "Fourier conditions",
+        "snippet": "the Newton iteration x i starting at the left endpoint is monotonically increasing and convergent"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Fourier's modified Newton iteration from right endpoint",
+      "anchor": {
+        "section": "Fourier conditions",
+        "snippet": "Joseph Fourier introduced a modification of Newton's method starting at the right endpoint"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quadratic convergence of left-right difference",
+      "anchor": {
+        "section": "Fourier conditions",
+        "snippet": "showing that this difference in locations converges quadratically to zero"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Error vector and Hessian quadratic form (n>1)",
+      "anchor": {
+        "section": "Error for n>1 variables",
+        "snippet": "If we seek the root of a single function"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Square root via Newton's method (Babylonian)",
+      "anchor": {
+        "section": "Use of Newton's method to compute square roots",
+        "snippet": "the problem of finding a number x such that x 2 = a is equivalent to finding a root of the function"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Solving cos(x) = x^3",
+      "anchor": {
+        "section": "Solution of cos( x ) = x 3 using Newton's method",
+        "snippet": "Consider the problem of finding the positive number x with cos ( x ) = x 3"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Newton's method for k equations via Jacobian inverse",
+      "anchor": {
+        "section": "k variables, k functions",
+        "snippet": "left multiply the function F ( x n ) by the inverse of its k × k Jacobian matrix"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Generalized inverse Newton for overdetermined systems",
+      "anchor": {
+        "section": "k variables, m equations, with m > k",
+        "snippet": "uses the generalized inverse of the non-square Jacobian matrix"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Milk carton minimum surface area",
+      "anchor": {
+        "section": "Example",
+        "snippet": "A milk carton"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Basin of attraction for complex zeroes",
+      "anchor": {
+        "section": "Complex functions",
+        "snippet": "Each zero has a basin of attraction in the complex plane"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Real iterates cannot reach non-real roots of x^2+1",
+      "anchor": {
+        "section": "Complex functions",
+        "snippet": "if one uses a real initial condition to seek a root of x 2 + 1"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "McMullen — divergence for degree ≥ 4 polynomials",
+      "anchor": {
+        "section": "Complex functions",
+        "snippet": "the algorithm will diverge on some open regions of the complex plane"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hubbard–Schleicher–Sutherland initial-point set",
+      "anchor": {
+        "section": "Complex functions",
+        "snippet": "gave a method for selecting a set of initial points"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Newton's method in a Banach space (Fréchet derivative)",
+      "anchor": {
+        "section": "In a Banach space",
+        "snippet": "Newton's method to find a root of a functional F defined in a Banach space"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Newton–Kantorovich theorem",
+      "anchor": {
+        "section": "In a Banach space",
+        "snippet": "A condition for existence of and convergence to a root is given by the Newton–Kantorovich theorem"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Nash–Moser smoothed Newton iteration",
+      "anchor": {
+        "section": "Nash–Moser iteration",
+        "snippet": "Nash's solution involved the introduction of smoothing operators into the iteration"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Quasi-Newton method",
+      "anchor": {
+        "section": "Quasi-Newton methods",
+        "snippet": "When the Jacobian is unavailable or too expensive to compute at every iteration"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Chebyshev's third-order method",
+      "anchor": {
+        "section": "Chebyshev's third-order method",
+        "snippet": "developing a variant of Newton's method that used cubic approximations"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Hensel's lemma — p-adic Newton recursion",
+      "anchor": {
+        "section": "Over p -adic numbers",
+        "snippet": "the standard method to show a polynomial equation in one variable has a p -adic root is Hensel's lemma"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "q-analog of Newton's method",
+      "anchor": {
+        "section": "q -analog",
+        "snippet": "Newton's method can be generalized with the q -analog of the usual derivative"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Maehly's procedure for next root",
+      "anchor": {
+        "section": "Maehly's procedure",
+        "snippet": "the next root can be found by applying Newton's method to the next equation"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Hirano's modified Newton method",
+      "anchor": {
+        "section": "Hirano's modified Newton method",
+        "snippet": "Hirano's modified Newton method is a modification conserving the convergence of Newton method and avoiding unstableness"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Interval Newton operator",
+      "anchor": {
+        "section": "Interval Newton's method",
+        "snippet": "We then define the interval Newton operator by"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Interval Newton — root containment and halving",
+      "anchor": {
+        "section": "Interval Newton's method",
+        "snippet": "The mean value theorem ensures that if there is a root of f"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Extended interval division separates multiple roots",
+      "anchor": {
+        "section": "Interval Newton's method",
+        "snippet": "the use of extended interval division produces a union of two intervals"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Newton's method applied to f' for optimization",
+      "anchor": {
+        "section": "Minimization and maximization problems",
+        "snippet": "local minima and maxima can be found by applying Newton's method to the derivative"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Newton–Raphson division (reciprocal of a)",
+      "anchor": {
+        "section": "Multiplicative inverses of numbers and power series",
+        "snippet": "Newton–Raphson division , which can be used to quickly find the reciprocal of a number a"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Transcendental equations — inverse Normal CDF",
+      "anchor": {
+        "section": "Solving transcendental equations",
+        "snippet": "finding the cumulative probability density function"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Numerical verification by candidate sets",
+      "anchor": {
+        "section": "Numerical verification for solutions of nonlinear equations",
+        "snippet": "A numerical verification for solutions of nonlinear equations has been established"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Python implementation for f(x)=x^2-2",
+      "anchor": {
+        "section": "Code",
+        "snippet": "an example of a possible implementation of Newton's method in the Python"
+      },
+      "provenance": "ai-agent1"
+    }
+  ]
+}

@@ -1,0 +1,1481 @@
+{
+  "slug": "Arithmetic",
+  "wikipedia_title": "Arithmetic",
+  "display_title": "Arithmetic",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Arithmetic",
+      "anchor": {
+        "section": "Definition, etymology, and related fields",
+        "snippet": "Arithmetic is the fundamental branch of mathematics that studies numbers and their operations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A meta-description of a branch of mathematics, not a formalizable mathematical object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Number theory",
+      "anchor": {
+        "section": "Definition, etymology, and related fields",
+        "snippet": "number theory is restricted to the study of integers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Describes a field of study rather than a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Numbers",
+      "anchor": {
+        "section": "Numbers",
+        "snippet": "Numbers are mathematical objects used to count quantities and measure magnitudes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no single generic 'number' type; numbers are formalized as specific types like ℕ, ℤ, ℝ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Natural numbers",
+      "anchor": {
+        "section": "Kinds",
+        "snippet": "The natural numbers are whole numbers that start from 1 and go to infinity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat",
+        "module": null,
+        "match_kind": "generalization"
+      },
+      "note": "The type ℕ (Nat) is a Lean core inductive type used throughout Mathlib, though Mathlib's ℕ includes 0 unlike this article's convention.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Whole numbers",
+      "anchor": {
+        "section": "Kinds",
+        "snippet": "The whole numbers are identical to the natural numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Identical to the natural number type ℕ (Nat), a Lean core type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Integers",
+      "anchor": {
+        "section": "Kinds",
+        "snippet": "The set of integers encompasses both positive and negative whole numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "The type ℤ (Int) is a Lean core type whose commutative ring structure is developed in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cardinal numbers",
+      "anchor": {
+        "section": "Kinds",
+        "snippet": "Cardinal numbers, like one, two, and three, are numbers that express the quantity of objects"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Cardinal is defined as the quotient of types by equinumerosity, capturing quantity/size.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ordinal numbers",
+      "anchor": {
+        "section": "Kinds",
+        "snippet": "Ordinal numbers, such as first, second, and third, indicate order or placement in a series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ordinal",
+        "module": "Mathlib.SetTheory.Ordinal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Ordinal is defined as isomorphism classes of well-ordered types.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rational number",
+      "anchor": {
+        "section": "Kinds",
+        "snippet": "A number is rational if it can be represented as the ratio of two integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Rat",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "The type ℚ (Rat) is a Lean core structure with numerator and denominator fields.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Decimal fractions",
+      "anchor": {
+        "section": "Kinds",
+        "snippet": "Decimal fractions like 0.3 and 25.12 are a special type of rational numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no distinguished subtype of rationals with denominators that are powers of 10.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rational numbers and decimals",
+      "anchor": {
+        "section": "Kinds",
+        "snippet": "Every rational number corresponds to a finite or a repeating decimal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem characterizing rationals as eventually-periodic decimal expansions was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Irrational numbers",
+      "anchor": {
+        "section": "Kinds",
+        "snippet": "Irrational numbers are numbers that cannot be expressed through the ratio of two integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Irrational",
+        "module": "Mathlib.NumberTheory.Real.Irrational",
+        "match_kind": "exact"
+      },
+      "note": "Irrational x is defined as x not lying in the range of the rational-to-real coercion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Real numbers",
+      "anchor": {
+        "section": "Kinds",
+        "snippet": "makes up the set of real numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real",
+        "module": "Mathlib.Data.Real.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Real is the type ℝ, constructed as a quotient of Cauchy sequences of rationals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Numeral",
+      "anchor": {
+        "section": "Numeral systems",
+        "snippet": "A numeral is a symbol to represent a number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Symbolic representation of numbers is not formalized as a mathematical object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Non-positional numeral system",
+      "anchor": {
+        "section": "Numeral systems",
+        "snippet": "the value of a digit does not depend on its position in the numeral"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Numeral-system notation conventions are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unary numeral system",
+      "anchor": {
+        "section": "Numeral systems",
+        "snippet": "The simplest non-positional system is the unary numeral system"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Though Nat's zero/succ structure is essentially unary, the unary numeral system itself is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Egyptian hieroglyphic numerals",
+      "anchor": {
+        "section": "Numeral systems",
+        "snippet": "Egyptian hieroglyphics had a more complex non-positional numeral system"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Historical numeral systems are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Positional numeral system",
+      "anchor": {
+        "section": "Numeral systems",
+        "snippet": "A numeral system is positional if the position of a basic numeral in a compound expression determines its value"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.digits",
+        "module": "Mathlib.Data.Nat.Digits.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Nat.digits b n gives the positional base-b digit representation, capturing positional value but not the notion of a 'numeral system' abstractly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Decimal system",
+      "anchor": {
+        "section": "Numeral systems",
+        "snippet": "In the common decimal system, also called the Hindu–Arabic numeral system"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.digits",
+        "module": "Mathlib.Data.Nat.Digits.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Nat.digits 10 n produces the base-10 positional representation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Binary system",
+      "anchor": {
+        "section": "Numeral systems",
+        "snippet": "used extensively in computer arithmetic is the binary system"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.digits",
+        "module": "Mathlib.Data.Nat.Digits.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Nat.digits 2 n produces the base-2 positional representation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Arithmetic operations",
+      "anchor": {
+        "section": "Operations",
+        "snippet": "Arithmetic operations are ways of combining, transforming, or manipulating numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A general informal umbrella term, not a single formalizable object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Identity element",
+      "anchor": {
+        "section": "Operations",
+        "snippet": "The identity element or neutral element of an operation does not cause any change"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulOneClass",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Captured by MulOneClass/AddZeroClass via one_mul/mul_one (and additive analogues).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inverse element",
+      "anchor": {
+        "section": "Operations",
+        "snippet": "The inverse element is the element that results in the identity element when combined with another element"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mul_inv_cancel",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "In a group, mul_inv_cancel states a * a⁻¹ = 1, expressing the inverse element giving the identity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inverse operation",
+      "anchor": {
+        "section": "Operations",
+        "snippet": "one operation is the inverse of another operation if it undoes the first operation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general 'inverse operation' relation is formalized, though specific instances like sub_eq_add_neg exist.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Commutativity",
+      "anchor": {
+        "section": "Operations",
+        "snippet": "An operation is commutative if the order of the arguments can be changed without affecting the results"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CommMagma",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "CommMagma (and the core Std.Commutative class) axiomatizes a commutative binary operation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Associativity",
+      "anchor": {
+        "section": "Operations",
+        "snippet": "An operation is associative if, in a series of two operations, it does not matter which operation is carried out first"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Semigroup",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Semigroup (and the core Std.Associative class) axiomatizes an associative binary operation via mul_assoc.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Addition",
+      "anchor": {
+        "section": "Addition and subtraction",
+        "snippet": "Addition is an arithmetic operation in which two numbers, called the addends, are combined into a single number, called the sum"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Add",
+        "module": null,
+        "match_kind": "generalization"
+      },
+      "note": "The Add/HAdd operation is a Lean core typeclass whose structures (AddCommMonoid, etc.) are developed in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Summation",
+      "anchor": {
+        "section": "Addition and subtraction",
+        "snippet": "The term summation is used if several additions are performed in a row"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.sum",
+        "module": "Mathlib.Algebra.BigOperators.Group.Finset.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Finset.sum (notation ∑) sums a function over a finite set, i.e. repeated addition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Counting",
+      "anchor": {
+        "section": "Addition and subtraction",
+        "snippet": "Counting is a type of repeated addition in which the number 1 is continuously added"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.succ",
+        "module": null,
+        "match_kind": "special_case"
+      },
+      "note": "Repeated addition of 1 is realized by the core successor function Nat.succ, but 'counting' itself is not a formalized notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Subtraction",
+      "anchor": {
+        "section": "Addition and subtraction",
+        "snippet": "Subtraction is the inverse of addition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "sub_eq_add_neg",
+        "module": "Mathlib.Algebra.Group.Basic",
+        "match_kind": "exact"
+      },
+      "note": "sub_eq_add_neg expresses subtraction as adding the additive inverse, i.e. the inverse of addition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Additive identity and inverse",
+      "anchor": {
+        "section": "Addition and subtraction",
+        "snippet": "The additive identity element is 0 and the additive inverse of a number is the negative of that number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "add_zero",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "add_zero gives 0 as additive identity and neg_add_cancel gives the negative as additive inverse.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Addition is commutative and associative",
+      "anchor": {
+        "section": "Addition and subtraction",
+        "snippet": "Addition is both commutative and associative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "add_comm",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "add_comm and add_assoc hold in any additive commutative monoid (to_additive duals of mul_comm/mul_assoc).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multiplication",
+      "anchor": {
+        "section": "Multiplication and division",
+        "snippet": "Multiplication is an arithmetic operation in which two numbers, called the multiplier and the multiplicand, are combined into a single number called the product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Mul",
+        "module": null,
+        "match_kind": "generalization"
+      },
+      "note": "The Mul/HMul operation is a Lean core typeclass whose structures (Monoid, etc.) are developed in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Division",
+      "anchor": {
+        "section": "Multiplication and division",
+        "snippet": "Division is the inverse of multiplication"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "div_eq_mul_inv",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "div_eq_mul_inv states a / b = a * b⁻¹, expressing division as the inverse of multiplication.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multiplicative identity and inverse",
+      "anchor": {
+        "section": "Multiplication and division",
+        "snippet": "The multiplicative identity element is 1 and the multiplicative inverse of a number is the reciprocal of that number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mul_one",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "mul_one gives 1 as multiplicative identity and mul_inv_cancel gives the reciprocal as multiplicative inverse.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multiplication is commutative and associative",
+      "anchor": {
+        "section": "Multiplication and division",
+        "snippet": "Multiplication is both commutative and associative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mul_comm",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "mul_comm and mul_assoc hold in any commutative monoid.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exponentiation",
+      "anchor": {
+        "section": "Exponentiation and logarithm",
+        "snippet": "Exponentiation is an arithmetic operation in which a number, known as the base, is raised to the power of another number, known as the exponent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Monoid.npow",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Monoid.npow (with HPow notation ^) defines raising a base to a natural-number power.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Roots",
+      "anchor": {
+        "section": "Exponentiation and logarithm",
+        "snippet": "Roots are a special type of exponentiation using a fractional exponent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.rpow",
+        "module": "Mathlib.Analysis.SpecialFunctions.Pow.Real",
+        "match_kind": "special_case"
+      },
+      "note": "Real.rpow allows real (hence fractional) exponents, so nth roots are x ^ (1/n).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Logarithm",
+      "anchor": {
+        "section": "Exponentiation and logarithm",
+        "snippet": "Logarithm is the inverse of exponentiation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.log",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Real.log is the natural logarithm (with Real.logb for arbitrary base), the inverse of exp/rpow.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponentiation/logarithm identity elements",
+      "anchor": {
+        "section": "Exponentiation and logarithm",
+        "snippet": "Exponentiation and logarithm do not have general identity elements and inverse elements"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A meta-observation about absence of structure, not a formalized theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponentiation/logarithm not commutative or associative",
+      "anchor": {
+        "section": "Exponentiation and logarithm",
+        "snippet": "Exponentiation and logarithm are neither commutative nor associative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated theorem stating non-commutativity/non-associativity of these operations was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Integer arithmetic",
+      "anchor": {
+        "section": "Integer arithmetic",
+        "snippet": "Integer arithmetic is the branch of arithmetic that deals with the manipulation of positive and negative whole numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Int",
+        "module": null,
+        "match_kind": "generalization"
+      },
+      "note": "The integers ℤ and their commutative-ring operations are fully formalized, though 'integer arithmetic' as a branch is meta.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Addition with carries",
+      "anchor": {
+        "section": "Integer arithmetic",
+        "snippet": "in the method addition with carries , the two numbers are written one above the other"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A pen-and-paper algorithm, not formalized as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Multiplication as repeated addition",
+      "anchor": {
+        "section": "Integer arithmetic",
+        "snippet": "A basic technique of integer multiplication employs repeated addition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "nsmul_eq_mul",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "nsmul_eq_mul states n • a = n * a, equating repeated addition (n•a) with multiplication.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Long multiplication",
+      "anchor": {
+        "section": "Integer arithmetic",
+        "snippet": "A common technique for multiplication with larger numbers is called long multiplication"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A computational algorithm, not formalized as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Long division",
+      "anchor": {
+        "section": "Integer arithmetic",
+        "snippet": "A common technique used for division is called long division"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A computational algorithm; only Euclidean division (Nat.div) is formalized, not the long-division method.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Integers not closed under division",
+      "anchor": {
+        "section": "Integer arithmetic",
+        "snippet": "Integer arithmetic is not closed under division"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The non-closure of ℤ under field division is not stated as a theorem (Mathlib uses truncating Int division).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Exponentiation by squaring",
+      "anchor": {
+        "section": "Integer arithmetic",
+        "snippet": "A more efficient technique used for large exponents is exponentiation by squaring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "npowBinRec",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "npowBinRec computes powers by binary recursion, i.e. exponentiation by squaring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Integers not closed under logarithm/exponentiation",
+      "anchor": {
+        "section": "Integer arithmetic",
+        "snippet": "Integer arithmetic is not closed under logarithm and under exponentiation with negative exponents"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Non-closure of ℤ under log/negative exponents is not stated as a theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Number theory",
+      "anchor": {
+        "section": "Number theory",
+        "snippet": "Number theory studies the structure and properties of integers as well as the relations and laws between them"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Describes a field of study, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of arithmetic",
+      "anchor": {
+        "section": "Number theory",
+        "snippet": "every integer greater than 1 is either a prime number or can be represented as a unique product of prime numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.primeFactorsList_unique",
+        "module": "Mathlib.Data.Nat.Factors",
+        "match_kind": "exact"
+      },
+      "note": "Explicitly labeled the Fundamental Theorem of Arithmetic, proving uniqueness of prime factorization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euclid's theorem",
+      "anchor": {
+        "section": "Number theory",
+        "snippet": "Euclid's theorem states that there are infinitely many prime numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.exists_infinite_primes",
+        "module": "Mathlib.Data.Nat.Prime.Infinite",
+        "match_kind": "exact"
+      },
+      "note": "States that for every n there is a prime p ≥ n, i.e. infinitely many primes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fermat's Last Theorem",
+      "anchor": {
+        "section": "Number theory",
+        "snippet": "Fermat's Last Theorem is the statement that no positive integer values exist for"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FermatLastTheorem",
+        "module": "Mathlib.NumberTheory.FLT.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The statement of FLT is defined (proof not in Mathlib), with special cases like n=3 proven.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rational number arithmetic",
+      "anchor": {
+        "section": "Rational number arithmetic",
+        "snippet": "Rational number arithmetic is the branch of arithmetic that deals with the manipulation of numbers that can be expressed as a ratio of two integers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Rat.instField",
+        "module": "Mathlib.Data.Rat.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "ℚ and its field operations are fully formalized, though 'rational arithmetic' as a branch is meta.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Adding rationals with common denominator",
+      "anchor": {
+        "section": "Rational number arithmetic",
+        "snippet": "If two rational numbers have the same denominator then they can be added by adding their numerators and keeping the common denominator"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "div_add_div_same",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "div_add_div_same states a/c + b/c = (a+b)/c in any division ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multiplying rationals",
+      "anchor": {
+        "section": "Rational number arithmetic",
+        "snippet": "Two rational numbers are multiplied by multiplying their numerators and their denominators respectively"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "div_mul_div_comm",
+        "module": "Mathlib.Algebra.Group.Basic",
+        "match_kind": "exact"
+      },
+      "note": "div_mul_div_comm states a/b * (c/d) = a*c/(b*d).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dividing rationals",
+      "anchor": {
+        "section": "Rational number arithmetic",
+        "snippet": "Dividing one rational number by another can be achieved by multiplying the first number with the reciprocal of the second number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "div_eq_mul_inv",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "div_eq_mul_inv states a / b = a * b⁻¹, i.e. multiply by the reciprocal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rationals closed under division",
+      "anchor": {
+        "section": "Rational number arithmetic",
+        "snippet": "rational number arithmetic is closed under division as long as the divisor is not 0"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Rat.instField",
+        "module": "Mathlib.Data.Rat.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "ℚ being a Field makes division total (with a/0 = 0 convention), but closure-except-0 is not stated as a separate theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Integers/rationals not closed under exp/log",
+      "anchor": {
+        "section": "Rational number arithmetic",
+        "snippet": "Both integer arithmetic and rational number arithmetic are not closed under exponentiation and logarithm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Non-closure of ℤ and ℚ under exp/log is not stated as a theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Decimal fraction notation",
+      "anchor": {
+        "section": "Rational number arithmetic",
+        "snippet": "The decimal fraction notation is a special way of representing rational numbers whose denominator is a power of 10"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Decimal-fraction notation is not formalized as a distinct object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Not all rationals have finite decimals",
+      "anchor": {
+        "section": "Rational number arithmetic",
+        "snippet": "Not all rational numbers have a finite representation in the decimal notation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem about finiteness of decimal representations of rationals was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Repeating decimals are rational",
+      "anchor": {
+        "section": "Rational number arithmetic",
+        "snippet": "Every repeating decimal expresses a rational number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem stating that repeating decimals are rational was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Real number arithmetic",
+      "anchor": {
+        "section": "Real number arithmetic",
+        "snippet": "Real number arithmetic is the branch of arithmetic that deals with the manipulation of both rational and irrational numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real",
+        "module": "Mathlib.Data.Real.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "ℝ and its complete linearly-ordered field operations are formalized, though 'real arithmetic' as a branch is meta.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reals closed under exponentiation",
+      "anchor": {
+        "section": "Real number arithmetic",
+        "snippet": "real number arithmetic is closed under exponentiation as long as it uses a positive number as its base"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.rpow_pos_of_pos",
+        "module": "Mathlib.Analysis.SpecialFunctions.Pow.Real",
+        "match_kind": "exact"
+      },
+      "note": "rpow_pos_of_pos shows that a positive real base raised to any real exponent yields a positive real.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Truncation",
+      "anchor": {
+        "section": "Real number arithmetic",
+        "snippet": "a certain number of leftmost digits are kept and remaining digits are discarded or replaced by zeros"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Digit truncation is not formalized as such (only floor/ceil-style operations exist).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rounding",
+      "anchor": {
+        "section": "Real number arithmetic",
+        "snippet": "Rounding is a similar process in which the last preserved digit is increased by one"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "round",
+        "module": "Mathlib.Algebra.Order.Round",
+        "match_kind": "exact"
+      },
+      "note": "round maps an element to the nearest integer, i.e. rounding.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Significant digits",
+      "anchor": {
+        "section": "Approximations and errors",
+        "snippet": "round each measurement to a certain number of digits, called significant digits"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of significant digits/measurement precision is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uncertainty propagation (addition/subtraction)",
+      "anchor": {
+        "section": "Approximations and errors",
+        "snippet": "When adding or subtracting two or more quantities, add the absolute uncertainties of each summand together"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Error-propagation rules for measurements are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uncertainty propagation (multiplication/division)",
+      "anchor": {
+        "section": "Approximations and errors",
+        "snippet": "When multiplying or dividing two or more quantities, add the relative uncertainties of each factor together"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Error-propagation rules for measurements are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Interval arithmetic",
+      "anchor": {
+        "section": "Approximations and errors",
+        "snippet": "Interval arithmetic describes operations on intervals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No interval-arithmetic operations were found (intervals like Set.Icc exist but not arithmetic on them).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Affine form",
+      "anchor": {
+        "section": "Approximations and errors",
+        "snippet": "An affine form is a number together with error terms that describe how the number may deviate from the actual magnitude"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Affine arithmetic / affine forms are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Scientific notation",
+      "anchor": {
+        "section": "Approximations and errors",
+        "snippet": "a number is decomposed into the product of a number between 1 and 10, called the significand"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "OfScientific",
+        "module": null,
+        "match_kind": "invocation"
+      },
+      "note": "The core OfScientific class (with Mathlib's LawfulOfScientific) represents significand×base^exponent literals, but not a general scientific-notation theory.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Floating-point arithmetic",
+      "anchor": {
+        "section": "Approximations and errors",
+        "snippet": "It represents real numbers similar to the scientific notation through three numbers: a significand, a base, and an exponent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not develop a theory of floating-point arithmetic (core has a Float type only).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Floating-point addition not associative",
+      "anchor": {
+        "section": "Approximations and errors",
+        "snippet": "floating-point addition is not associative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem on non-associativity of floating-point addition was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Mental arithmetic",
+      "anchor": {
+        "section": "Tool use",
+        "snippet": "Mental arithmetic relies exclusively on the mind without external tools"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal human practice, not a mathematical object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Compensation method",
+      "anchor": {
+        "section": "Tool use",
+        "snippet": "One such technique is the compensation method, which consists in altering the numbers to make the calculation easier"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A mental-calculation heuristic, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Modular arithmetic",
+      "anchor": {
+        "section": "Others",
+        "snippet": "Modular arithmetic operates on a finite set of numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod",
+        "module": "Mathlib.Data.ZMod.Defs",
+        "match_kind": "exact"
+      },
+      "note": "ZMod n is the ring of integers modulo n, with full modular arithmetic.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vector and matrix arithmetic",
+      "anchor": {
+        "section": "Others",
+        "snippet": "Vector arithmetic and matrix arithmetic describe arithmetic operations on vectors and matrices"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix",
+        "module": "Mathlib.LinearAlgebra.Matrix.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Matrix m n α with its addition/multiplication formalizes matrix arithmetic (vectors as Fin n → α).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Decimal arithmetic",
+      "anchor": {
+        "section": "Others",
+        "snippet": "decimal arithmetic describes arithmetic operations in the decimal system"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Arithmetic performed specifically in base-10 representation is not formalized as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Compound unit arithmetic",
+      "anchor": {
+        "section": "Others",
+        "snippet": "Compound unit arithmetic describes arithmetic operations performed on magnitudes with compound units"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Arithmetic on quantities with units is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Non-Diophantine arithmetics",
+      "anchor": {
+        "section": "Others",
+        "snippet": "Non-Diophantine arithmetics are arithmetic systems that violate traditional arithmetic intuitions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Non-Diophantine arithmetic systems are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Axiomatic foundations",
+      "anchor": {
+        "section": "Axiomatic foundations",
+        "snippet": "Axiomatic foundations of arithmetic try to provide a small set of laws, called axioms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A meta-description of axiomatization, not itself a formalizable object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dedekind–Peano axioms",
+      "anchor": {
+        "section": "Axiomatic foundations",
+        "snippet": "The Dedekind–Peano axioms provide an axiomatization of the arithmetic of natural numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat",
+        "module": null,
+        "match_kind": "generalization"
+      },
+      "note": "The inductive type Nat realizes the Peano axioms, though there is no separate explicit axiom-set structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Peano axiom 1",
+      "anchor": {
+        "section": "Axiomatic foundations",
+        "snippet": "0 is a natural number."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.zero",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Nat.zero : ℕ is a constructor of the core inductive type Nat.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Peano axiom 2 (successor)",
+      "anchor": {
+        "section": "Axiomatic foundations",
+        "snippet": "For every natural number, there is a successor, which is also a natural number."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.succ",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Nat.succ : ℕ → ℕ is the successor constructor of the core type Nat.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Peano axiom 3 (injectivity)",
+      "anchor": {
+        "section": "Axiomatic foundations",
+        "snippet": "The successors of two different natural numbers are never identical."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.succ_injective",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Nat.succ_injective (a Lean core lemma) states the successor function is injective.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Peano axiom 4 (0 not a successor)",
+      "anchor": {
+        "section": "Axiomatic foundations",
+        "snippet": "0 is not the successor of a natural number."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.succ_ne_zero",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Nat.succ_ne_zero (a Lean core lemma) states succ n ≠ 0.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Peano axiom 5 (induction)",
+      "anchor": {
+        "section": "Axiomatic foundations",
+        "snippet": "If a set contains 0 and every successor then it contains every natural number."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.rec",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Nat.rec is the core induction/recursion principle for ℕ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Natural numbers as sets",
+      "anchor": {
+        "section": "Axiomatic foundations",
+        "snippet": "Each natural number is represented by a unique set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines ℕ as an inductive type, not via the von Neumann set construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Integers as ordered pairs",
+      "anchor": {
+        "section": "Axiomatic foundations",
+        "snippet": "Integers can be defined as ordered pairs of natural numbers where the second number is subtracted from the first one"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib/core defines ℤ as an inductive type (ofNat/negSucc), not as a quotient of pairs of naturals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rational numbers as pairs",
+      "anchor": {
+        "section": "Axiomatic foundations",
+        "snippet": "Rational numbers are defined as pairs of integers where the first number represents the numerator and the second number represents the denominator"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Rat",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "The core Rat type is precisely a structure with a numerator (ℤ) and denominator (ℕ) in lowest terms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Real numbers via Dedekind cuts",
+      "anchor": {
+        "section": "Axiomatic foundations",
+        "snippet": "One way to construct the real numbers relies on the concept of Dedekind cuts"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "DedekindCut",
+        "module": "Mathlib.Order.Completion",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines DedekindCut as a Dedekind-completion construction (with DedekindCut ℚ ≃o EReal), though its canonical ℝ is built via Cauchy sequences.",
+      "provenance": "ai"
+    }
+  ]
+}

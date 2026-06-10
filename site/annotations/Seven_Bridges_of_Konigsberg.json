@@ -1,0 +1,249 @@
+{
+  "slug": "Seven_Bridges_of_Konigsberg",
+  "wikipedia_title": "Seven Bridges of Königsberg",
+  "display_title": "Seven Bridges of Königsberg",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "example",
+      "label": "Seven Bridges of Königsberg problem",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The problem was to devise a walk through the city that would cross each of those bridges once and only once."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific historical Königsberg instance (as a graph and its impossibility) is not formalized in Mathlib4; only the general Eulerian-trail theory exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "No solution exists",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Euler proved that the problem has no solution."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the specific Königsberg non-existence statement exists in Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Graph from land masses and bridges",
+      "anchor": {
+        "section": "Euler's analysis",
+        "snippet": "one replaces each land mass with an abstract"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `SimpleGraph` but no multigraph construction matching land masses and multiple bridges in this way.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Entering equals leaving at non-terminal vertex",
+      "anchor": {
+        "section": "Euler's analysis",
+        "snippet": "during any walk in the graph, the number of times one enters a non-terminal vertex equals the number of times one leaves it"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.Walk.IsTrail.even_countP_edges_iff",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Trails",
+        "match_kind": "generalization"
+      },
+      "note": "`IsTrail.even_countP_edges_iff` states the count of edges at vertex x in a trail is even iff x is not an endpoint, formalizing the entering=leaving property.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Even-degree condition for interior land masses",
+      "anchor": {
+        "section": "Euler's analysis",
+        "snippet": "the number of bridges touching that land mass must be even"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.Walk.IsEulerian.even_degree_iff",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Trails",
+        "match_kind": "exact"
+      },
+      "note": "`IsEulerian.even_degree_iff` states Even (G.degree x) ↔ (the walk's endpoints differ → x is neither endpoint), capturing the even-degree condition at non-endpoint vertices.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Degree of a node",
+      "anchor": {
+        "section": "Euler's analysis",
+        "snippet": "The degree of a node is the number of edges touching it."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.degree",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Finite",
+        "match_kind": "exact"
+      },
+      "note": "`SimpleGraph.degree` is defined as the cardinality of the neighbor finset.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler–Hierholzer characterization of Eulerian trails",
+      "anchor": {
+        "section": "Euler's analysis",
+        "snippet": "a necessary condition for the walk of the desired form is that the graph be connected and have exactly zero or two nodes of odd degree"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SimpleGraph.Walk.IsEulerian.card_odd_degree",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Trails",
+        "match_kind": "special_case"
+      },
+      "note": "Only the necessary direction is in Mathlib (`IsEulerian.card_odd_degree` shows 0 or 2 odd-degree vertices); the existence (sufficient) direction is an explicit TODO in `Trails.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Eulerian trail",
+      "anchor": {
+        "section": "Euler's analysis",
+        "snippet": "Such a walk is now called an Eulerian trail or Euler walk in his honor."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.Walk.IsEulerian",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Trails",
+        "match_kind": "exact"
+      },
+      "note": "`SimpleGraph.Walk.IsEulerian` is defined as a walk visiting every edge exactly once.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Endpoints of an Eulerian path with odd-degree nodes",
+      "anchor": {
+        "section": "Euler's analysis",
+        "snippet": "if there are nodes of odd degree, then any Eulerian path will start at one of them and end at the other"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.Walk.IsEulerian.even_degree_iff",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Trails",
+        "match_kind": "generalization"
+      },
+      "note": "The contrapositive of `IsEulerian.even_degree_iff` says odd-degree vertices must be endpoints of the Eulerian walk.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Königsberg graph has no Eulerian path",
+      "anchor": {
+        "section": "Euler's analysis",
+        "snippet": "Since the graph corresponding to historical Königsberg has four nodes of odd degree, it cannot have an Eulerian path."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific Königsberg graph and the corollary that it admits no Eulerian path are not formalized in Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Eulerian circuit",
+      "anchor": {
+        "section": "Euler's analysis",
+        "snippet": "Such a walk is called an Eulerian circuit or an Euler tour"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SimpleGraph.Walk.IsEulerian",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Trails",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has `IsEulerian` and `IsCircuit` separately; an Eulerian circuit is their conjunction (as noted in the `IsEulerian` docstring) but no dedicated `IsEulerianCircuit` predicate is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Characterization of Eulerian circuits",
+      "anchor": {
+        "section": "Euler's analysis",
+        "snippet": "Such a circuit exists if, and only if, the graph is connected and all nodes have even degree."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SimpleGraph.Walk.IsEulerian.even_degree_iff",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Trails",
+        "match_kind": "special_case"
+      },
+      "note": "Only the necessary direction (Eulerian ⇒ all degrees even when u=v) is available via `IsEulerian.even_degree_iff`; the existence direction is an open TODO.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Eulerian circuits are Eulerian paths",
+      "anchor": {
+        "section": "Euler's analysis",
+        "snippet": "All Eulerian circuits are also Eulerian paths, but not all Eulerian paths are Eulerian circuits."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This trivial inclusion is not stated as a named lemma since `IsEulerianCircuit` is not a separate predicate in Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Present-day five-bridge configuration admits Eulerian path",
+      "anchor": {
+        "section": "Present state of the bridges",
+        "snippet": "an Eulerian path is now possible, but it must begin on one island and end on the other"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the modern Königsberg bridge configuration exists in Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Bristol Bridges Walk",
+      "anchor": {
+        "section": "Present state of the bridges",
+        "snippet": "the configuration of the 45 major bridges in Bristol is such that an Eulerian circuit exists"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Bristol Bridges configuration is not formalized in Mathlib4.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,1221 @@
+{
+  "slug": "Exponential_function",
+  "wikipedia_title": "Exponential function",
+  "display_title": "Exponential function",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Exponential function (lead definition)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the unique real function which maps zero to one"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.exp",
+        "module": "Mathlib.Analysis.Complex.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "Real.exp is the real exponential function (defined via Complex.exp), with Real.exp_zero giving exp 0 = 1.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Converts sums to products",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The exponential function converts sums to products"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.exp_add",
+        "module": "Mathlib.Analysis.Complex.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "Real.exp_add states exp (x + y) = exp x * exp y.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Faster than every power",
+      "anchor": {
+        "section": "Graph",
+        "snippet": "is upward-sloping, and increases faster than every power of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.tendsto_exp_div_pow_atTop",
+        "module": "Mathlib.Analysis.SpecialFunctions.Exp",
+        "match_kind": "exact"
+      },
+      "note": "Real.tendsto_exp_div_pow_atTop shows exp x / x^n → ∞, i.e. exp outgrows every power.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Horizontal asymptote",
+      "anchor": {
+        "section": "Graph",
+        "snippet": "The graph always lies above the x -axis"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.exp_pos",
+        "module": "Mathlib.Analysis.Complex.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "Real.exp_pos gives 0 < exp x (graph above the x-axis); Real.tendsto_exp_atBot gives the asymptote at 0.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Slope equals height",
+      "anchor": {
+        "section": "Graph",
+        "snippet": "the slope of the tangent to the graph at each point is equal to its height"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.hasDerivAt_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.ExpDeriv",
+        "match_kind": "exact"
+      },
+      "note": "Real.hasDerivAt_exp states HasDerivAt exp (exp x) x, so the slope equals the value.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Differential equation definition",
+      "anchor": {
+        "section": "Differential equation",
+        "snippet": "the unique differentiable function that equals its derivative"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.deriv_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.ExpDeriv",
+        "match_kind": null
+      },
+      "note": "Real.deriv_exp shows exp' = exp, but the uniqueness characterization (exp as THE solution with f 0 = 1) is not formalized as a definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inverse of natural logarithm",
+      "anchor": {
+        "section": "Inverse of natural logarithm",
+        "snippet": "is the inverse function of the natural logarithm"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.exp_log",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Real.exp_log (exp (log x) = x for x > 0) and Real.log_exp (log (exp x) = x) establish the inverse relationship.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Power series definition",
+      "anchor": {
+        "section": "Power series",
+        "snippet": "is the sum of the power series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp",
+        "module": "Mathlib.Analysis.Complex.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "Complex.exp (and hence Real.exp) is defined as CauSeq.lim of the partial sums ∑ xᵐ/m!, i.e. the sum of its Taylor series.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Power series",
+          "snippet": "is the sum of the power series"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\exp(x)&amp;=1+x+{\\frac {x^{2}}{2!}}+{\\frac {x^{3}}{3!}}+\\cdots \\\\&amp;=\\sum _{n=0}^{\\infty }{\\frac {x^{n}}{n!}},\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Absolute convergence of series",
+      "anchor": {
+        "section": "Power series",
+        "snippet": "This series is absolutely convergent for every"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.isCauSeq_norm_exp",
+        "module": "Mathlib.Analysis.Complex.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "Complex.isCauSeq_norm_exp shows the series of norms ∑ ‖zᵐ/m!‖ is Cauchy, i.e. the exponential series is absolutely convergent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Functional equation",
+      "anchor": {
+        "section": "Functional equation",
+        "snippet": "and maps the additive identity 0 to the multiplicative identity 1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.exp_add",
+        "module": "Mathlib.Analysis.Complex.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "Real.exp_add gives exp(x+y)=exp x·exp y and Real.exp_zero gives exp 0 = 1, the functional equation.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Functional equation",
+          "snippet": "and maps the additive identity 0 to the multiplicative identity 1"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\exp(x+y)=\\exp(x)\\cdot \\exp(y)}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Characterization by derivative at 0",
+      "anchor": {
+        "section": "Functional equation",
+        "snippet": "characterized by the property that its derivative at 0 is 1"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.hasDerivAt_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.ExpDeriv",
+        "match_kind": null
+      },
+      "note": "The fact exp'(0)=1 follows from Real.hasDerivAt_exp and exp 0 = 1, but the uniqueness characterization among functional-equation solutions is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Functional equation",
+          "snippet": "characterized by the property that its derivative at 0 is 1"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\exp(x+y)=\\exp(x)\\cdot \\exp(y)}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Limit of integer powers",
+      "anchor": {
+        "section": "Limit of integer powers",
+        "snippet": "is the limit , as the integer n goes to infinity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.tendsto_one_add_div_pow_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.LogBounds",
+        "match_kind": "exact"
+      },
+      "note": "Real.tendsto_one_add_div_pow_exp states (1 + t/n)^n → exp t as n → ∞.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Limit of integer powers",
+          "snippet": "is the limit , as the integer n goes to infinity"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\exp(x)=\\lim _{n\\to +\\infty }\\left(1+{\\frac {x}{n}}\\right)^{n}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Reciprocal property",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The functional equation implies"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.exp_neg",
+        "module": "Mathlib.Analysis.Complex.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "Real.exp_neg states exp (-x) = (exp x)⁻¹.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Properties",
+          "snippet": "The functional equation implies"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {1}{e^{x}}}=e^{-x}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Positiveness",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Positiveness"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.exp_pos",
+        "module": "Mathlib.Analysis.Complex.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "Real.exp_pos states 0 < exp x for all real x.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Monotonically increasing",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "the exponential function is monotonically increasing"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.exp_strictMono",
+        "module": "Mathlib.Analysis.Complex.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "Real.exp_strictMono states StrictMono exp.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exponentiation with positive real base",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Extension of exponentiation to positive real bases"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.rpow",
+        "module": "Mathlib.Analysis.SpecialFunctions.Pow.Real",
+        "match_kind": "exact"
+      },
+      "note": "Real.rpow defines x^y = exp (y * log x) for positive base, extending exponentiation to real exponents.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exponential function (indefinite article)",
+      "anchor": {
+        "section": "General exponential functions",
+        "snippet": "A function is commonly called an exponential function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no general predicate/definition for what counts as 'an exponential function' of the form a·bˣ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "General-form exponential function",
+      "anchor": {
+        "section": "General exponential functions",
+        "snippet": "the term exponential function is commonly used for functions of the form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib definition packages functions of the form a·bˣ as a named class.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalent characterizations",
+      "anchor": {
+        "section": "General exponential functions",
+        "snippet": "the differentiable functions that satisfy the following equivalent characterizations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The equivalence of the various characterizations of general exponential functions is not formalized as a theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Base of an exponential function",
+      "anchor": {
+        "section": "General exponential functions",
+        "snippet": "The base of an exponential function is the base of the exponentiation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib notion of 'the base' of an exponential function exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Exponential growth and decay models",
+      "anchor": {
+        "section": "In applications",
+        "snippet": "are thus modeled with exponential functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Applied exponential growth/decay modeling is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Decay/rate constant",
+      "anchor": {
+        "section": "In applications",
+        "snippet": "is called, depending on the context, the decay constant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of a decay/rate constant is application terminology not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence of first two characterizations",
+      "anchor": {
+        "section": "Equivalence proof",
+        "snippet": "The two first characterizations are equivalent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The equivalence of the functional-equation and differential-equation characterizations is not formalized as a stated theorem.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Equivalence proof",
+          "snippet": "The two first characterizations are equivalent"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e^{kx}=(e^{k})^{x}=b^{x}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Continuously compounded interest",
+      "anchor": {
+        "section": "Compound interest",
+        "snippet": "If a principal amount of 1 earns interest at an annual rate of x compounded monthly"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The compound-interest application example is not formalized, though the underlying limit (1+x/n)^n→exp x is (Real.tendsto_one_add_div_pow_exp).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Compound interest",
+          "snippet": "If a principal amount of 1 earns interest at an annual rate of x compounded monthly"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\exp x=\\lim _{n\\to \\infty }\\left(1+{\\frac {x}{n}}\\right)^{n}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Solution of simplest differential equation",
+      "anchor": {
+        "section": "Differential equations",
+        "snippet": "is a solution of the simplest possible differential equation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.hasDerivAt_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.ExpDeriv",
+        "match_kind": "exact"
+      },
+      "note": "Real.hasDerivAt_exp shows exp solves y' = y.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "All solutions are exponential",
+      "anchor": {
+        "section": "Differential equations",
+        "snippet": "and every solution of this differential equation has this form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A theorem characterizing all solutions of y' = y as C·exp x was not found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Solutions of forced equation",
+      "anchor": {
+        "section": "Differential equations",
+        "snippet": "involve exponential functions in a more sophisticated way"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Solution formulas for forced linear ODEs y' = y + f via exponentials are not formalized as such.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Differential equations",
+          "snippet": "involve exponential functions in a more sophisticated way"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle y'+ky=f(x)}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle y=ce^{-kx}+e^{-kx}\\int f(x)e^{kx}dx,}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Linear constant-coefficient solutions",
+      "anchor": {
+        "section": "Differential equations",
+        "snippet": "can be expressed in terms of exponential functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "General solution of linear constant-coefficient ODEs in terms of exponentials is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complex exponential extension",
+      "anchor": {
+        "section": "Complex exponential",
+        "snippet": "can be naturally extended to a complex function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp",
+        "module": "Mathlib.Analysis.Complex.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "Complex.exp extends the real exponential, with Complex.ofReal_exp showing (Real.exp x : ℂ) = Complex.exp x.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complex exponential by derivative",
+      "anchor": {
+        "section": "Complex exponential",
+        "snippet": "the unique complex function that equals its complex derivative"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.hasDerivAt_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.ExpDeriv",
+        "match_kind": null
+      },
+      "note": "Complex.hasDerivAt_exp shows exp' = exp, but the uniqueness characterization by the derivative condition is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Complex exponential",
+          "snippet": "the unique complex function that equals its complex derivative"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {de^{z}}{dz}}=e^{z}\\quad {\\text{and}}\\quad e^{0}=1.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Complex exponential series",
+      "anchor": {
+        "section": "Complex exponential",
+        "snippet": "is the sum of the series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp",
+        "module": "Mathlib.Analysis.Complex.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "Complex.exp is defined as the limit of partial sums ∑ zᵐ/m! (Complex.exp', isCauSeq_exp).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Complex exponential",
+          "snippet": "is the sum of the series"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e^{z}=\\sum _{k=0}^{\\infty }{\\frac {z^{k}}{k!}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Complex exponential is entire",
+      "anchor": {
+        "section": "Complex exponential",
+        "snippet": "the complex exponential is an entire function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.analyticOnNhd_cexp",
+        "module": "Mathlib.Analysis.SpecialFunctions.ExpDeriv",
+        "match_kind": "exact"
+      },
+      "note": "Complex.analyticOnNhd_cexp shows exp is analytic on all of ℂ (also Complex.differentiable_exp), i.e. entire.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Complex exponential",
+          "snippet": "the complex exponential is an entire function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e^{z}=\\sum _{k=0}^{\\infty }{\\frac {z^{k}}{k!}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Complex exponential as limit",
+      "anchor": {
+        "section": "Complex exponential",
+        "snippet": "The complex exponential function is the limit"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.tendsto_one_add_div_pow_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.LogBounds",
+        "match_kind": "exact"
+      },
+      "note": "Complex.tendsto_one_add_div_pow_exp states (1 + t/n)^n → exp t for t : ℂ.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Complex exponential",
+          "snippet": "The complex exponential function is the limit"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e^{z}=\\lim _{n\\to \\infty }\\left(1+{\\frac {z}{n}}\\right)^{n}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Complex functional equation",
+      "anchor": {
+        "section": "Complex exponential",
+        "snippet": "the complex exponential satisfies the functional equation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_add",
+        "module": "Mathlib.Analysis.Complex.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "Complex.exp_add states exp (x + y) = exp x * exp y over ℂ.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Complex exponential",
+          "snippet": "the complex exponential satisfies the functional equation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\exp(z+w)=\\exp(z)\\cdot \\exp(w).}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Uniqueness via holomorphy",
+      "anchor": {
+        "section": "Complex exponential",
+        "snippet": "the unique solution which is holomorphic at the point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No uniqueness theorem characterizing exp as the unique holomorphic solution of f' = f was found in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Complex exponential",
+          "snippet": "the unique solution which is holomorphic at the point"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\exp(z+w)=\\exp(z)\\cdot \\exp(w).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Complex logarithm right-inverse",
+      "anchor": {
+        "section": "Complex exponential",
+        "snippet": "is a right-inverse function of the complex exponential"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_log",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Log",
+        "match_kind": "exact"
+      },
+      "note": "Complex.exp_log states exp (log z) = z for z ≠ 0, so log is a right inverse of exp.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Complex exponential",
+          "snippet": "is a right-inverse function of the complex exponential"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e^{\\log z}=z.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\log e^{z}=\\{z+2ik\\pi \\mid k\\in \\mathbb {Z} \\},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Periodicity of complex exponential",
+      "anchor": {
+        "section": "Complex exponential",
+        "snippet": "It is periodic function of period"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_periodic",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Complex.exp_periodic states Function.Periodic exp (2 * π * I).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Complex exponential",
+          "snippet": "It is periodic function of period"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {1}{e^{z}}}=e^{-z}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e^{z}\\neq 0\\quad {\\text{for every }}z\\in \\mathbb {C} .}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e^{z+2ik\\pi }=e^{z}\\quad {\\text{for every }}k\\in \\mathbb {Z} .}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Complex conjugate of exponential",
+      "anchor": {
+        "section": "Complex exponential",
+        "snippet": "The complex conjugate of the complex exponential is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_conj",
+        "module": "Mathlib.Analysis.Complex.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "Complex.exp_conj states exp (conj x) = conj (exp x).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Complex exponential",
+          "snippet": "The complex conjugate of the complex exponential is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\overline {e^{z}}}=e^{\\overline {z}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle |e^{z}|=e^{\\Re (z)},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Modulus of complex exponential",
+      "anchor": {
+        "section": "Complex exponential",
+        "snippet": "Its modulus is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.norm_exp",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "Complex.norm_exp states ‖exp z‖ = Real.exp z.re.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Complex exponential",
+          "snippet": "Its modulus is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\overline {e^{z}}}=e^{\\overline {z}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle |e^{z}|=e^{\\Re (z)},}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler's formula",
+      "anchor": {
+        "section": "Relationship with trigonometry",
+        "snippet": "are strongly related by Euler's formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_mul_I",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "Complex.exp_mul_I states exp (x * I) = cos x + sin x * I, Euler's formula.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Relationship with trigonometry",
+          "snippet": "are strongly related by Euler's formula"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e^{it}=\\cos(t)+i\\sin(t).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Real and imaginary decomposition",
+      "anchor": {
+        "section": "Relationship with trigonometry",
+        "snippet": "the decomposition of complex exponentials into real and imaginary parts"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_eq_exp_re_mul_sin_add_cos",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "Complex.exp_eq_exp_re_mul_sin_add_cos (with Complex.exp_re/exp_im) decomposes exp z into real-exp times cos/sin of the imaginary part.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Relationship with trigonometry",
+          "snippet": "the decomposition of complex exponentials into real and imaginary parts"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e^{x+iy}=e^{x}e^{iy}=e^{x}\\,\\cos y+ie^{x}\\,\\sin y.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Trig functions via exponentials",
+      "anchor": {
+        "section": "Relationship with trigonometry",
+        "snippet": "can be expressed in terms of complex exponentials"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.two_cos",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "Complex.two_cos (2 cos x = exp(xI) + exp(-xI)) and Complex.two_sin express cos/sin via exponentials.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Relationship with trigonometry",
+          "snippet": "can be expressed in terms of complex exponentials"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\cos x&amp;={\\frac {e^{ix}+e^{-ix}}{2}}\\\\\\sin x&amp;={\\frac {e^{ix}-e^{-ix}}{2i}}\\\\\\tan x&amp;=i\\,{\\frac {1-e^{2ix}}{1+e^{2ix}}}\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Exponential is transcendental function",
+      "anchor": {
+        "section": "Transcendency",
+        "snippet": "is a transcendental function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize that exp is a transcendental function (not algebraic over the field of rational functions).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Linear independence of exponentials",
+      "anchor": {
+        "section": "Transcendency",
+        "snippet": "are linearly independent over"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "linearIndependent_monoidHom",
+        "module": "Mathlib.LinearAlgebra.LinearIndependent.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "linearIndependent_monoidHom (Artin's linear independence of distinct characters) generalizes the linear independence of exponential functions, but the specific exp statement is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "e is transcendental (Lindemann–Weierstrass)",
+      "anchor": {
+        "section": "Transcendency",
+        "snippet": "is a transcendental number"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "exp_polynomial_approx",
+        "module": "Mathlib.NumberTheory.Transcendental.Lindemann.AnalyticalPart",
+        "match_kind": null
+      },
+      "note": "Only the analytical part of Lindemann–Weierstrass (exp_polynomial_approx) is in Mathlib; the transcendence of e itself is not yet proven.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "expm1 routine",
+      "anchor": {
+        "section": "Computation",
+        "snippet": "which computes e x − 1 directly"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no Real.expm1 definition; Mathlib only has bounds like Complex.norm_exp_sub_one_le, not a dedicated eˣ−1 routine.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Computation",
+          "snippet": "which computes e x − 1 directly"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e^{x}-1=x+{\\frac {x^{2}}{2}}+{\\frac {x^{3}}{6}}+\\cdots +{\\frac {x^{n}}{n!}}+\\cdots .}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Hyperbolic tangent identity",
+      "anchor": {
+        "section": "Computation",
+        "snippet": "An identity in terms of the hyperbolic tangent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identity eˣ = (1+tanh(x/2))/(1−tanh(x/2)) is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Computation",
+          "snippet": "An identity in terms of the hyperbolic tangent"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {expm1} (x)=e^{x}-1={\\frac {2\\tanh(x/2)}{1-\\tanh(x/2)}},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Continued fraction via Euler identity",
+      "anchor": {
+        "section": "Continued fractions",
+        "snippet": "can be obtained via an identity of Euler"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The continued-fraction expansion of eˣ via Euler's identity is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Continued fractions",
+          "snippet": "can be obtained via an identity of Euler"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e^{x}=1+{\\cfrac {x}{1-{\\cfrac {x}{x+2-{\\cfrac {2x}{x+3-{\\cfrac {3x}{x+4-\\ddots }}}}}}}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Faster-converging continued fraction",
+      "anchor": {
+        "section": "Continued fractions",
+        "snippet": "converges more quickly"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The faster-converging continued fraction for eˣ is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Continued fractions",
+          "snippet": "converges more quickly"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle e^{z}=1+{\\cfrac {2z}{2-z+{\\cfrac {z^{2}}{6+{\\cfrac {z^{2}}{10+{\\cfrac {z^{2}}{14+\\ddots }}}}}}}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Exponential on Banach algebras",
+      "anchor": {
+        "section": "Matrices and Banach algebras",
+        "snippet": "makes sense for square matrices"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedSpace.exp",
+        "module": "Mathlib.Analysis.Normed.Algebra.Exponential",
+        "match_kind": "generalization"
+      },
+      "note": "NormedSpace.exp defines the exponential on any Banach algebra via the series ∑ xⁿ/n!, specializing to Matrix.exp.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Invertibility in Banach algebra",
+      "anchor": {
+        "section": "Matrices and Banach algebras",
+        "snippet": "is invertible with inverse"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedSpace.isUnit_exp",
+        "module": "Mathlib.Analysis.Normed.Algebra.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "NormedSpace.isUnit_exp shows exp x is a unit and Ring.inverse_exp gives (exp x)⁻¹ = exp (-x).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Failure of addition law for noncommuting",
+      "anchor": {
+        "section": "Matrices and Banach algebras",
+        "snippet": "but this identity can fail for noncommuting x and y"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "NormedSpace.exp_add_of_commute",
+        "module": "Mathlib.Analysis.Normed.Algebra.Exponential",
+        "match_kind": null
+      },
+      "note": "NormedSpace.exp_add_of_commute proves exp(x+y)=exp x·exp y only under a Commute hypothesis, but the explicit failure for noncommuting elements is not a proven counterexample.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Alternative limit definition",
+      "anchor": {
+        "section": "Matrices and Banach algebras",
+        "snippet": "Some alternative definitions lead to the same function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An (1 + x/n)ⁿ-type limit definition agreeing with NormedSpace.exp on general Banach algebras was not found.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Matrices and Banach algebras",
+          "snippet": "Some alternative definitions lead to the same function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{n\\to \\infty }\\left(1+{\\frac {x}{n}}\\right)^{n}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Definition via differential equation",
+      "anchor": {
+        "section": "Matrices and Banach algebras",
+        "snippet": "is the solution to the differential equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A characterization of the matrix/Banach exponential as the solution of X' = AX is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lie algebra exponential map",
+      "anchor": {
+        "section": "Lie algebras",
+        "snippet": "the exponential map is a map"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no general Lie group/Lie algebra exponential map.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Real exponential as Lie special case",
+      "anchor": {
+        "section": "Lie algebras",
+        "snippet": "is a special case of the Lie algebra situation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.exp",
+        "module": "Mathlib.Analysis.Complex.Exponential",
+        "match_kind": null
+      },
+      "note": "Real.exp exists, but there is no Lie group exponential map for it to be presented as a special case of.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Matrix exponential as Lie special case",
+      "anchor": {
+        "section": "Lie algebras",
+        "snippet": "is a special case of the Lie algebra exponential map"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "NormedSpace.exp",
+        "module": "Mathlib.Analysis.Normed.Algebra.MatrixExponential",
+        "match_kind": null
+      },
+      "note": "The matrix exponential (NormedSpace.exp on Matrix n n 𝔸, with Matrix.exp_* lemmas) exists, but no Lie algebra exponential map frames it as a special case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Baker–Campbell–Hausdorff correction",
+      "anchor": {
+        "section": "Lie algebras",
+        "snippet": "can fail for Lie algebra elements x and y that do not commute"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Baker–Campbell–Hausdorff formula/correction is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

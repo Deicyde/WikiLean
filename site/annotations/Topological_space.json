@@ -1,0 +1,681 @@
+{
+  "slug": "Topological_space",
+  "wikipedia_title": "Topological space",
+  "display_title": "Topological space",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Topological space (neighbourhood axioms)",
+      "anchor": {
+        "section": "Definition via neighbourhoods",
+        "snippet": "The function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TopologicalSpace.mkOfNhds",
+        "module": "Mathlib.Topology.Order",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib defines `TopologicalSpace` via open sets; the neighbourhood-axiom construction is available as `TopologicalSpace.mkOfNhds` with companion lemma `nhds_mkOfNhds`, not as the primary definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Open set (from neighbourhoods)",
+      "anchor": {
+        "section": "Definition via neighbourhoods",
+        "snippet": "is defined to be open if"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "isOpen_iff_mem_nhds",
+        "module": "Mathlib.Topology.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The equivalence `IsOpen s ↔ ∀ x ∈ s, s ∈ 𝓝 x` is the lemma `isOpen_iff_mem_nhds`; Mathlib does not take this as the primitive definition of `IsOpen`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Neighbourhood system on the real line",
+      "anchor": {
+        "section": "Definition via neighbourhoods",
+        "snippet": "A standard example of such a system of neighbourhoods is for the real line"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.instTopologicalSpace",
+        "module": "Mathlib.Topology.Instances.Real",
+        "match_kind": "invocation"
+      },
+      "note": "The standard topology on `ℝ` is provided as a `TopologicalSpace` instance via its metric/uniform structure; the neighbourhood-system description is not the primary form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Topology via open sets",
+      "anchor": {
+        "section": "Definition via open sets",
+        "snippet": "A topology on a set X may be defined as a collection"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace",
+        "module": "Mathlib.Topology.Defs.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`class TopologicalSpace` is defined exactly via a collection of open sets with the three axioms (univ open, binary intersection, arbitrary union).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Closed set",
+      "anchor": {
+        "section": "Definition via open sets",
+        "snippet": "is said to be closed in"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsClosed",
+        "module": "Mathlib.Topology.Defs.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsClosed s` is defined as `IsOpen sᶜ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Clopen set",
+      "anchor": {
+        "section": "Definition via open sets",
+        "snippet": "is said to be clopen"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsClopen",
+        "module": "Mathlib.Topology.Defs.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsClopen s := IsClosed s ∧ IsOpen s`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Trivial (indiscrete) topology",
+      "anchor": {
+        "section": "Examples of topologies",
+        "snippet": "the trivial or indiscrete topology on"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IndiscreteTopology",
+        "module": "Mathlib.Topology.Order",
+        "match_kind": "exact"
+      },
+      "note": "`IndiscreteTopology` (equivalently the top element `⊤` of the lattice of topologies) records that the topology has only `∅` and `univ` as open sets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Six-subset topology",
+      "anchor": {
+        "section": "Examples of topologies",
+        "snippet": "of six subsets of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no specific entry for this ad-hoc three-point example topology.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Discrete topology / discrete space",
+      "anchor": {
+        "section": "Examples of topologies",
+        "snippet": "the discrete topology on"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DiscreteTopology",
+        "module": "Mathlib.Topology.Order",
+        "match_kind": "exact"
+      },
+      "note": "`DiscreteTopology α` records `‹TopologicalSpace α› = ⊥`, the topology in which every set is open.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Finite subsets of integers is not a topology",
+      "anchor": {
+        "section": "Examples of topologies",
+        "snippet": "of all finite subsets of the integers plus"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma in Mathlib explicitly states that this particular family fails to be a topology.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Topology via closed sets",
+      "anchor": {
+        "section": "Definition via closed sets",
+        "snippet": "another way to define a topological space is as a set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace.ofClosed",
+        "module": "Mathlib.Topology.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`TopologicalSpace.ofClosed` builds a `TopologicalSpace` from a family of closed sets satisfying the dual axioms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Topology via Kuratowski closure axioms",
+      "anchor": {
+        "section": "Other definitions",
+        "snippet": "by using the Kuratowski closure axioms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `ClosureOperator` and `closure` but no constructor that builds a `TopologicalSpace` from a Kuratowski closure operator.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Topology via nets / accumulation points",
+      "anchor": {
+        "section": "Other definitions",
+        "snippet": "A topology is completely determined if for every net in"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib develops convergence via filters rather than nets; there is no constructor producing a topology from a net-convergence relation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Finer and coarser topologies",
+      "anchor": {
+        "section": "Comparison of topologies",
+        "snippet": "one says that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace.le_def",
+        "module": "Mathlib.Topology.Order",
+        "match_kind": "exact"
+      },
+      "note": "The `PartialOrder (TopologicalSpace α)` instance defines `t ≤ s` to mean every `s`-open set is `t`-open, i.e. `t` is finer than `s`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lattice of topologies on a set",
+      "anchor": {
+        "section": "Comparison of topologies",
+        "snippet": "forms a complete lattice"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace.instCompleteLatticeTopologicalSpace",
+        "module": "Mathlib.Topology.Order",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib provides `instance : CompleteLattice (TopologicalSpace α)` with `⊥` discrete and `⊤` indiscrete.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Continuous function between topological spaces",
+      "anchor": {
+        "section": "Continuous functions",
+        "snippet": "between topological spaces is called continuous if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Continuous",
+        "module": "Mathlib.Topology.Defs.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Continuous f` is defined by `∀ s, IsOpen s → IsOpen (f ⁻¹' s)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuity via inverse images of open sets",
+      "anchor": {
+        "section": "Continuous functions",
+        "snippet": "is continuous if the inverse image of every open set is open"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Continuous.isOpen_preimage",
+        "module": "Mathlib.Topology.Defs.Basic",
+        "match_kind": "exact"
+      },
+      "note": "This is literally the field defining `Continuous` in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homeomorphism and homeomorphic spaces",
+      "anchor": {
+        "section": "Continuous functions",
+        "snippet": "A homeomorphism is a bijection that is continuous and whose inverse is also continuous"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Homeomorph",
+        "module": "Mathlib.Topology.Homeomorph.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Homeomorph X Y` (notation `X ≃ₜ Y`) bundles an `Equiv` with continuous forward and inverse maps.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Category Top",
+      "anchor": {
+        "section": "Continuous functions",
+        "snippet": "which denotes the category of topological spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopCat",
+        "module": "Mathlib.Topology.Category.TopCat.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`TopCat` is the bundled category of topological spaces with continuous maps.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Discrete topology example",
+      "anchor": {
+        "section": "Examples of topological spaces",
+        "snippet": "Any set can be given the discrete topology in which every subset is open"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DiscreteTopology",
+        "module": "Mathlib.Topology.Order",
+        "match_kind": "exact"
+      },
+      "note": "Same as the earlier entry: `DiscreteTopology` records that every set is open.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Trivial topology example",
+      "anchor": {
+        "section": "Examples of topological spaces",
+        "snippet": "any set can be given the trivial topology"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IndiscreteTopology",
+        "module": "Mathlib.Topology.Order",
+        "match_kind": "exact"
+      },
+      "note": "Same as the earlier entry: the indiscrete topology corresponds to `⊤` in the lattice.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Finite topological spaces",
+      "anchor": {
+        "section": "Examples of topological spaces",
+        "snippet": "Such spaces are called finite topological spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FinTopCat",
+        "module": "Mathlib.Topology.Category.FinTopCat",
+        "match_kind": "exact"
+      },
+      "note": "`FinTopCat` is the category of finite topological spaces, requiring `Fintype` plus `TopologicalSpace`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cofinite topology",
+      "anchor": {
+        "section": "Examples of topological spaces",
+        "snippet": "Any set can be given the cofinite topology"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CofiniteTopology",
+        "module": "Mathlib.Topology.Constructions",
+        "match_kind": "exact"
+      },
+      "note": "`CofiniteTopology X` is a type synonym for `X` equipped with the topology whose open sets are `∅` and sets with finite complement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cocountable topology",
+      "anchor": {
+        "section": "Examples of topological spaces",
+        "snippet": "Any set can be given the cocountable topology"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `Filter.cocompact`/`Filter.cofinite` but no `CocountableTopology` type synonym defining this topology.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Lower limit topology",
+      "anchor": {
+        "section": "Examples of topological spaces",
+        "snippet": "The real line can also be given the lower limit topology"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the Sorgenfrey/lower-limit topology on `ℝ` was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Order topology on an ordinal",
+      "anchor": {
+        "section": "Examples of topological spaces",
+        "snippet": "may be endowed with the order topology generated by the intervals"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ordinal.instTopologicalSpace",
+        "module": "Mathlib.SetTheory.Ordinal.Topology",
+        "match_kind": "exact"
+      },
+      "note": "`Ordinal` is endowed with the preorder/order topology via `instance : TopologicalSpace Ordinal := Preorder.topology Ordinal`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Natural topology on manifolds and simplicial complexes",
+      "anchor": {
+        "section": "Examples of topological spaces",
+        "snippet": "Every manifold has a natural topology since it is locally Euclidean"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ChartedSpace",
+        "module": "Mathlib.Geometry.Manifold.ChartedSpace",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib manifolds (`ChartedSpace`, `IsManifold`) presuppose an ambient `TopologicalSpace` rather than constructing one from a chart atlas; simplicial complexes carry topologies in `AlgebraicTopology` but not as a single uniform construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sierpiński space",
+      "anchor": {
+        "section": "Examples of topological spaces",
+        "snippet": "The Sierpiński space is the simplest non-discrete topological space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "sierpinskiSpace",
+        "module": "Mathlib.Topology.Order",
+        "match_kind": "exact"
+      },
+      "note": "`instance sierpinskiSpace : TopologicalSpace Prop` realises the Sierpiński topology on `Prop`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Subspace topology",
+      "anchor": {
+        "section": "Topology from other topologies",
+        "snippet": "Every subset of a topological space can be given the subspace topology"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "instTopologicalSpaceSubtype",
+        "module": "Mathlib.Topology.Defs.Induced",
+        "match_kind": "exact"
+      },
+      "note": "`instTopologicalSpaceSubtype` equips `Subtype p` with the topology induced by `Subtype.val`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Product topology",
+      "anchor": {
+        "section": "Topology from other topologies",
+        "snippet": "the product can be given the product topology"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "instTopologicalSpaceProd",
+        "module": "Mathlib.Topology.Constructions.SumProd",
+        "match_kind": "exact"
+      },
+      "note": "`instTopologicalSpaceProd` defines the product topology on `X × Y` as the infimum of the topologies pulled back along the projections.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quotient topology / quotient space",
+      "anchor": {
+        "section": "Topology from other topologies",
+        "snippet": "A quotient space is defined as follows"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "instTopologicalSpaceQuotient",
+        "module": "Mathlib.Topology.Constructions",
+        "match_kind": "exact"
+      },
+      "note": "`instTopologicalSpaceQuotient` equips `Quotient s` with the coinduced topology, the largest topology making the quotient map continuous.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Metric topology",
+      "anchor": {
+        "section": "Metric spaces",
+        "snippet": "Every metric space can be given a metric topology"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PseudoMetricSpace.toUniformSpace",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Every `PseudoMetricSpace`/`MetricSpace` carries a canonical `UniformSpace` and hence a `TopologicalSpace` instance whose open sets are unions of open balls.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Standard topology on the real line",
+      "anchor": {
+        "section": "Metric spaces",
+        "snippet": "The standard topology on"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.instTopologicalSpace",
+        "module": "Mathlib.Topology.Instances.Real",
+        "match_kind": "exact"
+      },
+      "note": "`ℝ` carries the standard topology coming from its metric instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Base / basis for a topology",
+      "anchor": {
+        "section": "Metric spaces",
+        "snippet": "forms a base or basis for the topology"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace.IsTopologicalBasis",
+        "module": "Mathlib.Topology.Bases",
+        "match_kind": "exact"
+      },
+      "note": "`TopologicalSpace.IsTopologicalBasis s` asserts that `s` is a basis for the topology.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Standard topology on Euclidean space and complex numbers",
+      "anchor": {
+        "section": "Metric spaces",
+        "snippet": "the basic open sets are the open balls"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PseudoMetricSpace.toUniformSpace",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "Euclidean spaces (`EuclideanSpace`, `ℂ`) inherit a topology from their metric/normed structure, with open balls forming a basis.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Topological groups, rings, fields, vector spaces",
+      "anchor": {
+        "section": "Topology from algebraic structure",
+        "snippet": "This leads to concepts such as topological groups"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsTopologicalGroup",
+        "module": "Mathlib.Topology.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib has `IsTopologicalGroup`, `IsTopologicalAddGroup`, `IsTopologicalRing`, `IsTopologicalDivisionRing`, and topological vector/module structures via `ContinuousSMul`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zariski topology",
+      "anchor": {
+        "section": "Topology from algebraic structure",
+        "snippet": "The Zariski topology is defined algebraically on the spectrum of a ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PrimeSpectrum.zariskiTopology",
+        "module": "Mathlib.RingTheory.Spectrum.Prime.Topology",
+        "match_kind": "exact"
+      },
+      "note": "`PrimeSpectrum.zariskiTopology` defines the Zariski topology on `PrimeSpectrum R`, whose closed sets are zero loci.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Spectral space",
+      "anchor": {
+        "section": "Topological spaces with order structure",
+        "snippet": "A space is spectral if and only if it is the prime spectrum of a ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SpectralSpace",
+        "module": "Mathlib.Topology.Spectral.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`class SpectralSpace` axiomatizes the property; the equivalence with being the prime spectrum of a ring is partially captured via `PrimeSpectrum.instSpectralSpace`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Specialization preorder",
+      "anchor": {
+        "section": "Topological spaces with order structure",
+        "snippet": "the specialization preorder (or canonical preorder ) is defined by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "specializationPreorder",
+        "module": "Mathlib.Topology.Defs.Filter",
+        "match_kind": "exact"
+      },
+      "note": "`specializationPreorder X` defines the specialization preorder via `x ⤳ y ↔ 𝓝 x ≤ 𝓝 y`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Topology from a filter",
+      "anchor": {
+        "section": "Topology from other structure",
+        "snippet": "If"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.instTopologicalSpaceFilter",
+        "module": "Mathlib.Topology.Filter",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib equips `Filter α` with a canonical topology generated by `Set.Iic (𝓟 s)`; this is the topology on the space of filters.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Outer space of a free group",
+      "anchor": {
+        "section": "Topology from other structure",
+        "snippet": "Outer space of a free group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Culler–Vogtmann outer space is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Topological property",
+      "anchor": {
+        "section": "Classification of topological spaces",
+        "snippet": "A topological property is a property of spaces that is invariant under homeomorphisms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no explicit definition of \"topological property\" as a homeomorphism-invariant predicate on spaces.",
+      "provenance": "ai"
+    }
+  ]
+}

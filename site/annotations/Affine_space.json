@@ -1,0 +1,1575 @@
+{
+  "slug": "Affine_space",
+  "wikipedia_title": "Affine space",
+  "display_title": "Affine space",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Affine space (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "an affine space is a geometric structure that generalizes some of the properties of Euclidean spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AddTorsor",
+        "module": "Mathlib.Algebra.AddTorsor.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`AddTorsor V P` (notation `AffineSpace V P`) is exactly an affine space as a torsor of a vector space action.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Affine subspace by translation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Adding a fixed vector to the elements of a linear subspace (vector subspace) of a vector space produces an affine subspace of the vector space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineSubspace.mk'",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`AffineSubspace.mk' p direction` is the translate of a submodule by a point, i.e. `p + direction`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Affine subspace as solution set",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "In finite dimensions, such an affine subspace is the solution set of an inhomogeneous linear system"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineSubspace.mk'",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Defs",
+        "match_kind": null
+      },
+      "note": "Affine subspaces as cosets are formalized via `mk'`, but the identification with solution sets of inhomogeneous linear systems is not stated as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dimension of an affine space",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The dimension of an affine space is defined as the dimension of the vector space of its translations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineSubspace.direction",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Defs",
+        "match_kind": null
+      },
+      "note": "The direction submodule is defined and `finrank` of it is used, but there is no dedicated `dim`/`finrank` definition for an affine space itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Affine line, plane, hyperplane",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "An affine space of dimension one is an affine line"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "affineSpan",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Defs",
+        "match_kind": null
+      },
+      "note": "Lines exist as `line[k, p₁, p₂]` (affineSpan of a pair), but affine line/plane/hyperplane are not defined as a dimension-based classification.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Affine space as forgetting the origin",
+      "anchor": {
+        "section": "Informal description",
+        "snippet": "an affine space is what is left of a vector space after one has forgotten which point is the origin"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AddTorsor",
+        "module": "Mathlib.Algebra.AddTorsor.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`AddTorsor` is precisely a vector space with no distinguished origin.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Affine combination",
+      "anchor": {
+        "section": "Informal description",
+        "snippet": "the values of affine combinations , defined as linear combinations in which the sum of the coefficients is 1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.affineCombination",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Combination",
+        "match_kind": "exact"
+      },
+      "note": "`Finset.affineCombination` is the weighted combination of points used with weights summing to 1.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Set with affine structure",
+      "anchor": {
+        "section": "Informal description",
+        "snippet": "A set with an affine structure is an affine space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AddTorsor",
+        "module": "Mathlib.Algebra.AddTorsor.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The affine structure on a set is the `AddTorsor`/`AffineSpace` typeclass.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Affine space (formal)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "An affine space is a set A together with a vector space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AddTorsor",
+        "module": "Mathlib.Algebra.AddTorsor.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`AddTorsor G P` is a set `P` with an additive group `G` acting freely and transitively via `+ᵥ`/`-ᵥ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Group action axioms",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The first two properties are simply defining properties of a (right) group action"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AddAction",
+        "module": "Mathlib.Algebra.Group.Action.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`AddTorsor` extends `AddAction`, whose axioms `zero_vadd` and `add_vadd` are the group-action laws.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Subtraction property",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "For every a , b in A , there exists a unique"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "eq_vadd_iff_vsub_eq",
+        "module": "Mathlib.Algebra.AddTorsor.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`eq_vadd_iff_vsub_eq` expresses that the unique vector with `b = v +ᵥ a` is `v = b -ᵥ a`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Principal homogeneous space",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "an affine space is a principal homogeneous space for the action of the additive group of a vector space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AddTorsor",
+        "module": "Mathlib.Algebra.AddTorsor.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`AddTorsor` is Mathlib's name for a torsor / principal homogeneous space of an additive group action.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Subtraction of points",
+      "anchor": {
+        "section": "Subtraction and Weyl's axioms",
+        "snippet": "the definition of subtraction for any given ordered pair"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "vsub_vadd",
+        "module": "Mathlib.Algebra.AddTorsor.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The `-ᵥ` (`VSub`) operation of `AddTorsor`, characterized by `vsub_vadd : (p₁ -ᵥ p₂) +ᵥ p₂ = p₁`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Weyl's axioms",
+      "anchor": {
+        "section": "Subtraction and Weyl's axioms",
+        "snippet": "called Weyl 's axioms"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AddTorsor",
+        "module": "Mathlib.Algebra.AddTorsor.Defs",
+        "match_kind": null
+      },
+      "note": "Mathlib's `AddTorsor` captures the same structure but is axiomatized via a group action; Weyl's axioms are not separately given nor proved equivalent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Parallelogram property",
+      "anchor": {
+        "section": "Subtraction and Weyl's axioms",
+        "snippet": "The parallelogram property is satisfied in affine spaces"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "vsub_add_vsub_cancel",
+        "module": "Mathlib.Algebra.AddTorsor.Defs",
+        "match_kind": null
+      },
+      "note": "Vector-subtraction cancellation lemmas (`vsub_add_vsub_cancel`, `vsub_sub_vsub_cancel_right`) give the parallelogram identities but it is not stated as a named property.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalent definition via Weyl's axioms",
+      "anchor": {
+        "section": "Subtraction and Weyl's axioms",
+        "snippet": "Affine spaces can be equivalently defined as a point set A"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AddTorsor",
+        "module": "Mathlib.Algebra.AddTorsor.Defs",
+        "match_kind": null
+      },
+      "note": "The torsor definition is the only one in Mathlib; the equivalence with a subtraction-based axiomatization is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Affine subspace",
+      "anchor": {
+        "section": "Affine subspaces and parallelism",
+        "snippet": "An affine subspace (also called, in some contexts, a linear variety , a flat"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineSubspace",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`AffineSubspace k P` is a subset closed under the affine combination operation `c • (p₁ -ᵥ p₂) +ᵥ p₃`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Form of affine subspaces",
+      "anchor": {
+        "section": "Affine subspaces and parallelism",
+        "snippet": "The affine subspaces of A are the subsets of A of the form"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineSubspace.mk'_eq",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`mk'_eq` shows every nonempty affine subspace equals `mk' p s.direction`, i.e. `p + direction`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Direction and parallelism",
+      "anchor": {
+        "section": "Affine subspaces and parallelism",
+        "snippet": "The linear subspace associated with an affine subspace is often called its direction"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineSubspace.direction",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`AffineSubspace.direction` is the submodule (`vectorSpan`) of differences of points of the subspace.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Generalized Playfair's axiom",
+      "anchor": {
+        "section": "Affine subspaces and parallelism",
+        "snippet": "This implies the following generalization of Playfair's axiom"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineSubspace.mk'",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Defs",
+        "match_kind": null
+      },
+      "note": "`mk' p direction` produces the subspace through `p` with a given direction, but the unique-parallel (Playfair) statement is not packaged as a theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Translation preserves parallelism",
+      "anchor": {
+        "section": "Affine subspaces and parallelism",
+        "snippet": "maps any affine subspace to a parallel subspace"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineSubspace.Parallel",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`AffineSubspace.Parallel` is defined as one subspace being a translate of the other, directly encoding this.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Parallel for nested directions",
+      "anchor": {
+        "section": "Affine subspaces and parallelism",
+        "snippet": "The term parallel is also used for two affine subspaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `Parallel` requires equal directions; the weaker notion (one direction contained in the other) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Affine map",
+      "anchor": {
+        "section": "Affine map",
+        "snippet": "an affine map or affine homomorphism from A to B is a map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineMap",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineMap",
+        "match_kind": "exact"
+      },
+      "note": "`AffineMap k P1 P2` (notation `P1 →ᵃ[k] P2`) is a map with an associated linear map satisfying `map_vadd'`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Affine map determined by one point",
+      "anchor": {
+        "section": "Affine map",
+        "snippet": "f is completely defined by its value on a single point and the associated linear map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineMap.ext_linear",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineMap",
+        "match_kind": "exact"
+      },
+      "note": "`ext_linear` shows two affine maps agreeing in linear part and at one point are equal; `AffineMap.mk'` builds a map from this data.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Affine transformation / endomorphism",
+      "anchor": {
+        "section": "Endomorphisms",
+        "snippet": "An affine transformation or endomorphism of an affine space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineMap",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineMap",
+        "match_kind": "special_case"
+      },
+      "note": "An affine endomorphism is `AffineMap k P P`; invertible ones are `AffineEquiv k P P`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Endomorphisms",
+          "snippet": "An affine transformation or endomorphism of an affine space"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle L_{M,b}(a)=b+M(a-b)}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Translations as affine maps",
+      "anchor": {
+        "section": "Endomorphisms",
+        "snippet": "One important family of examples is the translations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineEquiv.constVAdd",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineEquiv",
+        "match_kind": "special_case"
+      },
+      "note": "`AffineEquiv.constVAdd v` is the translation `p ↦ v +ᵥ p` as an affine equivalence (identity linear part).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Endomorphisms",
+          "snippet": "One important family of examples is the translations"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle L_{M,b}(a)=b+M(a-b)}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Linear maps centred at an origin",
+      "anchor": {
+        "section": "Endomorphisms",
+        "snippet": "Another important family of examples are the linear maps centred at an origin"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.toAffineMap",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineMap",
+        "match_kind": "special_case"
+      },
+      "note": "`LinearMap.toAffineMap` reinterprets a linear map (fixing the origin) as an affine map.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Endomorphisms",
+          "snippet": "Another important family of examples are the linear maps centred at an origin"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle L_{M,b}(a)=b+M(a-b)}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Decomposition of affine map",
+      "anchor": {
+        "section": "Endomorphisms",
+        "snippet": "any affine map may be written uniquely as a combination of a translation and a linear map centred at"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineMap.toConstProdLinearMap",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineMap",
+        "match_kind": "exact"
+      },
+      "note": "`toConstProdLinearMap` is a linear equivalence `(V1 →ᵃ V2) ≃ V2 × (V1 →ₗ V2)`, giving the unique translation+linear decomposition (`AffineMap.decomp`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vector space as affine space",
+      "anchor": {
+        "section": "Vector spaces as affine spaces",
+        "snippet": "Every vector space V may be considered as an affine space over itself"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "addGroupIsAddTorsor",
+        "module": "Mathlib.Algebra.AddTorsor.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`addGroupIsAddTorsor` makes any additive group (hence any vector space) a torsor over itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Origin choice induces isomorphism",
+      "anchor": {
+        "section": "Vector spaces as affine spaces",
+        "snippet": "the choice of any point a in A defines a unique affine isomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineEquiv.vaddConst",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineEquiv",
+        "match_kind": "exact"
+      },
+      "note": "`AffineEquiv.vaddConst b : V₁ ≃ᵃ[k] P₁` is the affine isomorphism `v ↦ v +ᵥ b` from choosing base point `b`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euclidean spaces are affine spaces",
+      "anchor": {
+        "section": "Definition of Euclidean spaces",
+        "snippet": "Euclidean spaces (including the one-dimensional line, two-dimensional plane"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedAddTorsor",
+        "module": "Mathlib.Geometry.Euclidean.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Euclidean geometry is developed over `[InnerProductSpace ℝ V] [NormedAddTorsor V P]`, i.e. affine spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euclidean space (modern)",
+      "anchor": {
+        "section": "Definition of Euclidean spaces",
+        "snippet": "a Euclidean space is defined to be an affine space, such that the associated vector space is a real inner product space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedAddTorsor",
+        "module": "Mathlib.Geometry.Euclidean.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's Euclidean setting is exactly an affine space `[NormedAddTorsor V P]` with `[InnerProductSpace ℝ V]`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euclidean space (synthetic, via equipollence)",
+      "anchor": {
+        "section": "Definition of Euclidean spaces",
+        "snippet": "In older definition of Euclidean spaces through synthetic geometry"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The synthetic/equipollence-based definition of Euclidean space is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Affine property",
+      "anchor": {
+        "section": "Affine properties",
+        "snippet": "refers to a property that can be proved in affine spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no formal notion of an 'affine property' in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Affine property is transformation-invariant",
+      "anchor": {
+        "section": "Affine properties",
+        "snippet": "an affine property is a property that is invariant under affine transformations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Invariance of affine properties under affine transformations is not formalized as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum independent of origin",
+      "anchor": {
+        "section": "Affine combinations and barycenter",
+        "snippet": "this sum is independent of the choice of the origin"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.weightedVSub",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Combination",
+        "match_kind": "exact"
+      },
+      "note": "`Finset.weightedVSub`/`affineCombination` are defined precisely so the result is independent of the base point when weights sum to 0 (resp. 1).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Barycenter / affine combination",
+      "anchor": {
+        "section": "Affine combinations and barycenter",
+        "snippet": "is called the barycenter of the"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.affineCombination",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Combination",
+        "match_kind": "exact"
+      },
+      "note": "`Finset.affineCombination` is the barycenter; `Finset.centroid` is the equal-weight case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Number line",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "they are treating the number line as a one-dimensional affine space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "addGroupIsAddTorsor",
+        "module": "Mathlib.Algebra.AddTorsor.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "ℝ is an affine space over itself via `addGroupIsAddTorsor`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Time as affine space",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Time can be modelled as a one-dimensional affine space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Modelling time as an affine space is a physical interpretation, not a formalized statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Space of energies",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The space of energies is an affine space for"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A physics example with no corresponding Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Physical space",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Physical space is often modelled as an affine space for"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A physics modelling example, not a formalized statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Coset of a subspace",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Any coset of a subspace V of a vector space is an affine space over that subspace"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineSubspace.mk'",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`mk' p direction` realizes the coset `p + V` as an affine subspace with direction `V`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Line not through origin",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "a line in the plane that doesn't pass through the origin is an affine space that is not a vector space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "affineSpan",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Defs",
+        "match_kind": null
+      },
+      "note": "Such a line is `affineSpan`/`line[k,p,q]`, an affine subspace, but the 'not a vector space' observation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Solution set of Tx = b",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "If T is a matrix and b lies in its column space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineSubspace.mk'",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Defs",
+        "match_kind": null
+      },
+      "note": "Solution sets are cosets and can be represented by `mk'`, but no lemma states that `{x | T x = b}` is an affine subspace.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Solutions of inhomogeneous ODE",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The solutions of an inhomogeneous linear differential equation form an affine space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The affine structure on solutions of an inhomogeneous linear ODE is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Solution set of linear map equation",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "if T : V → W is a linear map and y lies in its image"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineSubspace.mk'",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Defs",
+        "match_kind": null
+      },
+      "note": "The preimage of a point under a linear map is a coset of the kernel (expressible via `mk'`), but not stated as a named affine-subspace result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Complementary subspaces",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The space of (linear) complementary subspaces of a vector subspace V in a vector space W is an affine space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The affine structure on the set of complements of a subspace is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Space of connections",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The space of connections (viewed from the vector bundle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Connections on vector bundles and their affine space structure are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Affine span",
+      "anchor": {
+        "section": "Affine span and bases",
+        "snippet": "there is a smallest affine subspace that contains it, called the affine span of X"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "affineSpan",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`affineSpan k s` is the smallest affine subspace containing `s` (it forms a `GaloisInsertion` with coercion).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Affine span as affine combinations",
+      "anchor": {
+        "section": "Affine span and bases",
+        "snippet": "The affine span of X is the set of all (finite) affine combinations of points of X"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "eq_affineCombination_of_mem_affineSpan",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Combination",
+        "match_kind": "exact"
+      },
+      "note": "`eq_affineCombination_of_mem_affineSpan` shows membership in the span is equivalent to being a finite affine combination.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generating set",
+      "anchor": {
+        "section": "Affine span and bases",
+        "snippet": "the affine span of X is generated by X and that X is a generating set of its affine span"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "affineSpan",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Defs",
+        "match_kind": null
+      },
+      "note": "Spanning is expressed by `affineSpan k s = ⊤`, but 'generating set' is not a named definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Affinely independent set",
+      "anchor": {
+        "section": "Affine span and bases",
+        "snippet": "A set X of points of an affine space is said to be affinely independent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineIndependent",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Independent",
+        "match_kind": "exact"
+      },
+      "note": "`AffineIndependent k p` states no nontrivial weighted subtraction (weights summing to 0) vanishes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Affine basis",
+      "anchor": {
+        "section": "Affine span and bases",
+        "snippet": "An affine basis or barycentric frame (see § Barycentric coordinates , below) of an affine space is a generating set that is also independent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineBasis",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Basis",
+        "match_kind": "exact"
+      },
+      "note": "`AffineBasis` is a family of affinely-independent points whose `affineSpan` is `⊤`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bases of finite-dimensional affine space",
+      "anchor": {
+        "section": "Affine span and bases",
+        "snippet": "The bases of an affine space of finite dimension n are the independent subsets of n + 1 elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineIndependent.vectorSpan_eq_top_of_card_eq_finrank_add_one",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.FiniteDimensional",
+        "match_kind": "exact"
+      },
+      "note": "This lemma shows `n+1` affinely-independent points in an `n`-dimensional space span the whole space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Barycentric coordinates",
+      "anchor": {
+        "section": "Barycentric coordinates",
+        "snippet": "are called the barycentric coordinates of x over the affine basis"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineBasis.coord",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Basis",
+        "match_kind": "exact"
+      },
+      "note": "`AffineBasis.coord i : P →ᵃ[k] k` is the i-th barycentric coordinate function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Barycentric coordinate isomorphism",
+      "anchor": {
+        "section": "Barycentric coordinates",
+        "snippet": "The barycentric coordinates define an affine isomorphism between the affine space A and the affine subspace"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineBasis.coords",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Basis",
+        "match_kind": null
+      },
+      "note": "`coords` and `fintypeAffineCoords` are defined, but the affine equivalence between `P` and the coordinates summing to 1 is an explicit TODO in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Infinite-dimensional case",
+      "anchor": {
+        "section": "Barycentric coordinates",
+        "snippet": "For affine spaces of infinite dimension, the same definition applies"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineBasis",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Basis",
+        "match_kind": null
+      },
+      "note": "`AffineBasis` is defined over an arbitrary index type with `finsuppAffineCoords`, but the infinite-dimensional coordinate isomorphism is not established.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Affine frame",
+      "anchor": {
+        "section": "Affine coordinates",
+        "snippet": "An affine frame is a coordinate frame of an affine space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Affine frames (a base point plus a vector-space basis) are an explicit TODO in `AffineSpace.Defs` and not yet defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Affine coordinates",
+      "anchor": {
+        "section": "Affine coordinates",
+        "snippet": "are called the affine coordinates of p over the affine frame"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineBasis.coord",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Basis",
+        "match_kind": null
+      },
+      "note": "Barycentric coordinates (`AffineBasis.coord`) are formalized, but affine-frame coordinates (relative to a point and vector basis) are not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Affine coordinate system",
+      "anchor": {
+        "section": "Affine coordinates",
+        "snippet": "An affine coordinate system is a coordinate system on an affine space where each coordinate is an affine map to the number line"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineBasis.coords",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Basis",
+        "match_kind": null
+      },
+      "note": "`AffineBasis.coord` gives coordinates as affine maps `P →ᵃ[k] k`, but only barycentric coordinate systems are formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "System of n coordinates",
+      "anchor": {
+        "section": "Affine coordinates",
+        "snippet": "A system of n coordinates on n -dimensional space is defined by"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineBasis.coords",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Basis",
+        "match_kind": null
+      },
+      "note": "`AffineBasis.coords : P →ᵃ[k] ι → k` gives a coordinate system, but the affine (non-barycentric) n-coordinate version is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lower bound on number of coordinates",
+      "anchor": {
+        "section": "Affine coordinates",
+        "snippet": "An affine space cannot have a coordinate system with n less than its dimension"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no formalized lower bound relating coordinate systems to affine dimension.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cartesian coordinates",
+      "anchor": {
+        "section": "Affine coordinates",
+        "snippet": "The most important case of affine coordinates in Euclidean spaces is the real-valued Cartesian coordinate system"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`EuclideanSpace`/orthonormal-basis coordinates exist, but a 'Cartesian coordinate system' is not defined as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence of barycentric and affine coordinates",
+      "anchor": {
+        "section": "Relationship between barycentric and affine coordinates",
+        "snippet": "Barycentric coordinates and affine coordinates are strongly related, and may be considered as equivalent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The equivalence between barycentric and affine coordinates is not formalized (affine coordinates are absent).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Triangle as affine basis",
+      "anchor": {
+        "section": "Example of the triangle",
+        "snippet": "The vertices of a non-flat triangle form an affine basis of the Euclidean plane"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Triangle",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Simplex.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`Affine.Triangle = Affine.Simplex k P 2` is an affinely-independent family of three points, the affine basis of a plane.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Barycentric characterization of triangle",
+      "anchor": {
+        "section": "Example of the triangle",
+        "snippet": "The vertices are the points of barycentric coordinates"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineBasis.coord_apply_eq",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Basis",
+        "match_kind": null
+      },
+      "note": "`coord_apply_eq`/`coord_apply_ne` give that a basis point has barycentric coordinates `(0,…,1,…,0)`, of which the triangle vertices are an instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Change of barycentric basis",
+      "anchor": {
+        "section": "Case of barycentric coordinates",
+        "snippet": "Barycentric coordinates are readily changed from one basis to another"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineBasis.toMatrix_vecMul_coords",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Matrix",
+        "match_kind": "exact"
+      },
+      "note": "`toMatrix_vecMul_coords` (and `toMatrix_inv_vecMul_coords`) give the change-of-basis formula for barycentric coordinates.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Change of affine basis",
+      "anchor": {
+        "section": "Case of affine coordinates",
+        "snippet": "Affine coordinates are also readily changed from one basis to another"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineBasis.toMatrix",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Matrix",
+        "match_kind": null
+      },
+      "note": "Change of basis is formalized for barycentric coordinates via `toMatrix`; the affine-coordinate change-of-frame formula is not separately stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Matrix representation of affine transformation",
+      "anchor": {
+        "section": "Matrix representation",
+        "snippet": "by a 4 by 4 matrix with a special"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The augmented (homogeneous-coordinate) matrix representation of an affine transformation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Image of affine homomorphism",
+      "anchor": {
+        "section": "Image and fibers",
+        "snippet": "The image of f is the affine subspace"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineSubspace.map",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`AffineSubspace.map f` is the image affine subspace; the image of `f` is `(⊤).map f`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Affine homomorphism has no kernel",
+      "anchor": {
+        "section": "Image and fibers",
+        "snippet": "an affine homomorphism does not have a kernel"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a conceptual remark with no corresponding declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fiber",
+      "anchor": {
+        "section": "Image and fibers",
+        "snippet": "This affine subspace is called the fiber of x"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineSubspace.comap",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Basic",
+        "match_kind": null
+      },
+      "note": "A fiber is the `comap` of a singleton subspace; there is no dedicated `fiber` definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projection parallel to a direction",
+      "anchor": {
+        "section": "Projection",
+        "snippet": "the projection parallel to some direction onto an affine subspace"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.orthogonalProjection",
+        "module": "Mathlib.Geometry.Euclidean.Projection",
+        "match_kind": null
+      },
+      "note": "Only orthogonal projection onto an affine subspace is formalized; general projection parallel to an arbitrary direction is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Projection is affine homomorphism",
+      "anchor": {
+        "section": "Projection",
+        "snippet": "This is an affine homomorphism whose associated linear map"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.orthogonalProjection",
+        "module": "Mathlib.Geometry.Euclidean.Projection",
+        "match_kind": null
+      },
+      "note": "`orthogonalProjection` is an affine map, but the general parallel-projection-is-affine statement is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Image and fibers of projection",
+      "anchor": {
+        "section": "Projection",
+        "snippet": "The image of this projection is F"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Image and fibers of a general parallel projection are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quotient space",
+      "anchor": {
+        "section": "Quotient space",
+        "snippet": "The quotient E / D of E by D is the quotient of E by the equivalence relation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The quotient of an affine space by a direction submodule is not formalized (only linear `Submodule.Quotient` exists).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quotient is an affine space",
+      "anchor": {
+        "section": "Quotient space",
+        "snippet": "This quotient is an affine space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No affine-quotient construction or its affine-space structure is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "First isomorphism theorem for affine spaces",
+      "anchor": {
+        "section": "Quotient space",
+        "snippet": "This is the first isomorphism theorem for affine spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A first isomorphism theorem for affine spaces is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coxeter axiomatization",
+      "anchor": {
+        "section": "Axioms",
+        "snippet": "axiomatizes the special case of affine geometry over the reals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Coxeter's synthetic axiomatization of real affine geometry is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Affine plane axioms",
+      "anchor": {
+        "section": "Axioms",
+        "snippet": "Affine planes satisfy the following axioms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has projective-plane configurations but not the incidence axioms for affine planes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Affine spaces inside projective spaces",
+      "anchor": {
+        "section": "Relation to projective spaces",
+        "snippet": "Affine spaces are contained in projective spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`Projectivization` exists but the affine-chart embedding of an affine space into a projective space is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Affine group as subgroup of projective group",
+      "anchor": {
+        "section": "Relation to projective spaces",
+        "snippet": "any affine linear transformation extends uniquely to a projective linear transformation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The extension of affine transformations to projective ones is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Affine Möbius transformations",
+      "anchor": {
+        "section": "Relation to projective spaces",
+        "snippet": "if and only if they fix the point at infinity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The characterization of affine maps as Möbius transformations fixing the point at infinity is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Affine variety",
+      "anchor": {
+        "section": "Affine algebraic geometry",
+        "snippet": "an affine variety (or, more generally, an affine algebraic set ) is defined as the subset of an affine space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MvPolynomial.zeroLocus",
+        "module": "Mathlib.RingTheory.Nullstellensatz",
+        "match_kind": "exact"
+      },
+      "note": "`MvPolynomial.zeroLocus I` is the common zero set in `σ → K` of an ideal of polynomials, i.e. an affine algebraic set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Isomorphism with coordinate space",
+      "anchor": {
+        "section": "Affine algebraic geometry",
+        "snippet": "induces an affine isomorphism between"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.AffineSpace.SpecIso",
+        "module": "Mathlib.AlgebraicGeometry.AffineSpace",
+        "match_kind": null
+      },
+      "note": "`𝔸(n; Spec R) ≅ Spec R[n]` is formalized scheme-theoretically, but the affine-geometry coordinate isomorphism `A ≅ kⁿ` is not packaged directly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Affine spaces are affine varieties",
+      "anchor": {
+        "section": "Affine algebraic geometry",
+        "snippet": "affine spaces are affine algebraic varieties"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.AffineSpace",
+        "module": "Mathlib.AlgebraicGeometry.AffineSpace",
+        "match_kind": null
+      },
+      "note": "The scheme `𝔸(n; S)` is defined and shown affine (`SpecIso`), but the precise 'affine space is an affine variety' identification is not isolated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Polynomial functions form a k-algebra",
+      "anchor": {
+        "section": "Ring of polynomial functions",
+        "snippet": "is a k -algebra , denoted"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MvPolynomial",
+        "module": "Mathlib.Algebra.MvPolynomial.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`MvPolynomial σ k` carries `CommRing` and `Algebra k` instances, i.e. the polynomial k-algebra `k[X]`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Total degree filtration",
+      "anchor": {
+        "section": "Ring of polynomial functions",
+        "snippet": "which is independent from the choice of coordinates"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MvPolynomial.totalDegree",
+        "module": "Mathlib.Algebra.MvPolynomial.Degrees",
+        "match_kind": null
+      },
+      "note": "`totalDegree` is defined, but the induced filtration and its coordinate-independence are not formalized as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zariski topology",
+      "anchor": {
+        "section": "Zariski topology",
+        "snippet": "Zariski topology is the unique topology on an affine space whose closed sets are affine algebraic sets"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PrimeSpectrum.zariskiTopology",
+        "module": "Mathlib.RingTheory.Spectrum.Prime.Topology",
+        "match_kind": null
+      },
+      "note": "The Zariski topology is formalized on the prime spectrum (closed sets are `zeroLocus`); the version directly on affine space `kⁿ` is not separately defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zariski coarser than natural topology",
+      "anchor": {
+        "section": "Zariski topology",
+        "snippet": "Zariski topology is coarser than the natural topology"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The comparison of the Zariski topology with the metric/natural topology on affine space is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Injection into spectrum",
+      "anchor": {
+        "section": "Zariski topology",
+        "snippet": "There is a natural injective function from an affine space into the set of prime ideals"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MvPolynomial.isMaximal_iff_eq_vanishingIdeal_singleton",
+        "module": "Mathlib.RingTheory.Nullstellensatz",
+        "match_kind": null
+      },
+      "note": "Points correspond to maximal ideals via `vanishingIdeal` of singletons, capturing the injection's content, but it is not packaged as a `PrimeSpectrum`-valued map.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Homeomorphism onto image",
+      "anchor": {
+        "section": "Zariski topology",
+        "snippet": "This function is a homeomorphism"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The homeomorphism of affine space onto its image in the prime spectrum is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hilbert's Nullstellensatz",
+      "anchor": {
+        "section": "Zariski topology",
+        "snippet": "this is Hilbert's Nullstellensatz"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MvPolynomial.vanishingIdeal_zeroLocus_eq_radical",
+        "module": "Mathlib.RingTheory.Nullstellensatz",
+        "match_kind": "exact"
+      },
+      "note": "`vanishingIdeal_zeroLocus_eq_radical` is the classical Nullstellensatz: `I(V(I)) = radical I`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cohomology of affine space is trivial",
+      "anchor": {
+        "section": "Cohomology",
+        "snippet": "the cohomology of affine space is trivial"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Triviality of (quasi-coherent) cohomology of affine space is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Trivial étale cohomology",
+      "anchor": {
+        "section": "Cohomology",
+        "snippet": "all of the étale cohomology groups on affine space are trivial"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Étale cohomology of affine space is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Quillen–Suslin theorem",
+      "anchor": {
+        "section": "Cohomology",
+        "snippet": "the Quillen–Suslin theorem implies that every algebraic vector bundle over an affine space is trivial"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Quillen–Suslin theorem is not in Mathlib (matches for 'Quillen'/'Suslin' refer to unrelated model-category and descriptive-set-theory uses).",
+      "provenance": "ai"
+    }
+  ]
+}

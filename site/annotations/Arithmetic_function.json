@@ -1,0 +1,1593 @@
+{
+  "slug": "Arithmetic_function",
+  "wikipedia_title": "Arithmetic function",
+  "display_title": "Arithmetic function",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Arithmetic function",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is generally any function whose domain is the set of positive integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`ArithmeticFunction R` is a function `ℕ → R` with `f 0 = 0`, generalizing the codomain beyond ℂ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Divisor function example",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "An example of an arithmetic function is the divisor function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.sigma",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Misc",
+        "match_kind": "exact"
+      },
+      "note": "`ArithmeticFunction.sigma k` is the divisor (power-sum) function σ_k.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Completely additive function",
+      "anchor": {
+        "section": "Multiplicative and additive functions",
+        "snippet": "completely additive if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no `IsAdditive`/`IsCompletelyAdditive` predicate for arithmetic functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Completely multiplicative function",
+      "anchor": {
+        "section": "Multiplicative and additive functions",
+        "snippet": "completely multiplicative if"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no named predicate; completely multiplicative functions are represented as monoid-with-zero homs `ℕ →*₀ R` (e.g. in EulerProduct lemmas).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coprime integers",
+      "anchor": {
+        "section": "Multiplicative and additive functions",
+        "snippet": "Two whole numbers m and n are called coprime"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Coprime",
+        "module": "Mathlib.Data.Nat.GCD.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Coprime m n` is defined as `gcd m n = 1`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Additive function",
+      "anchor": {
+        "section": "Multiplicative and additive functions",
+        "snippet": "additive if a ( mn ) = a ( m ) + a ( n ) for all coprime natural numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `IsAdditive` predicate on `ArithmeticFunction` exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multiplicative function",
+      "anchor": {
+        "section": "Multiplicative and additive functions",
+        "snippet": "multiplicative if a (1) = 1 and a ( mn ) = a ( m ) a ( n ) for all coprime natural numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.IsMultiplicative",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsMultiplicative f` is `f 1 = 1 ∧ ∀ {m n}, m.Coprime n → f (m*n) = f m * f n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of arithmetic",
+      "anchor": {
+        "section": "Ω( n ), ω ( n ), ν p ( n ) – prime power decomposition",
+        "snippet": "The fundamental theorem of arithmetic states that any positive integer"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.factorization_prod_pow_eq_self",
+        "module": "Mathlib.Data.Nat.Factorization.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Existence is `Nat.factorization_prod_pow_eq_self`; uniqueness comes from ℕ being a `UniqueFactorizationMonoid`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "p-adic valuation",
+      "anchor": {
+        "section": "Ω( n ), ω ( n ), ν p ( n ) – prime power decomposition",
+        "snippet": "Define the p -adic valuation ν p ( n ) to be the exponent of the highest power"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "padicValNat",
+        "module": "Mathlib.Data.Nat.MaxPowDiv",
+        "match_kind": "exact"
+      },
+      "note": "`padicValNat p n` is the exponent of the highest power of `p` dividing `n`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Ω( n ), ω ( n ), ν p ( n ) – prime power decomposition",
+          "snippet": "Define the p -adic valuation ν p ( n ) to be the exponent of the highest power"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle n=\\prod _{p}p^{\\nu _{p}(n)}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Prime omega functions ω and Ω",
+      "anchor": {
+        "section": "Ω( n ), ω ( n ), ν p ( n ) – prime power decomposition",
+        "snippet": "the prime omega functions ω and Ω are defined by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.cardDistinctFactors",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Misc",
+        "match_kind": "exact"
+      },
+      "note": "`cardDistinctFactors` (ω) and `cardFactors` (Ω) are both defined in this file.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Divisor sum σk(n)",
+      "anchor": {
+        "section": "σ k ( n ), τ ( n ), d ( n ) – divisor sums",
+        "snippet": "is the sum of the k th powers of the positive divisors of n"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.sigma",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Misc",
+        "match_kind": "exact"
+      },
+      "note": "`sigma k n = ∑ d ∈ divisors n, d ^ k`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sum of divisors σ(n)",
+      "anchor": {
+        "section": "σ k ( n ), τ ( n ), d ( n ) – divisor sums",
+        "snippet": "the sum of the (positive) divisors of n , is usually denoted by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.sigma_one_apply",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Misc",
+        "match_kind": "special_case"
+      },
+      "note": "`sigma 1 n = ∑ d ∈ divisors n, d`, the case k=1 of `ArithmeticFunction.sigma`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Number of divisors d(n)",
+      "anchor": {
+        "section": "σ k ( n ), τ ( n ), d ( n ) – divisor sums",
+        "snippet": "is therefore the number of (positive) divisors of n"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.sigma_zero_apply",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Misc",
+        "match_kind": "special_case"
+      },
+      "note": "`sigma 0 n = #n.divisors`, the number-of-divisors function (k=0 of σ).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euler totient function",
+      "anchor": {
+        "section": "φ ( n ) – Euler totient function",
+        "snippet": "the Euler totient function, is the number of positive integers not greater than"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.totient",
+        "module": "Mathlib.Data.Nat.Totient",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.totient n` counts naturals less than `n` coprime to `n`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "φ ( n ) – Euler totient function",
+          "snippet": "the Euler totient function, is the number of positive integers not greater than"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\varphi (n)=n\\prod _{p\\mid n}\\left(1-{\\frac {1}{p}}\\right)=n\\left({\\frac {p_{1}-1}{p_{1}}}\\right)\\left({\\frac {p_{2}-1}{p_{2}}}\\right)\\cdots \\left({\\frac {p_{\\omega (n)}-1}{p_{\\omega (n)}}}\\right).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Jordan totient function",
+      "anchor": {
+        "section": "J k ( n ) – Jordan totient function",
+        "snippet": "the Jordan totient function, is the number of k -tuples of positive integers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Jordan totient function is defined in Mathlib (only Euler's totient).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "J k ( n ) – Jordan totient function",
+          "snippet": "the Jordan totient function, is the number of k -tuples of positive integers"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle J_{k}(n)=n^{k}\\prod _{p\\mid n}\\left(1-{\\frac {1}{p^{k}}}\\right)=n^{k}\\left({\\frac {p_{1}^{k}-1}{p_{1}^{k}}}\\right)\\left({\\frac {p_{2}^{k}-1}{p_{2}^{k}}}\\right)\\cdots \\left({\\frac {p_{\\omega (n)}^{k}-1}{p_{\\omega (n)}^{k}}}\\right).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Möbius function",
+      "anchor": {
+        "section": "μ ( n ) – Möbius function",
+        "snippet": "the Möbius function, is important because of the Möbius inversion formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.moebius",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Moebius",
+        "match_kind": "exact"
+      },
+      "note": "`ArithmeticFunction.moebius` (μ) is defined exactly as on Wikipedia.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "μ ( n ) – Möbius function",
+          "snippet": "the Möbius function, is important because of the Möbius inversion formula"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mu (n)={\\begin{cases}(-1)^{\\omega (n)}=(-1)^{\\Omega (n)}&amp;{\\text{if }}\\;\\omega (n)=\\Omega (n)\\\\0&amp;{\\text{if }}\\;\\omega (n)\\neq \\Omega (n).\\end{cases}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "μ(1) = 1",
+      "anchor": {
+        "section": "μ ( n ) – Möbius function",
+        "snippet": "This implies that μ (1) = 1."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.moebius_apply_one",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Moebius",
+        "match_kind": "exact"
+      },
+      "note": "`moebius_apply_one : μ 1 = 1`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ramanujan tau function",
+      "anchor": {
+        "section": "τ ( n ) – Ramanujan tau function",
+        "snippet": "the Ramanujan tau function, is defined by its generating function identity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Ramanujan tau function is not defined in Mathlib (the Delta modular-form file is deprecated).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "τ ( n ) – Ramanujan tau function",
+          "snippet": "the Ramanujan tau function, is defined by its generating function identity"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{n\\geq 1}\\tau (n)q^{n}=q\\prod _{n\\geq 1}(1-q^{n})^{24}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Ramanujan's sum",
+      "anchor": {
+        "section": "c q ( n ) – Ramanujan's sum",
+        "snippet": "Ramanujan's sum, is the sum of the n th powers of the primitive"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ramanujan's sum c_q(n) is not defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "c q ( n ) – Ramanujan's sum",
+          "snippet": "Ramanujan's sum, is the sum of the n th powers of the primitive"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c_{q}(n)=\\sum _{\\stackrel {1\\leq a\\leq q}{\\gcd(a,q)=1}}e^{2\\pi i{\\tfrac {a}{q}}n}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "cq(n) multiplicative in q",
+      "anchor": {
+        "section": "c q ( n ) – Ramanujan's sum",
+        "snippet": "For a fixed value of n it is multiplicative in q"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ramanujan's sum is absent, so this multiplicativity statement is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dedekind psi function",
+      "anchor": {
+        "section": "ψ ( n ) – Dedekind psi function",
+        "snippet": "The Dedekind psi function , used in the theory of modular functions , is defined by the formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Dedekind psi function is not defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "ψ ( n ) – Dedekind psi function",
+          "snippet": "The Dedekind psi function , used in the theory of modular functions , is defined by the formula"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\psi (n)=n\\prod _{p|n}\\left(1+{\\frac {1}{p}}\\right).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Liouville function",
+      "anchor": {
+        "section": "λ ( n ) – Liouville function",
+        "snippet": "the Liouville function, is defined by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.liouville",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Liouville",
+        "match_kind": "exact"
+      },
+      "note": "`ArithmeticFunction.liouville n = (-1)^Ω(n)` for n≠0.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "λ ( n ) – Liouville function",
+          "snippet": "the Liouville function, is defined by"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lambda (n)=(-1)^{\\Omega (n)}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Dirichlet characters completely multiplicative",
+      "anchor": {
+        "section": "χ ( n ) – characters",
+        "snippet": "All Dirichlet characters χ ( n ) are completely multiplicative."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulChar.map_mul",
+        "module": "Mathlib.NumberTheory.MulChar.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`DirichletCharacter R n := MulChar (ZMod n) R`, and `MulChar.map_mul` gives `χ(ab)=χ(a)χ(b)` for all arguments.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Principal character",
+      "anchor": {
+        "section": "χ ( n ) – characters",
+        "snippet": "The principal character (mod n ) is denoted by"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The principal/trivial character is the multiplicative identity `1 : DirichletCharacter R n`, but there is no dedicated `principalCharacter` definition.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "χ ( n ) – characters",
+          "snippet": "The principal character (mod n ) is denoted by"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\chi _{0}(a)={\\begin{cases}1&amp;{\\text{if }}\\gcd(a,n)=1,\\\\0&amp;{\\text{if }}\\gcd(a,n)\\neq 1.\\end{cases}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Quadratic character",
+      "anchor": {
+        "section": "χ ( n ) – characters",
+        "snippet": "The quadratic character (mod n ) is denoted by the Jacobi symbol for odd"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "jacobiSym",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.JacobiSymbol",
+        "match_kind": "exact"
+      },
+      "note": "The Jacobi symbol `jacobiSym a b` formalizes the quadratic character for odd modulus.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "χ ( n ) – characters",
+          "snippet": "The quadratic character (mod n ) is denoted by the Jacobi symbol for odd"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left({\\frac {a}{n}}\\right)=\\left({\\frac {a}{p_{1}}}\\right)^{a_{1}}\\left({\\frac {a}{p_{2}}}\\right)^{a_{2}}\\cdots \\left({\\frac {a}{p_{\\omega (n)}}}\\right)^{a_{\\omega (n)}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Legendre symbol",
+      "anchor": {
+        "section": "χ ( n ) – characters",
+        "snippet": "is the Legendre symbol , defined for all integers a and all odd primes"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "legendreSym",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`legendreSym p a` is the Legendre symbol for prime `p`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "χ ( n ) – characters",
+          "snippet": "is the Legendre symbol , defined for all integers a and all odd primes"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left({\\frac {a}{p}}\\right)={\\begin{cases}\\;\\;\\,0&amp;{\\text{if }}a\\equiv 0{\\pmod {p}},\\\\+1&amp;{\\text{if }}a\\not \\equiv 0{\\pmod {p}}{\\text{ and for some integer }}x,\\;a\\equiv x^{2}{\\pmod {p}}\\\\-1&amp;{\\text{if there is no such }}x.\\end{cases}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "ω(n) is additive",
+      "anchor": {
+        "section": "ω ( n ) – distinct prime divisors",
+        "snippet": "defined above as the number of distinct primes dividing n , is additive"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.cardDistinctFactors_mul",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Misc",
+        "match_kind": "exact"
+      },
+      "note": "`cardDistinctFactors_mul : m.Coprime n → ω (m*n) = ω m + ω n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ω(n) is completely additive",
+      "anchor": {
+        "section": "Ω( n ) – prime divisors",
+        "snippet": "defined above as the number of prime factors of n counted with multiplicities, is completely additive"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.cardFactors_mul",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Misc",
+        "match_kind": "exact"
+      },
+      "note": "`cardFactors_mul : m≠0 → n≠0 → Ω (m*n) = Ω m + Ω n` (no coprimality needed).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "νp(n) is completely additive",
+      "anchor": {
+        "section": "ν p ( n ) – p -adic valuation of an integer n",
+        "snippet": "defined above as the exponent of the largest power of p dividing n , is completely additive"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "padicValNat.mul",
+        "module": "Mathlib.NumberTheory.Padics.PadicVal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`padicValNat.mul : a≠0 → b≠0 → padicValNat p (a*b) = padicValNat p a + padicValNat p b`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Logarithmic derivative",
+      "anchor": {
+        "section": "Logarithmic derivative",
+        "snippet": "is the arithmetic derivative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The arithmetic derivative and its logarithmic-derivative variant are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Prime-counting function π(x)",
+      "anchor": {
+        "section": "π ( x ), Π( x ), ϑ ( x ), ψ ( x ) – prime-counting functions",
+        "snippet": "the prime-counting function , is the number of primes not exceeding"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.primeCounting",
+        "module": "Mathlib.NumberTheory.PrimeCounting",
+        "match_kind": "special_case"
+      },
+      "note": "`Nat.primeCounting n` (π) counts primes ≤ n; defined on ℕ rather than ℝ.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "π ( x ), Π( x ), ϑ ( x ), ψ ( x ) – prime-counting functions",
+          "snippet": "the prime-counting function , is the number of primes not exceeding"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\pi (x)=\\sum _{p\\leq x}1}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Prime-power counting function Π(x)",
+      "anchor": {
+        "section": "π ( x ), Π( x ), ϑ ( x ), ψ ( x ) – prime-counting functions",
+        "snippet": "A related function counts prime powers with weight 1 for primes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Riemann prime-power counting function Π(x) is not defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "π ( x ), Π( x ), ϑ ( x ), ψ ( x ) – prime-counting functions",
+          "snippet": "A related function counts prime powers with weight 1 for primes"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Pi (x)=\\sum _{p^{k}\\leq x}{\\frac {1}{k}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Chebyshev functions",
+      "anchor": {
+        "section": "π ( x ), Π( x ), ϑ ( x ), ψ ( x ) – prime-counting functions",
+        "snippet": "the Chebyshev functions , are defined as sums of the natural logarithms of the primes not exceeding"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Chebyshev.theta",
+        "module": "Mathlib.NumberTheory.Chebyshev",
+        "match_kind": "exact"
+      },
+      "note": "`Chebyshev.theta` (θ) and `Chebyshev.psi` (ψ) are both defined here.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "π ( x ), Π( x ), ϑ ( x ), ψ ( x ) – prime-counting functions",
+          "snippet": "the Chebyshev functions , are defined as sums of the natural logarithms of the primes not exceeding"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\vartheta (x)=\\sum _{p\\leq x}\\log p,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\psi (x)=\\sum _{p^{k}\\leq x}\\log p.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "ψ(x) is summation function of von Mangoldt",
+      "anchor": {
+        "section": "π ( x ), Π( x ), ϑ ( x ), ψ ( x ) – prime-counting functions",
+        "snippet": "The second Chebyshev function ψ ( x ) is the summation function of the von Mangoldt function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Chebyshev.psi",
+        "module": "Mathlib.NumberTheory.Chebyshev",
+        "match_kind": "exact"
+      },
+      "note": "`Chebyshev.psi x = ∑ n ∈ Ioc 0 ⌊x⌋₊, Λ n`, defined as the summatory function of von Mangoldt.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Von Mangoldt function",
+      "anchor": {
+        "section": "Λ( n ) – von Mangoldt function",
+        "snippet": "the von Mangoldt function, is 0 unless the argument"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.vonMangoldt",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.VonMangoldt",
+        "match_kind": "exact"
+      },
+      "note": "`vonMangoldt n = if IsPrimePow n then Real.log (minFac n) else 0`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Λ( n ) – von Mangoldt function",
+          "snippet": "the von Mangoldt function, is 0 unless the argument"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Lambda (n)={\\begin{cases}\\log p&amp;{\\text{if }}n=2,3,4,5,7,8,9,11,13,16,\\ldots =p^{k}{\\text{ is a prime power}}\\\\0&amp;{\\text{if }}n=1,6,10,12,14,15,18,20,21,\\dots \\;\\;\\;\\;{\\text{ is not a prime power}}.\\end{cases}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Partition function",
+      "anchor": {
+        "section": "p ( n ) – partition function",
+        "snippet": "the partition function, is the number of ways of representing"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.Partition",
+        "module": "Mathlib.Combinatorics.Enumerative.Partition.Basic",
+        "match_kind": null
+      },
+      "note": "`Nat.Partition n` is a Fintype, so p(n) = its cardinality, but the counting function p(n) is not separately named.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "p ( n ) – partition function",
+          "snippet": "the partition function, is the number of ways of representing"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle p(n)=\\left|\\left\\{(a_{1},a_{2},\\dots a_{k}):0&lt;a_{1}\\leq a_{2}\\leq \\cdots \\leq a_{k}\\;\\land \\;n=a_{1}+a_{2}+\\cdots +a_{k}\\right\\}\\right|.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Carmichael function",
+      "anchor": {
+        "section": "λ ( n ) – Carmichael function",
+        "snippet": "the Carmichael function, is the smallest positive number such that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.carmichael",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Carmichael",
+        "match_kind": "exact"
+      },
+      "note": "`ArithmeticFunction.carmichael` is the exponent of `(ZMod n)ˣ`, the Carmichael/reduced-totient function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Carmichael function via Euler totient",
+      "anchor": {
+        "section": "λ ( n ) – Carmichael function",
+        "snippet": "For powers of odd primes and for 2 and 4, λ ( n ) is equal to the Euler totient function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.carmichael_pow_of_prime_ne_two",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Carmichael",
+        "match_kind": "exact"
+      },
+      "note": "`carmichael_pow_of_prime_ne_two` gives λ(pⁿ)=φ(pⁿ) for odd primes, with `carmichael_two_pow_of_le_two_eq_totient` for 2 and 4.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "λ ( n ) – Carmichael function",
+          "snippet": "For powers of odd primes and for 2 and 4, λ ( n ) is equal to the Euler totient function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lambda (n)={\\begin{cases}\\;\\;\\phi (n)&amp;{\\text{if }}n=2,3,4,5,7,9,11,13,17,19,23,25,27,\\dots \\\\{\\tfrac {1}{2}}\\phi (n)&amp;{\\text{if }}n=8,16,32,64,\\dots \\end{cases}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lambda (p_{1}^{a_{1}}p_{2}^{a_{2}}\\dots p_{\\omega (n)}^{a_{\\omega (n)}})=\\operatorname {lcm} [\\lambda (p_{1}^{a_{1}}),\\;\\lambda (p_{2}^{a_{2}}),\\dots ,\\lambda (p_{\\omega (n)}^{a_{\\omega (n)}})].}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Class number function",
+      "anchor": {
+        "section": "h ( n ) – class number",
+        "snippet": "the class number function, is the order of the ideal class group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField.classNumber",
+        "module": "Mathlib.NumberTheory.NumberField.ClassNumber",
+        "match_kind": "generalization"
+      },
+      "note": "`NumberField.classNumber` is the cardinality of the class group of any number field, generalizing h(D) for quadratic fields.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sum of k squares rk(n)",
+      "anchor": {
+        "section": "r k ( n ) – sum of k squares",
+        "snippet": "is the number of ways n can be represented as the sum of k squares"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib proves existence of sum-of-four-squares but has no counting function r_k(n).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "r k ( n ) – sum of k squares",
+          "snippet": "is the number of ways n can be represented as the sum of k squares"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle r_{k}(n)=\\left|\\left\\{(a_{1},a_{2},\\dots ,a_{k}):n=a_{1}^{2}+a_{2}^{2}+\\cdots +a_{k}^{2}\\right\\}\\right|}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Arithmetic derivative",
+      "anchor": {
+        "section": "D ( n ) – Arithmetic derivative",
+        "snippet": "the arithmetic derivative D ( n ) is a function such that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The arithmetic derivative D(n) is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Summation function",
+      "anchor": {
+        "section": "Summation functions",
+        "snippet": "its summation function A ( x ) is defined by"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Summatory sums ∑_{n≤x} a(n) appear in concrete cases (e.g. `Chebyshev.psi`), but there is no general named summatory-function operator.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Summation functions",
+          "snippet": "its summation function A ( x ) is defined by"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A(x):=\\sum _{n\\leq x}a(n).}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Divisor summatory function",
+      "anchor": {
+        "section": "Summation functions",
+        "snippet": "A classical example of this phenomenon"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ArithmeticFunction.sum_Ioc_sigma0_eq_sum_div",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Misc",
+        "match_kind": null
+      },
+      "note": "`sum_Ioc_sigma0_eq_sum_div` gives a formula for ∑ d(n), but the Dirichlet divisor-problem asymptotic (average order log n) is not proven.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Summation functions",
+          "snippet": "A classical example of this phenomenon"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\liminf _{n\\to \\infty }d(n)=2}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\limsup _{n\\to \\infty }{\\frac {\\log d(n)\\log \\log n}{\\log n}}=\\log 2}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{n\\to \\infty }{\\frac {d(1)+d(2)+\\cdots +d(n)}{\\log(1)+\\log(2)+\\cdots +\\log(n)}}=1.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Average order",
+      "anchor": {
+        "section": "Summation functions",
+        "snippet": "An average order of an arithmetic function is some simpler or better-understood function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no formal definition of the 'average order' of an arithmetic function in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Summation functions",
+          "snippet": "An average order of an arithmetic function is some simpler or better-understood function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{n\\leq x}f(n)\\sim \\sum _{n\\leq x}g(n)}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Average order of d(n)",
+      "anchor": {
+        "section": "Summation functions",
+        "snippet": "The example above shows that d ( n ) has the average order log( n )."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The average-order asymptotic d(n) ~ log n is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generating function / Dirichlet series",
+      "anchor": {
+        "section": "Dirichlet convolution",
+        "snippet": "be the function defined by the corresponding Dirichlet series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LSeries",
+        "module": "Mathlib.NumberTheory.LSeries.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`LSeries f s = ∑' n, f n / n ^ s` is the Dirichlet series of an arithmetic function.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Dirichlet convolution",
+          "snippet": "be the function defined by the corresponding Dirichlet series"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F_{a}(s):=\\sum _{n=1}^{\\infty }{\\frac {a(n)}{n^{s}}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Generating function of Möbius is 1/ζ",
+      "anchor": {
+        "section": "Dirichlet convolution",
+        "snippet": "The generating function of the Möbius function is the inverse of the zeta function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.LSeries_zeta_mul_Lseries_moebius",
+        "module": "Mathlib.NumberTheory.LSeries.Dirichlet",
+        "match_kind": "exact"
+      },
+      "note": "`LSeries_zeta_mul_Lseries_moebius : L ↗ζ s * L ↗μ s = 1` for 1 < re s, i.e. ∑μ(n)/nˢ = 1/ζ(s).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Dirichlet convolution",
+          "snippet": "The generating function of the Möbius function is the inverse of the zeta function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\zeta (s)\\,\\sum _{n=1}^{\\infty }{\\frac {\\mu (n)}{n^{s}}}=1,\\;\\;\\Re s&gt;1.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Dirichlet convolution",
+      "anchor": {
+        "section": "Dirichlet convolution",
+        "snippet": "This function c is called the Dirichlet convolution of a and b"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.mul_apply",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The `*` (Mul) instance on `ArithmeticFunction` is Dirichlet convolution: `(f*g) n = ∑ divisorsAntidiagonal n, f x.1 * g x.2`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convolution with constant function",
+      "anchor": {
+        "section": "Dirichlet convolution",
+        "snippet": "A particularly important case is convolution with the constant function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.coe_zeta_mul_apply",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Zeta",
+        "match_kind": "exact"
+      },
+      "note": "`coe_zeta_mul_apply : (ζ * f) x = ∑ i ∈ divisors x, f i`, convolution with the constant-1 function ζ.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Dirichlet convolution",
+          "snippet": "A particularly important case is convolution with the constant function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle g(n)=\\sum _{d\\mid n}f(d).}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Möbius inversion formula",
+      "anchor": {
+        "section": "Dirichlet convolution",
+        "snippet": "Multiplying by the inverse of the zeta function gives the Möbius inversion formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.sum_eq_iff_sum_mul_moebius_eq",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Moebius",
+        "match_kind": "exact"
+      },
+      "note": "`sum_eq_iff_sum_mul_moebius_eq` is the Möbius inversion formula (with several variants).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Dirichlet convolution",
+          "snippet": "Multiplying by the inverse of the zeta function gives the Möbius inversion formula"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(n)=\\sum _{d\\mid n}\\mu \\left({\\frac {n}{d}}\\right)g(d).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Convolution preserves multiplicativity",
+      "anchor": {
+        "section": "Dirichlet convolution",
+        "snippet": "If f is multiplicative, then so is g ."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.IsMultiplicative.mul",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsMultiplicative.mul` shows the Dirichlet convolution of two multiplicative functions is multiplicative.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lagrange's four-square theorem",
+      "anchor": {
+        "section": "Sums of squares",
+        "snippet": "Lagrange's four-square theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.sum_four_squares",
+        "module": "Mathlib.NumberTheory.SumFourSquares",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.sum_four_squares : ∀ n, ∃ a b c d, a²+b²+c²+d² = n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Kronecker symbol values for r2",
+      "anchor": {
+        "section": "Sums of squares",
+        "snippet": "where the Kronecker symbol has the values"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The number-theoretic Kronecker symbol is not defined in Mathlib (only the matrix Kronecker product).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum of squares formula",
+      "anchor": {
+        "section": "Sums of squares",
+        "snippet": "where ν = ν 2 ( n )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Jacobi's formula for r_2(n) is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Sums of squares",
+          "snippet": "where ν = ν 2 ( n )"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle r_{4}(n)=8\\sum _{\\stackrel {d\\mid n}{4\\,\\nmid \\,d}}d=8(2+(-1)^{n})\\sum _{\\stackrel {d\\mid n}{2\\,\\nmid \\,d}}d={\\begin{cases}8\\sigma (n)&amp;{\\text{if }}n{\\text{ is odd }}\\\\24\\sigma \\left({\\frac {n}{2^{\\nu }}}\\right)&amp;{\\text{if }}n{\\text{ is even }}\\end{cases}},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle r_{6}(n)=16\\sum _{d\\mid n}\\chi \\left({\\frac {n}{d}}\\right)d^{2}-4\\sum _{d\\mid n}\\chi (d)d^{2},}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Function σ*k(n)",
+      "anchor": {
+        "section": "Sums of squares",
+        "snippet": "Define the function σ k * ( n ) as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The auxiliary divisor function σ*_k(n) (alternating-sign divisor sum) is not defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Sums of squares",
+          "snippet": "Define the function σ k * ( n ) as"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sigma _{k}^{*}(n)=(-1)^{n}\\sum _{d\\mid n}(-1)^{d}d^{k}={\\begin{cases}\\sum _{d\\mid n}d^{k}=\\sigma _{k}(n)&amp;{\\text{if }}n{\\text{ is odd }}\\\\\\sum _{\\stackrel {d\\mid n}{2\\,\\mid \\,d}}d^{k}-\\sum _{\\stackrel {d\\mid n}{2\\,\\nmid \\,d}}d^{k}&amp;{\\text{if }}n{\\text{ is even}}.\\end{cases}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Cauchy product / convolution of sequences",
+      "anchor": {
+        "section": "Divisor sum convolutions",
+        "snippet": "is called the convolution or the Cauchy product of the sequences"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Summable.tsum_mul_tsum_eq_tsum_sum_antidiagonal",
+        "module": "Mathlib.Topology.Algebra.InfiniteSum.Ring",
+        "match_kind": "exact"
+      },
+      "note": "`tsum_mul_tsum_eq_tsum_sum_antidiagonal` is the Cauchy product formula for sequences (also realized by power-series multiplication).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Partition recurrence",
+      "anchor": {
+        "section": "Divisor sum convolutions",
+        "snippet": "This recurrence can be used to compute p ( n )."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The σ-convolution / pentagonal-number recurrence for p(n) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Dirichlet class number formulas",
+      "anchor": {
+        "section": "Class number related",
+        "snippet": "Peter Gustav Lejeune Dirichlet discovered formulas that relate the class number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dirichlet's class number formulas are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fundamental discriminant",
+      "anchor": {
+        "section": "Class number related",
+        "snippet": "An integer D is called a fundamental discriminant if it is the discriminant of a quadratic number field"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no `fundamentalDiscriminant` definition in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Kronecker symbol extension",
+      "anchor": {
+        "section": "Class number related",
+        "snippet": "Extend the Jacobi symbol to accept even numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Kronecker symbol (even-modulus extension of the Jacobi symbol) is not defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Class number related",
+          "snippet": "Extend the Jacobi symbol to accept even numbers"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left({\\frac {a}{2}}\\right)={\\begin{cases}\\;\\;\\,0&amp;{\\text{ if }}a{\\text{ is even}}\\\\(-1)^{\\frac {a^{2}-1}{8}}&amp;{\\text{ if }}a{\\text{ is odd. }}\\end{cases}}}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Class number formula for D < −4",
+      "anchor": {
+        "section": "Class number related",
+        "snippet": "Then if D < −4 is a fundamental discriminant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This explicit class-number formula for imaginary quadratic fields is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Class number related",
+          "snippet": "Then if D < −4 is a fundamental discriminant"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}h(D)&amp;={\\frac {1}{D}}\\sum _{r=1}^{|D|}r\\left({\\frac {D}{r}}\\right)\\\\&amp;={\\frac {1}{2-\\left({\\tfrac {D}{2}}\\right)}}\\sum _{r=1}^{|D|/2}\\left({\\frac {D}{r}}\\right).\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Formula relating r3 and h",
+      "anchor": {
+        "section": "Class number related",
+        "snippet": "There is also a formula relating r 3 and h ."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gauss's formula relating r_3(n) and class numbers is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Class number related",
+          "snippet": "There is also a formula relating r 3 and h ."
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle r_{3}(|D|)=12\\left(1-\\left({\\frac {D}{2}}\\right)\\right)h(D).}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Lagarias criterion for RH",
+      "anchor": {
+        "section": "Prime-count related",
+        "snippet": "is true for every natural number n if and only if the Riemann hypothesis is true."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lagarias's elementary RH criterion is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Robin's theorem",
+      "anchor": {
+        "section": "Prime-count related",
+        "snippet": "The Riemann hypothesis is also equivalent to the statement that, for all n > 5040"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Robin's theorem (σ(n) bound equivalent to RH) is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Prime-count related",
+          "snippet": "The Riemann hypothesis is also equivalent to the statement that, for all n > 5040"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sigma (n)&lt;e^{\\gamma }n\\log \\log n}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Menon's identity",
+      "anchor": {
+        "section": "Menon's identity",
+        "snippet": "In 1965 P Kesava Menon proved"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Menon's identity is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Menon's identity",
+          "snippet": "In 1965 P Kesava Menon proved"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{\\stackrel {1\\leq k\\leq n}{\\gcd(k,n)=1}}\\gcd(k-1,n)=\\varphi (n)d(n).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Sury's generalization",
+      "anchor": {
+        "section": "Menon's identity",
+        "snippet": "B. Sury"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Sury's generalization of Menon's identity is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Menon's identity",
+          "snippet": "B. Sury"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{\\stackrel {1\\leq k_{1},k_{2},\\dots ,k_{s}\\leq n}{\\gcd(k_{1},n)=1}}\\gcd(k_{1}-1,k_{2},\\dots ,k_{s},n)=\\varphi (n)\\sigma _{s-1}(n).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Rao's generalization",
+      "anchor": {
+        "section": "Menon's identity",
+        "snippet": "where a 1 , a 2 , ..., a s are integers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Rao's generalization of Menon's identity is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Menon's identity",
+          "snippet": "where a 1 , a 2 , ..., a s are integers"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{\\stackrel {1\\leq k_{1},k_{2},\\dots ,k_{s}\\leq n}{\\gcd(k_{1},k_{2},\\dots ,k_{s},n)=1}}\\gcd(k_{1}-a_{1},k_{2}-a_{2},\\dots ,k_{s}-a_{s},n)^{s}=J_{s}(n)d(n),}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Fejes Tóth generalization",
+      "anchor": {
+        "section": "Menon's identity",
+        "snippet": "where m 1 and m 2 are odd"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Fejes Tóth generalization of Menon's identity is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Menon's identity",
+          "snippet": "where m 1 and m 2 are odd"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{\\stackrel {1\\leq k\\leq m}{\\gcd(k,m)=1}}\\gcd(k^{2}-1,m_{1})\\gcd(k^{2}-1,m_{2})=\\varphi (n)\\sum _{\\stackrel {d_{1}\\mid m_{1}}{d_{2}\\mid m_{2}}}\\varphi (\\gcd(d_{1},d_{2}))2^{\\omega (\\operatorname {lcm} (d_{1},d_{2}))},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Menon identity for general f",
+      "anchor": {
+        "section": "Menon's identity",
+        "snippet": "In fact, if f is any arithmetical function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The general-f form of Menon's identity is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Menon's identity",
+          "snippet": "In fact, if f is any arithmetical function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{\\stackrel {1\\leq k\\leq n}{\\gcd(k,n)=1}}f(\\gcd(k-1,n))=\\varphi (n)\\sum _{d\\mid n}{\\frac {(\\mu *f)(d)}{\\varphi (d)}},}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Quadratic reciprocity for Jacobi symbol",
+      "anchor": {
+        "section": "Miscellaneous",
+        "snippet": "Then the Jacobi symbol satisfies the law of quadratic reciprocity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "jacobiSym.quadratic_reciprocity",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.JacobiSymbol",
+        "match_kind": "exact"
+      },
+      "note": "`jacobiSym.quadratic_reciprocity` states the reciprocity law for the Jacobi symbol.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Miscellaneous",
+          "snippet": "Then the Jacobi symbol satisfies the law of quadratic reciprocity"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left({\\frac {m}{n}}\\right)\\left({\\frac {n}{m}}\\right)=(-1)^{(m-1)(n-1)/4}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Logarithmic derivative identity",
+      "anchor": {
+        "section": "Miscellaneous",
+        "snippet": "Let D ( n ) be the arithmetic derivative. Then the logarithmic derivative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The arithmetic-derivative logarithmic identity is not formalized (no arithmetic derivative).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Miscellaneous",
+          "snippet": "Let D ( n ) be the arithmetic derivative. Then the logarithmic derivative"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {D(n)}{n}}=\\sum _{\\stackrel {p\\mid n}{p{\\text{ prime}}}}{\\frac {v_{p}(n)}{p}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Liouville function identities",
+      "anchor": {
+        "section": "Miscellaneous",
+        "snippet": "Let λ ( n ) be Liouville's function."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ArithmeticFunction.isMultiplicative_liouville",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Liouville",
+        "match_kind": null
+      },
+      "note": "Only multiplicativity of λ is formalized; the divisor-sum identities (e.g. ∑_{d|n} λ(d) = [n square]) are not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Carmichael function identities",
+      "anchor": {
+        "section": "Miscellaneous",
+        "snippet": "Let λ ( n ) be Carmichael's function."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ArithmeticFunction.carmichael_dvd_totient",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Carmichael",
+        "match_kind": null
+      },
+      "note": "Basic Carmichael identities like `carmichael_dvd_totient` and `carmichael_mul` are formalized, but not all Wikipedia identities.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum-of-cubes comparison identity",
+      "anchor": {
+        "section": "Miscellaneous",
+        "snippet": "Compare this with 1 3 + 2 3 + 3 3 + ... + n 3 = (1 + 2 + 3 + ... + n ) 2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identity ∑ i³ = (∑ i)² is not formalized as a lemma in Mathlib (`sum_range_id` exists but not the cube version).",
+      "provenance": "ai"
+    }
+  ]
+}

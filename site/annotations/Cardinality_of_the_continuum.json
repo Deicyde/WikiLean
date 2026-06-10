@@ -1,0 +1,409 @@
+{
+  "slug": "Cardinality_of_the_continuum",
+  "wikipedia_title": "Cardinality of the continuum",
+  "display_title": "Cardinality of the continuum",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Cardinality of the continuum",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the cardinality of the continuum is the cardinality or"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.continuum",
+        "module": "Mathlib.SetTheory.Cardinal.Continuum",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.continuum` (notation `𝔠`) is defined as `2 ^ ℵ₀`, the cardinality of the continuum.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuum equals power set of naturals",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "has the same number of elements as the power set of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.mk_set_nat",
+        "module": "Mathlib.SetTheory.Cardinal.Continuum",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.mk_set_nat : #(Set ℕ) = 𝔠` states the power set of ℕ has cardinality continuum.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equal cardinality via bijection",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "two sets have the same cardinality if, and only if, there exists a bijective function between them"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.eq",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.eq : #α = #β ↔ Nonempty (α ≃ β)` expresses that equal cardinality is equivalent to existence of a bijection.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Open interval equinumerous with R",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the open interval ( a , b ) is equinumerous with"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.mk_Ioo_real",
+        "module": "Mathlib.Analysis.Real.Cardinality",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.mk_Ioo_real {a b : ℝ} (h : a < b) : #(Ioo a b) = 𝔠` gives the open interval the same cardinality as ℝ (= 𝔠).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Continuum hypothesis (no intermediate cardinality)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "which asserts that there are no sets whose cardinality is strictly between"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The continuum hypothesis is not stated in Mathlib (it is independent of its type theory); only `aleph0_lt_continuum` and `aleph_one_le_continuum` bracket 𝔠.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Uncountability of the reals",
+      "anchor": {
+        "section": "Uncountability",
+        "snippet": "the set of real numbers is uncountably infinite"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.not_countable_real",
+        "module": "Mathlib.Analysis.Real.Cardinality",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.not_countable_real` (and the `Uncountable ℝ` instance) prove the reals are uncountable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cantor's theorem",
+      "anchor": {
+        "section": "Cardinal equalities",
+        "snippet": "which states that the cardinality of any set is strictly less than that of its power set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.cantor",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.cantor (a : Cardinal) : a < 2 ^ a` is exactly Cantor's theorem that a set is smaller than its power set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cantor–Bernstein–Schroeder theorem",
+      "anchor": {
+        "section": "Cardinal equalities",
+        "snippet": "two sets with one-to-one mappings in both directions have the same cardinality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Embedding.schroeder_bernstein",
+        "module": "Mathlib.SetTheory.Cardinal.SchroederBernstein",
+        "match_kind": "exact"
+      },
+      "note": "`Function.Embedding.schroeder_bernstein` produces a bijection from injections in both directions (with `Function.Embedding.antisymm` giving the equiv).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cardinal equality via cardinal arithmetic",
+      "anchor": {
+        "section": "Cardinal equalities",
+        "snippet": "can be demonstrated using cardinal arithmetic"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.mk_real",
+        "module": "Mathlib.Analysis.Real.Cardinality",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.mk_real : #ℝ = 𝔠` is proved using cardinal arithmetic (with `two_power_aleph0 : 2 ^ ℵ₀ = 𝔠`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Further cardinal arithmetic identities",
+      "anchor": {
+        "section": "Cardinal equalities",
+        "snippet": "By using the rules of cardinal arithmetic, one can also show that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.continuum_power_aleph0",
+        "module": "Mathlib.SetTheory.Cardinal.Continuum",
+        "match_kind": "exact"
+      },
+      "note": "Identities like `continuum_power_aleph0 : 𝔠 ^ ℵ₀ = 𝔠`, `continuum_mul_self`, `aleph0_mul_continuum`, and `nat_power_aleph0` are all proven in Continuum.lean.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every real has an infinite decimal expansion",
+      "anchor": {
+        "section": "Alternative explanation for 𝔠 = 2 א ‎0",
+        "snippet": "Every real number has at least one infinite decimal expansion"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.ofDigits_digits",
+        "module": "Mathlib.Analysis.Real.OfDigits",
+        "match_kind": null
+      },
+      "note": "`Real.digits`/`Real.ofDigits_digits` give a base-`b` digit expansion recovering any real in [0,1), but not a general 'every real has an infinite decimal expansion' statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Countably many decimal places",
+      "anchor": {
+        "section": "Alternative explanation for 𝔠 = 2 א ‎0",
+        "snippet": "the number of decimal places is countable since they can be put into a one-to-one correspondence with the set of natural numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Digit sequences in Mathlib (`Real.ofDigits`) are indexed by ℕ and ℕ is countable, but this informal step is not itself a Mathlib statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Integer part plus decimal fraction",
+      "anchor": {
+        "section": "Alternative explanation for 𝔠 = 2 א ‎0",
+        "snippet": "Since each real number can be broken into an integer part and a decimal fraction, we get"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.aleph0_mul_continuum",
+        "module": "Mathlib.SetTheory.Cardinal.Continuum",
+        "match_kind": null
+      },
+      "note": "The cardinal identity used (`aleph0_mul_continuum : ℵ₀ * 𝔠 = 𝔠`) is formalized, but the integer-part/decimal-fraction decomposition argument is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lower bound via 3/7 decimal fractions",
+      "anchor": {
+        "section": "Alternative explanation for 𝔠 = 2 א ‎0",
+        "snippet": "decimal fractions containing only 3 or 7 are only a part of the real numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.cantorFunction_injective",
+        "module": "Mathlib.Analysis.Real.Cardinality",
+        "match_kind": null
+      },
+      "note": "Mathlib proves the analogous lower bound 𝔠 ≤ #ℝ via `cantorFunction_injective`, an injection {0,1}^ℕ → ℝ using base-1/3 expansions (used inside `mk_real`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Beth numbers sequence",
+      "anchor": {
+        "section": "Beth numbers",
+        "snippet": "The sequence of beth numbers is defined by setting"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.beth",
+        "module": "Mathlib.SetTheory.Cardinal.Aleph",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.beth` is defined with `beth_zero : ℶ_ 0 = ℵ₀`, `beth_succ : ℶ_ (succ o) = 2 ^ ℶ_ o`, and `beth_limit`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Beth-two as power set of R",
+      "anchor": {
+        "section": "Beth numbers",
+        "snippet": "The third beth number, beth-two , is the cardinality of the power set of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.beth_one",
+        "module": "Mathlib.SetTheory.Cardinal.Continuum",
+        "match_kind": null
+      },
+      "note": "`beth_one : ℶ_ 1 = 𝔠` and `beth_succ` give `ℶ_ 2 = 2 ^ 𝔠`, equal to `#(Set ℝ)` via `mk_powerset`, but no single decl states beth-two = cardinality of 𝒫(ℝ).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Continuum hypothesis (second aleph)",
+      "anchor": {
+        "section": "The continuum hypothesis",
+        "snippet": "the continuum hypothesis states that there is no set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "CH (𝔠 = ℵ₁) is not formalized; Mathlib only has the inequality `aleph_one_le_continuum : ℵ₁ ≤ 𝔠`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Independence of CH from ZFC",
+      "anchor": {
+        "section": "The continuum hypothesis",
+        "snippet": "This statement is now known to be independent of the axioms of Zermelo–Fraenkel set theory with the axiom of choice"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize forcing/independence results, so the independence of CH from ZFC is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "König's theorem on cofinality",
+      "anchor": {
+        "section": "The continuum hypothesis",
+        "snippet": "equality can be ruled out by König's theorem on the grounds of cofinality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.sum_lt_prod",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "König's theorem `Cardinal.sum_lt_prod` is formalized, and its cofinality consequence `Cardinal.lt_cof_ord_power` gives ℵ₀ < cf(𝔠).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sets with cardinality of the continuum",
+      "anchor": {
+        "section": "Sets with cardinality of the continuum",
+        "snippet": "A great many sets studied in mathematics have cardinality equal to"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.mk_real",
+        "module": "Mathlib.Analysis.Real.Cardinality",
+        "match_kind": "exact"
+      },
+      "note": "Many such sets are formalized (`mk_real`, `mk_complex`, the interval lemmas `mk_Ioo_real`, etc.), all equal to 𝔠.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Real algebraic numbers are countable",
+      "anchor": {
+        "section": "Sets with cardinality of the continuum",
+        "snippet": "The set of real algebraic numbers is countably infinite"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebraic.cardinalMk_of_countable_of_charZero",
+        "module": "Mathlib.Algebra.AlgebraicCard",
+        "match_kind": "generalization"
+      },
+      "note": "`Algebraic.cardinalMk_of_countable_of_charZero : #{x : A // IsAlgebraic R x} = ℵ₀` (with `Algebraic.countable`) gives the real algebraic numbers (R=ℚ, A=ℝ) as countably infinite.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Real transcendental numbers have cardinality c",
+      "anchor": {
+        "section": "Sets with cardinality of the continuum",
+        "snippet": "the real algebraic numbers and the real transcendental numbers are disjoint sets whose union is"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Algebraic.cardinalMk_of_countable_of_charZero",
+        "module": "Mathlib.Algebra.AlgebraicCard",
+        "match_kind": null
+      },
+      "note": "Algebraic numbers are countable and ℝ is uncountable, so transcendentals have cardinality 𝔠, but this conclusion is not stated as a Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cardinality of Euclidean space",
+      "anchor": {
+        "section": "Sets with cardinality of the continuum",
+        "snippet": "Per Cantor's proof of the cardinality of Euclidean space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.mk_complex",
+        "module": "Mathlib.Analysis.Complex.Cardinality",
+        "match_kind": "special_case"
+      },
+      "note": "`mk_complex : #ℂ = 𝔠` formalizes the n=2 case (#ℝ² = 𝔠); a general `#(Fin n → ℝ) = 𝔠` for Euclidean space is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sets with greater cardinality",
+      "anchor": {
+        "section": "Sets with greater cardinality",
+        "snippet": "Sets with cardinality greater than"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.cantor",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "generalization"
+      },
+      "note": "`Cardinal.cantor` gives 𝔠 < 2 ^ 𝔠, establishing that sets of cardinality greater than 𝔠 (e.g. 𝒫(ℝ)) exist.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "These sets have cardinality beth-two",
+      "anchor": {
+        "section": "Sets with greater cardinality",
+        "snippet": "These all have cardinality"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.mk_powerset",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "special_case"
+      },
+      "note": "`mk_powerset : #(𝒫 s) = 2 ^ #s` yields #(𝒫 ℝ) = 2 ^ 𝔠 (= beth-two), but the identification with beth-two and the full collection of such sets is not stated.",
+      "provenance": "ai"
+    }
+  ]
+}

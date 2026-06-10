@@ -1,0 +1,1529 @@
+{
+  "slug": "Von_Neumann_algebra",
+  "wikipedia_title": "Von Neumann algebra",
+  "display_title": "Von Neumann algebra",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Von Neumann algebra (W*-algebra)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a von Neumann algebra or W*-algebra is a *-algebra of bounded operators"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "VonNeumannAlgebra",
+        "module": "Mathlib.Analysis.VonNeumannAlgebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "VonNeumannAlgebra is a *-closed subalgebra of H →L[ℂ] H equal to its double commutant; WStarAlgebra gives the abstract version.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Double commutant theorem (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "His double commutant theorem shows that the analytic definition is equivalent"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "VonNeumannAlgebra.commutant_commutant",
+        "module": "Mathlib.Analysis.VonNeumannAlgebra.Basic",
+        "match_kind": null
+      },
+      "note": "Commutant infrastructure exists and S'' = S holds by definition, but the equivalence with weak-closedness (the actual theorem) is an explicit TODO in the file.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Essentially bounded functions on the real line",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "of essentially bounded measurable functions on the real line is a commutative von Neumann algebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "L∞ exists as MeasureTheory.Lp but is not endowed with or characterized as a von Neumann algebra.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "All bounded operators on a Hilbert space",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "of all bounded operators on a Hilbert space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap",
+        "match_kind": "special_case"
+      },
+      "note": "B(H) = H →L[ℂ] H has a CStarAlgebra instance, but it is not established as a von Neumann algebra (no ⊤ : VonNeumannAlgebra H or WStarAlgebra instance exists).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "First definition: weakly closed *-algebra",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "The first and most common way is to define them as weakly closed *-algebras of bounded operators"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "VonNeumannAlgebra",
+        "module": "Mathlib.Analysis.VonNeumannAlgebra.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib defines VonNeumannAlgebra via the double commutant, not via weak-operator-topology closure, which is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Norm-closed *-algebras are C*-algebras",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "The *-algebras of bounded operators that are closed in the norm topology are C*-algebras"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "StarSubalgebra.to_cstarRing",
+        "module": "Mathlib.Analysis.CStarAlgebra.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Any StarSubalgebra of a CStarRing inherits the C⋆-identity, but the completeness/closedness packaging into a full CStarAlgebra is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Second definition: double commutant",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "The second definition is that a von Neumann algebra is a subalgebra of the bounded operators closed under involution"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "VonNeumannAlgebra",
+        "module": "Mathlib.Analysis.VonNeumannAlgebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "This is exactly Mathlib's definition: a StarSubalgebra of H →L[ℂ] H with centralizer_centralizer' giving S'' = S.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Von Neumann double commutant theorem",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "The von Neumann double commutant theorem ( von Neumann 1930 ) says that the first two definitions are equivalent."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "VonNeumannAlgebra.commutant_commutant",
+        "module": "Mathlib.Analysis.VonNeumannAlgebra.Basic",
+        "match_kind": null
+      },
+      "note": "Commutant machinery is present, but the theorem that weak closure equals the double commutant is explicitly noted as not yet proven.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Abstract definition via predual",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "Sakai (1971) showed that von Neumann algebras can also be defined abstractly as C*-algebras that have a predual"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WStarAlgebra",
+        "module": "Mathlib.Analysis.VonNeumannAlgebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "WStarAlgebra is defined as a CStarAlgebra possessing a Banach space predual, following Sakai.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness of the predual",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "The predual of a von Neumann algebra is in fact unique up to isomorphism."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "WStarAlgebra only asserts existence of a predual; uniqueness up to isomorphism is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Factor",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "A factor is a von Neumann algebra with trivial center"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of factor (von Neumann algebra with trivial center) is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Finite von Neumann algebra",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "A finite von Neumann algebra is one which is the direct integral of finite factors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Direct integral decomposition and finiteness for von Neumann algebras are absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Properly infinite von Neumann algebra",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "properly infinite von Neumann algebras are the direct integral of properly infinite factors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Proper infiniteness of von Neumann algebras is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Separable von Neumann algebra",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "A von Neumann algebra that acts on a separable Hilbert space is called separable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No separability notion for von Neumann algebras exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generated von Neumann algebra",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "The von Neumann algebra generated by a set of bounded operators on a Hilbert space is the smallest von Neumann algebra containing all those operators"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no lattice/closure or generation operation for VonNeumannAlgebra.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tensor product of von Neumann algebras",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "The tensor product of two von Neumann algebras acting on two Hilbert spaces is defined to be the von Neumann algebra generated by their algebraic tensor product"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Von Neumann algebra tensor products are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Von Neumann algebras are semihereditary",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "Von Neumann algebras are semihereditary : every finitely generated submodule of a projective module is itself projective"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No result on semiheredity of von Neumann algebras exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Affiliated operators form a von Neumann regular ring",
+      "anchor": {
+        "section": "Terminology",
+        "snippet": "The *-algebra of affiliated operators of a finite von Neumann algebra is a von Neumann regular ring"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Affiliated operators are not defined and no von Neumann regular ring notion is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Classification of commutative von Neumann algebras",
+      "anchor": {
+        "section": "Commutative von Neumann algebras",
+        "snippet": "Every commutative von Neumann algebra is isomorphic to L ∞ ( X ) for some measure space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Gelfand duality for commutative C⋆-algebras but not the L∞(X) classification of commutative von Neumann algebras.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projection",
+      "anchor": {
+        "section": "Projections",
+        "snippet": "Operators E in a von Neumann algebra for which E = EE = E* are called projections"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsStarProjection",
+        "module": "Mathlib.Algebra.Star.StarProjection",
+        "match_kind": "generalization"
+      },
+      "note": "IsStarProjection is defined as a self-adjoint idempotent (p*p = p, star p = p) in any star ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Subspace belonging to M",
+      "anchor": {
+        "section": "Projections",
+        "snippet": "A subspace of the Hilbert space H is said to belong to the von Neumann algebra M if it is the image of some projection in M"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of a subspace belonging to a von Neumann algebra is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "1:1 correspondence projections/subspaces",
+      "anchor": {
+        "section": "Projections",
+        "snippet": "This establishes a 1:1 correspondence between projections of M and subspaces that belong to M"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.Submodule",
+        "match_kind": null
+      },
+      "note": "The general correspondence between orthogonal/star projections and closed subspaces exists, but the von Neumann algebra-relative version (projections of M ↔ subspaces belonging to M) does not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closures of images and kernels belong to M",
+      "anchor": {
+        "section": "Projections",
+        "snippet": "It can be shown that the closure of the image of any operator in M and the kernel of any operator in M belongs to M"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This closure/kernel membership statement for von Neumann algebras is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Murray–von Neumann equivalence",
+      "anchor": {
+        "section": "Comparison theory of projections",
+        "snippet": "Two subspaces belonging to M are called ( Murray–von Neumann ) equivalent if there is a partial isometry mapping the first isomorphically onto the other"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Murray–von Neumann equivalence of projections via partial isometries is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Additivity of equivalence",
+      "anchor": {
+        "section": "Comparison theory of projections",
+        "snippet": "The equivalence relation ~ thus defined is additive in the following sense"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Additivity of Murray–von Neumann equivalence is not present (the equivalence itself is undefined).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Schröder–Bernstein theorem for operator algebras",
+      "anchor": {
+        "section": "Comparison theory of projections",
+        "snippet": "The Schröder–Bernstein theorems for operator algebras gives a sufficient condition for Murray-von Neumann equivalence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The operator-algebra Schröder–Bernstein theorem for projections is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Total order on equivalence classes in a factor",
+      "anchor": {
+        "section": "Comparison theory of projections",
+        "snippet": "If M is a factor, ≤ is a total order on equivalence classes of projections"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Comparison theory of projections in a factor is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Finite projection",
+      "anchor": {
+        "section": "Comparison theory of projections",
+        "snippet": "E is said to be a finite projection if there is no projection F < E"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Finite projections (in the Murray–von Neumann sense) are not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Von Neumann algebra generated by projections",
+      "anchor": {
+        "section": "Comparison theory of projections",
+        "snippet": "a von Neumann algebra is generated by its projections; this is a consequence of the spectral theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This generation result (only the finite/compact spectral theorem exists) is not formalized for von Neumann algebras.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Projections of a finite factor form a continuous geometry",
+      "anchor": {
+        "section": "Comparison theory of projections",
+        "snippet": "The projections of a finite factor form a continuous geometry ."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Continuous geometries and finite factors are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Factor (center is scalar multiples)",
+      "anchor": {
+        "section": "Factors",
+        "snippet": "A von Neumann algebra N whose center consists only of multiples of the identity operator is called a factor"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Although Subalgebra.center exists, factors (trivial-center von Neumann algebras) are not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Direct integral decomposition into factors",
+      "anchor": {
+        "section": "Factors",
+        "snippet": "every von Neumann algebra on a separable Hilbert space is isomorphic to a direct integral of factors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Direct integral decomposition into factors is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Every factor has one of three types",
+      "anchor": {
+        "section": "Factors",
+        "snippet": "Murray & von Neumann (1936) showed that every factor has one of 3 types as described below"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The type I/II/III classification of factors is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Unique decomposition into types I, II, III",
+      "anchor": {
+        "section": "Factors",
+        "snippet": "Every von Neumann algebra can be written uniquely as a sum of von Neumann algebras of types I, II, and III"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The type decomposition of von Neumann algebras is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Discrete and continuous factors",
+      "anchor": {
+        "section": "Factors",
+        "snippet": "A factor is called discrete (or occasionally tame ) if it has type I, and continuous"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Discrete/continuous classification of factors is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Semifinite and purely infinite factors",
+      "anchor": {
+        "section": "Factors",
+        "snippet": "A factor is called semifinite if it has type I or II, and purely infinite if it has type III"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Semifinite/purely infinite factor terminology is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Finite and properly infinite factors",
+      "anchor": {
+        "section": "Factors",
+        "snippet": "A factor is called finite if the projection 1 is finite and properly infinite otherwise"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Finiteness/proper infiniteness of factors is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Type I factor",
+      "anchor": {
+        "section": "Type I factors",
+        "snippet": "A factor is said to be of type I if there is a minimal projection E ≠ 0"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Type I factors and minimal projections are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Type I factors are B(H)",
+      "anchor": {
+        "section": "Type I factors",
+        "snippet": "Any factor of type I is isomorphic to the von Neumann algebra of all bounded operators on some Hilbert space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classification of type I factors as B(H) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Type II factor",
+      "anchor": {
+        "section": "Type II factors",
+        "snippet": "A factor is said to be of type II if there are no minimal projections but there are non-zero finite projections"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Type II factors are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Type II_1 and II_∞",
+      "anchor": {
+        "section": "Type II factors",
+        "snippet": "If the identity operator in a type II factor is finite, the factor is said to be of type II 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Type II_1 and II_∞ distinctions are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness of hyperfinite type II factors",
+      "anchor": {
+        "section": "Type II factors",
+        "snippet": "These are the unique hyperfinite factors of types II 1 and II ∞"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hyperfinite factors and their uniqueness are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Unique tracial state on a type II_1 factor",
+      "anchor": {
+        "section": "Type II factors",
+        "snippet": "Murray & von Neumann (1937) proved the fundamental result that a factor of type II 1 has a unique finite tracial state"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Tracial states and the uniqueness on type II_1 factors are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Semifinite trace on type II_∞ factor",
+      "anchor": {
+        "section": "Type II factors",
+        "snippet": "A factor of type II ∞ has a semifinite trace, unique up to rescaling"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Semifinite traces on type II_∞ factors are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fundamental group of a type II_∞ factor",
+      "anchor": {
+        "section": "Type II factors",
+        "snippet": "is called the fundamental group of the type II ∞ factor"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The fundamental group of a factor is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tensor product yields type II_∞",
+      "anchor": {
+        "section": "Type II factors",
+        "snippet": "The tensor product of a factor of type II 1 and an infinite type I factor has type II ∞"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Type computations of tensor products of factors are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fundamental group of a type II_1 factor",
+      "anchor": {
+        "section": "Type II factors",
+        "snippet": "The fundamental group of a type II 1 factor is defined to be the fundamental group of its tensor product"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The fundamental group of a type II_1 factor is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Connes: property (T) gives countable fundamental group",
+      "anchor": {
+        "section": "Type II factors",
+        "snippet": "Connes then showed that the von Neumann group algebra of a countable discrete group with Kazhdan's property (T)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This result of Connes is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Popa: trivial fundamental group",
+      "anchor": {
+        "section": "Type II factors",
+        "snippet": "Sorin Popa showed that the fundamental group can be trivial for certain groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Popa's trivial fundamental group result is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Type II_1 group von Neumann algebra (ICC group)",
+      "anchor": {
+        "section": "Type II factors",
+        "snippet": "An example of a type II 1 factor is the group von Neumann algebra of a countable infinite discrete group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Group von Neumann algebras and ICC examples are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "McDuff: uncountably many type II_1 factors",
+      "anchor": {
+        "section": "Type II factors",
+        "snippet": "McDuff (1969) found an uncountable family of such groups with non-isomorphic group von Neumann algebras"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "McDuff's family of type II_1 factors is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Type III factor",
+      "anchor": {
+        "section": "Type III factors",
+        "snippet": "type III factors are factors that do not contain any nonzero finite projections at all"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Type III factors are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Type III_λ via Connes spectrum",
+      "anchor": {
+        "section": "Type III factors",
+        "snippet": "if the Connes spectrum (of its modular group) is 1 then the factor is of type III 0"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Connes spectrum, modular groups, and type III_λ subclassification are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Trace and projections on type III factors",
+      "anchor": {
+        "section": "Type III factors",
+        "snippet": "The only trace on type III factors takes value ∞ on all non-zero positive elements"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Traces on type III factors are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Type III as crossed product (Tomita–Takesaki)",
+      "anchor": {
+        "section": "Type III factors",
+        "snippet": "any type III factor can be written in a canonical way as the crossed product of a type II ∞ factor and the real numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Tomita–Takesaki crossed product structure theorem is not formalized (only an early StandardSubspace toward modular theory exists).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Predual",
+      "anchor": {
+        "section": "The predual",
+        "snippet": "Any von Neumann algebra M has a predual M ∗ , which is the Banach space of all ultraweakly continuous linear functionals on M"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "WStarAlgebra",
+        "module": "Mathlib.Analysis.VonNeumannAlgebra.Basic",
+        "match_kind": null
+      },
+      "note": "WStarAlgebra.exists_predual asserts an abstract predual, but the concrete M_* as the space of ultraweakly continuous functionals is not constructed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "M is the dual of its predual",
+      "anchor": {
+        "section": "The predual",
+        "snippet": "As the name suggests, M is (as a Banach space) the dual of its predual"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "WStarAlgebra",
+        "module": "Mathlib.Analysis.VonNeumannAlgebra.Basic",
+        "match_kind": null
+      },
+      "note": "WStarAlgebra builds in an isometric isomorphism StrongDual ℂ X ≃ₗᵢ⋆ M, capturing 'M is the dual of its predual' for the asserted predual.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness of the predual",
+      "anchor": {
+        "section": "The predual",
+        "snippet": "The predual is unique in the sense that any other Banach space whose dual is M is canonically isomorphic to M ∗"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Uniqueness of the predual is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sakai: predual characterizes von Neumann algebras",
+      "anchor": {
+        "section": "The predual",
+        "snippet": "Sakai (1971) showed that the existence of a predual characterizes von Neumann algebras among C* algebras"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "WStarAlgebra",
+        "module": "Mathlib.Analysis.VonNeumannAlgebra.Basic",
+        "match_kind": null
+      },
+      "note": "Sakai's predual criterion is taken as the definition of WStarAlgebra, but its equivalence with the concrete VonNeumannAlgebra is not proven.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Predual is a proper closed subspace of the dual",
+      "anchor": {
+        "section": "The predual",
+        "snippet": "The predual M ∗ is a closed subspace of the dual M* (which consists of all norm-continuous linear functionals on M ) but is generally smaller"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The predual as a closed subspace of the dual is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Predual of L∞(R) is L1(R)",
+      "anchor": {
+        "section": "The predual",
+        "snippet": "The predual of the von Neumann algebra L ∞ ( R ) of essentially bounded functions on R is the Banach space L 1 ( R ) of integrable functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lp duality exists in part, but the predual-of-L∞ statement framed for von Neumann algebras is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Predual of B(H) is trace class operators",
+      "anchor": {
+        "section": "The predual",
+        "snippet": "The predual of the von Neumann algebra B ( H ) of bounded operators on a Hilbert space H is the Banach space of all trace class operators"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Trace-class operators (Schatten classes) are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Predual of VN(G) is the Fourier algebra",
+      "anchor": {
+        "section": "The predual",
+        "snippet": "The predual of the group von Neumann algebra VN ( G ) associated to the left regular representation of a locally compact group G is the Fourier algebra A ( G )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the group von Neumann algebra nor the Fourier algebra is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Weight",
+      "anchor": {
+        "section": "Weights, states, and traces",
+        "snippet": "A weight ω on a von Neumann algebra is a linear map from the set of positive elements"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Weights on (von Neumann/C⋆-)algebras are not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Positive linear functional",
+      "anchor": {
+        "section": "Weights, states, and traces",
+        "snippet": "A positive linear functional is a weight with ω(1) finite"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PositiveLinearMap",
+        "module": "Mathlib.Algebra.Order.Module.PositiveLinearMap",
+        "match_kind": "generalization"
+      },
+      "note": "Positive linear maps (and the C⋆ specialization →ₚ[ℂ]) are defined, of which positive linear functionals A →ₚ[ℂ] ℂ are the special case, but the weight framework is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "State",
+      "anchor": {
+        "section": "Weights, states, and traces",
+        "snippet": "A state is a weight with ω(1) = 1."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No normalized-state (ω(1) = 1) structure is defined for C⋆/von Neumann algebras.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Trace",
+      "anchor": {
+        "section": "Weights, states, and traces",
+        "snippet": "A trace is a weight with ω( aa* ) = ω( a*a ) for all a ."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Traces as tracial weights on operator algebras are not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tracial state",
+      "anchor": {
+        "section": "Weights, states, and traces",
+        "snippet": "A tracial state is a trace with ω(1) = 1."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Tracial states are not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Unique trace on a factor",
+      "anchor": {
+        "section": "Weights, states, and traces",
+        "snippet": "Any factor has a trace such that the trace of a non-zero projection is non-zero"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Existence/uniqueness of traces on factors is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Normal state from a unit vector (GNS)",
+      "anchor": {
+        "section": "Weights, states, and traces",
+        "snippet": "then the functional a → ( av , v ) is a normal state"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PositiveLinearMap.GNS",
+        "module": "Mathlib.Analysis.CStarAlgebra.GelfandNaimarkSegal",
+        "match_kind": null
+      },
+      "note": "The GNS construction from a positive functional is formalized, but the vector-state functional a ↦ ⟨av, v⟩ and its normality are not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Classification of modules by M-dimension",
+      "anchor": {
+        "section": "Modules over a factor",
+        "snippet": "every such module H can be given an M -dimension"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "M-dimension of modules over a factor is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Standard module",
+      "anchor": {
+        "section": "Modules over a factor",
+        "snippet": "A module is called standard if it has a cyclic separating vector"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "StandardSubspace",
+        "module": "Mathlib.Analysis.InnerProductSpace.StandardSubspace",
+        "match_kind": null
+      },
+      "note": "Cyclic and separating notions are formalized for standard subspaces (toward Tomita–Takesaki), but standard modules over a factor are not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence and uniqueness of standard representation",
+      "anchor": {
+        "section": "Modules over a factor",
+        "snippet": "Each factor has a standard representation, which is unique up to isomorphism"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Standard representations of factors are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Equivalent characterizations of amenability",
+      "anchor": {
+        "section": "Amenable von Neumann algebras",
+        "snippet": "Connes (1976) and others proved that the following conditions on a von Neumann algebra M on a separable Hilbert space H are all equivalent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Amenability/injectivity of von Neumann algebras is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Classification of amenable factors",
+      "anchor": {
+        "section": "Amenable von Neumann algebras",
+        "snippet": "The amenable factors have been classified: there is a unique one of each of the types"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Connes' classification of amenable factors is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Amenable factors via group-measure space construction",
+      "anchor": {
+        "section": "Amenable von Neumann algebras",
+        "snippet": "All amenable factors can be constructed using the group-measure space construction of Murray and von Neumann"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The group-measure space construction is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finiteness of tensor products",
+      "anchor": {
+        "section": "Tensor products of von Neumann algebras",
+        "snippet": "The tensor product of two finite algebras is finite, and the tensor product of an infinite algebra and a non-zero algebra is infinite"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Tensor products of von Neumann algebras and their finiteness are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Type of a tensor product is the maximum",
+      "anchor": {
+        "section": "Tensor products of von Neumann algebras",
+        "snippet": "The type of the tensor product of two von Neumann algebras (I, II, or III) is the maximum of their types"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Type behavior under tensor products is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Commutation theorem for tensor products",
+      "anchor": {
+        "section": "Tensor products of von Neumann algebras",
+        "snippet": "The commutation theorem for tensor products states that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The commutation theorem for tensor products is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Infinite tensor product via states",
+      "anchor": {
+        "section": "Tensor products of von Neumann algebras",
+        "snippet": "von Neumann (1938) showed that one should choose a state on each of the von Neumann algebras"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Infinite tensor products with respect to states are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Araki–Woods (ITPFI) factors",
+      "anchor": {
+        "section": "Tensor products of von Neumann algebras",
+        "snippet": "Araki & Woods (1968) studied the case where all the factors are finite matrix algebras"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Araki–Woods (ITPFI) factors are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Powers factors",
+      "anchor": {
+        "section": "Tensor products of von Neumann algebras",
+        "snippet": "Powers (1967) found an uncountable family of non-isomorphic hyperfinite type III λ factors for 0 < λ < 1, called Powers factors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Powers factors are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hyperfinite (not III_0) factors are Araki–Woods",
+      "anchor": {
+        "section": "Tensor products of von Neumann algebras",
+        "snippet": "All hyperfinite von Neumann algebras not of type III 0 are isomorphic to Araki–Woods factors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This classification of hyperfinite factors is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bimodule (correspondence)",
+      "anchor": {
+        "section": "Bimodules and subfactors",
+        "snippet": "A bimodule (or correspondence) is a Hilbert space H with module actions of two commuting von Neumann algebras"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hilbert bimodules/correspondences over von Neumann algebras are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bimodules yield subfactors",
+      "anchor": {
+        "section": "Bimodules and subfactors",
+        "snippet": "Any bimodule over two factors always gives a subfactor since one of the factors is always contained in the commutant of the other"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Subfactors from bimodules are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Voiculescu: disjointness of non-amenable factor classes",
+      "anchor": {
+        "section": "Non-amenable factors",
+        "snippet": "Voiculescu has shown that the class of non-amenable factors coming from the group-measure space construction is disjoint from the class coming from group von Neumann algebras of free groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Voiculescu's free-probability disjointness result is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Ozawa: hyperbolic groups give prime II_1 factors",
+      "anchor": {
+        "section": "Non-amenable factors",
+        "snippet": "Narutaka Ozawa proved that group von Neumann algebras of hyperbolic groups yield prime type II 1 factors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ozawa's primeness theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Essentially bounded functions on a σ-finite measure space",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The essentially bounded functions on a σ-finite measure space form a commutative (type I 1 ) von Neumann algebra acting on the L 2 functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "L∞ acting on L² is not formalized as a von Neumann algebra.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Kaplansky density theorem",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "A fundamental approximation theorem can be represented by the Kaplansky density theorem ."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Kaplansky density theorem for von Neumann algebras is not in Mathlib (the Kaplansky hits are unrelated ring/cardinality results).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Bounded operators on a Hilbert space (type I factor)",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The bounded operators on any Hilbert space form a von Neumann algebra, indeed a factor, of type I"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap",
+        "match_kind": "special_case"
+      },
+      "note": "B(H) is a CStarAlgebra in Mathlib, but it is not established as a (type I factor) von Neumann algebra.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Commutant of a unitary group representation",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the bounded operators commuting with G form a von Neumann algebra G ′"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "VonNeumannAlgebra.commutant",
+        "module": "Mathlib.Analysis.VonNeumannAlgebra.Basic",
+        "match_kind": null
+      },
+      "note": "The commutant of a VonNeumannAlgebra is a VonNeumannAlgebra, but that the commutant of an arbitrary unitary group representation is a von Neumann algebra is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Von Neumann group algebra of a discrete group",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The von Neumann group algebra of a discrete group G is the algebra of all bounded operators"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Group von Neumann algebras are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Tensor product as a von Neumann algebra",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The tensor product of two von Neumann algebras, or of a countable number with states, is a von Neumann algebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Von Neumann algebra tensor products are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Crossed product by a group",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The crossed product of a von Neumann algebra by a discrete (or more generally locally compact) group can be defined, and is a von Neumann algebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Crossed products of von Neumann algebras are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Von Neumann algebras of equivalence relations and groupoids",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The von Neumann algebras of a measurable equivalence relation and a measurable groupoid can be defined"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Von Neumann algebras of equivalence relations/groupoids are not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

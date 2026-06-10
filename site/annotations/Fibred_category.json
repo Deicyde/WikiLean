@@ -1,0 +1,713 @@
+{
+  "slug": "Fibred_category",
+  "wikipedia_title": "Fibred category",
+  "display_title": "Fibred category",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Fibre category",
+      "anchor": {
+        "section": "Cartesian morphisms and functor",
+        "snippet": "is called the fibre category (or fibre ) over"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor.Fiber",
+        "module": "Mathlib.CategoryTheory.FiberedCategory.Fiber",
+        "match_kind": "exact"
+      },
+      "note": "`Functor.Fiber p S` is the category of objects mapping to `S` with morphisms lying over `𝟙 S`, exactly the fibre category.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cartesian morphism",
+      "anchor": {
+        "section": "Cartesian morphisms and functor",
+        "snippet": "(or simply cartesian ) if it satisfies the following condition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor.IsStronglyCartesian",
+        "module": "Mathlib.CategoryTheory.FiberedCategory.Cartesian",
+        "match_kind": "exact"
+      },
+      "note": "Wikipedia's cartesian morphism (the lifting/factorization universal property, Stacks 02XK) is Mathlib's `IsStronglyCartesian`; `IsCartesian` is the weaker over-identity variant.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inverse image",
+      "anchor": {
+        "section": "Cartesian morphisms and functor",
+        "snippet": "is called an inverse image of its projection"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor.IsPreFibered.pullbackObj",
+        "module": "Mathlib.CategoryTheory.FiberedCategory.Fibered",
+        "match_kind": "exact"
+      },
+      "note": "`pullbackObj` is the domain of a chosen cartesian lift of `f` over `a`, i.e. a chosen inverse image of `a`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cartesian morphisms of a fibre are isomorphisms",
+      "anchor": {
+        "section": "Cartesian morphisms and functor",
+        "snippet": "The cartesian morphisms of a fibre category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor.IsStronglyCartesian.isIso_of_base_isIso",
+        "module": "Mathlib.CategoryTheory.FiberedCategory.Cartesian",
+        "match_kind": "generalization"
+      },
+      "note": "A strongly cartesian morphism over an iso is an iso; specializing the base to `𝟙` gives that cartesian morphisms within a fibre are isomorphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverse images unique up to isomorphism",
+      "anchor": {
+        "section": "Cartesian morphisms and functor",
+        "snippet": "two such inverse images are isomorphic in"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor.IsCartesian.domainUniqueUpToIso",
+        "module": "Mathlib.CategoryTheory.FiberedCategory.Cartesian",
+        "match_kind": "exact"
+      },
+      "note": "`domainUniqueUpToIso` gives the canonical isomorphism between the domains (inverse images) of two cartesian arrows over the same morphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "S-category (category over S)",
+      "anchor": {
+        "section": "Cartesian morphisms and functor",
+        "snippet": "or a category over"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.BasedCategory",
+        "module": "Mathlib.CategoryTheory.FiberedCategory.BasedCategory",
+        "match_kind": "exact"
+      },
+      "note": "`BasedCategory 𝒮` is a category equipped with a functor to `𝒮`, exactly a category over `S`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "S-categories form a 2-category",
+      "anchor": {
+        "section": "Cartesian morphisms and functor",
+        "snippet": "form in a natural manner a 2-category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.BasedCategory.bicategory",
+        "module": "Mathlib.CategoryTheory.FiberedCategory.BasedCategory",
+        "match_kind": "exact"
+      },
+      "note": "`BasedCategory.bicategory` plus the `Bicategory.Strict` instance make categories over `𝒮` a strict bicategory, i.e. a 2-category.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cartesian functor",
+      "anchor": {
+        "section": "Cartesian morphisms and functor",
+        "snippet": "is called a cartesian functor if it takes cartesian morphisms to cartesian morphisms"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.BasedFunctor",
+        "module": "Mathlib.CategoryTheory.FiberedCategory.BasedCategory",
+        "match_kind": null
+      },
+      "note": "`BasedFunctor` (functor over `𝒮`) is formalized, but no class for a functor preserving cartesian morphisms exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cartesian section",
+      "anchor": {
+        "section": "Cartesian morphisms and functor",
+        "snippet": "is called a cartesian section"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of a cartesian section of a fibred category is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Section functor is fully faithful (Giraud Lemma 5.7)",
+      "anchor": {
+        "section": "Cartesian morphisms and functor",
+        "snippet": "is fully faithful (Lemma 5.7 of Giraud"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The full faithfulness of the cartesian-section functor (Giraud) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fibred category",
+      "anchor": {
+        "section": "Fibred categories and cloven categories",
+        "snippet": "is a fibred category (or a fibred"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor.IsFibered",
+        "module": "Mathlib.CategoryTheory.FiberedCategory.Fibered",
+        "match_kind": "exact"
+      },
+      "note": "`Functor.IsFibered p` formalizes a fibred category as in SGA 1 VI.6.1 (prefibered plus cartesian morphisms closed under composition).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cartesian sections equivalent to fibre over terminal object",
+      "anchor": {
+        "section": "Fibred categories and cloven categories",
+        "snippet": "is an equivalence of categories and moreover surjective on objects"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The equivalence between cartesian sections and the fibre over a terminal object is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cleavage and transport morphisms",
+      "anchor": {
+        "section": "Fibred categories and cloven categories",
+        "snippet": "is called a cleavage and the selected morphisms are called the transport morphisms"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor.IsPreFibered.pullbackMap",
+        "module": "Mathlib.CategoryTheory.FiberedCategory.Fibered",
+        "match_kind": null
+      },
+      "note": "`pullbackMap` provides individually chosen cartesian lifts (transport morphisms) via choice, but there is no packaged `Cleavage` structure on a fibred category.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cloven category",
+      "anchor": {
+        "section": "Fibred categories and cloven categories",
+        "snippet": "together with a cleavage is called a cloven category"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Pseudofunctor",
+        "module": "Mathlib.CategoryTheory.Bicategory.Functor.Pseudofunctor",
+        "match_kind": null
+      },
+      "note": "Cloven-category data is equivalent to a pseudofunctor `𝒮ᵒᵖ ⥤ Cat`, which Mathlib formalizes, but the cloven-category structure on a fibred category is not defined directly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Normalised cleavage",
+      "anchor": {
+        "section": "Fibred categories and cloven categories",
+        "snippet": "is called normalised if the transport morphisms include all identities in"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no notion of a normalised cleavage (identities being among the transport morphisms) in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compatibility isomorphism of inverse image functors",
+      "anchor": {
+        "section": "Fibred categories and cloven categories",
+        "snippet": "then there is an isomorphism of functors"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Pseudofunctor.mapComp",
+        "module": "Mathlib.CategoryTheory.Bicategory.Functor.Pseudofunctor",
+        "match_kind": null
+      },
+      "note": "The comparison iso `(f≫g)* ≅ g* ⋙ f*` is the pseudofunctor field `mapComp`, but it is given as data, not derived from a cleavage on a fibred category.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cocycle compatibilities",
+      "anchor": {
+        "section": "Fibred categories and cloven categories",
+        "snippet": "These isomorphisms satisfy the following two compatibilities"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Pseudofunctor.map₂_associator",
+        "module": "Mathlib.CategoryTheory.Bicategory.Functor.Pseudofunctor",
+        "match_kind": null
+      },
+      "note": "The associativity/unit cocycle conditions are the pseudofunctor coherence axioms (`map₂_associator`, unitors), expressed as pseudofunctor laws rather than properties of a cleavage.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reconstruction of cloven category from functors",
+      "anchor": {
+        "section": "Fibred categories and cloven categories",
+        "snippet": "satisfying the compatibilities above, defines a cloven category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Pseudofunctor.CoGrothendieck.forget",
+        "module": "Mathlib.CategoryTheory.FiberedCategory.Grothendieck",
+        "match_kind": "invocation"
+      },
+      "note": "The Grothendieck construction `∫ᶜ F` of a pseudofunctor yields `forget F`, which carries an `IsFibered` instance, reconstructing the cloven/fibred category from the functor data.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Splitting and split category",
+      "anchor": {
+        "section": "Splittings and split fibred categories",
+        "snippet": "is called a splitting , and a fibred category with a splitting is called a split (fibred) category"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Grothendieck",
+        "module": "Mathlib.CategoryTheory.Grothendieck",
+        "match_kind": null
+      },
+      "note": "A split category is the Grothendieck construction of a genuine functor to `Cat`, realized by `CategoryTheory.Grothendieck`, but a `splitting` structure on a fibred category is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Split categories correspond to true functors",
+      "anchor": {
+        "section": "Splittings and split fibred categories",
+        "snippet": "correspond exactly to true functors from"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Grothendieck",
+        "module": "Mathlib.CategoryTheory.Grothendieck",
+        "match_kind": null
+      },
+      "note": "`Grothendieck` builds a split fibration from a functor `C ⥤ Cat`, giving one direction, but the equivalence (correspondence) of split categories with true functors is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Not all fibred categories admit splittings",
+      "anchor": {
+        "section": "Splittings and split fibred categories",
+        "snippet": "not all fibred categories admit splittings"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no Mathlib result that some fibred category admits no splitting.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Co-cartesian morphism",
+      "anchor": {
+        "section": "Co-cartesian morphisms and co-fibred categories",
+        "snippet": "is called co-cartesian if it is cartesian for the opposite functor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor.IsStronglyCocartesian",
+        "module": "Mathlib.CategoryTheory.FiberedCategory.Cocartesian",
+        "match_kind": "exact"
+      },
+      "note": "`IsCocartesian`/`IsStronglyCocartesian` formalize co-cartesian morphisms via the dual universal property.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Co-fibred category",
+      "anchor": {
+        "section": "Co-cartesian morphisms and co-fibred categories",
+        "snippet": "such that direct image exists for each morphism in"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Functor.IsStronglyCocartesian",
+        "module": "Mathlib.CategoryTheory.FiberedCategory.Cocartesian",
+        "match_kind": null
+      },
+      "note": "Co-cartesian morphisms are formalized, but there is no `IsCofibered`/opfibered class asserting direct images exist for every morphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Co-cleavage and co-splitting",
+      "anchor": {
+        "section": "Co-cartesian morphisms and co-fibred categories",
+        "snippet": "A co-cleavage and a co-splitting are defined similarly"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No co-cleavage or co-splitting notions exist in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "2-category of fibred categories",
+      "anchor": {
+        "section": "The 2-categories of fibred categories and split categories",
+        "snippet": "The categories fibred over a fixed category"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.BasedCategory.bicategory",
+        "module": "Mathlib.CategoryTheory.FiberedCategory.BasedCategory",
+        "match_kind": null
+      },
+      "note": "The bicategory of all categories over `𝒮` is formalized, but the sub-2-category of fibred categories (with cartesian functors) is not carved out separately.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "2-category of split categories",
+      "anchor": {
+        "section": "The 2-categories of fibred categories and split categories",
+        "snippet": "Similarly the split categories over"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The 2-category of split categories over `𝒮` is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Forgetful 2-functor",
+      "anchor": {
+        "section": "The 2-categories of fibred categories and split categories",
+        "snippet": "that simply forgets the splitting"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Since splittings are not formalized, the forgetful 2-functor from split to fibred categories is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Every fibred category is equivalent to a split category",
+      "anchor": {
+        "section": "Existence of equivalent split categories",
+        "snippet": "each fibred category is in fact equivalent to a split category"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The theorem that every fibred category is equivalent to a split one is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Left and right 2-adjoints to forgetful functor (Giraud)",
+      "anchor": {
+        "section": "Existence of equivalent split categories",
+        "snippet": "admits a right 2-adjoint"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Giraud's left/right 2-adjoints to the forgetful 2-functor are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Adjunction functors are cartesian equivalences",
+      "anchor": {
+        "section": "Existence of equivalent split categories",
+        "snippet": "are both cartesian and equivalences"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No result that the relevant adjunction functors are cartesian equivalences exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Categories fibered in groupoids",
+      "anchor": {
+        "section": "Categories fibered in groupoids",
+        "snippet": "called categories fibered in groupoids"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no `fibered in groupoids` definition in Mathlib (the fibre categories being groupoids is not formalized).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Objects functor Cat to Set is a fibration",
+      "anchor": {
+        "section": "Fibered categories",
+        "snippet": "sending a category to its set of objects, is a fibration"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Cat.objects",
+        "module": "Mathlib.CategoryTheory.Category.Cat",
+        "match_kind": null
+      },
+      "note": "The functor `Cat.objects : Cat ⥤ Type` exists, but it is not equipped with or proved to be a fibration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Category of arrows",
+      "anchor": {
+        "section": "Fibered categories",
+        "snippet": "Categories of arrows : For any category"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Arrow",
+        "module": "Mathlib.CategoryTheory.Comma.Arrow",
+        "match_kind": null
+      },
+      "note": "The arrow category `Arrow C` (as a comma category) exists, but its codomain fibration structure is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fibrations of graphs",
+      "anchor": {
+        "section": "Fibered categories",
+        "snippet": "Fibrations of graphs : Each directed graph"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fibrations of graphs as a fibred category are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fibre bundles",
+      "anchor": {
+        "section": "Fibered categories",
+        "snippet": "Fibre bundles : Fibre products exist in the category"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fibre bundles over Top as a fibred category (via pullback) are not formalized, though fibre bundles themselves exist elsewhere.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Vector bundles",
+      "anchor": {
+        "section": "Fibered categories",
+        "snippet": "Vector bundles : In a manner similar to the previous examples"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Vector bundles as a fibred category are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sheaves on topological spaces",
+      "anchor": {
+        "section": "Fibered categories",
+        "snippet": "Sheaves on topological spaces : The inverse image functors of sheaves"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The fibred-category structure on sheaves via inverse-image functors over Top is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sheaves on topoi",
+      "anchor": {
+        "section": "Fibered categories",
+        "snippet": "Sheaves on topoi : If"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The fibred category of sheaves on topoi is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Quasi-coherent sheaves on schemes",
+      "anchor": {
+        "section": "Fibered categories",
+        "snippet": "Quasi-coherent sheaves form a fibred category over the category of schemes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quasi-coherent sheaves as a fibred category over schemes are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fibred category admitting no splitting",
+      "anchor": {
+        "section": "Fibered categories",
+        "snippet": "Fibred category admitting no splitting : A group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This counterexample of a fibred category with no splitting is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Co-fibred category of sheaves",
+      "anchor": {
+        "section": "Fibered categories",
+        "snippet": "The direct image functor of sheaves makes the categories of sheaves on topological spaces into a co-fibred category"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The co-fibred category of sheaves via direct-image functors is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Groupoid objects internal to a category",
+      "anchor": {
+        "section": "Category fibered in groupoids",
+        "snippet": "comes from groupoid objects internal to a category"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Internal groupoid objects (and their associated fibrations in groupoids) are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Group quotient [X/G]",
+      "anchor": {
+        "section": "Group quotient",
+        "snippet": "Given a group object"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The quotient stack `[X/G]` as a fibred category in groupoids is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Two-term chain complex",
+      "anchor": {
+        "section": "Two-term chain complex",
+        "snippet": "For an abelian category"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The fibred-in-groupoids example arising from a two-term chain complex is not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

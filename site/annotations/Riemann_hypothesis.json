@@ -1,0 +1,1495 @@
+{
+  "slug": "Riemann_hypothesis",
+  "wikipedia_title": "Riemann hypothesis",
+  "display_title": "Riemann hypothesis",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "theorem",
+      "label": "Riemann hypothesis",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The real part of every nontrivial zero of the Riemann zeta function is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RiemannHypothesis",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": "exact"
+      },
+      "note": "`RiemannHypothesis` is defined as the proposition that every non-trivial zero of `riemannZeta` has real part 1/2.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Trivial zeros of zeta",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "These are called its trivial zeros"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "riemannZeta_neg_two_mul_nat_add_one",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves ζ(−2(n+1)) = 0 but does not introduce a named definition for the set of trivial zeros.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Nontrivial zeros of zeta",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "which are called nontrivial zeros"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "RiemannHypothesis",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": "invocation"
+      },
+      "note": "The exclusion condition for non-trivial zeros appears inline in `RiemannHypothesis` but is not separately named; `riemannZetaZeros` defines all zeros, not just non-trivial ones.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Critical line",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "all the nontrivial zeros lie on the critical line"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "RiemannHypothesis",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": "invocation"
+      },
+      "note": "The condition `s.re = 1/2` is used inside `RiemannHypothesis`, but the critical line is not given its own definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Riemann zeta function (Dirichlet series)",
+      "anchor": {
+        "section": "Riemann zeta function",
+        "snippet": "by the absolutely convergent infinite series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "zeta_eq_tsum_one_div_nat_cpow",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": "exact"
+      },
+      "note": "Theorem establishing `riemannZeta s = ∑' n, 1 / n^s` for `1 < re s`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler product formula",
+      "anchor": {
+        "section": "Riemann zeta function",
+        "snippet": "it equals the Euler product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "riemannZeta_eulerProduct_tprod",
+        "module": "Mathlib.NumberTheory.EulerProduct.DirichletLSeries",
+        "match_kind": "exact"
+      },
+      "note": "States ∏' p prime, (1 − p^(−s))⁻¹ = riemannZeta s for re s > 1.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zeta–eta relation",
+      "anchor": {
+        "section": "Riemann zeta function",
+        "snippet": "the series for the zeta function and the Dirichlet eta function satisfy the relation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Dirichlet eta function appears in Mathlib and no zeta–eta identity was located.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Functional equation of zeta",
+      "anchor": {
+        "section": "Riemann zeta function",
+        "snippet": "this extension of the zeta function satisfies the functional equation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "riemannZeta_one_sub",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": "exact"
+      },
+      "note": "Gives ζ(1−s) = 2(2π)^(−s) Γ(s) cos(πs/2) ζ(s); `completedRiemannZeta_one_sub` gives the symmetric form for Λ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Trivial zeros at negative even integers",
+      "anchor": {
+        "section": "Riemann zeta function",
+        "snippet": "these are the zeta function's trivial zeros"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "riemannZeta_neg_two_mul_nat_add_one",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": "exact"
+      },
+      "note": "States ζ(−2(n+1)) = 0 for every natural n.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Value zeta(0) = -1/2",
+      "anchor": {
+        "section": "Riemann zeta function",
+        "snippet": "The value ζ (0) = −1/2 is not determined by the functional equation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "riemannZeta_zero",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": "exact"
+      },
+      "note": "Proves `riemannZeta 0 = -1/2`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Riemann's prime/prime-power counting function",
+      "anchor": {
+        "section": "Origin",
+        "snippet": "which counts the primes and prime powers up to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`Nat.primeCounting` (π) exists but the weighted Riemann J(x) function counting prime powers with weight 1/n is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Recovering primes via Möbius inversion",
+      "anchor": {
+        "section": "Origin",
+        "snippet": "The number of primes can be recovered from this function by using the Möbius inversion formula"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.ArithmeticFunction.sum_eq_iff_sum_smul_moebius_eq",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Moebius",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has general Möbius inversion, but the specific recovery formula π(x) = Σ μ(n)/n · J(x^{1/n}) is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Riemann's explicit formula",
+      "anchor": {
+        "section": "Origin",
+        "snippet": "Riemann's formula is then"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Riemann's explicit formula for J(x) in terms of zeta zeros was not located in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Logarithmic integral function (Cauchy principal value)",
+      "anchor": {
+        "section": "Origin",
+        "snippet": "is the (unoffset) logarithmic integral function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The logarithmic integral li(x) is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "von Koch's prime number theorem error bound under RH",
+      "anchor": {
+        "section": "Distribution of prime numbers",
+        "snippet": "Helge von Koch proved that the Riemann hypothesis implies"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The √x log x error bound for π(x) − li(x) under RH is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Schoenfeld's bound on Chebyshev's psi under RH",
+      "anchor": {
+        "section": "Distribution of prime numbers",
+        "snippet": "Schoenfeld (1976) also showed that the Riemann hypothesis implies"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Schoenfeld's explicit ψ(x) − x bound under RH is not in Mathlib (Chebyshev.psi is defined but no conditional bound).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Dudek's explicit Cramér-type prime gap under RH",
+      "anchor": {
+        "section": "Distribution of prime numbers",
+        "snippet": "Adrian Dudek"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dudek's explicit gap bound under RH was not located.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Möbius Dirichlet series equivalence to RH",
+      "anchor": {
+        "section": "Growth of arithmetic functions",
+        "snippet": "is valid for every s with real part greater than 1/2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The convergence-of-Σμ(n)/n^s ⇔ RH equivalence is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Mertens function",
+      "anchor": {
+        "section": "Growth of arithmetic functions",
+        "snippet": "if the Mertens function is defined by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Mertens` function exists in Mathlib (`mertens` matches only an unrelated file).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Littlewood's Mertens-function bound equivalent to RH",
+      "anchor": {
+        "section": "Growth of arithmetic functions",
+        "snippet": "for every positive ε is equivalent to the Riemann hypothesis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The M(x) = O(x^{1/2+ε}) ⇔ RH equivalence is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Soundararajan's conditional bound on M(x)",
+      "anchor": {
+        "section": "Growth of arithmetic functions",
+        "snippet": "Soundararajan's result is that, conditional on the Riemann hypothesis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Soundararajan's conditional bound on the Mertens function is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Disproof of the Mertens conjecture",
+      "anchor": {
+        "section": "Growth of arithmetic functions",
+        "snippet": "disproved the slightly stronger Mertens conjecture"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Odlyzko–te Riele's disproof is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Björner's Euler-characteristic equivalence",
+      "anchor": {
+        "section": "Growth of arithmetic functions",
+        "snippet": "Another closely related result is due to Björner"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Björner's order-complex Euler characteristic criterion is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Robin's theorem",
+      "anchor": {
+        "section": "Growth of arithmetic functions",
+        "snippet": "A typical example is Robin's theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Robin's σ(n) < e^γ n log log n criterion is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lagarias's harmonic-number criterion",
+      "anchor": {
+        "section": "Growth of arithmetic functions",
+        "snippet": "A related bound was given by Jeffrey Lagarias in 2002"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lagarias's harmonic-number criterion equivalent to RH is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Totient/primorial inequality equivalent to RH",
+      "anchor": {
+        "section": "Growth of arithmetic functions",
+        "snippet": "The Riemann hypothesis is also true if and only if the inequality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Although `primorial` and `Nat.totient` exist, the Nicolas inequality equivalent to RH is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Franel–Landau Farey sequence equivalence",
+      "anchor": {
+        "section": "Growth of arithmetic functions",
+        "snippet": "The Riemann hypothesis is equivalent to several statements showing that the terms of the Farey sequence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Farey sequences and their RH equivalence are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Massias–Nicolas–Robin bound on Landau's g(n)",
+      "anchor": {
+        "section": "Growth of arithmetic functions",
+        "snippet": "if g ( n ) is Landau's function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Landau's g(n) and the related bound are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lindelöf hypothesis",
+      "anchor": {
+        "section": "Lindelöf hypothesis and growth of the zeta function",
+        "snippet": "the Lindelöf hypothesis on the rate of growth of the zeta function on the critical line"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Lindelöf hypothesis is not stated in Mathlib (only unrelated `Lindelöf` topology hits).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "RH bounds for growth of zeta in the critical strip",
+      "anchor": {
+        "section": "Lindelöf hypothesis and growth of the zeta function",
+        "snippet": "The Riemann hypothesis also implies quite sharp bounds for the growth rate of the zeta function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Conditional growth bounds for ζ on the critical strip are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cramér's prime gap bound under RH",
+      "anchor": {
+        "section": "Large prime gap conjecture",
+        "snippet": "Cramér proved that, assuming the Riemann hypothesis, every gap is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cramér's O(√p log p) prime gap result under RH is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Riesz criterion",
+      "anchor": {
+        "section": "Analytic criteria equivalent to the Riemann hypothesis",
+        "snippet": "The Riesz criterion was given by Riesz"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Riesz criterion is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Nyman's density criterion",
+      "anchor": {
+        "section": "Analytic criteria equivalent to the Riemann hypothesis",
+        "snippet": "Nyman (1950) proved that the Riemann hypothesis is true if and only if the space of functions of the form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Nyman's L²-density criterion is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Beurling extension of Nyman's criterion",
+      "anchor": {
+        "section": "Analytic criteria equivalent to the Riemann hypothesis",
+        "snippet": "Beurling (1955) extended this by showing that the zeta function has no zeros"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Beurling's Lᵖ extension of Nyman's criterion is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Salem's integral equation criterion",
+      "anchor": {
+        "section": "Analytic criteria equivalent to the Riemann hypothesis",
+        "snippet": "Salem (1953) showed that the Riemann hypothesis is true if and only if the integral equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Salem's integral equation criterion is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Weil's positivity criterion",
+      "anchor": {
+        "section": "Analytic criteria equivalent to the Riemann hypothesis",
+        "snippet": "Weil's criterion is the statement that the positivity of a certain function is equivalent to the Riemann hypothesis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Weil's positivity criterion is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Li's criterion",
+      "anchor": {
+        "section": "Analytic criteria equivalent to the Riemann hypothesis",
+        "snippet": "Related is Li's criterion"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Li's criterion (positivity of λ_n) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Speiser's equivalence (zeros of zeta')",
+      "anchor": {
+        "section": "Analytic criteria equivalent to the Riemann hypothesis",
+        "snippet": "Speiser (1934) proved that the Riemann hypothesis is equivalent to the statement"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Speiser's equivalence (RH ⇔ ζ' has no zeros left of critical line) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Simple critical-line zeros equivalence",
+      "anchor": {
+        "section": "Analytic criteria equivalent to the Riemann hypothesis",
+        "snippet": "That ζ ( s ) has only simple zeros on the critical line is equivalent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Equivalence of simple-zeros to a divisor-function bound is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "de Bruijn–Newman constant",
+      "anchor": {
+        "section": "Analytic criteria equivalent to the Riemann hypothesis",
+        "snippet": "The de Bruijn–Newman constant denoted by Λ"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The de Bruijn–Newman constant is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Grönwall: GRH implies Gauss's class-number-1 list complete",
+      "anchor": {
+        "section": "Consequences of the generalized Riemann hypothesis",
+        "snippet": "In 1913, Grönwall showed that the generalized Riemann hypothesis implies"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grönwall's conditional list of class-number-1 imaginary quadratic fields is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hardy–Littlewood (1917) on Chebyshev's bias under GRH",
+      "anchor": {
+        "section": "Consequences of the generalized Riemann hypothesis",
+        "snippet": "In 1917, Hardy and Littlewood showed that the generalized Riemann hypothesis implies a conjecture of Chebyshev"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chebyshev's bias conjecture under GRH is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Consequences of the generalized Riemann hypothesis",
+          "snippet": "In 1917, Hardy and Littlewood showed that the generalized Riemann hypothesis implies a conjecture of Chebyshev"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{x\\to 1^{-}}\\sum _{p&gt;2}(-1)^{(p+1)/2}x^{p}=+\\infty ,}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Hardy–Littlewood (1923) on ternary Goldbach under GRH",
+      "anchor": {
+        "section": "Consequences of the generalized Riemann hypothesis",
+        "snippet": "In 1923, Hardy and Littlewood showed that the generalized Riemann hypothesis implies a weak form of the Goldbach conjecture"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hardy–Littlewood's conditional ternary Goldbach result is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Chowla's bound on least prime in AP under GRH",
+      "anchor": {
+        "section": "Consequences of the generalized Riemann hypothesis",
+        "snippet": "In 1934, Chowla showed that the generalized Riemann hypothesis implies"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chowla's least-prime-in-AP bound under GRH is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hooley: GRH implies Artin's primitive-root conjecture",
+      "anchor": {
+        "section": "Consequences of the generalized Riemann hypothesis",
+        "snippet": "In 1967, Hooley showed that the generalized Riemann hypothesis implies Artin's conjecture on primitive roots"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hooley's conditional proof of Artin's primitive-root conjecture is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Weinberger: GRH implies idoneal-number list complete",
+      "anchor": {
+        "section": "Consequences of the generalized Riemann hypothesis",
+        "snippet": "In 1973, Weinberger showed that the generalized Riemann hypothesis implies that Euler's list of idoneal numbers is complete"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Idoneal numbers are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Weinberger on class-number-1 number fields under GRH",
+      "anchor": {
+        "section": "Consequences of the generalized Riemann hypothesis",
+        "snippet": "Weinberger (1973) showed that the generalized Riemann hypothesis for the zeta functions of all algebraic number fields"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Weinberger's conditional class-number-1 result is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Miller test: polynomial-time primality under GRH",
+      "anchor": {
+        "section": "Consequences of the generalized Riemann hypothesis",
+        "snippet": "In 1976, G. Miller showed that the generalized Riemann hypothesis implies"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Miller's conditional polynomial-time primality test is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Ono–Soundararajan on Ramanujan's form under GRH",
+      "anchor": {
+        "section": "Consequences of the generalized Riemann hypothesis",
+        "snippet": "Ono & Soundararajan (1997) showed that the generalized Riemann hypothesis implies that Ramanujan's integral quadratic form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ono–Soundararajan on Ramanujan's quadratic form under GRH is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Dunn–Radziwiłł on Patterson's conjecture under GRH",
+      "anchor": {
+        "section": "Consequences of the generalized Riemann hypothesis",
+        "snippet": "In 2021, Alexander (Alex) Dunn and Maksym Radziwill proved Patterson's conjecture"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Patterson's conjecture on cubic Gauss sums is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hecke (1918)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem (Hecke; 1918)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hecke's GRH-conditional class-number lower bound is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Deuring (1933)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem (Deuring; 1933)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Deuring's class-number bound under ¬RH is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Mordell (1934)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem (Mordell; 1934)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mordell's strengthening of Deuring is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Heilbronn (1934)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem (Heilbronn; 1934)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Heilbronn's unconditional class-number theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Littlewood's sign-change theorem for pi(x) - li(x)",
+      "anchor": {
+        "section": "Littlewood's theorem",
+        "snippet": "In 1914, Littlewood proved that there are arbitrarily large values"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Littlewood's sign-change theorem for π(x) − li(x) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Nicolas inequality on Euler's totient",
+      "anchor": {
+        "section": "Growth of Euler's totient",
+        "snippet": "In 1983 J. L. Nicolas proved that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Nicolas's totient/primorial inequality equivalent to RH is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Growth of Euler's totient",
+          "snippet": "In 1983 J. L. Nicolas proved that"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\varphi (n)&lt;e^{-\\gamma }{\\frac {n}{\\log \\log n}}}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "RH for function fields (Artin, Hasse, Weil)",
+      "anchor": {
+        "section": "Function fields and zeta functions of varieties over finite fields",
+        "snippet": "Artin (1924) introduced global zeta functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The function-field Riemann hypothesis (Hasse–Weil) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "GRH for arithmetic zeta functions of arithmetic schemes",
+      "anchor": {
+        "section": "Arithmetic zeta functions of arithmetic schemes and their L-factors",
+        "snippet": "the generalized Riemann hypothesis for the L-factor states that its zeros inside the critical strip"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Arithmetic zeta functions of arithmetic schemes are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Selberg's RH analogue for Selberg zeta functions",
+      "anchor": {
+        "section": "Selberg zeta functions",
+        "snippet": "Selberg proved that the Selberg zeta functions satisfy the analogue of the Riemann hypothesis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Selberg zeta functions are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Ramanujan graph characterization via Ihara zeta",
+      "anchor": {
+        "section": "Ihara zeta functions",
+        "snippet": "A regular finite graph is a Ramanujan graph"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither Ihara zeta functions nor Ramanujan graphs are formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Montgomery's pair correlation conjecture",
+      "anchor": {
+        "section": "Montgomery's pair correlation conjecture",
+        "snippet": "Montgomery (1973) suggested the pair correlation conjecture"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Montgomery's pair-correlation conjecture is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Montgomery: at least 2/3 of zeros are simple under RH",
+      "anchor": {
+        "section": "Montgomery's pair correlation conjecture",
+        "snippet": "Montgomery showed that (assuming the Riemann hypothesis) at least 2/3 of all zeros are simple"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Montgomery's 2/3-simple-zeros result under RH is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "RH for Goss zeta functions (Sheats)",
+      "anchor": {
+        "section": "Other zeta functions",
+        "snippet": "Goss zeta functions of function fields have a Riemann hypothesis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Goss zeta functions are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Main conjecture of Iwasawa theory",
+      "anchor": {
+        "section": "Other zeta functions",
+        "snippet": "The main conjecture of Iwasawa theory"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The main conjecture of Iwasawa theory is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Riemann–von Mangoldt formula for N(T)",
+      "anchor": {
+        "section": "Number of zeros",
+        "snippet": "the number of zeros of the zeta function with imaginary part between 0 and T is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Riemann–von Mangoldt N(T) asymptotic is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Trudgian's explicit bound on N(T)",
+      "anchor": {
+        "section": "Number of zeros",
+        "snippet": "Trudgian (2014) proved that, if T > e"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Trudgian's explicit bound on N(T) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Karatsuba's sign-change theorem for S(t)",
+      "anchor": {
+        "section": "Number of zeros",
+        "snippet": "Karatsuba (1996) proved that every interval"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Karatsuba's sign-change result for S(t) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Selberg's moment formula for S(T)",
+      "anchor": {
+        "section": "Number of zeros",
+        "snippet": "Selberg (1946) showed that the average moments of even powers of S"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Selberg's moment formula for S(T) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hadamard–de la Vallée-Poussin: no zeros on Re(s)=1",
+      "anchor": {
+        "section": "Theorem of Hadamard and de la Vallée-Poussin",
+        "snippet": "Hadamard (1896) and de la Vallée-Poussin (1896) independently proved that no zeros could lie on the line"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "riemannZeta_ne_zero_of_one_le_re",
+        "module": "Mathlib.NumberTheory.LSeries.Nonvanishing",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves ζ(s) ≠ 0 whenever 1 ≤ re s, which includes the Re(s) = 1 case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "De la Vallée-Poussin classical zero-free region",
+      "anchor": {
+        "section": "Zero-free regions",
+        "snippet": "De la Vallée-Poussin (1899–1900) , who proved there is a region without zeroes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classical 1 − c/log|t| zero-free region is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Mossinghoff–Trudgian–Yang zero-free regions",
+      "anchor": {
+        "section": "Zero-free regions",
+        "snippet": "The most recent paper"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mossinghoff–Trudgian–Yang's quantitative zero-free regions are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hardy: infinitely many zeros on the critical line",
+      "anchor": {
+        "section": "Zeros on the critical line",
+        "snippet": "Hardy (1914) and Hardy & Littlewood (1921) showed there are infinitely many zeros on the critical line"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hardy's infinitely-many-critical-line-zeros theorem is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Selberg: positive proportion of zeros on critical line",
+      "anchor": {
+        "section": "Zeros on the critical line",
+        "snippet": "Selberg (1942) proved that at least a (small) positive proportion of zeros lie on the line"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Selberg's positive-proportion result is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Levinson: one-third of zeros on critical line",
+      "anchor": {
+        "section": "Zeros on the critical line",
+        "snippet": "Levinson (1974) improved this to one-third of the zeros"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Levinson's one-third result is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Conrey: two-fifths of zeros on critical line",
+      "anchor": {
+        "section": "Zeros on the critical line",
+        "snippet": "Conrey (1989) improved this further to two-fifths"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Conrey's two-fifths result is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Pratt–Robles–Zaharescu–Zeindler: five-twelfths on critical line",
+      "anchor": {
+        "section": "Zeros on the critical line",
+        "snippet": "In 2020, this estimate was extended to five-twelfths"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The 5/12 critical-line proportion is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bohr–Landau zero density estimate",
+      "anchor": {
+        "section": "Zeros on the critical line",
+        "snippet": "Bohr & Landau (1914) showed that for any positive ε"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bohr–Landau's zero-density estimate is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hardy's infinitely-many-real-zeros theorem",
+      "anchor": {
+        "section": "Hardy–Littlewood conjectures",
+        "snippet": "In 1914 Godfrey Harold Hardy proved that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hardy's theorem on infinitely many real zeros of Z(t) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hardy–Littlewood conjectures on real zeros",
+      "anchor": {
+        "section": "Hardy–Littlewood conjectures",
+        "snippet": "The next two conjectures of Hardy and John Edensor Littlewood"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hardy–Littlewood density conjectures for real zeros of Z(t) are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Selberg's zeta function conjecture (Selberg's lower bound)",
+      "anchor": {
+        "section": "Selberg's zeta function conjecture",
+        "snippet": "Atle Selberg investigated the problem of Hardy–Littlewood 2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Selberg's conjectural lower bound for N(T+H) − N(T) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Karatsuba's proof of Selberg's conjecture",
+      "anchor": {
+        "section": "Selberg's zeta function conjecture",
+        "snippet": "Anatoly Karatsuba proved that for a fixed ε"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Karatsuba's resolution of the Selberg-type estimate is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Karatsuba's almost-all-intervals analog of Selberg",
+      "anchor": {
+        "section": "Selberg's zeta function conjecture",
+        "snippet": "Karatsuba (1992) proved that an analog of the Selberg conjecture holds for almost all intervals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Karatsuba's almost-all-intervals refinement is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hardy's Z function and Riemann–Siegel theta",
+      "anchor": {
+        "section": "Numerical calculations",
+        "snippet": "where Hardy's Z function and the Riemann–Siegel theta function θ are uniquely defined"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hardy's Z(t) and the Riemann–Siegel θ function are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Gram point",
+      "anchor": {
+        "section": "Gram points",
+        "snippet": "A Gram point is a point on the critical line"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gram points are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gram's law",
+      "anchor": {
+        "section": "Gram points",
+        "snippet": "Gram observed that there was often exactly one zero of the zeta function between any two consecutive Gram points"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gram's law is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Good Gram point",
+      "anchor": {
+        "section": "Gram points",
+        "snippet": "A Gram point t is called good if the zeta function is positive"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Good Gram points are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Gram block",
+      "anchor": {
+        "section": "Gram points",
+        "snippet": "A Gram block is an interval bounded by two good Gram points"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gram blocks are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rosser's rule",
+      "anchor": {
+        "section": "Gram points",
+        "snippet": "A refinement of Gram's law called Rosser's rule"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Rosser's rule is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Trudgian: positive proportion of failures of Gram/Rosser",
+      "anchor": {
+        "section": "Gram points",
+        "snippet": "Trudgian (2011) showed that both Gram's law and Rosser's rule fail"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Trudgian's failure-rate result is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Katz–Sarnak symmetry-type philosophy for L-functions",
+      "anchor": {
+        "section": "Random matrix theory and quantum chaos",
+        "snippet": "This viewpoint was adopt by Nicholas Katz and Peter Sarnak"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Katz–Sarnak symmetry philosophy is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Keating–Snaith moments conjecture",
+      "anchor": {
+        "section": "Random matrix theory and quantum chaos",
+        "snippet": "Jonathan Keating and Nina Snaith used averages over random unitary matrices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Keating–Snaith moments conjecture is not in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Random matrix theory and quantum chaos",
+          "snippet": "Jonathan Keating and Nina Snaith used averages over random unitary matrices"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {1}{T}}\\int _{0}^{T}|\\zeta (1/2+it)|^{2k}\\,dt}"
+        }
+      ]
+    }
+  ]
+}

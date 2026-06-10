@@ -1,0 +1,569 @@
+{
+  "slug": "Combinatorial_game_theory",
+  "wikipedia_title": "Combinatorial game theory",
+  "display_title": "Combinatorial game theory",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Combinatorial game theory",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Combinatorial game theory is a branch of mathematics and theoretical computer science"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general definition of combinatorial game theory is present in Mathlib4; the only related file is `Mathlib/Order/GameAdd.lean`, which defines an abstract game-addition relation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Solved game",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A key concept in combinatorial game theory is that of the solved game"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of `SolvedGame` or analogous predicate appears in Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Tic-tac-toe is solved (draw)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "tic-tac-toe is solved in that optimal play by both participants always results in a draw"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Tic-tac-toe is not formalized in Mathlib4 (no occurrences of `TicTacToe`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Checkers weakly solved (2007)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "in 2007, checkers was announced to be weakly solved"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Checkers is not formalized in Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Mathgames vs playgames",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "It is useful to distinguish between combinatorial \"mathgames\""
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No such distinction is formalized in Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Impartial game",
+      "anchor": {
+        "section": "History",
+        "snippet": "the theory of impartial games , in which any play available to one player must be available to the other as well"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of impartial game (e.g. `PGame.Impartial`) is present in current Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Normal play condition",
+      "anchor": {
+        "section": "History",
+        "snippet": "subject to the normal play condition , which means that a player who cannot move loses"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Normal play convention is not formalized in Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sprague–Grundy theorem (impartial games)",
+      "anchor": {
+        "section": "History",
+        "snippet": "the Sprague–Grundy theorem showed that all impartial games are equivalent to heaps in Nim"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Sprague` returns no hits in Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Partisan game",
+      "anchor": {
+        "section": "History",
+        "snippet": "jointly introduced the theory of a partisan game , in which the requirement that a play available to one player be available to both is relaxed"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of partisan game is present in Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sum of two games",
+      "anchor": {
+        "section": "History",
+        "snippet": "the sum of two games, which is a game where each player may choose to move either in one game or the other at any point in the game"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Prod.GameAdd",
+        "module": "Mathlib.Order.GameAdd",
+        "match_kind": "generalization"
+      },
+      "note": "`Prod.GameAdd` (and `Sym2.GameAdd`) in `Mathlib/Order/GameAdd.lean` model the move relation for the sum of two games abstractly, but no `PGame`-based sum operation is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Blue–Red Hackenbush",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Blue–Red Hackenbush - At the finite level, this partisan combinatorial game allows constructions of games whose values are dyadic rational numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hackenbush is not formalized in Mathlib4 (no grep hits).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Blue–Red–Green Hackenbush",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Blue–Red–Green Hackenbush - Allows for additional game values that are not numbers in the traditional sense"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized in Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Toads and Frogs",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Toads and Frogs - Allows various game values"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Toads and Frogs is not formalized in Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Domineering",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Domineering - Various interesting games, such as hot games , appear as positions in Domineering"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Domineering` returns no hits in Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Nim",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Nim - An impartial game"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no `PGame.nim` or `Nim` game in Mathlib4 (the lone `Nim` grep hit is unrelated text in `Stonean/EffectiveEpi.lean`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Shannon number (chess complexity)",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Claude Shannon estimated the lower bound of the game-tree complexity of chess to be"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chess and the Shannon number are not formalized in Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Game notation {L|R}",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "each game has the notation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `{L | R}` game notation / `PGame.mk` is currently in Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Domineering initial position",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "Using Domineering as an example, label each of the sixteen boxes of the four-by-four board"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Domineering is not formalized in Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zero game",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "is called the zero game , and can actually be abbreviated 0"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `PGame.zero` / zero game is present in Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Star game",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "it is called the star game , which can also be abbreviated"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `PGame.star` / star game is present in Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Numbers (move advantage)",
+      "anchor": {
+        "section": "Numbers",
+        "snippet": "Numbers represent the number of free moves, or the move advantage of a particular player"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Game numbers are not formalized in Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero game is a first-player loss",
+      "anchor": {
+        "section": "Numbers",
+        "snippet": "The zero game is a loss for the first player"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized; depends on a `PGame` framework absent from Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum of number games behaves like integers",
+      "anchor": {
+        "section": "Numbers",
+        "snippet": "The sum of number games behaves like the integers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized in Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Game numbers are surreal numbers",
+      "anchor": {
+        "section": "Numbers",
+        "snippet": "Any game number is in the class of the surreal numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Surreal` type appears in Mathlib4 (no `Surreal*.lean` files).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Star ∗",
+      "anchor": {
+        "section": "Star",
+        "snippet": "Star , written as ∗ or {0|0}, is a first-player win"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized in Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "∗ + ∗ = 0",
+      "anchor": {
+        "section": "Star",
+        "snippet": "because the first player must turn one copy of ∗ to a 0"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized in Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fuzzy / confused with 0",
+      "anchor": {
+        "section": "Star",
+        "snippet": "are said to be fuzzy or confused with 0"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Fuzzy` / `‖` relation on games is in Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "∗n (nimber notation)",
+      "anchor": {
+        "section": "Star",
+        "snippet": "The game ∗n is notation for"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Nimber notation `∗n` is not formalized in Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Up and down",
+      "anchor": {
+        "section": "Up and down",
+        "snippet": "Up , written as ↑, is a position in combinatorial game theory"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The games `↑`/`↓` are not formalized in Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Up positive, down negative, both infinitesimal",
+      "anchor": {
+        "section": "Up and down",
+        "snippet": "Up is strictly positive (↑ > 0), and down is strictly negative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized in Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hot game / switch ±n",
+      "anchor": {
+        "section": "\"Hot\" games",
+        "snippet": "Both moves in this game are an advantage for the player who makes them; so the game is said to be \"hot;\""
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hot games and switches are not formalized in Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Impartial game",
+      "anchor": {
+        "section": "Nimbers",
+        "snippet": "An impartial game is one where, at every position of the game, the same moves are available to both players"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Impartial` predicate on games is present in Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Nimbers",
+      "anchor": {
+        "section": "Nimbers",
+        "snippet": "the games defined in this way are known as nimbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `nimber` returns no hits in Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sprague–Grundy theorem",
+      "anchor": {
+        "section": "Nimbers",
+        "snippet": "The Sprague–Grundy theorem states that every impartial game under the normal play convention is equivalent to a nimber"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized; no Sprague–Grundy declaration exists in current Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Smallest nimbers are 0 and ∗",
+      "anchor": {
+        "section": "Nimbers",
+        "snippet": "The \"smallest\" nimbers – the simplest and least under the usual ordering of the ordinals – are 0 and ∗"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized in Mathlib4.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,361 @@
+{
+  "slug": "Tuple",
+  "wikipedia_title": "Tuple",
+  "display_title": "Tuple",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Tuple",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a tuple is a finite sequence (or ordered list) of numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fin.cons",
+        "module": "Mathlib.Data.Fin.Tuple.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib models tuples as functions `Fin n → α` (or dependent versions) with the standard `Fin.cons`/`Fin.snoc` API.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "n-tuple",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "An n -tuple is a tuple of n elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fin.cons",
+        "module": "Mathlib.Data.Fin.Tuple.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "An n-tuple in Mathlib is just a function `Fin n → α`, indexed via the finite type `Fin n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Empty tuple",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "There is only one 0-tuple, called the empty tuple"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fin.elim0",
+        "module": "Mathlib.Data.Fin.Tuple.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "The unique function `Fin 0 → α` is given by `Fin.elim0`, witnessing the empty tuple.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Singleton and ordered pair",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A 1-tuple and a 2-tuple are commonly called a singleton and an ordered pair"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Prod",
+        "module": "Mathlib.Data.Sigma.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Ordered pairs are formalized as the core `Prod` type, and 1-tuples are `Fin.cons x Fin.elim0`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Formal definition of n-tuple as function",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "An n -tuple can be formally defined as the image of a function that has the set of the first n natural numbers as its domain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fin.cons",
+        "module": "Mathlib.Data.Fin.Tuple.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's tuples are by definition functions `Fin n → α`, exactly the function-with-domain-{0,…,n−1} model.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Recursive definition from ordered pairs",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Tuples may be also defined from ordered pairs by a recurrence starting from an ordered pair"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib uses the `Fin n → α` model, not a nested-pair recursive construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Null/empty tuple naming",
+      "anchor": {
+        "section": "Etymology",
+        "snippet": "The unique 0-tuple is called the null tuple or empty tuple"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a naming convention, not a formal statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Complex number as 2-tuple",
+      "anchor": {
+        "section": "Etymology",
+        "snippet": "a complex number can be represented as a 2‑tuple of reals"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.equivRealProd",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.equivRealProd` gives the equivalence `ℂ ≃ ℝ × ℝ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Identity of tuples",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The general rule for the identity of two n -tuples is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "funext_iff",
+        "module": "Mathlib.Logic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Two functions (hence tuples `Fin n → α`) are equal iff their components agree, via `funext_iff`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tuple distinguished from set",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Thus a tuple has properties that distinguish it from a set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Meta-comparison between tuple and set semantics, not a formal theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tuple as empty function",
+      "anchor": {
+        "section": "Tuples as functions",
+        "snippet": "tuple may be identified as the empty function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fin.elim0",
+        "module": "Mathlib.Data.Fin.Tuple.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`Fin.elim0` is the unique function out of the empty type `Fin 0`, i.e. the empty tuple.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tuple as surjective function",
+      "anchor": {
+        "section": "Tuples as functions",
+        "snippet": "may be identified with the surjective function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not identify tuples specifically with the surjective function onto their image.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Function as graph",
+      "anchor": {
+        "section": "Tuples as functions",
+        "snippet": "Functions are commonly identified with their graphs"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib treats functions as primitive; there is no canonical `Function.graph` identifying a function with its set-theoretic graph.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tuples as nested ordered pairs",
+      "anchor": {
+        "section": "Tuples as nested ordered pairs",
+        "snippet": "Another way of modeling tuples in set theory is as nested ordered pairs"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not use a nested-ordered-pair model for tuples.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "0-tuple as empty set",
+      "anchor": {
+        "section": "Tuples as nested ordered pairs",
+        "snippet": "The 0-tuple (i.e. the empty tuple) is represented by the empty set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not encode tuples as set-theoretic objects this way.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "n-tuple as nested ordered pair",
+      "anchor": {
+        "section": "Tuples as nested ordered pairs",
+        "snippet": "An n -tuple, with n > 0 , can be defined as an ordered pair of its first entry and an"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The recursive (a, (n−1)-tuple) encoding is not Mathlib's model.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Variant peeling from the other end",
+      "anchor": {
+        "section": "Tuples as nested ordered pairs",
+        "snippet": "A variant of this definition starts \"peeling off\" elements from the other end"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This set-theoretic variant is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tuples as nested sets (Kuratowski)",
+      "anchor": {
+        "section": "Tuples as nested sets",
+        "snippet": "Using Kuratowski's representation for an ordered pair , the second definition above can be reformulated in terms of pure set theory"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ZFSet.pair",
+        "module": "Mathlib.SetTheory.ZFC.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "`ZFSet.pair` defines the Kuratowski ordered pair in ZFC, but Mathlib does not iterate it to form general n-tuples.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of n-tuples of an m-set",
+      "anchor": {
+        "section": "n -tuples of m -sets",
+        "snippet": "The number of n -tuples of an m -set is m n"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fintype.card_fun",
+        "module": "Mathlib.Data.Fintype.BigOperators",
+        "match_kind": "exact"
+      },
+      "note": "`Fintype.card_fun` states `card (α → β) = card β ^ card α`, which gives `m^n` for `α = Fin n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tuple as product type",
+      "anchor": {
+        "section": "Type theory",
+        "snippet": "a tuple has a product type"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Prod",
+        "module": "Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "Product types are realized by `Prod` (and iterated products) in core Lean/Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Record type for labeled tuple",
+      "anchor": {
+        "section": "Type theory",
+        "snippet": "The tuple with labeled elements used in the relational model has a record type"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lean's `structure` mechanism implements record types but there is no Mathlib decl modeling labeled relational tuples.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unit type interpretation",
+      "anchor": {
+        "section": "Type theory",
+        "snippet": "The unit type has as semantic interpretation the 0-tuple"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PUnit",
+        "module": "Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "Lean's `PUnit`/`Unit` is the unique-inhabitant unit type, serving as the 0-tuple.",
+      "provenance": "ai"
+    }
+  ]
+}

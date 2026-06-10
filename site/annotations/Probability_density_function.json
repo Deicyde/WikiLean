@@ -1,0 +1,869 @@
+{
+  "slug": "Probability_density_function",
+  "wikipedia_title": "Probability density function",
+  "display_title": "Probability density function",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Probability density function",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a probability density function ( PDF ), density function , or simply density"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.pdf",
+        "module": "Mathlib.Probability.Density",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.pdf` and the `HasPDF` class define the probability density function of a random variable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Bacteria lifespan example",
+      "anchor": {
+        "section": "Example",
+        "snippet": "Suppose bacteria of a certain species typically live 20 to 30 hours."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an informal pedagogical example with no corresponding Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Density of an absolutely continuous random variable",
+      "anchor": {
+        "section": "Absolutely continuous univariate distributions",
+        "snippet": "non-negative Lebesgue-integrable function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.HasPDF",
+        "module": "Mathlib.Probability.Density",
+        "match_kind": "generalization"
+      },
+      "note": "`HasPDF` with `Real.hasPDF_iff` and `map_eq_setLIntegral_pdf` capture the univariate absolutely-continuous density `ℙ(X∈S)=∫_S f` for a general base measure.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Absolutely continuous univariate distributions",
+          "snippet": "non-negative Lebesgue-integrable function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Pr[a\\leq X\\leq b]=\\int _{a}^{b}f_{X}(x)\\,dx.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Relation between density and CDF",
+      "anchor": {
+        "section": "Absolutely continuous univariate distributions",
+        "snippet": "is the cumulative distribution function of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.map_eq_setLIntegral_pdf",
+        "module": "Mathlib.Probability.Density",
+        "match_kind": "invocation"
+      },
+      "note": "The integral relation `ℙ(X∈S)=∫_S pdf` is `map_eq_setLIntegral_pdf` and `cdf` exists, but the differentiation link `f = F'` between pdf and cdf is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Absolutely continuous univariate distributions",
+          "snippet": "is the cumulative distribution function of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle F_{X}(x)=\\int _{-\\infty }^{x}f_{X}(u)\\,du,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f_{X}(x)={\\frac {d}{dx}}F_{X}(x).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Measure-theoretic density (Radon–Nikodym derivative)",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "is the Radon–Nikodym derivative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.pdf",
+        "module": "Mathlib.Probability.Density",
+        "match_kind": "exact"
+      },
+      "note": "`pdf X ℙ μ` is defined exactly as `(map X ℙ).rnDeriv μ`, the Radon–Nikodym derivative of the law.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Formal definition",
+          "snippet": "is the Radon–Nikodym derivative"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f={\\frac {dX_{*}P}{d\\mu }}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "PMF as density with respect to counting measure",
+      "anchor": {
+        "section": "Discussion",
+        "snippet": "is the density with respect to the counting measure over the sample space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PMF.toMeasure",
+        "module": "Mathlib.Probability.ProbabilityMassFunction.Basic",
+        "match_kind": null
+      },
+      "note": "`PMF.toMeasure` and the counting measure both exist, but there is no lemma stating a PMF equals the density of its measure with respect to `Measure.count`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Almost-everywhere uniqueness of density",
+      "anchor": {
+        "section": "Discussion",
+        "snippet": "the density is almost unique, meaning that any two such densities coincide almost everywhere"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.withDensity_eq_iff_of_sigmaFinite",
+        "module": "Mathlib.MeasureTheory.Function.AEEqOfLIntegral",
+        "match_kind": "generalization"
+      },
+      "note": "`withDensity_eq_iff_of_sigmaFinite` shows two densities give the same measure iff they agree almost everywhere.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Uniform distribution with density greater than one",
+      "anchor": {
+        "section": "Further details",
+        "snippet": "the continuous uniform distribution on the interval [0, 1/2] has probability density"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.pdf.IsUniform.pdf_eq",
+        "module": "Mathlib.Probability.Distributions.Uniform",
+        "match_kind": "special_case"
+      },
+      "note": "`IsUniform.pdf_eq` gives the uniform density as `(μ s)⁻¹` on `s`, which equals 2 on `[0,1/2]`, illustrating densities exceeding one.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Standard normal density",
+      "anchor": {
+        "section": "Further details",
+        "snippet": "The standard normal distribution has probability density"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.gaussianPDFReal",
+        "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+        "match_kind": "special_case"
+      },
+      "note": "`gaussianPDFReal 0 1` is exactly the standard normal density `(1/√(2π))e^{-x²/2}`, a special case of the general Gaussian density.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Further details",
+          "snippet": "The standard normal distribution has probability density"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)={\\frac {1}{\\sqrt {2\\pi }}}\\,e^{-x^{2}/2}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Expected value from density",
+      "anchor": {
+        "section": "Further details",
+        "snippet": "then the expected value of X (if the expected value exists) can be calculated as"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.pdf.integral_mul_eq_integral",
+        "module": "Mathlib.Probability.Density",
+        "match_kind": "exact"
+      },
+      "note": "`pdf.integral_mul_eq_integral` proves `𝔼[X] = ∫ x·f(x) dx` for a real random variable with pdf `f`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Further details",
+          "snippet": "then the expected value of X (if the expected value exists) can be calculated as"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {E} [X]=\\int _{-\\infty }^{\\infty }x\\,f(x)\\,dx.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Not every distribution has a density",
+      "anchor": {
+        "section": "Further details",
+        "snippet": "Not every probability distribution has a density function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.hasPDF_iff",
+        "module": "Mathlib.Probability.Density",
+        "match_kind": null
+      },
+      "note": "`HasPDF` is a conditional class characterized by `hasPDF_iff` via absolute continuity, but there is no theorem exhibiting a distribution lacking a density.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Existence of density via absolutely continuous CDF",
+      "anchor": {
+        "section": "Further details",
+        "snippet": "A distribution has a density function if its cumulative distribution function F ( x ) is absolutely continuous"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.hasPDF_iff",
+        "module": "Mathlib.Probability.Density",
+        "match_kind": "invocation"
+      },
+      "note": "`Real.hasPDF_iff` shows a density exists iff the law is absolutely continuous w.r.t. Lebesgue, but the link from CDF absolute continuity specifically is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Further details",
+          "snippet": "A distribution has a density function if its cumulative distribution function F ( x ) is absolutely continuous"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {d}{dx}}F(x)=f(x).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "One-point sets have zero probability",
+      "anchor": {
+        "section": "Further details",
+        "snippet": "then the probability of every one-point set { a } is zero"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.noAtoms_withDensity",
+        "module": "Mathlib.MeasureTheory.Measure.WithDensity",
+        "match_kind": "generalization"
+      },
+      "note": "`noAtoms_withDensity` shows any measure with a density w.r.t. an atomless measure (like Lebesgue) assigns measure zero to singletons.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Densities equal up to a measure-zero set",
+      "anchor": {
+        "section": "Further details",
+        "snippet": "Two probability densities f and g represent the same probability distribution precisely if they differ only on a set of Lebesgue measure zero"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.withDensity_eq_iff_of_sigmaFinite",
+        "module": "Mathlib.MeasureTheory.Function.AEEqOfLIntegral",
+        "match_kind": "exact"
+      },
+      "note": "`withDensity_eq_iff_of_sigmaFinite` states `μ.withDensity f = μ.withDensity g ↔ f =ᵐ[μ] g`, exactly the differ-on-a-null-set criterion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Statistical physics definition of PDF",
+      "anchor": {
+        "section": "Further details",
+        "snippet": "If dt is an infinitely small number, the probability that X is included within the interval ( t , t + dt ) is equal to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an informal infinitesimal heuristic with no direct Mathlib counterpart.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Further details",
+          "snippet": "If dt is an infinitely small number, the probability that X is included within the interval ( t , t + dt ) is equal to"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Pr(t&lt;X&lt;t+dt)=f(t)\\,dt.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Generalized density via Dirac delta",
+      "anchor": {
+        "section": "Link between discrete and continuous distributions",
+        "snippet": "a generalized probability density function using the Dirac delta function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `Measure.dirac` but no notion of a generalized (distributional) density built from Dirac deltas.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Link between discrete and continuous distributions",
+          "snippet": "a generalized probability density function using the Dirac delta function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(t)={\\frac {1}{2}}(\\delta (t+1)+\\delta (t-1)).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Generalized density for a discrete variable",
+      "anchor": {
+        "section": "Link between discrete and continuous distributions",
+        "snippet": "if a discrete variable can take n different values among real numbers, then the associated probability density function is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The representation of a discrete variable's density as a sum of Dirac deltas is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Link between discrete and continuous distributions",
+          "snippet": "if a discrete variable can take n different values among real numbers, then the associated probability density function is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(t)=\\sum _{i=1}^{n}p_{i}\\,\\delta (t-x_{i}),}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Parametrized families of densities",
+      "anchor": {
+        "section": "Families of densities",
+        "snippet": "to be parametrized—that is, to be characterized by unspecified parameters"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific parametrized densities (e.g. `gaussianPDFReal μ v`) exist, but there is no general formalization of a parametrized family of densities.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Families of densities",
+          "snippet": "to be parametrized—that is, to be characterized by unspecified parameters"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x;\\mu ,\\sigma ^{2})={\\frac {1}{\\sigma {\\sqrt {2\\pi }}}}e^{-{\\frac {1}{2}}\\left({\\frac {x-\\mu }{\\sigma }}\\right)^{2}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Joint probability density function",
+      "anchor": {
+        "section": "Densities associated with multiple variables",
+        "snippet": "often called joint probability density function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.pdf",
+        "module": "Mathlib.Probability.Density",
+        "match_kind": "generalization"
+      },
+      "note": "`pdf` applies to a vector-valued variable `fun ω ↦ (X ω, Y ω)` with respect to `μ.prod ν`, giving the joint density used in `indepFun_iff_pdf_prod_eq_pdf_mul_pdf`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Densities associated with multiple variables",
+          "snippet": "often called joint probability density function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Pr \\left(X_{1},\\ldots ,X_{n}\\in D\\right)=\\int _{D}f_{X_{1},\\ldots ,X_{n}}(x_{1},\\ldots ,x_{n})\\,dx_{1}\\cdots dx_{n}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Joint PDF from CDF",
+      "anchor": {
+        "section": "Densities associated with multiple variables",
+        "snippet": "the joint probability density function can be computed as a partial derivative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `cdf` is only defined on ℝ; there is no multivariate joint CDF nor its mixed partial derivative.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Densities associated with multiple variables",
+          "snippet": "the joint probability density function can be computed as a partial derivative"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)=\\left.{\\frac {\\partial ^{n}F}{\\partial x_{1}\\cdots \\partial x_{n}}}\\right|_{x}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Marginal density function",
+      "anchor": {
+        "section": "Marginal densities",
+        "snippet": "This is called the marginal density function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.pdf.quasiMeasurePreserving_hasPDF'",
+        "module": "Mathlib.Probability.Density",
+        "match_kind": null
+      },
+      "note": "Projections of a joint-density variable are shown to have a pdf via `quasiMeasurePreserving_hasPDF'`, but the explicit marginal formula `f_X = ∫ f(x,y) dy` is not stated.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Marginal densities",
+          "snippet": "This is called the marginal density function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f_{X_{i}}(x_{i})=\\int f(x_{1},\\ldots ,x_{n})\\,dx_{1}\\cdots dx_{i-1}\\,dx_{i+1}\\cdots dx_{n}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Independence via joint density",
+      "anchor": {
+        "section": "Independence",
+        "snippet": "admitting a joint density are all independent from each other if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.pdf.indepFun_iff_pdf_prod_eq_pdf_mul_pdf",
+        "module": "Mathlib.Probability.Density",
+        "match_kind": "exact"
+      },
+      "note": "`indepFun_iff_pdf_prod_eq_pdf_mul_pdf` proves two variables are independent iff their joint density equals the product of the marginal densities.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Independence",
+          "snippet": "admitting a joint density are all independent from each other if"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f_{X_{1},\\ldots ,X_{n}}(x_{1},\\ldots ,x_{n})=f_{X_{1}}(x_{1})\\cdots f_{X_{n}}(x_{n}).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Independence from factored joint density",
+      "anchor": {
+        "section": "Corollary",
+        "snippet": "can be factored into a product of n functions of one variable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.pdf.indepFun_iff_pdf_prod_eq_pdf_mul_pdf",
+        "module": "Mathlib.Probability.Density",
+        "match_kind": "special_case"
+      },
+      "note": "The two-variable iff is formalized, but the corollary for an arbitrary factorization into one-variable functions and the n-variable version are not.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Corollary",
+          "snippet": "can be factored into a product of n functions of one variable"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f_{X_{1},\\ldots ,X_{n}}(x_{1},\\ldots ,x_{n})=f_{1}(x_{1})\\cdots f_{n}(x_{n}),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f_{X_{i}}(x_{i})={\\frac {f_{i}(x_{i})}{\\int f_{i}(x)\\,dx}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Two-variable density example",
+      "anchor": {
+        "section": "Example (2)",
+        "snippet": "This elementary example illustrates the above definition of multidimensional probability density functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a concrete illustrative computation with no corresponding Mathlib declaration.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Example (2)",
+          "snippet": "This elementary example illustrates the above definition of multidimensional probability density functions"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Pr \\left(X&gt;0,Y&gt;0\\right)=\\int _{0}^{\\infty }\\int _{0}^{\\infty }f_{X,Y}(x,y)\\,dx\\,dy.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Change of variables in the PDF",
+      "anchor": {
+        "section": "Function of random variables and change of variables in the probability density function",
+        "snippet": "to calculate the probability density function of some variable Y = g ( X )"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.pdf.quasiMeasurePreserving_hasPDF",
+        "module": "Mathlib.Probability.Density",
+        "match_kind": null
+      },
+      "note": "`quasiMeasurePreserving_hasPDF` shows `g ∘ X` has a pdf under suitable maps, but no general change-of-variables density formula is provided.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Law of the unconscious statistician (equal integrals)",
+      "anchor": {
+        "section": "Function of random variables and change of variables in the probability density function",
+        "snippet": "The values of the two integrals are the same in all cases in which both X and g ( X ) actually have probability density functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.pdf.integral_pdf_smul",
+        "module": "Mathlib.Probability.Density",
+        "match_kind": "exact"
+      },
+      "note": "`pdf.integral_pdf_smul` proves `∫ f(x)·pdf X x dx = ∫ f(X ω) dℙ`, the equality of the two integral computations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Density under a monotonic transformation",
+      "anchor": {
+        "section": "Scalar to scalar",
+        "snippet": "be a monotonic function , then the resulting density function is"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.lintegral_image_eq_lintegral_abs_det_fderiv_mul",
+        "module": "Mathlib.MeasureTheory.Function.Jacobian",
+        "match_kind": null
+      },
+      "note": "The Jacobian change-of-variables integral infrastructure exists, but the explicit pdf transformation `f_Y(y)=f_X(g⁻¹(y))|d g⁻¹/dy|` for monotone `g` is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Scalar to scalar",
+          "snippet": "be a monotonic function , then the resulting density function is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f_{Y}(y)=f_{X}{\\big (}g^{-1}(y){\\big )}\\left|{\\frac {d}{dy}}{\\big (}g^{-1}(y){\\big )}\\right|.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Density under a non-monotonic transformation",
+      "anchor": {
+        "section": "Scalar to scalar",
+        "snippet": "For functions that are not monotonic, the probability density function for y is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The branch-summation density formula for non-monotonic transformations is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Scalar to scalar",
+          "snippet": "For functions that are not monotonic, the probability density function for y is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{k=1}^{n(y)}\\left|{\\frac {d}{dy}}g_{k}^{-1}(y)\\right|\\cdot f_{X}{\\big (}g_{k}^{-1}(y){\\big )},}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Density under a vector bijective transformation",
+      "anchor": {
+        "section": "Vector to vector",
+        "snippet": "where G is a bijective , differentiable function , then y has density"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.lintegral_image_eq_lintegral_abs_det_fderiv_mul",
+        "module": "Mathlib.MeasureTheory.Function.Jacobian",
+        "match_kind": null
+      },
+      "note": "The Jacobian-determinant change-of-variables formula is formalized, but it is not expressed as the density transformation `f_Y(y)=f_X(G⁻¹(y))|det J|`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Vector to vector",
+          "snippet": "where G is a bijective , differentiable function , then y has density"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle p_{Y}(\\mathbf {y} )=f{\\Bigl (}G^{-1}(\\mathbf {y} ){\\Bigr )}\\left|\\det \\left[\\left.{\\frac {dG^{-1}(\\mathbf {z} )}{d\\mathbf {z} }}\\right|_{\\mathbf {z} =\\mathbf {y} }\\right]\\right|}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Two-dimensional change of variables",
+      "anchor": {
+        "section": "Vector to vector",
+        "snippet": "For example, in the 2-dimensional case"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a worked 2-dimensional illustration with no specific Mathlib declaration.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Vector to vector",
+          "snippet": "For example, in the 2-dimensional case"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle p_{Y_{1},Y_{2}}(y_{1},y_{2})=f_{X_{1},X_{2}}{\\big (}G_{1}^{-1}(y_{1},y_{2}),G_{2}^{-1}(y_{1},y_{2}){\\big )}\\left\\vert {\\frac {\\partial G_{1}^{-1}}{\\partial y_{1}}}{\\frac {\\partial G_{2}^{-1}}{\\partial y_{2}}}-{\\frac {\\partial G_{1}^{-1}}{\\partial y_{2}}}{\\frac {\\partial G_{2}^{-1}}{\\partial y_{1}}}\\right\\vert .}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Density of a scalar function of a random vector",
+      "anchor": {
+        "section": "Vector to scalar",
+        "snippet": "It is possible to use the formulas above to determine"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The general construction of the density of a scalar function of a random vector is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Vector to scalar",
+          "snippet": "It is possible to use the formulas above to determine"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f_{Y}(y)=\\int _{\\mathbb {R} ^{n}}f_{X}(\\mathbf {x} )\\delta {\\big (}y-V(\\mathbf {x} ){\\big )}\\,d\\mathbf {x} .}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Law of the unconscious statistician",
+      "anchor": {
+        "section": "Vector to scalar",
+        "snippet": "This result leads to the law of the unconscious statistician"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.pdf.integral_pdf_smul",
+        "module": "Mathlib.Probability.Density",
+        "match_kind": "exact"
+      },
+      "note": "`pdf.integral_pdf_smul` is exactly the law of the unconscious statistician `𝔼[g(X)] = ∫ pdf X x • g x dx`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Vector to scalar",
+          "snippet": "This result leads to the law of the unconscious statistician"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\operatorname {E} _{Y}[Y]&amp;=\\int _{\\mathbb {R} }yf_{Y}(y)\\,dy\\\\&amp;=\\int _{\\mathbb {R} }y\\int _{\\mathbb {R} ^{n}}f_{X}(\\mathbf {x} )\\delta {\\big (}y-V(\\mathbf {x} ){\\big )}\\,d\\mathbf {x} \\,dy\\\\&amp;=\\int _{{\\mathbb {R} }^{n}}\\int _{\\mathbb {R} }yf_{X}(\\mathbf {x} )\\delta {\\big (}y-V(\\mathbf {x} ){\\big )}\\,dy\\,d\\mathbf {x} \\\\&amp;=\\int _{\\mathbb {R} ^{n}}V(\\mathbf {x} )f_{X}(\\mathbf {x} )\\,d\\mathbf {x} =\\operatorname {E} _{X}[V(X)].\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Density of a sum is the convolution",
+      "anchor": {
+        "section": "Sums of independent random variables",
+        "snippet": "is the convolution of their separate density functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.IndepFun.pdf_add_eq_lconvolution_pdf",
+        "module": "Mathlib.Probability.Density",
+        "match_kind": "exact"
+      },
+      "note": "The `@[to_additive]` companion of `IndepFun.pdf_mul_eq_mlconvolution_pdf` proves the pdf of a sum of independent variables is the (additive) convolution of their densities.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Sums of independent random variables",
+          "snippet": "is the convolution of their separate density functions"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f_{U+V}(x)=\\int _{-\\infty }^{\\infty }f_{U}(y)f_{V}(x-y)\\,dy=\\left(f_{U}*f_{V}\\right)(x)}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Convolution for N independent variables",
+      "anchor": {
+        "section": "Sums of independent random variables",
+        "snippet": "It is possible to generalize the previous relation to a sum of N independent random variables"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.IndepFun.pdf_add_eq_lconvolution_pdf",
+        "module": "Mathlib.Probability.Density",
+        "match_kind": "special_case"
+      },
+      "note": "The two-variable convolution result and `lconvolution_assoc` exist, but the iterated N-fold convolution statement is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Sums of independent random variables",
+          "snippet": "It is possible to generalize the previous relation to a sum of N independent random variables"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f_{U_{1}+\\cdots +U}(x)=\\left(f_{U_{1}}*\\cdots *f_{U_{N}}\\right)(x)}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Density of products and quotients",
+      "anchor": {
+        "section": "Products and quotients of independent random variables",
+        "snippet": "the density of the product Y = UV and quotient Y = U / V can be computed by a change of variables"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.IndepFun.pdf_mul_eq_mlconvolution_pdf",
+        "module": "Mathlib.Probability.Density",
+        "match_kind": "special_case"
+      },
+      "note": "The density of a product is the multiplicative convolution `pdf_mul_eq_mlconvolution_pdf`, but the quotient case is not separately formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Quotient distribution derivation",
+      "anchor": {
+        "section": "Example: Quotient distribution",
+        "snippet": "To compute the quotient Y = U / V of two independent random variables U and V , define the following transformation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The general quotient-distribution derivation via auxiliary change of variables is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Example: Quotient distribution",
+          "snippet": "To compute the quotient Y = U / V of two independent random variables U and V , define the following transformation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}Y&amp;=U/V\\\\[1ex]Z&amp;=V\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Quotient of two standard normals (Cauchy)",
+      "anchor": {
+        "section": "Example: Quotient of two standard normals",
+        "snippet": "Given two standard normal variables U and V , the quotient can be computed as follows"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.cauchyPDFReal",
+        "module": "Mathlib.Probability.Distributions.Cauchy",
+        "match_kind": null
+      },
+      "note": "Both the Gaussian and Cauchy densities are formalized, but the theorem that the ratio of two standard normals follows the Cauchy distribution is not.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Example: Quotient of two standard normals",
+          "snippet": "Given two standard normal variables U and V , the quotient can be computed as follows"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}p(u)&amp;={\\frac {1}{\\sqrt {2\\pi }}}e^{-{u^{2}}/{2}}\\\\[1ex]p(v)&amp;={\\frac {1}{\\sqrt {2\\pi }}}e^{-{v^{2}}/{2}}\\end{aligned}}}"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1579 @@
+{
+  "slug": "Laplaces_equation",
+  "wikipedia_title": "Laplace's equation",
+  "display_title": "Laplace's equation",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Laplace's equation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Laplace's equation is a second-order partial differential equation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.laplacianWithin",
+        "module": "Mathlib.Analysis.InnerProductSpace.Laplacian",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib defines the Laplacian operator on inner product spaces, but Laplace's equation Δf = 0 itself is not packaged as a named predicate; harmonic functions encode it.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "(Lead)",
+          "snippet": "Laplace's equation is a second-order partial differential equation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\nabla ^{2}\\!f=0}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Delta f=0,}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Poisson's equation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "This is called Poisson's equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Poisson's equation Δf = g is not defined as such in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Harmonic functions",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The twice continuously differentiable solutions of Laplace's equation are the harmonic functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HarmonicAt",
+        "module": "Mathlib.Analysis.InnerProductSpace.Harmonic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Defined as C^2 with Laplacian vanishing in a neighborhood, alongside `HarmonicOnNhd`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Laplace's equation in rectangular coordinates",
+      "anchor": {
+        "section": "Forms in different coordinate systems",
+        "snippet": "In rectangular coordinates"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.laplacianWithin_eq_iteratedFDerivWithin_stdOrthonormalBasis",
+        "module": "Mathlib.Analysis.InnerProductSpace.Laplacian",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib gives the formula for the Laplacian as a sum of second partials in any orthonormal basis, which specialises to rectangular coordinates.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Forms in different coordinate systems",
+          "snippet": "In rectangular coordinates"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\nabla ^{2}f={\\frac {\\partial ^{2}f}{\\partial x^{2}}}+{\\frac {\\partial ^{2}f}{\\partial y^{2}}}+{\\frac {\\partial ^{2}f}{\\partial z^{2}}}=0.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Laplace's equation in cylindrical coordinates",
+      "anchor": {
+        "section": "Forms in different coordinate systems",
+        "snippet": "In cylindrical coordinates"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No expression of the Laplacian in cylindrical coordinates is present in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Forms in different coordinate systems",
+          "snippet": "In cylindrical coordinates"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\nabla ^{2}f={\\frac {1}{r}}{\\frac {\\partial }{\\partial r}}\\left(r{\\frac {\\partial f}{\\partial r}}\\right)+{\\frac {1}{r^{2}}}{\\frac {\\partial ^{2}f}{\\partial \\phi ^{2}}}+{\\frac {\\partial ^{2}f}{\\partial z^{2}}}=0.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Laplace's equation in spherical coordinates",
+      "anchor": {
+        "section": "Forms in different coordinate systems",
+        "snippet": "In spherical coordinates"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No expression of the Laplacian in spherical coordinates is present in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Forms in different coordinate systems",
+          "snippet": "In spherical coordinates"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\nabla ^{2}f={\\frac {1}{r^{2}}}{\\frac {\\partial }{\\partial r}}\\left(r^{2}{\\frac {\\partial f}{\\partial r}}\\right)+{\\frac {1}{r^{2}\\sin \\theta }}{\\frac {\\partial }{\\partial \\theta }}\\left(\\sin \\theta {\\frac {\\partial f}{\\partial \\theta }}\\right)+{\\frac {1}{r^{2}\\sin ^{2}\\theta }}{\\frac {\\partial ^{2}f}{\\partial \\varphi ^{2}}}=0.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Laplace's equation in curvilinear coordinates",
+      "anchor": {
+        "section": "Forms in different coordinate systems",
+        "snippet": "More generally, in arbitrary curvilinear coordinates"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Curvilinear-coordinate / Laplace–Beltrami expressions are not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Forms in different coordinate systems",
+          "snippet": "More generally, in arbitrary curvilinear coordinates"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\nabla ^{2}f={\\frac {\\partial }{\\partial \\xi ^{j}}}\\left({\\frac {\\partial f}{\\partial \\xi ^{k}}}g^{kj}\\right)+{\\frac {\\partial f}{\\partial \\xi ^{j}}}g^{jm}\\Gamma _{mn}^{n}=0,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\nabla ^{2}f={\\frac {1}{\\sqrt {|g|}}}{\\frac {\\partial }{\\partial \\xi ^{i}}}\\!\\left({\\sqrt {|g|}}g^{ij}{\\frac {\\partial f}{\\partial \\xi ^{j}}}\\right)=0,\\qquad (g=\\det\\{g_{ij}\\})}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Dirichlet problem",
+      "anchor": {
+        "section": "Boundary conditions",
+        "snippet": "The Dirichlet problem for Laplace's equation consists of finding a solution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Dirichlet problem is not defined as a named object in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Neumann boundary conditions",
+      "anchor": {
+        "section": "Boundary conditions",
+        "snippet": "The Neumann boundary conditions for Laplace's equation specify not the function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neumann boundary conditions are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Principle of superposition",
+      "anchor": {
+        "section": "Boundary conditions",
+        "snippet": "If any two functions are solutions to Laplace's equation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HarmonicOnNhd.add",
+        "module": "Mathlib.Analysis.InnerProductSpace.Harmonic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Closure of harmonic functions under sums and scalar multiplication is given by `HarmonicOnNhd.add`, `HarmonicAt.add`, and `HarmonicAt.const_smul`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness of Dirichlet solution",
+      "anchor": {
+        "section": "Details",
+        "snippet": "a harmonic function is uniquely determined by its Dirichlet boundary values"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Uniqueness of the Dirichlet problem for the Laplacian is not stated in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Details",
+          "snippet": "a harmonic function is uniquely determined by its Dirichlet boundary values"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{\\partial D}{\\frac {\\partial u}{\\partial \\nu }}\\,dS=0.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{\\partial D}g\\,dS=0.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Neumann compatibility condition",
+      "anchor": {
+        "section": "Details",
+        "snippet": "the divergence theorem implies the compatibility condition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The integral compatibility condition for the Neumann problem is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Details",
+          "snippet": "the divergence theorem implies the compatibility condition"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{\\partial D}{\\frac {\\partial u}{\\partial \\nu }}\\,dS=0.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{\\partial D}g\\,dS=0.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Robin boundary condition",
+      "anchor": {
+        "section": "Details",
+        "snippet": "A third classical boundary condition is the Robin boundary condition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Robin boundary conditions are not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Details",
+          "snippet": "A third classical boundary condition is the Robin boundary condition"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{\\partial D}{\\frac {\\partial u}{\\partial \\nu }}\\,dS=0.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{\\partial D}g\\,dS=0.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Poisson kernel formula on the disk",
+      "anchor": {
+        "section": "Details",
+        "snippet": "the solution of the Dirichlet problem with continuous boundary data"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HarmonicContOnCl.circleAverage_poissonKernel_smul",
+        "module": "Mathlib.Analysis.Complex.Harmonic.Poisson",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib has the Poisson integral formula on disks via `poissonKernel` and `HarmonicContOnCl.circleAverage_poissonKernel_smul`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Details",
+          "snippet": "the solution of the Dirichlet problem with continuous boundary data"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle u(re^{i\\theta })={\\frac {1}{2\\pi }}\\int _{0}^{2\\pi }{\\frac {1-r^{2}}{1-2r\\cos(\\theta -\\varphi )+r^{2}}}\\,f(e^{i\\varphi })\\,d\\varphi .}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle u(x',x_{n})=c_{n}\\int _{\\mathbf {R} ^{n-1}}{\\frac {x_{n}}{{\\bigl (}|x'-y|^{2}+x_{n}^{2}{\\bigr )}^{n/2}}}\\,f(y)\\,dy.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Poisson integral in upper half-space",
+      "anchor": {
+        "section": "Details",
+        "snippet": "harmonic functions with suitable boundary data are represented by the Poisson integral"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The half-space Poisson integral representation is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Details",
+          "snippet": "harmonic functions with suitable boundary data are represented by the Poisson integral"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle u(re^{i\\theta })={\\frac {1}{2\\pi }}\\int _{0}^{2\\pi }{\\frac {1-r^{2}}{1-2r\\cos(\\theta -\\varphi )+r^{2}}}\\,f(e^{i\\varphi })\\,d\\varphi .}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle u(x',x_{n})=c_{n}\\int _{\\mathbf {R} ^{n-1}}{\\frac {x_{n}}{{\\bigl (}|x'-y|^{2}+x_{n}^{2}{\\bigr )}^{n/2}}}\\,f(y)\\,dy.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Perron method",
+      "anchor": {
+        "section": "Existence theory and boundary regularity",
+        "snippet": "the Perron method , which constructs a candidate solution as the supremum of all subharmonic functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Perron's method (and subharmonic functions in general) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Regular boundary point",
+      "anchor": {
+        "section": "Existence theory and boundary regularity",
+        "snippet": "A boundary point is regular if the solution of the Dirichlet problem converges to the prescribed boundary value"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Regular boundary points for the Dirichlet problem are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Wiener criterion",
+      "anchor": {
+        "section": "Existence theory and boundary regularity",
+        "snippet": "regularity of boundary points is characterized by the classical Wiener criterion"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Wiener's criterion is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Weakly harmonic function",
+      "anchor": {
+        "section": "Weak solutions and Dirichlet principle",
+        "snippet": "is called weakly harmonic if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Weakly harmonic functions are not defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Weak solutions and Dirichlet principle",
+          "snippet": "is called weakly harmonic if"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{\\Omega }\\nabla u\\cdot \\nabla \\varphi \\,dx=0}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Weyl's lemma",
+      "anchor": {
+        "section": "Weak solutions and Dirichlet principle",
+        "snippet": "By Weyl's lemma , every weakly harmonic function is in fact smooth"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Weyl's lemma on the regularity of weakly harmonic functions is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Weak solutions and Dirichlet principle",
+          "snippet": "By Weyl's lemma , every weakly harmonic function is in fact smooth"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{\\Omega }\\nabla u\\cdot \\nabla \\varphi \\,dx=0}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Dirichlet's principle",
+      "anchor": {
+        "section": "Weak solutions and Dirichlet principle",
+        "snippet": "This is known as Dirichlet's principle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dirichlet's variational principle is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Weak solutions and Dirichlet principle",
+          "snippet": "This is known as Dirichlet's principle"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle E(u)={\\frac {1}{2}}\\int _{\\Omega }|\\nabla u|^{2}\\,dx.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Kelvin transform preserves harmonicity",
+      "anchor": {
+        "section": "Kelvin transform",
+        "snippet": "its Kelvin transform"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Kelvin transform is not present in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Kelvin transform",
+          "snippet": "its Kelvin transform"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (Ku)(x)=|x|^{2-n}u\\!\\left({\\frac {x}{|x|^{2}}}\\right)}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Omega ^{\\ast }=\\left\\{{\\frac {x}{|x|^{2}}}:x\\in \\Omega \\right\\}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Real and imaginary parts of analytic functions are harmonic",
+      "anchor": {
+        "section": "Analytic functions",
+        "snippet": "The real and imaginary parts of a complex analytic function both satisfy the Laplace equation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AnalyticAt.harmonicAt_re",
+        "module": "Mathlib.Analysis.InnerProductSpace.Harmonic.Constructions",
+        "match_kind": "exact"
+      },
+      "note": "Both `AnalyticAt.harmonicAt_re` and `AnalyticAt.harmonicAt_im` state this directly.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Analytic functions",
+          "snippet": "The real and imaginary parts of a complex analytic function both satisfy the Laplace equation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(z)=u(x,y)+iv(x,y),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle u_{x}=v_{y},\\quad v_{x}=-u_{y}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle u_{yy}=(-v_{x})_{y}=-(v_{y})_{x}=-(u_{x})_{x}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(z)=\\varphi (x,y)+i\\psi (x,y),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\psi _{x}=-\\varphi _{y},\\quad \\psi _{y}=\\varphi _{x}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d\\psi =-\\varphi _{y}\\,dx+\\varphi _{x}\\,dy.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\psi _{xy}=\\psi _{yx},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\varphi =\\log r,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(z)=\\log z=\\log r+i\\theta .}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Conjugate harmonic functions",
+      "anchor": {
+        "section": "Analytic functions",
+        "snippet": "The resulting pair of solutions of the Laplace equation are called conjugate harmonic functions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.HarmonicOnNhd.exists_analyticOnNhd_ball_re_eq",
+        "module": "Mathlib.Analysis.Complex.Harmonic.Analytic",
+        "match_kind": "invocation"
+      },
+      "note": "The existence of a harmonic conjugate (as the imaginary part of a holomorphic completion) is provided, but the term `conjugate harmonic` is not introduced as a named definition.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Analytic functions",
+          "snippet": "The resulting pair of solutions of the Laplace equation are called conjugate harmonic functions"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(z)=u(x,y)+iv(x,y),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle u_{x}=v_{y},\\quad v_{x}=-u_{y}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle u_{yy}=(-v_{x})_{y}=-(v_{y})_{x}=-(u_{x})_{x}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(z)=\\varphi (x,y)+i\\psi (x,y),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\psi _{x}=-\\varphi _{y},\\quad \\psi _{y}=\\varphi _{x}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d\\psi =-\\varphi _{y}\\,dx+\\varphi _{x}\\,dy.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\psi _{xy}=\\psi _{yx},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\varphi =\\log r,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(z)=\\log z=\\log r+i\\theta .}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Polar coordinate harmonic example",
+      "anchor": {
+        "section": "Analytic functions",
+        "snippet": "For example, if r and θ are polar coordinates"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The polar-coordinate example r^n cos(nθ) as a harmonic function is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Analytic functions",
+          "snippet": "For example, if r and θ are polar coordinates"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(z)=u(x,y)+iv(x,y),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle u_{x}=v_{y},\\quad v_{x}=-u_{y}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle u_{yy}=(-v_{x})_{y}=-(v_{y})_{x}=-(u_{x})_{x}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(z)=\\varphi (x,y)+i\\psi (x,y),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\psi _{x}=-\\varphi _{y},\\quad \\psi _{y}=\\varphi _{x}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d\\psi =-\\varphi _{y}\\,dx+\\varphi _{x}\\,dy.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\psi _{xy}=\\psi _{yx},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\varphi =\\log r,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(z)=\\log z=\\log r+i\\theta .}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Solutions have derivatives of all orders",
+      "anchor": {
+        "section": "Analytic functions",
+        "snippet": "any solution of the Laplace equation has derivatives of all orders"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HarmonicAt.analyticAt",
+        "module": "Mathlib.Analysis.Complex.Harmonic.Analytic",
+        "match_kind": "generalization"
+      },
+      "note": "Harmonic functions on ℂ are shown to be real-analytic, which in particular gives derivatives of all orders.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Power series and Fourier series connection",
+      "anchor": {
+        "section": "Analytic functions",
+        "snippet": "There is an intimate connection between power series and Fourier series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The formal correspondence between harmonic power series and Fourier series is not stated in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Analytic functions",
+          "snippet": "There is an intimate connection between power series and Fourier series"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(z)=\\sum _{n=0}^{\\infty }c_{n}z^{n},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c_{n}=a_{n}+ib_{n}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(z)=\\sum _{n=0}^{\\infty }\\left[a_{n}r^{n}\\cos n\\theta -b_{n}r^{n}\\sin n\\theta \\right]+i\\sum _{n=1}^{\\infty }\\left[a_{n}r^{n}\\sin n\\theta +b_{n}r^{n}\\cos n\\theta \\right],}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Stream function",
+      "anchor": {
+        "section": "Fluid flow",
+        "snippet": "the resulting function is called the stream function because it is constant along flow lines"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fluid stream functions are not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Fluid flow",
+          "snippet": "the resulting function is called the stream function because it is constant along flow lines"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle u_{x}+v_{y}=0,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\nabla \\times \\mathbf {V} =v_{x}-u_{y}=0.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d\\psi =u\\,dy-v\\,dx,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\psi _{x}=-v,\\quad \\psi _{y}=u,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\varphi _{x}=\\psi _{y}=u,\\quad \\varphi _{y}=-\\psi _{x}=v.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Velocity potential",
+      "anchor": {
+        "section": "Fluid flow",
+        "snippet": "The harmonic function φ that is conjugate to ψ is called the velocity potential"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Velocity potentials for fluid flow are not defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Fluid flow",
+          "snippet": "The harmonic function φ that is conjugate to ψ is called the velocity potential"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle u_{x}+v_{y}=0,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\nabla \\times \\mathbf {V} =v_{x}-u_{y}=0.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d\\psi =u\\,dy-v\\,dx,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\psi _{x}=-v,\\quad \\psi _{y}=u,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\varphi _{x}=\\psi _{y}=u,\\quad \\varphi _{y}=-\\psi _{x}=v.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Analytic functions correspond to fluid flows",
+      "anchor": {
+        "section": "Fluid flow",
+        "snippet": "Thus every analytic function corresponds to a steady incompressible, irrotational, inviscid fluid flow"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The analytic-function/fluid-flow correspondence is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Fluid flow",
+          "snippet": "Thus every analytic function corresponds to a steady incompressible, irrotational, inviscid fluid flow"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle u_{x}+v_{y}=0,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\nabla \\times \\mathbf {V} =v_{x}-u_{y}=0.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d\\psi =u\\,dy-v\\,dx,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\psi _{x}=-v,\\quad \\psi _{y}=u,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\varphi _{x}=\\psi _{y}=u,\\quad \\varphi _{y}=-\\psi _{x}=v.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Electrostatic potential satisfies Poisson equation",
+      "anchor": {
+        "section": "Electrostatics",
+        "snippet": "the electric potential φ may be constructed to satisfy"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Electrostatics is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Electrostatics",
+          "snippet": "the electric potential φ may be constructed to satisfy"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\nabla \\times (u,v,0)=(v_{x}-u_{y}){\\hat {\\mathbf {k} }}=\\mathbf {0} ,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\nabla \\cdot (u,v)=\\rho ,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d\\varphi =-u\\,dx-v\\,dy,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\varphi _{x}=-u,\\quad \\varphi _{y}=-v.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\varphi _{xx}+\\varphi _{yy}=-\\rho ,}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Fundamental solution of Laplace's equation",
+      "anchor": {
+        "section": "Fundamental solution",
+        "snippet": "A fundamental solution of Laplace's equation satisfies"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The fundamental solution of the Laplacian is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Fundamental solution",
+          "snippet": "A fundamental solution of Laplace's equation satisfies"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Delta u=u_{xx}+u_{yy}+u_{zz}=-\\delta (x-x',y-y',z-z'),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\iiint _{V}\\nabla \\cdot \\nabla u\\,dV=-1.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Fundamental solution in three dimensions",
+      "anchor": {
+        "section": "Fundamental solution",
+        "snippet": "on a sphere of radius r that is centered on the source point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The 3D Newton kernel -1/(4πr) as fundamental solution is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Fundamental solution",
+          "snippet": "on a sphere of radius r that is centered on the source point"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {du}{dr}}=-{\\frac {1}{4\\pi r^{2}}},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle u={\\frac {1}{4\\pi r}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Fundamental solution in two dimensions",
+      "anchor": {
+        "section": "Fundamental solution",
+        "snippet": "A similar argument shows that in two dimensions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The 2D logarithmic fundamental solution is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Fundamental solution",
+          "snippet": "A similar argument shows that in two dimensions"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle u=-{\\frac {\\log(r)}{2\\pi }}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Green's function",
+      "anchor": {
+        "section": "Green's function",
+        "snippet": "A Green's function is a fundamental solution that also satisfies a suitable condition on the boundary"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Green's functions for the Laplacian are not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Green's function",
+          "snippet": "A Green's function is a fundamental solution that also satisfies a suitable condition on the boundary"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle G(x,y,z;x',y',z')}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\nabla \\cdot \\nabla G=-\\delta (x-x',y-y',z-z')\\qquad {\\text{in }}V,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle G=0\\quad {\\text{if}}\\quad (x,y,z)\\qquad {\\text{on }}S.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Green's identity",
+      "anchor": {
+        "section": "Green's function",
+        "snippet": "we may apply Green's identity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Green's identities (∫uΔv − vΔu) are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Green's function for the sphere via reflection",
+      "anchor": {
+        "section": "Green's function",
+        "snippet": "the Green's function may be obtained by means of a reflection"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Method of images for Green's function on the sphere is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Poisson integral formula",
+      "anchor": {
+        "section": "Green's function",
+        "snippet": "A consequence of this expression for the Green's function is the Poisson integral formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HarmonicContOnCl.circleAverage_poissonKernel_smul",
+        "module": "Mathlib.Analysis.Complex.Harmonic.Poisson",
+        "match_kind": "special_case"
+      },
+      "note": "The 2D disk version of the Poisson integral formula is formalized via the Poisson kernel; higher-dimensional ball versions are not.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Green's function",
+          "snippet": "A consequence of this expression for the Green's function is the Poisson integral formula"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {1}{4\\pi R}}-{\\frac {a}{4\\pi \\rho R'}},\\,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle u(P)={\\frac {1}{4\\pi }}a^{3}\\left(1-{\\frac {\\rho ^{2}}{a^{2}}}\\right)\\int _{0}^{2\\pi }\\int _{0}^{\\pi }{\\frac {g(\\theta ',\\varphi ')\\sin \\theta '}{(a^{2}+\\rho ^{2}-2a\\rho \\cos \\Theta )^{\\frac {3}{2}}}}d\\theta '\\,d\\varphi '}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\cos \\Theta =\\cos \\theta \\cos \\theta '+\\sin \\theta \\sin \\theta '\\cos(\\varphi -\\varphi ')}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Mean value property",
+      "anchor": {
+        "section": "Green's function",
+        "snippet": "the value of u at the center of the sphere is the mean value of its values on the sphere"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HarmonicOnNhd.circleAverage_eq",
+        "module": "Mathlib.Analysis.Complex.Harmonic.MeanValue",
+        "match_kind": "special_case"
+      },
+      "note": "The mean value property is given for ℂ via `HarmonicOnNhd.circleAverage_eq` / `HarmonicContOnCl.circleAverage_eq`; not yet stated in higher dimensions.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Green's function",
+          "snippet": "the value of u at the center of the sphere is the mean value of its values on the sphere"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {1}{4\\pi R}}-{\\frac {a}{4\\pi \\rho R'}},\\,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle u(P)={\\frac {1}{4\\pi }}a^{3}\\left(1-{\\frac {\\rho ^{2}}{a^{2}}}\\right)\\int _{0}^{2\\pi }\\int _{0}^{\\pi }{\\frac {g(\\theta ',\\varphi ')\\sin \\theta '}{(a^{2}+\\rho ^{2}-2a\\rho \\cos \\Theta )^{\\frac {3}{2}}}}d\\theta '\\,d\\varphi '}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\cos \\Theta =\\cos \\theta \\cos \\theta '+\\sin \\theta \\sin \\theta '\\cos(\\varphi -\\varphi ')}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Maximum principle",
+      "anchor": {
+        "section": "Green's function",
+        "snippet": "a non-constant harmonic function cannot assume its maximum value at an interior point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has the maximum modulus principle for holomorphic functions but not a standalone maximum principle for harmonic functions.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Green's function",
+          "snippet": "a non-constant harmonic function cannot assume its maximum value at an interior point"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {1}{4\\pi R}}-{\\frac {a}{4\\pi \\rho R'}},\\,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle u(P)={\\frac {1}{4\\pi }}a^{3}\\left(1-{\\frac {\\rho ^{2}}{a^{2}}}\\right)\\int _{0}^{2\\pi }\\int _{0}^{\\pi }{\\frac {g(\\theta ',\\varphi ')\\sin \\theta '}{(a^{2}+\\rho ^{2}-2a\\rho \\cos \\Theta )^{\\frac {3}{2}}}}d\\theta '\\,d\\varphi '}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\cos \\Theta =\\cos \\theta \\cos \\theta '+\\sin \\theta \\sin \\theta '\\cos(\\varphi -\\varphi ')}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Spherical harmonic function",
+      "anchor": {
+        "section": "Laplace's spherical harmonics",
+        "snippet": "Here Y ℓ m is called a spherical harmonic function of degree ℓ and order m"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Spherical harmonics Y_ℓ^m are not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Laplace's spherical harmonics",
+          "snippet": "Here Y ℓ m is called a spherical harmonic function of degree ℓ and order m"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle r^{2}\\nabla ^{2}Y=-\\ell (\\ell +1)Y}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "General solution as solid harmonics expansion",
+      "anchor": {
+        "section": "Laplace's spherical harmonics",
+        "snippet": "The general solution to Laplace's equation in a ball centered at the origin is a linear combination of the spherical harmonic functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Expansion of harmonic functions in solid spherical harmonics is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Laplace's spherical harmonics",
+          "snippet": "The general solution to Laplace's equation in a ball centered at the origin is a linear combination of the spherical harmonic functions"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(r,\\theta ,\\varphi )=\\sum _{\\ell =0}^{\\infty }\\sum _{m=-\\ell }^{\\ell }f_{\\ell }^{m}r^{\\ell }Y_{\\ell }^{m}(\\theta ,\\varphi ),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle r&lt;R={\\frac {1}{\\limsup _{\\ell \\to \\infty }|f_{\\ell }^{m}|^{{1}/{\\ell }}}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Gauss's law for electricity",
+      "anchor": {
+        "section": "Electrostatics and magnetostatics",
+        "snippet": "Gauss's law for electricity (Maxwell's first equation) in differential form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Maxwell's equations are not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Electrostatics and magnetostatics",
+          "snippet": "Gauss's law for electricity (Maxwell's first equation) in differential form"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\nabla \\cdot \\mathbf {E} ={\\frac {\\rho }{\\varepsilon _{0}}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Poisson's equation for electricity",
+      "anchor": {
+        "section": "Electrostatics and magnetostatics",
+        "snippet": "Plugging this relation into Gauss's law, we obtain Poisson's equation for electricity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Electrostatics is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Electrostatics and magnetostatics",
+          "snippet": "Plugging this relation into Gauss's law, we obtain Poisson's equation for electricity"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\nabla ^{2}V=-{\\frac {\\rho }{\\varepsilon _{0}}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Laplace's equation for electric potential",
+      "anchor": {
+        "section": "Electrostatics and magnetostatics",
+        "snippet": "Poisson's equation reduces to Laplace's equation for the electric potential"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Source-free electrostatics is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness of electrostatic potential",
+      "anchor": {
+        "section": "Electrostatics and magnetostatics",
+        "snippet": "is specified on the boundary of a region"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Uniqueness of boundary-value problems for electrostatics is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Magnetic scalar potential",
+      "anchor": {
+        "section": "Electrostatics and magnetostatics",
+        "snippet": "We can thus define a magnetic scalar potential"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Magnetostatics and magnetic scalar potentials are not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Electrostatics and magnetostatics",
+          "snippet": "We can thus define a magnetic scalar potential"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\nabla \\times \\mathbf {H} =\\mathbf {0} .}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {H} =-\\nabla \\psi .}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\nabla \\cdot \\mathbf {B} =\\mu _{0}\\nabla \\cdot \\left(\\mathbf {H} +\\mathbf {M} \\right)=0,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\nabla ^{2}\\psi =-\\nabla \\cdot \\mathbf {H} =\\nabla \\cdot \\mathbf {M} .}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Gauss's law for gravitation",
+      "anchor": {
+        "section": "Gravitation",
+        "snippet": "Gauss's law for gravitation in differential form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gravitational physics is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Gravitation",
+          "snippet": "Gauss's law for gravitation in differential form"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\nabla \\cdot \\mathbf {g} =-4\\pi G\\rho .}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Gravitational potential as negative gradient",
+      "anchor": {
+        "section": "Gravitation",
+        "snippet": "The gravitational field is conservative and can therefore be expressed as the negative gradient of the gravitational potential"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gravitational potentials are not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Gravitation",
+          "snippet": "The gravitational field is conservative and can therefore be expressed as the negative gradient of the gravitational potential"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\mathbf {g} &amp;=-\\nabla V,\\\\\\nabla \\cdot \\mathbf {g} &amp;=\\nabla \\cdot (-\\nabla V)=-\\nabla ^{2}V,\\\\\\implies \\nabla ^{2}V&amp;=-\\nabla \\cdot \\mathbf {g} .\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Poisson's equation for gravitational fields",
+      "anchor": {
+        "section": "Gravitation",
+        "snippet": "which is Poisson's equation for gravitational fields"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Newtonian gravity / Poisson's equation for it is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Gravitation",
+          "snippet": "which is Poisson's equation for gravitational fields"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\nabla ^{2}V=4\\pi G\\rho ,}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Laplace's equation for gravitational fields",
+      "anchor": {
+        "section": "Gravitation",
+        "snippet": "which is Laplace's equation for gravitational fields"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Source-free Newtonian gravity is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Gravitation",
+          "snippet": "which is Laplace's equation for gravitational fields"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\nabla ^{2}V=0,}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Kakutani's formula",
+      "anchor": {
+        "section": "Brownian motion and harmonic measure",
+        "snippet": "This is known as Kakutani's formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Brownian motion and Kakutani's representation of harmonic functions are not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Brownian motion and harmonic measure",
+          "snippet": "This is known as Kakutani's formula"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\tau _{D}=\\inf\\{t&gt;0:B_{t}\\notin D\\}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle u(x)=\\mathbf {E} _{x}\\!\\left[u(B_{\\tau _{D}})\\right].}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Harmonic measure (probabilistic)",
+      "anchor": {
+        "section": "Brownian motion and harmonic measure",
+        "snippet": "is called the harmonic measure"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Harmonic measure via Brownian exit distribution is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Harmonic measure (analytic)",
+      "anchor": {
+        "section": "Harmonic measure",
+        "snippet": "called the harmonic measure"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Harmonic measure for a domain is not defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Harmonic measure",
+          "snippet": "called the harmonic measure"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle u(x)=\\int _{\\partial D}f(\\xi )\\,d\\omega _{D}^{x}(\\xi ),}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Harmonic measure density is Poisson kernel",
+      "anchor": {
+        "section": "Harmonic measure",
+        "snippet": "harmonic measure is absolutely continuous with respect to surface measure, and its density is the Poisson kernel"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identification of harmonic measure with the Poisson kernel is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Persides' Schwarzschild solution",
+      "anchor": {
+        "section": "In the Schwarzschild metric",
+        "snippet": "solved the Laplace equation in Schwarzschild spacetime on hypersurfaces of constant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Schwarzschild spacetime and PDEs on it are not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "In the Schwarzschild metric",
+          "snippet": "solved the Laplace equation in Schwarzschild spacetime on hypersurfaces of constant"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Psi (r,\\theta ,\\varphi )=R(r)Y_{l}(\\theta ,\\varphi ),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle R(r)=(-1)^{l}{\\frac {(l!)^{2}r_{s}^{l}}{(2l)!}}P_{l}\\left(1-{\\frac {2r}{r_{s}}}\\right)+(-1)^{l+1}{\\frac {2(2l+1)!}{(l)!^{2}r_{s}^{l+1}}}Q_{l}\\left(1-{\\frac {2r}{r_{s}}}\\right).}"
+        }
+      ]
+    }
+  ]
+}

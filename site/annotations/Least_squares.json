@@ -1,0 +1,577 @@
+{
+  "slug": "Least_squares",
+  "wikipedia_title": "Least squares",
+  "display_title": "Least squares",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Least squares method",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "least squares is a method to determine the best-fit model by minimizing the sum of the squared residuals"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Submodule.starProjection_minimal",
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the abstract Hilbert-space least-squares principle (orthogonal projection minimizes the residual norm) but no named statistical least-squares method.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Two categories of least squares problems",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Least squares problems fall into two categories"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This taxonomy (linear vs. nonlinear least squares) is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Polynomial least squares",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Polynomial least squares describes the variance in a prediction of the dependent variable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of polynomial least squares fitting exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Least squares equals maximum likelihood for exponential families",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "standardized least-squares estimates and maximum-likelihood estimates are identical"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib lacks maximum-likelihood estimation and exponential families, so this equivalence is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Residual",
+      "anchor": {
+        "section": "Problem statement",
+        "snippet": "measured by its residual , defined as the difference between the observed value of the dependent variable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The statistical notion of a residual is not defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Problem statement",
+          "snippet": "measured by its residual , defined as the difference between the observed value of the dependent variable"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle r_{i}=y_{i}-f(x_{i},{\\boldsymbol {\\beta }}).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Sum of squared residuals minimization",
+      "anchor": {
+        "section": "Problem statement",
+        "snippet": "The least-squares method finds the optimal parameter values by minimizing the sum of squared residuals"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Submodule.starProjection_minimal",
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The orthogonal projection minimizing ‖y - x‖ over a subspace is the abstract form of minimizing the squared residual norm, generalizing the least-squares objective.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Problem statement",
+          "snippet": "The least-squares method finds the optimal parameter values by minimizing the sum of squared residuals"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle S=\\sum _{i=1}^{n}r_{i}^{2}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Simplest case yields the arithmetic mean",
+      "anchor": {
+        "section": "Problem statement",
+        "snippet": "the result of the least-squares method is the arithmetic mean of the input data"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma states that the arithmetic mean minimizes the sum of squared deviations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Straight-line model",
+      "anchor": {
+        "section": "Problem statement",
+        "snippet": "An example of a model in two dimensions is that of the straight line"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fitting a straight-line regression model is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gradient set to zero",
+      "anchor": {
+        "section": "Solving the least squares problem",
+        "snippet": "The minimum of the sum of squares is found by setting the gradient to zero"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsLocalMin.fderiv_eq_zero",
+        "module": "Mathlib.Analysis.Calculus.LocalExtr.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Fermat's stationary-point theorem gives the general first-order necessary condition (gradient zero at a local minimum), of which setting the least-squares gradient to zero is an instance.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Solving the least squares problem",
+          "snippet": "The minimum of the sum of squares is found by setting the gradient to zero"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {\\partial S}{\\partial \\beta _{j}}}=2\\sum _{i}r_{i}{\\frac {\\partial r_{i}}{\\partial \\beta _{j}}}=0,\\ j=1,\\ldots ,m,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle -2\\sum _{i}r_{i}{\\frac {\\partial f(x_{i},{\\boldsymbol {\\beta }})}{\\partial \\beta _{j}}}=0,\\ j=1,\\ldots ,m.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Linear regression model",
+      "anchor": {
+        "section": "Linear least squares",
+        "snippet": "A regression model is a linear one when the model comprises a linear combination of the parameters"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has linear maps but no formalized notion of a linear regression model.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Linear least squares",
+          "snippet": "A regression model is a linear one when the model comprises a linear combination of the parameters"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x,{\\boldsymbol {\\beta }})=\\sum _{j=1}^{m}\\beta _{j}\\phi _{j}(x),}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Linear least squares closed-form solution",
+      "anchor": {
+        "section": "Linear least squares",
+        "snippet": "Setting the gradient of the loss to zero and solving for"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Submodule.starProjection_minimal",
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The orthogonal projection provides the geometric closed-form least-squares solution, but the explicit normal-equation formula β=(XᵀX)⁻¹Xᵀy is not stated.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Linear least squares",
+          "snippet": "Setting the gradient of the loss to zero and solving for"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle -2X^{\\mathsf {T}}Y+2X^{\\mathsf {T}}X{\\boldsymbol {\\beta }}=0\\Rightarrow X^{\\mathsf {T}}Y=X^{\\mathsf {T}}X{\\boldsymbol {\\beta }}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\boldsymbol {\\hat {\\beta }}}=\\left(X^{\\mathsf {T}}X\\right)^{-1}X^{\\mathsf {T}}Y}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Iterative refinement for NLLSQ",
+      "anchor": {
+        "section": "Non-linear least squares",
+        "snippet": "numerical algorithms are used to find the value of the parameters"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Iterative numerical algorithms for nonlinear least squares are not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Non-linear least squares",
+          "snippet": "numerical algorithms are used to find the value of the parameters"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\beta _{j}}^{k+1}={\\beta _{j}}^{k}+\\Delta \\beta _{j},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}f(x_{i},{\\boldsymbol {\\beta }})&amp;=f^{k}(x_{i},{\\boldsymbol {\\beta }})+\\sum _{j}{\\frac {\\partial f(x_{i},{\\boldsymbol {\\beta }})}{\\partial \\beta _{j}}}\\left(\\beta _{j}-{\\beta _{j}}^{k}\\right)\\\\[1ex]&amp;=f^{k}(x_{i},{\\boldsymbol {\\beta }})+\\sum _{j}J_{ij}\\,\\Delta \\beta _{j}.\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Gauss–Newton normal equations",
+      "anchor": {
+        "section": "Non-linear least squares",
+        "snippet": "These are the defining equations of the Gauss–Newton algorithm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Gauss–Newton algorithm and its defining equations are absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear vs nonlinear in parameters",
+      "anchor": {
+        "section": "Differences between linear and nonlinear least squares",
+        "snippet": "the model is linear in the parameters. Otherwise, the model is nonlinear"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This classification of models by linearity in parameters is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "LLSQ global concavity",
+      "anchor": {
+        "section": "Differences between linear and nonlinear least squares",
+        "snippet": "LLSQ is globally concave so non-convergence is not an issue"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The global convexity of the linear least-squares objective is not stated as such in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness vs multiple minima",
+      "anchor": {
+        "section": "Differences between linear and nonlinear least squares",
+        "snippet": "In LLSQ the solution is unique, but in NLLSQ there may be multiple minima in the sum of squares"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This comparative uniqueness statement for least-squares problems is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unbiasedness of LLSQ vs NLLSQ",
+      "anchor": {
+        "section": "Differences between linear and nonlinear least squares",
+        "snippet": "LLSQ yields unbiased estimates, but even under that condition NLLSQ estimates are generally biased"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Estimator bias/unbiasedness in regression is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hooke's law spring",
+      "anchor": {
+        "section": "Example",
+        "snippet": "the extension of a spring y is proportional to the force"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This physical least-squares example is not present in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Example",
+          "snippet": "the extension of a spring y is proportional to the force"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle y=f(F,k)=kF}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle y_{i}=kF_{i}+\\varepsilon _{i}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Parameter variance estimate",
+      "anchor": {
+        "section": "Uncertainty quantification",
+        "snippet": "the variance on the j th parameter"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Although Mathlib defines variance, the variance formula for regression parameter estimates is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Uncertainty quantification",
+          "snippet": "the variance on the j th parameter"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {var} ({\\hat {\\beta }}_{j})=\\sigma ^{2}\\left(\\left[X^{\\mathsf {T}}X\\right]^{-1}\\right)_{jj}\\approx {\\hat {\\sigma }}^{2}C_{jj},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\hat {\\sigma }}^{2}\\approx {\\frac {S}{n-m}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle C=\\left(X^{\\mathsf {T}}X\\right)^{-1},}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Normality of estimates under normal errors",
+      "anchor": {
+        "section": "Statistical testing",
+        "snippet": "the parameter estimates and residuals will also be normally distributed"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.gaussianReal_map_continuousLinearMap",
+        "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves that linear images of a Gaussian distribution remain Gaussian, the underlying fact behind normality of linear parameter estimates, but not the regression statement itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gauss–Markov theorem",
+      "anchor": {
+        "section": "Statistical testing",
+        "snippet": "the best linear unbiased estimator of any linear combination of the observations, is its least-squares estimator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Gauss–Markov theorem (BLUE property of least squares) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Least squares as maximum likelihood under normal errors",
+      "anchor": {
+        "section": "Statistical testing",
+        "snippet": "the least-squares estimators are also the maximum likelihood estimators in a linear model"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Maximum-likelihood estimation is not formalized, so this equivalence is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Weighted least squares",
+      "anchor": {
+        "section": "Weighted least squares",
+        "snippet": "A special case of generalized least squares called weighted least squares occurs when all the off-diagonal entries"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Weighted/generalized least squares is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Heteroscedasticity",
+      "anchor": {
+        "section": "Weighted least squares",
+        "snippet": "heteroscedasticity is when the variance of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The statistical concept of heteroscedasticity is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "First principal component",
+      "anchor": {
+        "section": "Relationship to principal components",
+        "snippet": "The first principal component about the mean of a set of points can be represented by that line which most closely approaches the data points"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Principal component analysis and the best-fitting line characterization are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Least-squares estimator as a measure",
+      "anchor": {
+        "section": "Relationship to measure theory",
+        "snippet": "a least-squares estimator can be interpreted as a measure on the space of square-integrable functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This measure-theoretic interpretation of the least-squares estimator is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tikhonov regularization",
+      "anchor": {
+        "section": "Tikhonov regularization",
+        "snippet": "Tikhonov regularization (or ridge regression ) adds a constraint that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Tikhonov/ridge regularization is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lasso",
+      "anchor": {
+        "section": "Lasso method",
+        "snippet": "An alternative regularized version of least squares is Lasso"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Lasso (L1-regularized) method is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lasso vs ridge regression",
+      "anchor": {
+        "section": "Lasso method",
+        "snippet": "in ridge regression, as the penalty is increased, all parameters are reduced while still remaining non-zero"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The comparison of Lasso and ridge shrinkage behavior is not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

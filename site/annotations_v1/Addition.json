@@ -1,0 +1,189 @@
+{
+  "slug": "Addition",
+  "wikipedia_title": "Addition",
+  "display_title": "Addition",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 3{\\frac {1}{2}}=3+{\\frac {1}{2}}=3.5.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Notational example of a mixed number, not a standalone Mathlib statement."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sum _{k=1}^{5}k^{2}=1^{2}+2^{2}+3^{2}+4^{2}+5^{2}=55.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Concrete arithmetic example illustrating sigma notation, not a named lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle a+b=b+a.}"
+      },
+      "status": "partial",
+      "decl": "AddCommSemigroup",
+      "module": "Mathlib.Algebra.Group.Defs",
+      "note": "Commutativity of addition is encoded as an axiom of the AddCommSemigroup class."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (a+b)+c=a+(b+c).}"
+      },
+      "status": "partial",
+      "decl": "AddSemigroup",
+      "module": "Mathlib.Algebra.Group.Defs",
+      "note": "Associativity is the defining axiom of the AddSemigroup class."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle a+0=0+a=a.}"
+      },
+      "status": "partial",
+      "decl": "AddMonoid",
+      "module": "Mathlib.Algebra.Group.Defs",
+      "note": "Two-sided additive identity is the defining property of AddMonoid (via AddZeroClass)."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}0+0&\\to 0\\\\0+1&\\to 1\\\\1+0&\\to 1\\\\1+1&\\to 0,\\qquad {\\text{carry 1 since }}1+1=2=0+1\\times 2^{1}\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Pedagogical table of binary single-digit sums, not a Mathlib declaration."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}5+5&\\to 0,\\qquad {\\text{carry 1 since }}5+5=10=0+1\\times 10^{1}\\\\7+9&\\to 6,\\qquad {\\text{carry 1 since }}7+9=16=6+1\\times 10^{1}\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Illustrative decimal-carry examples, not a formal statement."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (a,b)+(c,d)=(a+c,b+d).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Componentwise addition on pairs constructing integers is not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {a}{b}}+{\\frac {c}{d}}={\\frac {ad+bc}{bd}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Rational-addition formula is not represented by any decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {a}{c}}+{\\frac {b}{c}}={\\frac {a+b}{c}},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Common-denominator fraction addition lemma is not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle a+b=\\{q+r\\mid q\\in a,r\\in b\\}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Dedekind-cut addition construction is not among the provided algebraic class decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\lim _{n}a_{n}+\\lim _{n}b_{n}=\\lim _{n}(a_{n}+b_{n}).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Limit-of-sums identity is not in the provided list of decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (a,b)+(c,d)=(a+c,b+d).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Vector componentwise addition in the plane is not among the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\mathbf {A} +\\mathbf {B} &={\\begin{bmatrix}a_{11}&a_{12}&\\cdots &a_{1n}\\\\a_{21}&a_{22}&\\cdots &a_{2n}\\\\\\vdots &\\vdots &\\ddots &\\vdots \\\\a_{m1}&a_{m2}&\\cdots &a_{mn}\\\\\\end{bmatrix}}+{\\begin{bmatrix}b_{11}&b_{12}&\\cdots &b_{1n}\\\\b_{21}&b_{22}&\\cdots &b_{2n}\\\\\\vdots &\\vdots &\\ddots &\\vdots \\\\b_{m1}&b_{m2}&\\cdots &b_{mn}\\\\\\end{bmatrix}}\\\\[8mu]&={\\begin{bmatrix}a_{11}+b_{11}&a_{12}+b_{12}&\\cdots &a_{1n}+b_{1n}\\\\a_{21}+b_{21}&a_{22}+b_{22}&\\cdots &a_{2n}+b_{2n}\\\\\\vdots &\\vdots &\\ddots &\\vdots \\\\a_{m1}+b_{m1}&a_{m2}+b_{m2}&\\cdots &a_{mn}+b_{mn}\\\\\\end{bmatrix}}\\\\\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Entrywise matrix addition is not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e^{a+b}=e^{a}e^{b}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Exponential turning sums into products is not among the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle a+\\max(b,c)=\\max(a+b,a+c).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Distributivity of addition over max is not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\log(a+b)\\approx \\max(\\log a,\\log b),}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Tropical-logarithm approximation is informal and not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\max(a,b)=\\lim _{h\\to 0}h\\log(e^{a/h}+e^{b/h}).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Maslov dequantization limit identity is not among the provided decls."
+    }
+  ]
+}

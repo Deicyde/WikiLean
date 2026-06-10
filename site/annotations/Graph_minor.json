@@ -1,0 +1,825 @@
+{
+  "slug": "Graph_minor",
+  "wikipedia_title": "Graph minor",
+  "display_title": "Graph minor",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Graph minor",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is called a minor of the graph"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matroid.IsMinor",
+        "module": "Mathlib.Combinatorics.Matroid.Minor.Order",
+        "match_kind": null
+      },
+      "note": "Graph minors are not formalized (explicitly flagged as future work in Combinatorics/Graph/Basic.lean); only the analogous matroid minor relation exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Wagner's theorem (planarity)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a graph is planar if and only if its minors include neither"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Planar graphs are not defined in Mathlib (listed as a TODO), so this characterization is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Robertson–Seymour forbidden minor characterization",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "an analogous forbidden minor characterization exists for every property"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No graph minor theory exists in Mathlib, so the Robertson–Seymour theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Polynomial-time minor testing",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "it is possible to test whether"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a computational-complexity result with no graph-minor or complexity formalization in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Edge contraction",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "An edge contraction is an operation that removes an edge"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matroid.contract",
+        "module": "Mathlib.Combinatorics.Matroid.Minor.Contract",
+        "match_kind": null
+      },
+      "note": "Graph edge contraction is not defined; the analogous matroid contraction operation `Matroid.contract` (／) exists instead.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Minor (formal)",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "is a minor of another undirected graph"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matroid.IsMinor",
+        "module": "Mathlib.Combinatorics.Matroid.Minor.Order",
+        "match_kind": null
+      },
+      "note": "Only the matroid minor relation (contraction then deletion) is formalized, not the graph version.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Order independence of contractions and deletions",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "The order in which a sequence of such contractions and deletions is performed"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matroid.contract_delete_contract_delete",
+        "module": "Mathlib.Combinatorics.Matroid.Minor.Contract",
+        "match_kind": null
+      },
+      "note": "Order-independence of contractions/deletions is proven for matroids (`contract_delete_comm`, `contract_comm`, `contract_delete_contract_delete`), but not for graphs.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rank under deletion and contraction",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "edge deletions leave the rank of a graph unchanged"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matroid.contract",
+        "module": "Mathlib.Combinatorics.Matroid.Minor.Contract",
+        "match_kind": null
+      },
+      "note": "Matroid rank behaviour under contraction/deletion is developed, but graph rank under minor operations is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Minor-monotone function",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "is referred to as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of a minor-monotone graph parameter exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "H is a minor of G",
+      "anchor": {
+        "section": "Example",
+        "snippet": "graph H is a minor of graph G"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A worked graph-minor example has no formalized counterpart since graph minors are absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Minor relation is a partial order",
+      "anchor": {
+        "section": "Major results and conjectures",
+        "snippet": "the graph minor relation forms a partial order"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matroid.IsMinor.antisymm",
+        "module": "Mathlib.Combinatorics.Matroid.Minor.Order",
+        "match_kind": null
+      },
+      "note": "A `PartialOrder` instance for the minor order exists for matroids (refl/trans/antisymm lemmas), but not for graphs.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Robertson–Seymour well-quasi-ordering (Wagner's conjecture)",
+      "anchor": {
+        "section": "Major results and conjectures",
+        "snippet": "this partial order is actually a well-quasi-ordering"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "WellQuasiOrdered",
+        "module": "Mathlib.Order.WellQuasiOrder",
+        "match_kind": null
+      },
+      "note": "The general WQO concept is defined, but the theorem that the graph minor order is a well-quasi-ordering is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Graph structure theorem",
+      "anchor": {
+        "section": "Major results and conjectures",
+        "snippet": "also prove the graph structure theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Robertson–Seymour graph structure theorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "H-minor-free graphs are sparse",
+      "anchor": {
+        "section": "Major results and conjectures",
+        "snippet": "the simple H -minor-free graphs must be sparse"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No results on edge bounds for H-minor-free graphs exist in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Separator theorem for H-minor-free graphs",
+      "anchor": {
+        "section": "Major results and conjectures",
+        "snippet": "have a separator theorem similar to the planar separator theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither graph separators nor the planar separator theorem are formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Treewidth bound for H-minor-free graphs",
+      "anchor": {
+        "section": "Major results and conjectures",
+        "snippet": "H -minor-free graphs have treewidth"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Treewidth is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hadwiger conjecture",
+      "anchor": {
+        "section": "Major results and conjectures",
+        "snippet": "The Hadwiger conjecture in graph theory proposes that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hadwiger conjecture relating chromatic number and clique minors is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Case k=5 is the four color theorem",
+      "anchor": {
+        "section": "Major results and conjectures",
+        "snippet": "is a restatement of the four color theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The four color theorem is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Snark theorem",
+      "anchor": {
+        "section": "Major results and conjectures",
+        "snippet": "the snark theorem announced by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Snarks and the snark theorem are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Minor-closed family",
+      "anchor": {
+        "section": "Minor-closed graph families",
+        "snippet": "such a class is said to be minor-closed"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no notion of a minor-closed family of graphs in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Planar and surface-embeddable graphs are minor-closed",
+      "anchor": {
+        "section": "Minor-closed graph families",
+        "snippet": "form minor-closed families"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Planar/surface-embeddable graphs and minor-closure are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Finite forbidden minor characterization of minor-closed families",
+      "anchor": {
+        "section": "Minor-closed graph families",
+        "snippet": "can be characterized as the family of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The finite forbidden-minor characterization (Robertson–Seymour) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Wagner's theorem characterizing planar graphs",
+      "anchor": {
+        "section": "Minor-closed graph families",
+        "snippet": "characterizing the planar graphs as the graphs having neither"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Planarity and the K5/K3,3 forbidden-minor characterization are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bounded pathwidth iff forbidden minor is a forest",
+      "anchor": {
+        "section": "Minor-closed graph families",
+        "snippet": "has bounded pathwidth if and only if its forbidden minors include a forest"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pathwidth is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bounded tree-depth iff forbidden disjoint union of paths",
+      "anchor": {
+        "section": "Minor-closed graph families",
+        "snippet": "has bounded tree-depth if and only if its forbidden minors include"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Tree-depth is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bounded treewidth iff forbidden minor is planar",
+      "anchor": {
+        "section": "Minor-closed graph families",
+        "snippet": "has bounded treewidth if and only if its forbidden minors include a planar graph"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Treewidth and planar graphs are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bounded local treewidth iff forbidden apex graph",
+      "anchor": {
+        "section": "Minor-closed graph families",
+        "snippet": "has bounded local treewidth"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Local treewidth and apex graphs are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Simplified structure theorem for crossing-number-one H",
+      "anchor": {
+        "section": "Minor-closed graph families",
+        "snippet": "then the H -minor-free graphs have a simplified structure theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No graph structure theorems or crossing numbers are formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Wagner's characterization of K5-free graphs",
+      "anchor": {
+        "section": "Minor-closed graph families",
+        "snippet": "the K 5 -free graphs are exactly the 3-clique-sums of planar graphs"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Clique-sums and planar graphs are not defined, so this characterization is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Topological minor",
+      "anchor": {
+        "section": "Topological minors",
+        "snippet": "is called a topological minor of a graph"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Topological minors (subdivisions) are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Topological minor is a minor",
+      "anchor": {
+        "section": "Topological minors",
+        "snippet": "Every topological minor is also a minor"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither topological minors nor graph minors are formalized, so this implication is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Converse holds for maximum degree at most three",
+      "anchor": {
+        "section": "Topological minors",
+        "snippet": "but holds for graph with maximum degree not greater than three"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This degree-≤3 equivalence of minors and topological minors is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Topological minor relation is not a well-quasi-ordering",
+      "anchor": {
+        "section": "Topological minors",
+        "snippet": "The topological minor relation is not a well-quasi-ordering"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Topological minors are not defined, so this non-WQO result is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Induced minor",
+      "anchor": {
+        "section": "Induced minors",
+        "snippet": "is called an induced minor of a graph"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Induced minors are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Induced minor of a string graph is a string graph",
+      "anchor": {
+        "section": "Induced minors",
+        "snippet": "every induced minor of a string graph is another string graph"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "String graphs and induced minors are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "String graphs have infinitely many induced-minor obstacles",
+      "anchor": {
+        "section": "Induced minors",
+        "snippet": "with infinitely many obstacles in the induced minor order"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "String graphs and the induced-minor order are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lifting operation",
+      "anchor": {
+        "section": "Immersion minor",
+        "snippet": "is the operation that deletes the two edges"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The edge-lifting operation is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Immersion minor (via lifting)",
+      "anchor": {
+        "section": "Immersion minor",
+        "snippet": "we say that H is an immersion minor of G"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Graph immersions are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Immersion minor (edge-disjoint paths)",
+      "anchor": {
+        "section": "Immersion minor",
+        "snippet": "if there exists an injective mapping from vertices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The edge-disjoint-paths definition of immersion is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Immersion minor relation is a well-quasi-ordering",
+      "anchor": {
+        "section": "Immersion minor",
+        "snippet": "The immersion minor relation is a well-quasi-ordering"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "WellQuasiOrdered",
+        "module": "Mathlib.Order.WellQuasiOrder",
+        "match_kind": null
+      },
+      "note": "The generic WQO notion exists, but graph immersions and this theorem are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Immersion minors as planarizations",
+      "anchor": {
+        "section": "Immersion minor",
+        "snippet": "immersion minors arise as the planarizations of non-planar graphs"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Immersions and planarizations are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Shallow minor",
+      "anchor": {
+        "section": "Shallow minors",
+        "snippet": "is a minor in which the edges of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Shallow minors are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Minor via vertex-disjoint subtrees",
+      "anchor": {
+        "section": "Parity conditions",
+        "snippet": "the vertices of H can be represented by a collection of vertex-disjoint subtrees"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The subtree-model definition of a graph minor is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Odd minor",
+      "anchor": {
+        "section": "Parity conditions",
+        "snippet": "An odd minor restricts this definition by adding parity conditions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Odd minors are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Forbidden odd minors need not be sparse",
+      "anchor": {
+        "section": "Parity conditions",
+        "snippet": "graphs with forbidden odd minors are not necessarily sparse"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Odd minors and density results about them are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bipartite minor",
+      "anchor": {
+        "section": "Parity conditions",
+        "snippet": "is a bipartite minor of another graph"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bipartite minors are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Wagner's theorem for bipartite minors",
+      "anchor": {
+        "section": "Parity conditions",
+        "snippet": "A bipartite graph G is a planar graph if and only if it does not have the utility graph"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Planarity and bipartite-minor characterizations are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Minor containment is NP-complete",
+      "anchor": {
+        "section": "Algorithms",
+        "snippet": "is NP-complete in general"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "NP-completeness of minor containment is a complexity result not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fixed H solvable in polynomial time",
+      "anchor": {
+        "section": "Algorithms",
+        "snippet": "it can be solved in polynomial time"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This algorithmic complexity result is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Polynomial-time recognition of minor-closed families",
+      "anchor": {
+        "section": "Algorithms",
+        "snippet": "to recognize the members of any minor-closed family in polynomial time"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No minor-closed families or complexity results are formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linear-time test for fixed planar H",
+      "anchor": {
+        "section": "Algorithms",
+        "snippet": "we can test in linear time in an input graph"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This linear-time algorithmic result for planar H is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

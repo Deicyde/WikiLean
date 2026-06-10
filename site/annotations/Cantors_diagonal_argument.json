@@ -1,0 +1,361 @@
+{
+  "slug": "Cantors_diagonal_argument",
+  "wikipedia_title": "Cantor's diagonal argument",
+  "display_title": "Cantor's diagonal argument",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Uncountable set",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Such sets are now called uncountable sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Uncountable",
+        "module": "Mathlib.Data.Countable.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The `Uncountable` typeclass is defined as a type that is not countable, matching the article's notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Diagonalization lemma",
+      "anchor": {
+        "section": "Uncountable set",
+        "snippet": "an element s of T can be constructed that doesn't correspond to any"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.cantor_surjective",
+        "module": "Mathlib.Logic.Function.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`cantor_surjective` constructs the diagonal set `{a | a ∉ f a}` not in the range of any `f : α → Set α`, exactly the diagonalization construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "T is uncountable",
+      "anchor": {
+        "section": "Uncountable set",
+        "snippet": "The set T is uncountable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.cantor_surjective",
+        "module": "Mathlib.Logic.Function.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Taking `α = ℕ`, `cantor_surjective` gives no surjection `ℕ → Set ℕ ≃ (ℕ → Bool)`, i.e. the set of binary strings is uncountable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "R is uncountable",
+      "anchor": {
+        "section": "Real numbers",
+        "snippet": "Therefore, R is uncountable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.not_countable_real",
+        "module": "Mathlib.Analysis.Real.Cardinality",
+        "match_kind": "exact"
+      },
+      "note": "`not_countable_real` (and the `Uncountable ℝ` instance) state that the reals are not countable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Injection from T to R",
+      "anchor": {
+        "section": "Real numbers",
+        "snippet": "is an injection because it maps different strings to different numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.cantorFunction_injective",
+        "module": "Mathlib.Analysis.Real.Cardinality",
+        "match_kind": "exact"
+      },
+      "note": "`cantorFunction_injective` shows `cantorFunction c : (ℕ → Bool) → ℝ` is injective for `0 < c < 1/2`, an explicit injection from binary strings to reals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bijection between T and R",
+      "anchor": {
+        "section": "Real numbers",
+        "snippet": "Constructing a bijection between T and R is slightly more complicated"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.mk_real",
+        "module": "Mathlib.Analysis.Real.Cardinality",
+        "match_kind": null
+      },
+      "note": "`mk_real : #ℝ = 𝔠 = 2^ℵ₀ = #(ℕ → Bool)` gives a (non-constructive) bijection via cardinal equality, but no explicit `T ≃ ℝ` map is built.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cantor's 1878 bijection method",
+      "anchor": {
+        "section": "Real numbers",
+        "snippet": "to construct a bijection between the closed interval"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific historical interval-bijection construction is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dyadic numbers",
+      "anchor": {
+        "section": "Real numbers",
+        "snippet": "These are called dyadic numbers and have the form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general definition of dyadic numbers (of the form k/2^n) exists in Mathlib (only ad-hoc dyadic rationals inside Urysohn's lemma).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bijection g(t) from T to (0,1)",
+      "anchor": {
+        "section": "Real numbers",
+        "snippet": "Define the bijection g ( t ) from T to (0, 1)"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.cantorFunction",
+        "module": "Mathlib.Analysis.Real.Cardinality",
+        "match_kind": null
+      },
+      "note": "`cantorFunction` provides the related summing-of-binary-digits map into ℝ, but the specific bijection onto `(0,1)` is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Final bijection T to R via tangent",
+      "anchor": {
+        "section": "Real numbers",
+        "snippet": "which is a bijection from T to R"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The composite bijection `T → (0,1) → ℝ` via the tangent function is not formalized as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cantor's theorem",
+      "anchor": {
+        "section": "General sets",
+        "snippet": "cannot be in bijection with S itself"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.cantor",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.cantor : a < 2 ^ a` is Cantor's theorem that no set is in bijection with its power set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ordering of cardinalities",
+      "anchor": {
+        "section": "Ordering of cardinals",
+        "snippet": "in terms of the existence of injections between"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.le_def",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "`le_def : #α ≤ #β ↔ Nonempty (α ↪ β)` defines cardinal order via existence of injections.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Schröder–Bernstein theorem",
+      "anchor": {
+        "section": "Ordering of cardinals",
+        "snippet": "any two sets which are in the injective image of one another are in bijection as well"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Embedding.schroeder_bernstein",
+        "module": "Mathlib.SetTheory.Cardinal.SchroederBernstein",
+        "match_kind": "exact"
+      },
+      "note": "`schroeder_bernstein` gives a bijection from mutual injections `α → β` and `β → α`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Set of all sets is inconsistent",
+      "anchor": {
+        "section": "Ordering of cardinals",
+        "snippet": "the notion of the set of all sets is inconsistent"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Function.not_surjective_Type",
+        "module": "Mathlib.Logic.Function.Basic",
+        "match_kind": null
+      },
+      "note": "`not_surjective_Type` is the type-theoretic analog (why `Type : Type` is inconsistent) but the set-theoretic 'set of all sets' statement is not directly formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Constructive uncountability",
+      "anchor": {
+        "section": "In the absence of excluded middle",
+        "snippet": "these two collections are uncountable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Constructive (excluded-middle-free) uncountability results are not formalized; Mathlib works classically.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Schröder–Bernstein requires excluded middle",
+      "anchor": {
+        "section": "In the absence of excluded middle",
+        "snippet": "the Schröder–Bernstein theorem requires the law of excluded middle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This metatheorem about the constructive non-provability of Schröder–Bernstein is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Russell's paradox on unrestricted comprehension",
+      "anchor": {
+        "section": "Diagonalization in broader context",
+        "snippet": "set theory that includes an unrestricted comprehension scheme is contradictory"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Russell's paradox / inconsistency of unrestricted comprehension is not formalized (Mathlib's `ZFSet` uses restricted separation).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Halting problem as diagonal argument",
+      "anchor": {
+        "section": "Diagonalization in broader context",
+        "snippet": "the conventional proof of the unsolvability of the halting problem is essentially a diagonal argument"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ComputablePred.halting_problem",
+        "module": "Mathlib.Computability.Halting",
+        "match_kind": "exact"
+      },
+      "note": "`halting_problem` proves the predicate `(eval c n).Dom` is not computable, the unsolvability of the halting problem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Diagonal set not a set in NF",
+      "anchor": {
+        "section": "Version for Quine's New Foundations",
+        "snippet": "is not a set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quine's New Foundations and its stratification are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Modified diagonal set is a set in NF",
+      "anchor": {
+        "section": "Version for Quine's New Foundations",
+        "snippet": "is a set in NF"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "New Foundations stratified comprehension is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cardinality of P1(S) less than P(S)",
+      "anchor": {
+        "section": "Version for Quine's New Foundations",
+        "snippet": "use proof by contradiction to prove that"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.cantor",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": null
+      },
+      "note": "The underlying inequality `#S < #P(S)` is `Cardinal.cantor` (since P1(S) ≃ S), but the NF-typed formulation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "P1(S) not in bijection with S by typing",
+      "anchor": {
+        "section": "Version for Quine's New Foundations",
+        "snippet": "It is not possible to put P 1 ( S ) in a one-to-one relation with S"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This NF stratification/typing constraint argument is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

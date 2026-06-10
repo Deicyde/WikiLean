@@ -1,0 +1,441 @@
+{
+  "slug": "Ergodic_theory",
+  "wikipedia_title": "Ergodic theory",
+  "display_title": "Ergodic theory",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "theorem",
+      "label": "Poincaré recurrence theorem",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Poincaré recurrence theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Conservative.measure_mem_forall_ge_image_notMem_eq_zero",
+        "module": "Mathlib.Dynamics.Ergodic.Conservative",
+        "match_kind": "exact"
+      },
+      "note": "Stated as a Poincaré recurrence theorem for conservative maps, with a companion result `ae_mem_imp_frequently_image_mem` giving the infinite-return form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ergodic transformation",
+      "anchor": {
+        "section": "Ergodic transformations",
+        "snippet": "Then T is ergodic if for every E in"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ergodic",
+        "module": "Mathlib.Dynamics.Ergodic.Ergodic",
+        "match_kind": "exact"
+      },
+      "note": "`Ergodic f μ` extends `MeasurePreserving` and `PreErgodic`, requiring measurable invariant sets to be null or conull.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Essentially invariant set",
+      "anchor": {
+        "section": "Ergodic transformations",
+        "snippet": "The condition that the symmetric difference be measure zero is called being essentially invariant"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "QuasiErgodic.ae_empty_or_univ₀",
+        "module": "Mathlib.Dynamics.Ergodic.Ergodic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib does not name the notion of an essentially invariant set, but `QuasiErgodic.ae_empty_or_univ₀` uses the almost-everywhere invariance condition `f ⁻¹' s =ᵐ[μ] s` directly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Irrational rotation of the circle is ergodic",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "An irrational rotation of the circle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AddCircle.ergodic_add_left",
+        "module": "Mathlib.Dynamics.Ergodic.AddCircleAdd",
+        "match_kind": "exact"
+      },
+      "note": "Characterizes ergodicity of rotation by `a` on `AddCircle p` by `addOrderOf a = 0`, i.e. `a/p` is irrational.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ergodicity of group automorphisms of compact abelian groups",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Let G be a compact abelian group"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MonoidHom.ergodic_of_dense_iUnion_preimage_one",
+        "module": "Mathlib.Dynamics.Ergodic.Action.OfMinimal",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib gives a general criterion for a continuous surjective endomorphism of a compact group to be ergodic via density of preimages of 1, but no direct characterization for compact abelian groups via the dual.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Bernoulli shift is ergodic",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "A Bernoulli shift is ergodic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep found no Bernoulli shift or shift-ergodicity statement in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Non-ergodicity of systems with non-constant first integral",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "A system with a compact phase space which has a non-constant first integral cannot be ergodic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of `firstIntegral` or related non-ergodicity criterion exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Pointwise (Birkhoff) ergodic theorem",
+      "anchor": {
+        "section": "Ergodic theorems",
+        "snippet": "the pointwise or strong ergodic theorem states that the limit in the definition of the time average"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Birkhoff averages are defined, but no pointwise a.e. convergence theorem (Birkhoff's theorem) is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Kingman's subadditive ergodic theorem",
+      "anchor": {
+        "section": "Ergodic theorems",
+        "snippet": "A generalization of Birkhoff's theorem is Kingman's subadditive ergodic theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Kingman subadditive ergodic theorem is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Birkhoff–Khinchin theorem",
+      "anchor": {
+        "section": "Probabilistic formulation: Birkhoff–Khinchin theorem",
+        "snippet": "Let ƒ be measurable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is the L¹ pointwise ergodic theorem; not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Pointwise Ergodic Theorem (corollary)",
+      "anchor": {
+        "section": "Probabilistic formulation: Birkhoff–Khinchin theorem",
+        "snippet": "Corollary"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Equality of time and space averages for ergodic systems is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Von Neumann's mean ergodic theorem",
+      "anchor": {
+        "section": "Mean ergodic theorem",
+        "snippet": "Let U be a unitary operator on a Hilbert space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.tendsto_birkhoffAverage_orthogonalProjection",
+        "module": "Mathlib.Analysis.InnerProductSpace.MeanErgodic",
+        "match_kind": "exact"
+      },
+      "note": "Proven for any contracting continuous linear operator on a Hilbert space, with Birkhoff averages converging to the orthogonal projection onto the fixed-point subspace.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Mean ergodic theorem for one-parameter unitary groups",
+      "anchor": {
+        "section": "Mean ergodic theorem",
+        "snippet": "In another form of the mean ergodic theorem, let"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has only the discrete-time mean ergodic theorem, not the continuous one-parameter version.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Convergence of ergodic means in Lp",
+      "anchor": {
+        "section": "Convergence of the ergodic means in the L p norms",
+        "snippet": "converge to the projector"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Lp-norm convergence statement for ergodic means exists in Mathlib outside the Hilbert space case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Wiener–Yoshida–Kakutani ergodic dominated convergence theorem",
+      "anchor": {
+        "section": "Convergence of the ergodic means in the L p norms",
+        "snippet": "Wiener–Yoshida–Kakutani ergodic dominated convergence theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Wiener–Yoshida–Kakutani style maximal/dominated theorem for ergodic averages found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sojourn time",
+      "anchor": {
+        "section": "Sojourn time",
+        "snippet": "The time spent in a measurable set A is called the sojourn time"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of sojourn time appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Relative measure equals mean sojourn time",
+      "anchor": {
+        "section": "Sojourn time",
+        "snippet": "the relative measure of A is equal to the mean sojourn time"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a corollary of the pointwise ergodic theorem, which is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Occurrence times and recurrence times",
+      "anchor": {
+        "section": "Sojourn time",
+        "snippet": "The occurrence times of a measurable set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of occurrence/recurrence times for measurable sets is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Average recurrence time inversely proportional to measure",
+      "anchor": {
+        "section": "Sojourn time",
+        "snippet": "the average recurrence time of A is inversely proportional to the measure of A"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Kac's lemma is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hopf's ergodicity of geodesic flow on negatively curved manifolds",
+      "anchor": {
+        "section": "Ergodic flows on manifolds",
+        "snippet": "The ergodicity of the geodesic flow on compact Riemann surfaces of variable negative curvature"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No geodesic-flow ergodicity result for negatively curved manifolds exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Mautner's ergodicity on symmetric spaces",
+      "anchor": {
+        "section": "Ergodic flows on manifolds",
+        "snippet": "Ergodicity of the geodesic flow on Riemannian symmetric spaces was demonstrated by F. I. Mautner"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mautner's theorem on ergodicity over symmetric spaces is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Anosov–Sinai ergodicity theorem",
+      "anchor": {
+        "section": "Ergodic flows on manifolds",
+        "snippet": "Anosov and Ya. G. Sinai proved ergodicity of the geodesic flow"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Anosov–Sinai geodesic-flow ergodicity result is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Moore's ergodicity criterion for homogeneous flows",
+      "anchor": {
+        "section": "Ergodic flows on manifolds",
+        "snippet": "A simple criterion for the ergodicity of a homogeneous flow on a homogeneous space of a semisimple Lie group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Moore's ergodicity criterion for semisimple Lie group actions is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hedlund's horocycle flow theorem",
+      "anchor": {
+        "section": "Ergodic flows on manifolds",
+        "snippet": "Hedlund proved that the horocycle flow on a compact hyperbolic surface is minimal and ergodic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No horocycle flow definition or Hedlund result exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Furstenberg's unique ergodicity of horocycle flow",
+      "anchor": {
+        "section": "Ergodic flows on manifolds",
+        "snippet": "Unique ergodicity of the flow was established by Hillel Furstenberg"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Unique ergodicity is not defined in Mathlib, nor is this Furstenberg result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Ratner's theorems",
+      "anchor": {
+        "section": "Ergodic flows on manifolds",
+        "snippet": "Ratner's theorems provide a major generalization of ergodicity for unipotent flows"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ratner's measure-classification and orbit-closure theorems are not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lindenstrauss measure rigidity result",
+      "anchor": {
+        "section": "Ergodic flows on manifolds",
+        "snippet": "An important partial result"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lindenstrauss's measure rigidity theorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

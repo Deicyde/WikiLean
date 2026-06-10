@@ -1,0 +1,553 @@
+{
+  "slug": "Ancient_Greek_mathematics",
+  "wikipedia_title": "Ancient Greek mathematics",
+  "display_title": "Ancient Greek mathematics",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Euclid's parallel postulate",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Euclid's parallel line postulate"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib builds Euclidean geometry on real inner-product/affine spaces (with AffineSubspace.Parallel) rather than stating Euclid's parallel postulate as an axiom.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Thales' theorem",
+      "anchor": {
+        "section": "Archaic period",
+        "snippet": "Thales' Theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.Sphere.thales_theorem",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Sphere",
+        "match_kind": "exact"
+      },
+      "note": "Thales' theorem (angle inscribed in a semicircle is a right angle) is stated as `angle_eq_pi_div_two_iff_mem_sphere_of_isDiameter` with alias `thales_theorem`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Pythagorean theorem",
+      "anchor": {
+        "section": "Archaic period",
+        "snippet": "the Pythagorean theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.dist_sq_eq_dist_sq_add_dist_sq_iff_angle_eq_pi_div_two",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.RightAngle",
+        "match_kind": "exact"
+      },
+      "note": "The Pythagorean theorem appears in angle-at-point form and vector forms in the right-angle file.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Platonic solids",
+      "anchor": {
+        "section": "Archaic period",
+        "snippet": "the Platonic solids"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition or classification of regular polyhedra/Platonic solids exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Squaring the circle (Antiphon)",
+      "anchor": {
+        "section": "Classical Greece",
+        "snippet": "construct a rectilinear figure with the same area as a given circle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no theory of straightedge-and-compass construction nor a squaring-the-circle statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Squaring the circle by neusis (Hippias)",
+      "anchor": {
+        "section": "Classical Greece",
+        "snippet": "a method for squaring a circle with a neusis construction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No neusis construction or quadratrix is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Line meeting a circle at a single point",
+      "anchor": {
+        "section": "Classical Greece",
+        "snippet": "the possibility for a line to intersect a circle at a single point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.Sphere.IsTangentAt.mem_and_mem_iff_eq",
+        "module": "Mathlib.Geometry.Euclidean.Sphere.Tangent",
+        "match_kind": "generalization"
+      },
+      "note": "`IsTangentAt.mem_and_mem_iff_eq` proves a tangent affine subspace meets the sphere only at the tangent point, in any dimension.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cone is one-third of cylinder (Democritus)",
+      "anchor": {
+        "section": "Classical Greece",
+        "snippet": "the area of a cone was 1/3 the area of a cylinder with the same base"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no geometric cone/cylinder volume formulas (`cone` in Mathlib refers to category-theory limit cones).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Doubling the cube",
+      "anchor": {
+        "section": "Mathematics in the time of Plato",
+        "snippet": "the problem of doubling the cube"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No constructibility theory or doubling-the-cube impossibility result exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Irrationality of square roots from 3 to 17",
+      "anchor": {
+        "section": "Mathematics in the time of Plato",
+        "snippet": "the square roots of several numbers from 3 to 17 are irrational"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "irrational_sqrt_natCast_iff",
+        "module": "Mathlib.NumberTheory.Real.Irrational",
+        "match_kind": "generalization"
+      },
+      "note": "`irrational_sqrt_natCast_iff` shows √n is irrational iff n is not a perfect square, covering all non-squares from 3 to 17 (also via a norm_num extension).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Spiral of Theodorus",
+      "anchor": {
+        "section": "Mathematics in the time of Plato",
+        "snippet": "the construction now known as the Spiral of Theodorus"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of the Spiral of Theodorus exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Incommensurable magnitudes",
+      "anchor": {
+        "section": "Mathematics in the time of Plato",
+        "snippet": "incommensurable magnitudes"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Irrational",
+        "module": "Mathlib.NumberTheory.Real.Irrational",
+        "match_kind": null
+      },
+      "note": "Mathlib's `Irrational` captures incommensurability of a magnitude with the unit, but there is no general notion of two magnitudes being incommensurable (Mathlib's `Commensurable` concerns subgroups).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Exactly five regular polyhedra exist",
+      "anchor": {
+        "section": "Mathematics in the time of Plato",
+        "snippet": "the proof that only five of them exist"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no classification of regular polyhedra, so the 'only five Platonic solids' theorem is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Eudoxus' theory of proportion",
+      "anchor": {
+        "section": "Mathematics in the time of Plato",
+        "snippet": "the theory of proportion found in Book V of the Elements"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib uses the modern ordered-field real numbers rather than formalizing Eudoxus' Book V theory of proportion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Volume of a cone (Eudoxus)",
+      "anchor": {
+        "section": "Mathematics in the time of Plato",
+        "snippet": "the volume of a cone is one-third the volume of a cylinder with the same base"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no geometric cone volume formula in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Method of exhaustion to approximate π",
+      "anchor": {
+        "section": "Hellenistic and early Roman period",
+        "snippet": "the method of exhaustion to approximate Pi"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.pi_gt_d6",
+        "module": "Mathlib.Analysis.Real.Pi.Bounds",
+        "match_kind": null
+      },
+      "note": "Mathlib proves numerical bounds on π (e.g. `pi_gt_d6`/`pi_lt_d6`) via analytic methods rather than Archimedes' polygon-based method of exhaustion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Surface area and volume of a sphere",
+      "anchor": {
+        "section": "Hellenistic and early Roman period",
+        "snippet": "the surface area and volume of a sphere"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanSpace.volume_ball",
+        "module": "Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls",
+        "match_kind": null
+      },
+      "note": "The volume of an n-ball is computed (`volume_ball`, with explicit even/odd-dimensional formulas), but the 4πr² surface-area formula of a sphere is not established.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Theory of conic sections",
+      "anchor": {
+        "section": "Hellenistic and early Roman period",
+        "snippet": "the theory of conic sections that was first outlined by Menaechmus"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no theory of conic sections (ellipse/parabola/hyperbola as conics).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Numbers vs. magnitudes",
+      "anchor": {
+        "section": "Arithmetic",
+        "snippet": "separated numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The conceptual Greek distinction between discrete number and continuous magnitude is not a formalizable Mathlib statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euclidean algorithm for gcd",
+      "anchor": {
+        "section": "Arithmetic",
+        "snippet": "for computing the greatest common divisor of two numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.gcd",
+        "module": "Mathlib.Data.Nat.GCD.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.gcd` is defined by the Euclidean recursion with the characteristic recurrence `Nat.gcd_rec`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Infinitude of primes",
+      "anchor": {
+        "section": "Arithmetic",
+        "snippet": "a proof implying the infinitude of primes"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.exists_infinite_primes",
+        "module": "Mathlib.Data.Nat.Prime.Infinite",
+        "match_kind": "exact"
+      },
+      "note": "Euclid's theorem on the infinitude of primes is `Nat.exists_infinite_primes` (also `Nat.infinite_setOf_prime`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Odd times even is even",
+      "anchor": {
+        "section": "Arithmetic",
+        "snippet": "odd times even is even"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Even.mul_right",
+        "module": "Mathlib.Algebra.Ring.Parity",
+        "match_kind": "generalization"
+      },
+      "note": "`Even.mul_right`/`Even.mul_left` show an even number times anything is even, which subsumes odd×even.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Odd dividing an even number divides its half",
+      "anchor": {
+        "section": "Arithmetic",
+        "snippet": "if an odd number measures"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.Coprime.dvd_of_dvd_mul_left",
+        "module": "Mathlib.Data.Nat.GCD.Basic",
+        "match_kind": null
+      },
+      "note": "The exact Euclid IX.30 statement is absent, but it follows immediately from coprimality cancellation (`Coprime.dvd_of_dvd_mul_left`) since an odd number is coprime to 2.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Polygonal (figurate) numbers",
+      "anchor": {
+        "section": "Arithmetic",
+        "snippet": "polygonal or figurate numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no definition of polygonal/figurate (triangular, square, etc.) numbers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Congruences",
+      "anchor": {
+        "section": "Arithmetic",
+        "snippet": "the idea of congruences"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.ModEq",
+        "module": "Mathlib.Data.Int.ModEq",
+        "match_kind": "exact"
+      },
+      "note": "Modular congruence is formalized as `Int.ModEq`/`Nat.ModEq` (notation `a ≡ b [ZMOD n]`/`[MOD n]`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Archimedes' cattle problem",
+      "anchor": {
+        "section": "Arithmetic",
+        "snippet": "Archimedes's cattle problem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.NumberTheory.Pell",
+        "match_kind": null
+      },
+      "note": "The Pell equation to which the cattle problem reduces is formalized, but the cattle problem itself is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Three impossible construction problems",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "all of which are now known to be impossible with a straight edge and compass"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib lacks a theory of straightedge-and-compass constructible numbers, so the impossibility of these three problems is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Archimedean solids",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "semiregular polyhedra, also known as Archimedean solids"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of semiregular/Archimedean solids exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Determinate and indeterminate equations",
+      "anchor": {
+        "section": "Diophantus' Arithmetica",
+        "snippet": "determinate equations (those with a unique solution) and indeterminate equations (which admit of more than one solution)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no classification of equations as determinate vs. indeterminate (Diophantine).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Arbelos",
+      "anchor": {
+        "section": "Pappus' Collection",
+        "snippet": "Archimedes' construction of the arbelos"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The arbelos figure is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isoperimetric figures",
+      "anchor": {
+        "section": "Pappus' Collection",
+        "snippet": "isoperimetric figures"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No isoperimetric definitions or inequality are present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Descartes' theorem",
+      "anchor": {
+        "section": "Renaissance",
+        "snippet": "proved what is now called Descartes' theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Descartes' Rule of Signs but not Descartes' (circle/angular-defect) theorem referenced here.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fermat's Last Theorem",
+      "anchor": {
+        "section": "Renaissance",
+        "snippet": "Fermat's Last Theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FermatLastTheorem",
+        "module": "Mathlib.NumberTheory.FLT.Basic",
+        "match_kind": null
+      },
+      "note": "The statement `FermatLastTheorem` is defined and special cases (`fermatLastTheoremThree`, n=4) are proved, but the general theorem is not proved in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dedekind cut",
+      "anchor": {
+        "section": "Modern mathematics",
+        "snippet": "the Dedekind cut , a method of constructing the real numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DedekindCut",
+        "module": "Mathlib.Order.Completion",
+        "match_kind": "generalization"
+      },
+      "note": "`DedekindCut` is defined as the Concept lattice of `≤` for any preorder, with `DedekindCut ℚ ≃o EReal`.",
+      "provenance": "ai"
+    }
+  ]
+}

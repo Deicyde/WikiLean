@@ -1,0 +1,745 @@
+{
+  "slug": "Symmetry_in_mathematics",
+  "wikipedia_title": "Symmetry in mathematics",
+  "display_title": "Symmetry in mathematics",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Symmetry of a structured object",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a symmetry is a mapping of the object onto itself which preserves the structure"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Aut",
+        "module": "Mathlib.CategoryTheory.Endomorphism",
+        "match_kind": null
+      },
+      "note": "Mathlib has no single generic 'symmetry' notion; the closest is CategoryTheory.Aut (self-isomorphisms of an object), with structure-specific versions like MulAut, Equiv.Perm, Isometry.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Even function",
+      "anchor": {
+        "section": "Even functions",
+        "snippet": "then f is even if the following equation holds for all x and -x in the domain of f"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Even",
+        "module": "Mathlib.Algebra.Group.EvenFunction",
+        "match_kind": "exact"
+      },
+      "note": "Function.Even f is defined as ∀ a, f (-a) = f a, exactly matching the definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Examples of even functions",
+      "anchor": {
+        "section": "Even functions",
+        "snippet": "Examples of even functions include"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.cos_neg",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": null
+      },
+      "note": "Evenness facts for example functions exist (e.g. Real.cos_neg, abs_neg) but are not packaged as Function.Even instances.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Odd function",
+      "anchor": {
+        "section": "Odd functions",
+        "snippet": "then f is odd if the following equation holds for all x and -x in the domain of f"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Odd",
+        "module": "Mathlib.Algebra.Group.EvenFunction",
+        "match_kind": "exact"
+      },
+      "note": "Function.Odd f is defined as ∀ a, f (-a) = -(f a), exactly matching the definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Examples of odd functions",
+      "anchor": {
+        "section": "Odd functions",
+        "snippet": "Examples of odd functions are"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.sin_neg",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": null
+      },
+      "note": "Oddness facts for example functions exist (e.g. Real.sin_neg) but are not packaged as Function.Odd instances.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Integral of an odd function over symmetric interval",
+      "anchor": {
+        "section": "Integrating",
+        "snippet": "The integral of an odd function from − A to + A is zero"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "intervalIntegral.integral_comp_neg",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic",
+        "match_kind": null
+      },
+      "note": "The building block integral_comp_neg (∫ f(-x) over a..b = ∫ f over -b..-a) exists, but there is no named lemma stating ∫_{-A}^{A} of an odd function is zero.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Integral of an even function over symmetric interval",
+      "anchor": {
+        "section": "Integrating",
+        "snippet": "The integral of an even function from − A to + A is twice the integral from 0 to + A"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "intervalIntegral.integral_comp_neg",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic",
+        "match_kind": null
+      },
+      "note": "Infrastructure (integral_comp_neg) exists but no named lemma states ∫_{-A}^{A} of an even function equals twice ∫_0^A.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Maclaurin series of an even function",
+      "anchor": {
+        "section": "Series",
+        "snippet": "The Maclaurin series of an even function includes only even powers."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No result relating parity of a function to the parity of its Taylor/Maclaurin coefficients was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Maclaurin series of an odd function",
+      "anchor": {
+        "section": "Series",
+        "snippet": "The Maclaurin series of an odd function includes only odd powers."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No result relating oddness of a function to its Maclaurin series containing only odd powers was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fourier series of a periodic even function",
+      "anchor": {
+        "section": "Series",
+        "snippet": "The Fourier series of a periodic even function includes only cosine terms."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem relating evenness of a periodic function to vanishing of sine Fourier coefficients was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fourier series of a periodic odd function",
+      "anchor": {
+        "section": "Series",
+        "snippet": "The Fourier series of a periodic odd function includes only sine terms."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem relating oddness of a periodic function to vanishing of cosine Fourier coefficients was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetric matrix",
+      "anchor": {
+        "section": "Symmetry in matrices",
+        "snippet": "a symmetric matrix is a square matrix that is equal to its transpose"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.IsSymm",
+        "module": "Mathlib.LinearAlgebra.Matrix.Symmetric",
+        "match_kind": "exact"
+      },
+      "note": "Matrix.IsSymm A is defined as Aᵀ = A on Matrix n n α, exactly a square matrix equal to its transpose.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Only square matrices can be symmetric",
+      "anchor": {
+        "section": "Symmetry in matrices",
+        "snippet": "only square matrices can be symmetric"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Squareness is enforced structurally by the type of Matrix.IsSymm (defined only for Matrix n n α), not stated as a theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Entries symmetric about the main diagonal",
+      "anchor": {
+        "section": "Symmetry in matrices",
+        "snippet": "The entries of a symmetric matrix are symmetric with respect to the main diagonal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.IsSymm.apply",
+        "module": "Mathlib.LinearAlgebra.Matrix.Symmetric",
+        "match_kind": "exact"
+      },
+      "note": "Matrix.IsSymm.apply gives A j i = A i j, i.e. entries are symmetric across the main diagonal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "A symmetric 3×3 matrix",
+      "anchor": {
+        "section": "Symmetry in matrices",
+        "snippet": "the following 3×3 matrix is symmetric"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A concrete worked example of a particular symmetric 3×3 matrix is not present as a named declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Diagonal matrices are symmetric",
+      "anchor": {
+        "section": "Symmetry in matrices",
+        "snippet": "Every square diagonal matrix is symmetric, since all off-diagonal entries are zero"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.isSymm_diagonal",
+        "module": "Mathlib.LinearAlgebra.Matrix.Symmetric",
+        "match_kind": "exact"
+      },
+      "note": "Matrix.isSymm_diagonal proves (diagonal v).IsSymm for any vector v.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Real symmetric matrix as self-adjoint operator / Hermitian matrix",
+      "anchor": {
+        "section": "Symmetry in matrices",
+        "snippet": "a real symmetric matrix represents a self-adjoint operator over a real inner product space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.isHermitian_iff_isSymmetric",
+        "module": "Mathlib.Analysis.Matrix.Hermitian",
+        "match_kind": "generalization"
+      },
+      "note": "Matrix.isHermitian_iff_isSymmetric states IsHermitian A ↔ A.toEuclideanLin.IsSymmetric (self-adjoint operator); for real matrices IsHermitian coincides with IsSymm.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetric group",
+      "anchor": {
+        "section": "Symmetric groups",
+        "snippet": "The symmetric group S n (on a finite set of n symbols) is the group whose elements are all the permutations of the n symbols"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm",
+        "module": "Mathlib.Logic.Equiv.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Equiv.Perm α is the group of permutations of α (with group instance); Sₙ is the special case Equiv.Perm (Fin n).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Order of the symmetric group",
+      "anchor": {
+        "section": "Symmetric groups",
+        "snippet": "it follows that the order (i.e., the number of elements) of the symmetric group S n is n !"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fintype.card_perm",
+        "module": "Mathlib.Data.Fintype.Perm",
+        "match_kind": "exact"
+      },
+      "note": "Fintype.card_perm proves Fintype.card (Perm α) = (Fintype.card α)!.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetric polynomial",
+      "anchor": {
+        "section": "Symmetric polynomials",
+        "snippet": "A symmetric polynomial is a polynomial P ( X 1 , X 2 , ..., X n ) in n variables"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MvPolynomial.IsSymmetric",
+        "module": "Mathlib.RingTheory.MvPolynomial.Symmetric.Defs",
+        "match_kind": "exact"
+      },
+      "note": "MvPolynomial.IsSymmetric φ is defined as invariance under all permutations of variables via rename, matching the definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of symmetric polynomials",
+      "anchor": {
+        "section": "Symmetric polynomials",
+        "snippet": "A theorem states that any symmetric polynomial can be expressed in terms of elementary symmetric polynomials"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MvPolynomial.esymmAlgHom_surjective",
+        "module": "Mathlib.RingTheory.MvPolynomial.Symmetric.FundamentalTheorem",
+        "match_kind": "exact"
+      },
+      "note": "esymmAlgHom_surjective (and esymmAlgEquiv) show every symmetric polynomial lies in the image of the elementary symmetric polynomials.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Symmetric polynomials in two variables",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "In two variables X 1 and X 2 , one has symmetric polynomials such as"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MvPolynomial.esymm_isSymmetric",
+        "module": "Mathlib.RingTheory.MvPolynomial.Symmetric.Defs",
+        "match_kind": null
+      },
+      "note": "The example polynomials (e.g. X₁+X₂, X₁X₂) are elementary symmetric polynomials, proven symmetric by esymm_isSymmetric, but not stated as standalone examples.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Symmetric polynomial in three variables",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "and in three variables X 1 , X 2 and X 3 , one has as a symmetric polynomial"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MvPolynomial.psum",
+        "module": "Mathlib.RingTheory.MvPolynomial.Symmetric.Defs",
+        "match_kind": null
+      },
+      "note": "Such examples are power-sum / elementary symmetric polynomials (psum, esymm) proven symmetric, but the specific three-variable instance is not a named declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetric tensor",
+      "anchor": {
+        "section": "Symmetric tensors",
+        "snippet": "a symmetric tensor is tensor that is invariant under a permutation of its vector arguments"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SymmetricPower",
+        "module": "Mathlib.LinearAlgebra.TensorPower.Symmetric",
+        "match_kind": "exact"
+      },
+      "note": "SymmetricPower (Sym[R] ι M) is the tensor power quotiented by the permutation relation, formalizing tensors invariant under permutation of arguments.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Symmetric tensors and homogeneous polynomials",
+      "anchor": {
+        "section": "Symmetric tensors",
+        "snippet": "The space of symmetric tensors of rank r on a finite-dimensional vector space is naturally isomorphic to the dual"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SymmetricPower",
+        "module": "Mathlib.LinearAlgebra.TensorPower.Symmetric",
+        "match_kind": null
+      },
+      "note": "SymmetricPower is defined, but the file explicitly lists relating it to homogeneous polynomials as a TODO, so the isomorphism is not yet proven.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Central idea of Galois theory",
+      "anchor": {
+        "section": "Galois theory",
+        "snippet": "The central idea of Galois theory is to consider those permutations (or rearrangements) of the roots"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Gal.galActionHom",
+        "module": "Mathlib.FieldTheory.PolynomialGaloisGroup",
+        "match_kind": null
+      },
+      "note": "Polynomial.Gal acts on the roots via galActionHom into Equiv.Perm (rootSet), with galActionHom_injective showing the faithful permutation action of the Galois group on roots.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Automorphism",
+      "anchor": {
+        "section": "Automorphisms of algebraic objects",
+        "snippet": "an automorphism is an isomorphism from a mathematical object to itself"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Aut",
+        "module": "Mathlib.CategoryTheory.Endomorphism",
+        "match_kind": "exact"
+      },
+      "note": "CategoryTheory.Aut X := X ≅ X is the self-isomorphisms of an object, exactly an automorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Automorphism group",
+      "anchor": {
+        "section": "Automorphisms of algebraic objects",
+        "snippet": "The set of all automorphisms of an object forms a group , called the automorphism group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Aut",
+        "module": "Mathlib.CategoryTheory.Endomorphism",
+        "match_kind": "exact"
+      },
+      "note": "CategoryTheory.Aut X carries a Group instance, formalizing that automorphisms of an object form a group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Set automorphisms form the symmetric group",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "In set theory , an arbitrary permutation of the elements of a set X is an automorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm",
+        "module": "Mathlib.Logic.Equiv.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Equiv.Perm X is the group of bijections (automorphisms) of the set X, i.e. its symmetric group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Automorphisms of the integers",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "the set of integers , Z , considered as a group under addition, has a unique nontrivial automorphism: negation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration was found establishing that negation is the unique nontrivial additive automorphism of ℤ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Group automorphism and inner automorphisms",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "A group automorphism is a group isomorphism from a group to itself"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAut",
+        "module": "Mathlib.Algebra.Group.End",
+        "match_kind": "exact"
+      },
+      "note": "MulAut G is the group of self-isomorphisms of a group, and MulAut.conj gives the inner automorphisms g ↦ g·_·g⁻¹.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Vector space automorphisms and GL(V)",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "an endomorphism of a vector space V is a linear operator V → V"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.GeneralLinearGroup",
+        "module": "Mathlib.LinearAlgebra.GeneralLinearGroup.Basic",
+        "match_kind": "exact"
+      },
+      "note": "LinearMap.GeneralLinearGroup R M := (M →ₗ[R] M)ˣ is the group of invertible linear operators, i.e. GL(V) (endomorphisms are Module.End).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Field automorphism",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "A field automorphism is a bijective ring homomorphism from a field to itself"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RingAut",
+        "module": "Mathlib.Algebra.Ring.Aut",
+        "match_kind": "generalization"
+      },
+      "note": "RingAut R := RingEquiv R R is the group of ring automorphisms; a field automorphism is this applied to a field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bosons symmetric, fermions antisymmetric",
+      "anchor": {
+        "section": "Symmetry in quantum mechanics: bosons and fermions",
+        "snippet": "bosons have representatives that are symmetric under permutation operators, and fermions have antisymmetric representatives"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This quantum-mechanical characterization of bosons/fermions via wavefunction symmetry is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pauli exclusion equivalent to antisymmetric wavefunction",
+      "anchor": {
+        "section": "Symmetry in quantum mechanics: bosons and fermions",
+        "snippet": "the Pauli exclusion principle with a single-valued many-particle wavefunction is equivalent to requiring the wavefunction to be antisymmetric"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Pauli exclusion principle and its equivalence to wavefunction antisymmetry are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vanishing diagonal implies antisymmetry",
+      "anchor": {
+        "section": "Symmetry in quantum mechanics: bosons and fermions",
+        "snippet": "Conversely, if the diagonal quantities A ( x , x ) are zero in every basis"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.BilinForm.IsAlt.neg_eq",
+        "module": "Mathlib.LinearAlgebra.BilinearForm.Properties",
+        "match_kind": "generalization"
+      },
+      "note": "For a bilinear form, IsAlt (B x x = 0 for all x) implies -B x y = B y x via IsAlt.neg_eq, i.e. vanishing diagonal forces antisymmetry.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetric relation",
+      "anchor": {
+        "section": "Symmetric relation",
+        "snippet": "We call a relation symmetric if every time the relation stands from A to B, it stands too from B to A"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Symmetric",
+        "module": "Mathlib.Order.Defs.Unbundled",
+        "match_kind": "exact"
+      },
+      "note": "Symmetric r is defined as ∀ ⦃x y⦄, r x y → r y x, exactly matching the definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isometry",
+      "anchor": {
+        "section": "Isometries of a space",
+        "snippet": "An isometry is a distance -preserving map between metric spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Isometry",
+        "module": "Mathlib.Topology.MetricSpace.Isometry",
+        "match_kind": "exact"
+      },
+      "note": "Isometry f is defined as preserving the (extended) distance edist (f x) (f y) = edist x y.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Congruent figures via isometry",
+      "anchor": {
+        "section": "Isometries of a space",
+        "snippet": "two geometric figures are congruent if they are related by an isometry"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Congruent",
+        "module": "Mathlib.Topology.MetricSpace.Congruence",
+        "match_kind": null
+      },
+      "note": "Congruent v₁ v₂ is defined via equal pairwise distances of indexed point sets, the metric-space formulation of being related by an isometry.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetry of a differential equation",
+      "anchor": {
+        "section": "Symmetries of differential equations",
+        "snippet": "A symmetry of a differential equation is a transformation that leaves the differential equation invariant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Symmetries of differential equations are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Line (Lie) symmetry of a system of differential equations",
+      "anchor": {
+        "section": "Symmetries of differential equations",
+        "snippet": "A Line symmetry of a system of differential equations is a continuous symmetry of the system of differential equations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lie (continuous) point symmetries of differential equations are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lie symmetries yield first integrals",
+      "anchor": {
+        "section": "Symmetries of differential equations",
+        "snippet": "knowledge of an appropriate set of Lie symmetries allows one to explicitly calculate a set of first integrals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The relationship between Lie symmetries and first integrals of differential equations is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Permutation symmetry gives discrete uniform distribution",
+      "anchor": {
+        "section": "Symmetry in probability",
+        "snippet": "symmetry with respect to permutations (relabelings) implies a discrete uniform distribution"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PMF.uniformOfFintype",
+        "module": "Mathlib.Probability.Distributions.Uniform",
+        "match_kind": null
+      },
+      "note": "The discrete uniform distribution (PMF.uniformOfFintype) is defined, but no theorem characterizes it as the unique permutation-invariant distribution.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Interval symmetry gives continuous uniform distribution",
+      "anchor": {
+        "section": "Symmetry in probability",
+        "snippet": "symmetry with respect to interchanging sub-intervals of equal length corresponds to a continuous uniform distribution"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.pdf.IsUniform",
+        "module": "Mathlib.Probability.Distributions.Uniform",
+        "match_kind": null
+      },
+      "note": "The continuous uniform distribution (IsUniform) is defined, but its characterization via interval-interchange symmetry is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reflection in a point preserving a distribution",
+      "anchor": {
+        "section": "Symmetry in probability",
+        "snippet": "There is one type of isometry in one dimension that may leave the probability distribution unchanged, that is reflection in a point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of a probability distribution invariant under reflection (a symmetric distribution) is not formalized as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reciprocal-invariance symmetry for positive outcomes",
+      "anchor": {
+        "section": "Symmetry in probability",
+        "snippet": "the outcome and its reciprocal have the same distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Distributions invariant under taking reciprocals are not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

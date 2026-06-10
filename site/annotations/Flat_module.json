@@ -1,0 +1,793 @@
+{
+  "slug": "Flat_module",
+  "wikipedia_title": "Flat module",
+  "display_title": "Flat module",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Flat module",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a module M over a ring R is flat if taking the tensor product over R with M preserves exact sequences"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Flat",
+        "module": "Mathlib.RingTheory.Flat.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Module.Flat is defined via tensor product preserving injectivity of finitely generated submodule inclusions; the exact-sequence formulation is given by Module.Flat.iff_lTensor_exact.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Faithfully flat module",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A module is faithfully flat if taking the tensor product with a sequence produces an exact sequence if and only if the original sequence is exact"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.FaithfullyFlat",
+        "module": "Mathlib.RingTheory.Flat.FaithfullyFlat.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Module.FaithfullyFlat is defined via flatness plus IM ≠ M for maximal ideals; equivalence with the exactness-iff characterization is Module.FaithfullyFlat.iff_exact_iff_lTensor_exact.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Flat module (injectivity definition)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A left module M over a ring R is flat if the following condition is satisfied"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Flat",
+        "module": "Mathlib.RingTheory.Flat.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Module.Flat is defined exactly by injectivity of tensored inclusions of (finitely generated) submodules; Module.Flat.iff_rTensor_preserves_injective_linearMap gives the formulation in terms of arbitrary injective linear maps.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Restriction to finitely generated ideals",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "it is enough to restrict the injections"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Flat.iff_rTensor_injective",
+        "module": "Mathlib.RingTheory.Flat.Tensor",
+        "match_kind": "exact"
+      },
+      "note": "Module.Flat.iff_rTensor_injective states that flatness is equivalent to injectivity of I ⊗ M → R ⊗ M for finitely generated ideals I.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalent definition via exact functor",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "an R -module M is flat if the tensor product with M is an exact functor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Flat.iff_lTensor_exact",
+        "module": "Mathlib.RingTheory.Flat.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Module.Flat.iff_lTensor_exact (and iff_rTensor_exact) characterizes flatness as preservation of exactness by the tensor functor.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equational characterization of flatness",
+      "anchor": {
+        "section": "Characterizations",
+        "snippet": "Flatness can also be characterized by the following equational condition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Flat.iff_forall_isTrivialRelation",
+        "module": "Mathlib.RingTheory.Flat.EquationalCriterion",
+        "match_kind": "exact"
+      },
+      "note": "Module.Flat.iff_forall_isTrivialRelation tagged with Stacks 00HK gives the equational criterion: every relation ∑ fᵢxᵢ = 0 in M is trivial.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Characterization via homomorphisms factoring through free modules",
+      "anchor": {
+        "section": "Characterizations",
+        "snippet": "An R -module M is flat if and only if the following condition holds"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Flat.iff_forall_exists_factorization",
+        "module": "Mathlib.RingTheory.Flat.EquationalCriterion",
+        "match_kind": "exact"
+      },
+      "note": "Module.Flat.iff_forall_exists_factorization (Stacks 058D) characterizes flatness via factorization through finite free modules.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Relations to free, projective, torsion-free",
+      "anchor": {
+        "section": "Relations to other module properties",
+        "snippet": "every flat module is torsion-free , every projective module is flat, and every free module is projective"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Flat.of_projective",
+        "module": "Mathlib.RingTheory.Flat.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Module.Flat.of_projective, Module.Flat.of_free, and Module.Flat.isTorsionFree (Mathlib.RingTheory.Flat.TorsionFree) together cover all three implications.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finitely generated flat iff locally free",
+      "anchor": {
+        "section": "Relations to other module properties",
+        "snippet": "a finitely generated module is flat if and only it is locally free"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.freeLocus_eq_univ",
+        "module": "Mathlib.RingTheory.Spectrum.Prime.FreeLocus",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has Module.free_of_flat_of_isLocalRing for finite+flat over local rings and freeLocus_eq_univ for finitely presented flat modules, but the precise iff with locally free for finitely generated is not stated as one decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Flat implies torsion-free",
+      "anchor": {
+        "section": "Torsion-free modules",
+        "snippet": "Every flat module is torsion-free"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Flat.isTorsionFree",
+        "module": "Mathlib.RingTheory.Flat.TorsionFree",
+        "match_kind": "exact"
+      },
+      "note": "Module.Flat.isTorsionFree (an instance) shows every flat module is torsion-free; Module.Flat.torsion_eq_bot is the same in equational form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Converse over PIDs and Dedekind rings",
+      "anchor": {
+        "section": "Torsion-free modules",
+        "snippet": "The converse holds over the integers, and more generally over principal ideal domains and Dedekind rings"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsDedekindDomain.flat_iff_torsion_eq_bot",
+        "module": "Mathlib.RingTheory.Flat.TorsionFree",
+        "match_kind": "exact"
+      },
+      "note": "IsDedekindDomain.flat_iff_torsion_eq_bot (Stacks 0AUW) and Module.Flat.flat_iff_torsion_eq_bot_of_isBezout cover Dedekind rings and PIDs/Bezout domains respectively.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Prüfer domain",
+      "anchor": {
+        "section": "Torsion-free modules",
+        "snippet": "An integral domain over which every torsion-free module is flat is called a Prüfer domain"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has a TODO comment in RingTheory/Flat/TorsionFree.lean noting that Prüfer domains have not yet been defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Characterization of projective modules",
+      "anchor": {
+        "section": "Free and projective modules",
+        "snippet": "A module M is projective if and only if there is a free module G and two linear maps"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Projective.iff_split",
+        "module": "Mathlib.Algebra.Module.Projective",
+        "match_kind": "exact"
+      },
+      "note": "Module.Projective.iff_split (and Module.projective_def') characterize projectivity as being a retract/direct summand of a free module.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Projective implies flat",
+      "anchor": {
+        "section": "Free and projective modules",
+        "snippet": "Every projective module is flat"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Flat.of_projective",
+        "module": "Mathlib.RingTheory.Flat.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Module.Flat.of_projective is a typeclass instance deriving Flat from Projective.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finitely presented flat is projective",
+      "anchor": {
+        "section": "Free and projective modules",
+        "snippet": "A finitely presented module"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Flat.projective_of_finitePresentation",
+        "module": "Mathlib.RingTheory.Flat.EquationalCriterion",
+        "match_kind": "exact"
+      },
+      "note": "Module.Flat.projective_of_finitePresentation tagged with Stacks 00NX states that a finitely presented flat module is projective.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finitely generated flat is projective over Noetherian rings",
+      "anchor": {
+        "section": "Free and projective modules",
+        "snippet": "Over a Noetherian ring , every finitely generated flat module is projective"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.Flat.projective_of_finitePresentation",
+        "module": "Mathlib.RingTheory.Flat.EquationalCriterion",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has projective_of_finitePresentation; combined with Module.Finite ⇒ FinitePresentation over Noetherian, this yields the statement, but there is no dedicated decl spelling out the Noetherian+finite flat case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finitely generated flat is free over local rings",
+      "anchor": {
+        "section": "Free and projective modules",
+        "snippet": "On a local ring every finitely generated flat module is free"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.free_of_flat_of_isLocalRing",
+        "module": "Mathlib.RingTheory.LocalRing.Module",
+        "match_kind": "exact"
+      },
+      "note": "Module.free_of_flat_of_isLocalRing proves Module.Finite + Module.Flat over a local ring implies Module.Free.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Finitely generated flat non-projective module",
+      "anchor": {
+        "section": "Free and projective modules",
+        "snippet": "A finitely generated flat module that is not projective can be built as follows"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No corresponding non-example construction was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "R/I generally not flat",
+      "anchor": {
+        "section": "Non-examples",
+        "snippet": "If I is an ideal in a Noetherian commutative ring R"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general statement that R/I fails to be flat unless I is generated by an idempotent was located in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Torsion modules over Z not flat",
+      "anchor": {
+        "section": "Non-examples",
+        "snippet": "a module that contains nonzero torsion elements is not flat"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.Flat.isTorsionFree",
+        "module": "Mathlib.RingTheory.Flat.TorsionFree",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib's Module.Flat.isTorsionFree implies (contrapositively) any nonzero-torsion module is not flat, but this is not stated as a named non-example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Direct sum flatness",
+      "anchor": {
+        "section": "Direct sums, limits and products",
+        "snippet": "The direct sum"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Flat.directSum_iff",
+        "module": "Mathlib.RingTheory.Flat.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Module.Flat.directSum_iff (and the directSum instance) state that a direct sum is flat iff each summand is.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Direct limit of flat modules is flat",
+      "anchor": {
+        "section": "Direct sums, limits and products",
+        "snippet": "The direct limit of flat modules is flat"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement that filtered/direct limits of flat modules are flat was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Direct product flat iff coherent ring",
+      "anchor": {
+        "section": "Direct sums, limits and products",
+        "snippet": "Direct products of flat modules need not in general be flat"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Coherent rings and the corresponding characterization via direct products of flat modules are not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Flat ring homomorphism",
+      "anchor": {
+        "section": "Flat ring extensions",
+        "snippet": "A ring homomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RingHom.Flat",
+        "module": "Mathlib.RingTheory.RingHom.Flat",
+        "match_kind": "exact"
+      },
+      "note": "RingHom.Flat is defined as flatness of S as an R-module via the homomorphism f.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Localization is flat",
+      "anchor": {
+        "section": "Flat ring extensions",
+        "snippet": "the localization"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLocalization.flat",
+        "module": "Mathlib.RingTheory.Flat.Localization",
+        "match_kind": "exact"
+      },
+      "note": "IsLocalization.flat shows any localization is flat over the base ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Completion is flat",
+      "anchor": {
+        "section": "Flat ring extensions",
+        "snippet": "the completion"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AdicCompletion.flat_of_isNoetherian",
+        "module": "Mathlib.RingTheory.AdicCompletion.AsTensorProduct",
+        "match_kind": "special_case"
+      },
+      "note": "AdicCompletion.flat_of_isNoetherian shows the I-adic completion is flat when R is Noetherian, matching the standard statement; the more general completion contexts aren't generalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Flatness is a local property",
+      "anchor": {
+        "section": "Local property",
+        "snippet": "If M is an R -module the three following conditions are equivalent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.flat_of_isLocalized_maximal",
+        "module": "Mathlib.RingTheory.Flat.Localization",
+        "match_kind": "exact"
+      },
+      "note": "Module.flat_of_isLocalized_maximal and Module.flat_of_isLocalized_span (with Module.flat_iff_of_isLocalization) establish that flatness can be checked locally at maximal ideals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Flat morphism of schemes",
+      "anchor": {
+        "section": "Flat morphisms of schemes",
+        "snippet": "A morphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.Flat",
+        "module": "Mathlib.AlgebraicGeometry.Morphisms.Flat",
+        "match_kind": "exact"
+      },
+      "note": "AlgebraicGeometry.Flat is the predicate that a morphism of schemes is flat, defined via flatness of the ring maps Γ(Y,U) → Γ(X,V).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Flat extension and primitive polynomial",
+      "anchor": {
+        "section": "Flat morphisms of schemes",
+        "snippet": "Let"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific example illustrating a flat extension built from a primitive polynomial does not appear in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Faithfully flat algebra",
+      "anchor": {
+        "section": "Faithful flatness",
+        "snippet": "A module is faithfully flat if taking the tensor product with a sequence produces an exact sequence if and only if the original sequence is exact"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.FaithfullyFlat",
+        "module": "Mathlib.RingTheory.Flat.FaithfullyFlat.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Module.FaithfullyFlat applies to algebras viewed as modules; Mathlib.RingTheory.Flat.FaithfullyFlat.Algebra develops the algebra setting.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalent conditions for faithful flatness",
+      "anchor": {
+        "section": "Faithful flatness",
+        "snippet": "the following conditions are equivalent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.FaithfullyFlat.iff_flat_and_rTensor_faithful",
+        "module": "Mathlib.RingTheory.Flat.FaithfullyFlat.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Multiple iff lemmas (iff_flat_and_proper_ideal, iff_flat_and_rTensor_faithful, iff_exact_iff_rTensor_exact, iff_zero_iff_lTensor_zero) cover the standard equivalent characterizations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Flat local homomorphism is faithfully flat",
+      "anchor": {
+        "section": "Faithful flatness",
+        "snippet": "The second condition implies that a flat local homomorphism of local rings is faithfully flat"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.FaithfullyFlat.of_flat_of_isLocalHom",
+        "module": "Mathlib.RingTheory.Flat.FaithfullyFlat.Algebra",
+        "match_kind": "exact"
+      },
+      "note": "Module.FaithfullyFlat.of_flat_of_isLocalHom states that flat + local homomorphism of local rings implies faithfully flat.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Submersive property",
+      "anchor": {
+        "section": "Faithful flatness",
+        "snippet": "The second-last condition can be stated in the following strengthened form"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PrimeSpectrum.comap_surjective_of_faithfullyFlat",
+        "module": "Mathlib.RingTheory.Flat.FaithfullyFlat.Algebra",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has the surjectivity of Spec under faithfully flat maps (comap_surjective_of_faithfullyFlat), but not the full submersive/quotient-map topological strengthening.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Free implies faithfully flat",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is a nonzero free R -module is faithfully flat"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.FaithfullyFlat.instOfNontrivialOfFree",
+        "module": "Mathlib.RingTheory.Flat.FaithfullyFlat.Basic",
+        "match_kind": "exact"
+      },
+      "note": "An anonymous instance `[Nontrivial M] [Module.Free R M] : FaithfullyFlat R M` proves nonzero free modules are faithfully flat.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Polynomial ring is faithfully flat",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "A polynomial ring is a faithfully flat extension of its ring of coefficients"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.FaithfullyFlat",
+        "module": "Mathlib.RingTheory.Flat.FaithfullyFlat.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "R[X] is a free R-module in Mathlib so FaithfullyFlat R R[X] is inferrable via the free-implies-faithfully-flat instance, but no named declaration spells this out.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Monic polynomial inclusion is faithfully flat",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the inclusion"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The faithfully flat extension R → R[X]/(monic) is not formalized as a named instance in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Direct product of localizations faithfully flat",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The direct product"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement asserting the product of localizations at all maximal ideals is faithfully flat was located.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Direct sum of localizations at all primes",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The direct sum of the localizations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement about faithful flatness of the direct sum of localizations at all primes was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Amitsur complex exactness",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "there is an associated complex called the Amitsur complex"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Amitsur complex is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Theorem of transition characterization",
+      "anchor": {
+        "section": "Faithfully flat local homomorphisms",
+        "snippet": "Here is one characterization of a faithfully flat homomorphism for a not-necessarily-flat homomorphism"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The characterization of faithfully flat local homomorphisms via transition is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Flatness via vanishing Tor",
+      "anchor": {
+        "section": "Homological characterization using Tor functors",
+        "snippet": "Flatness may also be expressed using the Tor functors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has CategoryTheory.Tor as a left-derived functor of tensor, but no theorem characterizing Module.Flat via vanishing of Tor.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vanishing of first Tor suffices",
+      "anchor": {
+        "section": "Homological characterization using Tor functors",
+        "snippet": "it is enough to check that the first Tor term vanishes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement that vanishing of Tor₁ alone implies flatness has been formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Flatness in short exact sequences",
+      "anchor": {
+        "section": "Homological characterization using Tor functors",
+        "snippet": "one can then easily prove facts about a short exact sequence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Long exact Tor sequence and the standard \"two of three flat ⇒ third flat\" consequences are not formalized for Module.Flat.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Flat resolution",
+      "anchor": {
+        "section": "Flat resolutions",
+        "snippet": "A flat resolution of a module"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of a flat resolution is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Flat dimension",
+      "anchor": {
+        "section": "Flat resolutions",
+        "snippet": "the minimal length among all finite flat resolutions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Flat (Tor-)dimension of a module is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Module with vanishing Tor is flat",
+      "anchor": {
+        "section": "Flat resolutions",
+        "snippet": "As an example, consider a module"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No example tying vanishing Tor on resolutions to flatness is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Flat cover",
+      "anchor": {
+        "section": "Flat covers",
+        "snippet": "every module M would be the epimorphic image of a flat module F"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Flat covers/precovers are not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Flat cover conjecture resolved",
+      "anchor": {
+        "section": "Flat covers",
+        "snippet": "The conjecture turned out to be true, resolved positively and proved simultaneously by L. Bican, R. El Bashir and E. Enochs"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Bican–El Bashir–Enochs flat cover theorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Free modules are flat constructively",
+      "anchor": {
+        "section": "In constructive mathematics",
+        "snippet": "no choice is needed to prove that free modules are flat"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Flat.of_free",
+        "module": "Mathlib.RingTheory.Flat.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Module.Flat.of_free (and Module.Flat.finsupp) prove free modules are flat; Mathlib does not separately track constructive content.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,393 @@
+{
+  "slug": "Karnaugh_map",
+  "wikipedia_title": "Karnaugh map",
+  "display_title": "Karnaugh map",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Karnaugh map",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A Karnaugh map ( KM or K-map ) is a diagram that can be used to simplify a Boolean algebra expression."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Karnaugh maps are a circuit-design visualization technique with no representation in Mathlib (grep for 'Karnaugh' yields no matches).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cells and minterms",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Cells are also known as minterms , while each cell value represents the corresponding output value of the Boolean function."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of a minterm (a conjunction over all input variables) is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sum-of-products and product-of-sums implementation",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A sum-of-products expression (SOP) can always be implemented using AND gates feeding into an OR gate , and a product-of-sums expression (POS) leads to OR gates feeding an AND gate."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "SOP/POS normal forms for Boolean expressions and their gate-level implementations are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Four-variable Boolean function example",
+      "anchor": {
+        "section": "Example",
+        "snippet": "Karnaugh maps are used to facilitate the simplification of Boolean algebra functions."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This worked example of 4-variable K-map simplification has no analog in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Karnaugh map construction (4-variable)",
+      "anchor": {
+        "section": "Construction",
+        "snippet": "In the example above, the four input variables can be combined in 16 different ways, so the truth table has 16 rows, and the Karnaugh map has 16 positions."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The K-map construction (a Gray-coded layout of a 16-row truth table) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Gray code ordering of indices",
+      "anchor": {
+        "section": "Construction",
+        "snippet": "The row and column indices (shown across the top and down the left side of the Karnaugh map) are ordered in Gray code rather than binary numerical order."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gray code is not defined in Mathlib (case-insensitive grep returns no matches).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Minterm grouping rules",
+      "anchor": {
+        "section": "Grouping",
+        "snippet": "Minterm groups must be rectangular and must have an area that is a power of two (i.e., 1, 2, 4, 8...)."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "K-map grouping rules (rectangles of power-of-two area) are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cell shorthand notation",
+      "anchor": {
+        "section": "Grouping",
+        "snippet": "The cells are often denoted by a shorthand which describes the logical value of the inputs that the cell covers."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Shorthand cell labeling notation is a presentational convention with no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Toroidal adjacency of the grid",
+      "anchor": {
+        "section": "Grouping",
+        "snippet": "The grid is toroidally connected, which means that rectangular groups can wrap across the edges (see picture)."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The toroidal adjacency structure of the K-map grid is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reading minterms from groupings",
+      "anchor": {
+        "section": "Solution",
+        "snippet": "Once the Karnaugh map has been constructed and the adjacent 1s linked by rectangular and square boxes, the algebraic minterms can be found by examining which variables stay the same within each box."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The procedure of reading product terms off K-map groupings is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Red grouping minterm derivation",
+      "anchor": {
+        "section": "Solution",
+        "snippet": "For the red grouping: A is the same and is equal to 1 throughout the box, therefore it should be included in the algebraic representation of the red minterm."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Concrete worked K-map example; not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Green grouping minterm derivation",
+      "anchor": {
+        "section": "Solution",
+        "snippet": "For the green grouping, A and B maintain the same state, while C and D change."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Concrete worked K-map example; not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Blue grouping minterm",
+      "anchor": {
+        "section": "Solution",
+        "snippet": "In the same way, the blue grouping gives the term BC D ."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Concrete worked K-map example; not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverse via grouping zeros",
+      "anchor": {
+        "section": "Inverse",
+        "snippet": "The inverse of a function is solved in the same way by grouping the 0s instead."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The K-map dualization recipe for computing a Boolean function's complement is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product of sums via De Morgan's laws",
+      "anchor": {
+        "section": "Inverse",
+        "snippet": "Through the use of De Morgan's laws , the product of sums can be determined:"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "compl_inf",
+        "module": "Mathlib.Order.BooleanAlgebra.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "De Morgan's laws themselves are in Mathlib (`compl_inf : (x ⊓ y)ᶜ = xᶜ ⊔ yᶜ` and its dual), but their application to convert a SOP K-map result into POS form is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Don't care conditions",
+      "anchor": {
+        "section": "Don't cares",
+        "snippet": "A \"don't care\" condition is a combination of inputs for which the designer doesn't care what the output is."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Don't-care conditions for partial Boolean functions are a circuit-design notion not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Don't care simplification example",
+      "anchor": {
+        "section": "Don't cares",
+        "snippet": "The example on the right is the same as the example above but with the value of f (1,1,1,1) replaced by a \"don't care\"."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Concrete don't-care K-map example; not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Race hazard detection on K-map",
+      "anchor": {
+        "section": "Elimination",
+        "snippet": "Race hazards are very easy to spot using a Karnaugh map, because a race condition may exist when moving between any pair of adjacent, but disjoint, regions circumscribed on the map."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Race-hazard analysis of combinational circuits is a digital-design topic not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Race condition between blue and green states",
+      "anchor": {
+        "section": "Elimination",
+        "snippet": "a potential race condition exists when C is 1 and D is 0, A is 1, and B changes from 1 to 0 (moving from the blue state to the green state)."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific race-condition example; not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Second wrap-around glitch",
+      "anchor": {
+        "section": "Elimination",
+        "snippet": "There is a second potential glitch in the same example that is more difficult to spot: when D is 0 and A and B are both 1, with C changing from 1 to 0 (moving from the blue state to the red state)."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific glitch example; not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Consensus term eliminates race hazard",
+      "anchor": {
+        "section": "Elimination",
+        "snippet": "The term is redundant in terms of the static logic of the system, but such redundant, or consensus terms , are often needed to assure race-free dynamic performance."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The consensus theorem and its use in eliminating race hazards is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "All possible 2-variable Karnaugh maps",
+      "anchor": {
+        "section": "2-variable map examples",
+        "snippet": "The following are all the possible 2-variable, 2 × 2 Karnaugh maps."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Enumeration of the 16 two-variable K-maps is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Block sizes are powers of two",
+      "anchor": {
+        "section": "2-variable map examples",
+        "snippet": "These blocks must be of the size of the powers of 2 (1, 2, 4, 8, 16, 32, ...)."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Restated K-map grouping constraint; not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cylindrical/toroidal visualization",
+      "anchor": {
+        "section": "2-variable map examples",
+        "snippet": "A visualization of the k-map can be considered cylindrical."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The cylindrical/toroidal interpretation of the K-map's adjacency is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,445 @@
+{
+  "slug": "Mobius_function",
+  "wikipedia_title": "Möbius function",
+  "display_title": "Möbius function",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Definition of the Möbius function",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The Möbius function is defined by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.moebius",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Moebius",
+        "match_kind": "exact"
+      },
+      "note": "ArithmeticFunction.moebius is defined exactly as (-1)^cardFactors n for squarefree n and 0 otherwise.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "The Möbius function is defined by"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mu (n)={\\begin{cases}1&amp;{\\text{if }}n=1\\\\(-1)^{k}&amp;{\\text{if }}n{\\text{ is the product of }}k{\\text{ distinct primes}}\\\\0&amp;{\\text{if }}n{\\text{ is divisible by a square}}&gt;1.\\end{cases}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Alternative representation via Liouville/prime omega functions",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The Möbius function can alternatively be represented as"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ArithmeticFunction.liouville",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Liouville",
+        "match_kind": null
+      },
+      "note": "The Liouville function and the ω/Ω prime-counting functions exist, but the identity expressing μ in terms of them is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gauss characterization as sum of primitive roots",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Another characterization by Carl Friedrich Gauss is the sum of all primitive roots"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration equating μ(n) with the sum of primitive n-th roots of unity was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Values for the first 60 positive numbers",
+      "anchor": {
+        "section": "Values",
+        "snippet": "for the first 60 positive numbers are"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "μ is computable via ArithmeticFunction.moebius but no enumerated value table is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dirichlet series as inverse of Riemann zeta",
+      "anchor": {
+        "section": "Mathematical series",
+        "snippet": "The Dirichlet series that generates the Möbius function is the"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.LSeries_zeta_mul_Lseries_moebius",
+        "module": "Mathlib.NumberTheory.LSeries.Dirichlet",
+        "match_kind": "exact"
+      },
+      "note": "LSeries_zeta_mul_Lseries_moebius proves L(ζ)·L(μ)=1 for re s>1, i.e. the Möbius L-series is 1/ζ(s).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euler product",
+      "anchor": {
+        "section": "Mathematical series",
+        "snippet": "This may be seen from its Euler product"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "riemannZeta_eulerProduct",
+        "module": "Mathlib.NumberTheory.EulerProduct.DirichletLSeries",
+        "match_kind": null
+      },
+      "note": "The Euler product of ζ is formalized (riemannZeta_eulerProduct), but the reciprocal product ∏(1−p^{−s}) form for the Möbius series is not separately stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Identity involving Euler's constant",
+      "anchor": {
+        "section": "Mathematical series",
+        "snippet": "is Euler's constant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the Möbius series identities involving Euler's constant γ was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lambert series for the Möbius function",
+      "anchor": {
+        "section": "Mathematical series",
+        "snippet": "The Lambert series for the Möbius function is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Lambert series identity ∑μ(n)q^n/(1−q^n)=q for the Möbius function was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lambert series for prime argument",
+      "anchor": {
+        "section": "Mathematical series",
+        "snippet": "we also have"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the prime-restricted Lambert series variant was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gauss: sum of primitive roots mod p",
+      "anchor": {
+        "section": "Algebraic number theory",
+        "snippet": "the sum of its primitive roots is congruent to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration stating that the sum of primitive roots mod p is ≡ μ(p−1) was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of monic irreducible polynomials over a finite field",
+      "anchor": {
+        "section": "Algebraic number theory",
+        "snippet": "of monic irreducible polynomials of degree"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Gauss/necklace counting formula (1/n)∑μ(d)q^{n/d} for monic irreducibles over a finite field is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Möbius function is multiplicative",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The Möbius function is multiplicative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.isMultiplicative_moebius",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Moebius",
+        "match_kind": "exact"
+      },
+      "note": "isMultiplicative_moebius proves μ is multiplicative (IsMultiplicative μ).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum of Möbius function over divisors",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The sum of the Möbius function over all positive divisors of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.moebius_mul_coe_zeta",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Moebius",
+        "match_kind": "invocation"
+      },
+      "note": "moebius_mul_coe_zeta (μ*ζ=1) is exactly ∑_{d|n}μ(d)=[n=1] once unfolded via coe_mul_zeta_apply.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Formula without factorization (sum of primitive roots of unity)",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "for calculating the Möbius function without directly knowing the factorization"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of μ(n) as a sum of primitive n-th roots of unity (Ramanujan sum c_n(1)) was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Other identities satisfied by the Möbius function",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Other identities satisfied by the Möbius function include"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ArithmeticFunction.IsMultiplicative.prodPrimeFactors_one_sub_of_squarefree",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Moebius",
+        "match_kind": null
+      },
+      "note": "Möbius inversion and identities like ∏(1−f p)=∑μ(d)f(d) are formalized, but the specific list of further identities is only partially covered.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Binomial coefficients alternating-entry result",
+      "anchor": {
+        "section": "Other proofs",
+        "snippet": "the binomial coefficients exhibit alternating entries of odd and even power"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The binomial-coefficient combinatorial argument used in this Möbius proof is not formalized as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Mean value is zero (equivalent to PNT)",
+      "anchor": {
+        "section": "Average order",
+        "snippet": "The mean value (in the sense of average orders) of the Möbius function is zero"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The PNT-equivalent statement that the mean value of μ is zero is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "μ(n)=0 iff divisible by square of a prime",
+      "anchor": {
+        "section": "μ ( n ) {\\displaystyle \\mu (n)} sections",
+        "snippet": "is divisible by the square of a prime"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.moebius_ne_zero_iff_squarefree",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Moebius",
+        "match_kind": "invocation"
+      },
+      "note": "moebius_ne_zero_iff_squarefree gives μ n≠0 ↔ Squarefree n, which with Nat.squarefree_iff_prime_squarefree yields μ n=0 ↔ a prime square divides n.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Numbers divisible by a square of a prime",
+      "anchor": {
+        "section": "μ ( n ) {\\displaystyle \\mu (n)} sections",
+        "snippet": "The first numbers with this property are"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This enumerated example list of non-squarefree numbers is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Prime implies μ(n)=−1 but not conversely",
+      "anchor": {
+        "section": "μ ( n ) {\\displaystyle \\mu (n)} sections",
+        "snippet": "but the converse is not true"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.moebius_apply_prime",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Moebius",
+        "match_kind": "exact"
+      },
+      "note": "moebius_apply_prime proves μ p=−1 for prime p; the (non-)converse remark is just informal commentary.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sphenic numbers (three distinct prime factors)",
+      "anchor": {
+        "section": "μ ( n ) {\\displaystyle \\mu (n)} sections",
+        "snippet": "The first such numbers with three distinct prime factors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This enumerated example list of sphenic numbers is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Numbers with five distinct prime factors",
+      "anchor": {
+        "section": "μ ( n ) {\\displaystyle \\mu (n)} sections",
+        "snippet": "the first such numbers with 5 distinct prime factors are"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This enumerated example list of numbers with five distinct prime factors is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Mertens function",
+      "anchor": {
+        "section": "Mertens function",
+        "snippet": "closely related to the Möbius function is the Mertens function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Mertens function M(n)=∑_{k≤n}μ(k) is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mertens function via Farey sequence",
+      "anchor": {
+        "section": "Mertens function",
+        "snippet": "it follows that the Mertens function is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the Mertens function nor the Farey sequence formula for it is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Möbius function of a locally finite poset",
+      "anchor": {
+        "section": "Incidence algebras",
+        "snippet": "every locally finite partially ordered set (poset) is assigned an incidence algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IncidenceAlgebra.mu",
+        "module": "Mathlib.Combinatorics.Enumerative.IncidenceAlgebra",
+        "match_kind": "exact"
+      },
+      "note": "IncidenceAlgebra.mu is the Möbius function on a locally finite poset, defined as the inverse of the zeta function in the incidence algebra.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Iterated Dirichlet convolution of the Möbius function",
+      "anchor": {
+        "section": "Incidence algebras",
+        "snippet": "so is its (iterated) Dirichlet convolution"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IncidenceAlgebra.mu",
+        "module": "Mathlib.Combinatorics.Enumerative.IncidenceAlgebra",
+        "match_kind": null
+      },
+      "note": "The incidence/arithmetic-function convolution ring structure exists, but no statement about iterated Dirichlet convolutions of μ specifically is formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Incidence algebras",
+          "snippet": "so is its (iterated) Dirichlet convolution"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mu _{k}\\left(p^{a}\\right)=(-1)^{a}{\\binom {k}{a}}}"
+        }
+      ]
+    }
+  ]
+}

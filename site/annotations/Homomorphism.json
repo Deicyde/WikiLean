@@ -1,0 +1,937 @@
+{
+  "slug": "Homomorphism",
+  "wikipedia_title": "Homomorphism",
+  "display_title": "Homomorphism",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Homomorphism",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A homomorphism is a map between two algebraic structures of the same type"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MonoidHomClass",
+        "module": "Mathlib.Algebra.Group.Hom.Defs",
+        "match_kind": null
+      },
+      "note": "Mathlib has no single universal 'homomorphism' definition but realizes the concept per-structure via bundled hom types and `*HomClass`/`FunLike` predicates like MonoidHomClass.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Preservation of an n-ary operation",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "preserves an operation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no general universal-algebra signature framework expressing preservation of an arbitrary n-ary operation; preservation is stated per-operation (e.g. map_mul).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Preservation of constants and identity elements",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The operations that must be preserved by a homomorphism include 0-ary operations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "map_one",
+        "module": "Mathlib.Algebra.Group.Hom.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`map_one` (and dually `map_zero`) state that any OneHomClass/ZeroHomClass map preserves the nullary identity/constant element.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Semigroup homomorphism",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A semigroup homomorphism is a map between semigroups that preserves the semigroup operation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulHom",
+        "module": "Mathlib.Algebra.Group.Hom.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`MulHom` (M →ₙ* N) is a map with `map_mul'` preserving the multiplication on `Mul`/semigroup types.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Monoid homomorphism",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A monoid homomorphism is a map between monoids that preserves the monoid operation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MonoidHom",
+        "module": "Mathlib.Algebra.Group.Hom.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`MonoidHom` (M →* N) preserves both multiplication and the identity element between monoids.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Group homomorphism",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A group homomorphism is a map between groups that preserves the group operation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MonoidHom",
+        "module": "Mathlib.Algebra.Group.Hom.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has no separate GroupHom; group homomorphisms are `MonoidHom` instantiated at group types (inverses are preserved automatically).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ring homomorphism",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A ring homomorphism is a map between rings that preserves the ring addition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RingHom",
+        "module": "Mathlib.Algebra.Ring.Hom.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`RingHom` (α →+* β) bundles a monoid hom and an add-monoid hom, preserving multiplication, addition, and 1.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rng homomorphism",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "If the multiplicative identity is not preserved, one has a rng homomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NonUnitalRingHom",
+        "module": "Mathlib.Algebra.Ring.Hom.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`NonUnitalRingHom` preserves addition and multiplication but not necessarily the unit, exactly the rng-homomorphism notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear map",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A linear map is a homomorphism of vector spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`LinearMap` formalizes (semilinear) maps preserving addition and scalar multiplication, covering vector-space homomorphisms as a special case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Module homomorphism",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A module homomorphism , also called a linear map between modules , is defined similarly"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap` is defined precisely as a module homomorphism preserving addition and the module's scalar action.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebra homomorphism",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "An algebra homomorphism is a map that preserves the algebra operations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgHom",
+        "module": "Mathlib.Algebra.Algebra.Hom",
+        "match_kind": "exact"
+      },
+      "note": "`AlgHom` (A →ₐ[R] B) is a ring hom commuting with the R-algebra scalar structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "All operations must be preserved",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "a map that preserves only some of the operations is not a homomorphism of the structure"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a meta-level remark about the definition rather than a formal statement provable in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Exponential function as group homomorphism",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "and is thus a homomorphism between these two groups"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.expMonoidHom",
+        "module": "Mathlib.Analysis.Complex.Exponential",
+        "match_kind": null
+      },
+      "note": "`Real.expMonoidHom : Multiplicative ℝ →* ℝ` captures exp turning addition into multiplication, but the codomain is not restricted to the positive-reals group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Real-to-matrix ring homomorphism",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "then f is a homomorphism of rings, since f preserves both addition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.scalar",
+        "module": "Mathlib.Data.Matrix.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Matrix.scalar n : α →+* Matrix n n α` sends a ring element to the corresponding scalar matrix, generalizing the 2×2 example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Modulus as group homomorphism",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is a homomorphism of groups, since it preserves multiplication"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AbsoluteValue",
+        "module": "Mathlib.Algebra.Order.AbsoluteValue.Basic",
+        "match_kind": null
+      },
+      "note": "`AbsoluteValue` bundles a `MulHom` (`map_mul'`) so the modulus' multiplicativity is captured, though not packaged as a group hom into the positive reals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Modulus not a ring homomorphism",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Note that f cannot be extended to a homomorphism of rings"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This negative example (modulus fails to preserve addition) is not formalized as a stated lemma in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Monoid homomorphism diagram",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the diagram shows a monoid homomorphism"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MonoidHom",
+        "module": "Mathlib.Algebra.Group.Hom.Defs",
+        "match_kind": null
+      },
+      "note": "The illustrative concept is just a `MonoidHom`; the specific diagram example itself is not a Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Norm of a composition algebra",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "has a quadratic form , called a norm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no general theory of composition algebras and their multiplicative norm form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isomorphism (bijective homomorphism)",
+      "anchor": {
+        "section": "Isomorphism",
+        "snippet": "An isomorphism between algebraic structures of the same type is commonly defined as a bijective homomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulEquiv",
+        "module": "Mathlib.Algebra.Group.Equiv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`MulEquiv` (and `RingEquiv`, etc.) bundles a bijection that is also a homomorphism, i.e. an algebraic isomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isomorphism (categorical)",
+      "anchor": {
+        "section": "Isomorphism",
+        "snippet": "an isomorphism is defined as a morphism that has an inverse that is also a morphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Iso",
+        "module": "Mathlib.CategoryTheory.Iso",
+        "match_kind": "exact"
+      },
+      "note": "`CategoryTheory.Iso` is a morphism with a two-sided inverse morphism, the categorical isomorphism definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Invertible homomorphism is bijective",
+      "anchor": {
+        "section": "Isomorphism",
+        "snippet": "is bijective. In fact"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EquivLike.bijective",
+        "module": "Mathlib.Data.FunLike.Equiv",
+        "match_kind": "exact"
+      },
+      "note": "`EquivLike.bijective` shows any equivalence-like map (including `MulEquiv`/`RingEquiv`) is bijective.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bijective homomorphism is an isomorphism",
+      "anchor": {
+        "section": "Isomorphism",
+        "snippet": "is a bijective homomorphism between algebraic structures"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulEquiv.ofBijective",
+        "module": "Mathlib.Algebra.Group.Equiv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`MulEquiv.ofBijective` (and `RingEquiv.ofBijective`) upgrades a bijective homomorphism to an isomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homeomorphism",
+      "anchor": {
+        "section": "Isomorphism",
+        "snippet": "An isomorphism of topological spaces, called homeomorphism or bicontinuous map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Homeomorph",
+        "module": "Mathlib.Topology.Homeomorph.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Homeomorph` is a bijection continuous in both directions, exactly a homeomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Endomorphism",
+      "anchor": {
+        "section": "Endomorphism",
+        "snippet": "An endomorphism is a homomorphism whose domain equals the codomain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Monoid.End",
+        "module": "Mathlib.Algebra.Group.Hom.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Monoid.End M := M →* M` (and `CategoryTheory.End`) defines endomorphisms as self-maps that are homomorphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Endomorphisms form a monoid",
+      "anchor": {
+        "section": "Endomorphism",
+        "snippet": "form a monoid under composition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Monoid.End.instMonoid",
+        "module": "Mathlib.Algebra.Group.Hom.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Monoid.End.instMonoid` provides the monoid structure on endomorphisms with composition as multiplication and identity as unit.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Endomorphisms of a module form a ring",
+      "anchor": {
+        "section": "Endomorphism",
+        "snippet": "The endomorphisms of a vector space or of a module form a ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.End.instRing",
+        "module": "Mathlib.Algebra.Module.LinearMap.End",
+        "match_kind": "exact"
+      },
+      "note": "`Module.End.instRing` gives the ring of module endomorphisms (composition as multiplication, pointwise addition).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Automorphism",
+      "anchor": {
+        "section": "Automorphism",
+        "snippet": "An automorphism is an endomorphism that is also an isomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAut",
+        "module": "Mathlib.Algebra.Group.End",
+        "match_kind": "exact"
+      },
+      "note": "`MulAut M` (and `RingAut`, `AddAut`) is the type of self-isomorphisms, i.e. automorphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Automorphisms form a group",
+      "anchor": {
+        "section": "Automorphism",
+        "snippet": "form a group under composition, which is called the automorphism group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAut",
+        "module": "Mathlib.Algebra.Group.End",
+        "match_kind": "exact"
+      },
+      "note": "`MulAut M` carries a `Group` instance (instance Group (MulAut M) in End.lean), the automorphism group under composition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "General linear group as automorphism group",
+      "anchor": {
+        "section": "Automorphism",
+        "snippet": "is the automorphism group of a vector space of dimension"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.GeneralLinearGroup",
+        "module": "Mathlib.LinearAlgebra.GeneralLinearGroup.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`LinearMap.GeneralLinearGroup R M := (Module.End R M)ˣ` is exactly the automorphism group of a module, equiv to `M ≃ₗ[R] M`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Monomorphism (injective homomorphism)",
+      "anchor": {
+        "section": "Monomorphism",
+        "snippet": "monomorphisms are commonly defined as injective homomorphisms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.mono_iff_injective",
+        "module": "Mathlib.CategoryTheory.Types.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Injectivity is `Function.Injective`, and `mono_iff_injective` identifies injective maps with categorical monos in concrete categories.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Monomorphism (left cancelable)",
+      "anchor": {
+        "section": "Monomorphism",
+        "snippet": "a monomorphism is defined as a morphism that is left cancelable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Mono",
+        "module": "Mathlib.CategoryTheory.Category.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`CategoryTheory.Mono` is defined exactly as the left-cancellation property (f∘g = f∘h ⟹ g = h).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence of monomorphism definitions",
+      "anchor": {
+        "section": "Monomorphism",
+        "snippet": "These two definitions of monomorphism are equivalent for all common algebraic structures"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.ConcreteCategory.mono_iff_injective_of_preservesPullback",
+        "module": "Mathlib.CategoryTheory.ConcreteCategory.EpiMono",
+        "match_kind": null
+      },
+      "note": "Mono ↔ injective is proven for concrete categories under hypotheses (and in `Types`), but not as one universal statement over all algebraic structures.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Split monomorphism",
+      "anchor": {
+        "section": "Monomorphism",
+        "snippet": "A split monomorphism is a homomorphism that has a left inverse"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.SplitMono",
+        "module": "Mathlib.CategoryTheory.EpiMono",
+        "match_kind": "exact"
+      },
+      "note": "`SplitMono`/`IsSplitMono` is a morphism admitting a retraction (left inverse).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Split monomorphism is a monomorphism",
+      "anchor": {
+        "section": "Monomorphism",
+        "snippet": "A split monomorphism is always a monomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.IsSplitMono.mono",
+        "module": "Mathlib.CategoryTheory.EpiMono",
+        "match_kind": "exact"
+      },
+      "note": "`IsSplitMono.mono` (dual of `IsSplitEpi.epi`) is the instance that every split mono is a mono.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Injective homomorphism is left cancelable",
+      "anchor": {
+        "section": "Monomorphism",
+        "snippet": "An injective homomorphism is left cancelable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.ConcreteCategory.mono_of_injective",
+        "module": "Mathlib.CategoryTheory.ConcreteCategory.EpiMono",
+        "match_kind": "generalization"
+      },
+      "note": "`ConcreteCategory.mono_of_injective` shows an injective morphism is a (left-cancelable) mono in any concrete category.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Free object",
+      "anchor": {
+        "section": "Monomorphism",
+        "snippet": "is a pair consisting of an algebraic structure"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MonCat.adj",
+        "module": "Mathlib.Algebra.Category.MonCat.Adjunctions",
+        "match_kind": null
+      },
+      "note": "Mathlib has specific free objects (FreeMonoid, FreeGroup,…) and free-forgetful adjunctions, but no single general 'free object' definition over an arbitrary variety.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Left cancelable homomorphism is injective",
+      "anchor": {
+        "section": "Monomorphism",
+        "snippet": "exists, then every left cancelable homomorphism is injective"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.ConcreteCategory.injective_of_mono_of_preservesPullback",
+        "module": "Mathlib.CategoryTheory.ConcreteCategory.EpiMono",
+        "match_kind": null
+      },
+      "note": "Mathlib proves mono ⟹ injective for concrete categories under a pullback-preservation hypothesis rather than the free-object-on-one-generator condition stated here.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Existence of a free object on a variety",
+      "anchor": {
+        "section": "Monomorphism",
+        "snippet": "For building a free object over"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no general universal-algebra 'variety' framework in Mathlib, so the general free-object existence theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Epimorphism (surjective homomorphism)",
+      "anchor": {
+        "section": "Epimorphism",
+        "snippet": "epimorphisms are often defined as surjective homomorphisms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.epi_iff_surjective",
+        "module": "Mathlib.CategoryTheory.Types.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Surjectivity is `Function.Surjective`, and `epi_iff_surjective` identifies surjective maps with categorical epis in (concrete) categories.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Epimorphism (right cancelable)",
+      "anchor": {
+        "section": "Epimorphism",
+        "snippet": "epimorphisms are defined as right cancelable morphisms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Epi",
+        "module": "Mathlib.CategoryTheory.Category.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`CategoryTheory.Epi` is defined exactly as right cancellation (g∘f = h∘f ⟹ g = h).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Surjective homomorphism is right cancelable",
+      "anchor": {
+        "section": "Epimorphism",
+        "snippet": "A surjective homomorphism is always right cancelable, but the converse is not always true"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.epi_iff_surjective",
+        "module": "Mathlib.CategoryTheory.Types.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`epi_iff_surjective` (Types) and concrete-category analogues give surjective ⟹ epi; the failing converse is witnessed elsewhere (e.g. ring localizations).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Non-surjective epimorphisms in semigroups and rings",
+      "anchor": {
+        "section": "Epimorphism",
+        "snippet": "include semigroups and rings"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsLocalization.epi",
+        "module": "Mathlib.Algebra.Category.Ring.Instances",
+        "match_kind": null
+      },
+      "note": "The ring case is witnessed by `IsLocalization.epi` (a non-surjective ring epi); the semigroup case is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Inclusion of integers into rationals",
+      "anchor": {
+        "section": "Epimorphism",
+        "snippet": "The most basic example is the inclusion of integers into rational numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsLocalization.epi",
+        "module": "Mathlib.Algebra.Category.Ring.Instances",
+        "match_kind": null
+      },
+      "note": "ℚ is the localization of ℤ, so `IsLocalization.epi` makes ℤ→ℚ a ring epimorphism, but this specific instance is not stated as a named example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Localization as ring epimorphism",
+      "anchor": {
+        "section": "Epimorphism",
+        "snippet": "Every localization is a ring epimorphism, which is not, in general, surjective"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLocalization.epi",
+        "module": "Mathlib.Algebra.Category.Ring.Instances",
+        "match_kind": "exact"
+      },
+      "note": "`IsLocalization.epi` proves the localization map is an epimorphism in CommRingCat.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Split epimorphism",
+      "anchor": {
+        "section": "Epimorphism",
+        "snippet": "A split epimorphism is a homomorphism that has a right inverse"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.SplitEpi",
+        "module": "Mathlib.CategoryTheory.EpiMono",
+        "match_kind": "exact"
+      },
+      "note": "`SplitEpi`/`IsSplitEpi` is a morphism admitting a section (right inverse).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Split epimorphism is an epimorphism",
+      "anchor": {
+        "section": "Epimorphism",
+        "snippet": "A split epimorphism is always an epimorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.SplitEpi.epi",
+        "module": "Mathlib.CategoryTheory.EpiMono",
+        "match_kind": "exact"
+      },
+      "note": "`SplitEpi.epi` (and instance `IsSplitEpi.epi`) shows every split epi is an epi.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Summary of implications between morphism types",
+      "anchor": {
+        "section": "Epimorphism",
+        "snippet": "the last implication is an equivalence for sets, vector spaces, modules, abelian groups, and groups"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.epi_iff_surjective",
+        "module": "Mathlib.CategoryTheory.Types.Basic",
+        "match_kind": null
+      },
+      "note": "The substantive claim (epi ⟺ surjective) is proven per-category (`epi_iff_surjective` for Types, ModuleCat, etc.) but the overall implication table is not a single Mathlib statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Kernel of a homomorphism",
+      "anchor": {
+        "section": "Kernel",
+        "snippet": "is called the kernel of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Con.ker",
+        "module": "Mathlib.GroupTheory.Congruence.Hom",
+        "match_kind": "exact"
+      },
+      "note": "`Con.ker f` is the kernel pair {(x,y) : f x = f y} of a homomorphism, the kernel-as-equivalence notion described here.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Kernel is a congruence relation",
+      "anchor": {
+        "section": "Kernel",
+        "snippet": "It is a congruence relation on"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Con.ker",
+        "module": "Mathlib.GroupTheory.Congruence.Hom",
+        "match_kind": "exact"
+      },
+      "note": "`Con.ker f` returns a `Con` (congruence relation), so the kernel of a monoid hom is formalized as a congruence (also `RingCon.ker`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Isomorphism theorem for images",
+      "anchor": {
+        "section": "Kernel",
+        "snippet": "this fact is one of the isomorphism theorems"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Con.quotientKerEquivRange",
+        "module": "Mathlib.GroupTheory.Congruence.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Con.quotientKerEquivRange` (and `QuotientGroup.quotientKerEquivRange`) gives the first isomorphism theorem: domain/ker ≅ image.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Kernel characterized by identity class for groups",
+      "anchor": {
+        "section": "Kernel",
+        "snippet": "suffices to characterize the equivalence relation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuotientGroup.con_ker_eq_conKer",
+        "module": "Mathlib.GroupTheory.QuotientGroup.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`con_ker_eq_conKer` shows the congruence kernel of a group hom equals the one determined by its subgroup kernel (the identity's equivalence class).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homomorphism of relational structures",
+      "anchor": {
+        "section": "Relational structures",
+        "snippet": "is a mapping h from the domain of A to the domain of B"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Hom",
+        "module": "Mathlib.ModelTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`FirstOrder.Language.Hom` (M →[L] N) is a map of L-structures preserving functions and relations, exactly a homomorphism of relational structures.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Graph homomorphism",
+      "anchor": {
+        "section": "Relational structures",
+        "snippet": "we obtain the notion of a graph homomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.Hom",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Maps",
+        "match_kind": "exact"
+      },
+      "note": "`SimpleGraph.Hom` (G →g H) is an adjacency-preserving vertex map, the graph homomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homomorphism on an alphabet",
+      "anchor": {
+        "section": "Formal language theory",
+        "snippet": "is called a homomorphism on"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FreeMonoid.lift",
+        "module": "Mathlib.Algebra.FreeMonoid.Basic",
+        "match_kind": null
+      },
+      "note": "Strings over an alphabet are `FreeMonoid` and `FreeMonoid.lift` realizes alphabet maps as monoid homs Σ* → M, but the formal-language 'homomorphism on Σ' is not named as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "ε-free homomorphism",
+      "anchor": {
+        "section": "Formal language theory",
+        "snippet": "denotes the empty string"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The formal-language notion of an ε-free (non-erasing) homomorphism is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "k-uniform homomorphism",
+      "anchor": {
+        "section": "Formal language theory",
+        "snippet": "uniform homomorphism"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The k-uniform (constant-length-image) string homomorphism notion is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coding / projection",
+      "anchor": {
+        "section": "Formal language theory",
+        "snippet": "is also called a coding or a projection"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The formal-language 'coding'/'projection' homomorphisms are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Language homomorphism is a monoid homomorphism",
+      "anchor": {
+        "section": "Formal language theory",
+        "snippet": "a language homomorphism is precisely a monoid homomorphism"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FreeMonoid.lift",
+        "module": "Mathlib.Algebra.FreeMonoid.Basic",
+        "match_kind": null
+      },
+      "note": "`FreeMonoid.lift` is the natural equivalence (α → M) ≃ (FreeMonoid α →* M), embodying that string homomorphisms are exactly monoid homomorphisms, though not stated in language-theoretic terms.",
+      "provenance": "ai"
+    }
+  ]
+}

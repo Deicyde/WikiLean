@@ -1,0 +1,297 @@
+{
+  "slug": "Isomorphism_theorems",
+  "wikipedia_title": "Isomorphism theorems",
+  "display_title": "Isomorphism theorems",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "theorem",
+      "label": "First isomorphism theorem (groups)",
+      "anchor": {
+        "section": "Theorem A (groups)",
+        "snippet": "be groups, and let"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuotientGroup.quotientKerEquivRange",
+        "module": "Mathlib.GroupTheory.QuotientGroup.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `QuotientGroup.quotientKerEquivRange` gives the explicit isomorphism `G / ker φ ≃* range φ` for a group homomorphism `φ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Second isomorphism theorem (groups)",
+      "anchor": {
+        "section": "Theorem B (groups)",
+        "snippet": "be a subgroup of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuotientGroup.quotientInfEquivProdNormalQuotient",
+        "module": "Mathlib.GroupTheory.QuotientGroup.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `QuotientGroup.quotientInfEquivProdNormalQuotient` is the classical second isomorphism `H/(H ∩ N) ≃* HN/N` for `N` normal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Projective linear group via second isomorphism theorem",
+      "anchor": {
+        "section": "Theorem B (groups)",
+        "snippet": "An application of the second isomorphism theorem identifies projective linear groups"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.ProjGenLinGroup",
+        "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Projective",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib defines `PGL(n,R) := GL n R ⧸ Subgroup.center (GL n R)` directly but does not phrase its identification as an application of the second isomorphism theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Third isomorphism theorem and correspondence (groups)",
+      "anchor": {
+        "section": "Theorem C (groups)",
+        "snippet": "a normal subgroup of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuotientGroup.quotientQuotientEquivQuotient",
+        "module": "Mathlib.GroupTheory.QuotientGroup.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `QuotientGroup.quotientQuotientEquivQuotient` provides the canonical isomorphism `(G/N)/(M/N) ≃* G/M` when `N ≤ M`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Correspondence/lattice theorem (groups)",
+      "anchor": {
+        "section": "Theorem D (groups)",
+        "snippet": "The canonical projection homomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuotientGroup.comapMk'OrderIso",
+        "module": "Mathlib.GroupTheory.QuotientGroup.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `QuotientGroup.comapMk'OrderIso` is the lattice isomorphism between subgroups of `G/N` and subgroups of `G` containing `N`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "First isomorphism theorem (rings)",
+      "anchor": {
+        "section": "Theorem A (rings)",
+        "snippet": "be rings, and let"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RingHom.quotientKerEquivRange",
+        "module": "Mathlib.RingTheory.Ideal.Quotient.Operations",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `RingHom.quotientKerEquivRange` gives `R/ker f ≃+* f.range` for a ring homomorphism `f`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Second isomorphism theorem (rings)",
+      "anchor": {
+        "section": "Theorem B (rings)",
+        "snippet": "be a subring of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RingCon.comapQuotientEquivRange",
+        "module": "Mathlib.RingTheory.Congruence.Hom",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `RingCon.comapQuotientEquivRange` is labelled as the second isomorphism theorem for rings via ring congruences, generalizing the classical `(S+I)/I ≅ S/(S∩I)` statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Third isomorphism theorem and correspondence (rings)",
+      "anchor": {
+        "section": "Theorem C (rings)",
+        "snippet": "Let R be a ring, and I an ideal of R"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DoubleQuot.quotQuotEquivQuotOfLE",
+        "module": "Mathlib.RingTheory.Ideal.Quotient.Operations",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `DoubleQuot.quotQuotEquivQuotOfLE` is the third isomorphism theorem for rings: `(R/I)/(J/I) ≃+* R/J` when `I ≤ J`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Correspondence theorem (rings)",
+      "anchor": {
+        "section": "Theorem D (rings)",
+        "snippet": "is an inclusion -preserving bijection between the set of subrings"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.relIsoOfSurjective",
+        "module": "Mathlib.RingTheory.Ideal.Maps",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `Ideal.relIsoOfSurjective` gives the order isomorphism `Ideal S ≃o {p : Ideal R // comap f ⊥ ≤ p}` for a surjective ring homomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "First isomorphism theorem (modules)",
+      "anchor": {
+        "section": "Theorem A (modules)",
+        "snippet": "be modules, and let"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.quotKerEquivRange",
+        "module": "Mathlib.LinearAlgebra.Isomorphisms",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `LinearMap.quotKerEquivRange` provides the canonical `M/ker f ≃ₗ[R] range f` for a linear map `f`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Second isomorphism theorem (modules)",
+      "anchor": {
+        "section": "Theorem B (modules)",
+        "snippet": "be submodules of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.quotientInfEquivSupQuotient",
+        "module": "Mathlib.LinearAlgebra.Isomorphisms",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `LinearMap.quotientInfEquivSupQuotient` is the second isomorphism theorem for modules: `p / (p ⊓ p') ≃ₗ (p ⊔ p') / p'`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Third isomorphism theorem and correspondence (modules)",
+      "anchor": {
+        "section": "Theorem C (modules)",
+        "snippet": "Let M be a module, T a submodule of M"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.quotientQuotientEquivQuotient",
+        "module": "Mathlib.LinearAlgebra.Isomorphisms",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `Submodule.quotientQuotientEquivQuotient` provides `(M/S)/(T/S) ≃ₗ[R] M/T` when `S ≤ T`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Correspondence theorem (modules)",
+      "anchor": {
+        "section": "Theorem D (modules)",
+        "snippet": "There is a bijection between the submodules of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.comapMkQRelIso",
+        "module": "Mathlib.LinearAlgebra.Quotient.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `Submodule.comapMkQRelIso` gives the order isomorphism `Submodule R (M ⧸ p) ≃o Set.Ici p` between submodules of `M/p` and submodules of `M` containing `p`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Congruence on an algebra",
+      "anchor": {
+        "section": "Universal algebra",
+        "snippet": "A congruence on an algebra"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Con",
+        "module": "Mathlib.GroupTheory.Congruence.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has structure-specific congruences (`Con` for magmas/monoids, `AddCon`, `RingCon`) and `Setoid`, but no fully general universal-algebra congruence definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "First isomorphism theorem (universal algebra)",
+      "anchor": {
+        "section": "Theorem A (universal algebra)",
+        "snippet": "be an algebra homomorphism"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Con.quotientKerEquivRange",
+        "module": "Mathlib.GroupTheory.Congruence.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes the first isomorphism theorem for `Con`/`RingCon`/`Setoid` separately but lacks a single universal-algebra statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Second isomorphism theorem (universal algebra)",
+      "anchor": {
+        "section": "Theorem B (universal algebra)",
+        "snippet": "Given an algebra"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Con.comapQuotientEquiv",
+        "module": "Mathlib.GroupTheory.Congruence.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Only structure-specific versions (e.g. `Con.comapQuotientEquiv`, `RingCon.comapQuotientEquivRange`, `LinearMap.quotientInfEquivSupQuotient`) exist; no general universal-algebra version is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Third isomorphism theorem (universal algebra)",
+      "anchor": {
+        "section": "Theorem C (universal algebra)",
+        "snippet": "two congruence relations on"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Setoid.quotientQuotientEquivQuotient",
+        "module": "Mathlib.Data.Setoid.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has `Setoid.quotientQuotientEquivQuotient` plus the `Con` and `RingCon` variants, but no statement at the level of universal algebra.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Correspondence theorem (universal algebra)",
+      "anchor": {
+        "section": "Theorem D (universal algebra)",
+        "snippet": "the set of all congruences on"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has correspondence/lattice theorems for subgroups, ideals, and submodules but no general bijection between congruences containing a given congruence and congruences on the quotient algebra.",
+      "provenance": "ai"
+    }
+  ]
+}

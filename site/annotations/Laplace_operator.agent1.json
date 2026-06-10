@@ -1,0 +1,629 @@
+{
+  "slug": "Laplace_operator",
+  "wikipedia_title": "Laplace operator",
+  "display_title": "Laplace operator",
+  "schema_version": 3,
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Laplace operator (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the Laplace operator or Laplacian is a differential operator given by the divergence of the gradient of a scalar function on Euclidean space"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Harmonic function",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Solutions of Laplace's equation Δ f = 0 are called harmonic functions"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Laplacian as divergence of gradient",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "defined as the divergence"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Laplacian as sum of unmixed second partials",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Explicitly, the Laplacian of f is thus the sum of all the unmixed second partial derivatives in the Cartesian coordinates"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Laplacian maps C^k to C^{k-2}",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "As a second-order differential operator, the Laplace operator maps C k functions to C k −2 functions for k ≥ 2"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Laplacian via sphere averages",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Alternatively, the Laplace operator can be defined as"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Negative semidefinite sign convention",
+      "anchor": {
+        "section": "Sign conventions",
+        "snippet": "is negative semidefinite"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Nonnegative sign convention",
+      "anchor": {
+        "section": "Sign conventions",
+        "snippet": "Another common convention inserts a minus sign and defines instead"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Diffusion equilibrium and Laplace's equation",
+      "anchor": {
+        "section": "Diffusion",
+        "snippet": "the net flux of u through the boundary"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Diffusion implies Laplace's equation",
+      "anchor": {
+        "section": "Diffusion",
+        "snippet": "the entire equation Δ u = 0 is known as Laplace's equation"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Average over a ball",
+      "anchor": {
+        "section": "Averages",
+        "snippet": "the average value of"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Average over a sphere",
+      "anchor": {
+        "section": "Averages",
+        "snippet": "Similarly, the average value of"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Charge density from electrostatic potential",
+      "anchor": {
+        "section": "Density associated with a potential",
+        "snippet": "the charge distribution itself is given by the negative of the Laplacian"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Gauss's law derivation",
+      "anchor": {
+        "section": "Density associated with a potential",
+        "snippet": "This is a consequence of Gauss's law"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mass distribution from gravitational potential",
+      "anchor": {
+        "section": "Density associated with a potential",
+        "snippet": "the negative of the Laplacian of the gravitational potential is the mass distribution"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Harmonic functions minimize Dirichlet energy",
+      "anchor": {
+        "section": "Energy minimization",
+        "snippet": "solutions to Δ f = 0 in a region U are functions that make the Dirichlet energy functional stationary"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dirichlet stationary iff harmonic",
+      "anchor": {
+        "section": "Energy minimization",
+        "snippet": "Conversely, if E is stationary around f , then Δ f = 0"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Laplacian in 2D Cartesian coordinates",
+      "anchor": {
+        "section": "Two dimensions",
+        "snippet": "where x and y are the standard Cartesian coordinates of the xy -plane"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Laplacian in polar coordinates",
+      "anchor": {
+        "section": "Two dimensions",
+        "snippet": "where r represents the radial distance and θ the angle"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Laplacian in 3D Cartesian coordinates",
+      "anchor": {
+        "section": "Three dimensions",
+        "snippet": "In Cartesian coordinates"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Laplacian in cylindrical coordinates",
+      "anchor": {
+        "section": "Three dimensions",
+        "snippet": "represents the radial distance, φ the azimuth angle and z the height"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Laplacian in spherical coordinates",
+      "anchor": {
+        "section": "Three dimensions",
+        "snippet": "where φ represents the azimuthal angle and θ the zenith angle"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Laplacian in general curvilinear coordinates (3D)",
+      "anchor": {
+        "section": "Three dimensions",
+        "snippet": "In general curvilinear coordinates"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Laplacian in N-dim curvilinear coordinates",
+      "anchor": {
+        "section": "N dimensions",
+        "snippet": "In arbitrary curvilinear coordinates"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Radial/angular decomposition of Laplacian",
+      "anchor": {
+        "section": "N dimensions",
+        "snippet": "the Laplacian decomposes into radial and angular parts"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Spherical harmonic eigenvalue equation",
+      "anchor": {
+        "section": "N dimensions",
+        "snippet": "the angular factor must satisfy the eigenvalue equation"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Radial equation and solid harmonics",
+      "anchor": {
+        "section": "N dimensions",
+        "snippet": "gives the radial equation"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Radial harmonic functions on annulus",
+      "anchor": {
+        "section": "N dimensions",
+        "snippet": "Thus every radial harmonic function on an annulus"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Spherical Laplacian via homogeneous extension",
+      "anchor": {
+        "section": "N dimensions",
+        "snippet": "the spherical Laplacian of a function on"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euclidean equivariance of Laplacian",
+      "anchor": {
+        "section": "Euclidean invariance",
+        "snippet": "The Laplacian is equivariant under pullback by every Euclidean transformation"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rotation/translation invariance in 2D",
+      "anchor": {
+        "section": "Euclidean invariance",
+        "snippet": "In two dimensions, this says that"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euclidean group invariance",
+      "anchor": {
+        "section": "Euclidean invariance",
+        "snippet": "is invariant under the natural action of the Euclidean group"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Characterization of Euclidean-invariant operators",
+      "anchor": {
+        "section": "Euclidean invariance",
+        "snippet": "those that commute with all Euclidean isometries are exactly the polynomial expressions in the Laplacian"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Angular Laplacian as Casimir",
+      "anchor": {
+        "section": "Euclidean invariance",
+        "snippet": "the angular part of the Euclidean Laplacian is, up to sign convention, the quadratic Casimir operator of the rotation group"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Laplace–Beltrami from Casimir on homogeneous spaces",
+      "anchor": {
+        "section": "Euclidean invariance",
+        "snippet": "the Laplace–Beltrami operator is obtained from the quadratic Casimir of the acting Lie group"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linearity of the Laplacian",
+      "anchor": {
+        "section": "Linearity and ellipticity",
+        "snippet": "The Laplace operator is linear"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ellipticity of the Laplacian",
+      "anchor": {
+        "section": "Linearity and ellipticity",
+        "snippet": "is an elliptic differential operator"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Green's identities for the Laplacian",
+      "anchor": {
+        "section": "Green's identities and formal self-adjointness",
+        "snippet": "Green's identities give"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Formal self-adjointness",
+      "anchor": {
+        "section": "Green's identities and formal self-adjointness",
+        "snippet": "the Laplacian is formally self-adjoint"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Energy identity",
+      "anchor": {
+        "section": "Green's identities and formal self-adjointness",
+        "snippet": "gives the energy identity"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Harmonic, subharmonic, superharmonic",
+      "anchor": {
+        "section": "Harmonic, subharmonic, and superharmonic functions",
+        "snippet": "is called harmonic if"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Mean value property",
+      "anchor": {
+        "section": "Harmonic, subharmonic, and superharmonic functions",
+        "snippet": "This is the mean value property for harmonic functions"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Maximum and minimum principles",
+      "anchor": {
+        "section": "Harmonic, subharmonic, and superharmonic functions",
+        "snippet": "A nonconstant harmonic function cannot attain an interior maximum or minimum"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Elliptic regularity for the Laplacian",
+      "anchor": {
+        "section": "Regularity",
+        "snippet": "solutions of equations involving"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Smoothness/analyticity of harmonic functions",
+      "anchor": {
+        "section": "Regularity",
+        "snippet": "harmonic functions are smooth, and in fact real analytic"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Weyl's lemma",
+      "anchor": {
+        "section": "Regularity",
+        "snippet": "Weyl's lemma states that if"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Laplacian as Fourier multiplier",
+      "anchor": {
+        "section": "Fourier transform",
+        "snippet": "Thus the Laplacian is a Fourier multiplier with symbol"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Heat semigroup and fractional powers via Fourier",
+      "anchor": {
+        "section": "Fourier transform",
+        "snippet": "the heat semigroup corresponds to multiplication by"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Continuous spectrum on R^n",
+      "anchor": {
+        "section": "Spectral theory",
+        "snippet": "the spectrum of"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Discrete spectrum on bounded domains",
+      "anchor": {
+        "section": "Spectral theory",
+        "snippet": "is a self-adjoint operator with compact resolvent"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Helmholtz equation",
+      "anchor": {
+        "section": "Spectral theory",
+        "snippet": "is the Helmholtz equation"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Spectrum of Laplace–Beltrami on compact manifold",
+      "anchor": {
+        "section": "Spectral theory",
+        "snippet": "the Laplace–Beltrami operator likewise has discrete nonnegative spectrum"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Fractional Laplacian (Fourier definition)",
+      "anchor": {
+        "section": "Fractional Laplacian",
+        "snippet": "A nonlocal generalization of the Laplace operator is given by the fractional Laplacian"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Fractional Laplacian (singular integral)",
+      "anchor": {
+        "section": "Fractional Laplacian",
+        "snippet": "the fractional Laplacian can be defined by a singular integral"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Riesz potential",
+      "anchor": {
+        "section": "Fractional Laplacian",
+        "snippet": "the Riesz potential of order"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Bessel potential",
+      "anchor": {
+        "section": "Fractional Laplacian",
+        "snippet": "the Bessel potential operator is defined by"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Vector Laplacian",
+      "anchor": {
+        "section": "Vector Laplacian",
+        "snippet": "The vector Laplace operator"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Vector Laplacian via Helmholtz decomposition",
+      "anchor": {
+        "section": "Vector Laplacian",
+        "snippet": "The vector Laplacian of a vector field"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vector Laplacian in Cartesian coordinates",
+      "anchor": {
+        "section": "Vector Laplacian",
+        "snippet": "In Cartesian coordinates , this reduces to the much simpler expression"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Tensor Laplacian",
+      "anchor": {
+        "section": "Generalization",
+        "snippet": "The Laplacian of any tensor field"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Navier–Stokes equation",
+      "anchor": {
+        "section": "Use in physics",
+        "snippet": "An example of the usage of the vector Laplacian is the Navier-Stokes equations"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Wave equation for electric field",
+      "anchor": {
+        "section": "Use in physics",
+        "snippet": "Another example is the wave equation for the electric field"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Heat semigroup",
+      "anchor": {
+        "section": "Semigroup and heat kernel",
+        "snippet": "The Laplace operator generates the heat semigroup"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Smoothing effect of heat semigroup",
+      "anchor": {
+        "section": "Semigroup and heat kernel",
+        "snippet": "A basic feature of the heat semigroup is its smoothing effect"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Heat kernel on manifolds",
+      "anchor": {
+        "section": "Semigroup and heat kernel",
+        "snippet": "the same construction defines a heat semigroup whose integral kernel is again called the heat kernel"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Laplace–Beltrami operator",
+      "anchor": {
+        "section": "Laplace–Beltrami operator",
+        "snippet": "is the trace"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Geometer's Laplacian",
+      "anchor": {
+        "section": "Laplace–Beltrami operator",
+        "snippet": "the \"geometer's Laplacian\" is expressed as"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Hodge Laplacian / Laplace–de Rham",
+      "anchor": {
+        "section": "Laplace–Beltrami operator",
+        "snippet": "the \"Hodge\" Laplacian is defined on differential forms"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "D'Alembert operator",
+      "anchor": {
+        "section": "D'Alembertian",
+        "snippet": "In Minkowski space the Laplace–Beltrami operator becomes the D'Alembert operator"
+      },
+      "provenance": "ai-agent1"
+    }
+  ]
+}

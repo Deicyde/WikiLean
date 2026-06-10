@@ -1,0 +1,777 @@
+{
+  "slug": "Module_mathematics",
+  "wikipedia_title": "Module (mathematics)",
+  "display_title": "Module (mathematics)",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Left R-module",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "A left R -module M consists of an abelian group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module",
+        "module": "Mathlib.Algebra.Module.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Module R M` over a `Semiring R` and `AddCommMonoid M` is exactly a left module.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Right R-module",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "A right R -module M R is defined similarly in terms of an operation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module",
+        "module": "Mathlib.Algebra.Module.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib models right modules as left modules over the opposite ring, i.e. `Module Rᵐᵒᵖ M`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bimodule",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "bimodule is an abelian group together with both a left scalar multiplication"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Subbimodule",
+        "module": "Mathlib.Algebra.Module.Bimodule",
+        "match_kind": "invocation"
+      },
+      "note": "Bimodules have no dedicated class but are expressed as `[Module R M] [Module Sᵐᵒᵖ M] [SMulCommClass R Sᵐᵒᵖ M]`, as documented in this file.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Modules over commutative rings",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "then left R -modules are the same as right R -modules"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem states the identification of left and right modules over a commutative ring (Mathlib simply uses left modules throughout).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "K-modules are vector spaces",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "If K is a field , then K -modules are called K - vector spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module",
+        "module": "Mathlib.Algebra.Module.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "A vector space is `Module K V` with `K` a field/division ring, the special case of `Module` over a field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "K[x]-modules",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "then a K [ x ]-module M is a K -module with an additional action of x"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.AEval",
+        "module": "Mathlib.Algebra.Polynomial.Module.AEval",
+        "match_kind": "exact"
+      },
+      "note": "`Module.AEval` is the `R[X]`-module structure on a module given by an algebra element acting as `X`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Z-modules are abelian groups",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The concept of a Z -module agrees with the notion of an abelian group."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AddCommGroup.uniqueIntModule",
+        "module": "Mathlib.Algebra.Module.NatInt",
+        "match_kind": "exact"
+      },
+      "note": "`AddCommGroup.uniqueIntModule` shows every abelian group carries a unique ℤ-module structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Decimal fractions module",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The decimal fractions (including negative ones) form a module over the integers."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific ℤ-module of decimal fractions (ℤ[1/10]) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Free module R^n",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "then the cartesian product R n is both a left and right R -module"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Free",
+        "module": "Mathlib.LinearAlgebra.FreeModule.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`Rⁿ = Fin n → R` has `Pi.module` structure and is a `Module.Free R` instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Matrix ring modules",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "If M n ( R ) is the ring of n × n matrices over a ring R"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.instRing",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "invocation"
+      },
+      "note": "The matrix ring is `Matrix.instRing` and acts on `Fin n → R` via `Matrix.mulVec`, but `Rⁿ` as a named module over `Mₙ(R)` is not a single declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Module of functions M^S",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is the collection of all functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Pi.module",
+        "module": "Mathlib.Algebra.Module.Pi",
+        "match_kind": "generalization"
+      },
+      "note": "`Pi.module` gives the module structure on (dependent) function types, generalizing `M^S = S → M`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Modules over smooth functions",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "If X is a smooth manifold , then the smooth functions from X to the real numbers form a ring"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContMDiffMap.semiring",
+        "module": "Mathlib.Geometry.Manifold.Algebra.SmoothFunctions",
+        "match_kind": "invocation"
+      },
+      "note": "Smooth functions form a (comm)ring via instances on `ContMDiffMap`, but modules over them are not separately developed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ideals as modules",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "If R is any ring and I is any left ideal in R , then I is a left R -module"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule",
+        "module": "Mathlib.Algebra.Module.Submodule.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "An ideal is `Ideal R := Submodule R R`, i.e. a submodule of `R` viewed as a module over itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Opposite ring modules",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "we can define the opposite ring R op"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulOpposite",
+        "module": "Mathlib.Algebra.Opposites",
+        "match_kind": "invocation"
+      },
+      "note": "`MulOpposite` (`Rᵐᵒᵖ`) exists and right modules are realized as `Module Rᵐᵒᵖ M`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Lie algebra modules",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Modules over a Lie algebra are (associative algebra) modules over its universal enveloping algebra ."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "UniversalEnvelopingAlgebra",
+        "module": "Mathlib.Algebra.Lie.UniversalEnveloping",
+        "match_kind": null
+      },
+      "note": "Both `LieModule` and `UniversalEnvelopingAlgebra` are formalized, but the equivalence between Lie modules and modules over the enveloping algebra is not stated as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Restriction of scalars",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "then every S -module M is an R -module"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.compHom",
+        "module": "Mathlib.Algebra.Algebra.RestrictScalars",
+        "match_kind": "exact"
+      },
+      "note": "`Module.compHom` (and `RestrictScalars`) turns an S-module into an R-module along a ring homomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Submodule",
+      "anchor": {
+        "section": "Submodules and homomorphisms",
+        "snippet": "Then N is a submodule (or more explicitly an R -submodule) if for any n in N and any r in R"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule",
+        "module": "Mathlib.Algebra.Module.Submodule.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Submodule R M` is the bundled subset closed under addition and scalar multiplication.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Submodule spanned by a set",
+      "anchor": {
+        "section": "Submodules and homomorphisms",
+        "snippet": "then the submodule spanned by X is defined to be"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.span",
+        "module": "Mathlib.LinearAlgebra.Span.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Submodule.span R s` is the smallest submodule containing the set `s`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lattice of submodules and modular law",
+      "anchor": {
+        "section": "Submodules and homomorphisms",
+        "snippet": "forms a lattice that satisfies the modular law"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.instIsModularLattice",
+        "module": "Mathlib.LinearAlgebra.Span.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Submodules form a complete lattice with an `IsModularLattice (Submodule R M)` instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Module homomorphism",
+      "anchor": {
+        "section": "Submodules and homomorphisms",
+        "snippet": "then a map f : M → N is a homomorphism of R -modules if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap",
+        "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap` is the bundled additive, scalar-preserving map between modules.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Module isomorphism",
+      "anchor": {
+        "section": "Submodules and homomorphisms",
+        "snippet": "A bijective module homomorphism f : M → N is called a module isomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearEquiv",
+        "module": "Mathlib.Algebra.Module.Equiv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`LinearEquiv` (`M ≃ₗ[R] N`) is a bijective linear map, i.e. a module isomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Kernel and image",
+      "anchor": {
+        "section": "Submodules and homomorphisms",
+        "snippet": "The kernel of a module homomorphism f : M → N is the submodule of M"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.ker",
+        "module": "Mathlib.Algebra.Module.Submodule.Ker",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.ker` (and `LinearMap.range` in the sibling file) define kernel and image as submodules.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Isomorphism theorems for modules",
+      "anchor": {
+        "section": "Submodules and homomorphisms",
+        "snippet": "The isomorphism theorems familiar from groups and vector spaces are also valid for R -modules."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.quotKerEquivRange",
+        "module": "Mathlib.LinearAlgebra.Isomorphisms",
+        "match_kind": "exact"
+      },
+      "note": "The first/second/third isomorphism theorems are `quotKerEquivRange`, `quotientInfEquivSupQuotient`, and `quotientQuotientEquivQuotient`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "R-Mod is an abelian category",
+      "anchor": {
+        "section": "Submodules and homomorphisms",
+        "snippet": "the set of all left R -modules together with their module homomorphisms forms an abelian category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ModuleCat.abelian",
+        "module": "Mathlib.Algebra.Category.ModuleCat.Abelian",
+        "match_kind": "exact"
+      },
+      "note": "`ModuleCat.abelian` provides the `Abelian (ModuleCat R)` instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Finitely generated module",
+      "anchor": {
+        "section": "Types of modules",
+        "snippet": "An R -module M is finitely generated if there exist finitely many elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Finite",
+        "module": "Mathlib.RingTheory.Finiteness.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Module.Finite` states the top submodule is finitely generated (`Submodule.FG`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cyclic module",
+      "anchor": {
+        "section": "Types of modules",
+        "snippet": "A module is called a cyclic module if it is generated by one element."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Submodule.IsPrincipal",
+        "module": "Mathlib.LinearAlgebra.Span.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Cyclicity is expressible as `(⊤ : Submodule R M).IsPrincipal`, but there is no dedicated cyclic-module class.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Free module",
+      "anchor": {
+        "section": "Types of modules",
+        "snippet": "A free R -module is a module that has a basis"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Free",
+        "module": "Mathlib.LinearAlgebra.FreeModule.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Module.Free R M` is the class asserting `M` admits a basis.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective module",
+      "anchor": {
+        "section": "Types of modules",
+        "snippet": "Projective modules are direct summands of free modules"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Projective",
+        "module": "Mathlib.Algebra.Module.Projective",
+        "match_kind": "exact"
+      },
+      "note": "`Module.Projective` is the class of projective modules.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Injective module",
+      "anchor": {
+        "section": "Types of modules",
+        "snippet": "Injective modules are defined dually to projective modules."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Injective",
+        "module": "Mathlib.Algebra.Module.Injective",
+        "match_kind": "exact"
+      },
+      "note": "`Module.Injective` is the class of injective modules.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Flat module",
+      "anchor": {
+        "section": "Types of modules",
+        "snippet": "A module is called flat if taking the tensor product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Flat",
+        "module": "Mathlib.RingTheory.Flat.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Module.Flat` is the class defined via exactness of tensoring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Torsionless module",
+      "anchor": {
+        "section": "Types of modules",
+        "snippet": "A module is called torsionless if it embeds into its algebraic dual ."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No torsionless-module predicate (embedding into the double dual) is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Simple module",
+      "anchor": {
+        "section": "Types of modules",
+        "snippet": "A simple module S is a module that is not {0}"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsSimpleModule",
+        "module": "Mathlib.RingTheory.SimpleModule.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsSimpleModule` is a nontrivial module whose only submodules are `⊥` and `⊤`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Semisimple module",
+      "anchor": {
+        "section": "Types of modules",
+        "snippet": "A semisimple module is a direct sum (finite or not) of simple modules."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsSemisimpleModule",
+        "module": "Mathlib.RingTheory.SimpleModule.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsSemisimpleModule` is the class of (complemented) semisimple modules.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Indecomposable module",
+      "anchor": {
+        "section": "Types of modules",
+        "snippet": "An indecomposable module is a non-zero module that cannot be written as a direct sum"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `IsMulIndecomposable` for monoids but no indecomposable-module predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Faithful module",
+      "anchor": {
+        "section": "Types of modules",
+        "snippet": "A faithful module M is one where the action of each r ≠ 0 in R on M is nontrivial"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FaithfulSMul",
+        "module": "Mathlib.Algebra.Group.Action.Faithful",
+        "match_kind": "exact"
+      },
+      "note": "`FaithfulSMul R M` is exactly the condition that distinct scalars act differently.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Torsion-free module",
+      "anchor": {
+        "section": "Types of modules",
+        "snippet": "A torsion-free module is a module over a ring such that 0 is the only element annihilated"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.IsTorsionFree",
+        "module": "Mathlib.Algebra.Module.Torsion.Free",
+        "match_kind": "exact"
+      },
+      "note": "`Module.IsTorsionFree` is the torsion-free predicate (cf. also `NoZeroSMulDivisors`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Noetherian module",
+      "anchor": {
+        "section": "Types of modules",
+        "snippet": "A Noetherian module is a module that satisfies the ascending chain condition on submodules"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsNoetherian",
+        "module": "Mathlib.RingTheory.Noetherian.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsNoetherian R M` is the ascending chain / well-foundedness condition on submodules.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Artinian module",
+      "anchor": {
+        "section": "Types of modules",
+        "snippet": "An Artinian module is a module that satisfies the descending chain condition on submodules"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsArtinian",
+        "module": "Mathlib.RingTheory.Artinian.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsArtinian R M` is the descending chain condition on submodules.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Graded module",
+      "anchor": {
+        "section": "Types of modules",
+        "snippet": "A graded module is a module over a graded ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SetLike.GradedSMul",
+        "module": "Mathlib.Algebra.Module.GradedModule",
+        "match_kind": "exact"
+      },
+      "note": "Internal graded modules are set up via `SetLike.GradedSMul` plus `DirectSum.Decomposition`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Uniform module",
+      "anchor": {
+        "section": "Types of modules",
+        "snippet": "A uniform module is a module in which all pairs of nonzero submodules have nonzero intersection."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No uniform-module predicate (nonzero submodules intersecting nontrivially) is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Group representation as module",
+      "anchor": {
+        "section": "Relation to representation theory",
+        "snippet": "A representation of a group G over a field k is a module over the group ring k [ G ]."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation",
+        "module": "Mathlib.RepresentationTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Representation k G V` corresponds to a `Module k[G]` structure via `Representation.asModule`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Action of a ring element",
+      "anchor": {
+        "section": "Relation to representation theory",
+        "snippet": "then the action of an element r in R is defined to be the map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.toAddMonoidEnd",
+        "module": "Mathlib.Algebra.Module.End",
+        "match_kind": "exact"
+      },
+      "note": "`Module.toAddMonoidEnd R M r` is the endomorphism `x ↦ r • x`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Representation of abelian group over a ring",
+      "anchor": {
+        "section": "Relation to representation theory",
+        "snippet": "is called a representation of the abelian group M over the ring R"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.toAddMonoidEnd",
+        "module": "Mathlib.Algebra.Module.End",
+        "match_kind": "exact"
+      },
+      "note": "`Module.toAddMonoidEnd : R →+* AddMonoid.End M` is precisely the representation/ring-hom to endomorphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Faithful representation",
+      "anchor": {
+        "section": "Relation to representation theory",
+        "snippet": "A representation is called faithful if the map"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FaithfulSMul",
+        "module": "Mathlib.Algebra.Group.Action.Faithful",
+        "match_kind": "invocation"
+      },
+      "note": "Faithfulness (injectivity of the action map) is captured by `FaithfulSMul`, but there is no dedicated faithful-representation definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Module over a preadditive category",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "a left R -module is just a covariant additive functor from R to the category of abelian groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Additive functors exist, but a module as a covariant additive functor on a (one-object) preadditive category is not formalized as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sheaf of modules",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "consider the sheaves of O X -modules"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SheafOfModules",
+        "module": "Mathlib.Algebra.Category.ModuleCat.Sheaf",
+        "match_kind": "exact"
+      },
+      "note": "`SheafOfModules` is the structure of sheaves of modules over a sheaf of rings.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Semimodule",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "One can also consider modules over a semiring , called a semimodule ."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module",
+        "module": "Mathlib.Algebra.Module.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `Module` is already defined over a `Semiring` and `AddCommMonoid`, so semimodules are exactly `Module`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Near-ring module",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "one can consider near-ring modules, a nonabelian generalization of modules."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Near-rings and near-ring modules are not present in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

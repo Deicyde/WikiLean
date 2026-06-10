@@ -1,0 +1,40 @@
+{
+  "slug": "Discrete_Fourier_transform",
+  "wikipedia_title": "Discrete Fourier transform",
+  "display_title": "Discrete Fourier transform",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {x} ={\\begin{pmatrix}x_{0}\\\\x_{1}\\\\x_{2}\\\\x_{3}\\end{pmatrix}}={\\begin{pmatrix}1\\\\2-i\\\\-i\\\\-1+2i\\end{pmatrix}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Concrete numerical input vector for an illustrative example; not a standalone Mathlib declaration."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}X_{0}&=e^{-i2\\pi 0\\cdot 0/4}\\cdot 1+e^{-i2\\pi 0\\cdot 1/4}\\cdot (2-i)+e^{-i2\\pi 0\\cdot 2/4}\\cdot (-i)+e^{-i2\\pi 0\\cdot 3/4}\\cdot (-1+2i)=2\\\\X_{1}&=e^{-i2\\pi 1\\cdot 0/4}\\cdot 1+e^{-i2\\pi 1\\cdot 1/4}\\cdot (2-i)+e^{-i2\\pi 1\\cdot 2/4}\\cdot (-i)+e^{-i2\\pi 1\\cdot 3/4}\\cdot (-1+2i)=-2-2i\\\\X_{2}&=e^{-i2\\pi 2\\cdot 0/4}\\cdot 1+e^{-i2\\pi 2\\cdot 1/4}\\cdot (2-i)+e^{-i2\\pi 2\\cdot 2/4}\\cdot (-i)+e^{-i2\\pi 2\\cdot 3/4}\\cdot (-1+2i)=-2i\\\\X_{3}&=e^{-i2\\pi 3\\cdot 0/4}\\cdot 1+e^{-i2\\pi 3\\cdot 1/4}\\cdot (2-i)+e^{-i2\\pi 3\\cdot 2/4}\\cdot (-i)+e^{-i2\\pi 3\\cdot 3/4}\\cdot (-1+2i)=4+4i\\end{aligned}}}"
+      },
+      "section": "Example",
+      "status": "partial",
+      "decl": "ZMod.dft_apply",
+      "module": "Mathlib.Analysis.Fourier.ZMod",
+      "note": "Worked numerical instance of the DFT formula; Mathlib has the general formula but not this specific computation."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {X} ={\\begin{pmatrix}X_{0}\\\\X_{1}\\\\X_{2}\\\\X_{3}\\end{pmatrix}}={\\begin{pmatrix}2\\\\-2-2i\\\\-2i\\\\4+4i\\end{pmatrix}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Concrete numerical output vector for the example; not a standalone Mathlib declaration."
+    }
+  ]
+}

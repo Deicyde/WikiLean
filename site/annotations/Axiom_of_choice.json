@@ -1,0 +1,1961 @@
+{
+  "slug": "Axiom_of_choice",
+  "wikipedia_title": "Axiom of choice",
+  "display_title": "Axiom of choice",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Axiom of choice (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the axiom of choice says that given any collection of non-empty sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Classical.axiomOfChoice",
+        "module": "Mathlib.Logic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's Classical.axiomOfChoice yields a choice function from a family of nonempty types.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Smallest element of finite subsets of naturals",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the set containing each smallest element is {4, 10, 1}"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a numeric illustrative example, not a formalizable mathematical statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Russell's shoes and socks analogy",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "for any (even infinite) collection of unordered pairs of shoes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal pedagogical analogy with no formal counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Choice function",
+      "anchor": {
+        "section": "Statement",
+        "snippet": "A choice function (also called selector or selection)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Classical.axiomOfChoice",
+        "module": "Mathlib.Logic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "A function selecting one element from each nonempty set is exactly the content of Classical.axiomOfChoice.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Axiom of choice (formal axiom box)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Axiom — For any set [MATH] of nonempty s"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Classical.axiomOfChoice",
+        "module": "Mathlib.Logic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The existence of a choice function for nonempty sets is Classical.axiomOfChoice (built on Lean's Classical.choice).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalent form via Cartesian product",
+      "anchor": {
+        "section": "Statement",
+        "snippet": "an equivalent form of the axiom of choice is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Classical.nonempty_pi",
+        "module": "Mathlib.Logic.Nonempty",
+        "match_kind": "exact"
+      },
+      "note": "Classical.nonempty_pi states Nonempty (∀ i, π i) ↔ ∀ i, Nonempty (π i), i.e. the product of nonempty sets is nonempty.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Generalization to indexed families",
+      "anchor": {
+        "section": "Statement",
+        "snippet": "This form implies a more general form where the Cartesian product is of a general indexed family of sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Classical.nonempty_pi",
+        "module": "Mathlib.Logic.Nonempty",
+        "match_kind": "exact"
+      },
+      "note": "Classical.nonempty_pi is stated for an arbitrary indexed family of types.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Partition/transversal variant",
+      "anchor": {
+        "section": "Variants",
+        "snippet": "This guarantees for any partition of a set"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Classical.axiomOfChoice",
+        "module": "Mathlib.Logic.Basic",
+        "match_kind": null
+      },
+      "note": "The choice axiom is present, but there is no dedicated lemma producing a transversal of a partition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Powerset choice-function variant",
+      "anchor": {
+        "section": "Variants",
+        "snippet": "Another equivalent axiom only considers collections"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Classical.axiomOfChoice",
+        "module": "Mathlib.Logic.Basic",
+        "match_kind": null
+      },
+      "note": "Per-nonempty-subset choice is available via choice, but no packaged powerset choice-function object exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite collections need no choice (induction)",
+      "anchor": {
+        "section": "Cases where the axiom of choice is not needed",
+        "snippet": "The existence of a choice function for a finite collection of nonempty sets can be proved by the principle of finite induction"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Classical.nonempty_pi",
+        "module": "Mathlib.Logic.Nonempty",
+        "match_kind": null
+      },
+      "note": "The nonempty-product lemma covers the finite case, but Mathlib does not isolate a choice-free finite-induction version.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Canonical choice via explicit rule",
+      "anchor": {
+        "section": "Cases where the axiom of choice is not needed",
+        "snippet": "Another case where the axiom of choice is not needed is when there exists an explicit rule"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An illustrative discussion rather than a formal statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Well-orderable union gives choice function",
+      "anchor": {
+        "section": "Cases where the axiom of choice is not needed",
+        "snippet": "In general, if the union of all sets in"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "WellFounded.min",
+        "module": "Mathlib.Order.WellFounded",
+        "match_kind": null
+      },
+      "note": "A well-order supplies least elements (WellFounded.min), giving a choice function, but no packaged 'well-orderable union → choice' lemma exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Subsets of reals require choice",
+      "anchor": {
+        "section": "Real numbers",
+        "snippet": "As an example where the axiom of choice is required"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An illustrative remark about when choice is needed, not a formal statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Open interval has no least element",
+      "anchor": {
+        "section": "Real numbers",
+        "snippet": "does not have a least element"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated lemma stating that an open real interval has no least element was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Well-ordering of reals equivalent to choice function",
+      "anchor": {
+        "section": "Real numbers",
+        "snippet": "If there exists a different ordering of the real numbers which is a well-ordering"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.exists_wellFoundedLT",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "special_case"
+      },
+      "note": "The general well-ordering theorem applies to ℝ, but the stated equivalence with a choice function for sets of reals is not a separate decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Construction of a non-measurable set",
+      "anchor": {
+        "section": "Constructing a non-measurable set",
+        "snippet": "Using the axiom of choice, we could pick a single point from each orbit"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Vitali non-measurable set construction is not in Mathlib (docs/1000.yaml points to an external repository).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Banach–Tarski paradox",
+      "anchor": {
+        "section": "Criticism and acceptance",
+        "snippet": "which says that it is possible to decompose the 3-dimensional solid unit ball into finitely many pieces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Banach–Tarski paradox is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Diaconescu's theorem",
+      "anchor": {
+        "section": "In constructive mathematics",
+        "snippet": "Diaconescu's theorem shows that the axiom of choice implies the law of excluded middle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Classical.em",
+        "module": "Mathlib.Logic.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Lean derives Classical.em from Classical.choice via Diaconescu's argument; Mathlib re-exports it as the alias em.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "AC may fail with urelements (permutation models)",
+      "anchor": {
+        "section": "Independence",
+        "snippet": "It has been known since as early as 1922 that the axiom of choice may fail in a variant of ZF with urelements"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Permutation/urelement model results are metamathematics not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gödel: ZFC consistent if ZF consistent",
+      "anchor": {
+        "section": "Independence",
+        "snippet": "Kurt Gödel showed that the negation of the axiom of choice is not a theorem of ZF"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Relative consistency of ZFC over ZF is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cohen: AC not a theorem of ZF (forcing)",
+      "anchor": {
+        "section": "Independence",
+        "snippet": "Paul Cohen employed the technique of forcing"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Forcing and the independence of AC are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "AC independent of ZF",
+      "anchor": {
+        "section": "Independence",
+        "snippet": "Together these results establish that the axiom of choice is logically independent of ZF"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The independence of AC from ZF is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Peano-arithmetic statements: ZF iff ZFC",
+      "anchor": {
+        "section": "Independence",
+        "snippet": "are provable in ZF if and only if they are provable in ZFC"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This conservativity metatheorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "ZF + GCH implies AC",
+      "anchor": {
+        "section": "Independence",
+        "snippet": "ZF plus GCH implies AC, making GCH a strictly stronger claim than AC"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The implication GCH → AC over ZF is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Constructibility and GCH imply AC",
+      "anchor": {
+        "section": "Stronger axioms",
+        "snippet": "The axiom of constructibility and the generalized continuum hypothesis each imply the axiom of choice"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "V=L and GCH implying AC are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Axiom of global choice",
+      "anchor": {
+        "section": "Stronger axioms",
+        "snippet": "there is an axiom called the axiom of global choice that is stronger than the axiom of choice for sets"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The class-theoretic axiom of global choice is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Global choice from limitation of size",
+      "anchor": {
+        "section": "Stronger axioms",
+        "snippet": "The axiom of global choice follows from the axiom of limitation of size"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The axiom of limitation of size and its implications are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tarski's axiom stronger than AC",
+      "anchor": {
+        "section": "Stronger axioms",
+        "snippet": "Tarski's axiom, which is used in Tarski–Grothendieck set theory"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Tarski's axiom (existence of inaccessibles/universes) as a set-theoretic statement is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Trichotomy of cardinalities",
+      "anchor": {
+        "section": "Equivalents",
+        "snippet": "Trichotomy: The cardinalities of any two sets are comparable with each other"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.linearOrder",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "Cardinal forms a LinearOrder (its le_total field), so any two cardinalities are comparable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Tarski's theorem about choice",
+      "anchor": {
+        "section": "Equivalents",
+        "snippet": "Tarski's theorem about choice"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.mul_eq_self",
+        "module": "Mathlib.SetTheory.Cardinal.Arithmetic",
+        "match_kind": "exact"
+      },
+      "note": "Cardinal.mul_eq_self proves κ·κ=κ for infinite κ, the AC-equivalent identity of Tarski's theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every surjection has a right inverse",
+      "anchor": {
+        "section": "Equivalents",
+        "snippet": "has a right inverse"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Surjective.hasRightInverse",
+        "module": "Mathlib.Logic.Function.Basic",
+        "match_kind": "exact"
+      },
+      "note": "A surjection has a right inverse via Function.surjInv / Function.Surjective.hasRightInverse.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Disjoint collection has transversal",
+      "anchor": {
+        "section": "Equivalents",
+        "snippet": "that intersects each member of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Classical.axiomOfChoice",
+        "module": "Mathlib.Logic.Basic",
+        "match_kind": null
+      },
+      "note": "Choice is available, but no dedicated lemma produces a transversal meeting each member of a disjoint collection once.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Relation contains a function",
+      "anchor": {
+        "section": "Equivalents",
+        "snippet": "If a relation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Classical.axiomOfChoice",
+        "module": "Mathlib.Logic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Classical.axiomOfChoice produces a function f with R a (f a) from ∀ a, ∃ b, R a b.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cartesian product of nonempty family is nonempty",
+      "anchor": {
+        "section": "Equivalents",
+        "snippet": "The Cartesian product of any indexed family of nonempty sets is nonempty"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Classical.nonempty_pi",
+        "module": "Mathlib.Logic.Nonempty",
+        "match_kind": "exact"
+      },
+      "note": "Classical.nonempty_pi gives nonemptiness of the product of any indexed family of nonempty types.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Maximal disjoint subcollection meeting all members",
+      "anchor": {
+        "section": "Equivalents",
+        "snippet": "there exists a disjoint subcollection"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This Rubin–Rubin choice-equivalent has no dedicated declaration in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Maximal collection with finite intersection property",
+      "anchor": {
+        "section": "Equivalents",
+        "snippet": "there exists a maximal (under set inclusion) collection"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Order.IsOfFiniteCharacter.exists_maximal",
+        "module": "Mathlib.Order.TeichmullerTukey",
+        "match_kind": "special_case"
+      },
+      "note": "Tukey's lemma gives maximal finite-character families, but the finite-intersection-property phrasing is not a separate decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Well-ordering theorem",
+      "anchor": {
+        "section": "Equivalents",
+        "snippet": "Well-ordering theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.exists_wellFoundedLT",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "Zermelo's well-ordering theorem; any type also gets the concrete well-order WellOrderingRel.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Powerset of an ordinal is well-orderable",
+      "anchor": {
+        "section": "Equivalents",
+        "snippet": "the powerset (i.e., the set of all subsets) of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.exists_wellFoundedLT",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "special_case"
+      },
+      "note": "Special case of the well-ordering theorem applied to a powerset type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hausdorff maximal principle",
+      "anchor": {
+        "section": "Equivalents",
+        "snippet": "Hausdorff maximal principle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsChain.exists_maxChain",
+        "module": "Mathlib.Order.Zorn",
+        "match_kind": "generalization"
+      },
+      "note": "IsChain.exists_maxChain (every chain extends to a maximal chain) generalizes Hausdorff's maximality principle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Antichain principle",
+      "anchor": {
+        "section": "Equivalents",
+        "snippet": "Antichain principle: Every partially ordered set has a maximal antichain"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsMaxAntichain",
+        "module": "Mathlib.Order.Antichain",
+        "match_kind": null
+      },
+      "note": "Only the IsMaxAntichain predicate is defined; the existence theorem 'every poset has a maximal antichain' is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Zorn's lemma",
+      "anchor": {
+        "section": "Equivalents",
+        "snippet": "Zorn's lemma"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "zorn_le",
+        "module": "Mathlib.Order.Zorn",
+        "match_kind": "exact"
+      },
+      "note": "Zorn's lemma is zorn_le / exists_maximal_of_chains_bounded.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Kuratowski's lemma",
+      "anchor": {
+        "section": "Equivalents",
+        "snippet": "Kuratowski's lemma"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsChain.exists_maxChain",
+        "module": "Mathlib.Order.Zorn",
+        "match_kind": "generalization"
+      },
+      "note": "Kuratowski's maximal-chain lemma is IsChain.exists_maxChain (same statement as Hausdorff's principle).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Tukey's lemma",
+      "anchor": {
+        "section": "Equivalents",
+        "snippet": "Tukey's lemma"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Order.IsOfFiniteCharacter.exists_maximal",
+        "module": "Mathlib.Order.TeichmullerTukey",
+        "match_kind": "exact"
+      },
+      "note": "The Teichmüller–Tukey lemma for finite-character families is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "König's theorem",
+      "anchor": {
+        "section": "Equivalents",
+        "snippet": "König's theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.sum_lt_prod",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "Cardinal.sum_lt_prod is König's theorem (sum < product for cardinals).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every vector space has a basis",
+      "anchor": {
+        "section": "Equivalents",
+        "snippet": "Every vector space has a basis"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Basis.ofVectorSpace",
+        "module": "Mathlib.LinearAlgebra.Basis.VectorSpace",
+        "match_kind": "exact"
+      },
+      "note": "Basis.ofVectorSpace builds a basis for any vector space over a division ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Krull's theorem (maximal ideal)",
+      "anchor": {
+        "section": "Equivalents",
+        "snippet": "Krull's theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.exists_maximal",
+        "module": "Mathlib.RingTheory.Ideal.Maximal",
+        "match_kind": "exact"
+      },
+      "note": "Ideal.exists_maximal gives a maximal ideal in any nontrivial ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Group structure on every nonempty set",
+      "anchor": {
+        "section": "Equivalents",
+        "snippet": "that gives it a group structure"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration giving a group structure on an arbitrary nonempty set was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every free abelian group is projective",
+      "anchor": {
+        "section": "Equivalents",
+        "snippet": "Every free abelian group is projective"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Projective.of_free",
+        "module": "Mathlib.Algebra.Module.Projective",
+        "match_kind": "generalization"
+      },
+      "note": "Module.Projective.of_free shows free modules (over any ring, hence free abelian groups) are projective.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Baer's criterion (divisible implies injective)",
+      "anchor": {
+        "section": "Equivalents",
+        "snippet": "Baer's criterion: Every divisible abelian group is injective"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Baer.injective",
+        "module": "Mathlib.Algebra.Module.Injective",
+        "match_kind": "generalization"
+      },
+      "note": "Module.Baer.injective is the general Baer criterion; combined with Module.Baer.of_divisible it gives divisible → injective.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every set is a projective object in Set",
+      "anchor": {
+        "section": "Equivalents",
+        "snippet": "Every set is a projective object in the category of sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Type.enoughProjectives",
+        "module": "Mathlib.CategoryTheory.Preadditive.Projective.Basic",
+        "match_kind": "exact"
+      },
+      "note": "An instance makes every type a projective object (docstring: 'the axiom of choice says every type is a projective object in Type').",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dual unit ball has an extreme point",
+      "anchor": {
+        "section": "Equivalents",
+        "snippet": "The closed unit ball of the dual of a normed vector space over the reals has an extreme point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompact.extremePoints_nonempty",
+        "module": "Mathlib.Analysis.Convex.KreinMilman",
+        "match_kind": "generalization"
+      },
+      "note": "Krein–Milman gives an extreme point of any nonempty compact convex set; the dual unit ball is the special case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Tychonoff's theorem",
+      "anchor": {
+        "section": "Equivalents",
+        "snippet": "Tychonoff's theorem : The product of any indexed family of compact topological spaces is compact"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isCompact_univ_pi",
+        "module": "Mathlib.Topology.Compactness.Compact",
+        "match_kind": "exact"
+      },
+      "note": "isCompact_univ_pi is Tychonoff's theorem for an arbitrary indexed product of compact sets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closure of product equals product of closures",
+      "anchor": {
+        "section": "Equivalents",
+        "snippet": "The closure of the product of any indexed family of subsets of a topological space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "closure_pi_set",
+        "module": "Mathlib.Topology.NhdsWithin",
+        "match_kind": "exact"
+      },
+      "note": "closure_pi_set states closure (I.pi s) = I.pi (fun i => closure (s i)).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Maximal consistent superset of first-order sentences",
+      "anchor": {
+        "section": "Equivalents",
+        "snippet": "is a set of sentences of first-order logic"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.IsMaximal",
+        "module": "Mathlib.ModelTheory.Satisfiability",
+        "match_kind": null
+      },
+      "note": "Maximal theories are defined and obtained from models (completeTheory), but a general Lindenbaum extension lemma is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Löwenheim–Skolem theorem",
+      "anchor": {
+        "section": "Equivalents",
+        "snippet": "Löwenheim–Skolem theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.exists_elementarySubstructure_card_eq",
+        "module": "Mathlib.ModelTheory.Skolem",
+        "match_kind": "exact"
+      },
+      "note": "The downward Löwenheim–Skolem theorem is formalized (with an upward companion in Satisfiability).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every connected graph has a spanning tree",
+      "anchor": {
+        "section": "Equivalents",
+        "snippet": "Every connected graph has a spanning tree"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "SimpleGraph.IsTree is defined, but there is no theorem producing a spanning tree of an arbitrary connected graph.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every small category has a skeleton",
+      "anchor": {
+        "section": "Category theory",
+        "snippet": "Every small category has a skeleton"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.skeleton_isSkeleton",
+        "module": "Mathlib.CategoryTheory.Skeletal",
+        "match_kind": "exact"
+      },
+      "note": "skeleton_isSkeleton exhibits Skeleton C as a skeleton of any category C.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Weakly equivalent small categories are equivalent",
+      "anchor": {
+        "section": "Category theory",
+        "snippet": "If two small categories are weakly equivalent, then they are equivalent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No result deriving categorical equivalence from weak equivalence was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Freyd adjoint functor theorem",
+      "anchor": {
+        "section": "Category theory",
+        "snippet": "Every continuous functor on a small-complete category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.isRightAdjoint_of_preservesLimits_of_solutionSetCondition",
+        "module": "Mathlib.CategoryTheory.Adjunction.AdjointFunctorTheorems",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib formalizes the General Adjoint Functor Theorem via the solution set condition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Axiom of dependent choice (DC)",
+      "anchor": {
+        "section": "Weaker forms",
+        "snippet": "One example is the axiom of dependent choice"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib assumes full choice and does not define DC as a separate weaker axiom.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Axiom of countable choice (CC)",
+      "anchor": {
+        "section": "Weaker forms",
+        "snippet": "which states that a choice function exists for any countable family of nonempty sets"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib assumes full choice and does not isolate countable choice as a separate weaker axiom.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Ultrafilter lemma (Tarski)",
+      "anchor": {
+        "section": "Weaker forms",
+        "snippet": "every filter is a subset of some ultrafilter"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ultrafilter.exists_le",
+        "module": "Mathlib.Order.Filter.Ultrafilter.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Ultrafilter.exists_le is the ultrafilter lemma: every filter is below some ultrafilter.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Well-orderability by rank below ordinal α",
+      "anchor": {
+        "section": "Weaker forms",
+        "snippet": "for every set S with rank less than α, S is well-orderable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This rank-stratified weak choice principle is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Well-orderability by Hartogs number",
+      "anchor": {
+        "section": "Weaker forms",
+        "snippet": "for every set S with Hartogs number less than"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This Hartogs-number-stratified weak choice principle is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Axiom of countable choice (product form)",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "Axiom of countable choice : The Cartesian product of any sequence"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Classical.nonempty_pi",
+        "module": "Mathlib.Logic.Nonempty",
+        "match_kind": "special_case"
+      },
+      "note": "The ℕ-indexed product statement holds as a special case of Classical.nonempty_pi, though CC is not isolated as an axiom.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Axiom of dependent choice (sequence form)",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "Axiom of dependent choice"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "DC as a sequence-construction principle is not formalized as such in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Axiom of choice for finite sets",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "Axiom of choice for finite sets"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The weak principle of choice for families of finite sets is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Ultrafilter lemma (filter extension)",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "Ultrafilter lemma: Every filter on a set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ultrafilter.exists_le",
+        "module": "Mathlib.Order.Filter.Ultrafilter.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Every filter extends to an ultrafilter via Ultrafilter.exists_le.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Countable union of countable sets is countable",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "The union of any countable family of countable sets is countable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.countable_iUnion",
+        "module": "Mathlib.Data.Set.Countable",
+        "match_kind": "exact"
+      },
+      "note": "Set.countable_iUnion gives countability of a countable union of countable sets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Infinite set has countable-infinite subset",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "Every infinite set has a countable-infinite subset"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.Infinite.exists_subset_countable_infinite",
+        "module": "Mathlib.Data.Set.Countable",
+        "match_kind": "exact"
+      },
+      "note": "Built on Infinite.natEmbedding, this gives a countably infinite subset of any infinite set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Eight definitions of finite set equivalent",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "Eight definitions of a finite set are equivalent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Finite/Fintype/Set.Finite but not a packaged equivalence of the eight classical finiteness definitions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Borel determinacy",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "is a Borel subset of Baire space is determined"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Borel determinacy is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Infinite cardinal squared equals itself",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "Every infinite cardinal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.mul_eq_self",
+        "module": "Mathlib.SetTheory.Cardinal.Arithmetic",
+        "match_kind": "exact"
+      },
+      "note": "Cardinal.mul_eq_self proves κ·κ=κ for every infinite cardinal κ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Vitali theorem (non-measurable sets)",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "The Vitali theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Vitali set / existence of a non-measurable set is not in Mathlib (only Vitali covering theory).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lebesgue-measurable non-Borel sets",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "There exist Lebesgue-measurable subsets of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Existence of Lebesgue-measurable non-Borel sets is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hausdorff paradox",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "The Hausdorff paradox"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hausdorff paradox is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Banach–Tarski paradox",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "The Banach–Tarski paradox"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Banach–Tarski paradox is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every field has an algebraic closure",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "Every field has an algebraic closure"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgebraicClosure",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure",
+        "match_kind": "exact"
+      },
+      "note": "The AlgebraicClosure construction (with IsAlgClosed instance) gives an algebraic closure of any field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every field extension has a transcendence basis",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "Every field extension has a transcendence basis"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_isTranscendenceBasis",
+        "module": "Mathlib.RingTheory.AlgebraicIndependent.TranscendenceBasis",
+        "match_kind": "generalization"
+      },
+      "note": "exists_isTranscendenceBasis gives a transcendence basis for any faithful ring extension.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Infinite-dimensional spaces have infinite independent subset",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "Every infinite-dimensional vector space contains an infinite linearly independent subset"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Basis.ofVectorSpace",
+        "module": "Mathlib.LinearAlgebra.Basis.VectorSpace",
+        "match_kind": null
+      },
+      "note": "A basis exists (infinite when the space is infinite-dimensional), but the exact phrased statement is not a single declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Stone's representation theorem",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "Stone's representation theorem for Boolean algebras"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.Order.PrimeSeparator",
+        "match_kind": null
+      },
+      "note": "The prime-ideal/filter separation lemma (a key ingredient of Stone duality) is present, but the full representation theorem is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Nielsen–Schreier theorem",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "The Nielsen–Schreier theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "subgroupIsFreeOfIsFree",
+        "module": "Mathlib.GroupTheory.FreeGroup.NielsenSchreier",
+        "match_kind": "exact"
+      },
+      "note": "subgroupIsFreeOfIsFree shows a subgroup of a free group is free.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Additive groups of R and C isomorphic",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "The additive groups of R and C are isomorphic"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.nonempty_linearEquiv_real",
+        "module": "Mathlib.LinearAlgebra.Complex.FiniteDimensional",
+        "match_kind": "generalization"
+      },
+      "note": "A ℚ-linear equivalence ℂ ≃ₗ[ℚ] ℝ exists, which in particular is an additive-group isomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Accumulation point: topological = sequential",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "the topological and sequential definitions of an accumulation point"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "accPt_iff_frequently",
+        "module": "Mathlib.Topology.ClusterPt",
+        "match_kind": null
+      },
+      "note": "Accumulation points are characterized via filters/neighborhoods, but the explicit topological=sequential equivalence is not a single decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuity: topological = sequential",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "For functions between metric spaces, the topological and sequential definitions of continuity are equivalent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "continuous_iff_seqContinuous",
+        "module": "Mathlib.Topology.Sequences",
+        "match_kind": "generalization"
+      },
+      "note": "continuous_iff_seqContinuous holds for sequential spaces, including metric spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compactness: topological = sequential",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "For metric spaces, the topological and sequential definitions of compactness are equivalent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isCompact_iff_isSeqCompact",
+        "module": "Mathlib.Topology.Sequences",
+        "match_kind": "generalization"
+      },
+      "note": "isCompact_iff_isSeqCompact equates compactness with sequential compactness (e.g. for metric spaces).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hahn–Banach theorem",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "The Hahn–Banach theorem in functional analysis"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_extension_norm_eq",
+        "module": "Mathlib.Analysis.Normed.Module.HahnBanach",
+        "match_kind": "exact"
+      },
+      "note": "exists_extension_norm_eq is the norm-preserving Hahn–Banach extension theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Every Hilbert space has orthonormal basis",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "every Hilbert space has an orthonormal basis"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_hilbertBasis",
+        "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
+        "match_kind": "exact"
+      },
+      "note": "exists_hilbertBasis gives an orthonormal Hilbert basis for any Hilbert space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Banach–Alaoglu theorem",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "The Banach–Alaoglu theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeakDual.isCompact_polar",
+        "module": "Mathlib.Analysis.Normed.Module.WeakDual",
+        "match_kind": "exact"
+      },
+      "note": "WeakDual.isCompact_polar is the Banach–Alaoglu weak-* compactness theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Baire category theorem",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "The Baire category theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BaireSpace.of_completelyPseudoMetrizable",
+        "module": "Mathlib.Topology.Baire.CompleteMetrizable",
+        "match_kind": "exact"
+      },
+      "note": "Complete (pseudo)metrizable spaces are Baire spaces; conclusion lemmas are in Topology.Baire.Lemmas.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Discontinuous linear map on infinite-dim TVS",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "On every infinite-dimensional topological vector space there is a discontinuous linear map"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Existence of a discontinuous linear map on an infinite-dimensional TVS is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniform space compact iff complete and totally bounded",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "A uniform space is compact if and only if it is complete and totally bounded"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isCompact_iff_totallyBounded_isComplete",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "exact"
+      },
+      "note": "isCompact_iff_totallyBounded_isComplete states IsCompact s ↔ TotallyBounded s ∧ IsComplete s.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Stone–Čech compactification exists",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "Every Tychonoff space has a Stone–Čech compactification"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "StoneCech",
+        "module": "Mathlib.Topology.Compactification.StoneCech",
+        "match_kind": "exact"
+      },
+      "note": "StoneCech with its universal property gives the Stone–Čech compactification.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Urysohn's lemma",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "Urysohn's Lemma"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_continuous_zero_one_of_isClosed",
+        "module": "Mathlib.Topology.UrysohnsLemma",
+        "match_kind": "exact"
+      },
+      "note": "Urysohn's lemma is exists_continuous_zero_one_of_isClosed for disjoint closed sets in a normal space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Tietze extension theorem",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "Tietze extension theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.exists_restrict_eq",
+        "module": "Mathlib.Topology.TietzeExtension",
+        "match_kind": "exact"
+      },
+      "note": "ContinuousMap.exists_restrict_eq is the Tietze extension theorem for closed subsets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Existence of partitions of unity",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "Existence of partitions of unity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PartitionOfUnity",
+        "module": "Mathlib.Topology.PartitionOfUnity",
+        "match_kind": "exact"
+      },
+      "note": "PartitionOfUnity is defined with existence results (via BumpCovering) for normal/paracompact spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gödel's completeness theorem",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "Gödel's completeness theorem for first-order logic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's ModelTheory has no syntactic proof system, so the soundness/completeness theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Compactness theorem",
+      "anchor": {
+        "section": "Results requiring AC (or weaker forms) but weaker than it",
+        "snippet": "The compactness theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.isSatisfiable_iff_isFinitelySatisfiable",
+        "module": "Mathlib.ModelTheory.Satisfiability",
+        "match_kind": "exact"
+      },
+      "note": "The first-order compactness theorem is isSatisfiable_iff_isFinitelySatisfiable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Partition principle",
+      "anchor": {
+        "section": "Possibly equivalent implications of AC",
+        "snippet": "Partition principle: Given two sets A and B"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The partition principle is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Injection or surjection between two sets",
+      "anchor": {
+        "section": "Possibly equivalent implications of AC",
+        "snippet": "Given any two sets A and B where B is nonempty"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.linearOrder",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "special_case"
+      },
+      "note": "Cardinal comparability (le_total) gives an injection one way; the injection-or-surjection phrasing is not a dedicated decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Surjection between two nonempty sets",
+      "anchor": {
+        "section": "Possibly equivalent implications of AC",
+        "snippet": "Given any two nonempty sets, a surjection exists"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.linearOrder",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "special_case"
+      },
+      "note": "Follows from cardinal comparability plus nonemptiness, but is not stated as a dedicated declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Converse Schröder–Bernstein theorem",
+      "anchor": {
+        "section": "Possibly equivalent implications of AC",
+        "snippet": "Converse Schröder–Bernstein theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Function.Embedding.schroeder_bernstein",
+        "module": "Mathlib.SetTheory.Cardinal.SchroederBernstein",
+        "match_kind": null
+      },
+      "note": "The injection-based Schröder–Bernstein is present; the surjection-based converse (which needs AC) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Weak partition principle",
+      "anchor": {
+        "section": "Possibly equivalent implications of AC",
+        "snippet": "Weak partition principle: Given two sets A and B"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The weak partition principle is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "No infinite decreasing sequence of cardinals",
+      "anchor": {
+        "section": "Possibly equivalent implications of AC",
+        "snippet": "There is no infinite decreasing sequence of cardinals"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.lt_wf",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "Cardinal.lt_wf (and WellFoundedLT Cardinal) shows < on cardinals is well-founded, ruling out infinite descent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hahn embedding theorem",
+      "anchor": {
+        "section": "Possibly equivalent implications of AC",
+        "snippet": "Hahn embedding theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "hahnEmbedding_isOrderedAddMonoid",
+        "module": "Mathlib.RingTheory.HahnSeries.HahnEmbedding",
+        "match_kind": "exact"
+      },
+      "note": "hahnEmbedding_isOrderedAddMonoid is the classical Hahn embedding theorem for ordered groups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Baire property of all reals stronger than ¬AC",
+      "anchor": {
+        "section": "Stronger forms of the negation of AC",
+        "snippet": "every set of real numbers has the property of Baire"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The statement that every set of reals has the Baire property is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Solovay: ZF+DC with all reals measurable",
+      "anchor": {
+        "section": "Stronger forms of the negation of AC",
+        "snippet": "this consistency result, due to Robert M. Solovay"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Solovay's model and its consistency result are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Axiom of determinacy implications",
+      "anchor": {
+        "section": "Stronger forms of the negation of AC",
+        "snippet": "The much stronger axiom of determinacy , or AD"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The axiom of determinacy and its implications are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "AC disprovable in New Foundations",
+      "anchor": {
+        "section": "Stronger forms of the negation of AC",
+        "snippet": "In the NF axiomatic system, the axiom of choice can be disproved"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "New Foundations and the Specker disproof of AC are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Negation of weak partition principle",
+      "anchor": {
+        "section": "Statements implying the negation of AC",
+        "snippet": "The negation of the weak partition principle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This anti-choice statement is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sequentially continuous but not continuous function",
+      "anchor": {
+        "section": "Statements implying the negation of AC",
+        "snippet": "There is a function f from the real numbers to the real numbers such that f is not continuous at a"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This ¬AC consequence is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Infinite set without countably infinite subset",
+      "anchor": {
+        "section": "Statements implying the negation of AC",
+        "snippet": "There is an infinite set of real numbers without a countably infinite subset"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Amorphous-set-type ¬AC statements are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reals as countable union of countable sets",
+      "anchor": {
+        "section": "Statements implying the negation of AC",
+        "snippet": "The real numbers are a countable union of countable sets"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This ¬AC consequence is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Field with no algebraic closure",
+      "anchor": {
+        "section": "Statements implying the negation of AC",
+        "snippet": "There is a field with no algebraic closure"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This ¬AC consequence is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Field with two non-isomorphic algebraic closures",
+      "anchor": {
+        "section": "Statements implying the negation of AC",
+        "snippet": "There is a field with two non-isomorphic algebraic closures"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This ¬AC consequence is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vector space with no basis",
+      "anchor": {
+        "section": "Statements implying the negation of AC",
+        "snippet": "In all models of ZF¬C there is a vector space with no basis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This ¬AC consequence is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vector space with bases of different cardinalities",
+      "anchor": {
+        "section": "Statements implying the negation of AC",
+        "snippet": "There is a vector space with two bases of different cardinalities"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This ¬AC consequence is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Free complete Boolean algebra on countably many generators",
+      "anchor": {
+        "section": "Statements implying the negation of AC",
+        "snippet": "There is a free complete Boolean algebra on countably many generators"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No free complete Boolean algebra construction exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Set that cannot be linearly ordered",
+      "anchor": {
+        "section": "Statements implying the negation of AC",
+        "snippet": "There is a set that cannot be linearly ordered"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This ¬AC consequence is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Model of ZF¬C with all sets in Rⁿ measurable",
+      "anchor": {
+        "section": "Statements implying the negation of AC",
+        "snippet": "There exists a model of ZF¬C in which every set in R n is measurable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This model-theoretic ¬AC result is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "GCH fails in all models of ZF¬C",
+      "anchor": {
+        "section": "Statements implying the negation of AC",
+        "snippet": "In all models of ZF¬C, the generalized continuum hypothesis does not hold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This metamathematical statement about ZF¬C models is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Axiom of choice in type theory",
+      "anchor": {
+        "section": "Axiom of choice in type theory",
+        "snippet": "The axiom of choice states that if for each x of type σ there exists a y of type τ"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Classical.axiomOfChoice",
+        "module": "Mathlib.Logic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The type-theoretic choice (∀x ∃y R x y → ∃f ∀x R x (f x)) is exactly Classical.axiomOfChoice / Classical.skolem.",
+      "provenance": "ai"
+    }
+  ]
+}

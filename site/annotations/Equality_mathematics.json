@@ -1,0 +1,1001 @@
+{
+  "slug": "Equality_mathematics",
+  "wikipedia_title": "Equality (mathematics)",
+  "display_title": "Equality (mathematics)",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Equality",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "equality is a relationship between two quantities or expressions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Eq",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Propositional equality is Lean core's `Eq`, the foundational equality relation underlying all of Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equation or identity",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A written expression of equality is called an equation or identity depending on the context"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a terminological distinction about written expressions, not a formalizable mathematical statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Distinct objects",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Two objects that are not equal are said to be distinct"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ne",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Inequality/distinctness is Lean core's `Ne a b := ¬(a = b)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reflexivity of equality",
+      "anchor": {
+        "section": "Basic properties",
+        "snippet": "For every a , one has a = a"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Eq.refl",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Reflexivity is the constructor `Eq.refl`/`rfl` in Lean core.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Symmetry of equality",
+      "anchor": {
+        "section": "Basic properties",
+        "snippet": "if a = b , then b = a"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Eq.symm",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Symmetry of equality is `Eq.symm` in Lean core.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Transitivity of equality",
+      "anchor": {
+        "section": "Basic properties",
+        "snippet": "if a = b and b = c , then a = c"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Eq.trans",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Transitivity of equality is `Eq.trans` in Lean core.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Substitution property",
+      "anchor": {
+        "section": "Basic properties",
+        "snippet": "a can replace b in any mathematical expression or formula without changing its meaning"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Eq.subst",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "The substitution (Leibniz) property is `Eq.subst`/`▸` in Lean core.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Function application property",
+      "anchor": {
+        "section": "Basic properties",
+        "snippet": "For every a and b , with some function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "congrArg",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "a = b implies f a = f b is `congrArg` in Lean core.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equation",
+      "anchor": {
+        "section": "Equations",
+        "snippet": "An equation is a symbolic equality of two mathematical expressions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Eq",
+        "module": null,
+        "match_kind": "generalization"
+      },
+      "note": "An equation is a propositional equality `a = b`, represented by core `Eq`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebra",
+      "anchor": {
+        "section": "Equations",
+        "snippet": "Algebra is the branch of mathematics concerned with equation solving"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This describes a branch of mathematics, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Solution of an equation",
+      "anchor": {
+        "section": "Equations",
+        "snippet": "is called a solution of the given equation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no general notion of 'solution'; only domain-specific ones such as `Polynomial.IsRoot` exist.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Solution set",
+      "anchor": {
+        "section": "Equations",
+        "snippet": "is called its solution set"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "setOf",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": null
+      },
+      "note": "A solution set is expressible as `{x | equation x}` via `setOf`, but there is no dedicated 'solution set' concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Conditionally true equation",
+      "anchor": {
+        "section": "Equations",
+        "snippet": "Equations with unknowns are considered conditionally true"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an informal characterization of equations with free variables, not a formalized result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equation as binary predicate",
+      "anchor": {
+        "section": "Equations",
+        "snippet": "an equation is a binary predicate"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Eq",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "`Eq : α → α → Prop` is exactly a binary predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equation in computer science",
+      "anchor": {
+        "section": "Equations",
+        "snippet": "an equation is defined as a boolean -valued expression"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BEq",
+        "module": null,
+        "match_kind": "generalization"
+      },
+      "note": "Boolean-valued equality is `BEq` (`==`) / `DecidableEq` in Lean core.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Identity",
+      "anchor": {
+        "section": "Identities",
+        "snippet": "An identity is an equality that is true for all values of its variables in a given domain"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Identities are universally-quantified equalities (∀ x, f x = g x) expressible in Lean, but 'identity' is not a named concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Extensionality of functions",
+      "anchor": {
+        "section": "Identities",
+        "snippet": "identities may be viewed as an equality of functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "funext",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Function extensionality is `funext` in Lean core.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Functional equation",
+      "anchor": {
+        "section": "Identities",
+        "snippet": "called a functional equation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific functional equations are formalized (e.g. the Riemann zeta functional equation) but 'functional equation' is not a defined notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Differential equation",
+      "anchor": {
+        "section": "Identities",
+        "snippet": "A functional equation involving derivatives is called a differential equation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.Analysis.ODE.Gronwall",
+        "match_kind": null
+      },
+      "note": "ODE infrastructure (HasDerivAt-based solutions, Grönwall, Picard–Lindelöf) exists but 'differential equation' is not defined as a term.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equal by definition",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "which is called \"equal by definition\""
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Definitional equality (`:=`) is a meta-level notion of the type theory, not a formalized declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Definition of Euler's number",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "defines Euler's number"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.exp",
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Euler's number is `Real.exp 1`, but there is no named constant defined via the limit (1+1/n)^n.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Extension by definition",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "this is called an extension by definition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Conservative extension by definition is a metalogical notion, not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Identity of indiscernibles",
+      "anchor": {
+        "section": "History",
+        "snippet": "its converse , the identity of indiscernibles"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The converse of Leibniz's law (shared properties ⇒ equal) is not formalized as a principle in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Law of identity",
+      "anchor": {
+        "section": "Axioms",
+        "snippet": "Stating that each thing is identical with itself, without restriction"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "rfl",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "The law of identity (a = a) is `Eq.refl`/`rfl` in Lean core.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Substitution property (axiom)",
+      "anchor": {
+        "section": "Axioms",
+        "snippet": "if two things are equal, then any property of one must be a property of the other"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Eq.subst",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Indiscernibility of identicals is `Eq.subst`/`▸` in Lean core.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Function application deducible from axioms",
+      "anchor": {
+        "section": "Axioms",
+        "snippet": "Function application is also sometimes included in the axioms of equality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "congrArg",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "The function-application property is `congrArg`, derivable from substitution in Lean core.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Substitution failing in intensional context",
+      "anchor": {
+        "section": "Axioms",
+        "snippet": "The substitution property can produce false statements when applied naively"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Failure of substitution in intensional natural-language contexts is not a formalizable mathematical statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Derivation of reflexivity",
+      "anchor": {
+        "section": "Derivations of basic properties",
+        "snippet": "Reflexivity: Given any expression"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Eq.refl",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Reflexivity is the primitive constructor `Eq.refl`/`rfl` in Lean core.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Derivation of symmetry",
+      "anchor": {
+        "section": "Derivations of basic properties",
+        "snippet": "Symmetry: Given"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Eq.symm",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Symmetry is proven as `Eq.symm` in Lean core.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Derivation of transitivity",
+      "anchor": {
+        "section": "Derivations of basic properties",
+        "snippet": "Transitivity: Given"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Eq.trans",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Transitivity is proven as `Eq.trans` in Lean core.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Derivation of function application",
+      "anchor": {
+        "section": "Derivations of basic properties",
+        "snippet": "Function application: Given some function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "congrArg",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Function application is proven as `congrArg` in Lean core.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Set theory",
+      "anchor": {
+        "section": "In set theory",
+        "snippet": "Set theory is the branch of mathematics that studies sets"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This describes a branch of mathematics, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Set equality by elements (extensionality)",
+      "anchor": {
+        "section": "In set theory",
+        "snippet": "two sets that have precisely the same elements are equal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.ext",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Set.ext` states sets with the same members are equal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Set builder equality example",
+      "anchor": {
+        "section": "In set theory",
+        "snippet": "greater than 0 but not more than 3 is equal to the set containing only 1, 2, and 3"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an ad hoc illustrative example, not a named declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Intensional definition",
+      "anchor": {
+        "section": "In set theory",
+        "snippet": "an intensional definition describes the necessary and sufficient conditions for a term to apply to an object"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a philosophical/logical notion of definition, not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Extensional definition",
+      "anchor": {
+        "section": "In set theory",
+        "snippet": "An extensional definition instead lists all objects where the term applies"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a philosophical/logical notion of definition, not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Extension of a predicate",
+      "anchor": {
+        "section": "In set theory",
+        "snippet": "the extension of a predicate is the set of all objects for which the predicate is true"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "setOf",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`setOf p` is exactly the set of all objects for which predicate `p` holds.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Axiom of extensionality (FOL with equality)",
+      "anchor": {
+        "section": "Set equality based on first-order logic with equality",
+        "snippet": "two sets that contain the same elements are the same set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.ext",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Set.ext` is the extensionality principle for sets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Set equality (FOL without equality)",
+      "anchor": {
+        "section": "Set equality based on first-order logic without equality",
+        "snippet": "two sets are defined to be equal if they contain the same elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.ext_iff",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib characterizes set equality by membership via `Set.ext`/`Set.ext_iff`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Proof of reflexivity (sets)",
+      "anchor": {
+        "section": "Proof of basic properties",
+        "snippet": "Reflexivity: Given a set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Eq.refl",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Set equality is `Eq`, so reflexivity is `rfl`/`Eq.refl`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Proof of symmetry (sets)",
+      "anchor": {
+        "section": "Proof of basic properties",
+        "snippet": "Symmetry: Given sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Eq.symm",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Set equality is `Eq`, so symmetry is `Eq.symm`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Proof of transitivity (sets)",
+      "anchor": {
+        "section": "Proof of basic properties",
+        "snippet": "Transitivity: Given sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Eq.trans",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Set equality is `Eq`, so transitivity is `Eq.trans`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Proof of function application (sets)",
+      "anchor": {
+        "section": "Proof of basic properties",
+        "snippet": "This is the defining property of an ordered pair"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Prod.ext_iff",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "The defining property of ordered pairs, (a,b)=(c,d) ↔ a=c ∧ b=d, is `Prod.ext_iff`/`Prod.mk.injEq` in core.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Numerical analysis",
+      "anchor": {
+        "section": "Approximate equality",
+        "snippet": "Numerical analysis is the study of constructive methods and algorithms to find numerical approximations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This describes a branch of mathematics, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Approximate equality not an equivalence relation",
+      "anchor": {
+        "section": "Approximate equality",
+        "snippet": "any rigorous definition of it will not be an equivalence relation, due to its not being transitive"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No approximate-equality relation with a proof of its non-transitivity is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Floating-point number",
+      "anchor": {
+        "section": "Approximate equality",
+        "snippet": "Each floating-point number is represented as a significand"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FP.Float",
+        "module": "Mathlib.Data.FP.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`FP.Float` (with `FloatCfg` and `ValidFinite`) models floating-point numbers by significand and exponent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Undecidability of real number equality (Richardson's theorem)",
+      "anchor": {
+        "section": "Approximate equality",
+        "snippet": "the equality of two real numbers given by an expression is known to be undecidable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Richardson's theorem is listed in docs/1000.yaml without an associated declaration, i.e. not yet formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalence relation",
+      "anchor": {
+        "section": "Equivalence relation",
+        "snippet": "An equivalence relation is a mathematical relation that generalizes the idea of similarity or sameness"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equivalence",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Reflexive/symmetric/transitive relations are `Equivalence` (and bundled as `Setoid`) in Lean core.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence relations partition a set",
+      "anchor": {
+        "section": "Equivalence relation",
+        "snippet": "These properties are enough to partition a set into disjoint equivalence classes"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Setoid.isPartition_classes",
+        "module": "Mathlib.Data.Setoid.Partition",
+        "match_kind": "exact"
+      },
+      "note": "`Setoid.isPartition_classes` proves the equivalence classes of a setoid form a partition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equality is the strictest equivalence relation",
+      "anchor": {
+        "section": "Equivalence relation",
+        "snippet": "it is the strictest possible equivalence relation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Setoid.bot_def",
+        "module": "Mathlib.Data.Setoid.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Equality is the bottom (finest) element of the complete lattice of equivalence relations, `Setoid.bot_def`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Congruence relation",
+      "anchor": {
+        "section": "Congruence relation",
+        "snippet": "a congruence relation extends the idea of an equivalence relation to include the function-application property"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Con",
+        "module": "Mathlib.GroupTheory.Congruence.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "`Con` extends `Setoid` with multiplication-compatibility (the function-application property); analogous `AddCon`/`RingCon` exist per structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isomorphism",
+      "anchor": {
+        "section": "Isomorphism",
+        "snippet": "An isomorphism describes a kind of structure-preserving correspondence between two objects"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Iso",
+        "module": "Mathlib.CategoryTheory.Iso",
+        "match_kind": "generalization"
+      },
+      "note": "`CategoryTheory.Iso` is the general structure-preserving (invertible-morphism) notion of isomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isomorphism (formal)",
+      "anchor": {
+        "section": "Isomorphism",
+        "snippet": "an isomorphism is a bijective mapping"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv",
+        "module": "Mathlib.Logic.Equiv.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Equiv` (α ≃ β) is a bijective mapping; structure-specific variants (e.g. `MulEquiv`) add structure preservation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Group isomorphism",
+      "anchor": {
+        "section": "Isomorphism",
+        "snippet": "in group theory , a group isomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulEquiv",
+        "module": "Mathlib.Algebra.Group.Equiv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`MulEquiv` (`≃*`) is a multiplication-preserving bijection, i.e. a group isomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cyclic groups isomorphic to integers",
+      "anchor": {
+        "section": "Isomorphism",
+        "snippet": "all cyclic groups of order"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "zmodMulEquivOfGenerator",
+        "module": "Mathlib.GroupTheory.SpecificGroups.Cyclic",
+        "match_kind": "exact"
+      },
+      "note": "`zmodMulEquivOfGenerator` gives a cyclic group of order n ≅ Multiplicative (ZMod n); `mulEquivOfCyclicCardEq` shows any two cyclic groups of equal cardinality are isomorphic.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Isomorphic vector spaces",
+      "anchor": {
+        "section": "Isomorphism",
+        "snippet": "two vector spaces are isomorphic if they have the same dimension"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearEquiv.nonempty_equiv_iff_rank_eq",
+        "module": "Mathlib.LinearAlgebra.Dimension.Free",
+        "match_kind": "exact"
+      },
+      "note": "`LinearEquiv.nonempty_equiv_iff_rank_eq` states two (free) modules are linearly isomorphic iff they have equal rank/dimension.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Geometric equality of figures",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "two figures are equal if they contain exactly the same points"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Set.ext",
+        "module": "Mathlib.Data.Set.Defs",
+        "match_kind": null
+      },
+      "note": "Mathlib has no dedicated 'figure' type; figures-as-point-sets are equal by `Set.ext` when they share all points.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Euclid's Pythagorean theorem statement",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "the square on the hypotenuse is equal to the squares on the sides, taken together"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.dist_sq_eq_dist_sq_add_dist_sq_iff_angle_eq_pi_div_two",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.RightAngle",
+        "match_kind": "generalization"
+      },
+      "note": "The Pythagorean theorem is formalized as an iff with the right-angle condition; Euclid's statement is its forward direction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Archimedes' area of a circle",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "a circle is equal to the rectangle whose sides are the radius and half the circumference"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.volume_ball",
+        "module": "Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls",
+        "match_kind": "special_case"
+      },
+      "note": "The area of a disk (πr², equal to r·(C/2)) is the dimension-2 special case of `EuclideanSpace.volume_ball`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Divisibly equal and equal in content",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "if they can be cut into finitely many triangles which are congruent"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Equidecomp",
+        "module": "Mathlib.Algebra.Group.Action.Equidecomp",
+        "match_kind": "generalization"
+      },
+      "note": "`Equidecomp` formalizes equidecomposition via a group action, generalizing scissors-congruence, but the Bolyai–Gerwien result is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Similar figures",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "Similar figures are those that have the same shape but can differ in size"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Similar",
+        "module": "Mathlib.Topology.MetricSpace.Similarity",
+        "match_kind": "generalization"
+      },
+      "note": "`Similar` defines point configurations as similar when their pairwise distances agree up to a nonzero scale factor.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equipollence",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "a concept of equality of directed line segments , equipollence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No equipollence relation on directed segments is defined; Mathlib handles vectors directly via modules/affine torsors.",
+      "provenance": "ai"
+    }
+  ]
+}

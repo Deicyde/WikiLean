@@ -1,0 +1,49 @@
+{
+  "slug": "Fiber_bundle",
+  "wikipedia_title": "Fiber bundle",
+  "display_title": "Fiber bundle",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{matrix}{}\\\\F\\longrightarrow E\\ {\\xrightarrow {\\,\\ \\pi \\ }}\\ B\\\\{}\\end{matrix}}}"
+      },
+      "status": "formalized",
+      "decl": "FiberBundle",
+      "module": "Mathlib.Topology.FiberBundle.Basic",
+      "note": "The diagram F → E → B is the standard notation for a fiber bundle, captured by the FiberBundle class."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\varphi _{i}\\varphi _{j}^{-1}:\\left(U_{i}\\cap U_{j}\\right)\\times F\\to \\left(U_{i}\\cap U_{j}\\right)\\times F}"
+      },
+      "status": "partial",
+      "decl": "FiberBundleCore",
+      "module": "Mathlib.Topology.FiberBundle.Basic",
+      "note": "Transition maps between trivializations are encoded in FiberBundleCore's coordChange data, though not as a standalone composition decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\varphi _{i}\\varphi _{j}^{-1}(x,\\,\\xi )=\\left(x,\\,t_{ij}(x)\\xi \\right)}"
+      },
+      "status": "partial",
+      "decl": "FiberBundleCore",
+      "module": "Mathlib.Topology.FiberBundle.Basic",
+      "note": "FiberBundleCore.coordChange plays the role of t_ij, but this exact formula for φ_i φ_j⁻¹ isn't a standalone decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\varphi :E\\to F,\\quad f:M\\to N}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "No bundle morphism / pair (φ, f) declaration is included in the provided Mathlib list."
+    }
+  ]
+}

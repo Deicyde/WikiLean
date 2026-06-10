@@ -1,0 +1,969 @@
+{
+  "slug": "Jordan_normal_form",
+  "wikipedia_title": "Jordan normal form",
+  "display_title": "Jordan normal form",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Jordan normal form",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is an upper triangular matrix of a particular form called a Jordan matrix"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Jordan matrix or Jordan normal form definition (no `jordanBlock`/normal-form constructions).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Existence condition for Jordan form",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a basis with respect to which the matrix has the required form exists if and only if all eigenvalues of the matrix lie in K"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.End.iSup_maxGenEigenspace_eq_top",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Triangularizable",
+        "match_kind": "special_case"
+      },
+      "note": "Generalized eigenspaces span the space over an algebraically closed field, but the existence of a Jordan basis under the splitting condition is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic multiplicity",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the number of times each eigenvalue occurs is called the algebraic multiplicity of the eigenvalue"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.finrank_maxGenEigenspace_eq",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Zero",
+        "match_kind": null
+      },
+      "note": "Algebraic multiplicity exists only as `charpoly.rootMultiplicity` (= dim of the maximal generalized eigenspace), with no dedicated named definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-uniqueness of Jordan form",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the normal form for a given M is not entirely unique"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Jordan normal form exists in Mathlib, so its non-uniqueness up to block order is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Diagonal form as special case",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The diagonal form for diagonalizable matrices, for instance normal matrices , is a special case of the Jordan normal form."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a Jordan normal form, the statement that diagonalization is a special case of it is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Diagonalizability criterion",
+      "anchor": {
+        "section": "Motivation",
+        "snippet": "is diagonalizable if and only if the sum of the dimensions of the eigenspaces is n"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.End.IsSemisimple.iSup_eigenspace_eq_top",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Semisimple",
+        "match_kind": null
+      },
+      "note": "Mathlib uses semisimplicity (eigenspaces spanning the space) rather than a `Diagonalizable` predicate, so the eigenspace-dimension criterion is only implicit.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Defective matrix",
+      "anchor": {
+        "section": "Motivation",
+        "snippet": "matrices that are not diagonalizable are called defective matrices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no `defective` predicate (nor a `Diagonalizable` predicate to negate) in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Non-diagonalizable matrix example",
+      "anchor": {
+        "section": "Motivation",
+        "snippet": "Including multiplicity, the eigenvalues of A are"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a worked numerical example, not a general statement formalizable in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Similarity to block diagonal Jordan matrix",
+      "anchor": {
+        "section": "Complex matrices",
+        "snippet": "In general, a square complex matrix A is similar to a block diagonal matrix"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.End.iSup_maxGenEigenspace_eq_top",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Triangularizable",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has the generalized-eigenspace (primary) decomposition over an algebraically closed field, but not similarity to a block-diagonal Jordan matrix.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Jordan normal form of A",
+      "anchor": {
+        "section": "Complex matrices",
+        "snippet": "J is called the Jordan normal form of A"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of the Jordan normal form of a matrix exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Jordan block",
+      "anchor": {
+        "section": "Complex matrices",
+        "snippet": "Each J i is called a Jordan block of A"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no `jordanBlock` definition in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Eigenvalues are diagonal entries",
+      "anchor": {
+        "section": "Complex matrices",
+        "snippet": "Counting multiplicities, the eigenvalues of J , and therefore of A , are the diagonal entries"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.hasEigenvalue_toLin'_diagonal_iff",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Matrix",
+        "match_kind": "special_case"
+      },
+      "note": "Only the diagonal-matrix case (eigenvalues are the diagonal entries) is formalized; the triangular/Jordan version is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Geometric multiplicity",
+      "anchor": {
+        "section": "Complex matrices",
+        "snippet": "its geometric multiplicity is the dimension of ker( A − λ i I )"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.finrank_eigenspace_le",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Zero",
+        "match_kind": null
+      },
+      "note": "Geometric multiplicity is the finrank of the eigenspace (named in this lemma's docstring) but has no dedicated definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Algebraic multiplicity as sum of block sizes",
+      "anchor": {
+        "section": "Complex matrices",
+        "snippet": "The sum of the sizes of all Jordan blocks corresponding to an eigenvalue"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.finrank_maxGenEigenspace_eq",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Zero",
+        "match_kind": null
+      },
+      "note": "Algebraic multiplicity equals the dimension of the generalized eigenspace (this lemma), but the Jordan-block-sum description is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Diagonalizable iff multiplicities coincide",
+      "anchor": {
+        "section": "Complex matrices",
+        "snippet": "for every eigenvalue λ of A , its geometric and algebraic multiplicities coincide"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.End.IsSemisimple.iSup_eigenspace_eq_top",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Semisimple",
+        "match_kind": null
+      },
+      "note": "Semisimplicity is characterized by generalized eigenspaces collapsing to eigenspaces, but the explicit geometric=algebraic multiplicity criterion is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Jordan block as λI + N",
+      "anchor": {
+        "section": "Complex matrices",
+        "snippet": "The Jordan block corresponding to λ is of the form λI + N , where N is a nilpotent matrix"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Jordan block exists; the related Jordan-Chevalley splitting acts on the whole operator, not per block.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of Jordan blocks of size at least j",
+      "anchor": {
+        "section": "Complex matrices",
+        "snippet": "The number of Jordan blocks corresponding to λ i of size at least j is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Counting Jordan blocks by size requires Jordan structure not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multiplicity in minimal polynomial",
+      "anchor": {
+        "section": "Complex matrices",
+        "snippet": "its multiplicity in the minimal polynomial is the size of its largest Jordan block"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The relation between minpoly multiplicity and largest Jordan block size is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Jordan form via similarity transformation",
+      "anchor": {
+        "section": "Example",
+        "snippet": "The Jordan normal form is obtained by some similarity transformation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a worked example of computing a Jordan form, which Mathlib does not support.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generalized eigenvectors",
+      "anchor": {
+        "section": "Example",
+        "snippet": "are called generalized eigenvectors of A"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.End.genEigenspace",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Generalized eigenspaces `genEigenspace`/`maxGenEigenspace` are defined, whose nonzero members are the generalized eigenvectors.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Obtaining the normal form",
+      "anchor": {
+        "section": "Example: Obtaining the normal form",
+        "snippet": "This example shows how to calculate the Jordan normal form of a given matrix."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A computational example of producing a Jordan form, not formalizable without the construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Jordan chain",
+      "anchor": {
+        "section": "Generalized eigenvectors",
+        "snippet": "every corresponding Jordan block gives rise to a Jordan chain of linearly independent vectors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Jordan chains of generalized eigenvectors are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generator / lead vector",
+      "anchor": {
+        "section": "Generalized eigenvectors",
+        "snippet": "The generator , or lead vector , p b of the chain is a generalized eigenvector"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of a Jordan-chain generator/lead vector exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Jordan form equivalent to basis of chains",
+      "anchor": {
+        "section": "Generalized eigenvectors",
+        "snippet": "is equivalent to the claim that the underlying vector space has a basis composed of Jordan chains"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The equivalence of Jordan form with a basis of Jordan chains is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Existence of Jordan normal form (proof)",
+      "anchor": {
+        "section": "A proof",
+        "snippet": "any complex-valued square matrix A may be put in Jordan normal form"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.End.iSup_maxGenEigenspace_eq_top",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Triangularizable",
+        "match_kind": "special_case"
+      },
+      "note": "The generalized-eigenspace decomposition over an algebraically closed field is present, but full Jordan-form existence is not proved.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Uniqueness of Jordan form",
+      "anchor": {
+        "section": "Uniqueness",
+        "snippet": "the Jordan normal form of a given matrix A is unique up to the order of the Jordan blocks"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a Jordan normal form construction, its uniqueness up to block order is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Index of an eigenvalue",
+      "anchor": {
+        "section": "Uniqueness",
+        "snippet": "is also called the index of λ"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.End.maxGenEigenspaceIndex",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`maxGenEigenspaceIndex` is the least k at which the generalized eigenspace stabilizes, i.e. the index of the eigenvalue.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Real Jordan form",
+      "anchor": {
+        "section": "Real matrices",
+        "snippet": "there exists a real invertible matrix P such that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The real Jordan normal form is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Real Jordan block",
+      "anchor": {
+        "section": "Real matrices",
+        "snippet": "A real Jordan block is either identical to a complex Jordan block"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Real Jordan blocks are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Jordan–Chevalley decomposition",
+      "anchor": {
+        "section": "Matrices with entries in a field",
+        "snippet": "any M can be written as a sum D + N where D is semisimple"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.End.exists_isNilpotent_isSemisimple",
+        "module": "Mathlib.LinearAlgebra.JordanChevalley",
+        "match_kind": "exact"
+      },
+      "note": "This proves an endomorphism over a perfect field is a sum of commuting nilpotent and semisimple parts, both polynomials in it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Elementary divisors (modules)",
+      "anchor": {
+        "section": "Matrices with entries in a field",
+        "snippet": "the polynomials ( x − λ ) k are the elementary divisors of M"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.equiv_directSum_of_isTorsion",
+        "module": "Mathlib.Algebra.Module.PID",
+        "match_kind": null
+      },
+      "note": "The structure theorem produces prime-power quotient factors `R⧸(pᵉ)`, but they are not named or packaged as elementary divisors.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Jordan form as corollary of structure theorem",
+      "anchor": {
+        "section": "Matrices with entries in a field",
+        "snippet": "the structure theorem for finitely generated modules over a principal ideal domain"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.equiv_free_prod_directSum",
+        "module": "Mathlib.Algebra.Module.PID",
+        "match_kind": null
+      },
+      "note": "The structure theorem for f.g. modules over a PID is formalized, but the derivation of Jordan form from it is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Spectral mapping theorem",
+      "anchor": {
+        "section": "Spectral mapping theorem",
+        "snippet": "then for any polynomial p , p ( A ) has eigenvalues"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "spectrum.map_polynomial_aeval_of_degree_pos",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.Spectrum",
+        "match_kind": "generalization"
+      },
+      "note": "The spectral mapping theorem for polynomials is proved for elements of algebras over an algebraically closed field, generalizing the matrix statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Similar matrices share characteristic polynomial",
+      "anchor": {
+        "section": "Characteristic polynomial",
+        "snippet": "Similar matrices have the same characteristic polynomial"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.charpoly_units_conj",
+        "module": "Mathlib.LinearAlgebra.Matrix.Charpoly.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Conjugation by a unit preserves the characteristic polynomial (also `LinearEquiv.charpoly_conj`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cayley–Hamilton theorem",
+      "anchor": {
+        "section": "Cayley–Hamilton theorem",
+        "snippet": "every matrix A satisfies its characteristic equation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.aeval_self_charpoly",
+        "module": "Mathlib.LinearAlgebra.Charpoly.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Cayley-Hamilton is proved as `aeval f f.charpoly = 0` (and `Matrix.aeval_self_charpoly`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Minimal polynomial",
+      "anchor": {
+        "section": "Minimal polynomial",
+        "snippet": "The minimal polynomial P of a square matrix A is the unique monic polynomial of least degree"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "minpoly",
+        "module": "Mathlib.FieldTheory.Minpoly.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`minpoly` defines the monic least-degree annihilating polynomial for any algebra element, including matrices/endomorphisms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Degree of minimal polynomial",
+      "anchor": {
+        "section": "Minimal polynomial",
+        "snippet": "the minimal polynomial of A has degree"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Jordan-based formula for the minimal polynomial's degree (sum of largest block sizes) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Elementary divisors of a matrix",
+      "anchor": {
+        "section": "Minimal polynomial",
+        "snippet": "The elementary divisors of a square matrix A are the characteristic polynomials of its Jordan blocks"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Elementary divisors as characteristic polynomials of Jordan blocks are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linear elementary divisors imply diagonalizable",
+      "anchor": {
+        "section": "Minimal polynomial",
+        "snippet": "If all elementary divisors are linear, A is diagonalizable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.End.isSemisimple_of_squarefree_aeval_eq_zero",
+        "module": "Mathlib.LinearAlgebra.Semisimple",
+        "match_kind": null
+      },
+      "note": "A squarefree (hence over an algebraically closed field, distinct-linear-factor) minimal polynomial gives semisimplicity, Mathlib's analog of diagonalizability.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Invariant subspace decomposition",
+      "anchor": {
+        "section": "Invariant subspace decompositions",
+        "snippet": "Every Jordan block J i corresponds to an invariant subspace X i"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.End.iSup_maxGenEigenspace_eq_top",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Triangularizable",
+        "match_kind": null
+      },
+      "note": "The decomposition into invariant generalized eigenspaces is formalized, but the finer per-Jordan-block invariant subspaces are not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Index of eigenvalue (decomposition)",
+      "anchor": {
+        "section": "Invariant subspace decompositions",
+        "snippet": "is called the index of λ i and denoted by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.End.maxGenEigenspaceIndex",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`maxGenEigenspaceIndex` is exactly the index of the eigenvalue (least exponent stabilizing the generalized eigenspace).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Spectral projection",
+      "anchor": {
+        "section": "Invariant subspace decompositions",
+        "snippet": "is called the spectral projection of A at v i"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Spectral projections onto generalized eigenspaces of a general operator are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Spectral projections mutually orthogonal",
+      "anchor": {
+        "section": "Invariant subspace decompositions",
+        "snippet": "Spectral projections are mutually orthogonal in the sense that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mutual orthogonality of spectral projections is not formalized since these projections are not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Spectral theorem for normal operators",
+      "anchor": {
+        "section": "Invariant subspace decompositions",
+        "snippet": "the subspaces X i 's in the first decomposition are one-dimensional and mutually orthogonal"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.IsSymmetric.eigenvectorBasis",
+        "module": "Mathlib.Analysis.InnerProductSpace.Spectrum",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves the spectral theorem for self-adjoint/Hermitian operators (an orthonormal eigenbasis), a special case of the normal-operator statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Index of a complex number",
+      "anchor": {
+        "section": "Invariant subspace decompositions",
+        "snippet": "its index can be defined as the least non-negative integer ν ( λ ) such that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.End.maxGenEigenspaceIndex",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`maxGenEigenspaceIndex` is the least ν at which ker(A−λ)^ν reaches the maximal generalized eigenspace.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conjugacy classes not affine subspaces",
+      "anchor": {
+        "section": "Plane (flat) normal form",
+        "snippet": "do not constitute linear or affine subspaces in the ambient matrix spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement about matrix conjugacy classes failing to be affine subspaces exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Arnold's flat normal form problem",
+      "anchor": {
+        "section": "Plane (flat) normal form",
+        "snippet": "Find a canonical form of matrices over a field for which the set of representatives of matrix conjugacy classes is a union of affine linear subspaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Arnold's flat normal form problem is not addressed in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Daugulis solution for algebraically closed fields",
+      "anchor": {
+        "section": "Plane (flat) normal form",
+        "snippet": "It was solved for algebraically closed fields by Peteris Daugulis."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Daugulis's flat normal form construction is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Function applied to a Jordan block",
+      "anchor": {
+        "section": "Matrix functions",
+        "snippet": "Applying the function on a n × n Jordan block J with eigenvalue λ results in an upper triangular matrix"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The formula for a holomorphic function applied to a Jordan block is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Power function on Jordan block",
+      "anchor": {
+        "section": "Matrix functions",
+        "snippet": "The following example shows the application to the power function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The explicit power of a Jordan block is a worked example not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Jordan form for compact operators",
+      "anchor": {
+        "section": "Compact operators",
+        "snippet": "A result analogous to the Jordan normal form holds for compact operators on a Banach space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A Jordan-form analog for compact operators is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Spectral points of compact operators are eigenvalues",
+      "anchor": {
+        "section": "Compact operators",
+        "snippet": "every point x in the spectrum of a compact operator T is an eigenvalue"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompactOperator.hasEigenvalue_iff_mem_spectrum",
+        "module": "Mathlib.Analysis.Normed.Operator.Compact.FredholmAlternative",
+        "match_kind": "exact"
+      },
+      "note": "For a compact operator the nonzero spectrum points are exactly the nonzero eigenvalues (via the Fredholm alternative).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Holomorphic functional calculus",
+      "anchor": {
+        "section": "Holomorphic functional calculus",
+        "snippet": "The holomorphic functional calculus is defined as follows"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has the continuous functional calculus but no holomorphic (Riesz-Dunford) functional calculus.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Properties of functional calculus",
+      "anchor": {
+        "section": "Holomorphic functional calculus",
+        "snippet": "Φ extends the polynomial functional calculus"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Properties of the holomorphic functional calculus are not formalized since it is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "e_i(T) is a projection",
+      "anchor": {
+        "section": "The finite-dimensional case",
+        "snippet": "By property 3 of the functional calculus, the operator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The idempotency of holomorphic-functional-calculus spectral idempotents is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Identification of spectral projections",
+      "anchor": {
+        "section": "The finite-dimensional case",
+        "snippet": "Each e i ( T ) is the projection onto the subspace spanned by the Jordan chains corresponding to λ i"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Identifying functional-calculus idempotents with projections onto generalized eigenspaces is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Explicit functional calculus for matrices",
+      "anchor": {
+        "section": "The finite-dimensional case",
+        "snippet": "gives an explicit form of holomorphic functional calculus for matrices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An explicit holomorphic functional calculus for matrices is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pole of an operator",
+      "anchor": {
+        "section": "Poles of an operator",
+        "snippet": "The point λ is called a pole of operator T with order ν if the resolvent function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `resolvent`/`resolventSet` but no definition of a pole of an operator with an order.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Order of eigenvalue equals index",
+      "anchor": {
+        "section": "Poles of an operator",
+        "snippet": "the order of an eigenvalue coincides with its index"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The coincidence of pole order with eigenvalue index is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sensitivity of Jordan form to perturbations",
+      "anchor": {
+        "section": "Numerical analysis",
+        "snippet": "its Jordan normal form is very sensitive to perturbations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Numerical-stability remarks about the Jordan form are not formalizable content in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

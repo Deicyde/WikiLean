@@ -1,0 +1,499 @@
+{
+  "slug": "Distance",
+  "wikipedia_title": "Distance",
+  "display_title": "Distance",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Euclidean distance between two points",
+      "anchor": {
+        "section": "Straight-line or Euclidean distance",
+        "snippet": "the length of a straight line between them"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.dist_eq",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "exact"
+      },
+      "note": "EuclideanSpace.dist_eq states dist x y = √(∑ i, dist (x i) (y i) ^ 2), the Euclidean distance between two points.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euclidean distance in the plane",
+      "anchor": {
+        "section": "Straight-line or Euclidean distance",
+        "snippet": "in the plane is given by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.dist_eq",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "generalization"
+      },
+      "note": "The planar formula √((x₂-x₁)²+(y₂-y₁)²) is the n=2 case of the general EuclideanSpace.dist_eq.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Straight-line or Euclidean distance",
+          "snippet": "in the plane is given by"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d={\\sqrt {(\\Delta x)^{2}+(\\Delta y)^{2}}}={\\sqrt {(x_{2}-x_{1})^{2}+(y_{2}-y_{1})^{2}}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d={\\sqrt {(\\Delta x)^{2}+(\\Delta y)^{2}+(\\Delta z)^{2}}}={\\sqrt {(x_{2}-x_{1})^{2}+(y_{2}-y_{1})^{2}+(z_{2}-z_{1})^{2}}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Euclidean distance in three-dimensional space",
+      "anchor": {
+        "section": "Straight-line or Euclidean distance",
+        "snippet": "in three-dimensional space, the distance between them is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.dist_eq",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "generalization"
+      },
+      "note": "The 3-D distance formula is the n=3 case of the general EuclideanSpace.dist_eq.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Straight-line or Euclidean distance",
+          "snippet": "in three-dimensional space, the distance between them is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d={\\sqrt {(\\Delta x)^{2}+(\\Delta y)^{2}}}={\\sqrt {(x_{2}-x_{1})^{2}+(y_{2}-y_{1})^{2}}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d={\\sqrt {(\\Delta x)^{2}+(\\Delta y)^{2}+(\\Delta z)^{2}}}={\\sqrt {(x_{2}-x_{1})^{2}+(y_{2}-y_{1})^{2}+(z_{2}-z_{1})^{2}}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Great-circle distance",
+      "anchor": {
+        "section": "Shortest-path distance on a curved surface",
+        "snippet": "approximated mathematically by the great-circle distance on a sphere"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No great-circle / spherical distance definition exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Geodesic",
+      "anchor": {
+        "section": "Shortest-path distance on a curved surface",
+        "snippet": "is known as a geodesic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Only incidental docstring mentions of 'geodesic' appear; there is no general geodesic/shortest-path-on-a-manifold definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Manhattan distance",
+      "anchor": {
+        "section": "Other spatial distances",
+        "snippet": "is given by the Manhattan distance"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PiLp.dist_eq_of_L1",
+        "module": "Mathlib.Analysis.Normed.Lp.PiLp",
+        "match_kind": "generalization"
+      },
+      "note": "PiLp.dist_eq_of_L1 gives dist x y = ∑ i, dist (x i) (y i), the L¹/Manhattan distance, on the general Pi type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Chebyshev distance",
+      "anchor": {
+        "section": "Other spatial distances",
+        "snippet": "is the minimum number of moves a king must make on a chessboard"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dist_pi_def",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Pi",
+        "match_kind": "generalization"
+      },
+      "note": "dist_pi_def defines the sup (L∞) metric dist f g = sup over coordinates of nndist, which is the Chebyshev distance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Statistical distances",
+      "anchor": {
+        "section": "Statistical distances",
+        "snippet": "statistical distances measure the degree of difference between two probability distributions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "klDiv",
+        "module": "Mathlib.InformationTheory.KullbackLeibler.Basic",
+        "match_kind": null
+      },
+      "note": "No general 'statistical distance' notion is defined, though specific divergences like klDiv exist as instances.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Squared Euclidean distance",
+      "anchor": {
+        "section": "Statistical distances",
+        "snippet": "The most elementary is the squared Euclidean distance"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.dist_sq_eq",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "exact"
+      },
+      "note": "EuclideanSpace.dist_sq_eq states dist x y ^ 2 = ∑ i, dist (x i) (y i) ^ 2, the squared Euclidean distance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Relative entropy (Kullback–Leibler divergence)",
+      "anchor": {
+        "section": "Statistical distances",
+        "snippet": "The most important in information theory is the relative entropy"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "klDiv",
+        "module": "Mathlib.InformationTheory.KullbackLeibler.Basic",
+        "match_kind": "exact"
+      },
+      "note": "klDiv μ ν is the Kullback–Leibler divergence (relative entropy) between two measures.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Mahalanobis and energy distances",
+      "anchor": {
+        "section": "Statistical distances",
+        "snippet": "Other important statistical distances include the Mahalanobis distance and the energy distance"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the Mahalanobis distance nor the energy distance is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Edit distance / string metric",
+      "anchor": {
+        "section": "Edit distances",
+        "snippet": "between two strings measures how different they are"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No edit/Levenshtein distance or string metric is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Edit distance of dog/dot/cat",
+      "anchor": {
+        "section": "Edit distances",
+        "snippet": "which differ by just one letter, are closer than"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This illustrative example has no formalization, since edit distance itself is absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Distance between vertices in a graph",
+      "anchor": {
+        "section": "Distance in graph theory",
+        "snippet": "measured by the length of the shortest edge path between them"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.dist",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Metric",
+        "match_kind": "exact"
+      },
+      "note": "SimpleGraph.dist is the length of the shortest walk between two vertices (dist_eq_sInf over walk lengths).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Six degrees of separation",
+      "anchor": {
+        "section": "Distance in graph theory",
+        "snippet": "the distance between any two vertices is at most six"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This sociological example/conjecture has no formalization in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Metric / distance function",
+      "anchor": {
+        "section": "Mathematical formalization",
+        "snippet": "A metric or distance function is a function d which takes pairs of points or objects to real numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MetricSpace",
+        "module": "Mathlib.Topology.MetricSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "MetricSpace (built on PseudoMetricSpace's dist_self, dist_comm, dist_triangle plus eq_of_dist_eq_zero) is exactly the metric/distance-function axiomatization.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Mathematical formalization",
+          "snippet": "A metric or distance function is a function d which takes pairs of points or objects to real numbers"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d(x,z)\\leq d(x,y)+d(y,z).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Distance between multi-point objects",
+      "anchor": {
+        "section": "Distance between sets",
+        "snippet": "measuring the physical distance between objects that consist of more than one point"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Metric.infDist",
+        "module": "Mathlib.Topology.MetricSpace.HausdorffDistance",
+        "match_kind": null
+      },
+      "note": "Metric.infDist gives point-to-set distance, related infrastructure for distance between extended objects, but no general object-to-object distance is named.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Distance between sets",
+      "anchor": {
+        "section": "Distance between sets",
+        "snippet": "is the infimum of the distances between any two of their respective points"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Metric.infDist",
+        "module": "Mathlib.Topology.MetricSpace.HausdorffDistance",
+        "match_kind": null
+      },
+      "note": "Mathlib defines point-to-set infimum distance (Metric.infDist) but no dedicated set-to-set infimum-distance function.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Distance between sets",
+          "snippet": "is the infimum of the distances between any two of their respective points"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d(A,B)=\\inf _{x\\in A,y\\in B}d(x,y).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Set distance is not a metric",
+      "anchor": {
+        "section": "Distance between sets",
+        "snippet": "This does not define a metric on the set of such subsets"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no theorem stating the inf set-distance fails the metric axioms.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Distance between sets",
+          "snippet": "This does not define a metric on the set of such subsets"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d(A,B)=\\inf _{x\\in A,y\\in B}d(x,y).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Hausdorff distance",
+      "anchor": {
+        "section": "Distance between sets",
+        "snippet": "can be thought of as measuring how far they are from perfectly overlapping"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.hausdorffDist",
+        "module": "Mathlib.Topology.MetricSpace.HausdorffDistance",
+        "match_kind": "exact"
+      },
+      "note": "Metric.hausdorffDist defines the Hausdorff distance between two sets.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hausdorff distance is a metric on compact subsets",
+      "anchor": {
+        "section": "Distance between sets",
+        "snippet": "defines a metric on the set of compact subsets of a metric space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace.NonemptyCompacts.instMetricSpace",
+        "module": "Mathlib.Topology.MetricSpace.Closeds",
+        "match_kind": "exact"
+      },
+      "note": "NonemptyCompacts.instMetricSpace gives a MetricSpace structure on nonempty compact subsets whose dist is the Hausdorff distance (NonemptyCompacts.dist_eq).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Distance travelled (arc length)",
+      "anchor": {
+        "section": "Distance travelled",
+        "snippet": "is the length of a specific path travelled between two points"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "eVariationOn",
+        "module": "Mathlib.Topology.EMetricSpace.BoundedVariation",
+        "match_kind": "generalization"
+      },
+      "note": "eVariationOn is the total variation (supremum of summed segment distances), which is the arc length / distance travelled along a path.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Signed distance travelled",
+      "anchor": {
+        "section": "Distance travelled",
+        "snippet": "The distance travelled may also be signed"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "variationOnFromTo",
+        "module": "Mathlib.Topology.EMetricSpace.BoundedVariation",
+        "match_kind": null
+      },
+      "note": "variationOnFromTo is a signed variation (sign from endpoint order), close to but not the physics notion of signed distance travelled along a reversing path.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Circular distance",
+      "anchor": {
+        "section": "Distance travelled",
+        "snippet": "Circular distance is the distance traveled by a point on the circumference of a wheel"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No 'circular distance' (wheel-circumference travel) notion is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Displacement",
+      "anchor": {
+        "section": "Displacement and directed distance",
+        "snippet": "measures the change in position of an object during an interval of time"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "VSub.vsub",
+        "module": "Mathlib.Algebra.Notation.Defs",
+        "match_kind": null
+      },
+      "note": "Affine point subtraction (b -ᵥ a via VSub) gives a displacement vector, but no named physics 'displacement' concept exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Directed distance",
+      "anchor": {
+        "section": "Displacement and directed distance",
+        "snippet": "is sometimes called the directed distance"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "VSub.vsub",
+        "module": "Mathlib.Algebra.Notation.Defs",
+        "match_kind": null
+      },
+      "note": "The directed distance from a to b is captured by the affine subtraction b -ᵥ a (VSub), but is not itself a named definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Signed distance function",
+      "anchor": {
+        "section": "Signed distance",
+        "snippet": "is the orthogonal distance of a given point x to the boundary of a set Ω"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineSubspace.signedInfDist",
+        "module": "Mathlib.Geometry.Euclidean.SignedDist",
+        "match_kind": "special_case"
+      },
+      "note": "AffineSubspace.signedInfDist gives signed orthogonal distance to an affine subspace, a special case of the general signed distance function to a set's boundary.",
+      "provenance": "ai"
+    }
+  ]
+}

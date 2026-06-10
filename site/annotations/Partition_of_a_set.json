@@ -1,0 +1,393 @@
+{
+  "slug": "Partition_of_a_set",
+  "wikipedia_title": "Partition of a set",
+  "display_title": "Partition of a set",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Partition of a set (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a partition of a set is a grouping of its elements into non-empty subsets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Setoid.IsPartition",
+        "module": "Mathlib.Data.Setoid.Partition",
+        "match_kind": "exact"
+      },
+      "note": "`Setoid.IsPartition c` formalizes a collection of sets with no empty set and each element in a unique set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence relations correspond to partitions",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Every equivalence relation on a set defines a partition of this set, and every partition defines an equivalence relation."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Setoid.Partition.orderIso",
+        "module": "Mathlib.Data.Setoid.Partition",
+        "match_kind": "generalization"
+      },
+      "note": "`Setoid.Partition.orderIso` provides an order-preserving bijection between `Setoid α` and `Partitions α`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Setoid",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A set equipped with an equivalence relation or a partition is sometimes called a setoid"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Setoid",
+        "module": "Mathlib.Data.Setoid.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Setoid` is a core Lean structure bundling an equivalence relation, used throughout Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Partition of a set X",
+      "anchor": {
+        "section": "Definition and notation",
+        "snippet": "A partition of a set X is a set of non-empty subsets of X such that every element x in X is in exactly one of these subsets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Setoid.IsPartition",
+        "module": "Mathlib.Data.Setoid.Partition",
+        "match_kind": "exact"
+      },
+      "note": "`Setoid.IsPartition c := ∅ ∉ c ∧ ∀ a, ∃! b ∈ c, a ∈ b` matches the definition verbatim.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalent conditions for a partition",
+      "anchor": {
+        "section": "Definition and notation",
+        "snippet": "Equivalently, a family of sets P is a partition of X if and only if all of the following conditions hold"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.PairwiseDisjoint.isPartition_of_exists_of_ne_empty",
+        "module": "Mathlib.Data.Setoid.Partition",
+        "match_kind": "exact"
+      },
+      "note": "`IsPartition.pairwiseDisjoint`, `IsPartition.sUnion_eq_univ`, and `Set.PairwiseDisjoint.isPartition_of_exists_of_ne_empty` together give the equivalence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Blocks/parts/cells of a partition",
+      "anchor": {
+        "section": "Definition and notation",
+        "snippet": "are called the blocks , parts , or cells , of the partition"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Finpartition.parts",
+        "module": "Mathlib.Order.Partition.Finpartition",
+        "match_kind": "invocation"
+      },
+      "note": "`Finpartition.parts` and `Partition.parts` use the terminology, but only as a field accessor without a separate `blocks`/`cells` synonym.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Partition identified with equivalence relation",
+      "anchor": {
+        "section": "Definition and notation",
+        "snippet": "Every partition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Setoid.Partition.orderIso",
+        "module": "Mathlib.Data.Setoid.Partition",
+        "match_kind": "exact"
+      },
+      "note": "`Setoid.Partition.orderIso` establishes the canonical identification used in this passage.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Partition of the empty set",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "has exactly one partition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement uniquely characterizing the (empty) partition of the empty set as a `Setoid.IsPartition` is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Trivial partition",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "P = { X } is a partition of X , called the trivial partition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finpartition.indiscrete",
+        "module": "Mathlib.Order.Partition.Finpartition",
+        "match_kind": "exact"
+      },
+      "note": "`Finpartition.indiscrete` is the indiscrete/trivial partition consisting of a single part.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Partition by subset and complement",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the set A together with its complement form a partition of U"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific lemma asserting `{A, Aᶜ}` is a `Setoid.IsPartition` was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Five partitions of {1,2,3}",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The set {1, 2, 3} has these five partitions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No enumeration of the partitions of a specific 3-element set is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Non-partitions of {1,2,3}",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The following are not partitions of {1, 2, 3}"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No counterexamples for `IsPartition` on a specific 3-element set are formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence classes form a partition",
+      "anchor": {
+        "section": "Partitions and equivalence relations",
+        "snippet": "For any equivalence relation on a set X , the set of its equivalence classes is a partition of X ."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Setoid.isPartition_classes",
+        "module": "Mathlib.Data.Setoid.Partition",
+        "match_kind": "exact"
+      },
+      "note": "`Setoid.isPartition_classes : IsPartition r.classes` is exactly this statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Axiom of choice and transversal",
+      "anchor": {
+        "section": "Partitions and equivalence relations",
+        "snippet": "The axiom of choice guarantees for any partition of a set X the existence of a subset of X containing exactly one element from each part of the partition."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IndexedPartition.out",
+        "module": "Mathlib.Data.Setoid.Partition",
+        "match_kind": "special_case"
+      },
+      "note": "`IndexedPartition.out` and `Quotient.out` give representatives for indexed partitions/setoids, but no direct `Setoid.IsPartition` transversal lemma was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Refinement of a partition",
+      "anchor": {
+        "section": "Refinement of partitions",
+        "snippet": "A partition α of a set X is a refinement of a partition ρ of X"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finpartition.instLE",
+        "module": "Mathlib.Order.Partition.Finpartition",
+        "match_kind": "exact"
+      },
+      "note": "`Finpartition`'s `LE` instance defines refinement (each part of `P` is `≤` some part of `Q`); `Partition` and `Partitions` carry analogous orders.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Partition lattice",
+      "anchor": {
+        "section": "Refinement of partitions",
+        "snippet": "This \"finer-than\" relation on the set of partitions of X is a partial order"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Setoid.Partition.completeLattice",
+        "module": "Mathlib.Data.Setoid.Partition",
+        "match_kind": "generalization"
+      },
+      "note": "`Setoid.Partition.completeLattice` gives a `CompleteLattice (Partitions α)`; `Finpartition.instPartialOrder` gives the partial order on `Finpartition`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Meet and join of partitions",
+      "anchor": {
+        "section": "Refinement of partitions",
+        "snippet": "The meet and join of partitions α and ρ are defined as follows."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Setoid.completeLattice",
+        "module": "Mathlib.Data.Setoid.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Setoid.completeLattice` provides `⊓`/`⊔` on equivalence relations, transported to `Partitions α` via `Setoid.Partition.completeLattice`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lattice of partitions and graphic matroid",
+      "anchor": {
+        "section": "Refinement of partitions",
+        "snippet": "Based on the equivalence between geometric lattices and matroids , this lattice of partitions of a finite set corresponds to a matroid"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of geometric lattices or the graphic matroid via the partition lattice was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Card deck refinement",
+      "anchor": {
+        "section": "Refinement of partitions",
+        "snippet": "If D is the set of cards in a standard 52-card deck"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This concrete card-deck example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Noncrossing partition",
+      "anchor": {
+        "section": "Noncrossing partitions",
+        "snippet": "is noncrossing if it has the following property"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A grep for `Noncrossing`/`noncrossing` in `Mathlib/` returned no matches.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Noncrossing partition lattice is not a sublattice",
+      "anchor": {
+        "section": "Noncrossing partitions",
+        "snippet": "The lattice of noncrossing partitions of a finite set forms a subset of the lattice of all partitions, but not a sublattice"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Noncrossing partitions are absent from Mathlib, so this statement is unformalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bell number counts partitions",
+      "anchor": {
+        "section": "Counting partitions",
+        "snippet": "The total number of partitions of an n -element set is the Bell number"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.bell",
+        "module": "Mathlib.Combinatorics.Enumerative.Bell",
+        "match_kind": "invocation"
+      },
+      "note": "`Nat.bell` is defined and its recurrence proved, but the file's TODO notes that it is not yet proved to count partitions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Stirling number of the second kind",
+      "anchor": {
+        "section": "Counting partitions",
+        "snippet": "The number of partitions of an n -element set into exactly k (non-empty) parts is the Stirling number of the second kind"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.stirlingSecond",
+        "module": "Mathlib.Combinatorics.Enumerative.Stirling",
+        "match_kind": "invocation"
+      },
+      "note": "`Nat.stirlingSecond` is defined via its recurrence; no theorem equating it to a count of `Setoid.IsPartition`s was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Catalan number counts noncrossing partitions",
+      "anchor": {
+        "section": "Counting partitions",
+        "snippet": "The number of noncrossing partitions of an n -element set is the Catalan number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`Nat.catalan` exists but with no link to (unformalized) noncrossing partitions.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,989 @@
+{
+  "slug": "Equivalence_relation",
+  "wikipedia_title": "Equivalence relation",
+  "display_title": "Equivalence relation",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Equivalence relation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "an equivalence relation is a binary relation that is reflexive , symmetric , and transitive"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Setoid",
+        "module": "Init.Core",
+        "match_kind": "exact"
+      },
+      "note": "Lean core's `Setoid` bundles a relation with `Equivalence` (reflexive, symmetric, transitive); Mathlib builds extensively on this in `Mathlib/Data/Setoid/Basic.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Numerical equality as equivalence relation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A simpler example is numerical equality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "eq_equivalence",
+        "module": "Init.Core",
+        "match_kind": "exact"
+      },
+      "note": "Equality is the canonical equivalence relation; in Mathlib it appears as `Setoid.bot_def` showing the bottom Setoid has relation `(· = ·)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence relation induces partition into equivalence classes",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Each equivalence relation provides a partition of the underlying set into disjoint equivalence classes"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Setoid.isPartition_classes",
+        "module": "Mathlib.Data.Setoid.Partition",
+        "match_kind": "exact"
+      },
+      "note": "`Setoid.isPartition_classes` states that `r.classes` forms a partition (`IsPartition`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalence relation (formal)",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "is said to be an equivalence relation if it is reflexive, symmetric and transitive"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Setoid",
+        "module": "Init.Core",
+        "match_kind": "exact"
+      },
+      "note": "Same as `Setoid` from Lean core, with `iseqv : Equivalence` packaging reflexivity, symmetry, and transitivity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Setoid and equivalence class",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "together with the relation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Setoid.classes",
+        "module": "Mathlib.Data.Setoid.Partition",
+        "match_kind": "exact"
+      },
+      "note": "`Setoid.classes` (Mathlib/Data/Setoid/Partition.lean) defines the set of equivalence classes of a `Setoid`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Composite relation in relational algebra",
+      "anchor": {
+        "section": "Alternative definition using relational algebra",
+        "snippet": "the composite relation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Relation.Comp",
+        "module": "Mathlib.Logic.Relation",
+        "match_kind": "exact"
+      },
+      "note": "`Relation.Comp` (notation `∘r`) defines composition of binary relations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalence relation via relational algebra",
+      "anchor": {
+        "section": "Alternative definition using relational algebra",
+        "snippet": "The defining properties of an equivalence relation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Relation.Comp",
+        "module": "Mathlib.Logic.Relation",
+        "match_kind": "invocation"
+      },
+      "note": "Building blocks (`Relation.Comp`, inverse) exist, but the characterization of equivalence via `r⁻¹ = r` and `r ∘r r = r` is not stated as a single lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Simple equivalence example on a finite set",
+      "anchor": {
+        "section": "Simple example",
+        "snippet": "is an equivalence relation. The following sets are equivalence classes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This worked example of a concrete equivalence on a small set is not present in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Simple example",
+          "snippet": "is an equivalence relation. The following sets are equivalence classes"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle [a]=\\{a\\},~~~~[b]=[c]=\\{b,c\\}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Quotient set",
+      "anchor": {
+        "section": "Simple example",
+        "snippet": "It is also called the quotient set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Quotient",
+        "module": "Init.Core",
+        "match_kind": "exact"
+      },
+      "note": "`Quotient r` (Lean core) is the quotient set of a type by a `Setoid`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Equality is an equivalence relation",
+      "anchor": {
+        "section": "Equivalence relations",
+        "snippet": "\"Is equal to\" on the set of numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "eq_equivalence",
+        "module": "Init.Core",
+        "match_kind": "exact"
+      },
+      "note": "`eq_equivalence` proves that equality is an `Equivalence`; instantiated as `⊥ : Setoid α` in `Setoid.bot_def`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Similarity of triangles",
+      "anchor": {
+        "section": "Equivalence relations",
+        "snippet": "\"Is similar to\" on the set of all triangles"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Similar",
+        "module": "Mathlib.Topology.MetricSpace.Similarity",
+        "match_kind": "exact"
+      },
+      "note": "`Similar` defines similarity of indexed point families; `EuclideanGeometry` proves similarity criteria for triangles in `Mathlib/Geometry/Euclidean/Similarity.lean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Congruence of triangles",
+      "anchor": {
+        "section": "Equivalence relations",
+        "snippet": "\"Is congruent to\" on the set of all triangles"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Congruent",
+        "module": "Mathlib.Topology.MetricSpace.Congruence",
+        "match_kind": "exact"
+      },
+      "note": "`Congruent v₁ v₂` (notation `v₁ ≅ v₂`) defines congruence of indexed point families; `Mathlib/Geometry/Euclidean/Congruence.lean` provides triangle SSS, etc.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Same image under a function",
+      "anchor": {
+        "section": "Equivalence relations",
+        "snippet": "\"has the same image under"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Setoid.ker",
+        "module": "Mathlib.Data.Setoid.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Setoid.ker f` is exactly the equivalence relation `f x = f y`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Same absolute value",
+      "anchor": {
+        "section": "Equivalence relations",
+        "snippet": "\"Has the same absolute value as\" on the set of real numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Setoid.ker",
+        "module": "Mathlib.Data.Setoid.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "This specific equivalence is not declared, but `Setoid.ker abs` realizes it via the kernel construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Same cosine",
+      "anchor": {
+        "section": "Equivalence relations",
+        "snippet": "\"Has the same cosine as\" on the set of all angles"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Setoid.ker",
+        "module": "Mathlib.Data.Setoid.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Not declared explicitly, but expressible as `Setoid.ker Real.cos`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Congruence modulo n",
+      "anchor": {
+        "section": "Equivalence relations",
+        "snippet": "\"is congruent to, modulo"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.ModEq",
+        "module": "Mathlib.Data.Int.ModEq",
+        "match_kind": "exact"
+      },
+      "note": "`Int.ModEq` and `Nat.ModEq` formalize congruence modulo n with reflexivity/symmetry/transitivity instances.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Equipollence of directed line segments",
+      "anchor": {
+        "section": "Equivalence relations",
+        "snippet": "\"Have the same length and direction\""
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The equipollence equivalence relation on directed segments is not declared in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Same birthday",
+      "anchor": {
+        "section": "Equivalence relations",
+        "snippet": "\"Has the same birthday as\" on the set of all people"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal example; not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "≥ on reals is not symmetric",
+      "anchor": {
+        "section": "Relations that are not equivalences",
+        "snippet": "The relation \"≥\" between real numbers is reflexive and transitive, but not symmetric"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Stated as commentary about non-symmetry, not as a Mathlib lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Common factor relation is not transitive",
+      "anchor": {
+        "section": "Relations that are not equivalences",
+        "snippet": "The relation \"has a common factor greater than 1 with\""
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Counter-example commentary not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Empty relation is not reflexive",
+      "anchor": {
+        "section": "Relations that are not equivalences",
+        "snippet": "The empty relation R (defined so that aRb is never true) on a set X is vacuously symmetric and transitive"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Counter-example commentary not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Approximately equal is not transitive",
+      "anchor": {
+        "section": "Relations that are not equivalences",
+        "snippet": "The relation \"is approximately equal to\" between real numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal counter-example, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Partial order",
+      "anchor": {
+        "section": "Connections to other relations",
+        "snippet": "A partial order is a relation that is reflexive, antisymmetric , and transitive"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PartialOrder",
+        "module": "Mathlib.Order.Defs.PartialOrder",
+        "match_kind": "exact"
+      },
+      "note": "`class PartialOrder` extends `Preorder` with `le_antisymm`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equality as equivalence and partial order",
+      "anchor": {
+        "section": "Connections to other relations",
+        "snippet": "Equality is both an equivalence relation and a partial order"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "eq_equivalence",
+        "module": "Init.Core",
+        "match_kind": "invocation"
+      },
+      "note": "`eq_equivalence` confirms equality is an equivalence; that `(· = ·)` is a partial order is implicit but not packaged as a named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Strict partial order",
+      "anchor": {
+        "section": "Connections to other relations",
+        "snippet": "A strict partial order is irreflexive, transitive, and asymmetric"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsStrictOrder",
+        "module": "Mathlib.Order.Defs.Unbundled",
+        "match_kind": "exact"
+      },
+      "note": "`IsStrictOrder` bundles `IsIrrefl` and `IsTrans` (asymmetry follows); also represented unbundled by `StrictMono`/`<`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Partial equivalence relation",
+      "anchor": {
+        "section": "Connections to other relations",
+        "snippet": "A partial equivalence relation is transitive and symmetric"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `IsSymm` and `IsTrans` separately but no bundled `PartialEquivalence` structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ternary equivalence relation",
+      "anchor": {
+        "section": "Connections to other relations",
+        "snippet": "A ternary equivalence relation is a ternary analogue"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No ternary equivalence relation is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dependency / tolerance relation",
+      "anchor": {
+        "section": "Connections to other relations",
+        "snippet": "A reflexive and symmetric relation is a dependency relation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated `ToleranceRelation`/`DependencyRelation` definition exists; only `IsRefl` and `IsSymm` separately.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Preorder",
+      "anchor": {
+        "section": "Connections to other relations",
+        "snippet": "A preorder is reflexive and transitive"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Preorder",
+        "module": "Mathlib.Order.Defs.PartialOrder",
+        "match_kind": "exact"
+      },
+      "note": "`class Preorder` extends `LE`, `LT` with `le_refl` and `le_trans`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Congruence relation",
+      "anchor": {
+        "section": "Connections to other relations",
+        "snippet": "A congruence relation is an equivalence relation whose domain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Con",
+        "module": "Mathlib.GroupTheory.Congruence.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Con M` is an equivalence relation compatible with multiplication; analogous `AddCon` exists for additive structures.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence relation as negation of apartness",
+      "anchor": {
+        "section": "Connections to other relations",
+        "snippet": "Any equivalence relation is the negation of an apartness relation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Apartness relations are not present in Mathlib, so the negation correspondence is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reflexive Euclidean implies equivalence",
+      "anchor": {
+        "section": "Connections to other relations",
+        "snippet": "Each relation that is both reflexive and left (or right) Euclidean is also an equivalence relation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Euclidean relations are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Well-defined / class invariant property",
+      "anchor": {
+        "section": "Well-definedness under an equivalence relation",
+        "snippet": "the property"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Quotient.lift",
+        "module": "Init.Core",
+        "match_kind": "invocation"
+      },
+      "note": "Class-invariance is the hypothesis used by `Quotient.lift` (and `Setoid.liftEquiv`), but no separate `ClassInvariant`/`WellDefined` predicate is declared.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Morphism / invariant function",
+      "anchor": {
+        "section": "Well-definedness under an equivalence relation",
+        "snippet": "is said to be a morphism for"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Setoid.liftEquiv",
+        "module": "Mathlib.Data.Setoid.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "`Setoid.liftEquiv r` identifies `{f // r ≤ Setoid.ker f}` with `Quotient r → β`; the side condition expresses being a morphism for `r`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Morphism between equivalence relations",
+      "anchor": {
+        "section": "Well-definedness under an equivalence relation",
+        "snippet": "Such a function is known as a morphism from"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Quotient.map",
+        "module": "Init.Core",
+        "match_kind": "invocation"
+      },
+      "note": "`Quotient.map` lifts a function respecting `r → s` to quotients; no separately named `Setoid.Hom` definition exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalence class",
+      "anchor": {
+        "section": "Equivalence class",
+        "snippet": "is called an equivalence class of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Setoid.classes",
+        "module": "Mathlib.Data.Setoid.Partition",
+        "match_kind": "exact"
+      },
+      "note": "An element of `Setoid.classes r` is an equivalence class; `Setoid.mem_classes` builds `{x | r x y}` for each `y`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quotient set",
+      "anchor": {
+        "section": "Quotient set",
+        "snippet": "is the quotient set of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Quotient",
+        "module": "Init.Core",
+        "match_kind": "exact"
+      },
+      "note": "`Quotient s` is the quotient set; `Setoid.quotientEquivClasses` exhibits it as bijective with `Setoid.classes`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projection onto quotient",
+      "anchor": {
+        "section": "Projection",
+        "snippet": "The projection of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Quotient.mk",
+        "module": "Init.Core",
+        "match_kind": "exact"
+      },
+      "note": "`Quotient.mk r` is the canonical projection onto the quotient.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Theorem on projections",
+      "anchor": {
+        "section": "Projection",
+        "snippet": "Theorem on projections"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Setoid.liftEquiv",
+        "module": "Mathlib.Data.Setoid.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The universal-property part is `Quotient.lift`/`Setoid.liftEquiv`; the umbrella `Theorem on projections` from the article is not packaged as a single Mathlib result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalence kernel of a function",
+      "anchor": {
+        "section": "Equivalence kernel",
+        "snippet": "The equivalence kernel of a function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Setoid.ker",
+        "module": "Mathlib.Data.Setoid.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Setoid.ker f` is the equivalence relation `f x = f y`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence kernel of injection is identity",
+      "anchor": {
+        "section": "Equivalence kernel",
+        "snippet": "The equivalence kernel of an injection is the identity relation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Setoid.injective_iff_ker_bot",
+        "module": "Mathlib.Data.Setoid.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Setoid.injective_iff_ker_bot` proves `Injective f ↔ Setoid.ker f = ⊥`, where `⊥` is the equality Setoid.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Partition of a set",
+      "anchor": {
+        "section": "Partition",
+        "snippet": "A partition of X is a set P of nonempty subsets of X"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Setoid.IsPartition",
+        "module": "Mathlib.Data.Setoid.Partition",
+        "match_kind": "exact"
+      },
+      "note": "`Setoid.IsPartition c` says `∅ ∉ c` and every element of `α` lies in a unique block.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of equivalence relations equals Bell number",
+      "anchor": {
+        "section": "Counting partitions",
+        "snippet": "the number of equivalence relations on X equals the number of distinct partitions of X"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": "Nat.bell",
+        "module": "Mathlib.Combinatorics.Enumerative.Bell",
+        "match_kind": "invocation"
+      },
+      "note": "`Nat.bell` is defined recursively but `Bell.lean` notes in TODO that it is not yet proved equal to the number of partitions/equivalence relations.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Counting partitions",
+          "snippet": "the number of equivalence relations on X equals the number of distinct partitions of X"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle B_{n}={\\frac {1}{e}}\\sum _{k=0}^{\\infty }{\\frac {k^{n}}{k!}}\\quad }"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of equivalence relations",
+      "anchor": {
+        "section": "Fundamental theorem of equivalence relations",
+        "snippet": "A key result links equivalence relations and partitions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Setoid.Partition.orderIso",
+        "module": "Mathlib.Data.Setoid.Partition",
+        "match_kind": "exact"
+      },
+      "note": "`Setoid.Partition.orderIso` is the order-isomorphism `Setoid α ≃o Partitions α`, the partition–equivalence correspondence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coarser and finer equivalence relations",
+      "anchor": {
+        "section": "Comparing equivalence relations",
+        "snippet": "is said to be a coarser relation than"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Setoid.le_def",
+        "module": "Mathlib.Data.Setoid.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Setoid.le_def`: `r ≤ s ↔ ∀ x y, r x y → s x y` is the finer/coarser order on `Setoid α`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finer iff classes are subsets",
+      "anchor": {
+        "section": "Comparing equivalence relations",
+        "snippet": "is finer than"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Setoid.Partition.orderIso",
+        "module": "Mathlib.Data.Setoid.Partition",
+        "match_kind": "invocation"
+      },
+      "note": "`Setoid.Partition.orderIso` is order-preserving, encoding that `r ≤ s` matches refinement of classes; no separate `finer_iff_classes_subset` lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finest and coarsest equivalence relations",
+      "anchor": {
+        "section": "Comparing equivalence relations",
+        "snippet": "The equality equivalence relation is the finest equivalence relation on any set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Setoid.completeLattice",
+        "module": "Mathlib.Data.Setoid.Basic",
+        "match_kind": "exact"
+      },
+      "note": "In `Setoid.completeLattice`, `⊥` is equality (`Setoid.bot_def`) — the finest — and `⊤` is the total relation (`Setoid.top_def`) — the coarsest.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lattice of equivalence relations is geometric",
+      "anchor": {
+        "section": "Comparing equivalence relations",
+        "snippet": "on the collection of all equivalence relations on a fixed set is itself a partial order relation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Setoid.completeLattice",
+        "module": "Mathlib.Data.Setoid.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "`Setoid.completeLattice` gives the complete lattice structure on `Setoid α`, but the geometric-lattice / Steinitz exchange property is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Equivalence on functions by fixed-point cardinality",
+      "anchor": {
+        "section": "Generating equivalence relations",
+        "snippet": "Two functions are deemed equivalent when their respective sets of fixed points have the same cardinality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific equivalence is not declared in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence relations correspond to surjections",
+      "anchor": {
+        "section": "Generating equivalence relations",
+        "snippet": "is the equivalence kernel of its surjective projection"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Setoid.ker_mk_eq",
+        "module": "Mathlib.Data.Setoid.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Setoid.ker_mk_eq r : Setoid.ker (Quotient.mk'' : α → Quotient r) = r` shows every equivalence relation is the kernel of its canonical surjective projection.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Intersection of equivalence relations",
+      "anchor": {
+        "section": "Generating equivalence relations",
+        "snippet": "The intersection of any collection of equivalence relations over X"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Setoid.sInf_def",
+        "module": "Mathlib.Data.Setoid.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The `InfSet (Setoid α)` instance and `Setoid.sInf_def` show that the infimum of a set of equivalence relations is again an equivalence relation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalence relation generated by a relation",
+      "anchor": {
+        "section": "Generating equivalence relations",
+        "snippet": "the equivalence relation generated by R is the intersection of all equivalence relations containing R"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Setoid.eqvGen_eq",
+        "module": "Mathlib.Data.Setoid.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Setoid.eqvGen_eq` shows `EqvGen.setoid r = sInf {s | r ≤ s}`, i.e. the generated equivalence relation is the intersection of equivalences containing `r`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Equivalence generated by total order is trivial",
+      "anchor": {
+        "section": "Generating equivalence relations",
+        "snippet": "the equivalence relation generated by any total order on X has exactly one equivalence class"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized as a Mathlib lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Torus as quotient of unit square",
+      "anchor": {
+        "section": "Generating equivalence relations",
+        "snippet": "can be naturally identified"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The torus-as-quotient-of-the-square construction is not formalized in this form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Three connected theorems on equivalences and transformation groups",
+      "anchor": {
+        "section": "Group theory",
+        "snippet": "Then the following three connected theorems hold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "These bundled theorems linking equivalence relations and transformation groups are not packaged as such in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cosets as equivalence classes of subgroup action",
+      "anchor": {
+        "section": "Group theory",
+        "snippet": "The equivalence classes of ~—also called the orbits of the action of H on G —are the right cosets of H in G"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuotientGroup.mk",
+        "module": "Mathlib.GroupTheory.QuotientGroup.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`QuotientGroup` realizes the quotient of a group by a (normal) subgroup as cosets via a Setoid; for the unnormalized version `QuotientGroup.leftRel` gives the coset equivalence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Groupoid representing an equivalence relation",
+      "anchor": {
+        "section": "Categories and groupoids",
+        "snippet": "Then we can form a groupoid representing this equivalence relation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `CategoryTheory.Groupoid` but no dedicated construction turning a `Setoid` into the corresponding equivalence groupoid.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lattice of equivalence relations Con X",
+      "anchor": {
+        "section": "Lattices",
+        "snippet": "The equivalence relations on any set X , when ordered by set inclusion , form a complete lattice"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Setoid.completeLattice",
+        "module": "Mathlib.Data.Setoid.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Setoid.completeLattice` instance gives `CompleteLattice (Setoid α)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "ω-categorical equivalence relation example",
+      "anchor": {
+        "section": "Equivalence relations and mathematical logic",
+        "snippet": "an equivalence relation with exactly two infinite equivalence classes is an easy example of a theory which is ω- categorical"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `ModelTheory` library defines categoricity but does not formalize this specific example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Independence of equivalence relation axioms",
+      "anchor": {
+        "section": "Equivalence relations and mathematical logic",
+        "snippet": "the three defining properties of equivalence relations can be proved mutually independent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The independence of reflexivity, symmetry, transitivity is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

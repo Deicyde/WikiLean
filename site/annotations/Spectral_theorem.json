@@ -1,0 +1,607 @@
+{
+  "slug": "Spectral_theorem",
+  "wikipedia_title": "Spectral theorem",
+  "display_title": "Spectral theorem",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "theorem",
+      "label": "Cauchy: real symmetric matrices are diagonalizable",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "every real, symmetric matrix is diagonalizable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.IsHermitian.spectral_theorem",
+        "module": "Mathlib.Analysis.Matrix.Spectrum",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib's spectral theorem unitarily diagonalizes any Hermitian matrix over an RCLike field; real symmetric matrices are the special case 𝕜 = ℝ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hermitian condition",
+      "anchor": {
+        "section": "Hermitian maps and Hermitian matrices",
+        "snippet": "The Hermitian condition on"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.IsSymmetric",
+        "module": "Mathlib.Analysis.InnerProductSpace.Symmetric",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.IsSymmetric T` is defined as `∀ x y, ⟪T x, y⟫ = ⟪x, T y⟫`, exactly the Hermitian/symmetric inner-product condition.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Hermitian maps and Hermitian matrices",
+          "snippet": "The Hermitian condition on"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\langle Ax,y\\rangle =\\langle x,Ay\\rangle .}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalent condition A* = A",
+      "anchor": {
+        "section": "Hermitian maps and Hermitian matrices",
+        "snippet": "An equivalent condition is that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric",
+        "module": "Mathlib.Analysis.InnerProductSpace.Adjoint",
+        "match_kind": "exact"
+      },
+      "note": "This lemma states `IsSelfAdjoint A ↔ IsSymmetric A`, i.e. the adjoint condition A* = A is equivalent to the inner-product Hermitian condition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Eigenvalues of a Hermitian map are real",
+      "anchor": {
+        "section": "Hermitian maps and Hermitian matrices",
+        "snippet": "This condition implies that all eigenvalues"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.IsSymmetric.conj_eigenvalue_eq_self",
+        "module": "Mathlib.Analysis.InnerProductSpace.Spectrum",
+        "match_kind": "exact"
+      },
+      "note": "`conj_eigenvalue_eq_self` proves that any eigenvalue μ of a symmetric/self-adjoint operator satisfies conj μ = μ, i.e. it is real.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Eigenvector and eigenvalue",
+      "anchor": {
+        "section": "Hermitian maps and Hermitian matrices",
+        "snippet": "Recall that an eigenvector of a linear map A is a non-zero vector"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.End.HasEigenvector",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Module.End.HasEigenvector` (a nonzero vector with `f x = μ • x`) and `Module.End.HasEigenvalue` formalize eigenvectors and eigenvalues.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Spectral decomposition",
+      "anchor": {
+        "section": "Hermitian maps and Hermitian matrices",
+        "snippet": "called its spectral decomposition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.IsSymmetric.direct_sum_isInternal",
+        "module": "Mathlib.Analysis.InnerProductSpace.Spectrum",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib gives the spectral/eigenspace decomposition as an internal orthogonal direct sum over eigenvalues for self-adjoint operators in finite dimension.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Hermitian maps and Hermitian matrices",
+          "snippet": "called its spectral decomposition"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle V_{\\lambda }=\\{v\\in V:Av=\\lambda v\\}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Eigenspace",
+      "anchor": {
+        "section": "Hermitian maps and Hermitian matrices",
+        "snippet": "be the eigenspace corresponding to an eigenvalue"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.End.eigenspace",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Module.End.eigenspace f μ` is defined as the kernel of `f - μ • 1`, the eigenspace for eigenvalue μ.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Hermitian maps and Hermitian matrices",
+          "snippet": "be the eigenspace corresponding to an eigenvalue"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle V_{\\lambda }=\\{v\\in V:Av=\\lambda v\\}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Spectral decomposition as special case of Schur decomposition",
+      "anchor": {
+        "section": "Hermitian maps and Hermitian matrices",
+        "snippet": "the spectral decomposition is a special case of the Schur decomposition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Schur (unitary triangularization) decomposition appears in Mathlib, so the relationship cannot be stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Spectral theorem for Hermitian maps",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.IsSymmetric.eigenvectorBasis_apply_self_apply",
+        "module": "Mathlib.Analysis.InnerProductSpace.Spectrum",
+        "match_kind": "exact"
+      },
+      "note": "This theorem gives an orthonormal eigenvector basis in which a finite-dimensional self-adjoint operator acts diagonally, the spectral theorem for Hermitian maps.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Singular value decomposition",
+      "anchor": {
+        "section": "Spectral decomposition and the singular value decomposition",
+        "snippet": "a special case of the singular value decomposition"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.singularValues",
+        "module": "Mathlib.Analysis.InnerProductSpace.SingularValues",
+        "match_kind": null
+      },
+      "note": "Mathlib defines the singular values of a finite-dimensional map and their basic properties but does not prove the full SVD factorization T = U Σ V*.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Normal operator",
+      "anchor": {
+        "section": "Normal matrices",
+        "snippet": "A is said to be normal if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsStarNormal",
+        "module": "Mathlib.Algebra.Star.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsStarNormal x` is the class asserting `star x` commutes with `x`, the normality condition A*A = AA*.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Normal iff unitarily diagonalizable",
+      "anchor": {
+        "section": "Normal matrices",
+        "snippet": "A is normal if and only if it is unitarily diagonalizable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no spectral/diagonalization theorem for normal (as opposed to Hermitian/self-adjoint) operators or matrices.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Spectral theorem for compact self-adjoint operators",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.orthogonalComplement_iSup_eigenspaces_eq_bot",
+        "module": "Mathlib.Analysis.InnerProductSpace.Spectrum",
+        "match_kind": "exact"
+      },
+      "note": "Labelled the Spectral Theorem for compact self-adjoint operators, it proves the eigenspaces of such an operator have trivial orthogonal complement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Multiplication by t with no eigenvectors",
+      "anchor": {
+        "section": "Possible absence of eigenvectors",
+        "snippet": "let A be the operator of multiplication by t"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific multiplication operator on L²[0,1] and its lack of eigenvectors is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Possible absence of eigenvectors",
+          "snippet": "let A be the operator of multiplication by t"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle [Af](t)=tf(t).}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Dirac delta as generalized eigenvector",
+      "anchor": {
+        "section": "Possible absence of eigenvectors",
+        "snippet": "is the Dirac delta function , is an eigenvector"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The rigged-Hilbert-space notion of the Dirac delta as a generalized eigenvector is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Spectral subspace",
+      "anchor": {
+        "section": "Spectral subspaces and projection-valued measures",
+        "snippet": "consisting of an almost eigenvector"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Spectral subspaces of the projection-valued-measure formulation are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projection-valued measure",
+      "anchor": {
+        "section": "Spectral subspaces and projection-valued measures",
+        "snippet": "is then represented by a projection-valued measure"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No projection-valued measure structure exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Projection-valued measure formulation",
+      "anchor": {
+        "section": "Spectral subspaces and projection-valued measures",
+        "snippet": "One formulation of the spectral theorem expresses the operator A as an integral"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The PVM-integral formulation A = ∫ λ dP is absent since projection-valued measures are not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Spectral subspaces and projection-valued measures",
+          "snippet": "One formulation of the spectral theorem expresses the operator A as an integral"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A=\\int _{\\sigma (A)}\\lambda \\,d\\pi (\\lambda ).}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Unitary equivalence to a multiplication operator",
+      "anchor": {
+        "section": "Multiplication operator version",
+        "snippet": "every bounded self-adjoint operator is unitarily equivalent to a multiplication operator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no theorem realizing bounded self-adjoint operators as multiplication operators.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multiplication operators generalize diagonal matrices",
+      "anchor": {
+        "section": "Multiplication operator version",
+        "snippet": "Multiplication operators are a direct generalization of diagonal matrices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no multiplication-operator-on-L² construction in this spectral context in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Spectral theorem for bounded normal operators",
+      "anchor": {
+        "section": "Multiplication operator version",
+        "snippet": "an analogous spectral theorem for bounded normal operators"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No spectral theorem for bounded normal operators is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Multiplication operator version of spectral theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem [ 6 ]"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The multiplication-operator version of the spectral theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Direct integral Hilbert space",
+      "anchor": {
+        "section": "Direct integrals",
+        "snippet": "We then form the direct integral Hilbert space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Direct integrals of Hilbert spaces are not defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Direct integrals",
+          "snippet": "We then form the direct integral Hilbert space"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{\\mathbf {R} }^{\\oplus }H_{\\lambda }\\,d\\mu (\\lambda ).}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Direct integral version of spectral theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The direct-integral formulation of the spectral theorem is absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cyclic vector",
+      "anchor": {
+        "section": "Cyclic vectors and simple spectrum",
+        "snippet": "is called a cyclic vector for"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of cyclic vector for an operator is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cyclic vector unifies the two formulations",
+      "anchor": {
+        "section": "Cyclic vectors and simple spectrum",
+        "snippet": "there is no distinction between the direct-integral and multiplication-operator formulations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither cyclic vectors nor the two spectral formulations are formalized, so their equivalence is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Simple spectrum",
+      "anchor": {
+        "section": "Cyclic vectors and simple spectrum",
+        "snippet": "in the sense of spectral multiplicity theory"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The spectral-multiplicity notion of simple spectrum is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Decomposition into cyclic invariant subspaces",
+      "anchor": {
+        "section": "Cyclic vectors and simple spectrum",
+        "snippet": "we can decompose the Hilbert space as a direct sum of invariant subspaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The decomposition of a Hilbert space into cyclic invariant subspaces is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Functional calculus",
+      "anchor": {
+        "section": "Functional calculus",
+        "snippet": "the idea of defining a functional calculus"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "cfc",
+        "module": "Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Unital",
+        "match_kind": "exact"
+      },
+      "note": "`cfc` is Mathlib's continuous functional calculus, applying a function to (e.g. self-adjoint) operators/elements.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Functional calculus",
+          "snippet": "the idea of defining a functional calculus"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle [f(A)s](\\lambda )=f(\\lambda )s(\\lambda ).}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Spectral theorem for unbounded self-adjoint operators",
+      "anchor": {
+        "section": "Unbounded self-adjoint operators",
+        "snippet": "There is also a spectral theorem for self-adjoint operators that applies in these cases"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no spectral theorem for unbounded self-adjoint operators.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Constant-coefficient differential operators",
+      "anchor": {
+        "section": "Unbounded self-adjoint operators",
+        "snippet": "every constant-coefficient differential operator is unitarily equivalent to a multiplication operator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The diagonalization of constant-coefficient differential operators via the Fourier transform is not formalized in this form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generalized eigenvectors for unbounded operators",
+      "anchor": {
+        "section": "Unbounded self-adjoint operators",
+        "snippet": "naturally extends to unbounded self-adjoint operators"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Generalized eigenvectors in the rigged-Hilbert-space sense are not formalized (Mathlib's genEigenspace is an unrelated algebraic notion).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Completeness of generalized eigenvectors",
+      "anchor": {
+        "section": "Unbounded self-adjoint operators",
+        "snippet": "there always exist a real subset of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The completeness of generalized eigenvectors is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

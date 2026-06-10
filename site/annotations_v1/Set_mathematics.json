@@ -1,0 +1,309 @@
+{
+  "slug": "Set_mathematics",
+  "wikipedia_title": "Set (mathematics)",
+  "display_title": "Set (mathematics)",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\{1,2,3,4\\}=\\{4,2,1,3\\}=\\{4,2,4,3,1,3\\}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Illustrative roster example, not a standalone Mathlib declaration."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\{\\ldots ,-3,-2,-1,0,1,2,3,\\ldots \\}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Informal ellipsis notation for the integers; not a Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\{0,1,-1,2,-2,3,-3,\\ldots \\}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Informal alternative enumeration of the integers; not a Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\{x\\mid P(x)\\}}"
+      },
+      "status": "formalized",
+      "decl": "setOf",
+      "module": "Mathlib.Data.Set.Defs",
+      "note": "Mathlib's setOf realizes set-builder notation {x | P x}."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\{x:P(x)\\}}"
+      },
+      "status": "formalized",
+      "decl": "setOf",
+      "module": "Mathlib.Data.Set.Defs",
+      "note": "Alternative set-builder colon notation is the same setOf construction."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle F=\\{n\\mid n{\\text{ is an integer, and }}0\\leq n\\leq 19\\}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Concrete set-builder example, not a standalone Mathlib declaration."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\{x\\mid x\\in U{\\text{ and ...}}\\}}"
+      },
+      "status": "partial",
+      "decl": "setOf",
+      "module": "Mathlib.Data.Set.Defs",
+      "note": "Bounded set-builder via universe; Mathlib's setOf over a type provides the analogous construction."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\{x\\in U\\mid {\\text{ ...}}\\}.}"
+      },
+      "status": "partial",
+      "decl": "setOf",
+      "module": "Mathlib.Data.Set.Defs",
+      "note": "Restricted set-builder shorthand; corresponds to setOf with the ambient type as universe."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\{x\\mid x\\not \\in \\mathbb {Q} \\}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific irrational-set example using implicit universe; not a Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\{x\\in \\mathbb {R} \\mid x\\not \\in \\mathbb {Q} \\},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Concrete example of irrationals; no dedicated decl in provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle A\\cap B=\\{x\\mid x\\in A\\land x\\in B\\},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Set intersection definition not present in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\bigcap _{A\\in {\\mathcal {S}}}A=\\{x\\mid (\\forall A\\in {\\mathcal {S}})\\;x\\in A\\}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Arbitrary intersection (sInter) not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle A\\cup B=\\{x\\mid x\\in A\\lor x\\in B\\},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Set union definition not present in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\bigcup _{A\\in {\\mathcal {S}}}A=\\{x\\mid (\\exists A\\in {\\mathcal {S}})\\;x\\in A\\}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Arbitrary union (sUnion) not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle A\\setminus B=\\{x\\mid x\\in A\\land x\\not \\in B\\},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Set difference not present in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle A\\,\\Delta \\,B=(A\\setminus B)\\cup (B\\setminus A).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Symmetric difference not present in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\bigcup _{i\\in {\\mathcal {I}}}A_{i}=\\{x\\mid (\\exists i\\in {\\mathcal {I}})\\;x\\in A_{i}\\}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Indexed union (iUnion) not present in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\bigcap _{i\\in {\\mathcal {I}}}A_{i}=\\{x\\mid (\\forall i\\in {\\mathcal {I}})\\;x\\in A_{i}\\}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Indexed intersection (iInter) not present in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle A\\times B=\\{(a,b)\\mid a\\in A{\\text{ and }}b\\in B\\}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Cartesian product of sets not present in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathcal {P}}(\\{1,2,3\\})=\\{\\emptyset ,\\{1\\},\\{2\\},\\{3\\},\\{1,2\\},\\{1,3\\},\\{2,3\\},\\{1,2,3\\}\\}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Concrete power-set example, not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathcal {P}}(E)=\\{0,1\\}^{E}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Power-set/function-space identification not present in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathcal {P}}(E)=2^{E}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Power-set exponentiation notation not present in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle A\\sqcup B=\\{(a,i)\\mid (i=1\\land a\\in A)\\lor (i=2\\land a\\in B\\}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Disjoint union of two sets not present in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\bigsqcup _{i\\in {\\mathcal {I}}}=\\{(a,i)\\mid i\\in {\\mathcal {I}}\\land a\\in A_{i}\\}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Indexed disjoint union not present in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\coprod _{i\\in {\\mathcal {I}}}=\\{(a,i)\\mid i\\in {\\mathcal {I}}\\land a\\in A_{i}\\}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Coproduct notation for disjoint union not present in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\bigsqcup _{i\\in {\\mathcal {I}}}A_{i}&\\to \\bigcup _{i\\in {\\mathcal {I}}}A_{i}\\\\(a,i)&\\mapsto a,\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Natural map from disjoint to ordinary union not in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle |S|<\\left|2^{S}\\right|.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Cantor's theorem on cardinalities not present in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathfrak {c}}=2^{\\aleph _{0}},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Continuum equals 2^ℵ₀ not present in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\mathfrak {c}}>\\aleph _{0}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Uncountability of the reals not present in the provided decl list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (m<n\\implies P(m))\\implies P(n).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Transfinite/strong induction principle not present in the provided decl list."
+    }
+  ]
+}

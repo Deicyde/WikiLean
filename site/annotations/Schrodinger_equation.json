@@ -1,0 +1,1455 @@
+{
+  "slug": "Schrodinger_equation",
+  "wikipedia_title": "Schrödinger equation",
+  "display_title": "Schrödinger equation",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Schrödinger equation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The Schrödinger equation is a partial differential equation that governs the wave function of a non-relativistic quantum-mechanical system"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for 'Schrödinger' returns no results in Mathlib; this physics PDE is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Position-space Schrödinger equation (1D)",
+      "anchor": {
+        "section": "Preliminaries",
+        "snippet": "position-space Schrödinger equation for a single nonrelativistic particle in one dimension"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Schrödinger equation (in any spatial form) appears in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Preliminaries",
+          "snippet": "position-space Schrödinger equation for a single nonrelativistic particle in one dimension"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle i\\hbar {\\frac {\\partial }{\\partial t}}\\Psi (x,t)=\\left[-{\\frac {\\hbar ^{2}}{2m}}{\\frac {\\partial ^{2}}{\\partial x^{2}}}+V(x,t)\\right]\\Psi (x,t).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Wave function",
+      "anchor": {
+        "section": "Preliminaries",
+        "snippet": "is a wave function, a function that assigns a complex number to each point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The quantum-mechanical wave function is not a defined object in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Preliminaries",
+          "snippet": "is a wave function, a function that assigns a complex number to each point"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle i\\hbar {\\frac {\\partial }{\\partial t}}\\Psi (x,t)=\\left[-{\\frac {\\hbar ^{2}}{2m}}{\\frac {\\partial ^{2}}{\\partial x^{2}}}+V(x,t)\\right]\\Psi (x,t).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Quantum state as Hilbert space vector",
+      "anchor": {
+        "section": "Preliminaries",
+        "snippet": "defines the state of a quantum mechanical system to be a vector"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has (complete) inner product spaces, i.e. Hilbert spaces, but no notion of 'quantum state'.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Observable",
+      "anchor": {
+        "section": "Preliminaries",
+        "snippet": "are represented by observables"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.IsSymmetric",
+        "module": "Mathlib.Analysis.InnerProductSpace.Symmetric",
+        "match_kind": "generalization"
+      },
+      "note": "Self-adjoint/symmetric operators (the math behind observables) are formalized, but 'observable' as such is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Eigenstate",
+      "anchor": {
+        "section": "Preliminaries",
+        "snippet": "in which case it is called an eigenstate"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.End.HasEigenvector",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "An eigenstate is exactly an eigenvector of an operator, captured by Module.End.HasEigenvector.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quantum superposition",
+      "anchor": {
+        "section": "Preliminaries",
+        "snippet": "known as a quantum superposition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Linear combinations exist abstractly, but no quantum-superposition notion is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Born rule",
+      "anchor": {
+        "section": "Preliminaries",
+        "snippet": "with probability given by the Born rule"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Born rule is a physical postulate with no formalization in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generalized eigenvectors",
+      "anchor": {
+        "section": "Preliminaries",
+        "snippet": "composed of elements outside the Hilbert space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Rigged-Hilbert-space generalized eigenvectors (continuous spectrum) are not formalized; Mathlib's algebraic generalized eigenvectors are a different concept.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Preliminaries",
+          "snippet": "composed of elements outside the Hilbert space"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Psi (x,t)=\\langle x|\\Psi (t)\\rangle .}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Time-dependent Schrödinger equation",
+      "anchor": {
+        "section": "Time-dependent equation",
+        "snippet": "the time-dependent Schrödinger equation, which gives a description of a system evolving with time"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The time-dependent Schrödinger equation does not appear in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Probability density function",
+      "anchor": {
+        "section": "Time-dependent equation",
+        "snippet": "is taken to define a probability density function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.pdf",
+        "module": "Mathlib.Probability.Density",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines probability density functions generally via MeasureTheory.HasPDF/pdf.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Time-dependent equation",
+          "snippet": "is taken to define a probability density function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Pr(x,t)=|\\Psi (x,t)|^{2}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Stationary states",
+      "anchor": {
+        "section": "Time-independent equation",
+        "snippet": "wave functions can form standing waves , called stationary states"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Stationary states of the Schrödinger equation are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Time-independent Schrödinger equation",
+      "anchor": {
+        "section": "Time-independent equation",
+        "snippet": "Stationary states can also be described by a simpler form of the Schrödinger equation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.End.HasEigenvector",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "It is the eigenvalue equation Hψ=Eψ, abstractly captured by HasEigenvector, but the Hamiltonian/equation itself is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Wave function as eigenfunction of Hamiltonian",
+      "anchor": {
+        "section": "Time-independent equation",
+        "snippet": "the wave function is an eigenfunction of the Hamiltonian operator"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.End.HasEigenvector",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The eigenfunction/eigenvector relation is formalized abstractly, but not for any Hamiltonian operator.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linearity of the Schrödinger equation",
+      "anchor": {
+        "section": "Linearity",
+        "snippet": "The Schrödinger equation is a linear differential equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Schrödinger equation is absent, so its linearity / solution-space superposition is not stated.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Linearity",
+          "snippet": "The Schrödinger equation is a linear differential equation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle |\\psi \\rangle =a|\\psi _{1}\\rangle +b|\\psi _{2}\\rangle }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle |\\Psi (t)\\rangle =\\sum _{n}A_{n}e^{{-iE_{n}t}/\\hbar }|\\psi _{E_{n}}\\rangle ,}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Unitarity of the time-evolution operator",
+      "anchor": {
+        "section": "Unitarity",
+        "snippet": "is known as the time-evolution operator, and it is unitary"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "selfAdjoint.expUnitary",
+        "module": "Mathlib.Analysis.CStarAlgebra.Exponential",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves the exponential of a self-adjoint element is unitary, but not Stone's theorem for the time-evolution group.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Unitarity",
+          "snippet": "is known as the time-evolution operator, and it is unitary"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle |\\Psi (t)\\rangle =e^{-i{\\hat {H}}t/\\hbar }|\\Psi (0)\\rangle .}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle |\\Psi (t)\\rangle ={\\hat {U}}(t)|\\Psi (0)\\rangle }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\hat {U}}(\\delta t)^{\\dagger }{\\hat {U}}(\\delta t)\\approx ({\\hat {U}}(0)^{\\dagger }+i{\\hat {G}}^{\\dagger }\\delta t)({\\hat {U}}(0)-i{\\hat {G}}\\delta t)=I+i\\delta t({\\hat {G}}^{\\dagger }-{\\hat {G}})+O(\\delta t^{2}),}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Generator is Hermitian",
+      "anchor": {
+        "section": "Unitarity",
+        "snippet": "To see that the generator is Hermitian"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.IsSymmetric",
+        "module": "Mathlib.Analysis.InnerProductSpace.Symmetric",
+        "match_kind": "generalization"
+      },
+      "note": "Hermitian/self-adjoint operators are formalized, but the generator-of-unitary-group claim (Stone's theorem) is not.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Unitarity",
+          "snippet": "To see that the generator is Hermitian"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle |\\Psi (t)\\rangle =e^{-i{\\hat {H}}t/\\hbar }|\\Psi (0)\\rangle .}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle |\\Psi (t)\\rangle ={\\hat {U}}(t)|\\Psi (0)\\rangle }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\hat {U}}(\\delta t)^{\\dagger }{\\hat {U}}(\\delta t)\\approx ({\\hat {U}}(0)^{\\dagger }+i{\\hat {G}}^{\\dagger }\\delta t)({\\hat {U}}(0)-i{\\hat {G}}\\delta t)=I+i\\delta t({\\hat {G}}^{\\dagger }-{\\hat {G}})+O(\\delta t^{2}),}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Position- and momentum-space Schrödinger equations",
+      "anchor": {
+        "section": "Changes of basis",
+        "snippet": "the position-space and momentum-space Schrödinger equations for a nonrelativistic, spinless particle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Fourier transform exists in Mathlib, but the Schrödinger equation in either basis does not.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Changes of basis",
+          "snippet": "the position-space and momentum-space Schrödinger equations for a nonrelativistic, spinless particle"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle i\\hbar {\\frac {d}{dt}}|\\Psi (t)\\rangle =\\left({\\frac {1}{2m}}{\\hat {p}}^{2}+{\\hat {V}}\\right)|\\Psi (t)\\rangle .}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle i\\hbar {\\frac {\\partial }{\\partial t}}\\Psi (\\mathbf {r} ,t)=-{\\frac {\\hbar ^{2}}{2m}}\\nabla ^{2}\\Psi (\\mathbf {r} ,t)+V(\\mathbf {r} )\\Psi (\\mathbf {r} ,t).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle i\\hbar {\\frac {\\partial }{\\partial t}}{\\tilde {\\Psi }}(\\mathbf {p} ,t)={\\frac {\\mathbf {p} ^{2}}{2m}}{\\tilde {\\Psi }}(\\mathbf {p} ,t)+(2\\pi \\hbar )^{-3/2}\\int d^{3}\\mathbf {p} '\\,{\\tilde {V}}(\\mathbf {p} -\\mathbf {p} '){\\tilde {\\Psi }}(\\mathbf {p} ',t).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Psi (\\mathbf {r} ,t)=\\langle \\mathbf {r} |\\Psi (t)\\rangle ,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\tilde {\\Psi }}(\\mathbf {p} ,t)=\\langle \\mathbf {p} |\\Psi (t)\\rangle ,}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Canonical commutation relation",
+      "anchor": {
+        "section": "Changes of basis",
+        "snippet": "that satisfy the canonical commutation relation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ring.lie_def",
+        "module": "Mathlib.Algebra.Lie.OfAssociative",
+        "match_kind": "generalization"
+      },
+      "note": "The ring commutator ⁅x,y⁆ = xy − yx is formalized, but the specific relation [x,p]=iℏ is not.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Changes of basis",
+          "snippet": "that satisfy the canonical commutation relation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle [{\\hat {x}},{\\hat {p}}]=i\\hbar .}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\langle x|{\\hat {p}}|\\Psi \\rangle =-i\\hbar {\\frac {d}{dx}}\\Psi (x),}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Bloch's theorem",
+      "anchor": {
+        "section": "Changes of basis",
+        "snippet": "as Bloch's theorem ensures the periodic crystal lattice potential couples"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for 'Bloch' finds nothing; the solid-state Bloch theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Local probability conservation",
+      "anchor": {
+        "section": "Probability current",
+        "snippet": "The Schrödinger equation is consistent with local probability conservation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Local conservation of probability for the Schrödinger equation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuity equation for probability",
+      "anchor": {
+        "section": "Probability current",
+        "snippet": "The continuity equation for probability in nonrelativistic quantum mechanics is stated as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The probability continuity equation is not present in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Probability current",
+          "snippet": "The continuity equation for probability in nonrelativistic quantum mechanics is stated as"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {\\partial }{\\partial t}}\\rho \\left(\\mathbf {r} ,t\\right)+\\nabla \\cdot \\mathbf {j} =0,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {j} ={\\frac {1}{2m}}\\left(\\Psi ^{*}{\\hat {\\mathbf {p} }}\\Psi -\\Psi {\\hat {\\mathbf {p} }}\\Psi ^{*}\\right)=-{\\frac {i\\hbar }{2m}}(\\psi ^{*}\\nabla \\psi -\\psi \\nabla \\psi ^{*})={\\frac {\\hbar }{m}}\\operatorname {Im} (\\psi ^{*}\\nabla \\psi )}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Probability flux from phase",
+      "anchor": {
+        "section": "Probability current",
+        "snippet": "then the probability flux is calculated as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The probability current/flux of a wave function is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Probability current",
+          "snippet": "then the probability flux is calculated as"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {j} ={\\frac {\\rho \\nabla S}{m}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Separation of variables ansatz",
+      "anchor": {
+        "section": "Separation of variables",
+        "snippet": "seeking a solution of the form of a product of spatial and temporal parts"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Separation of variables for the Schrödinger PDE is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Separation of variables",
+          "snippet": "seeking a solution of the form of a product of spatial and temporal parts"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle i\\hbar {\\frac {\\partial }{\\partial t}}\\Psi (\\mathbf {r} ,t)=\\left[-{\\frac {\\hbar ^{2}}{2m}}\\nabla ^{2}+V(\\mathbf {r} )\\right]\\Psi (\\mathbf {r} ,t).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Psi (\\mathbf {r} ,t)=\\psi (\\mathbf {r} )\\tau (t),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Psi (\\mathbf {r} ,t)=\\psi (\\mathbf {r} )e^{-i{Et/\\hbar }}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Stationary solution",
+      "anchor": {
+        "section": "Separation of variables",
+        "snippet": "A solution of this type is called stationary"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Stationary solutions of the Schrödinger equation are not defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Separation of variables",
+          "snippet": "A solution of this type is called stationary"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle i\\hbar {\\frac {\\partial }{\\partial t}}\\Psi (\\mathbf {r} ,t)=\\left[-{\\frac {\\hbar ^{2}}{2m}}\\nabla ^{2}+V(\\mathbf {r} )\\right]\\Psi (\\mathbf {r} ,t).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Psi (\\mathbf {r} ,t)=\\psi (\\mathbf {r} )\\tau (t),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Psi (\\mathbf {r} ,t)=\\psi (\\mathbf {r} )e^{-i{Et/\\hbar }}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Spatial part equation",
+      "anchor": {
+        "section": "Separation of variables",
+        "snippet": "The spatial part of the full wave function solves the equation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.End.HasEigenvector",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The spatial equation is the eigenvalue problem Hψ=Eψ, abstractly captured by HasEigenvector, but not for the Hamiltonian.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Separation of variables",
+          "snippet": "The spatial part of the full wave function solves the equation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\nabla ^{2}\\psi (\\mathbf {r} )+{\\frac {2m}{\\hbar ^{2}}}\\left[E-V(\\mathbf {r} )\\right]\\psi (\\mathbf {r} )=0,}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Energy eigenstates form a basis (spectral theorem)",
+      "anchor": {
+        "section": "Separation of variables",
+        "snippet": "The energy eigenstates form a basis"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.IsSymmetric.eigenvectorBasis",
+        "module": "Mathlib.Analysis.InnerProductSpace.Spectrum",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has the finite-dimensional spectral theorem (orthonormal eigenbasis) but not the spectral theorem for unbounded self-adjoint operators.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Particle in a box",
+      "anchor": {
+        "section": "Particle in a box",
+        "snippet": "The particle in a one-dimensional potential energy box is the most mathematically simple example"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The particle-in-a-box model is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Particle in a box",
+          "snippet": "The particle in a one-dimensional potential energy box is the most mathematically simple example"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle -{\\frac {\\hbar ^{2}{\\vphantom {\\psi }}}{2m{\\vphantom {x^{2}}}}}{\\frac {d^{2}\\psi }{dx^{2}}}=E\\psi .}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "General solutions for particle in a box",
+      "anchor": {
+        "section": "Particle in a box",
+        "snippet": "The general solutions of the Schrödinger equation for the particle in a box are"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Solutions of the particle-in-a-box problem are not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Particle in a box",
+          "snippet": "The general solutions of the Schrödinger equation for the particle in a box are"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\psi (x)=Ae^{ikx}+Be^{-ikx}\\qquad \\qquad E={\\frac {\\hbar ^{2}k^{2}}{2m}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\psi (x)=C\\sin(kx)+D\\cos(kx).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Quantization of energy levels in a box",
+      "anchor": {
+        "section": "Particle in a box",
+        "snippet": "implies a constraint on the energy levels"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Energy-level quantization for the box is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Particle in a box",
+          "snippet": "implies a constraint on the energy levels"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle E_{n}={\\frac {\\hbar ^{2}\\pi ^{2}n^{2}}{2mL^{2}}}={\\frac {n^{2}h^{2}}{8mL^{2}}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Finite potential well",
+      "anchor": {
+        "section": "Particle in a box",
+        "snippet": "A finite potential well is the generalization of the infinite potential well problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The finite potential well model is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Rectangular potential barrier",
+      "anchor": {
+        "section": "Particle in a box",
+        "snippet": "the rectangular potential barrier , which furnishes a model for the quantum tunneling effect"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The rectangular barrier / quantum tunneling model is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Harmonic oscillator equation",
+      "anchor": {
+        "section": "Harmonic oscillator",
+        "snippet": "is the displacement and"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The quantum harmonic oscillator equation is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Harmonic oscillator",
+          "snippet": "is the displacement and"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle E\\psi =-{\\frac {\\hbar ^{2}}{2m{\\vphantom {x^{2}}}}}{\\frac {d^{2}}{dx^{2}}}\\psi +{\\frac {1}{2{\\vphantom {x^{2}}}}}m\\omega ^{2}x^{2}\\psi ,}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Harmonic oscillator solutions (Hermite polynomials)",
+      "anchor": {
+        "section": "Harmonic oscillator",
+        "snippet": "are the Hermite polynomials of order"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.hermite",
+        "module": "Mathlib.RingTheory.Polynomial.Hermite.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Hermite polynomials are formalized (including the Gaussian weight), but not the oscillator eigenfunctions themselves.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Harmonic oscillator",
+          "snippet": "are the Hermite polynomials of order"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\psi _{n}(x)={\\sqrt {\\frac {1}{2^{n}\\,n!}}}\\ \\left({\\frac {m\\omega }{\\pi \\hbar }}\\right)^{1/4}\\ e^{-{\\frac {m\\omega x^{2}}{2\\hbar }}}\\ {\\mathcal {H}}_{n}\\left({\\sqrt {\\frac {m\\omega }{\\hbar }}}x\\right),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\psi _{n}(x)={\\frac {1}{\\sqrt {n!}}}\\left({\\sqrt {\\frac {m\\omega }{2\\hbar }}}\\right)^{n}\\left(x-{\\frac {\\hbar }{m\\omega }}{\\frac {d}{dx}}\\right)^{n}\\left({\\frac {m\\omega }{\\pi \\hbar }}\\right)^{\\frac {1}{4}}e^{\\frac {-m\\omega x^{2}}{2\\hbar }}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Harmonic oscillator eigenvalues",
+      "anchor": {
+        "section": "Harmonic oscillator",
+        "snippet": "The eigenvalues are"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The (n+1/2)ℏω oscillator eigenvalues are not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Harmonic oscillator",
+          "snippet": "The eigenvalues are"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle E_{n}=\\left(n+{\\frac {1}{2}}\\right)\\hbar \\omega .}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Ground state and zero-point energy",
+      "anchor": {
+        "section": "Harmonic oscillator",
+        "snippet": "is called the ground state"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ground state and zero-point energy are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Discretization of bound eigenstate energies",
+      "anchor": {
+        "section": "Harmonic oscillator",
+        "snippet": "the energies of bound eigenstates are discretized"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Discreteness of bound-state energy spectra is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hydrogen atom equation",
+      "anchor": {
+        "section": "Hydrogen atom",
+        "snippet": "The Schrödinger equation for the electron in a hydrogen atom"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The hydrogen-atom Schrödinger equation is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Hydrogen atom",
+          "snippet": "The Schrödinger equation for the electron in a hydrogen atom"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle E\\psi =-{\\frac {\\hbar ^{2}}{2\\mu }}\\nabla ^{2}\\psi -{\\frac {q^{2}}{4\\pi \\varepsilon _{0}r}}\\psi }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mu ={\\frac {m_{q}m_{p}}{m_{q}+m_{p}}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Hydrogen atom solved by separation of variables",
+      "anchor": {
+        "section": "Hydrogen atom",
+        "snippet": "The Schrödinger equation for a hydrogen atom can be solved by separation of variables"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Solution of the hydrogen atom is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Hydrogen atom",
+          "snippet": "The Schrödinger equation for a hydrogen atom can be solved by separation of variables"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\psi (r,\\theta ,\\varphi )=R(r)\\ Y_{\\ell }^{m}(\\theta ,\\varphi )=R(r)\\ \\Theta (\\theta )\\ \\Phi (\\varphi ),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\psi _{n\\ell m}(r,\\theta ,\\varphi )={\\sqrt {\\left({\\frac {2}{na_{0}}}\\right)^{3}{\\frac {(n-\\ell -1)!}{2n[(n+\\ell )!]}}}}e^{-r/na_{0}}\\left({\\frac {2r}{na_{0}}}\\right)^{\\ell }L_{n-\\ell -1}^{2\\ell +1}\\left({\\frac {2r}{na_{0}}}\\right)\\cdot Y_{\\ell }^{m}(\\theta ,\\varphi )}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Hydrogen the only exactly-solved atom",
+      "anchor": {
+        "section": "Hydrogen atom",
+        "snippet": "This is the only atom for which the Schrödinger equation has been solved exactly"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This physics statement has no Mathlib counterpart.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Hydrogen atom",
+          "snippet": "This is the only atom for which the Schrödinger equation has been solved exactly"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\psi (r,\\theta ,\\varphi )=R(r)\\ Y_{\\ell }^{m}(\\theta ,\\varphi )=R(r)\\ \\Theta (\\theta )\\ \\Phi (\\varphi ),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\psi _{n\\ell m}(r,\\theta ,\\varphi )={\\sqrt {\\left({\\frac {2}{na_{0}}}\\right)^{3}{\\frac {(n-\\ell -1)!}{2n[(n+\\ell )!]}}}}e^{-r/na_{0}}\\left({\\frac {2r}{na_{0}}}\\right)^{\\ell }L_{n-\\ell -1}^{2\\ell +1}\\left({\\frac {2r}{na_{0}}}\\right)\\cdot Y_{\\ell }^{m}(\\theta ,\\varphi )}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Ehrenfest theorem",
+      "anchor": {
+        "section": "Semiclassical limit",
+        "snippet": "The quantum expectation values satisfy the Ehrenfest theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep finds no Ehrenfest theorem in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Semiclassical limit",
+          "snippet": "The quantum expectation values satisfy the Ehrenfest theorem"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle m{\\frac {d}{dt}}\\langle x\\rangle =\\langle p\\rangle ;\\quad {\\frac {d}{dt}}\\langle p\\rangle =-\\left\\langle V'(X)\\right\\rangle .}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle -V'\\left(\\left\\langle X\\right\\rangle \\right)}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Relation to Hamilton–Jacobi equation",
+      "anchor": {
+        "section": "Semiclassical limit",
+        "snippet": "is closely related to the Hamilton–Jacobi equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hamilton–Jacobi equation is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Semiclassical limit",
+          "snippet": "is closely related to the Hamilton–Jacobi equation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle i\\hbar {\\frac {\\partial }{\\partial t}}\\Psi \\left(\\mathbf {r} ,t\\right)={\\hat {H}}\\Psi \\left(\\mathbf {r} ,t\\right)}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle -{\\frac {\\partial }{\\partial t}}S(q_{i},t)=H\\left(q_{i},{\\frac {\\partial S}{\\partial q_{i}}},t\\right)}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Classical limit yields Hamilton–Jacobi equation",
+      "anchor": {
+        "section": "Semiclassical limit",
+        "snippet": "in the resulting equation yield the Hamilton–Jacobi equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The WKB/classical-limit derivation of Hamilton–Jacobi is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Semiclassical limit",
+          "snippet": "in the resulting equation yield the Hamilton–Jacobi equation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Psi ={\\sqrt {\\rho (\\mathbf {r} ,t)}}e^{iS(\\mathbf {r} ,t)/\\hbar }}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Density matrix",
+      "anchor": {
+        "section": "Density matrices",
+        "snippet": "A density matrix is a positive semi-definite operator whose trace is equal to 1"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.PosSemidef",
+        "module": "Mathlib.LinearAlgebra.Matrix.PosDef",
+        "match_kind": "generalization"
+      },
+      "note": "Positive semidefiniteness and trace are formalized, but there is no defined notion of density matrix (PSD with trace 1).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Density matrices",
+          "snippet": "A density matrix is a positive semi-definite operator whose trace is equal to 1"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\hat {\\rho }}=|\\Psi \\rangle \\langle \\Psi |.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Von Neumann equation",
+      "anchor": {
+        "section": "Density matrices",
+        "snippet": "The density-matrix analogue of the Schrödinger equation for wave functions is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The von Neumann (Liouville) equation for density matrices is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Density matrices",
+          "snippet": "The density-matrix analogue of the Schrödinger equation for wave functions is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle i\\hbar {\\frac {\\partial {\\hat {\\rho }}}{\\partial t}}=[{\\hat {H}},{\\hat {\\rho }}],}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\hat {\\rho }}(t)=e^{-i{\\hat {H}}t/\\hbar }\\ {\\hat {\\rho }}(0)\\ e^{i{\\hat {H}}t/\\hbar }.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Unitary evolution conserves von Neumann entropy",
+      "anchor": {
+        "section": "Density matrices",
+        "snippet": "Unitary evolution of a density matrix conserves its von Neumann entropy"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Von Neumann entropy is not defined in Mathlib (only classical/topological entropy notions exist).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Galilean transformation gives a phase factor",
+      "anchor": {
+        "section": "Relativistic quantum physics and quantum field theory",
+        "snippet": "creates a phase factor times the wave function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Galilean covariance of the Schrödinger equation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Klein–Gordon equation",
+      "anchor": {
+        "section": "Klein–Gordon and Dirac equations",
+        "snippet": "was the first such equation to be obtained"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep finds no Klein–Gordon equation in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Klein–Gordon and Dirac equations",
+          "snippet": "was the first such equation to be obtained"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle E^{2}=(pc)^{2}+\\left(m_{0}c^{2}\\right)^{2},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle -{\\frac {1}{c^{2}}}{\\frac {\\partial ^{2}}{\\partial t^{2}}}\\psi +\\nabla ^{2}\\psi ={\\frac {m^{2}c^{2}}{\\hbar ^{2}}}\\psi ,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left(\\beta mc^{2}+c\\left(\\sum _{n\\mathop {=} 1}^{3}\\alpha _{n}p_{n}\\right)\\right)\\psi =i\\hbar {\\frac {\\partial \\psi }{\\partial t}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Dirac equation (free space)",
+      "anchor": {
+        "section": "Klein–Gordon and Dirac equations",
+        "snippet": "the Dirac equation that, in free space, read"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Dirac equation is not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Klein–Gordon and Dirac equations",
+          "snippet": "the Dirac equation that, in free space, read"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle E^{2}=(pc)^{2}+\\left(m_{0}c^{2}\\right)^{2},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle -{\\frac {1}{c^{2}}}{\\frac {\\partial ^{2}}{\\partial t^{2}}}\\psi +\\nabla ^{2}\\psi ={\\frac {m^{2}c^{2}}{\\hbar ^{2}}}\\psi ,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left(\\beta mc^{2}+c\\left(\\sum _{n\\mathop {=} 1}^{3}\\alpha _{n}p_{n}\\right)\\right)\\psi =i\\hbar {\\frac {\\partial \\psi }{\\partial t}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Dirac Hamiltonian in an electromagnetic field",
+      "anchor": {
+        "section": "Klein–Gordon and Dirac equations",
+        "snippet": "the Dirac Hamiltonian for a particle of mass m and electric charge q in an electromagnetic field"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The minimally-coupled Dirac Hamiltonian is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Klein–Gordon and Dirac equations",
+          "snippet": "the Dirac Hamiltonian for a particle of mass m and electric charge q in an electromagnetic field"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\hat {H}}_{\\text{Dirac}}=\\gamma ^{0}\\left[c{\\boldsymbol {\\gamma }}\\cdot \\left({\\hat {\\mathbf {p} }}-q\\mathbf {A} \\right)+mc^{2}+\\gamma ^{0}q\\varphi \\right],}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Dirac equation solutions are 4-component spinors",
+      "anchor": {
+        "section": "Klein–Gordon and Dirac equations",
+        "snippet": "the solutions to the equation are 4-component spinor fields"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dirac spinor solutions are not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Klein–Gordon and Dirac equations",
+          "snippet": "the solutions to the equation are 4-component spinor fields"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\hat {H}}_{\\text{Dirac}}=\\gamma ^{0}\\left[c{\\boldsymbol {\\gamma }}\\cdot \\left({\\hat {\\mathbf {p} }}-q\\mathbf {A} \\right)+mc^{2}+\\gamma ^{0}q\\varphi \\right],}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Relativistic spin-s spinor field solutions",
+      "anchor": {
+        "section": "Klein–Gordon and Dirac equations",
+        "snippet": "are complex-valued 2(2 s + 1) -component spinor fields"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Relativistic spin-s wave equations are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fock space",
+      "anchor": {
+        "section": "Fock space",
+        "snippet": "where the basis states are labeled by particle number, a so-called Fock space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep finds no Fock space construction in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "de Broglie relation",
+      "anchor": {
+        "section": "History",
+        "snippet": "is inversely proportional to its wavelength"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The de Broglie relation p=h/λ is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "History",
+          "snippet": "is inversely proportional to its wavelength"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle p={\\frac {h}{\\lambda }}=\\hbar k,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle L=n{\\frac {h}{2\\pi }}=n\\hbar .}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle n\\lambda =2\\pi r.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Bohr quantization of angular momentum",
+      "anchor": {
+        "section": "History",
+        "snippet": "the assumed quantization of angular momentum"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bohr's angular-momentum quantization is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "History",
+          "snippet": "the assumed quantization of angular momentum"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle p={\\frac {h}{\\lambda }}=\\hbar k,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle L=n{\\frac {h}{2\\pi }}=n\\hbar .}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle n\\lambda =2\\pi r.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Standing wave condition on the orbit",
+      "anchor": {
+        "section": "History",
+        "snippet": "a whole number of wavelengths must fit along the circumference of the electron's orbit"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The de Broglie standing-wave orbit condition is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "History",
+          "snippet": "a whole number of wavelengths must fit along the circumference of the electron's orbit"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle p={\\frac {h}{\\lambda }}=\\hbar k,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle L=n{\\frac {h}{2\\pi }}=n\\hbar .}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle n\\lambda =2\\pi r.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Schrödinger's original equation",
+      "anchor": {
+        "section": "History",
+        "snippet": "The equation he found is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Schrödinger's original equation is not present in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "History",
+          "snippet": "The equation he found is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle i\\hbar {\\frac {\\partial }{\\partial t}}\\Psi (\\mathbf {r} ,t)=-{\\frac {\\hbar ^{2}}{2m}}\\nabla ^{2}\\Psi (\\mathbf {r} ,t)+V(\\mathbf {r} )\\Psi (\\mathbf {r} ,t).}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Klein–Gordon equation in a Coulomb potential",
+      "anchor": {
+        "section": "History",
+        "snippet": "what is now known as the Klein–Gordon equation in a Coulomb potential"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Klein–Gordon equation in a Coulomb potential is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "History",
+          "snippet": "what is now known as the Klein–Gordon equation in a Coulomb potential"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left(E+{\\frac {e^{2}}{r}}\\right)^{2}\\psi (x)=-\\nabla ^{2}\\psi (x)+m^{2}\\psi (x).}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Probability amplitude (Born interpretation)",
+      "anchor": {
+        "section": "History",
+        "snippet": "as the probability amplitude , whose modulus squared is equal to probability density"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The probability-amplitude / Born interpretation is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

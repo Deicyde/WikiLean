@@ -1,0 +1,697 @@
+{
+  "slug": "Geometry",
+  "wikipedia_title": "Geometry",
+  "display_title": "Geometry",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Geometry",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a branch of mathematics concerned with properties of space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A description of a field of mathematics, not a formalizable mathematical statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Theorema Egregium",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "asserts roughly that the Gaussian curvature of a surface is independent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Listed in docs/1000.yaml with no decl; Gaussian curvature and the Theorema Egregium are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Volume of a frustum (Moscow Papyrus)",
+      "anchor": {
+        "section": "History",
+        "snippet": "gives a formula for calculating the volume of a truncated pyramid"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No frustum / truncated-pyramid volume formula exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Brahmagupta's theorem on diagonals of a cyclic quadrilateral",
+      "anchor": {
+        "section": "History",
+        "snippet": "his famous theorem on the diagonals of a cyclic quadrilateral"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Only the algebraic Brahmagupta(-Fibonacci) identities exist (Mathlib/Algebra/Ring/Identities.lean); the cyclic-quadrilateral diagonal theorem is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Brahmagupta's formula (area of a cyclic quadrilateral)",
+      "anchor": {
+        "section": "History",
+        "snippet": "a formula for the area of a cyclic quadrilateral"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The cyclic-quadrilateral area formula is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Axioms / axiomatic geometry",
+      "anchor": {
+        "section": "Axioms",
+        "snippet": "expressing primary or self-evident properties of points, lines, and planes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no synthetic axiomatic (Hilbert/Tarski/Euclid) geometry system.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Point",
+      "anchor": {
+        "section": "Points",
+        "snippet": "Points are generally considered fundamental objects for building geometry"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no primitive 'point' object; points are generic elements of affine/torsor spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Whitehead's point-free geometry",
+      "anchor": {
+        "section": "Points",
+        "snippet": "Whitehead's point-free geometry , formulated by Alfred North Whitehead"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Whitehead's point-free geometry is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Line",
+      "anchor": {
+        "section": "Lines",
+        "snippet": "Euclid described a line as"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "affineSpan",
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lines are represented via affineSpan of two points or AffineMap.lineMap, with no dedicated Line type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Geodesic",
+      "anchor": {
+        "section": "Lines",
+        "snippet": "a geodesic is a generalization of the notion of a line to curved spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no general Riemannian/metric-space geodesic definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Plane",
+      "anchor": {
+        "section": "Planes",
+        "snippet": "a plane is a flat, two-dimensional surface that extends infinitely"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated 'plane' object; only general AffineSubspace exists, not a 2-dimensional-plane notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Curve",
+      "anchor": {
+        "section": "Curves",
+        "snippet": "A curve is a 1-dimensional object that may be straight"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general 'curve' object, but parametrized/topological curves are formalized as Path / continuous maps.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Curve (topology)",
+      "anchor": {
+        "section": "Curves",
+        "snippet": "a curve is defined by a function from an interval of the real numbers to another space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Path",
+        "module": "Mathlib.Topology.Path",
+        "match_kind": "special_case"
+      },
+      "note": "Path formalizes a continuous map from the unit interval, the special case of a curve defined on [0,1].",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic curve",
+      "anchor": {
+        "section": "Curves",
+        "snippet": "which are defined as algebraic varieties of dimension one"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Schemes and Krull/scheme dimension exist (Mathlib.AlgebraicGeometry.Scheme) but there is no dedicated dimension-one algebraic-curve object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Surface",
+      "anchor": {
+        "section": "Surfaces",
+        "snippet": "A surface is a two-dimensional object, such as a sphere or paraboloid"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general 'surface' (2-dimensional object) definition in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Solid",
+      "anchor": {
+        "section": "Solids",
+        "snippet": "A solid is a three-dimensional object bounded by a closed surface"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general 'solid' (3-dimensional bounded region) definition in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Manifold",
+      "anchor": {
+        "section": "Manifolds",
+        "snippet": "A manifold is a generalization of the concepts of curve and surface"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ChartedSpace",
+        "module": "Mathlib.Geometry.Manifold.ChartedSpace",
+        "match_kind": null
+      },
+      "note": "ChartedSpace (and IsManifold) provide the manifold infrastructure generalizing curves and surfaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Manifold (topology)",
+      "anchor": {
+        "section": "Manifolds",
+        "snippet": "a manifold is a topological space where every point has a neighborhood that is homeomorphic to Euclidean space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ChartedSpace",
+        "module": "Mathlib.Geometry.Manifold.ChartedSpace",
+        "match_kind": "generalization"
+      },
+      "note": "ChartedSpace formalizes a space locally homeomorphic to a model H, with the Euclidean H giving exactly a topological manifold.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Differentiable manifold",
+      "anchor": {
+        "section": "Manifolds",
+        "snippet": "a differentiable manifold is a space where each neighborhood is diffeomorphic to Euclidean space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsManifold",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "IsManifold formalizes C^n (differentiable) manifolds with corners, generalizing the diffeomorphic-to-Euclidean-space definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Angle (Euclid)",
+      "anchor": {
+        "section": "Angles",
+        "snippet": "Euclid defines a plane angle as the inclination to each other"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductGeometry.angle",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "InnerProductGeometry.angle is the undirected angle (inclination) between two vectors/directions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Angle (modern)",
+      "anchor": {
+        "section": "Angles",
+        "snippet": "an angle is the figure formed by two rays"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.angle",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.Affine",
+        "match_kind": "exact"
+      },
+      "note": "EuclideanGeometry.angle (∠ p₁ p₂ p₃) is the undirected angle at a vertex formed by two rays.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Length, area, and volume",
+      "anchor": {
+        "section": "Measures: length, area, and volume",
+        "snippet": "describe the size or extent of an object in one dimension"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "dist measures length and MeasureTheory.volume measures area/volume, but not as a single unified notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Length of a line segment via the Pythagorean theorem",
+      "anchor": {
+        "section": "Measures: length, area, and volume",
+        "snippet": "the length of a line segment can often be calculated by the Pythagorean theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.dist_eq",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "special_case"
+      },
+      "note": "EuclideanSpace.dist_eq expresses distance as the square root of the sum of squared coordinate differences (the Pythagorean formula).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Area and volume via integrals",
+      "anchor": {
+        "section": "Measures: length, area, and volume",
+        "snippet": "area and volume can be defined in terms of integrals"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Volume is the Lebesgue measure and admits integral representations (e.g. region-between integrals), but is not defined as an integral identity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Metric",
+      "anchor": {
+        "section": "Metrics and measures",
+        "snippet": "The concept of length or distance can be generalized, leading to the idea of metrics"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MetricSpace",
+        "module": "Mathlib.Topology.MetricSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "class MetricSpace formalizes a distance function (metric) generalizing length.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Measure theory",
+      "anchor": {
+        "section": "Metrics and measures",
+        "snippet": "the concepts of length, area and volume are extended by measure theory"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure",
+        "module": "Mathlib.MeasureTheory.Measure.MeasureSpaceDef",
+        "match_kind": "exact"
+      },
+      "note": "structure Measure is Mathlib's measure-theoretic generalization of length, area, and volume.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Congruence and similarity",
+      "anchor": {
+        "section": "Congruence and similarity",
+        "snippet": "similarity is used to describe objects that have the same shape"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Similar",
+        "module": "Mathlib.Topology.MetricSpace.Similarity",
+        "match_kind": "exact"
+      },
+      "note": "Similar (with Congruent in Mathlib.Topology.MetricSpace.Congruence) formalizes similarity and congruence of point families.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Configuration space of a screw",
+      "anchor": {
+        "section": "Dimension",
+        "snippet": "the configuration of a screw can be described by five coordinates"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This illustrative configuration-space example is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Symmetry determines geometry (Erlangen program)",
+      "anchor": {
+        "section": "Symmetry",
+        "snippet": "symmetry, expressed via the notion of a transformation group , determines what geometry is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has transformation/symmetry groups but does not formalize the Erlangen-program characterization of geometry.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Principle of duality in projective geometry",
+      "anchor": {
+        "section": "Symmetry",
+        "snippet": "exchange point with plane , join with meet , lies in with contains"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Projectivization",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": null
+      },
+      "note": "Projective space (Projectivization) is formalized, but the point–plane duality principle is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euclidean geometry",
+      "anchor": {
+        "section": "Euclidean geometry",
+        "snippet": "Euclidean geometry is geometry in its classical sense"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": null
+      },
+      "note": "EuclideanSpace and the Geometry/Euclidean folder provide Euclidean geometry, though the field is not a single definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Differential geometry",
+      "anchor": {
+        "section": "Differential geometry",
+        "snippet": "Differential geometry uses techniques of calculus and linear algebra to study problems in geometry"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsManifold",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": null
+      },
+      "note": "Manifold and smooth-map infrastructure exists, but 'differential geometry' is a field, not one declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Non-Euclidean geometry",
+      "anchor": {
+        "section": "Non-Euclidean geometry",
+        "snippet": "Non-Euclidean geometry consists of two geometries based on axioms closely related to those that specify Euclidean geometry"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalized hyperbolic/elliptic geometry presented as non-Euclidean geometry in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Topology",
+      "anchor": {
+        "section": "Topology",
+        "snippet": "Topology is the field concerned with the properties of continuous mappings"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TopologicalSpace",
+        "module": "Mathlib.Topology.Defs.Basic",
+        "match_kind": null
+      },
+      "note": "class TopologicalSpace and Continuous underlie topology, but the field itself is not a single statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic geometry",
+      "anchor": {
+        "section": "Algebraic geometry",
+        "snippet": "the study by means of algebraic methods of some geometrical shapes, called algebraic sets"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.Scheme",
+        "module": "Mathlib.AlgebraicGeometry.Scheme",
+        "match_kind": null
+      },
+      "note": "Schemes and zeroLocus (algebraic sets) are formalized, but the field is not one definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hilbert's Nullstellensatz",
+      "anchor": {
+        "section": "Algebraic geometry",
+        "snippet": "that establishes a strong correspondence between algebraic sets and ideals of polynomial rings"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MvPolynomial.vanishingIdeal_zeroLocus_eq_radical",
+        "module": "Mathlib.RingTheory.Nullstellensatz",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves the Nullstellensatz as vanishingIdeal_zeroLocus_eq_radical.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complex geometry",
+      "anchor": {
+        "section": "Complex geometry",
+        "snippet": "Complex geometry studies the nature of geometric structures modelled on, or arising out of, the complex plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Complex analysis and complex manifolds exist piecewise, but 'complex geometry' is not formalized as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Discrete geometry",
+      "anchor": {
+        "section": "Discrete geometry",
+        "snippet": "Discrete geometry is a subject that has close connections with convex geometry"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Discrete geometry as a field is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Computational geometry",
+      "anchor": {
+        "section": "Computational geometry",
+        "snippet": "Computational geometry deals with algorithms and their implementations for manipulating geometrical objects"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Computational geometry (algorithms on geometric objects) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Geometric group theory",
+      "anchor": {
+        "section": "Geometric group theory",
+        "snippet": "Geometric group theory studies group actions on objects that are regarded as geometric"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MulAction",
+        "module": "Mathlib.Algebra.Group.Action.Defs",
+        "match_kind": null
+      },
+      "note": "Group actions (MulAction) are formalized, but geometric group theory as a field is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Agol's proof of the virtually Haken conjecture",
+      "anchor": {
+        "section": "Geometric group theory",
+        "snippet": "Agol's proof of the virtually Haken conjecture that combines Perelman geometrization"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The virtually Haken conjecture and its proof are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convex geometry",
+      "anchor": {
+        "section": "Convex geometry",
+        "snippet": "Convex geometry investigates convex shapes in the Euclidean space and its more abstract analogues"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Convex",
+        "module": "Mathlib.Analysis.Convex.Basic",
+        "match_kind": null
+      },
+      "note": "The Convex predicate and extensive convex-analysis infrastructure exist, but the field is not one statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convexity (Archimedes)",
+      "anchor": {
+        "section": "Convex geometry",
+        "snippet": "Archimedes gave the first known precise definition of convexity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Convex",
+        "module": "Mathlib.Analysis.Convex.Basic",
+        "match_kind": null
+      },
+      "note": "def Convex formalizes convexity via the segment condition, capturing the notion Archimedes defined.",
+      "provenance": "ai"
+    }
+  ]
+}

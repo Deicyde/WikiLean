@@ -1,0 +1,425 @@
+{
+  "slug": "LHopitals_rule",
+  "wikipedia_title": "L'Hôpital's rule",
+  "display_title": "L'Hôpital's rule",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "L'Hôpital's rule (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a mathematical theorem used for evaluating the limit of a quotient of two functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasDerivAt.lhopital_zero_nhds",
+        "module": "Mathlib.Analysis.Calculus.LHopital",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib formalizes L'Hôpital's rule for evaluating quotient limits in `Mathlib/Analysis/Calculus/LHopital.lean` (0/0 form).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "L'Hôpital's rule (lead statement)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "L'Hôpital's rule states that in such cases"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasDerivAt.lhopital_zero_nhds",
+        "module": "Mathlib.Analysis.Calculus.LHopital",
+        "match_kind": "exact"
+      },
+      "note": "The lead statement that lim f/g = lim f'/g' under 0/0 conditions is `HasDerivAt.lhopital_zero_nhds` (and the `deriv` variant).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "L'Hôpital's rule (general form)",
+      "anchor": {
+        "section": "General form",
+        "snippet": "The general form of l'Hôpital's rule covers many cases"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HasDerivAt.lhopital_zero_nhdsNE",
+        "module": "Mathlib.Analysis.Calculus.LHopital",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib covers the 0/0 form on various filters (nhds, nhdsGT, nhdsLT, nhdsNE, atTop, atBot) but does not have the ∞/∞ form, so only a partial general form is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Necessary conditions for L'Hôpital's rule",
+      "anchor": {
+        "section": "Necessity of conditions: Counterexamples",
+        "snippet": "All four conditions for l'Hôpital's rule are necessary"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib states the L'Hôpital hypotheses but does not formalize the meta-claim that each is individually necessary.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Counterexample: form not indeterminate",
+      "anchor": {
+        "section": "1. Form is not indeterminate",
+        "snippet": "The necessity of the first condition can be seen by considering the counterexample"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalized counterexample to the indeterminate-form hypothesis is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Counterexample: non-differentiable point",
+      "anchor": {
+        "section": "2. Differentiability of functions",
+        "snippet": "Differentiability of functions is a requirement"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific counterexample concerning non-differentiability is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Otto Stolz counterexample (denominator derivative)",
+      "anchor": {
+        "section": "3. Derivative of denominator is zero",
+        "snippet": "can be seen by the following counterexample due to Otto Stolz"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Stolz's counterexample concerning vanishing denominator derivative is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Counterexample: limit of derivatives nonexistent",
+      "anchor": {
+        "section": "4. Limit of derivatives does not exist",
+        "snippet": "The requirement that the limit"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This counterexample regarding nonexistence of the derivative-quotient limit is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Basic exponential example",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Here is a basic example involving the exponential function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific exponential limit example using L'Hôpital is not formalized as a named declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Triple application example",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "This is a more elaborate example"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The triple-application example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Repeated application with exponent",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Repeatedly apply l'Hôpital's rule until the exponent is zero"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The repeated-application-on-exponent example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Rewriting indeterminate form example",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Here is an example involving the indeterminate form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific limit calculation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Mortgage repayment formula limit",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Here is an example involving the mortgage repayment formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The mortgage-formula limit example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Second derivative via L'Hôpital",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "One can also use l'Hôpital's rule to prove the following theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The symmetric-difference characterization of f'' is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tricky invocation of L'Hôpital",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Sometimes l'Hôpital's rule is invoked in a tricky way"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This expository example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Two applications return to original",
+      "anchor": {
+        "section": "Complications",
+        "snippet": "Two applications can lead to a return to the original expression"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This pedagogical complication is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Arbitrarily many applications fail",
+      "anchor": {
+        "section": "Complications",
+        "snippet": "An arbitrarily large number of applications may never lead to an answer even without repeating"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This example illustrating failure of repeated L'Hôpital is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Circular reasoning fallacy",
+      "anchor": {
+        "section": "Complications",
+        "snippet": "A common logical fallacy is to use L'Hôpital's rule to prove the value of a derivative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Meta-discussion about circular reasoning is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Other indeterminate forms via L'Hôpital",
+      "anchor": {
+        "section": "Other indeterminate forms",
+        "snippet": "Other indeterminate forms, such as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's L'Hôpital file only covers the 0/0 case; reductions of 0·∞, ∞-∞, 0^0, 1^∞, ∞^0 are not stated as named lemmas.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Difference-of-functions example",
+      "anchor": {
+        "section": "Other indeterminate forms",
+        "snippet": "convert the difference of two functions to a quotient"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific difference-to-quotient example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Exponent moved down via logarithms",
+      "anchor": {
+        "section": "Other indeterminate forms",
+        "snippet": "L'Hôpital's rule can be used on indeterminate forms involving exponents by using logarithms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This computational technique is not formalized as a named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Stolz–Cesàro theorem",
+      "anchor": {
+        "section": "Stolz–Cesàro theorem",
+        "snippet": "The Stolz–Cesàro theorem is a similar result involving limits of sequences"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Filter.Tendsto.cesaro",
+        "module": "Mathlib.Analysis.Asymptotics.SpecificAsymptotics",
+        "match_kind": "special_case"
+      },
+      "note": "Only the Cesàro mean theorem is in Mathlib (`Filter.Tendsto.cesaro`/`cesaro_smul`); the general Stolz–Cesàro ratio theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Geometric interpretation via parametric curve",
+      "anchor": {
+        "section": "Geometric interpretation: parametric curve and velocity vector",
+        "snippet": "Consider the parametric curve in the xy -plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The parametric-curve/velocity-vector geometric interpretation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "L'Hôpital's rule (special case)",
+      "anchor": {
+        "section": "Special case",
+        "snippet": "The proof of L'Hôpital's rule is simple in the case where"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasDerivAt.lhopital_zero_nhds",
+        "module": "Mathlib.Analysis.Calculus.LHopital",
+        "match_kind": "generalization"
+      },
+      "note": "The basic 0/0 case with continuous derivatives at the point is subsumed by Mathlib's `HasDerivAt.lhopital_zero_nhds`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "L'Hôpital's rule (general proof)",
+      "anchor": {
+        "section": "General proof",
+        "snippet": "This is a unified proof"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HasDerivAt.lhopital_zero_right_on_Ioo",
+        "module": "Mathlib.Analysis.Calculus.LHopital",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib gives a unified Cauchy-MVT-based proof for the 0/0 case (`lhopital_zero_right_on_Ioo` and its derivatives), but not the unified ∞/∞ proof.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Corollary: no removable discontinuity in derivatives",
+      "anchor": {
+        "section": "Corollary",
+        "snippet": "the derivative of a function cannot have a removable discontinuity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "hasFDerivWithinAt_closure_of_tendsto_fderiv",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Extend",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves that if the derivative converges at a boundary point then the function is differentiable there with that limit, which formalizes the no-removable-discontinuity corollary.",
+      "provenance": "ai"
+    }
+  ]
+}

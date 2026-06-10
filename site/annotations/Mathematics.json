@@ -1,0 +1,745 @@
+{
+  "slug": "Mathematics",
+  "wikipedia_title": "Mathematics",
+  "display_title": "Mathematics",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Mathematics",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Mathematics is a field of knowledge concerned with abstract concepts"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal description of the discipline, not a formalizable mathematical object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Number theory",
+      "anchor": {
+        "section": "Number theory",
+        "snippet": "Number theory evolved from the manipulation of numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A description of the subject area rather than a single formal object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fermat's Last Theorem",
+      "anchor": {
+        "section": "Number theory",
+        "snippet": "A prominent example is Fermat's Last Theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FermatLastTheorem",
+        "module": "Mathlib.NumberTheory.FLT.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`FermatLastTheorem` is defined exactly as the statement that aⁿ+bⁿ=cⁿ has no positive solutions for n≥3.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Goldbach's conjecture",
+      "anchor": {
+        "section": "Number theory",
+        "snippet": "every even integer greater than 2 is the sum of two prime numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's only 'Goldbach' result concerns coprimality of Fermat numbers, not the even-sum-of-two-primes conjecture.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Geometry",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "Geometry is one of the oldest branches of mathematics"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A description of the discipline rather than a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euclidean geometry",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "The resulting Euclidean geometry is the study of shapes and their arrangements"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": null
+      },
+      "note": "The setting `EuclideanSpace` and the `EuclideanGeometry` namespace formalize the objects, but the informal disciplinary definition itself is not a statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Non-Euclidean geometry",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "mathematicians discovered non-Euclidean geometries , which do not follow the parallel postulate"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of non-Euclidean (hyperbolic/elliptic) geometry as such was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projective geometry",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "extends Euclidean geometry by adding points at infinity"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Projectivization",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": null
+      },
+      "note": "`Projectivization` formalizes projective space, but the disciplinary description is not itself a statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Affine geometry",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "the study of properties relative to parallelism and independent from the concept of length"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AffineSpace",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Defs",
+        "match_kind": null
+      },
+      "note": "`AffineSpace` (notation for `AddTorsor`) formalizes the central object, not the informal disciplinary definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Differential geometry",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "the study of curves, surfaces, and their generalizations, which are defined using differentiable functions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsManifold",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": null
+      },
+      "note": "Smooth manifolds via `IsManifold` formalize the objects studied, but the disciplinary description is not a statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Manifold theory",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "the study of shapes that are not necessarily embedded in a larger space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ChartedSpace",
+        "module": "Mathlib.Geometry.Manifold.ChartedSpace",
+        "match_kind": null
+      },
+      "note": "`ChartedSpace` formalizes abstract manifolds, but the disciplinary description itself is not a formal statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Riemannian geometry",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "the study of distance properties in curved spaces"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.Geometry.Manifold.Riemannian.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib has developing Riemannian-geometry infrastructure (`Mathlib.Geometry.Manifold.Riemannian`), but the disciplinary description is not a formal statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic geometry",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "the study of curves, surfaces, and their generalizations, which are defined using polynomials"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.Scheme",
+        "module": "Mathlib.AlgebraicGeometry.Scheme",
+        "match_kind": null
+      },
+      "note": "`Scheme` formalizes the central object of modern algebraic geometry, but the disciplinary description is not a statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Topology",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "the study of properties that are kept under continuous deformations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TopologicalSpace",
+        "module": "Mathlib.Topology.Defs.Basic",
+        "match_kind": null
+      },
+      "note": "`TopologicalSpace` formalizes the central object, but the informal disciplinary definition is not itself a statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Discrete geometry",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "the study of finite configurations in geometry"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No object corresponding to the discipline of discrete geometry was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convex geometry",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "the study of convex sets , which takes its importance from its applications in optimization"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Convex",
+        "module": "Mathlib.Analysis.Convex.Basic",
+        "match_kind": null
+      },
+      "note": "`Convex` formalizes convex sets, but the disciplinary description is not itself a statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complex geometry",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "the geometry obtained by replacing real numbers with complex numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of complex geometry as a discipline/object was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebra",
+      "anchor": {
+        "section": "Algebra",
+        "snippet": "Algebra is the art of manipulating equations and formulas"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A description of the discipline (distinct from the `Algebra` typeclass, which means an algebra over a ring).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic structure",
+      "anchor": {
+        "section": "Algebra",
+        "snippet": "The concept of algebraic structure addresses this, consisting of a set whose elements are unspecified"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has many specific structures but no single unified 'algebraic structure' object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vector spaces",
+      "anchor": {
+        "section": "Algebra",
+        "snippet": "whose study is essentially the same as linear algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module",
+        "module": "Mathlib.Algebra.Module.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "A vector space is exactly `Module K V` over a field K; Mathlib's `Module` generalizes this to semirings.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Commutative algebra",
+      "anchor": {
+        "section": "Algebra",
+        "snippet": "which is the study of commutative rings"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CommRing",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": null
+      },
+      "note": "`CommRing` formalizes the central object (commutative rings), but the discipline itself is not a statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Boolean algebra",
+      "anchor": {
+        "section": "Algebra",
+        "snippet": "which is widely used for the study of the logical structure of computers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BooleanAlgebra",
+        "module": "Mathlib.Order.BooleanAlgebra.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The `BooleanAlgebra` class directly formalizes Boolean algebras.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Universal algebra and category theory",
+      "anchor": {
+        "section": "Algebra",
+        "snippet": "The study of types of algebraic structures as mathematical objects is the purpose of universal algebra and category theory"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Category",
+        "module": "Mathlib.CategoryTheory.Category.Basic",
+        "match_kind": null
+      },
+      "note": "Category theory is formalized via `CategoryTheory.Category`, but universal algebra has no general formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Calculus",
+      "anchor": {
+        "section": "Calculus and analysis",
+        "snippet": "It is fundamentally the study of the relationship between variables that depend continuously on each other"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "deriv",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Basic",
+        "match_kind": null
+      },
+      "note": "Differentiation (`deriv`/`fderiv`) and integration are formalized, but the disciplinary description is not itself a statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Real and complex analysis",
+      "anchor": {
+        "section": "Calculus and analysis",
+        "snippet": "Analysis is further subdivided into real analysis , where variables represent real numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.Analysis",
+        "match_kind": null
+      },
+      "note": "Real and complex analysis are extensively developed under `Mathlib.Analysis`, but no single object defines the discipline.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Functional analysis",
+      "anchor": {
+        "section": "Calculus and analysis",
+        "snippet": "where variables represent varying functions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "NormedSpace",
+        "module": "Mathlib.Analysis.Normed.Module.Basic",
+        "match_kind": null
+      },
+      "note": "Normed/Banach/Hilbert space theory (e.g. `NormedSpace`) formalizes the setting, but the discipline itself is not a statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Numerical analysis",
+      "anchor": {
+        "section": "Calculus and analysis",
+        "snippet": "mainly devoted to the computation of solutions of ordinary and partial differential equations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize numerical analysis of ODEs/PDEs.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Discrete mathematics",
+      "anchor": {
+        "section": "Discrete mathematics",
+        "snippet": "Discrete mathematics, broadly speaking, is the study of individual, countable mathematical objects"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A description of the subject area, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Four color theorem",
+      "anchor": {
+        "section": "Discrete mathematics",
+        "snippet": "The four color theorem and optimal sphere packing were two major problems"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the four color theorem exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "P versus NP problem",
+      "anchor": {
+        "section": "Discrete mathematics",
+        "snippet": "The P versus NP problem , which remains open to this day"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Computational complexity classes P and NP and their (in)equality are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Combinatorics",
+      "anchor": {
+        "section": "Discrete mathematics",
+        "snippet": "the art of enumerating mathematical objects that satisfy some given constraints"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Combinatorics is extensively developed but has no single defining object matching the disciplinary description.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cantor's diagonal argument",
+      "anchor": {
+        "section": "Mathematical logic and set theory",
+        "snippet": "by showing that this implies different sizes of infinity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.cantor_surjective",
+        "module": "Mathlib.Logic.Function.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Function.cantor_surjective` (with `cantor_injective`) is exactly Cantor's diagonal argument that no function α→Set α is surjective.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Peano axioms for natural numbers",
+      "anchor": {
+        "section": "Mathematical logic and set theory",
+        "snippet": "in Peano arithmetic , the natural numbers are defined by"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "ℕ realizes the Peano axioms (e.g. `Nat.succ_injective`, `Nat.succ_ne_zero`, induction via `Nat.rec`), but they are not bundled as an explicit axiomatization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gödel's incompleteness theorems",
+      "anchor": {
+        "section": "Mathematical logic and set theory",
+        "snippet": "in every consistent formal system that contains the natural numbers, there are theorems that are true"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Only the Gödel beta function helper (`Mathlib.Logic.Godel.GodelBetaFunction`) is present, not the incompleteness theorems.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Computational mathematics",
+      "anchor": {
+        "section": "Computational mathematics",
+        "snippet": "Computational mathematics is the study of mathematical problems that are typically too large for human, numerical capacity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A description of the discipline, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Axiom / postulate",
+      "anchor": {
+        "section": "Symbolic notation and terminology",
+        "snippet": "An axiom or postulate is a mathematical statement that is taken to be true without need of proof"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A metamathematical/terminological notion, not a formalizable mathematical object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conjecture",
+      "anchor": {
+        "section": "Symbolic notation and terminology",
+        "snippet": "If a mathematical statement has yet to be proven (or disproven), it is termed a conjecture"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A terminological notion about proof status, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Theorem",
+      "anchor": {
+        "section": "Symbolic notation and terminology",
+        "snippet": "a statement that is proven to be true becomes a theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A metamathematical/terminological notion, not a formalizable object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lemma",
+      "anchor": {
+        "section": "Symbolic notation and terminology",
+        "snippet": "A specialized theorem that is mainly used to prove another theorem is called a lemma"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A terminological notion, not a formalizable mathematical statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Corollary",
+      "anchor": {
+        "section": "Symbolic notation and terminology",
+        "snippet": "A proven instance that forms part of a more general finding is termed a corollary"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A terminological notion, not a formalizable mathematical statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Every free module is flat / a field is a ring",
+      "anchor": {
+        "section": "Symbolic notation and terminology",
+        "snippet": "every free module is flat"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Flat.of_free",
+        "module": "Mathlib.RingTheory.Flat.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Module.Flat.of_free` directly states that free modules are flat.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Prime factorization and RSA cryptosystem",
+      "anchor": {
+        "section": "Unreasonable effectiveness",
+        "snippet": "A notable example is the prime factorization of natural numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.primeFactorsList",
+        "module": "Mathlib.Data.Nat.Factors",
+        "match_kind": null
+      },
+      "note": "Prime factorization is formalized (`Nat.primeFactorsList`, unique factorization), but the RSA cryptosystem is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ellipses as planetary orbits",
+      "anchor": {
+        "section": "Unreasonable effectiveness",
+        "snippet": "A second historical example is the theory of ellipses"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Kepler orbits / planetary ellipses are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetry group",
+      "anchor": {
+        "section": "Artistic expression",
+        "snippet": "the symmetries of an object form a group known as the symmetry group"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Equiv.Perm",
+        "module": "Mathlib.Logic.Equiv.Defs",
+        "match_kind": null
+      },
+      "note": "Symmetry/automorphism groups are realized via `Equiv.Perm` and `MulAut`, but there is no single general 'symmetry group of an object' construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Apéry's theorem",
+      "anchor": {
+        "section": "Psychology (aesthetic, creativity and intuition)",
+        "snippet": "An extreme example is Apery's theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The irrationality of ζ(3) is listed as a target but not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Infinitude of primes",
+      "anchor": {
+        "section": "Psychology (aesthetic, creativity and intuition)",
+        "snippet": "Euclid's proof that there are infinitely many prime numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.exists_infinite_primes",
+        "module": "Mathlib.Data.Nat.Prime.Infinite",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.exists_infinite_primes` is Euclid's theorem that there exist arbitrarily large primes.",
+      "provenance": "ai"
+    }
+  ]
+}

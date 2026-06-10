@@ -1,0 +1,409 @@
+{
+  "slug": "Church-Turing_thesis",
+  "wikipedia_title": "Church–Turing thesis",
+  "display_title": "Church–Turing thesis",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Church–Turing thesis",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "It states that a function on the natural numbers can be calculated by an effective method if and only if it is computable by a Turing machine"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Church–Turing thesis is a meta-statement about an informal notion (effective method) and is not stated as a Lean theorem in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "General recursive functions",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "formalized the definition of the class of general recursive functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Partrec",
+        "module": "Mathlib.Computability.Partrec",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Partrec` inductively defines the class of (partial) general recursive functions on ℕ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "λ-computable function",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A function on the natural numbers is called λ-computable if the corresponding function on the Church numerals can be represented by a term of the λ-calculus"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formalization of the untyped λ-calculus or Church numerals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Turing computable function",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a function on the natural numbers is called Turing computable if some Turing machine computes the corresponding function on encoded natural numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Turing.TM2Computable",
+        "module": "Mathlib.Computability.TuringMachine.Computable",
+        "match_kind": "exact"
+      },
+      "note": "`TM2Computable` (and the in-time/poly-time variants) defines what it means for a function to be computed by a finite TM2 Turing machine.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Equivalence of computability models",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "proved that these three formally defined classes of computable functions coincide"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Turing.PartrecToTM2.tr_eval",
+        "module": "Mathlib.Computability.TuringMachine.ToPartrec",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves a Turing machine TM2 can simulate every `Partrec` function (and `Nat.Partrec.Code.exists_code` encodes Partrec into codes), but the λ-calculus model and a full three-way equivalence are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Effective method (Rosser)",
+      "anchor": {
+        "section": "Statement in Church's and Turing's words",
+        "snippet": "a method each step of which is precisely predetermined and which is certain to produce the answer in a finite number of steps"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal philosophical definition; not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Effectively calculable vs computable",
+      "anchor": {
+        "section": "Statement in Church's and Turing's words",
+        "snippet": "the words \"effectively calculable\" will mean \"produced by any intuitively 'effective' means whatsoever\""
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal terminological clarification; no Lean counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Statement of the thesis",
+      "anchor": {
+        "section": "Statement in Church's and Turing's words",
+        "snippet": "The thesis can be stated as: Every effectively calculable function is a computable function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Restatement of the Church–Turing thesis, an informal claim with no Lean formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Unsolvability of the Entscheidungsproblem",
+      "anchor": {
+        "section": "Circa 1930–1952",
+        "snippet": "proved (1936) that the Entscheidungsproblem is unsolvable: there is no algorithm that can determine whether a well formed formula has a beta normal form"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.Partrec.Code.halting_problem",
+        "module": "Mathlib.Computability.Halting",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib proves the halting problem is not computable (`halting_problem`), but does not formalize the Entscheidungsproblem for first-order logic or β-normal forms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Equivalence of λ-calculus and Turing machines",
+      "anchor": {
+        "section": "Circa 1930–1952",
+        "snippet": "Turing showed that the classes of functions defined by λ-calculus and Turing machines coincided"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no λ-calculus, so this equivalence is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rosser's identification",
+      "anchor": {
+        "section": "Circa 1930–1952",
+        "snippet": "All three definitions are equivalent, so it does not matter which one is used"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Partrec.nat_iff",
+        "module": "Mathlib.Computability.Partrec",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib relates `Partrec` and `Nat.Partrec` (and TM via `PartrecToTM2.tr_eval`), giving two of the three identifications but not λ-definability.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Kleene's Thesis I",
+      "anchor": {
+        "section": "Circa 1930–1952",
+        "snippet": "Every effectively calculable function (effectively decidable predicate) is general recursive"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A thesis identifying an informal notion with `Nat.Partrec`; cannot be stated as a Lean theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Theorem XXX (Kleene)",
+      "anchor": {
+        "section": "Circa 1930–1952",
+        "snippet": "The following classes of partial functions are coextensive"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.Partrec.Code.exists_code",
+        "module": "Mathlib.Computability.PartrecCode",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves `Nat.Partrec f ↔ ∃ c, eval c = f`, giving coextensiveness with code-evaluable functions; the full multi-way coextensiveness (μ-recursive, λ-definable, etc.) is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Turing's thesis",
+      "anchor": {
+        "section": "Circa 1930–1952",
+        "snippet": "Turing's thesis that every function which would naturally be regarded as computable is computable under his definition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal thesis, not a formal Lean theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gandy's theorem",
+      "anchor": {
+        "section": "Later developments",
+        "snippet": "What can be calculated by a device satisfying principles I–IV is computable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gandy machines and his principles are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sieg's computor constraints",
+      "anchor": {
+        "section": "Later developments",
+        "snippet": "Sieg presents a series of constraints on the behavior of a computor"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Sieg's analysis is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gödel absoluteness of reckonability",
+      "anchor": {
+        "section": "Success of the thesis",
+        "snippet": "a function which is computable ['reckonable'] in one of the systems S i , or even in a system of transfinite type, is already computable [reckonable] in S 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of reckonability across the hierarchy of systems S_i.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Infinite RE set contains infinite recursive subset",
+      "anchor": {
+        "section": "Informal usage in proofs",
+        "snippet": "Each infinite recursively enumerable (RE) set contains an infinite recursive set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines `REPred` and `ComputablePred` in `Mathlib.Computability.Halting`, but the theorem that every infinite RE set has an infinite recursive subset is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Physical Church–Turing thesis",
+      "anchor": {
+        "section": "Variations",
+        "snippet": "All physically computable functions are Turing-computable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Physical Church–Turing thesis is an empirical claim with no Lean formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Logarithmic slowdown of universal Turing machine",
+      "anchor": {
+        "section": "Variations",
+        "snippet": "a (multi-tape) universal Turing machine only suffers a logarithmic slowdown factor in simulating any Turing machine"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not have a universal Turing machine with quantitative simulation bounds.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Feasibility (extended Church–Turing) thesis",
+      "anchor": {
+        "section": "Variations",
+        "snippet": "A probabilistic Turing machine can efficiently simulate any realistic model of computation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No probabilistic TM model or complexity-theoretic CT thesis in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Invariance thesis",
+      "anchor": {
+        "section": "Variations",
+        "snippet": "'Reasonable' machines can simulate each other within a polynomially bounded overhead in time and a constant-factor overhead in space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the invariance thesis (polynomial/constant simulation overhead between machine models).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quantum complexity-theoretic Church–Turing thesis",
+      "anchor": {
+        "section": "Variations",
+        "snippet": "A quantum Turing machine can efficiently simulate any realistic model of computation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no quantum Turing machine model.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Busy Beaver function",
+      "anchor": {
+        "section": "Non-computable functions",
+        "snippet": "This function takes an input n and returns the largest number of symbols that a Turing machine with n states can print before halting, when run with no input"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `BusyBeaver`-style definition exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Busy Beaver and the halting problem",
+      "anchor": {
+        "section": "Non-computable functions",
+        "snippet": "Finding an upper bound on the busy beaver function is equivalent to solving the halting problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a Busy Beaver definition in Mathlib, this equivalence is not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

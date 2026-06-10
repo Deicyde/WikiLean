@@ -1,0 +1,313 @@
+{
+  "slug": "Numerical_digit",
+  "wikipedia_title": "Numerical digit",
+  "display_title": "Numerical digit",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Numerical digit",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a single symbol used to represent numbers in positional notation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.digits",
+        "module": "Mathlib.Data.Nat.Digits.Defs",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes digit sequences via Nat.digits (little-endian list of base-b digits) but has no standalone notion of a digit as a symbol.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of digits equals base",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the number of different digits required is the absolute value of the base"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.digits_lt_base",
+        "module": "Mathlib.Data.Nat.Digits.Defs",
+        "match_kind": null
+      },
+      "note": "Nat.digits_lt_base proves every base-b digit is < b (so values range 0..b-1), but the cardinality claim 'number of distinct digits = base' is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Digits in decimal, binary, hexadecimal",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "decimal (base 10) requires ten digits (0 to 9)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "These concrete base examples are not stated as lemmas in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Value of a numeral",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "The value of the numeral is computed by multiplying each digit in the sequence by its place value"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.ofDigits",
+        "module": "Mathlib.Data.Nat.Digits.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Nat.ofDigits interprets a digit list as a number, with ofDigits_eq_sum_mapIdx giving the explicit sum of digit times place value.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Digits and the radix",
+      "anchor": {
+        "section": "Digital values",
+        "snippet": "has one unique digit for each integer from zero up to, but not including, the radix of the number system"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.digits_lt_base",
+        "module": "Mathlib.Data.Nat.Digits.Defs",
+        "match_kind": null
+      },
+      "note": "Nat.digits_lt_base establishes that digits lie in 0..radix-1, but the radix-to-digit-set correspondence is not a separate definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Place values in 12 and 312",
+      "anchor": {
+        "section": "Digital values",
+        "snippet": "The number 12 is expressed with the numeral"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a specific worked numeric example, not a Mathlib statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Successive place values",
+      "anchor": {
+        "section": "Computation of place values",
+        "snippet": "Each successive place to the left of this has a place value equal to the place value of the previous digit times the base"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.ofDigits_eq_sum_mapIdx",
+        "module": "Mathlib.Data.Nat.Digits.Lemmas",
+        "match_kind": null
+      },
+      "note": "The place value b^i (each position scaled by an extra factor of b) is implicit in ofDigits_eq_sum_mapIdx, but 'place value' is not a named defined concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Place value formula",
+      "anchor": {
+        "section": "Computation of place values",
+        "snippet": "The calculation involves the multiplication of the given digit by the base raised by the exponent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.ofDigits_eq_sum_mapIdx",
+        "module": "Mathlib.Data.Nat.Digits.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "Nat.ofDigits_eq_sum_mapIdx states ofDigits b L = sum of a * b^i, exactly the digit-times-base-power place value formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Place values in 10.34",
+      "anchor": {
+        "section": "Computation of place values",
+        "snippet": "For example, in the numeral 10.34"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fractional/decimal place values are not handled by Nat.digits, which only treats natural numbers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Balanced ternary",
+      "anchor": {
+        "section": "Unusual systems",
+        "snippet": "Balanced ternary is unusual in having the digit values"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No balanced ternary representation exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Digital root",
+      "anchor": {
+        "section": "Digital roots",
+        "snippet": "The digital root is the single-digit number obtained by summing the digits of a given number"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.modEq_nine_digits_sum",
+        "module": "Mathlib.Data.Nat.Digits.Div",
+        "match_kind": null
+      },
+      "note": "Digit-sum infrastructure and n ≡ (digits 10 n).sum [MOD 9] exist, but the iterated single-digit digital root function itself is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Casting out nines",
+      "anchor": {
+        "section": "Casting out nines",
+        "snippet": "Casting out nines is a procedure for checking arithmetic done by hand"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.modEq_nine_digits_sum",
+        "module": "Mathlib.Data.Nat.Digits.Div",
+        "match_kind": null
+      },
+      "note": "Nat.modEq_nine_digits_sum formalizes the underlying congruence n ≡ digit-sum mod 9, but the arithmetic-checking procedure is not formalized as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Digital root check for addition",
+      "anchor": {
+        "section": "Casting out nines",
+        "snippet": "Casting out nines makes use of the fact that if"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.modEq_nine_digits_sum",
+        "module": "Mathlib.Data.Nat.Digits.Div",
+        "match_kind": null
+      },
+      "note": "The fact n ≡ digit-sum mod 9 (modEq_nine_digits_sum) plus Nat.ModEq's compatibility with addition derives the check, but it is not stated as a single lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Repunit",
+      "anchor": {
+        "section": "Repunits and repdigits",
+        "snippet": "Repunits are integers that are represented with only the digit 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No repunit definition exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "1111 is a repunit",
+      "anchor": {
+        "section": "Repunits and repdigits",
+        "snippet": "1111 (one thousand, one hundred and eleven) is a repunit"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No repunit concept or this example exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Repdigit",
+      "anchor": {
+        "section": "Repunits and repdigits",
+        "snippet": "Repdigits are a generalization of repunits"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No repdigit definition exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "333 is a repdigit",
+      "anchor": {
+        "section": "Repunits and repdigits",
+        "snippet": "333 is a repdigit"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No repdigit concept or this example exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Palindromic number",
+      "anchor": {
+        "section": "Palindromic numbers and Lychrel numbers",
+        "snippet": "Palindromic numbers are numbers that read the same when their digits are reversed"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "List.Palindrome",
+        "module": "Mathlib.Data.List.Palindrome",
+        "match_kind": "generalization"
+      },
+      "note": "List.Palindrome defines lists equal to their reverse and is applied to (digits 10 n) in eleven_dvd_of_palindrome, but there is no dedicated 'palindromic number' definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lychrel number",
+      "anchor": {
+        "section": "Palindromic numbers and Lychrel numbers",
+        "snippet": "A Lychrel number is a positive integer that never yields a palindromic number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Lychrel number or reverse-and-add iteration is formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

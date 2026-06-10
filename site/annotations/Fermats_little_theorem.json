@@ -1,0 +1,349 @@
+{
+  "slug": "Fermats_little_theorem",
+  "wikipedia_title": "Fermat's little theorem",
+  "display_title": "Fermat's little theorem",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "theorem",
+      "label": "Fermat's little theorem (a^p − a form)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "then for any integer a"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.ModEq.pow_prime_eq_self",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Int.ModEq.pow_prime_eq_self states n^p ≡ n [ZMOD p] for prime p, exactly the a^p−a form (also ZMod.pow_card and Int.prime_dvd_pow_self_sub).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "(Lead)",
+          "snippet": "then for any integer a"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a^{p}\\equiv a{\\pmod {p}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Example: a=2, p=7 (a^p − a)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "128 − 2 = 126 = 7 × 18"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This concrete numerical instance (128−2=126=7×18) is not stated in Mathlib, though it is provable by decide/norm_num from the general theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fermat's little theorem (coprime form)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is equivalent to the statement that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.ModEq.pow_card_sub_one_eq_one",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Int.ModEq.pow_card_sub_one_eq_one gives a^(p−1) ≡ 1 [ZMOD p] for a coprime to p (with Nat/ZMod variants).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "(Lead)",
+          "snippet": "is equivalent to the statement that"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a^{p-1}\\equiv 1{\\pmod {p}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Example: a=2, p=7 (coprime form)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "64 − 1 = 63 = 7 × 9"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This concrete numerical instance (64−1=63=7×9) is not stated in Mathlib, though provable by decide from the general theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fermat's original formulation",
+      "anchor": {
+        "section": "History",
+        "snippet": "is any integer not divisible by p"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.prime_dvd_pow_sub_one",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Int.prime_dvd_pow_sub_one states (p:ℤ) ∣ n^(p−1)−1 for n coprime to p, matching Fermat's original divisibility formulation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chinese hypothesis and its counterexample",
+      "anchor": {
+        "section": "Further history",
+        "snippet": "made the related hypothesis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the Chinese hypothesis (2^n ≡ 2 mod n ⇒ n prime) nor its counterexample 341 is stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler's theorem",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "For any modulus n and any integer a coprime to n"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.ModEq.pow_totient",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Nat.ModEq.pow_totient states a^φ(n) ≡ 1 [MOD n] for a coprime to n (Fermat–Euler totient theorem), with unit version ZMod.pow_totient.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fermat as special case of Euler",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "is indeed a special case"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.totient_prime",
+        "module": "Mathlib.Data.Nat.Totient",
+        "match_kind": "special_case"
+      },
+      "note": "The bridging fact φ(p)=p−1 is Nat.totient_prime, but the explicit statement that Fermat is a special case of Euler is not formalized as a single declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Corollary of Euler's theorem (exponent reduction)",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "For every positive integer n , if the integer a is coprime with n"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "pow_eq_pow_iff_modEq",
+        "module": "Mathlib.GroupTheory.OrderOfElement",
+        "match_kind": "generalization"
+      },
+      "note": "pow_eq_pow_iff_modEq gives x^m=x^k ↔ m≡k [MOD orderOf x], a refinement, but the exact exponent-reduction-mod-φ(n) corollary is not stated separately.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Generalizations",
+          "snippet": "For every positive integer n , if the integer a is coprime with n"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x\\equiv y{\\pmod {\\varphi (n)}}\\quad {\\text{implies}}\\quad a^{x}\\equiv a^{y}{\\pmod {n}},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a^{x}=a^{y+\\varphi (n)k}=a^{y}(a^{\\varphi (n)})^{k}\\equiv a^{y}1^{k}\\equiv a^{y}{\\pmod {n}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Totient of a product of two primes",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "if n = pq is the product of two distinct prime numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.totient_mul",
+        "module": "Mathlib.Data.Nat.Totient",
+        "match_kind": "generalization"
+      },
+      "note": "φ(pq)=(p−1)(q−1) follows from Nat.totient_mul (coprime multiplicativity) plus Nat.totient_prime, but is not a standalone lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Converse fails for Carmichael numbers",
+      "anchor": {
+        "section": "Converse",
+        "snippet": "fails for Carmichael numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.exists_infinite_pseudoprimes",
+        "module": "Mathlib.NumberTheory.FermatPsp",
+        "match_kind": null
+      },
+      "note": "Failure of the converse is witnessed by Nat.exists_infinite_pseudoprimes (composite numbers passing the test), but Carmichael numbers specifically are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lehmer's theorem",
+      "anchor": {
+        "section": "Converse",
+        "snippet": "and for all primes q dividing"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lucas_primality",
+        "module": "Mathlib.NumberTheory.LucasPrimality",
+        "match_kind": "exact"
+      },
+      "note": "lucas_primality states that a^(p−1)=1 with a^((p−1)/q)≠1 for all primes q ∣ p−1 implies p prime, exactly Lehmer's converse theorem.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Converse",
+          "snippet": "and for all primes q dividing"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a^{p-1}\\equiv 1{\\pmod {p}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a^{(p-1)/q}\\not \\equiv 1{\\pmod {p}},}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Fermat pseudoprime to base a",
+      "anchor": {
+        "section": "Pseudoprimes",
+        "snippet": "is called a (Fermat) pseudoprime to base a"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.FermatPsp",
+        "module": "Mathlib.NumberTheory.FermatPsp",
+        "match_kind": "exact"
+      },
+      "note": "Nat.FermatPsp n b defines a Fermat pseudoprime as a composite n with n ∣ b^(n−1)−1, matching the article's definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "First base-2 pseudoprime (Sarrus, 341)",
+      "anchor": {
+        "section": "Pseudoprimes",
+        "snippet": "The first pseudoprime to base 2 was found in 1820"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific fact that 341 is the first base-2 pseudoprime is not stated in Mathlib, though FermatPsp 341 2 is decidable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Carmichael number",
+      "anchor": {
+        "section": "Pseudoprimes",
+        "snippet": "is called a Carmichael number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Carmichael numbers are not defined in Mathlib (FermatPsp.lean explicitly notes this); ArithmeticFunction.carmichael is the unrelated Carmichael function.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Pseudoprimes",
+          "snippet": "is called a Carmichael number"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\gcd \\left(p,\\sum _{a=1}^{p-1}a^{p-1}\\right)=1}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Prime or Carmichael characterization",
+      "anchor": {
+        "section": "Pseudoprimes",
+        "snippet": "is either a prime or a Carmichael number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This characterization is not formalized since Carmichael numbers are not defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Pseudoprimes",
+          "snippet": "is either a prime or a Carmichael number"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\gcd \\left(p,\\sum _{a=1}^{p-1}a^{p-1}\\right)=1}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Miller–Rabin extension of Fermat's little theorem",
+      "anchor": {
+        "section": "Miller–Rabin primality test",
+        "snippet": "If p is an odd prime and p − 1 = 2 s d"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Miller–Rabin primality test or its underlying square-root-of-unity refinement of Fermat's theorem is present in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

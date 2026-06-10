@@ -1,0 +1,260 @@
+{
+  "slug": "Fast_Fourier_transform",
+  "wikipedia_title": "Fast Fourier transform",
+  "display_title": "Fast Fourier transform",
+  "schema_version": 3,
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Discrete Fourier transform (DFT)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The DFT is defined by the formula"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Fast Fourier transform (FFT)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "An FFT is any method to compute the same results"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Direct DFT evaluation cost",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Evaluating this definition directly requires"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Cooley–Tukey algorithm",
+      "anchor": {
+        "section": "Cooley–Tukey algorithm",
+        "snippet": "This is a divide-and-conquer algorithm that recursively breaks down a DFT of any composite size"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Prime-factor (Good–Thomas) algorithm",
+      "anchor": {
+        "section": "Other FFT algorithms",
+        "snippet": "one can use the prime-factor (Good–Thomas) algorithm (PFA), based on the Chinese remainder theorem"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Rader–Brenner algorithm",
+      "anchor": {
+        "section": "Other FFT algorithms",
+        "snippet": "The Rader–Brenner algorithm (1976)"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Bruun's algorithm",
+      "anchor": {
+        "section": "Other FFT algorithms",
+        "snippet": "Bruun's algorithm , in particular, is based on interpreting the FFT as a recursive factorization"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Winograd FFT algorithm",
+      "anchor": {
+        "section": "Other FFT algorithms",
+        "snippet": "Another polynomial viewpoint is exploited by the Winograd FFT algorithm"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Winograd minimal-multiplication bound",
+      "anchor": {
+        "section": "Other FFT algorithms",
+        "snippet": "Winograd showed that the DFT can be computed with only"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Rader's algorithm",
+      "anchor": {
+        "section": "Other FFT algorithms",
+        "snippet": "Rader's algorithm , exploiting the existence of a generator for the multiplicative group modulo prime"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Bluestein's chirp-z algorithm",
+      "anchor": {
+        "section": "Other FFT algorithms",
+        "snippet": "Another prime-size FFT is due to L. I. Bluestein, and is sometimes called the chirp-z algorithm"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Hexagonal FFT (HFFT)",
+      "anchor": {
+        "section": "Other FFT algorithms",
+        "snippet": "Hexagonal fast Fourier transform (HFFT) aims at computing an efficient FFT for the hexagonally-sampled data"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Real-input DFT symmetry",
+      "anchor": {
+        "section": "FFT algorithms specialized for real or symmetric data",
+        "snippet": "the input data for the DFT are purely real, in which case the outputs satisfy the symmetry"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Winograd lower bound on real multiplications",
+      "anchor": {
+        "section": "Bounds on complexity and operation counts",
+        "snippet": "tight"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Morgenstern lower bound on additions",
+      "anchor": {
+        "section": "Bounds on complexity and operation counts",
+        "snippet": "Morgenstern"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Pan asynchronicity lower bound",
+      "anchor": {
+        "section": "Bounds on complexity and operation counts",
+        "snippet": "Pan (1986)"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Papadimitriou optimality of Cooley–Tukey additions",
+      "anchor": {
+        "section": "Bounds on complexity and operation counts",
+        "snippet": "Papadimitriou (1979)"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Split-radix arithmetic complexity",
+      "anchor": {
+        "section": "Bounds on complexity and operation counts",
+        "snippet": "the lowest published count for power-of-two"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sparse-input FFT complexity",
+      "anchor": {
+        "section": "Approximations",
+        "snippet": "if the data are sparse"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cooley–Tukey relative error bound",
+      "anchor": {
+        "section": "Accuracy",
+        "snippet": "The upper bound on the relative error for the Cooley–Tukey algorithm"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fixed-point Cooley–Tukey error growth",
+      "anchor": {
+        "section": "Accuracy",
+        "snippet": "the finite-precision errors accumulated by FFT algorithms are worse"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Randomized FFT correctness verification",
+      "anchor": {
+        "section": "Accuracy",
+        "snippet": "rigorous guarantees can be obtained in"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Multidimensional DFT",
+      "anchor": {
+        "section": "Multidimensional FFTs",
+        "snippet": "the multidimensional DFT"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Row-column algorithm",
+      "anchor": {
+        "section": "Multidimensional FFTs",
+        "snippet": "the simplest and most common multidimensional DFT algorithm, known as the row-column algorithm"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Vector-radix FFT algorithm",
+      "anchor": {
+        "section": "Multidimensional FFTs",
+        "snippet": "the vector-radix FFT algorithm , which is a generalization of the ordinary Cooley–Tukey algorithm"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Spherical harmonic FFT on S²",
+      "anchor": {
+        "section": "Other generalizations",
+        "snippet": "generalization to spherical harmonics on the sphere"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Fast folding algorithm",
+      "anchor": {
+        "section": "Other generalizations",
+        "snippet": "The fast folding algorithm is analogous to the FFT"
+      },
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Quantum FFT",
+      "anchor": {
+        "section": "Research areas",
+        "snippet": "This is implemented as a sequence of 1- or 2-bit quantum gates now known as quantum FFT"
+      },
+      "provenance": "ai-agent1"
+    }
+  ]
+}

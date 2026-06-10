@@ -1,0 +1,585 @@
+{
+  "slug": "Tangent",
+  "wikipedia_title": "Tangent",
+  "display_title": "Tangent",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Tangent line to a plane curve",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a straight line is tangent to the curve"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "tangentConeAt",
+        "module": "Mathlib.Analysis.Calculus.TangentCone.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has `tangentConeAt` (tangent directions to a set at a point) and `HasDerivAt`/`HasFDerivAt`, but not a named `tangentLine` construct for plane curves.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Point of tangency",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The point where the tangent line and the curve meet or intersect is called the point of tangency"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.Sphere.IsTangentAt",
+        "module": "Mathlib.Geometry.Euclidean.Sphere.Tangent",
+        "match_kind": "special_case"
+      },
+      "note": "The notion is captured for spheres via `IsTangentAt` (point at which an affine subspace touches a sphere), but no general `pointOfTangency` exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tangent line approximation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "can also be thought of as a tangent line approximation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HasFDerivAt",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `HasFDerivAt`/`HasDerivAt` encode the first-order linear approximation, but no specific 'tangent line approximation' lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tangent plane to a surface (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the tangent plane to a surface at a given point is the plane that"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TangentSpace",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Tangent planes for embedded surfaces are not formalized; the manifold `TangentSpace` is the closest analogue.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Leibniz tangent (limit of secants)",
+      "anchor": {
+        "section": "History",
+        "snippet": "the tangent to a curve at a point P on the curve is the limit of the line passing through two points of the curve"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "hasDerivAt_iff_tendsto_slope",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Slope",
+        "match_kind": "special_case"
+      },
+      "note": "For graphs of functions, `hasDerivAt_iff_tendsto_slope` formalizes the limit-of-secants characterization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tangent as limit of secant lines",
+      "anchor": {
+        "section": "Tangent line to a plane curve",
+        "snippet": "The tangent at A is the limit when point B approximates or tends to A"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "hasDerivAt_iff_tendsto_slope",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Slope",
+        "match_kind": "special_case"
+      },
+      "note": "Captured for function graphs by `hasDerivAt_iff_tendsto_slope`; no general curve-theoretic version.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inflection point",
+      "anchor": {
+        "section": "Tangent line to a plane curve",
+        "snippet": "A point where the tangent (at this point) crosses the curve is called an inflection point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Inflection`/`inflectionPoint` declaration was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Inflection points of common curves",
+      "anchor": {
+        "section": "Tangent line to a plane curve",
+        "snippet": "Circles , parabolas , hyperbolas and ellipses do not have any inflection point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of inflection-point classification for conics in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Supporting line",
+      "anchor": {
+        "section": "Tangent line to a plane curve",
+        "snippet": "In convex geometry , such lines are called supporting lines"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsExposed",
+        "module": "Mathlib.Analysis.Convex.Exposed",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has `IsExposed` (exposed faces by supporting hyperplanes) but no named 'supporting line'.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Slope of secant via difference quotient",
+      "anchor": {
+        "section": "Intuitive description",
+        "snippet": "The slope of the secant line passing through p and q is equal to the difference quotient"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "slope",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Slope",
+        "match_kind": "exact"
+      },
+      "note": "`slope f a b := (b - a)⁻¹ • (f b -ᵥ f a)` is exactly the secant difference quotient.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Slope of tangent as limit of difference quotients",
+      "anchor": {
+        "section": "More rigorous description",
+        "snippet": "This leads to the definition of the slope of the tangent line to the graph as the limit of the difference quotients"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "hasDerivAt_iff_tendsto_slope",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Slope",
+        "match_kind": "exact"
+      },
+      "note": "`hasDerivAt_iff_tendsto_slope` states `HasDerivAt f f' x ↔ Tendsto (slope f x) (𝓝[≠] x) (𝓝 f')`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Vertical tangent: y = x^(1/3)",
+      "anchor": {
+        "section": "How the method can fail",
+        "snippet": "This curve has a tangent line at the origin that is vertical"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The vertical-tangent example for x^(1/3) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cusp: y = x^(2/3)",
+      "anchor": {
+        "section": "How the method can fail",
+        "snippet": "this graph has a cusp at the origin"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of `Cusp` and no formalization of this specific example was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Corner: y = |x|",
+      "anchor": {
+        "section": "How the method can fail",
+        "snippet": "Having two different (but finite) slopes is called a corner"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Non-differentiability of `|x|` at 0 isn't packaged as a 'corner' example in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Discontinuity implies non-differentiability",
+      "anchor": {
+        "section": "How the method can fail",
+        "snippet": "since differentiability implies continuity, the contrapositive states discontinuity implies non-differentiability"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DifferentiableAt.continuousAt",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`DifferentiableAt.continuousAt` gives differentiability ⇒ continuity; the contrapositive is immediate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equation of tangent line via point-slope",
+      "anchor": {
+        "section": "Equations",
+        "snippet": "so by the point–slope formula the equation of the tangent line at"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The explicit `y = f(a) + f'(a)(x - a)` tangent-line equation isn't a named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tangent via polynomial division",
+      "anchor": {
+        "section": "Equations",
+        "snippet": "the tangent line's equation can also be found"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of computing tangent lines to polynomial graphs by Euclidean division was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tangent via implicit differentiation",
+      "anchor": {
+        "section": "Equations",
+        "snippet": "the value of the slope can be found by implicit differentiation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ImplicitFunction",
+        "module": "Mathlib.Analysis.Calculus.Implicit",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's implicit function theorem provides the underlying machinery but doesn't state the tangent-slope formula directly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Singular point",
+      "anchor": {
+        "section": "Equations",
+        "snippet": "the tangent line is not defined and the point ( X , Y ) is said to be singular"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `singularPoint`/`IsSingular` notion for plane curves was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tangent line in homogeneous coordinates",
+      "anchor": {
+        "section": "Equations",
+        "snippet": "It follows that the homogeneous equation of the tangent line is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No tangent-in-projective-coordinates lemma was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tangent to a parametric curve",
+      "anchor": {
+        "section": "Equations",
+        "snippet": "If the curve is given parametrically by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No tangent-line construction specifically for parametric curves was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Normal line to a curve",
+      "anchor": {
+        "section": "Normal line to a curve",
+        "snippet": "The line perpendicular to the tangent line to a curve at the point of tangency is called the normal line to the curve at that point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `normalLine` declaration exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equation of the normal line",
+      "anchor": {
+        "section": "Normal line to a curve",
+        "snippet": "it follows that the equation of the normal line at"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of an explicit normal-line equation was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Angle between curves",
+      "anchor": {
+        "section": "Angle between curves",
+        "snippet": "The angle between two curves at a point where they intersect is defined as the angle between their tangent lines at that point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `angleBetweenCurves` definition was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tangent and orthogonal curves",
+      "anchor": {
+        "section": "Angle between curves",
+        "snippet": "two curves are said to be tangent at a point if they have the same tangent at a point, and orthogonal if their tangent lines are orthogonal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of tangent/orthogonal curves was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tangents at a singular point via lowest-degree terms",
+      "anchor": {
+        "section": "Multiple tangents at a point",
+        "snippet": "the equations of these lines can be found for algebraic curves by factoring the equation formed by eliminating all but the lowest degree terms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Tangent cones of algebraic curves via initial forms are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Tangents to the limaçon trisectrix at the origin",
+      "anchor": {
+        "section": "Multiple tangents at a point",
+        "snippet": "the equation of the limaçon trisectrix shown to the right is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The limaçon trisectrix is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Left and right tangents",
+      "anchor": {
+        "section": "Multiple tangents at a point",
+        "snippet": "the tangents at that point with those slopes are called the left and right tangents"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No left/right tangent line definitions; only one-sided derivatives via `HasDerivWithinAt`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Coinciding left/right tangents for y = x^(2/3)",
+      "anchor": {
+        "section": "Multiple tangents at a point",
+        "snippet": "both the left and right tangent lines have equation x = 0"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific example is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tangent vector",
+      "anchor": {
+        "section": "Tangent line to a space curve",
+        "snippet": "a tangent vector is a vector that is tangent to a curve or surface at a given point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TangentSpace",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Tangent vectors live in `TangentSpace I x`, defined for a point of a manifold.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tangent vector as linear derivation on germs",
+      "anchor": {
+        "section": "Tangent line to a space curve",
+        "snippet": "a tangent vector at the point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PointDerivation",
+        "module": "Mathlib.Geometry.Manifold.DerivationBundle",
+        "match_kind": "exact"
+      },
+      "note": "`PointDerivation I x` is the space of derivations on smooth functions at `x`, modelling tangent vectors as derivations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tangent circles",
+      "anchor": {
+        "section": "Tangent circles",
+        "snippet": "Two distinct circles lying in the same plane are said to be tangent to each other if they meet at exactly one point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.Sphere.IsExtTangent",
+        "module": "Mathlib.Geometry.Euclidean.Sphere.Tangent",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines tangency between spheres (`IsExtTangent`, `IsIntTangent`), which specialises to tangent circles in dimension 2.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Externally and internally tangent circles",
+      "anchor": {
+        "section": "Tangent circles",
+        "snippet": "The two circles are called externally tangent if the distance between their centres is equal to the sum of their radii"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.Sphere.isExtTangent_iff_dist_center",
+        "module": "Mathlib.Geometry.Euclidean.Sphere.Tangent",
+        "match_kind": "exact"
+      },
+      "note": "`isExtTangent_iff_dist_center` and `isIntTangent_iff_dist_center` characterise external/internal tangency by `dist = r₁ ± r₂`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tangent plane to a surface",
+      "anchor": {
+        "section": "Tangent plane to a surface",
+        "snippet": "The tangent plane to a surface at a given point p is defined in an analogous way to the tangent line in the case of curves"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TangentSpace",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The manifold `TangentSpace` covers this in abstract form, but no construction for embedded surfaces in ℝ³ is given.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equation of the tangent plane",
+      "anchor": {
+        "section": "Tangent plane to a surface",
+        "snippet": "the equation of the tangent plane at point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit tangent-plane equation for graphs/zero-sets was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tangent space of a manifold",
+      "anchor": {
+        "section": "Higher-dimensional manifolds",
+        "snippet": "there is a k -dimensional tangent space at each point of a k -dimensional manifold"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TangentSpace",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`TangentSpace I x` defines the tangent space at a point of a manifold modelled on `I`.",
+      "provenance": "ai"
+    }
+  ]
+}

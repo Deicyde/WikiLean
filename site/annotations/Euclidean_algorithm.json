@@ -1,0 +1,1545 @@
+{
+  "slug": "Euclidean_algorithm",
+  "wikipedia_title": "Euclidean algorithm",
+  "display_title": "Euclidean algorithm",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Euclidean algorithm",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is an efficient method for computing the greatest common divisor (GCD) of two integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanDomain.gcd",
+        "module": "Mathlib.Algebra.EuclideanDomain.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's gcd (and Nat.gcd) is defined by the recursive Euclidean algorithm via well-founded recursion on remainders.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Subtraction principle for GCD",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the greatest common divisor of two numbers does not change if the larger number is replaced by its difference with the smaller number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.gcd_sub_self_left",
+        "module": "Mathlib.Data.Nat.GCD.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Nat.gcd_sub_self_left/right state the gcd is unchanged when one argument is replaced by its difference with the other.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "GCD of 252 and 105",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "21 is the GCD of 252 and 105"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A specific numeric example, decidable by computation but not a named Mathlib result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bézout's identity (stated)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The fact that the GCD can always be expressed in this way is known as Bézout's identity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.gcd_eq_gcd_ab",
+        "module": "Mathlib.Data.Int.GCD",
+        "match_kind": "exact"
+      },
+      "note": "Int.gcd_eq_gcd_ab expresses gcd x y = x * gcdA x y + y * gcdB x y.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Greatest common divisor",
+      "anchor": {
+        "section": "Background: greatest common divisor",
+        "snippet": "The greatest common divisor g is the largest natural number that divides both a and b without leaving a remainder"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.gcd",
+        "module": "Mathlib.Data.Nat.GCD.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Nat.gcd with gcd_dvd_left/right and dvd_gcd captures the greatest common divisor.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coprime numbers",
+      "anchor": {
+        "section": "Background: greatest common divisor",
+        "snippet": "then a and b are said to be coprime (or relatively prime)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Coprime",
+        "module": "Mathlib.Data.Nat.GCD.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Nat.Coprime a b is defined as gcd a b = 1; the ring-level analogue is IsCoprime.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "6 and 35 are coprime",
+      "anchor": {
+        "section": "Background: greatest common divisor",
+        "snippet": "6 and 35 are coprime"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific numeric example, decidable but not a named result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "GCD divisible by every common divisor",
+      "anchor": {
+        "section": "Background: greatest common divisor",
+        "snippet": "The greatest common divisor g of a and b is the unique (positive) common divisor of a and b that is divisible by any other common divisor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.dvd_gcd",
+        "module": "Mathlib.Data.Nat.GCD.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Nat.dvd_gcd states any common divisor of a and b divides gcd a b (universal property).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Geometric visualization of GCD",
+      "anchor": {
+        "section": "Background: greatest common divisor",
+        "snippet": "The greatest common divisor can be visualized as follows"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal geometric picture, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "GCD via shared prime factors",
+      "anchor": {
+        "section": "Background: greatest common divisor",
+        "snippet": "is the product of the prime factors shared by the two numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.factorization_gcd",
+        "module": "Mathlib.Data.Nat.Factorization.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Nat.factorization_gcd gives (gcd a b).factorization = a.factorization ⊓ b.factorization, i.e. the min of shared prime exponents.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "GCD of 1386 and 3213",
+      "anchor": {
+        "section": "Background: greatest common divisor",
+        "snippet": "the GCD of 1386 and 3213 equals 63"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific numeric example, not a named result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "GCD as smallest linear combination",
+      "anchor": {
+        "section": "Background: greatest common divisor",
+        "snippet": "is also their smallest positive integral linear combination"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.gcd_least_linear",
+        "module": "Mathlib.Data.Int.GCD",
+        "match_kind": "exact"
+      },
+      "note": "Int.gcd_least_linear proves gcd a b is the least positive value in {a*x+b*y}.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "GCD of three or more numbers",
+      "anchor": {
+        "section": "Background: greatest common divisor",
+        "snippet": "The GCD of three or more numbers equals the product of the prime factors common to all the numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Finset.gcd",
+        "module": "Mathlib.Algebra.GCDMonoid.Finset",
+        "match_kind": "generalization"
+      },
+      "note": "Finset.gcd generalizes gcd to finitely many elements, but the prime-factor characterization for multiple numbers is not a named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algorithm as remainder sequence",
+      "anchor": {
+        "section": "Procedure",
+        "snippet": "The Euclidean algorithm can be thought of as constructing a sequence of non-negative integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.gcd_rec",
+        "module": "Mathlib.Data.Nat.GCD.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Nat.gcd_rec (gcd m n = gcd (n % m) m) encodes the remainder recursion underlying the algorithm.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Algorithm terminates",
+      "anchor": {
+        "section": "Procedure",
+        "snippet": "the algorithm will always terminate at the n th step"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Termination is guaranteed by the well-founded recursion defining Nat.gcd, but there is no standalone termination theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "GCD of 1071 and 462 (procedure)",
+      "anchor": {
+        "section": "Procedure",
+        "snippet": "suppose the GCD of 1071 and 462 is requested"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific numeric worked example, not a named result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dropping the ordering requirement",
+      "anchor": {
+        "section": "Procedure",
+        "snippet": "We can generalize slightly by dropping any ordering requirement on the initial two values"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.gcd_comm",
+        "module": "Mathlib.Data.Nat.GCD.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Nat.gcd_comm shows gcd is symmetric, so the inputs need not be ordered.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Termination of the algorithm",
+      "anchor": {
+        "section": "Proof of validity",
+        "snippet": "This ensures that the algorithm terminates"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Strictly decreasing remainders correspond to the well-founded recursion in Nat.gcd's definition, but no explicit termination lemma is stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Last nonzero remainder is the GCD",
+      "anchor": {
+        "section": "Proof of validity",
+        "snippet": "follows from the following properties of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.gcd_rec",
+        "module": "Mathlib.Data.Nat.GCD.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The recursion Nat.gcd_rec computes the last nonzero remainder, proven equal to the gcd via gcd_dvd_left/right and dvd_gcd.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Property 1: common divisors of a pair",
+      "anchor": {
+        "section": "Proof of validity",
+        "snippet": "In fact, the common divisors of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.dvd_gcd",
+        "module": "Mathlib.Data.Nat.GCD.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Together with gcd_dvd_left/right, Nat.dvd_gcd shows the common divisors of a,b are exactly the divisors of gcd a b.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Property 2: invariance of common divisors",
+      "anchor": {
+        "section": "Proof of validity",
+        "snippet": "the sets of common divisors of the pairs"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.gcd_rec",
+        "module": "Mathlib.Data.Nat.GCD.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Nat.gcd_rec gives gcd a b = gcd b (a % b), reflecting that the pair (a,b) and (b, a mod b) share common divisors.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Worked example gcd(1071, 462)",
+      "anchor": {
+        "section": "Worked example",
+        "snippet": "the Euclidean algorithm can be used to find the greatest common divisor of a = 1071 and b = 462"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific numeric worked example, not a named result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Tiling visualization",
+      "anchor": {
+        "section": "Visualization",
+        "snippet": "The Euclidean algorithm can be visualized in terms of the tiling analogy"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal visualization, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euclidean division step",
+      "anchor": {
+        "section": "Euclidean division",
+        "snippet": "the Euclidean algorithm computes a quotient q k and remainder r k"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanDomain.div_add_mod",
+        "module": "Mathlib.Algebra.EuclideanDomain.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "div_add_mod states b*(a/b) + a%b = a, the quotient-remainder relation of one division step (Nat.div_add_mod for naturals).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Existence and uniqueness of quotient/remainder",
+      "anchor": {
+        "section": "Euclidean division",
+        "snippet": "ensures that such a quotient and remainder always exist and are unique"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.ediv_emod_unique",
+        "module": "Mathlib.Data.Int.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "Existence is Int.ediv_add_emod / Nat.div_add_mod and uniqueness is Int.ediv_emod_unique (Nat.div_mod_unique).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Least absolute remainder variant",
+      "anchor": {
+        "section": "Method of least absolute remainders",
+        "snippet": "the quotient at each step is increased by one if the resulting negative remainder is smaller in magnitude"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The least-absolute-remainder (balanced) variant of the Euclidean algorithm is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Remainder halving bound",
+      "anchor": {
+        "section": "Method of least absolute remainders",
+        "snippet": "then one gets a variant of Euclidean algorithm such that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The remainder-halving bound for the balanced variant is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Kronecker: fewest steps",
+      "anchor": {
+        "section": "Method of least absolute remainders",
+        "snippet": "this version requires the fewest steps of any version of Euclid's algorithm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Kronecker's optimality of the least-absolute-remainder version is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Minimal steps iff golden-ratio quotient",
+      "anchor": {
+        "section": "Method of least absolute remainders",
+        "snippet": "the number of steps is minimal if and only if q k is chosen in order that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The golden-ratio characterization of minimal step count is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bézout's identity",
+      "anchor": {
+        "section": "Bézout's identity",
+        "snippet": "the greatest common divisor g of two integers a and b can be represented as a linear sum of the original two numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.gcd_eq_gcd_ab",
+        "module": "Mathlib.Data.Int.GCD",
+        "match_kind": "exact"
+      },
+      "note": "Int.gcd_eq_gcd_ab gives gcd a b = a*s + b*t with s,t = gcdA, gcdB.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Computing s and t by back-substitution",
+      "anchor": {
+        "section": "Bézout's identity",
+        "snippet": "The integers s and t can be calculated from the quotients"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.xgcd",
+        "module": "Mathlib.Data.Int.GCD",
+        "match_kind": "exact"
+      },
+      "note": "Nat.xgcd (via xgcdAux) computes the Bézout coefficients from the algorithm's quotients.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Generalization to Euclidean domains",
+      "anchor": {
+        "section": "Bézout's identity",
+        "snippet": "can be generalized to the context of Euclidean domains"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanDomain.gcd_eq_gcd_ab",
+        "module": "Mathlib.Algebra.EuclideanDomain.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "EuclideanDomain.gcd_eq_gcd_ab states Bézout's identity for any Euclidean domain.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "GCD as ideal generator",
+      "anchor": {
+        "section": "Principal ideals and related problems",
+        "snippet": "Bézout's identity provides yet another definition of the greatest common divisor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "span_gcd",
+        "module": "Mathlib.RingTheory.PrincipalIdealDomain",
+        "match_kind": "exact"
+      },
+      "note": "span_gcd proves Ideal.span {gcd x y} = Ideal.span {x, y}, so gcd generates the ideal (x,y).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Principal ideal and PID",
+      "anchor": {
+        "section": "Principal ideals and related problems",
+        "snippet": "the modern abstract algebraic concepts of a principal ideal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsPrincipalIdealRing",
+        "module": "Mathlib.RingTheory.Ideal.Span",
+        "match_kind": "exact"
+      },
+      "note": "Submodule.IsPrincipal and IsPrincipalIdealRing formalize principal ideals and PIDs.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Measuring cups",
+      "anchor": {
+        "section": "Principal ideals and related problems",
+        "snippet": "consider two measuring cups of volume a and b"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An illustrative physical example, not a formalized statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Extended Euclidean algorithm",
+      "anchor": {
+        "section": "Extended Euclidean algorithm",
+        "snippet": "can be computed efficiently using the extended Euclidean algorithm"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.xgcd",
+        "module": "Mathlib.Data.Int.GCD",
+        "match_kind": "exact"
+      },
+      "note": "Nat.xgcd (and EuclideanDomain.xgcd) implement the extended Euclidean algorithm.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Validity by induction",
+      "anchor": {
+        "section": "Extended Euclidean algorithm",
+        "snippet": "The validity of this approach can be shown by induction"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.gcd_eq_gcd_ab",
+        "module": "Mathlib.Data.Int.GCD",
+        "match_kind": "invocation"
+      },
+      "note": "Nat.gcd_eq_gcd_ab proves correctness of the extended algorithm's output coefficients.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Matrix method",
+      "anchor": {
+        "section": "Matrix method",
+        "snippet": "can also be found using an equivalent matrix method"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The 2×2 matrix formulation of the algorithm is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Determinant of M",
+      "anchor": {
+        "section": "Matrix method",
+        "snippet": "it equals the product of the determinants of the quotient matrices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The determinant identity for the quotient-matrix product is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euclid's lemma",
+      "anchor": {
+        "section": "Euclid's lemma and unique factorization",
+        "snippet": "if a prime number divides L , then it must divide at least one factor of L"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Prime.dvd_mul",
+        "module": "Mathlib.Data.Nat.Prime.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Nat.Prime.dvd_mul: p prime ∧ p ∣ m*n ↔ p ∣ m ∨ p ∣ n (general Prime.dvd_or_dvd also holds).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Coprimality preserved by products",
+      "anchor": {
+        "section": "Euclid's lemma and unique factorization",
+        "snippet": "then w is also coprime to their product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Coprime.mul_right",
+        "module": "Mathlib.Data.Nat.GCD.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Nat.Coprime.mul_right (and IsCoprime.mul_right) prove coprimality is preserved under products.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Unique factorization into primes",
+      "anchor": {
+        "section": "Euclid's lemma and unique factorization",
+        "snippet": "every number has a unique factorization into prime numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.factorization_inj",
+        "module": "Mathlib.Data.Nat.Factorization.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Existence is factorization_prod_pow_eq_self and uniqueness is Nat.factorization_inj (the general UniqueFactorizationMonoid framework also applies).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Diophantine equation",
+      "anchor": {
+        "section": "Linear Diophantine equations",
+        "snippet": "Diophantine equations are equations in which the solutions are restricted to integers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no general 'Diophantine equation' definition (Mathlib formalizes specific equations and Diophantine sets, not this concept).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Solvability condition",
+      "anchor": {
+        "section": "Linear Diophantine equations",
+        "snippet": "c must also be divisible by g , or the equation has no solutions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.gcd_dvd_iff",
+        "module": "Mathlib.Data.Int.GCD",
+        "match_kind": "exact"
+      },
+      "note": "Int.gcd_dvd_iff: gcd a b ∣ n ↔ ∃ x y, n = a*x + b*y, i.e. a*x+b*y=c solvable iff gcd divides c.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of solutions",
+      "anchor": {
+        "section": "Linear Diophantine equations",
+        "snippet": "a linear Diophantine equation has no solutions, or an infinite number of solutions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The parametrization/count of solutions to a linear Diophantine equation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Finite field",
+      "anchor": {
+        "section": "Multiplicative inverses and the RSA algorithm",
+        "snippet": "A finite field is a set of numbers with four generalized operations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.instField",
+        "module": "Mathlib.Algebra.Field.ZMod",
+        "match_kind": "special_case"
+      },
+      "note": "Finite fields are formalized as Field instances (e.g. ZMod p for prime p) with finiteness via Fintype.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Field of 13 numbers",
+      "anchor": {
+        "section": "Multiplicative inverses and the RSA algorithm",
+        "snippet": "An example of a finite field is the set of 13 numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.instField",
+        "module": "Mathlib.Algebra.Field.ZMod",
+        "match_kind": "invocation"
+      },
+      "note": "ZMod 13 is a field via ZMod.instField with the prime-fact instance for 13.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Modular multiplicative inverse",
+      "anchor": {
+        "section": "Multiplicative inverses and the RSA algorithm",
+        "snippet": "every nonzero element a has a unique modular multiplicative inverse"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.unitOfCoprime",
+        "module": "Mathlib.Data.ZMod.Basic",
+        "match_kind": "exact"
+      },
+      "note": "ZMod.unitOfCoprime produces the modular inverse of an element coprime to the modulus.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Chinese remainder theorem",
+      "anchor": {
+        "section": "Chinese remainder theorem",
+        "snippet": "the Chinese remainder theorem , which describes a novel method to represent an integer"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.chineseRemainder",
+        "module": "Mathlib.Data.ZMod.Basic",
+        "match_kind": "exact"
+      },
+      "note": "ZMod.chineseRemainder gives ZMod (m*n) ≃+* ZMod m × ZMod n for coprime m,n (general Ideal.quotientInfRingEquivPiQuotient also exists).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Stern–Brocot tree",
+      "anchor": {
+        "section": "Stern–Brocot tree",
+        "snippet": "into an infinite binary search tree , called the Stern–Brocot tree"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Stern–Brocot tree is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Each rational appears once",
+      "anchor": {
+        "section": "Stern–Brocot tree",
+        "snippet": "each positive rational number appears exactly once in this tree"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized; the Stern–Brocot tree is absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Locating 3/4 in the tree",
+      "anchor": {
+        "section": "Stern–Brocot tree",
+        "snippet": "3/4 can be found by starting at the root"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized; specific example in an unformalized structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Calkin–Wilf tree",
+      "anchor": {
+        "section": "Stern–Brocot tree",
+        "snippet": "another binary tree on the rational numbers called the Calkin–Wilf tree"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Calkin–Wilf tree is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Relationship to continued fractions",
+      "anchor": {
+        "section": "Continued fractions",
+        "snippet": "The Euclidean algorithm has a close relationship with continued fractions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "GenContFract.of",
+        "module": "Mathlib.Algebra.ContinuedFractions.Computation.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "GenContFract.of constructs the continued-fraction expansion via the same floor/remainder steps, but the explicit gcd↔continued-fraction correspondence is not a named theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Continued fraction of 1071/462",
+      "anchor": {
+        "section": "Continued fractions",
+        "snippet": "the quotients q k were 2, 3 and 7, respectively"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific numeric example, not a named result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "GCD in factorization algorithms",
+      "anchor": {
+        "section": "Factorization algorithms",
+        "snippet": "Calculating a greatest common divisor is an essential step in several integer factorization algorithms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Integer factorization algorithms (e.g. Pollard's rho) using gcd are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reynaud bound",
+      "anchor": {
+        "section": "Algorithmic efficiency",
+        "snippet": "the number of division steps on input ( u , v ) is bounded by v"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Step-count bounds for the algorithm are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finck bound",
+      "anchor": {
+        "section": "Algorithmic efficiency",
+        "snippet": "the number of division steps is at most 2 log 2 v + 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Finck's logarithmic step bound is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lamé's theorem",
+      "anchor": {
+        "section": "Algorithmic efficiency",
+        "snippet": "the number of steps required for completion is never more than five times the number h of base-10 digits of the smaller number b"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lamé's theorem on the step count is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quadratic time for large numbers",
+      "anchor": {
+        "section": "Algorithmic efficiency",
+        "snippet": "showing that it is also O ( h 2 )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bit-complexity analysis of the algorithm is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Step count invariant under scaling",
+      "anchor": {
+        "section": "Number of steps",
+        "snippet": "the number of steps remains the same if a and b are multiplied by a common factor w"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.gcd_mul_left",
+        "module": "Mathlib.Data.Nat.GCD.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Nat.gcd_mul_left formalizes gcd(wa,wb)=w·gcd(a,b), but step-count invariance under scaling is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Recursive step-count equation",
+      "anchor": {
+        "section": "Number of steps",
+        "snippet": "The recursive nature of the Euclidean algorithm gives another equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A step-count function with a recurrence is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fibonacci worst case",
+      "anchor": {
+        "section": "Worst-case",
+        "snippet": "the smallest values of a and b for which this is true are the Fibonacci numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The worst-case (Fibonacci) input analysis of the algorithm is not formalized, though Nat.fib_gcd relates fib and gcd.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Five times the digit count",
+      "anchor": {
+        "section": "Worst-case",
+        "snippet": "the number of steps in Euclid's algorithm can never be more than five times the number of its digits"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This (Lamé-style) digit-count bound is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "First average T(a)",
+      "anchor": {
+        "section": "Average",
+        "snippet": "The first definition is the average time T ( a ) required to calculate the GCD"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Average-case running-time definitions are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tau average over coprimes",
+      "anchor": {
+        "section": "Average",
+        "snippet": "a second average τ ( a ) is taken over all numbers coprime with a"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This average over coprime inputs is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Porter's constant",
+      "anchor": {
+        "section": "Average",
+        "snippet": "The constant C in this formula is called Porter's constant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Porter's constant is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Third average Y(n)",
+      "anchor": {
+        "section": "Average",
+        "snippet": "A third average Y ( n ) is defined as the mean number of steps"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This mean-step-count average is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cost of dividing h-bit numbers",
+      "anchor": {
+        "section": "Computational expense per step",
+        "snippet": "The computational expense of dividing h -bit numbers scales as O ( h ( ℓ + 1))"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Per-step bit-cost analysis is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Probability of a given quotient",
+      "anchor": {
+        "section": "Computational expense per step",
+        "snippet": "The probability of a given quotient q is approximately ln | u /( u − 1) |"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The quotient-distribution (Gauss–Kuzmin-type) estimate is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quadratic overall growth",
+      "anchor": {
+        "section": "Computational expense per step",
+        "snippet": "the Euclid's algorithm grows quadratically ( h 2 ) with the average number of digits"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Overall quadratic complexity analysis is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Enumerating common divisors is inefficient",
+      "anchor": {
+        "section": "Alternative methods",
+        "snippet": "is to calculate all their common divisors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An efficiency remark, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Binary GCD algorithm",
+      "anchor": {
+        "section": "Alternative methods",
+        "snippet": "The binary GCD algorithm is an efficient alternative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The binary GCD algorithm is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quasilinear GCD algorithms",
+      "anchor": {
+        "section": "Alternative methods",
+        "snippet": "leads to quasilinear integer GCD algorithms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quasilinear GCD algorithms are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Generalization of the algorithm",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "it may be generalized to the real numbers, and to other mathematical objects"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanDomain",
+        "module": "Mathlib.Algebra.EuclideanDomain.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "The EuclideanDomain class generalizes the algorithm to abstract rings with division and remainder.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Commensurable lengths",
+      "anchor": {
+        "section": "Rational and real numbers",
+        "snippet": "a and b are called commensurable lengths, otherwise they are incommensurable lengths"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of commensurable/incommensurable lengths is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Termination iff ratio rational",
+      "anchor": {
+        "section": "Rational and real numbers",
+        "snippet": "If it does, the fraction a / b is a rational number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GenContFract.terminates_iff_rat",
+        "module": "Mathlib.Algebra.ContinuedFractions.Computation.TerminatesIffRat",
+        "match_kind": "generalization"
+      },
+      "note": "GenContFract.terminates_iff_rat: the continued-fraction (Euclidean) expansion of v terminates iff v is rational.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convergents are best approximations",
+      "anchor": {
+        "section": "Rational and real numbers",
+        "snippet": "The convergent m k / n k is the best rational number approximation to a / b"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.exists_rat_eq_convergent",
+        "module": "Mathlib.NumberTheory.DiophantineApproximation.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Legendre's theorem (Real.exists_rat_eq_convergent: a sufficiently good rational approximation must be a convergent) is formalized, but the full best-approximation optimality is not stated as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "GCD of polynomials",
+      "anchor": {
+        "section": "Polynomials",
+        "snippet": "The greatest common divisor polynomial g ( x ) of two polynomials"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.instEuclideanDomain",
+        "module": "Mathlib.Algebra.Polynomial.FieldDivision",
+        "match_kind": "generalization"
+      },
+      "note": "Polynomials over a field form a EuclideanDomain, so EuclideanDomain.gcd gives the polynomial GCD.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Last nonzero remainder is polynomial GCD",
+      "anchor": {
+        "section": "Polynomials",
+        "snippet": "The last nonzero remainder is the greatest common divisor of the original two polynomials"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanDomain.gcd_dvd_left",
+        "module": "Mathlib.Algebra.EuclideanDomain.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "EuclideanDomain.gcd_dvd_left/right and dvd_gcd prove the algorithm's last nonzero remainder is the gcd, applying to polynomials over a field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "GCD of two quartic polynomials",
+      "anchor": {
+        "section": "Polynomials",
+        "snippet": "consider the following two quartic polynomials"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A specific worked polynomial example, not a named result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Gaussian integers",
+      "anchor": {
+        "section": "Gaussian integers",
+        "snippet": "The Gaussian integers are complex numbers of the form"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GaussianInt",
+        "module": "Mathlib.NumberTheory.Zsqrtd.GaussianInt",
+        "match_kind": "exact"
+      },
+      "note": "GaussianInt := Zsqrtd (-1), notation ℤ[i], formalizes the Gaussian integers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Unique factorization of Gaussian integers",
+      "anchor": {
+        "section": "Gaussian integers",
+        "snippet": "Gaussian integers can be shown to be uniquely factorizable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PrincipalIdealRing.to_uniqueFactorizationMonoid",
+        "module": "Mathlib.RingTheory.PrincipalIdealDomain",
+        "match_kind": "invocation"
+      },
+      "note": "ℤ[i] is a EuclideanDomain, hence a PID, hence a UFD via PrincipalIdealRing.to_uniqueFactorizationMonoid.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Norm function on Gaussian integers",
+      "anchor": {
+        "section": "Gaussian integers",
+        "snippet": "a norm function f ( u + vi ) = u 2 + v 2 is defined"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Zsqrtd.norm",
+        "module": "Mathlib.NumberTheory.Zsqrtd.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Zsqrtd.norm gives re² - d·im²; for d=-1 (Gaussian integers) this is u²+v².",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euclidean domain",
+      "anchor": {
+        "section": "Euclidean domains",
+        "snippet": "is called a Euclidean domain if it forms a commutative ring R"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanDomain",
+        "module": "Mathlib.Algebra.EuclideanDomain.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The EuclideanDomain class formalizes commutative rings with quotient/remainder and the division identity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euclidean function",
+      "anchor": {
+        "section": "Euclidean domains",
+        "snippet": "The generalized Euclidean algorithm requires a Euclidean function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanDomain",
+        "module": "Mathlib.Algebra.EuclideanDomain.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's EuclideanDomain uses a well-founded relation r in place of an explicit ℕ-valued Euclidean function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Unique factorization in Euclidean domains",
+      "anchor": {
+        "section": "Euclidean domains",
+        "snippet": "The fundamental theorem of arithmetic applies to any Euclidean domain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PrincipalIdealRing.to_uniqueFactorizationMonoid",
+        "module": "Mathlib.RingTheory.PrincipalIdealDomain",
+        "match_kind": "invocation"
+      },
+      "note": "Via EuclideanDomain → PID → UFD, unique factorization holds in any Euclidean domain.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euclidean domain is a UFD",
+      "anchor": {
+        "section": "Euclidean domains",
+        "snippet": "Any Euclidean domain is a unique factorization domain (UFD)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PrincipalIdealRing.to_uniqueFactorizationMonoid",
+        "module": "Mathlib.RingTheory.PrincipalIdealDomain",
+        "match_kind": "invocation"
+      },
+      "note": "EuclideanDomain.to_principal_ideal_domain then PrincipalIdealRing.to_uniqueFactorizationMonoid give that any Euclidean domain is a UFD.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euclidean domain is a PID",
+      "anchor": {
+        "section": "Euclidean domains",
+        "snippet": "A Euclidean domain is always a principal ideal domain (PID)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanDomain.to_principal_ideal_domain",
+        "module": "Mathlib.RingTheory.PrincipalIdealDomain",
+        "match_kind": "exact"
+      },
+      "note": "EuclideanDomain.to_principal_ideal_domain is an instance making any Euclidean domain an IsPrincipalIdealRing.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quadratic integers",
+      "anchor": {
+        "section": "Unique factorization of quadratic integers",
+        "snippet": "Quadratic integers are generalizations of the Gaussian integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Zsqrtd",
+        "module": "Mathlib.NumberTheory.Zsqrtd.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Zsqrtd d formalizes ℤ[√d]; the full ring of quadratic integers for d ≡ 1 mod 4 is a slightly larger ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Norm-Euclidean quadratic rings",
+      "anchor": {
+        "section": "Unique factorization of quadratic integers",
+        "snippet": "The norm-Euclidean rings of quadratic integers are exactly those where D is one of the values"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classification of norm-Euclidean quadratic integer rings is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Weinberger's theorem",
+      "anchor": {
+        "section": "Unique factorization of quadratic integers",
+        "snippet": "a quadratic integer ring with D > 0 is Euclidean if, and only if, it is a principal ideal domain"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Weinberger's theorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Common right divisor",
+      "anchor": {
+        "section": "Noncommutative rings",
+        "snippet": "They have a common right divisor δ if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Right/left divisors and noncommutative gcd are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Two versions of the algorithm",
+      "anchor": {
+        "section": "Noncommutative rings",
+        "snippet": "there are two versions of the Euclidean algorithm, one for right divisors and one for left divisors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Noncommutative left/right versions of the algorithm are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bézout's identity (noncommutative)",
+      "anchor": {
+        "section": "Noncommutative rings",
+        "snippet": "the right gcd( α , β ) can be expressed as a linear combination of α and β"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bézout's identity for noncommutative rings is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lagrange's four-square theorem",
+      "anchor": {
+        "section": "Noncommutative rings",
+        "snippet": "Lagrange's four-square theorem , that every positive integer can be represented as a sum of four squares"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.sum_four_squares",
+        "module": "Mathlib.NumberTheory.SumFourSquares",
+        "match_kind": "exact"
+      },
+      "note": "Nat.sum_four_squares proves every natural is a sum of four squares.",
+      "provenance": "ai"
+    }
+  ]
+}

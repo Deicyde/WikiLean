@@ -1,0 +1,389 @@
+{
+  "slug": "Vector_space",
+  "wikipedia_title": "Vector space",
+  "display_title": "Vector space",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {v} -\\mathbf {w} =\\mathbf {v} +(-\\mathbf {w} ).}"
+      },
+      "status": "formalized",
+      "decl": "sub_eq_add_neg",
+      "module": "Mathlib.Algebra.Group.Basic",
+      "note": "Standard subtraction-as-addition-of-negation lemma in any additive group."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle a_{1}\\mathbf {g} _{1}+a_{2}\\mathbf {g} _{2}+\\cdots +a_{k}\\mathbf {g} _{k},}"
+      },
+      "status": "formalized",
+      "decl": "Finsupp.linearCombination",
+      "module": "Mathlib.LinearAlgebra.Finsupp.LinearCombination",
+      "note": "Mathlib formalizes a linear combination of a family of vectors as `Finsupp.linearCombination`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {v} =a_{1}\\mathbf {b} _{1}+\\cdots +a_{n}\\mathbf {b} _{n},}"
+      },
+      "status": "formalized",
+      "decl": "Basis.sum_repr",
+      "module": "Mathlib.LinearAlgebra.Basis.Defs",
+      "note": "Expresses every vector as the sum of its coordinates times basis vectors."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}(x_{1},y_{1})+(x_{2},y_{2})&=(x_{1}+x_{2},y_{1}+y_{2}),\\\\a(x,y)&=(ax,ay).\\end{aligned}}}"
+      },
+      "status": "formalized",
+      "decl": "Prod.instModule",
+      "module": "Mathlib.Algebra.Module.Prod",
+      "note": "Componentwise addition and scalar multiplication give the product module structure."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (a_{1},a_{2},\\dots ,a_{n})}"
+      },
+      "status": "partial",
+      "decl": "Pi.module",
+      "module": "Mathlib.Algebra.Module.Pi",
+      "note": "An n-tuple is `Fin n → F`; its module structure is the Pi module instance."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (f+g)(w)=f(w)+g(w),}"
+      },
+      "status": "formalized",
+      "decl": "Pi.add_apply",
+      "module": "Mathlib.Algebra.Group.Pi.Basic",
+      "note": "Pointwise addition of functions evaluated at a point is the sum of the values."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{alignedat}{9}&&a\\,&&+\\,3b\\,&\\,+&\\,&c&\\,=0\\\\4&&a\\,&&+\\,2b\\,&\\,+&\\,2&c&\\,=0\\\\\\end{alignedat}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Concrete illustrative system of two equations, not a named Mathlib statement."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle A\\mathbf {x} =\\mathbf {0} ,}"
+      },
+      "status": "partial",
+      "decl": "LinearMap.ker",
+      "module": "Mathlib.Algebra.Module.Submodule.Ker",
+      "note": "Solutions of `Ax = 0` are captured as the kernel of the associated linear map."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f^{\\prime \\prime }(x)+2f^{\\prime }(x)+f(x)=0}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific second-order linear ODE used as an illustrative example, not a Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}f(\\mathbf {v} +\\mathbf {w} )&=f(\\mathbf {v} )+f(\\mathbf {w} ),\\\\f(a\\cdot \\mathbf {v} )&=a\\cdot f(\\mathbf {v} )\\end{aligned}}}"
+      },
+      "status": "formalized",
+      "decl": "LinearMap",
+      "module": "Mathlib.Algebra.Module.LinearMap.Defs",
+      "note": "Linear maps are structures that preserve addition (`map_add`) and scalar multiplication (`map_smul`)."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {x} =(x_{1},x_{2},\\ldots ,x_{n})\\mapsto \\left(\\sum _{j=1}^{n}a_{1j}x_{j},\\sum _{j=1}^{n}a_{2j}x_{j},\\ldots ,\\sum _{j=1}^{n}a_{mj}x_{j}\\right),}"
+      },
+      "status": "formalized",
+      "decl": "Matrix.mulVec",
+      "module": "Mathlib.Data.Matrix.Mul",
+      "note": "Matrix-vector multiplication is exactly the row-sum formula given."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {x} \\mapsto A\\mathbf {x} .}"
+      },
+      "status": "formalized",
+      "decl": "Matrix.toLin'",
+      "module": "Mathlib.LinearAlgebra.Matrix.ToLin",
+      "note": "Mathlib's `Matrix.toLin'` is precisely the linear map `x ↦ A x`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\det(f-\\lambda \\cdot \\operatorname {Id} )=0.}"
+      },
+      "status": "formalized",
+      "decl": "Module.End.hasEigenvalue_iff_isRoot",
+      "module": "Mathlib.LinearAlgebra.Eigenspace.Charpoly",
+      "note": "Eigenvalues correspond to roots of the characteristic polynomial `det(f - λ·Id)`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {v} +W=\\{\\mathbf {v} +\\mathbf {w} :\\mathbf {w} \\in W\\},}"
+      },
+      "status": "formalized",
+      "decl": "Submodule.Quotient",
+      "module": "Mathlib.LinearAlgebra.Quotient.Defs",
+      "note": "The cosets `v + W` are the elements of the quotient submodule construction."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle a_{0}f+a_{1}{\\frac {df}{dx}}+a_{2}{\\frac {d^{2}f}{dx^{2}}}+\\cdots +a_{n}{\\frac {d^{n}f}{dx^{n}}}=0,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Generic homogeneous linear ODE; not packaged as a standalone Mathlib statement."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f\\mapsto D(f)=\\sum _{i=0}^{n}a_{i}{\\frac {d^{i}f}{dx^{i}}},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "A general linear differential operator of this form is not a Mathlib definition."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle V/\\ker(f)\\;\\equiv \\;\\operatorname {im} (f)}"
+      },
+      "status": "formalized",
+      "decl": "LinearMap.quotKerEquivRange",
+      "module": "Mathlib.LinearAlgebra.Isomorphisms",
+      "note": "The first isomorphism theorem for modules in `Isomorphisms.lean`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {v} _{1}\\otimes \\mathbf {w} _{1}+\\mathbf {v} _{2}\\otimes \\mathbf {w} _{2}+\\cdots +\\mathbf {v} _{n}\\otimes \\mathbf {w} _{n},}"
+      },
+      "status": "formalized",
+      "decl": "TensorProduct",
+      "module": "Mathlib.LinearAlgebra.TensorProduct.Defs",
+      "note": "Elements of the tensor product are exactly finite sums of simple tensors `v ⊗ w`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{alignedat}{6}a\\cdot (\\mathbf {v} \\otimes \\mathbf {w} )~&=~(a\\cdot \\mathbf {v} )\\otimes \\mathbf {w} ~=~\\mathbf {v} \\otimes (a\\cdot \\mathbf {w} ),&&~~{\\text{ where }}a{\\text{ is a scalar}}\\\\(\\mathbf {v} _{1}+\\mathbf {v} _{2})\\otimes \\mathbf {w} ~&=~\\mathbf {v} _{1}\\otimes \\mathbf {w} +\\mathbf {v} _{2}\\otimes \\mathbf {w} &&\\\\\\mathbf {v} \\otimes (\\mathbf {w} _{1}+\\mathbf {w} _{2})~&=~\\mathbf {v} \\otimes \\mathbf {w} _{1}+\\mathbf {v} \\otimes \\mathbf {w} _{2}.&&\\\\\\end{alignedat}}}"
+      },
+      "status": "formalized",
+      "decl": "TensorProduct.smul_tmul",
+      "module": "Mathlib.LinearAlgebra.TensorProduct.Defs",
+      "note": "Bilinearity rules for `⊗` are encoded as `smul_tmul`, `add_tmul`, and `tmul_add`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f=f^{+}-f^{-}.}"
+      },
+      "status": "formalized",
+      "decl": "posPart_sub_negPart",
+      "module": "Mathlib.Algebra.Order.Group.PosPart",
+      "note": "Decomposition of an element of a lattice-ordered group as positive minus negative part."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle \\mathbf {x} ,\\mathbf {y} \\rangle =\\mathbf {x} \\cdot \\mathbf {y} =x_{1}y_{1}+\\cdots +x_{n}y_{n}.}"
+      },
+      "status": "formalized",
+      "decl": "PiLp.inner_apply",
+      "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+      "note": "The Euclidean inner product on `EuclideanSpace` is the standard sum of coordinate products."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {x} \\cdot \\mathbf {y} =\\cos \\left(\\angle (\\mathbf {x} ,\\mathbf {y} )\\right)\\cdot |\\mathbf {x} |\\cdot |\\mathbf {y} |.}"
+      },
+      "status": "formalized",
+      "decl": "InnerProductGeometry.cos_angle_mul_norm_mul_norm",
+      "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.Basic",
+      "note": "Mathlib has `cos (angle x y) * (‖x‖ * ‖y‖) = ⟪x, y⟫`, i.e. the law of cosines form."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle \\mathbf {x} |\\mathbf {y} \\rangle =x_{1}y_{1}+x_{2}y_{2}+x_{3}y_{3}-x_{4}y_{4}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "The Lorentz/Minkowski form on R⁴ is not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle \\mathbf {x} |\\mathbf {y} \\rangle =-x_{0}y_{0}+x_{1}y_{1}+x_{2}y_{2}+x_{3}y_{3}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Alternative-signature Minkowski form on R⁴ is not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sum _{i=1}^{\\infty }f_{i}~=~\\lim _{n\\to \\infty }f_{1}+\\cdots +f_{n}}"
+      },
+      "status": "formalized",
+      "decl": "tsum",
+      "module": "Mathlib.Topology.Algebra.InfiniteSum.Defs",
+      "note": "Infinite sums in topological additive groups are formalized as `tsum`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\lim _{n\\to \\infty }|\\mathbf {v} _{n}-\\mathbf {v} |=0.}"
+      },
+      "status": "formalized",
+      "decl": "tendsto_iff_norm_sub_tendsto_zero",
+      "module": "Mathlib.Analysis.Normed.Group.Basic",
+      "note": "Convergence in a normed group is equivalent to the norm of the difference tending to 0."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\|\\mathbf {x} \\|_{\\infty }:=\\sup _{i}|x_{i}|\\qquad {\\text{ for }}p=\\infty ,{\\text{ and }}}"
+      },
+      "status": "formalized",
+      "decl": "PiLp",
+      "module": "Mathlib.Analysis.Normed.Lp.PiLp",
+      "note": "The ℓ∞ norm on a product is realized by `PiLp ⊤` with the supremum-of-coordinates norm."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\|\\mathbf {x} \\|_{p}:=\\left(\\sum _{i}|x_{i}|^{p}\\right)^{\\frac {1}{p}}\\qquad {\\text{ for }}p<\\infty .}"
+      },
+      "status": "formalized",
+      "decl": "PiLp",
+      "module": "Mathlib.Analysis.Normed.Lp.PiLp",
+      "note": "The ℓᵖ norm on a finite product is the `PiLp p` norm definition."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\|\\mathbf {x} _{n}\\|_{\\infty }=\\sup(2^{-n},0)=2^{-n}\\to 0,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Concrete numerical illustration of an ℓ∞ sequence, not a Mathlib lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\|\\mathbf {x} _{n}\\|_{1}=\\sum _{i=1}^{2^{n}}2^{-n}=2^{n}\\cdot 2^{-n}=1.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Concrete computation for the worked example showing ℓ¹/ℓ∞ inequivalence."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\|f\\|_{p}:=\\left(\\int _{\\Omega }|f(x)|^{p}\\,{d\\mu (x)}\\right)^{\\frac {1}{p}}.}"
+      },
+      "status": "formalized",
+      "decl": "MeasureTheory.eLpNorm",
+      "module": "Mathlib.MeasureTheory.Function.LpSeminorm.Defs",
+      "note": "The Lᵖ seminorm of a function with respect to a measure is `eLpNorm`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\lim _{k,\\ n\\to \\infty }\\int _{\\Omega }\\left|f_{k}(x)-f_{n}(x)\\right|^{p}\\,{d\\mu (x)}=0}"
+      },
+      "status": "partial",
+      "decl": "MeasureTheory.Lp",
+      "module": "Mathlib.MeasureTheory.Function.LpSpace.Basic",
+      "note": "Cauchy condition in Lᵖ is expressed via completeness of `MeasureTheory.Lp`, not this exact equation."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\lim _{k\\to \\infty }\\int _{\\Omega }\\left|f(x)-f_{k}(x)\\right|^{p}\\,{d\\mu (x)}=0.}"
+      },
+      "status": "partial",
+      "decl": "MeasureTheory.Lp",
+      "module": "Mathlib.MeasureTheory.Function.LpSpace.Basic",
+      "note": "Lᵖ convergence is captured by the norm topology on `MeasureTheory.Lp`, which is complete."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\langle f\\ ,\\ g\\rangle =\\int _{\\Omega }f(x){\\overline {g(x)}}\\,dx,}"
+      },
+      "status": "formalized",
+      "decl": "MeasureTheory.L2.inner_def",
+      "module": "Mathlib.MeasureTheory.Function.L2Space",
+      "note": "The L² inner product is defined as the integral of `f · conj g`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {v} _{1}\\otimes \\mathbf {v} _{2}\\otimes \\cdots \\otimes \\mathbf {v} _{n},}"
+      },
+      "status": "formalized",
+      "decl": "TensorAlgebra",
+      "module": "Mathlib.LinearAlgebra.TensorAlgebra.Basic",
+      "note": "Simple tensors of arbitrary length live in `TensorAlgebra R V`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\pi :E\\to X}"
+      },
+      "status": "formalized",
+      "decl": "VectorBundle",
+      "module": "Mathlib.Topology.VectorBundle.Basic",
+      "note": "A topological vector bundle over `X` is formalized as `VectorBundle` with projection `proj`."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle V\\times V\\to W,\\;(\\mathbf {v} ,\\mathbf {a} )\\mapsto \\mathbf {a} +\\mathbf {v} .}"
+      },
+      "status": "formalized",
+      "decl": "AddTorsor",
+      "module": "Mathlib.Algebra.AddTorsor.Defs",
+      "note": "Free transitive additive group action on a set is the `AddTorsor` typeclass."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle A\\mathbf {v} =\\mathbf {b} }"
+      },
+      "status": "partial",
+      "decl": "Matrix.mulVec",
+      "module": "Mathlib.Data.Matrix.Mul",
+      "note": "The inhomogeneous equation `Ax = b` is expressed via `Matrix.mulVec A v = b`; affine-solution structure not a single named decl."
+    }
+  ]
+}

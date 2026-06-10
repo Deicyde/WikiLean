@@ -1,0 +1,393 @@
+{
+  "slug": "Divisor",
+  "wikipedia_title": "Divisor",
+  "display_title": "Divisor",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Divisor of an integer",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a divisor of an integer"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "semigroupDvd",
+        "module": "Mathlib.Algebra.Divisibility.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `a ∣ b` via the `semigroupDvd` instance `∃ c, b = a * c`, which specializes to divisibility of integers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Divisible / evenly divisible",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is divisible or evenly divisible by another integer"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dvd_def",
+        "module": "Mathlib.Algebra.Divisibility.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`dvd_def : a ∣ b ↔ ∃ c, b = a * c` is the formal statement that `b` is evenly divisible by `a`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Divisibility (formal)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is divisible by a nonzero integer"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dvd_def",
+        "module": "Mathlib.Algebra.Divisibility.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`dvd_def` formalizes divisibility in any semigroup, hence in `ℤ`; the nonzero-divisor convention is the standard `Dvd` definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conventions on zero divisor",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "There are two conventions, distinguished by whether"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "semigroupDvd",
+        "module": "Mathlib.Algebra.Divisibility.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib adopts the convention `0 ∣ 0` via `semigroupDvd` but does not formalize a meta-comparison of the two conventions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Even and odd integers",
+      "anchor": {
+        "section": "General",
+        "snippet": "Integers divisible by 2 are called even"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Odd",
+        "module": "Mathlib.Algebra.Ring.Parity",
+        "match_kind": "exact"
+      },
+      "note": "`Even` is defined in `Mathlib.Algebra.Group.Even` as `∃ r, a = r + r` and `Odd a := ∃ k, a = 2 * k + 1` in `Mathlib.Algebra.Ring.Parity`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Trivial and non-trivial divisors",
+      "anchor": {
+        "section": "General",
+        "snippet": "are known as the trivial divisors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No grep hits for a `trivialDivisors`/`nontrivialDivisors` notion; Mathlib does not name the units and associates as trivial divisors explicitly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Composite number",
+      "anchor": {
+        "section": "General",
+        "snippet": "A nonzero integer with at least one non-trivial divisor is known as a composite number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Composite`/`IsComposite` predicate appears for integers in Mathlib; the converse `Irreducible`/`Prime` predicates exist but `Composite` itself is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "7 divides 42",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "7 is a divisor of 42 because"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific lemma `7 ∣ 42` is recorded; such trivial instances are left to `decide`/`norm_num`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Non-trivial divisors of 6",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The non-trivial divisors of 6 are 2, −2, 3, −3."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no enumerated example for the proper integer divisors of 6.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Positive divisors of 42",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The positive divisors of 42 are 1, 2, 3, 6, 7, 14, 21, 42."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "While `Nat.divisors 42` is computable, no named lemma enumerates the divisors of 42 explicitly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hasse diagram of divisors of 60",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The set of all positive divisors of 60"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Hasse-diagram example for divisors of 60 is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Transitivity of divisibility",
+      "anchor": {
+        "section": "Further notions and facts",
+        "snippet": "that is, divisibility is a transitive relation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dvd_trans",
+        "module": "Mathlib.Algebra.Divisibility.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`dvd_trans : a ∣ b → b ∣ c → a ∣ c` and the `IsTrans α Dvd.dvd` instance witness transitivity of divisibility.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Associates",
+      "anchor": {
+        "section": "Further notions and facts",
+        "snippet": "are associates"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Associated",
+        "module": "Mathlib.Algebra.GroupWithZero.Associated",
+        "match_kind": "exact"
+      },
+      "note": "`Associated x y` is defined as `∃ u : αˣ, x * u = y`, capturing the associate relation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euclid's lemma",
+      "anchor": {
+        "section": "Further notions and facts",
+        "snippet": "This is called Euclid's lemma"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCoprime.dvd_of_dvd_mul_right",
+        "module": "Mathlib.RingTheory.Coprime.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Euclid's lemma is stated as `IsCoprime.dvd_of_dvd_mul_right : IsCoprime x z → x ∣ y * z → x ∣ y`, generalizing the integer form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Prime divides product",
+      "anchor": {
+        "section": "Further notions and facts",
+        "snippet": "is a prime number and"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Prime.dvd_mul",
+        "module": "Mathlib.Data.Nat.Prime.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Prime.dvd_mul : p.Prime → (p ∣ m * n ↔ p ∣ m ∨ p ∣ n)` formalizes this property.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Proper divisor / aliquot part",
+      "anchor": {
+        "section": "Further notions and facts",
+        "snippet": "is called a proper divisor or an aliquot part"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.properDivisors",
+        "module": "Mathlib.NumberTheory.Divisors",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.properDivisors n` is the finset of divisors of `n` other than `n` itself, matching the aliquot-part definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Prime number",
+      "anchor": {
+        "section": "Further notions and facts",
+        "snippet": "whose only proper divisor is 1 is called a prime number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Prime",
+        "module": "Mathlib.Data.Nat.Prime.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Prime p := Irreducible p`, equivalently `prime_def_lt : 2 ≤ p ∧ ∀ m < p, m ∣ p → m = 1`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Divisors from prime factorization",
+      "anchor": {
+        "section": "Further notions and facts",
+        "snippet": "Any positive divisor of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.divisors_prime_pow",
+        "module": "Mathlib.NumberTheory.Divisors",
+        "match_kind": "special_case"
+      },
+      "note": "`Nat.divisors_prime_pow` and `Nat.mem_divisors_prime_pow` characterize divisors via prime factorization; the general statement follows from `isMultiplicative_sigma`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Perfect, deficient, abundant numbers",
+      "anchor": {
+        "section": "Further notions and facts",
+        "snippet": "is said to be perfect if it equals the sum of its proper divisors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Perfect",
+        "module": "Mathlib.NumberTheory.Divisors",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Perfect`, `Nat.Abundant`, and `Nat.Deficient` are defined in `Mathlib.NumberTheory.Divisors` and `Mathlib.NumberTheory.FactorisationProperties`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of divisors is multiplicative",
+      "anchor": {
+        "section": "Further notions and facts",
+        "snippet": "The total number of positive divisors of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.isMultiplicative_sigma",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Misc",
+        "match_kind": "exact"
+      },
+      "note": "`isMultiplicative_sigma` shows `σ k` (including `σ 0`, the divisor-count function) is a multiplicative arithmetic function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum of divisors function",
+      "anchor": {
+        "section": "Further notions and facts",
+        "snippet": "The sum of the positive divisors of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.sigma_one_apply",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Misc",
+        "match_kind": "exact"
+      },
+      "note": "`sigma_one_apply : σ 1 n = ∑ d ∈ divisors n, d` defines the sum-of-divisors function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of divisors formula",
+      "anchor": {
+        "section": "Further notions and facts",
+        "snippet": "then the number of positive divisors of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.card_divisors",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Misc",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.card_divisors : #n.divisors = ∏ p ∈ n.primeFactors, (n.factorization p + 1)` gives the product-of-exponents-plus-one formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Average number of divisors",
+      "anchor": {
+        "section": "Further notions and facts",
+        "snippet": "where [MATH] is Euler–Mascheroni constant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Dirichlet divisor asymptotic `(1/n)∑ d(k) ∼ ln n + 2γ - 1` is not present in Mathlib (no hits for divisor-average or Dirichlet divisor problem).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Division lattice",
+      "anchor": {
+        "section": "Division lattice",
+        "snippet": "the relation of divisibility turns the set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Associates.instLattice",
+        "module": "Mathlib.RingTheory.UniqueFactorizationDomain.FactorSet",
+        "match_kind": "generalization"
+      },
+      "note": "`Associates α` carries a `Lattice` instance with `gcd`/`lcm` as meet/join, witnessing the divisibility lattice for UFDs including `ℕ`.",
+      "provenance": "ai"
+    }
+  ]
+}

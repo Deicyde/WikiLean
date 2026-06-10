@@ -1,0 +1,1337 @@
+{
+  "slug": "Mathematical_logic",
+  "wikipedia_title": "Mathematical logic",
+  "display_title": "Mathematical logic",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Mathematical logic",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Mathematical logic is the study of formal logic within mathematics"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A meta-level field description, not a mathematical statement that could be a Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Formalization of mathematics in set theory",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "almost all ordinary mathematics can be formalized in terms of sets"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a philosophical/meta claim about formalizability rather than a provable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Arithmetic as theory of natural numbers",
+      "anchor": {
+        "section": "Foundational theories",
+        "snippet": "the term arithmetic refers to the theory of the natural numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Terminological remark; ℕ exists in Mathlib but 'arithmetic = theory of naturals' is not a declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Peano axioms",
+      "anchor": {
+        "section": "Foundational theories",
+        "snippet": "published a set of axioms for arithmetic that came to bear his name"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "ℕ realizes the Peano axioms but Mathlib has no bundled `PeanoAxioms` axiomatization object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Induction characterization of the naturals (Dedekind)",
+      "anchor": {
+        "section": "Foundational theories",
+        "snippet": "the natural numbers are uniquely characterized by their induction properties"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib uses the built-in induction principle but does not formalize Dedekind's categoricity/uniqueness characterization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Uniqueness of the naturals up to isomorphism",
+      "anchor": {
+        "section": "Foundational theories",
+        "snippet": "including the uniqueness of the set of natural numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem stating any two models of the Peano/Dedekind axioms are isomorphic was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Independence of the parallel postulate",
+      "anchor": {
+        "section": "Foundational theories",
+        "snippet": "the independence of the parallel postulate"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not axiomatize synthetic geometry or prove independence of the parallel postulate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Theorem that a line contains at least two points",
+      "anchor": {
+        "section": "Foundational theories",
+        "snippet": "the theorem that a line contains at least two points"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Hilbert-style incidence-geometry axiomatization with this derived theorem exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hilbert's axioms for geometry",
+      "anchor": {
+        "section": "Foundational theories",
+        "snippet": "developed a complete set of axioms for geometry"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib treats geometry analytically (EuclideanSpace) and has no formalization of Hilbert's synthetic axioms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Nowhere-differentiable continuous functions",
+      "anchor": {
+        "section": "Foundational theories",
+        "snippet": "such as nowhere-differentiable continuous functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No construction of a Weierstrass-type nowhere-differentiable continuous function was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "(ε, δ)-definition of limit (Bolzano)",
+      "anchor": {
+        "section": "Foundational theories",
+        "snippet": "definition of limit and continuous functions was already developed by Bolzano"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.continuousAt_iff",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The ε–δ characterization of limits/continuity is `Metric.continuousAt_iff` (and `Metric.tendsto_nhds`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cauchy's definition of continuity",
+      "anchor": {
+        "section": "Foundational theories",
+        "snippet": "defined continuity in terms of infinitesimals"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Hyperreal.Infinitesimal",
+        "module": "Mathlib.Analysis.Real.Hyperreal",
+        "match_kind": null
+      },
+      "note": "Mathlib has hyperreals, standard part, and `Infinitesimal`, but not a continuity-via-infinitesimals definition as the primary one.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dedekind cuts definition of the reals",
+      "anchor": {
+        "section": "Foundational theories",
+        "snippet": "a definition of the real numbers in terms of Dedekind cuts of rational numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.Order.Completion",
+        "match_kind": null
+      },
+      "note": "Mathlib constructs ℝ via Cauchy sequences rather than Dedekind cuts, though a general Dedekind–MacNeille completion exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Reals and naturals have different cardinalities",
+      "anchor": {
+        "section": "Foundational theories",
+        "snippet": "proved that the reals and the natural numbers have different cardinalities"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.not_countable_real",
+        "module": "Mathlib.Analysis.Real.Cardinality",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.not_countable_real` (with `Cardinal.mk_real = 𝔠`) shows ℝ is not countable, hence differs in cardinality from ℕ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Uncountability of the reals (diagonal argument)",
+      "anchor": {
+        "section": "Foundational theories",
+        "snippet": "a new proof of the uncountability of the real numbers that introduced the diagonal argument"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.not_countable_real",
+        "module": "Mathlib.Analysis.Real.Cardinality",
+        "match_kind": "exact"
+      },
+      "note": "Uncountability of ℝ is `Cardinal.not_countable_real`, though Mathlib's proof uses cardinal arithmetic rather than the literal diagonal argument.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cantor's theorem",
+      "anchor": {
+        "section": "Foundational theories",
+        "snippet": "Cantor's theorem that no set can have the same cardinality as its powerset"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.cantor_surjective",
+        "module": "Mathlib.Logic.Function.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Function.cantor_surjective`/`cantor_injective` (and `Cardinal.cantor`) state no surjection from a type to its powerset exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Well-ordering theorem (Zermelo)",
+      "anchor": {
+        "section": "Set theory and paradoxes",
+        "snippet": "gave a proof that every set could be well-ordered"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_wellFoundedLT",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "generalization"
+      },
+      "note": "`exists_wellFoundedLT` (Zermelo's theorem) gives every type a well-order, generalizing 'every set can be well-ordered'.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Burali-Forti paradox",
+      "anchor": {
+        "section": "Set theory and paradoxes",
+        "snippet": "the Burali-Forti paradox shows that the collection of all ordinal numbers cannot form a set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZFSet.isOrdinal_notMem_univ",
+        "module": "Mathlib.SetTheory.ZFC.Class",
+        "match_kind": "exact"
+      },
+      "note": "`ZFSet.isOrdinal_notMem_univ` is explicitly the Burali-Forti paradox: the ordinals form a proper class.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Russell's paradox",
+      "anchor": {
+        "section": "Set theory and paradoxes",
+        "snippet": "Bertrand Russell discovered Russell's paradox in 1901"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated formalization of Russell's paradox was found; the type-theoretic foundation precludes the naive comprehension it relies on.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Independence of choice with urelements (Fraenkel)",
+      "anchor": {
+        "section": "Set theory and paradoxes",
+        "snippet": "the axiom of choice cannot be proved from the axioms of Zermelo's set theory with urelements"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize permutation models or independence results over set theory with urelements.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Independence of the axiom of choice in ZF (Cohen)",
+      "anchor": {
+        "section": "Set theory and paradoxes",
+        "snippet": "the axiom of choice is unprovable in ZF"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Forcing and the independence of AC from ZF are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Löwenheim–Skolem theorem",
+      "anchor": {
+        "section": "Symbolic logic",
+        "snippet": "first-order logic cannot control the cardinalities of infinite structures"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.exists_elementarySubstructure_card_eq",
+        "module": "Mathlib.ModelTheory.Skolem",
+        "match_kind": "special_case"
+      },
+      "note": "The downward Löwenheim–Skolem theorem is `exists_elementarySubstructure_card_eq`; the upward direction is not separately stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Skolem's paradox",
+      "anchor": {
+        "section": "Symbolic logic",
+        "snippet": "any such formalization has a countable model"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize a first-order axiomatization of set theory or its countable model giving Skolem's paradox.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gödel's completeness theorem",
+      "anchor": {
+        "section": "Symbolic logic",
+        "snippet": "which establishes a correspondence between syntax and semantics in first-order logic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's model theory has semantics but no proof/derivation system, so completeness (provable ⇔ valid) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Compactness theorem",
+      "anchor": {
+        "section": "Symbolic logic",
+        "snippet": "demonstrating the finitary nature of first-order logical consequence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.isSatisfiable_iff_isFinitelySatisfiable",
+        "module": "Mathlib.ModelTheory.Satisfiability",
+        "match_kind": "exact"
+      },
+      "note": "The compactness theorem is `Theory.isSatisfiable_iff_isFinitelySatisfiable`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gödel's incompleteness theorem",
+      "anchor": {
+        "section": "Symbolic logic",
+        "snippet": "the incompleteness (in a different meaning of the word) of all sufficiently strong, effective first-order theories"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gödel's incompleteness theorems are not formalized in Mathlib (no internal provability predicate / arithmetization).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Unprovability of consistency in-system",
+      "anchor": {
+        "section": "Symbolic logic",
+        "snippet": "a consistency proof of any sufficiently strong, effective axiom system cannot be obtained in the system itself"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The second incompleteness theorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gentzen's consistency proof of arithmetic",
+      "anchor": {
+        "section": "Symbolic logic",
+        "snippet": "Gentzen proved the consistency of arithmetic using a finitistic system together with a principle of transfinite induction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gentzen's ordinal-analysis consistency proof of PA is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gödel's Dialectica consistency proof",
+      "anchor": {
+        "section": "Symbolic logic",
+        "snippet": "reduces the consistency of classical arithmetic to that of intuitionistic arithmetic in higher types"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Dialectica interpretation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "First-order logic",
+      "anchor": {
+        "section": "First-order logic",
+        "snippet": "First-order logic is a particular formal system of logic"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language",
+        "module": "Mathlib.ModelTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`FirstOrder.Language` with terms/formulas (Syntax) and structures/satisfaction (Semantics) formalizes first-order logic.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Löwenheim–Skolem theorem (precise)",
+      "anchor": {
+        "section": "First-order logic",
+        "snippet": "if a set of sentences in a countable first-order language has an infinite model"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.exists_elementarySubstructure_card_eq",
+        "module": "Mathlib.ModelTheory.Skolem",
+        "match_kind": "special_case"
+      },
+      "note": "The downward Löwenheim–Skolem theorem is formalized as `exists_elementarySubstructure_card_eq`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gödel's completeness theorem (precise)",
+      "anchor": {
+        "section": "First-order logic",
+        "snippet": "established the equivalence between semantic and syntactic definitions of logical consequence in first-order logic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No deductive system or completeness theorem exists in Mathlib's first-order logic.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Compactness theorem (precise)",
+      "anchor": {
+        "section": "First-order logic",
+        "snippet": "a set of sentences has a model if and only if every finite subset has a model"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.isSatisfiable_iff_isFinitelySatisfiable",
+        "module": "Mathlib.ModelTheory.Satisfiability",
+        "match_kind": "exact"
+      },
+      "note": "`Theory.isSatisfiable_iff_isFinitelySatisfiable` is exactly: a theory is satisfiable iff every finite subset is.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "First incompleteness theorem",
+      "anchor": {
+        "section": "First-order logic",
+        "snippet": "for any consistent, effectively given (defined below) logical system that is capable of interpreting arithmetic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gödel's first incompleteness theorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Gödel sentence for Peano axioms",
+      "anchor": {
+        "section": "First-order logic",
+        "snippet": "the Gödel sentence holds for the natural numbers but cannot be proved"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Construction of a Gödel sentence for PA is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Effectively given logical system",
+      "anchor": {
+        "section": "First-order logic",
+        "snippet": "a logical system is said to be effectively given if it is possible to decide"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has computability but no definition of an 'effectively given' (recursively axiomatized) logical system.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-elementarily-equivalent models from incompleteness",
+      "anchor": {
+        "section": "First-order logic",
+        "snippet": "any sufficiently strong, consistent, effective first-order theory has models that are not elementarily equivalent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This corollary of incompleteness is not formalized, as incompleteness itself is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Second incompleteness theorem",
+      "anchor": {
+        "section": "First-order logic",
+        "snippet": "no sufficiently strong, consistent, effective axiom system for arithmetic can prove its own consistency"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The second incompleteness theorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Infinitary logics",
+      "anchor": {
+        "section": "Other classical logics",
+        "snippet": "which allow for formulas to provide an infinite amount of information"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's logic supports only finitary first-order formulas; infinitary logics are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "The infinitary logic L_ω1ω",
+      "anchor": {
+        "section": "Other classical logics",
+        "snippet": "In this logic, quantifiers may only be nested to finite depths"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The logic L_ω1ω is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Higher-order logics",
+      "anchor": {
+        "section": "Other classical logics",
+        "snippet": "Higher-order logics allow for quantification not only of elements of the domain of discourse"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize higher-order logic as an object of study (the ambient type theory is not such a formalization).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Higher-order logic lacks completeness/compactness",
+      "anchor": {
+        "section": "Other classical logics",
+        "snippet": "they do not satisfy analogues of the completeness and compactness theorems from first-order logic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This metatheoretic property of higher-order logic is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fixed-point logics",
+      "anchor": {
+        "section": "Other classical logics",
+        "snippet": "that allow inductive definitions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fixed-point logics are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Extension of first-order logic",
+      "anchor": {
+        "section": "Other classical logics",
+        "snippet": "One can formally define an extension of first-order logic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no abstract framework of 'logics' in which one defines extensions of first-order logic.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lindström's theorem",
+      "anchor": {
+        "section": "Other classical logics",
+        "snippet": "the only extension of first-order logic satisfying both the compactness theorem and the downward Löwenheim–Skolem theorem is first-order logic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lindström's theorem (abstract model theory) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Modal logics",
+      "anchor": {
+        "section": "Nonclassical and modal logic",
+        "snippet": "Modal logics include additional modal operators"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Modal logics are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Intuitionistic logic and excluded middle",
+      "anchor": {
+        "section": "Nonclassical and modal logic",
+        "snippet": "Intuitionistic logic specifically does not include the law of the excluded middle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib works in classical logic (`Classical.em`) but does not formalize intuitionistic logic as a system.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Provably total intuitionistic functions are computable",
+      "anchor": {
+        "section": "Nonclassical and modal logic",
+        "snippet": "any provably total function in intuitionistic arithmetic is computable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This metatheorem about Heyting arithmetic is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic logic",
+      "anchor": {
+        "section": "Algebraic logic",
+        "snippet": "Algebraic logic uses the methods of abstract algebra to study the semantics of formal logics"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Algebraic logic as a discipline is not formalized, though algebraic structures like Boolean algebras exist.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Boolean algebras for propositional truth values",
+      "anchor": {
+        "section": "Algebraic logic",
+        "snippet": "A fundamental example is the use of Boolean algebras to represent truth values in classical propositional logic"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Prop.instBooleanAlgebra",
+        "module": "Mathlib.Order.BooleanAlgebra.Defs",
+        "match_kind": null
+      },
+      "note": "Mathlib defines `BooleanAlgebra` and the instance `Prop.instBooleanAlgebra`, but not a propositional-logic semantics interpreted into Boolean algebras.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Set theory",
+      "anchor": {
+        "section": "Set theory",
+        "snippet": "Set theory is the study of sets"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ZFSet",
+        "module": "Mathlib.SetTheory.ZFC.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes a model of set theory via `ZFSet`, but the discipline-level definition is meta.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zermelo–Fraenkel set theory (ZF)",
+      "anchor": {
+        "section": "Set theory",
+        "snippet": "was extended slightly to become Zermelo–Fraenkel set theory (ZF)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZFSet",
+        "module": "Mathlib.SetTheory.ZFC.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ZFSet` is the von Neumann cumulative hierarchy realizing the ZFC axioms (proved as theorems).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Alternative set theories (NBG, MK, NF)",
+      "anchor": {
+        "section": "Set theory",
+        "snippet": "Other formalizations of set theory have been proposed, including von Neumann–Bernays–Gödel set theory (NBG)"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Class",
+        "module": "Mathlib.SetTheory.ZFC.Class",
+        "match_kind": null
+      },
+      "note": "Mathlib has `Class` (proper classes, NBG-flavored) but does not axiomatize NBG, MK, or NF as distinct theories.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Axiom of choice",
+      "anchor": {
+        "section": "Set theory",
+        "snippet": "given a collection of nonempty sets there is a single set C that contains exactly one element from each set in the collection"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Classical.axiomOfChoice",
+        "module": "Mathlib.Logic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Classical.axiomOfChoice` states a family of nonempty types admits a choice function (and `Classical.choice` is the underlying axiom).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Banach–Tarski paradox",
+      "anchor": {
+        "section": "Set theory",
+        "snippet": "the axiom of choice can be used to decompose a solid ball into a finite number of pieces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Banach–Tarski paradox is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Consistency of CH with ZF (Gödel)",
+      "anchor": {
+        "section": "Set theory",
+        "snippet": "the continuum hypothesis cannot be disproven from the axioms of Zermelo–Fraenkel set theory"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gödel's constructible-universe consistency of CH is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Independence of CH (Cohen)",
+      "anchor": {
+        "section": "Set theory",
+        "snippet": "the continuum hypothesis cannot be proven from the axioms of Zermelo–Fraenkel set theory"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cohen forcing and the independence of CH are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Large cardinals",
+      "anchor": {
+        "section": "Set theory",
+        "snippet": "Large cardinals are cardinal numbers with particular properties so strong that the existence of such cardinals cannot be proved in ZFC"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Cardinal.IsInaccessible",
+        "module": "Mathlib.SetTheory.Cardinal.Regular",
+        "match_kind": null
+      },
+      "note": "Mathlib defines a specific large cardinal notion, `Cardinal.IsInaccessible`, but not the general large-cardinal framework.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Inaccessible cardinal implies Con(ZFC)",
+      "anchor": {
+        "section": "Set theory",
+        "snippet": "already implies the consistency of ZFC"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no formalized Con(ZFC) statement, so this consistency-strength result is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Determinacy",
+      "anchor": {
+        "section": "Set theory",
+        "snippet": "Determinacy refers to the possible existence of winning strategies for certain two-player games"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Infinite-game determinacy (e.g. AD, Borel determinacy) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Model theory",
+      "anchor": {
+        "section": "Model theory",
+        "snippet": "Model theory studies the models of various formal theories"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.ModelType",
+        "module": "Mathlib.ModelTheory.Bundled",
+        "match_kind": null
+      },
+      "note": "Mathlib has a substantial first-order model theory framework (languages, theories, `ModelType`), though the field's definition is meta.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Theory and model",
+      "anchor": {
+        "section": "Model theory",
+        "snippet": "a theory is a set of formulas in a particular formal logic and signature"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory",
+        "module": "Mathlib.ModelTheory.Syntax",
+        "match_kind": "exact"
+      },
+      "note": "`FirstOrder.Language.Theory` is a set of sentences and `M ⊨ T` / `ModelType` formalize models.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Elementary class",
+      "anchor": {
+        "section": "Model theory",
+        "snippet": "The set of all models of a particular theory is called an elementary class"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Theory.ModelType",
+        "module": "Mathlib.ModelTheory.Bundled",
+        "match_kind": null
+      },
+      "note": "The collection of models of a theory is captured by `Theory.ModelType`/`ModelsTheory`, but 'elementary class' is not a named definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Quantifier elimination for real-closed fields (Tarski)",
+      "anchor": {
+        "section": "Model theory",
+        "snippet": "Tarski established quantifier elimination for real-closed fields"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Real-closed fields are defined (`IsRealClosed`) but quantifier elimination for them is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Morley's categoricity theorem",
+      "anchor": {
+        "section": "Model theory",
+        "snippet": "if a first-order theory in a countable language is categorical in some uncountable cardinality"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.Categorical",
+        "module": "Mathlib.ModelTheory.Satisfiability",
+        "match_kind": null
+      },
+      "note": "`Categorical` and the Łoś–Vaught test (`Categorical.isComplete`) exist, but Morley's uncountable-categoricity transfer theorem is not proved.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Countable-model consequence of CH",
+      "anchor": {
+        "section": "Model theory",
+        "snippet": "A trivial consequence of the continuum hypothesis is that a complete theory with less than continuum many nonisomorphic countable models can have only countably many"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This counting-of-countable-models consequence of CH is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vaught's conjecture",
+      "anchor": {
+        "section": "Model theory",
+        "snippet": "says that this is true even independently of the continuum hypothesis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Vaught's conjecture is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Recursion theory",
+      "anchor": {
+        "section": "Recursion theory",
+        "snippet": "studies the properties of computable functions and the Turing degrees"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.Partrec",
+        "module": "Mathlib.Computability.Partrec",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes computable/partial-recursive functions and Turing degrees (`Computability.TuringDegree`), covering the objects of recursion theory.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Robustness of the computable functions",
+      "anchor": {
+        "section": "Recursion theory",
+        "snippet": "The fundamental results establish a robust, canonical class of computable functions with numerous independent, equivalent characterizations using Turing machines"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.Computability.TuringMachine.ToPartrec",
+        "match_kind": null
+      },
+      "note": "Mathlib proves equivalence between Turing-machine computability and partial recursive functions, but not the full slate of equivalent models.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generalized recursion theory",
+      "anchor": {
+        "section": "Recursion theory",
+        "snippet": "Generalized recursion theory extends the ideas of recursion theory to computations that are no longer necessarily finite"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Higher/generalized recursion theory (e.g. hyperarithmetic, α-recursion) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algorithmically unsolvable problem",
+      "anchor": {
+        "section": "Algorithmically unsolvable problems",
+        "snippet": "a decision problem or function problem is algorithmically unsolvable if there is no possible computable algorithm that returns the correct answer for all legal inputs to the problem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ComputablePred",
+        "module": "Mathlib.Computability.Halting",
+        "match_kind": null
+      },
+      "note": "Unsolvability is expressed as `¬ ComputablePred`; the predicate `ComputablePred` is defined but 'unsolvable problem' is not a standalone definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Undecidability of the Entscheidungsproblem",
+      "anchor": {
+        "section": "Algorithmically unsolvable problems",
+        "snippet": "showed that the Entscheidungsproblem is algorithmically unsolvable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Undecidability of first-order validity is not formalized (Mathlib has no proof system / decidability statement for FOL).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Unsolvability of the halting problem",
+      "anchor": {
+        "section": "Algorithmically unsolvable problems",
+        "snippet": "establishing the unsolvability of the halting problem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ComputablePred.halting_problem",
+        "module": "Mathlib.Computability.Halting",
+        "match_kind": "exact"
+      },
+      "note": "`ComputablePred.halting_problem` states the halting predicate is not computable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Unsolvability of the word problem for groups",
+      "anchor": {
+        "section": "Algorithmically unsolvable problems",
+        "snippet": "The word problem for groups was proved algorithmically unsolvable by Pyotr Novikov"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Novikov–Boone unsolvability of the group word problem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Busy beaver problem",
+      "anchor": {
+        "section": "Algorithmically unsolvable problems",
+        "snippet": "The busy beaver problem, developed by Tibor Radó in 1962, is another well-known example"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The busy beaver function and its noncomputability are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hilbert's tenth problem",
+      "anchor": {
+        "section": "Algorithmically unsolvable problems",
+        "snippet": "Hilbert's tenth problem asked for an algorithm to determine whether a multivariate polynomial equation with integer coefficients has a solution in the integers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Dioph",
+        "module": "Mathlib.NumberTheory.Dioph",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes Diophantine sets (`Dioph`), the central object of Hilbert's tenth problem, but not the decision-problem statement itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Unsolvability of Hilbert's tenth problem (Matiyasevich)",
+      "anchor": {
+        "section": "Algorithmically unsolvable problems",
+        "snippet": "The algorithmic unsolvability of the problem was proved by Yuri Matiyasevich in 1970"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Dioph.pow_dioph",
+        "module": "Mathlib.NumberTheory.Dioph",
+        "match_kind": null
+      },
+      "note": "`pow_dioph` (the power function is Diophantine) is a key step of the MRDP theorem, but the full RE=Diophantine result and resulting unsolvability are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Proof theory",
+      "anchor": {
+        "section": "Proof theory and constructive mathematics",
+        "snippet": "Proof theory is the study of formal proofs in various logical deduction systems"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formalized deduction systems or formal proofs as objects, so proof theory is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Predicative development of real analysis (Weyl)",
+      "anchor": {
+        "section": "Proof theory and constructive mathematics",
+        "snippet": "who showed it is possible to develop a large part of real analysis using only predicative methods"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Predicative reverse-mathematics development of analysis is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gödel–Gentzen negative translation",
+      "anchor": {
+        "section": "Proof theory and constructive mathematics",
+        "snippet": "it is possible to embed (or translate ) classical logic into intuitionistic logic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The double-negation/negative translation embedding classical into intuitionistic logic is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Curry–Howard correspondence",
+      "anchor": {
+        "section": "Connections with computer science",
+        "snippet": "The Curry–Howard correspondence between proofs and programs relates to proof theory"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Curry–Howard underlies Lean's type theory but is not stated as a formalized theorem in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fagin's theorem",
+      "anchor": {
+        "section": "Connections with computer science",
+        "snippet": "NP is precisely the set of languages expressible by sentences of existential second-order logic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fagin's descriptive-complexity theorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Consistency of non-Euclidean geometry via spherical model",
+      "anchor": {
+        "section": "Foundations of mathematics",
+        "snippet": "non-Euclidean geometry can be proved consistent by defining point to mean a point on a fixed sphere"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No relative-consistency model of non-Euclidean geometry on a sphere is formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

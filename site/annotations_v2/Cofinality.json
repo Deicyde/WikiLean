@@ -1,0 +1,69 @@
+{
+  "slug": "Cofinality",
+  "wikipedia_title": "Cofinality",
+  "display_title": "Cofinality",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {cf} (\\kappa )=\\min \\left\\{|I|\\ :\\ \\kappa =\\sum _{i\\in I}\\lambda _{i}\\ \\land \\forall i\\in I\\colon \\lambda _{i}<\\kappa \\right\\}.}"
+      },
+      "status": "partial",
+      "decl": "Order.cof",
+      "module": "Mathlib.SetTheory.Cardinal.Cofinality.Basic",
+      "note": "Mathlib defines cofinality as an infimum over cofinal subsets, equivalent to but not stated as this sum characterization."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\kappa =\\bigcup _{i\\in \\kappa }\\{i\\}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Trivial set identity used as a proof intermediate to show the set is nonempty; not a standalone Mathlib theorem."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\aleph _{\\omega }=\\bigcup _{n<\\omega }\\aleph _{n},}"
+      },
+      "status": "formalized",
+      "decl": "Cardinal.aleph_limit",
+      "module": "Mathlib.SetTheory.Cardinal.Aleph",
+      "note": "aleph_limit states ℵ_o = ⨆ a : Iio o, ℵ_a for IsSuccLimit o, which specializes to o = ω."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 2^{\\aleph _{0}}\\neq \\aleph _{\\omega }.}"
+      },
+      "status": "partial",
+      "decl": "Cardinal.lt_cof_ord_power",
+      "module": "Mathlib.SetTheory.Cardinal.Cofinality.Ordinal",
+      "note": "König's lemma form a < (b^a).ord.cof is formalized, implying cf(2^ℵ₀) > ℵ₀, but the inequality 2^ℵ₀ ≠ ℵω is not stated."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {cf} (\\aleph _{\\delta })=\\operatorname {cf} (\\delta ).}"
+      },
+      "status": "formalized",
+      "decl": "Ordinal.cof_omega",
+      "module": "Mathlib.SetTheory.Cardinal.Cofinality.Ordinal",
+      "note": "cof_omega: for IsSuccLimit o, (ω_o).cof = o.cof, exactly the limit-δ statement cf(ℵ_δ) = cf(δ)."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\operatorname {cf} (\\aleph _{\\delta })=\\aleph _{\\delta }.}"
+      },
+      "status": "formalized",
+      "decl": "Cardinal.IsRegular.cof_omega_eq",
+      "module": "Mathlib.SetTheory.Cardinal.Regular",
+      "note": "IsRegular.cof_omega_eq states (ω_o).cof = ℵ_o whenever ℵ_o is regular, capturing the regular-aleph characterization."
+    }
+  ]
+}

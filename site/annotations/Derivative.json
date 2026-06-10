@@ -1,0 +1,1021 @@
+{
+  "slug": "Derivative",
+  "wikipedia_title": "Derivative",
+  "display_title": "Derivative",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Derivative (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the derivative is a fundamental tool that quantifies the sensitivity to change"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fderiv",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `fderiv` is the general (Fréchet) derivative on normed spaces; `deriv` specializes to scalar input.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Differentiability at a point (ε-δ)",
+      "anchor": {
+        "section": "As a limit",
+        "snippet": "is differentiable at a point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DifferentiableAt",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`DifferentiableAt 𝕜 f x` captures differentiability at a point via the Fréchet condition (which agrees with ε-δ on `ℝ`).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "As a limit",
+          "snippet": "is differentiable at a point"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle L=\\lim _{h\\to 0}{\\frac {f(a+h)-f(a)}{h}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left|L-{\\frac {f(a+h)-f(a)}{h}}\\right|&lt;\\varepsilon ,}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Derivative as a limit",
+      "anchor": {
+        "section": "As a limit",
+        "snippet": "then this limit is called the derivative of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "deriv",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`deriv f x` is defined via `fderiv`, but `HasDerivAt` is equivalent to the classical difference-quotient limit.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Derivative function",
+      "anchor": {
+        "section": "As a limit",
+        "snippet": "This function is written"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "deriv",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`deriv f : 𝕜 → F` is exactly the derivative function viewed as a function of the point.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Derivative of squaring function",
+      "anchor": {
+        "section": "As a limit",
+        "snippet": "let [MATH] be the squaring function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "deriv_pow_field",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Pow",
+        "match_kind": "special_case"
+      },
+      "note": "`deriv_pow_field` gives `deriv (· ^ n) x = n * x^(n-1)`; specializing to `n = 2` yields the squaring example.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "As a limit",
+          "snippet": "let [MATH] be the squaring function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {f(a+h)-f(a)}{h}}={\\frac {(a+h)^{2}-a^{2}}{h}}={\\frac {a^{2}+2ah+h^{2}-a^{2}}{h}}=2a+h.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Derivative as slope of tangent",
+      "anchor": {
+        "section": "As a limit",
+        "snippet": "In other words, the derivative is the slope of the tangent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no geometric `tangentLine` concept identifying `deriv` with the slope of a tangent line (only the analytic `HasDerivAt`/`slope` machinery).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Derivative via infinitesimals (nonstandard analysis)",
+      "anchor": {
+        "section": "Using infinitesimals",
+        "snippet": "the derivative of [MATH] becomes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`Hyperreal` exists in `Mathlib.Analysis.Real.Hyperreal` but no derivative defined via `st` of an infinitesimal ratio is provided.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Using infinitesimals",
+          "snippet": "the derivative of [MATH] becomes"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f'(x)=\\operatorname {st} \\left({\\frac {f(x+dx)-f(x)}{dx}}\\right)}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}f'(x)&amp;=\\operatorname {st} \\left({\\frac {x^{2}+2x\\cdot dx+(dx)^{2}-x^{2}}{dx}}\\right)\\\\&amp;=\\operatorname {st} \\left({\\frac {2x\\cdot dx+(dx)^{2}}{dx}}\\right)\\\\&amp;=\\operatorname {st} \\left({\\frac {2x\\cdot dx}{dx}}+{\\frac {(dx)^{2}}{dx}}\\right)\\\\&amp;=\\operatorname {st} \\left(2x+dx\\right)\\\\&amp;=2x.\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Squaring function via infinitesimals",
+      "anchor": {
+        "section": "Using infinitesimals",
+        "snippet": "Taking the squaring function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No nonstandard derivative is set up in Mathlib, so this worked example is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Using infinitesimals",
+          "snippet": "Taking the squaring function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f'(x)=\\operatorname {st} \\left({\\frac {f(x+dx)-f(x)}{dx}}\\right)}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}f'(x)&amp;=\\operatorname {st} \\left({\\frac {x^{2}+2x\\cdot dx+(dx)^{2}-x^{2}}{dx}}\\right)\\\\&amp;=\\operatorname {st} \\left({\\frac {2x\\cdot dx+(dx)^{2}}{dx}}\\right)\\\\&amp;=\\operatorname {st} \\left({\\frac {2x\\cdot dx}{dx}}+{\\frac {(dx)^{2}}{dx}}\\right)\\\\&amp;=\\operatorname {st} \\left(2x+dx\\right)\\\\&amp;=2x.\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Differentiability implies continuity",
+      "anchor": {
+        "section": "Continuity and differentiability",
+        "snippet": "then [MATH] must also be continuous at"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DifferentiableAt.continuousAt",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`DifferentiableAt.continuousAt` states that any function differentiable at `x` is continuous at `x`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Step function is not differentiable",
+      "anchor": {
+        "section": "Continuity and differentiability",
+        "snippet": "be the step function that returns the value 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated lemma showing the Heaviside/step function is non-differentiable; one would derive it from the discontinuity, but no named result exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Absolute value not differentiable at 0",
+      "anchor": {
+        "section": "Continuity and differentiability",
+        "snippet": "the absolute value function given by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "not_differentiableAt_abs_zero",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Abs",
+        "match_kind": "exact"
+      },
+      "note": "`not_differentiableAt_abs_zero` states `¬ DifferentiableAt ℝ abs 0`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Function with vertical tangent",
+      "anchor": {
+        "section": "Continuity and differentiability",
+        "snippet": "Even a function with a smooth graph is not differentiable at a point where its tangent is vertical"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No named example of a vertical-tangent non-differentiability (e.g. cube root) is recorded in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Weierstrass function",
+      "anchor": {
+        "section": "Continuity and differentiability",
+        "snippet": "Weierstrass found the first example of a function that is continuous everywhere but differentiable nowhere"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Weierstrass nowhere-differentiable function is not constructed in Mathlib (only the Weierstrass approximation theorem appears).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Banach's meager set theorem",
+      "anchor": {
+        "section": "Continuity and differentiability",
+        "snippet": "Stefan Banach proved that the set of functions that have a derivative at some point is a meager set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Banach's meagerness result on differentiable functions in `C[0,1]` is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Leibniz notation",
+      "anchor": {
+        "section": "Notation",
+        "snippet": "One common way of writing the derivative of a function is Leibniz notation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib uses `deriv`/`fderiv` notation, not Leibniz `dy/dx`; no `dy/dx` notation is set up.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Chain rule (Leibniz form)",
+      "anchor": {
+        "section": "Notation",
+        "snippet": "The derivative of a composed function can be expressed using the chain rule"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fderiv_comp",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Comp",
+        "match_kind": "generalization"
+      },
+      "note": "The chain rule itself is `fderiv_comp` / `HasDerivAt.comp`; only the Leibniz notational form is unformalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Prime (Lagrange) notation",
+      "anchor": {
+        "section": "Notation",
+        "snippet": "Another common notation for differentiation is by using the prime mark"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not introduce `f'` notation for derivatives — it writes `deriv f` instead.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Newton's dot notation",
+      "anchor": {
+        "section": "Notation",
+        "snippet": "In Newton's notation or the dot notation, a dot is placed over a symbol"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dot notation for time derivatives is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "D-notation (Euler)",
+      "anchor": {
+        "section": "Notation",
+        "snippet": "Another notation is D-notation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not provide Euler's `D` operator notation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Derivative of powers",
+      "anchor": {
+        "section": "Rules for basic functions",
+        "snippet": "Derivatives of powers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "deriv_pow_field",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Pow",
+        "match_kind": "exact"
+      },
+      "note": "`deriv_pow_field` gives `deriv (· ^ n) x = n * x^(n-1)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Derivatives of exponentials and logarithms",
+      "anchor": {
+        "section": "Rules for basic functions",
+        "snippet": "Functions of exponential , natural logarithm , and logarithm with general base"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.deriv_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.ExpDeriv",
+        "match_kind": "exact"
+      },
+      "note": "`Real.deriv_exp` and `Real.deriv_log` give the derivatives of exp and log; general-base versions are in the SpecialFunctions library.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Derivatives of trigonometric functions",
+      "anchor": {
+        "section": "Rules for basic functions",
+        "snippet": "Trigonometric functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.deriv_sin",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv",
+        "match_kind": "exact"
+      },
+      "note": "`Real.deriv_sin = cos` and `Real.deriv_cos = -sin` (and tan via quotient) are established.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Derivatives of inverse trigonometric functions",
+      "anchor": {
+        "section": "Rules for basic functions",
+        "snippet": "Inverse trigonometric functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.deriv_arcsin",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.InverseDeriv",
+        "match_kind": "exact"
+      },
+      "note": "`Real.deriv_arcsin` and `Real.deriv_arctan` give the standard inverse-trig derivative formulas.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Constant rule",
+      "anchor": {
+        "section": "Rules for combined functions",
+        "snippet": "Constant rule"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fderiv_const",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Const",
+        "match_kind": "exact"
+      },
+      "note": "`fderiv_const c` proves the derivative of a constant function is zero.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum rule",
+      "anchor": {
+        "section": "Rules for combined functions",
+        "snippet": "Sum rule"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fderiv_add",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Add",
+        "match_kind": "exact"
+      },
+      "note": "`fderiv_add` states `fderiv (f + g) = fderiv f + fderiv g` under differentiability hypotheses.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product rule",
+      "anchor": {
+        "section": "Rules for combined functions",
+        "snippet": "Product rule"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "deriv_mul",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Mul",
+        "match_kind": "exact"
+      },
+      "note": "`deriv_mul` / `fderiv_mul` give the Leibniz product rule.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quotient rule",
+      "anchor": {
+        "section": "Rules for combined functions",
+        "snippet": "Quotient rule"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "deriv_div",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Inv",
+        "match_kind": "exact"
+      },
+      "note": "`deriv_div` proves the quotient rule when the denominator is nonzero.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chain rule",
+      "anchor": {
+        "section": "Rules for combined functions",
+        "snippet": "Chain rule for composite functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fderiv_comp",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Comp",
+        "match_kind": "exact"
+      },
+      "note": "`fderiv_comp` (and `HasDerivAt.comp`) is the chain rule for composition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Computation example",
+      "anchor": {
+        "section": "Computation example",
+        "snippet": "The derivative of the function given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A worked-out specific derivative example like this is not stored as a named lemma in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Computation example",
+          "snippet": "The derivative of the function given by"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}f'(x)&amp;=4x^{(4-1)}+{\\frac {d\\left(x^{2}\\right)}{dx}}\\cos \\left(x^{2}\\right)-{\\frac {d\\left(\\ln {x}\\right)}{dx}}e^{x}-\\ln(x){\\frac {d\\left(e^{x}\\right)}{dx}}+0\\\\&amp;=4x^{3}+2x\\cos \\left(x^{2}\\right)-{\\frac {1}{x}}e^{x}-\\ln(x)e^{x}.\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Antiderivative",
+      "anchor": {
+        "section": "Antidifferentiation",
+        "snippet": "An antiderivative of a function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HasDerivAt",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "`HasDerivAt F f x` expresses that `F` is an antiderivative of `f` at `x`, but no dedicated `Antiderivative` notion is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of calculus",
+      "anchor": {
+        "section": "Antidifferentiation",
+        "snippet": "The fundamental theorem of calculus shows that finding an antiderivative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "intervalIntegral.integral_eq_sub_of_hasDerivAt",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus",
+        "match_kind": "exact"
+      },
+      "note": "`integral_eq_sub_of_hasDerivAt` is the FTC: `∫ x in a..b, f' x = f b - f a`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Higher-order derivatives",
+      "anchor": {
+        "section": "Higher-order derivatives",
+        "snippet": "Higher-order derivatives are the result of differentiating a function repeatedly"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "iteratedDeriv",
+        "module": "Mathlib.Analysis.Calculus.IteratedDeriv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`iteratedDeriv n f` and `iteratedFDeriv` formalize n-fold differentiation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Differentiability class C^k",
+      "anchor": {
+        "section": "Higher-order derivatives",
+        "snippet": "then the function is said to be of differentiability class"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContDiff",
+        "module": "Mathlib.Analysis.Calculus.ContDiff.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`ContDiff 𝕜 n f` is the C^k class (with n : ℕ∞ω).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Smooth (infinitely differentiable) function",
+      "anchor": {
+        "section": "Higher-order derivatives",
+        "snippet": "A function that has infinitely many derivatives is called infinitely differentiable or smooth"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContDiff",
+        "module": "Mathlib.Analysis.Calculus.ContDiff.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Smoothness is `ContDiff 𝕜 ∞ f` (or `ContDiff 𝕜 ω f` for real-analytic).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Polynomials are smooth",
+      "anchor": {
+        "section": "Higher-order derivatives",
+        "snippet": "Any polynomial function is infinitely differentiable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CPolynomialOn.contDiffOn",
+        "module": "Mathlib.Analysis.Calculus.ContDiff.CPolynomial",
+        "match_kind": "generalization"
+      },
+      "note": "`CPolynomialOn.contDiffOn` shows continuously polynomial functions are `C^∞`; a more elementary `Polynomial`-level statement is also available via `Polynomial.contDiff` lemmas.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Position, velocity, acceleration, jerk",
+      "anchor": {
+        "section": "Higher-order derivatives",
+        "snippet": "represents an object's position with respect to time"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Kinematic interpretation (position/velocity/acceleration/jerk) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Derivative of a vector-valued function",
+      "anchor": {
+        "section": "Vector-valued functions",
+        "snippet": "The derivative of [MATH] is defined to be the vector"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "deriv",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`deriv : (𝕜 → F) → 𝕜 → F` already takes values in an arbitrary normed space `F`, covering vector-valued curves.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Vector-valued functions",
+          "snippet": "The derivative of [MATH] is defined to be the vector"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {y} '(t)=\\lim _{h\\to 0}{\\frac {\\mathbf {y} (t+h)-\\mathbf {y} (t)}{h}},}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Partial derivative",
+      "anchor": {
+        "section": "Partial derivatives",
+        "snippet": "A partial derivative of a function of several variables is its derivative with respect to one of those variables"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "lineDeriv",
+        "module": "Mathlib.Analysis.Calculus.LineDeriv.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has no dedicated `partialDeriv`; partials are obtained as `lineDeriv 𝕜 f x eᵢ` along basis vectors or via `fderiv` composed with coordinate inclusions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Partial derivative in a direction",
+      "anchor": {
+        "section": "Partial derivatives",
+        "snippet": "In general, the partial derivative of a function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "lineDeriv",
+        "module": "Mathlib.Analysis.Calculus.LineDeriv.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Subsumed by `lineDeriv`/`HasLineDerivAt`, but no dedicated notion of partial derivative along a coordinate axis exists by name.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Partial derivatives",
+          "snippet": "In general, the partial derivative of a function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {\\partial f}{\\partial x}}=2x+y,\\qquad {\\frac {\\partial f}{\\partial y}}=x+2y.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {\\partial f}{\\partial x_{i}}}(a_{1},\\ldots ,a_{n})=\\lim _{h\\to 0}{\\frac {f(a_{1},\\ldots ,a_{i}+h,\\ldots ,a_{n})-f(a_{1},\\ldots ,a_{i},\\ldots ,a_{n})}{h}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Gradient",
+      "anchor": {
+        "section": "Partial derivatives",
+        "snippet": "which is called the gradient of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "gradient",
+        "module": "Mathlib.Analysis.Calculus.Gradient.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`gradient f x` (notation `∇ f x`) is defined via the Fréchet derivative and inner product duality.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Partial derivatives",
+          "snippet": "which is called the gradient of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\nabla f(a_{1},\\ldots ,a_{n})=\\left({\\frac {\\partial f}{\\partial x_{1}}}(a_{1},\\ldots ,a_{n}),\\ldots ,{\\frac {\\partial f}{\\partial x_{n}}}(a_{1},\\ldots ,a_{n})\\right),}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Directional derivative",
+      "anchor": {
+        "section": "Directional derivatives",
+        "snippet": "then the directional derivative of [MATH] in the direction of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lineDeriv",
+        "module": "Mathlib.Analysis.Calculus.LineDeriv.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`lineDeriv 𝕜 f x v` is exactly the directional derivative of `f` at `x` along `v`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Directional derivatives",
+          "snippet": "then the directional derivative of [MATH] in the direction of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle D_{\\mathbf {v} }{f}(\\mathbf {x} )=\\lim _{h\\rightarrow 0}{\\frac {f(\\mathbf {x} +h\\mathbf {v} )-f(\\mathbf {x} )}{h}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Directional derivative formula",
+      "anchor": {
+        "section": "Directional derivatives",
+        "snippet": "then they determine the directional derivative of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasFDerivAt.hasLineDerivAt",
+        "module": "Mathlib.Analysis.Calculus.LineDeriv.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The formula `fderiv 𝕜 f x v = lineDeriv 𝕜 f x v` is recorded via `HasFDerivAt.hasLineDerivAt` and related lemmas.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Directional derivatives",
+          "snippet": "then they determine the directional derivative of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle D_{\\mathbf {v} }{f}(\\mathbf {x} )=\\sum _{j=1}^{n}v_{j}{\\frac {\\partial f}{\\partial x_{j}}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Total derivative",
+      "anchor": {
+        "section": "Total derivative and Jacobian matrix",
+        "snippet": "The total derivative of [MATH] at [MATH] is the unique linear transformation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fderiv",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`fderiv 𝕜 f x : E →L[𝕜] F` is precisely the (unique) total/Fréchet derivative.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Total derivative and Jacobian matrix",
+          "snippet": "The total derivative of [MATH] at [MATH] is the unique linear transformation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(\\mathbf {a} +\\mathbf {v} )\\approx f(\\mathbf {a} )+f'(\\mathbf {a} )\\mathbf {v} .}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{\\mathbf {h} \\to 0}{\\frac {\\lVert f(\\mathbf {a} +\\mathbf {h} )-(f(\\mathbf {a} )+f'(\\mathbf {a} )\\mathbf {h} )\\rVert }{\\lVert \\mathbf {h} \\rVert }}=0.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Pushforward",
+      "anchor": {
+        "section": "Total derivative and Jacobian matrix",
+        "snippet": "is called the pushforward of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mfderiv",
+        "module": "Mathlib.Geometry.Manifold.MFDeriv.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`mfderiv I I' f x` (and `tangentMap`) is the pushforward of tangent vectors by a differentiable map between manifolds.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Total derivative and Jacobian matrix",
+          "snippet": "is called the pushforward of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(\\mathbf {a} +\\mathbf {v} )\\approx f(\\mathbf {a} )+f'(\\mathbf {a} )\\mathbf {v} .}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{\\mathbf {h} \\to 0}{\\frac {\\lVert f(\\mathbf {a} +\\mathbf {h} )-(f(\\mathbf {a} )+f'(\\mathbf {a} )\\mathbf {h} )\\rVert }{\\lVert \\mathbf {h} \\rVert }}=0.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Total derivative determines partials and directional derivatives",
+      "anchor": {
+        "section": "Total derivative and Jacobian matrix",
+        "snippet": "then all the partial derivatives and directional derivatives of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasFDerivAt.hasLineDerivAt",
+        "module": "Mathlib.Analysis.Calculus.LineDeriv.Basic",
+        "match_kind": "exact"
+      },
+      "note": "From `HasFDerivAt f f' x` one obtains `HasLineDerivAt 𝕜 f (f' v) x v` for every direction `v`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Total derivative and Jacobian matrix",
+          "snippet": "then all the partial derivatives and directional derivatives of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f'(\\mathbf {a} )=\\operatorname {Jac} _{\\mathbf {a} }=\\left({\\frac {\\partial f_{i}}{\\partial x_{j}}}\\right)_{ij}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Jacobian matrix",
+      "anchor": {
+        "section": "Total derivative and Jacobian matrix",
+        "snippet": "This matrix is called the Jacobian matrix of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "fderiv",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "No `jacobian` matrix is named for the Fréchet derivative; one can take the matrix representation of `fderiv` in coordinates, and `MeasureTheory.Function.Jacobian` uses its determinant for change-of-variables.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Total derivative and Jacobian matrix",
+          "snippet": "This matrix is called the Jacobian matrix of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f'(\\mathbf {a} )=\\operatorname {Jac} _{\\mathbf {a} }=\\left({\\frac {\\partial f_{i}}{\\partial x_{j}}}\\right)_{ij}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Complex derivative",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "The notion of the derivative of such a function is obtained by replacing real variables with complex variables"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "deriv",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`deriv` and `fderiv` are parametric in the scalar field; taking `𝕜 = ℂ` yields the complex (holomorphic) derivative.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cauchy–Riemann equations",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "the complex derivative only exists if the real derivative is complex linear"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "differentiableWithinAt_complex_iff_differentiableWithinAt_real",
+        "module": "Mathlib.Analysis.Complex.Conformal",
+        "match_kind": "exact"
+      },
+      "note": "This theorem characterizes complex differentiability as real differentiability plus the CR-type condition `fderiv ℝ f s x I = I • fderiv ℝ f s x 1`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Derivative on manifolds",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "The derivative (or differential) of a (differentiable) map"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mfderiv",
+        "module": "Mathlib.Geometry.Manifold.MFDeriv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`mfderiv I I' f x` is the differential of a map between smooth manifolds between tangent spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Gateaux and Fréchet derivatives",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "those generalizations are the Gateaux derivative and the Fréchet derivative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fderiv",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`fderiv` is the Fréchet derivative; `lineDeriv` plays the role of the Gateaux/directional derivative.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Weak derivative",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "a concept known as the weak derivative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Sobolev/weak derivatives of distributions are not formalized in Mathlib (only tempered distributions and related infrastructure exist).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Arithmetic derivative",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "The arithmetic derivative involves the function that is defined for the integers by the prime factorization"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The number-theoretic arithmetic derivative on `ℕ` defined via prime factorization is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Derivations",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "Derivations generalize derivatives to algebraic settings"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Derivation",
+        "module": "Mathlib.RingTheory.Derivation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Derivation R A M` is the algebraic notion of an `R`-linear map satisfying the Leibniz rule.",
+      "provenance": "ai"
+    }
+  ]
+}

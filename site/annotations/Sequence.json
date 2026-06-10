@@ -1,0 +1,1385 @@
+{
+  "slug": "Sequence",
+  "wikipedia_title": "Sequence",
+  "display_title": "Sequence",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Sequence (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a sequence is a collection of objects possibly with repetition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Stream'.Seq",
+        "module": "Mathlib.Data.Seq.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `Seq α` models a possibly-finite-or-infinite ordered sequence (with `Stream'`/`List` for the purely infinite/finite cases).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Indexed family",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "can be generalized to an indexed family"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Indexed families are represented pervasively as plain dependent functions `ι → α` / `(i : ι) → π i`, but there is no dedicated `IndexedFamily` definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sequence of letters (M,A,R,Y)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a sequence of letters with the letter"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A specific illustrative example with no corresponding Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Length of a finite sequence",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The length of a finite sequence is defined as the number of elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "List.length",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Length of a finite sequence is `List.length` (a Lean-core function with extensive Mathlib API).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Position / index of an element",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The position of an element in a sequence is its rank or index"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Position is just the function argument / list index (`List.get`); no dedicated notion is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Strings, words, lists (computing)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "finite sequences are usually called strings"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FreeMonoid",
+        "module": "Mathlib.Algebra.FreeMonoid.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Finite sequences/words are `FreeMonoid α := List α` (with `List`/`String` as the core types).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Empty sequence",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is included in most notions of sequence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "List.nil",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "The empty finite sequence is `List.nil` / `[]` (Lean core).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Listing notation",
+      "anchor": {
+        "section": "Examples and notation",
+        "snippet": "One way to specify a sequence is to list all its elements"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A notational device for specifying sequences, not a formalizable statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Prime number",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "A prime number is a natural numbers greater than 1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Prime",
+        "module": "Mathlib.Data.Nat.Prime.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Prime p` is the standard definition of a prime natural number.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sequence of prime numbers",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Listing the prime numbers in their natural order gives the sequence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.nth",
+        "module": "Mathlib.Data.Nat.Nth",
+        "match_kind": "invocation"
+      },
+      "note": "`Nat.nth Nat.Prime` enumerates the primes in order, with lemmas like `Nat.nth_prime_zero_eq_two`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fibonacci numbers",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The Fibonacci numbers are a sequence for which each element is the sum of the previous two elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.fib",
+        "module": "Mathlib.Data.Nat.Fib.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.fib` is the Fibonacci sequence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Rational sequence approaching 1",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "for instance, approaches the number 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A specific illustrative example with no dedicated declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every real is a limit of rationals",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "every real number can be written as the limit of a sequence of rational numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Rat.denseRange_cast",
+        "module": "Mathlib.Topology.Algebra.Order.Archimedean",
+        "match_kind": "generalization"
+      },
+      "note": "`Rat.denseRange_cast` gives density of ℚ (hence every real is a rational limit) for any linear ordered archimedean field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Decimal digits of a real number",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "A related type of sequence consists of the decimal digits of a real number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.digits",
+        "module": "Mathlib.Analysis.Real.OfDigits",
+        "match_kind": "generalization"
+      },
+      "note": "`Real.digits x b` is the base-`b` digit sequence of a real number (decimal is `b = 10`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Monomial basis sequence",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the monomial basis for polynomials of a single variable forms the sequence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.basisMonomials",
+        "module": "Mathlib.Algebra.Polynomial.Basis",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial.basisMonomials` is the basis `Xⁿ` of `R[X]` (`coe_basisMonomials` gives `fun s => monomial s 1`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "OEIS",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "comprises a large list of examples of integer sequences"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An external database, not a mathematical object in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Index and index set",
+      "anchor": {
+        "section": "Indexing",
+        "snippet": "The variable n is called an index"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The index/index set is just the domain of the function; no dedicated notion is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bi-infinite sequence (indexing)",
+      "anchor": {
+        "section": "Indexing",
+        "snippet": "A bi-infinite sequence is a sequence indexed by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A ℤ-indexed sequence is representable as `ℤ → α` but has no dedicated definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Recurrence relation",
+      "anchor": {
+        "section": "Defining a sequence by recursion",
+        "snippet": "one needs a rule, called recurrence relation to construct each element"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The general notion of recurrence relation is not a named concept (only special cases like `LinearRecurrence` are formalized).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fibonacci by recurrence",
+      "anchor": {
+        "section": "Defining a sequence by recursion",
+        "snippet": "The Fibonacci sequence is a simple classical example"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.fib_add_two",
+        "module": "Mathlib.Data.Nat.Fib.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.fib_add_two` proves `fib (n+2) = fib n + fib (n+1)`, the Fibonacci recurrence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Recamán's sequence",
+      "anchor": {
+        "section": "Defining a sequence by recursion",
+        "snippet": "A complicated example of a sequence defined by a recurrence relation is Recamán's sequence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Recamán's sequence is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear recurrence with constant coefficients",
+      "anchor": {
+        "section": "Defining a sequence by recursion",
+        "snippet": "A linear recurrence with constant coefficients is a recurrence relation of the form"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearRecurrence",
+        "module": "Mathlib.Algebra.LinearRecurrence",
+        "match_kind": "exact"
+      },
+      "note": "`LinearRecurrence` is the structure of a linear recurrence with constant coefficients.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Holonomic sequence",
+      "anchor": {
+        "section": "Defining a sequence by recursion",
+        "snippet": "A holonomic sequence is a sequence defined by a recurrence relation of the form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Holonomic (P-recursive) sequences are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Not all sequences satisfy a recurrence",
+      "anchor": {
+        "section": "Defining a sequence by recursion",
+        "snippet": "Not all sequences can be specified by a recurrence relation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A meta-mathematical remark with no formal counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sequence (formal, as a function)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "a sequence can be defined as a function whose domain is an interval of integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Stream'",
+        "module": "Mathlib.Data.Stream.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "`Stream' α := ℕ → α` defines a sequence as a function with index-set domain ℕ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Length of a sequence",
+      "anchor": {
+        "section": "Finite and infinite",
+        "snippet": "The length of a sequence is defined as the number of terms in the sequence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "List.length",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Length of a finite sequence is `List.length` (Lean core).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Finite sequence / n-tuple",
+      "anchor": {
+        "section": "Finite and infinite",
+        "snippet": "A sequence of a finite length is a finite sequence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "List",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Finite sequences are `List α`; n-tuples are `Fin n → α` (core types with Mathlib API).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Infinite and bi-infinite sequences",
+      "anchor": {
+        "section": "Finite and infinite",
+        "snippet": "infinite sequence refers to a sequence that is infinite in one direction"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Stream'",
+        "module": "Mathlib.Data.Stream.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "One-directional infinite sequences are `Stream' α := ℕ → α`, but bi-infinite (ℤ-indexed) sequences have no dedicated definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Monotonically increasing",
+      "anchor": {
+        "section": "Increasing and decreasing",
+        "snippet": "monotonically increasing if each term is greater than or equal to the one before it"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Monotone",
+        "module": "Mathlib.Order.Monotone.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Monotone` captures (weakly) increasing functions/sequences.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Monotonically decreasing",
+      "anchor": {
+        "section": "Increasing and decreasing",
+        "snippet": "monotonically decreasing if each consecutive term is less than or equal to the previous one"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Antitone",
+        "module": "Mathlib.Order.Monotone.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Antitone` captures (weakly) decreasing functions/sequences.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Monotone sequence",
+      "anchor": {
+        "section": "Increasing and decreasing",
+        "snippet": "it is called a monotone sequence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Monotone",
+        "module": "Mathlib.Order.Monotone.Defs",
+        "match_kind": "exact"
+      },
+      "note": "A monotone sequence is `Monotone` (or `Antitone`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Nondecreasing / nonincreasing",
+      "anchor": {
+        "section": "Increasing and decreasing",
+        "snippet": "The terms nondecreasing and nonincreasing are often used in place"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Monotone",
+        "module": "Mathlib.Order.Monotone.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Nondecreasing is `Monotone` and nonincreasing is `Antitone`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bounded from above",
+      "anchor": {
+        "section": "Bounded",
+        "snippet": "the sequence is said to be bounded from above"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BddAbove",
+        "module": "Mathlib.Order.Bounds.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Bounded above is `BddAbove (Set.range u)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Upper bound",
+      "anchor": {
+        "section": "Bounded",
+        "snippet": "Any such M is called an upper bound"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "upperBounds",
+        "module": "Mathlib.Order.Bounds.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`upperBounds s` is the set of upper bounds of `s`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bounded from below / lower bound",
+      "anchor": {
+        "section": "Bounded",
+        "snippet": "the sequence is bounded from below and any such m is called a lower bound"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BddBelow",
+        "module": "Mathlib.Order.Bounds.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Bounded below is `BddBelow (Set.range u)` and lower bounds form `lowerBounds`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bounded sequence",
+      "anchor": {
+        "section": "Bounded",
+        "snippet": "If a sequence is both bounded from above and bounded from below"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Bornology.IsBounded",
+        "module": "Mathlib.Topology.Bornology.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "A bounded sequence has bounded range, i.e. `Bornology.IsBounded (Set.range u)` (equivalently `BddAbove` ∧ `BddBelow`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Subsequence (informal)",
+      "anchor": {
+        "section": "Subsequences",
+        "snippet": "A subsequence of a given sequence is a sequence formed from the given sequence by deleting some of the elements"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "StrictMono",
+        "module": "Mathlib.Order.Monotone.Defs",
+        "match_kind": null
+      },
+      "note": "Subsequences are encoded as `u ∘ φ` with `StrictMono φ : ℕ → ℕ`, but no dedicated `Subsequence` object exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Subsequence (formal)",
+      "anchor": {
+        "section": "Subsequences",
+        "snippet": "Formally, a subsequence of the sequence"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "StrictMono",
+        "module": "Mathlib.Order.Monotone.Defs",
+        "match_kind": null
+      },
+      "note": "The formal `a_{n_k}` is realized as `a ∘ φ` for `StrictMono φ`, used throughout Mathlib but without its own definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Integer sequence",
+      "anchor": {
+        "section": "Other types of sequences",
+        "snippet": "An integer sequence is a sequence whose terms are integers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Just a function `ℕ → ℤ`; no dedicated definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Polynomial sequence",
+      "anchor": {
+        "section": "Other types of sequences",
+        "snippet": "A polynomial sequence is a sequence whose terms are polynomials"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Just a function `ℕ → R[X]`; no dedicated definition of a polynomial sequence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multiplicative sequence",
+      "anchor": {
+        "section": "Other types of sequences",
+        "snippet": "A positive integer sequence is sometimes called multiplicative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.IsMultiplicative",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`ArithmeticFunction.IsMultiplicative` is exactly `f(mn)=f(m)f(n)` for coprime `m,n` (with `f 1 = 1`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Binary sequence",
+      "anchor": {
+        "section": "Other types of sequences",
+        "snippet": "A binary sequence is a sequence whose terms have one of two discrete values"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Binary sequences `ℕ → Bool` are studied (as the Cantor space) but have no dedicated definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convergent sequence / limit",
+      "anchor": {
+        "section": "Limits and convergence",
+        "snippet": "it converges to a particular value known as the limit"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.Tendsto",
+        "module": "Mathlib.Order.Filter.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "Convergence of a sequence to a limit is `Filter.Tendsto u atTop (𝓝 l)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Divergent sequence",
+      "anchor": {
+        "section": "Limits and convergence",
+        "snippet": "A sequence that does not converge is divergent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Divergence is just the negation of convergence; no dedicated predicate is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Limit (informal)",
+      "anchor": {
+        "section": "Limits and convergence",
+        "snippet": "a sequence has a limit if the elements of the sequence become closer and closer"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.Tendsto",
+        "module": "Mathlib.Order.Filter.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "The limit notion is `Filter.Tendsto` along `atTop` to the neighborhood filter.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Convergent and divergent examples",
+      "anchor": {
+        "section": "Limits and convergence",
+        "snippet": "shown to the right converges to the value 0"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific illustrative examples with no dedicated declarations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness of the limit",
+      "anchor": {
+        "section": "Limits and convergence",
+        "snippet": "then the value it converges to is unique"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendsto_nhds_unique",
+        "module": "Mathlib.Topology.Separation.Hausdorff",
+        "match_kind": "exact"
+      },
+      "note": "`tendsto_nhds_unique` proves limits are unique in Hausdorff (hence metric) spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convergence (epsilon-N)",
+      "anchor": {
+        "section": "Formal definition of convergence",
+        "snippet": "there exists a natural number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.tendsto_atTop",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Metric.tendsto_atTop` is the ε–N characterization of sequence convergence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convergence in complex / metric spaces",
+      "anchor": {
+        "section": "Formal definition of convergence",
+        "snippet": "this last formula can still be used to define convergence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.tendsto_atTop",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Metric.tendsto_atTop` defines convergence in any (pseudo)metric space, including ℂ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Limit laws",
+      "anchor": {
+        "section": "Applications and important results",
+        "snippet": "then the following limits exist, and can be computed as follows"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.Tendsto.mul",
+        "module": "Mathlib.Topology.Algebra.Monoid.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Limit laws are `Filter.Tendsto.add`, `Filter.Tendsto.mul`, etc., for topological algebraic structures.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Limits preserve order",
+      "anchor": {
+        "section": "Applications and important results",
+        "snippet": "greater than some"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "le_of_tendsto_of_tendsto",
+        "module": "Mathlib.Topology.Order.OrderClosed",
+        "match_kind": "exact"
+      },
+      "note": "`le_of_tendsto_of_tendsto` shows order is preserved in the limit.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Squeeze theorem",
+      "anchor": {
+        "section": "Applications and important results",
+        "snippet": "Squeeze theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendsto_of_tendsto_of_tendsto_of_le_of_le",
+        "module": "Mathlib.Topology.Order.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`tendsto_of_tendsto_of_tendsto_of_le_of_le` is the squeeze/sandwich theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Monotone bounded sequences converge",
+      "anchor": {
+        "section": "Applications and important results",
+        "snippet": "If a sequence is bounded and monotonic then it is convergent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendsto_atTop_ciSup",
+        "module": "Mathlib.Topology.Order.MonotoneConvergence",
+        "match_kind": "generalization"
+      },
+      "note": "`tendsto_atTop_ciSup` proves a monotone, bounded-above sequence converges to its supremum.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convergence via subsequences",
+      "anchor": {
+        "section": "Applications and important results",
+        "snippet": "all of its subsequences are convergent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendsto_of_subseq_tendsto",
+        "module": "Mathlib.Order.Filter.AtTopBot.CountablyGenerated",
+        "match_kind": "generalization"
+      },
+      "note": "`tendsto_of_subseq_tendsto`: if every subsequence has a sub-subsequence tending to `a`, the sequence tends to `a`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cauchy sequence",
+      "anchor": {
+        "section": "Cauchy sequences",
+        "snippet": "A Cauchy sequence is a sequence whose terms become arbitrarily close together"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CauchySeq",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "exact"
+      },
+      "note": "`CauchySeq` defines Cauchy sequences (with `IsCauSeq` for ordered fields).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cauchy characterization of convergence",
+      "anchor": {
+        "section": "Cauchy sequences",
+        "snippet": "A sequence of real numbers is convergent (in the reals) if and only if it is Cauchy"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "cauchySeq_tendsto_of_complete",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "special_case"
+      },
+      "note": "`cauchySeq_tendsto_of_complete` gives Cauchy ⟹ convergent in a complete space (ℝ is a `CompleteSpace`), the converse being `Filter.Tendsto.cauchySeq`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Rational Cauchy sequence with no rational limit",
+      "anchor": {
+        "section": "Cauchy sequences",
+        "snippet": "there are Cauchy sequences of rational numbers that are not convergent in the rationals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The incompleteness of ℚ is implicit in the real construction but not stated as a standalone example here.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complete metric space",
+      "anchor": {
+        "section": "Cauchy sequences",
+        "snippet": "are called complete metric spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompleteSpace",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "generalization"
+      },
+      "note": "`CompleteSpace` is the typeclass for spaces where every Cauchy filter converges.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Divergence to infinity",
+      "anchor": {
+        "section": "Infinite limits",
+        "snippet": "we say that the sequence diverges , or that it converges to infinity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.Tendsto",
+        "module": "Mathlib.Order.Filter.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "Divergence to +∞ is `Filter.Tendsto u atTop atTop`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Divergence to negative infinity",
+      "anchor": {
+        "section": "Infinite limits",
+        "snippet": "say that the sequence diverges or converges to negative infinity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.Tendsto",
+        "module": "Mathlib.Order.Filter.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "Divergence to −∞ is `Filter.Tendsto u atTop atBot`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Series",
+      "anchor": {
+        "section": "Series",
+        "snippet": "A series is, informally speaking, the sum of the terms of a sequence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tsum",
+        "module": "Mathlib.Topology.Algebra.InfiniteSum.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Infinite sums are `tsum` (`∑'`) / `HasSum`, the (unordered) series of a sequence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Partial sums",
+      "anchor": {
+        "section": "Series",
+        "snippet": "The partial sums of a series are the expressions resulting from replacing the infinity symbol"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.sum",
+        "module": null,
+        "match_kind": "invocation"
+      },
+      "note": "Partial sums are `∑ i ∈ Finset.range n, a i`, the finite sums on which `HasSum` is built.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convergent series / value",
+      "anchor": {
+        "section": "Series",
+        "snippet": "is called the value of the series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasSum",
+        "module": "Mathlib.Topology.Algebra.InfiniteSum.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`HasSum f a` says the series converges with value `a` (also recoverable as `tsum`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compactness via sequential compactness",
+      "anchor": {
+        "section": "Topology",
+        "snippet": "A metric space is compact exactly when it is sequentially compact"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isCompact_iff_isSeqCompact",
+        "module": "Mathlib.Topology.Sequences",
+        "match_kind": "generalization"
+      },
+      "note": "`isCompact_iff_isSeqCompact` proves compactness ⟺ sequential compactness (in suitable uniform/metric settings).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sequential characterization of continuity",
+      "anchor": {
+        "section": "Topology",
+        "snippet": "is continuous exactly when it takes convergent sequences to convergent sequences"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "continuous_iff_seqContinuous",
+        "module": "Mathlib.Topology.Sequences",
+        "match_kind": "special_case"
+      },
+      "note": "`continuous_iff_seqContinuous` gives continuity ⟺ sequential continuity for sequential (e.g. metric) spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sequential characterization of connectedness",
+      "anchor": {
+        "section": "Topology",
+        "snippet": "A metric space is a connected space if and only if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No sequential characterization of connectedness is formalized (only `ConnectedSpace` itself).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Separability via dense sequence",
+      "anchor": {
+        "section": "Topology",
+        "snippet": "A topological space is separable exactly when there is a dense sequence of points"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_dense_seq",
+        "module": "Mathlib.Topology.Bases",
+        "match_kind": "special_case"
+      },
+      "note": "`exists_dense_seq` produces a dense sequence in a (nonempty) `SeparableSpace`, capturing the dense-sequence characterization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generalization to nets and filters",
+      "anchor": {
+        "section": "Topology",
+        "snippet": "Sequences can be generalized to nets or filters"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter",
+        "module": "Mathlib.Order.Filter.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Filters are formalized as `Filter`; Mathlib uses filters rather than nets as the primary generalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Topological product",
+      "anchor": {
+        "section": "Product topology",
+        "snippet": "The topological product of a sequence of topological spaces is the cartesian product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Pi.topologicalSpace",
+        "module": "Mathlib.Topology.Constructions",
+        "match_kind": "exact"
+      },
+      "note": "`Pi.topologicalSpace` is the product topology on the dependent cartesian product `∀ i, Y i`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Canonical projections",
+      "anchor": {
+        "section": "Product topology",
+        "snippet": "The canonical projections are the maps"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "continuous_apply",
+        "module": "Mathlib.Topology.Constructions",
+        "match_kind": "exact"
+      },
+      "note": "`continuous_apply` shows each projection `fun f => f i` from a product is continuous.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Product topology (coarsest topology)",
+      "anchor": {
+        "section": "Product topology",
+        "snippet": "the product topology on X is defined to be the coarsest topology"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Pi.topologicalSpace",
+        "module": "Mathlib.Topology.Constructions",
+        "match_kind": "exact"
+      },
+      "note": "`Pi.topologicalSpace` is defined as `⨅ i, induced (· i) (t i)`, the coarsest topology making all projections continuous.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sequence with shifted starting index",
+      "anchor": {
+        "section": "Analysis",
+        "snippet": "A sequence may start with an index different from 1 or 0"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib sequences are ℕ-indexed; index shifting is handled ad hoc with no dedicated declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sequence space",
+      "anchor": {
+        "section": "Sequence spaces",
+        "snippet": "A sequence space is a vector space whose elements are infinite sequences"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "lp",
+        "module": "Mathlib.Analysis.Normed.Lp.lpSpace",
+        "match_kind": null
+      },
+      "note": "Specific sequence spaces like `lp` exist, but there is no general `SequenceSpace` definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "ℓp spaces",
+      "anchor": {
+        "section": "Sequence spaces",
+        "snippet": "are the ℓ p spaces, consisting of the p -power summable sequences"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lp",
+        "module": "Mathlib.Analysis.Normed.Lp.lpSpace",
+        "match_kind": "exact"
+      },
+      "note": "`lp E p` is the space of `p`-power summable sequences/families.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Spaces c and c0",
+      "anchor": {
+        "section": "Sequence spaces",
+        "snippet": "convergent sequences or null sequences form sequence spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The spaces `c` (convergent) and `c₀` (null sequences) are not defined as named sequence spaces in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sequences as vectors",
+      "anchor": {
+        "section": "Linear algebra",
+        "snippet": "Sequences over a field may also be viewed as vectors in a vector space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Pi.module",
+        "module": "Mathlib.Algebra.Module.Pi",
+        "match_kind": "generalization"
+      },
+      "note": "`Pi.module` gives the module/vector-space structure on function spaces such as `ℕ → K`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Free monoid (Kleene star)",
+      "anchor": {
+        "section": "Free monoid",
+        "snippet": "is a monoid containing all the finite sequences"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FreeMonoid",
+        "module": "Mathlib.Algebra.FreeMonoid.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`FreeMonoid α := List α` is the free monoid (Kleene star `A*`) of finite sequences.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Free semigroup",
+      "anchor": {
+        "section": "Free monoid",
+        "snippet": "The free semigroup A + is the subsemigroup of A *"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FreeSemigroup",
+        "module": "Mathlib.Algebra.Free",
+        "match_kind": "exact"
+      },
+      "note": "`FreeSemigroup α` is the free semigroup (nonempty finite sequences `A⁺`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exact sequence",
+      "anchor": {
+        "section": "Exact sequences",
+        "snippet": "is called exact , if the image (or range ) of each homomorphism is equal to the kernel of the next"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.Exact",
+        "module": "Mathlib.Algebra.Exact",
+        "match_kind": "exact"
+      },
+      "note": "`Function.Exact f g` says `range f = ker g`, with `CategoryTheory.ComposableArrows.Exact` for longer sequences.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Spectral sequence",
+      "anchor": {
+        "section": "Spectral sequences",
+        "snippet": "a spectral sequence is a means of computing homology groups by taking successive approximations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Spectral sequences are not formalized in Mathlib (the `Spectral` files concern spectral spaces/spectra).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ordinal-indexed sequence",
+      "anchor": {
+        "section": "Set theory",
+        "snippet": "An ordinal-indexed sequence is a generalization of a sequence"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ordinal",
+        "module": "Mathlib.SetTheory.Ordinal.Basic",
+        "match_kind": null
+      },
+      "note": "`Ordinal` exists and ordinal-indexed families are used (e.g. `o.toType → α`), but there is no dedicated ordinal-indexed-sequence definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lists",
+      "anchor": {
+        "section": "Computing",
+        "snippet": "finite sequences are called lists"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "List",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "`List` is the core type of finite sequences, used throughout Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Streams",
+      "anchor": {
+        "section": "Computing",
+        "snippet": "Potentially infinite sequences are called streams"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Stream'",
+        "module": "Mathlib.Data.Stream.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Stream' α := ℕ → α` is Mathlib's stream of infinite sequences.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Strings",
+      "anchor": {
+        "section": "Computing",
+        "snippet": "Finite sequences of characters or digits are called strings"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "String",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "`String` is the core type of finite character sequences.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cantor space",
+      "anchor": {
+        "section": "Streams",
+        "snippet": "is sometimes called the Cantor space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "cantorSetHomeomorphNatToBool",
+        "module": "Mathlib.Topology.Instances.CantorSet",
+        "match_kind": "special_case"
+      },
+      "note": "`cantorSetHomeomorphNatToBool : cantorSet ≃ₜ (ℕ → Bool)` identifies the space of binary sequences with the Cantor set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Binary sequence representing a formal language",
+      "anchor": {
+        "section": "Streams",
+        "snippet": "An infinite binary sequence can represent a formal language"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Language",
+        "module": "Mathlib.Computability.Language",
+        "match_kind": null
+      },
+      "note": "`Language α := Set (List α)` is formalized, but the binary-sequence-as-characteristic-function correspondence is not a stated theorem.",
+      "provenance": "ai"
+    }
+  ]
+}

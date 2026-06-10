@@ -1,0 +1,302 @@
+{
+  "items": [
+    {
+      "kind": "definition",
+      "label": "Contraction mapping on a metric space",
+      "section": "Statement",
+      "candidate_anchors": [
+        {
+          "type": "prose_snippet",
+          "section": "Statement",
+          "snippet": "a map T : X → X is called a contraction mapping on X if there exists a nonnegative constant q < 1"
+        },
+        {
+          "type": "math_alttext",
+          "value": "d(T(x),T(y)) \\le q\\, d(x,y)"
+        }
+      ],
+      "rationale": "The article explicitly introduces the definition of a contraction mapping, with both prose and a defining inequality."
+    },
+    {
+      "kind": "proposition",
+      "label": "Banach fixed-point theorem",
+      "section": "Statement",
+      "candidate_anchors": [
+        {
+          "type": "prose_snippet",
+          "section": "Statement",
+          "snippet": "Banach fixed-point theorem"
+        },
+        {
+          "type": "prose_snippet",
+          "section": "Statement",
+          "snippet": "Let (X, d) be a non-empty complete metric space with a contraction mapping T : X → X. Then T admits a unique fixed point"
+        }
+      ],
+      "rationale": "This is the main theorem statement: existence and uniqueness of a fixed point for a contraction on a complete metric space."
+    },
+    {
+      "kind": "proposition",
+      "label": "Picard iteration converges to the fixed point",
+      "section": "Statement",
+      "candidate_anchors": [
+        {
+          "type": "prose_snippet",
+          "section": "Statement",
+          "snippet": "start with an arbitrary element x_0 in X and define x_n = T(x_{n-1}) for n ≥ 1. Then lim_{n→∞} x_n = x*"
+        }
+      ],
+      "rationale": "The constructive part of the theorem — that Picard iterations converge to the fixed point — is a distinct claim usable independently."
+    },
+    {
+      "kind": "proposition",
+      "label": "Rate-of-convergence inequalities for Banach iteration",
+      "section": "Statement",
+      "candidate_anchors": [
+        {
+          "type": "prose_snippet",
+          "section": "Statement",
+          "snippet": "The following inequalities are equivalent and describe the speed of convergence"
+        },
+        {
+          "type": "math_alttext",
+          "value": "d(x^*, x_n) \\leq q^n d(x^*,x_0),"
+        }
+      ],
+      "rationale": "Remark 1 gives four explicit error/rate-of-convergence inequalities, a distinct proposition from the existence/uniqueness theorem."
+    },
+    {
+      "kind": "definition",
+      "label": "Lipschitz constant (and best Lipschitz constant)",
+      "section": "Statement",
+      "candidate_anchors": [
+        {
+          "type": "prose_snippet",
+          "section": "Statement",
+          "snippet": "The value q is called a Lipschitz constant for T, and a minimal such q is sometimes called \"the best Lipschitz constant\" of T."
+        }
+      ],
+      "rationale": "The article defines the Lipschitz constant and the best Lipschitz constant terminology."
+    },
+    {
+      "kind": "example",
+      "label": "Counter-example: T(x)=x+1/x on [1,∞) has no fixed point",
+      "section": "Statement",
+      "candidate_anchors": [
+        {
+          "type": "prose_snippet",
+          "section": "Statement",
+          "snippet": "The condition d(T(x),T(y))<d(x,y) for all x ≠ y is in general not enough to ensure the existence of a fixed point"
+        },
+        {
+          "type": "math_alttext",
+          "value": "T : [1,\\infty) \\to [1,\\infty), \\,\\, T(x)=x+\\tfrac{1}{x}\\,,"
+        }
+      ],
+      "rationale": "A canonical counter-example showing strict contractivity alone is insufficient for existence of a fixed point."
+    },
+    {
+      "kind": "proposition",
+      "label": "Fixed-point theorem on compact metric spaces under strict contraction",
+      "section": "Statement",
+      "candidate_anchors": [
+        {
+          "type": "prose_snippet",
+          "section": "Statement",
+          "snippet": "if X is compact, then this weaker condition does imply the existence and uniqueness of a fixed point which can be easily found as a minimizer of d(x,T(x))"
+        }
+      ],
+      "rationale": "States a separate fixed-point existence/uniqueness result for compact metric spaces under the weaker strict-contraction condition."
+    },
+    {
+      "kind": "proposition",
+      "label": "Picard–Lindelöf theorem via Banach fixed-point",
+      "section": "Applications",
+      "candidate_anchors": [
+        {
+          "type": "prose_snippet",
+          "section": "Applications",
+          "snippet": "Picard–Lindelöf theorem"
+        }
+      ],
+      "rationale": "The article cites Picard–Lindelöf existence/uniqueness for ODEs as a consequence; named theorem."
+    },
+    {
+      "kind": "proposition",
+      "label": "Small Lipschitz perturbations of identity are bi-Lipschitz homeomorphisms",
+      "section": "Applications",
+      "candidate_anchors": [
+        {
+          "type": "prose_snippet",
+          "section": "Applications",
+          "snippet": "small Lipschitz perturbations of the identity are bi-lipschitz homeomorphisms"
+        },
+        {
+          "type": "prose_snippet",
+          "section": "Applications",
+          "snippet": "Let Ω be an open set of a Banach space E; let I:Ω→E denote the identity (inclusion) map and let g:Ω→E be a Lipschitz map of constant k<1"
+        }
+      ],
+      "rationale": "A precisely stated proposition with hypotheses and conclusions about I+g being a bi-Lipschitz homeomorphism."
+    },
+    {
+      "kind": "proposition",
+      "label": "Openness of (I+g)Ω under small Lipschitz perturbation",
+      "section": "Applications",
+      "candidate_anchors": [
+        {
+          "type": "prose_snippet",
+          "section": "Applications",
+          "snippet": "Ω':=(I+g)Ω is an open subset of E"
+        }
+      ],
+      "rationale": "The first numbered subclaim — explicit openness statement with a quantitative ball inclusion — is a distinct proposition."
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverse of I+g is of the form I+h with Lipschitz constant k/(1-k)",
+      "section": "Applications",
+      "candidate_anchors": [
+        {
+          "type": "prose_snippet",
+          "section": "Applications",
+          "snippet": "(I+g)^{-1} is still of the form I+h:Ω→Ω' with h a Lipschitz map of constant k/(1-k)"
+        }
+      ],
+      "rationale": "Distinct quantitative claim about the inverse map's form and Lipschitz constant."
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverse function theorem (via Banach FPT)",
+      "section": "Applications",
+      "candidate_anchors": [
+        {
+          "type": "prose_snippet",
+          "section": "Applications",
+          "snippet": "inverse function theorem"
+        }
+      ],
+      "rationale": "Named theorem stated as a direct consequence; a distinct, formalizable item."
+    },
+    {
+      "kind": "proposition",
+      "label": "Nash embedding theorem (via Banach FPT)",
+      "section": "Applications",
+      "candidate_anchors": [
+        {
+          "type": "prose_snippet",
+          "section": "Applications",
+          "snippet": "Nash embedding theorem"
+        }
+      ],
+      "rationale": "Named theorem referenced as obtainable via Banach FPT."
+    },
+    {
+      "kind": "example",
+      "label": "Map-on-floor illustration of the theorem",
+      "section": "Applications",
+      "candidate_anchors": [
+        {
+          "type": "prose_snippet",
+          "section": "Applications",
+          "snippet": "Suppose a person holds a sheet of people on which is printed a map of the city they are in"
+        }
+      ],
+      "rationale": "An informal real-world example demonstrating the theorem's conclusion."
+    },
+    {
+      "kind": "proposition",
+      "label": "Bessaga converse of the Banach contraction principle",
+      "section": "Converses",
+      "candidate_anchors": [
+        {
+          "type": "prose_snippet",
+          "section": "Converses",
+          "snippet": "Let f:X→X be a map of an abstract set such that each iterate f^n has a unique fixed point. Let q ∈ (0, 1), then there exists a complete metric on X such that f is contractive, and q is the contraction constant."
+        }
+      ],
+      "rationale": "A named converse (Bessaga, 1959) with explicit hypotheses and conclusion."
+    },
+    {
+      "kind": "proposition",
+      "label": "Hitzler–Seda converse on T1 topological spaces",
+      "section": "Converses",
+      "candidate_anchors": [
+        {
+          "type": "prose_snippet",
+          "section": "Converses",
+          "snippet": "if f : X → X is a map on a T1 topological space with a unique fixed point a, such that for each x ∈ X we have f^n(x)→a, then there already exists a metric on X with respect to which f satisfies the conditions of the Banach contraction principle with contraction constant 1/2"
+        }
+      ],
+      "rationale": "A distinct converse result with weaker (T1) hypotheses, plus the ultrametric strengthening."
+    },
+    {
+      "kind": "proposition",
+      "label": "Iterate-is-contraction generalization",
+      "section": "Generalizations",
+      "candidate_anchors": [
+        {
+          "type": "prose_snippet",
+          "section": "Generalizations",
+          "snippet": "Assume that some iterate T^n of T is a contraction. Then T has a unique fixed point."
+        }
+      ],
+      "rationale": "A standard generalization: contraction of an iterate suffices for unique fixed point."
+    },
+    {
+      "kind": "proposition",
+      "label": "Summable Lipschitz-coefficients generalization",
+      "section": "Generalizations",
+      "candidate_anchors": [
+        {
+          "type": "prose_snippet",
+          "section": "Generalizations",
+          "snippet": "Assume that for each n, there exist c_n such that d(T^n(x),T^n(y))≤c_n d(x,y) for all x and y, and that"
+        },
+        {
+          "type": "math_alttext",
+          "value": "\\sum\\nolimits_n c_n <\\infty."
+        }
+      ],
+      "rationale": "A separate generalization based on summability of per-iterate Lipschitz constants."
+    },
+    {
+      "kind": "proposition",
+      "label": "Edelstein-type theorem on compact metric spaces",
+      "section": "Generalizations",
+      "candidate_anchors": [
+        {
+          "type": "prose_snippet",
+          "section": "Generalizations",
+          "snippet": "In a non-empty compact metric space, any function T satisfying d(T(x),T(y))<d(x,y) for all distinct x,y, has a unique fixed point."
+        }
+      ],
+      "rationale": "Explicit existence/uniqueness statement for strict contractions on compact metric spaces."
+    },
+    {
+      "kind": "example",
+      "label": "Approximating π by iterating f(x)=x+sin(x)",
+      "section": "Example",
+      "candidate_anchors": [
+        {
+          "type": "prose_snippet",
+          "section": "Example",
+          "snippet": "An application of the Banach fixed-point theorem and fixed-point iteration can be used to quickly obtain an approximation of π with high accuracy. Consider the function f(x)=x+sin(x)."
+        }
+      ],
+      "rationale": "A concrete worked example using Banach FPT to compute π via iteration of x+sin x."
+    },
+    {
+      "kind": "proposition",
+      "label": "Lipschitz bound 0 ≤ 1+cos(x) ≤ 1−1/√2 on [3π/4, 5π/4]",
+      "section": "Example",
+      "candidate_anchors": [
+        {
+          "type": "math_alttext",
+          "value": "0\\leqslant 1+\\cos(x)\\leqslant 1-\\frac{1}{\\sqrt{2\\,}\\,}\\approx 0.292893<1"
+        }
+      ],
+      "rationale": "A quantitative inequality used to certify the Lipschitz constant in the π example; distinct enough to formalize separately."
+    }
+  ]
+}

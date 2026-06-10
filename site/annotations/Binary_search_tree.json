@@ -1,0 +1,393 @@
+{
+  "slug": "Binary_search_tree",
+  "wikipedia_title": "Binary search tree",
+  "display_title": "Binary search tree",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Binary search tree",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is a rooted binary tree data structure with the key of each internal node being greater than all the keys in the respective node's left subtree and less than the ones in its right subtree"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ordnode",
+        "module": "Mathlib.Data.Ordmap.Ordnode",
+        "match_kind": "special_case"
+      },
+      "note": "Ordnode is a weight-balanced BST whose left<node<right ordering invariant is captured by Ordnode.Bounded, but a plain (unbalanced) BST is not separately defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Time complexity linear in tree height",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The time complexity of operations on the binary search tree is linear with respect to the height of the tree."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines Tree.height but proves no running-time/complexity bounds for tree operations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Logarithmic lookup performance",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "each comparison skips about half of the remaining tree"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No complexity/halving analysis of search is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Average and worst-case complexity",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The complexity analysis of BST shows that, on average"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Average- and worst-case complexity analysis is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Binary search tree (strict total order)",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "A binary search tree is a rooted binary tree in which nodes are arranged in strict total order"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ordnode.Bounded",
+        "module": "Mathlib.Data.Ordmap.Invariants",
+        "match_kind": null
+      },
+      "note": "Ordnode.Bounded enforces that every element lies strictly between its lo/hi bounds, encoding the BST strict-order arrangement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Worst-case degeneracy to linked list",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "successive operations in the binary search tree may lead to degeneracy and form a singly linked list"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's Ordnode is always kept balanced, and no degeneration-to-list result is stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Search procedure",
+      "anchor": {
+        "section": "Searching",
+        "snippet": "Searching begins by examining the root node"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ordnode.find",
+        "module": "Mathlib.Data.Ordmap.Ordnode",
+        "match_kind": null
+      },
+      "note": "Ordnode.find implements the recursive compare-at-root-then-descend BST search, though the prose procedure itself is not stated as a theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "BST search running time",
+      "anchor": {
+        "section": "Iterative search",
+        "snippet": "the running time complexity of BST search is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The running-time bound of BST search is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Successor of a node",
+      "anchor": {
+        "section": "Successor and predecessor",
+        "snippet": "is the node with the smallest key greater than"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ordnode.findGt",
+        "module": "Mathlib.Data.Ordmap.Ordnode",
+        "match_kind": null
+      },
+      "note": "Ordnode.findGt returns the smallest element of the tree greater than a given value, matching the successor's defining property (no correctness lemma proven).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Predecessor of a node",
+      "anchor": {
+        "section": "Successor and predecessor",
+        "snippet": "is the node with the largest key smaller than"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ordnode.findLt",
+        "module": "Mathlib.Data.Ordmap.Ordnode",
+        "match_kind": null
+      },
+      "note": "Ordnode.findLt returns the largest element of the tree less than a given value, matching the predecessor's defining property (no correctness lemma proven).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "New nodes inserted as leaves",
+      "anchor": {
+        "section": "Insertion",
+        "snippet": "New nodes are inserted as leaf nodes in the BST"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ordnode.insert",
+        "module": "Mathlib.Data.Ordmap.Ordnode",
+        "match_kind": null
+      },
+      "note": "Ordnode.insert (with insert.valid preserving the invariant) implements insertion, but it rebalances rather than always leaving the new element as a leaf.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Deletion case: leaf node",
+      "anchor": {
+        "section": "Deletion",
+        "snippet": "is a leaf node, it is replaced by"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ordnode.erase",
+        "module": "Mathlib.Data.Ordmap.Ordnode",
+        "match_kind": null
+      },
+      "note": "Ordnode.erase implements BST deletion, but the specific leaf-case behavior is not isolated as a theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Deletion case: one child",
+      "anchor": {
+        "section": "Deletion",
+        "snippet": "gets elevated by modifying the parent node"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ordnode.erase",
+        "module": "Mathlib.Data.Ordmap.Ordnode",
+        "match_kind": null
+      },
+      "note": "Ordnode.erase handles single-child deletion within its rebalancing recursion, but the one-child case is not stated separately.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Deletion case: two children",
+      "anchor": {
+        "section": "Deletion",
+        "snippet": "has both left and right children"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ordnode.glue",
+        "module": "Mathlib.Data.Ordmap.Ordnode",
+        "match_kind": null
+      },
+      "note": "When erasing a two-child node, Ordnode.erase calls Ordnode.glue to merge the two subtrees, the analogue of the successor-replacement case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inorder tree walk",
+      "anchor": {
+        "section": "Traversal",
+        "snippet": "followed by the root node and right subtree"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ordnode.toList",
+        "module": "Mathlib.Data.Ordmap.Ordnode",
+        "match_kind": null
+      },
+      "note": "Ordnode.toList performs an in-order traversal (toList_node = toList l ++ x :: toList r, i.e. left, root, right).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inorder walk yields non-decreasing order",
+      "anchor": {
+        "section": "Traversal",
+        "snippet": "visits all the nodes in the order of non-decreasing key sequence"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ordnode.toList",
+        "module": "Mathlib.Data.Ordmap.Ordnode",
+        "match_kind": null
+      },
+      "note": "toList and the Bounded ordering invariant exist, but no lemma proving that toList of a valid Ordnode is sorted/non-decreasing is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Preorder tree walk",
+      "anchor": {
+        "section": "Traversal",
+        "snippet": "The root node gets visited first, followed by left and right subtrees"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Tree.traverse",
+        "module": "Mathlib.Data.Tree.Basic",
+        "match_kind": null
+      },
+      "note": "Tree.traverse (and Tree.map) visit in node → left → right order, i.e. preorder, though no list-producing preorder function is named as such.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Postorder tree walk",
+      "anchor": {
+        "section": "Traversal",
+        "snippet": "followed by the right subtree, and finally, the root"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No post-order (left, right, root) traversal is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Degeneration without rebalancing",
+      "anchor": {
+        "section": "Balanced binary search trees",
+        "snippet": "insertions or deletions in a binary search tree may lead to degeneration"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib only models the self-balancing Ordnode; degeneration of unbalanced BSTs is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Height-balanced tree",
+      "anchor": {
+        "section": "Height-balanced trees",
+        "snippet": "A tree is height-balanced if the heights of the left sub-tree and right sub-tree are guaranteed to be related by a constant factor"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines Tree.height but has no height-balance (AVL-style) predicate; its Ordnode.Balanced is a size/weight-balance condition instead.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Weight-balanced tree",
+      "anchor": {
+        "section": "Weight-balanced trees",
+        "snippet": "the criterion of a balanced tree is the number of leaves of the subtrees"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ordnode.Balanced",
+        "module": "Mathlib.Data.Ordmap.Invariants",
+        "match_kind": "special_case"
+      },
+      "note": "Ordnode.Balanced/BalancedSz is a weight-balance criterion on subtree sizes (Adams/Nievergelt–Reingold bounded-balance trees), a specific instance of the weight-balanced-tree notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Tree sort",
+      "anchor": {
+        "section": "Sort",
+        "snippet": "where all the elements are inserted at once and the tree is traversed at an in-order fashion"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ordnode.ofList",
+        "module": "Mathlib.Data.Ordmap.Ordnode",
+        "match_kind": null
+      },
+      "note": "Ordnode.ofList (foldr insert) followed by Ordnode.toList realizes tree sort, but no theorem proves the composite output is sorted.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ascending priority queue removal",
+      "anchor": {
+        "section": "Priority queue operations",
+        "snippet": "removal of an element with the lowest priority is done through leftward traversal of the BST"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ordnode.eraseMin",
+        "module": "Mathlib.Data.Ordmap.Ordnode",
+        "match_kind": null
+      },
+      "note": "Ordnode.eraseMin (with findMin) removes the leftmost/minimum element as in min-priority extraction, but the priority-queue framing is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Descending priority queue removal",
+      "anchor": {
+        "section": "Priority queue operations",
+        "snippet": "removal of an element with the highest priority is done through rightward traversal of the BST"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ordnode.eraseMax",
+        "module": "Mathlib.Data.Ordmap.Ordnode",
+        "match_kind": null
+      },
+      "note": "Ordnode.eraseMax (with findMax) removes the rightmost/maximum element as in max-priority extraction, but the priority-queue framing is not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,569 @@
+{
+  "slug": "Partial_differential_equation",
+  "wikipedia_title": "Partial differential equation",
+  "display_title": "Partial differential equation",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Partial differential equation (PDE)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a partial differential equation ( PDE ) is an equation which involves a multivariable function and one or more of its partial derivatives"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no general PDE abstraction; individual equations (e.g. Laplace) appear only ad hoc via the Laplacian operator.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Harmonic function",
+      "anchor": {
+        "section": "Introduction and examples",
+        "snippet": "A function that obeys this equation is called a harmonic function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.HarmonicAt",
+        "module": "Mathlib.Analysis.InnerProductSpace.Harmonic.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`HarmonicAt` defines harmonicity via vanishing Laplacian on real finite-dimensional inner product spaces, generalizing the planar definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Harmonic functions of various forms",
+      "anchor": {
+        "section": "Introduction and examples",
+        "snippet": "It may be surprising that these examples of harmonic functions are of such different forms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific catalogue of example harmonic functions (e^x cos y, log(x²+y²), etc.) is not present as named declarations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Solutions v(x,y) = f(x) + g(y)",
+      "anchor": {
+        "section": "Introduction and examples",
+        "snippet": "It can be directly checked that any function v of the form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration formalizes that f(x)+g(y) solves v_{xy}=0 on the plane.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Existence/uniqueness on the unit disk",
+      "anchor": {
+        "section": "Introduction and examples",
+        "snippet": "Let B denote the unit-radius disk around the origin in the plane"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Dirichlet problem on the disk is not stated; the Poisson formula in `Harmonic/Poisson.lean` gives a representation but no existence/uniqueness theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Existence/uniqueness on the strip",
+      "anchor": {
+        "section": "Introduction and examples",
+        "snippet": "For any functions f and g on the real line"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No existence/uniqueness result for v_{xy}=0 on a strip with prescribed boundary data is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Affine solutions from differential-geometric PDE",
+      "anchor": {
+        "section": "Introduction and examples",
+        "snippet": "then there are numbers a , b , and c with"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Monge–Ampère-type rigidity statement classifying affine solutions is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear PDE",
+      "anchor": {
+        "section": "Introduction and examples",
+        "snippet": "A linear PDE is one such that, if it is homogeneous, the sum of any two solutions is also a solution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no abstraction of linear PDE in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Partial differential equation (formal)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A partial differential equation is an equation that involves an unknown function of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formal data type for PDEs (relation among an unknown function and its partials) is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Laplace operator",
+      "anchor": {
+        "section": "Notation",
+        "snippet": "The Greek letter Δ denotes the Laplace operator"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.instLaplacian",
+        "module": "Mathlib.Analysis.InnerProductSpace.Laplacian",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines Δ via `Laplacian.laplacian` (instance for inner-product spaces), with the standard orthonormal-basis formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear PDE",
+      "anchor": {
+        "section": "Linear and nonlinear equations",
+        "snippet": "A PDE is called linear if it is linear in the unknown and its derivatives"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general definition of a linear PDE exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear with constant coefficients",
+      "anchor": {
+        "section": "Linear and nonlinear equations",
+        "snippet": "then the PDE is called linear with constant coefficients"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of constant-coefficient linear PDE is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homogeneous / inhomogeneous linear PDE",
+      "anchor": {
+        "section": "Linear and nonlinear equations",
+        "snippet": "If f is zero everywhere then the linear PDE is homogeneous , otherwise it is inhomogeneous"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized — there is no PDE type to be homogeneous over.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Semi-linear PDE",
+      "anchor": {
+        "section": "Linear and nonlinear equations",
+        "snippet": "Nearest to linear PDEs are semi-linear PDEs, where only the highest order derivatives appear as linear terms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quasilinear PDE",
+      "anchor": {
+        "section": "Linear and nonlinear equations",
+        "snippet": "In a quasilinear PDE the highest order derivatives likewise appear only as linear terms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fully nonlinear PDE",
+      "anchor": {
+        "section": "Linear and nonlinear equations",
+        "snippet": "A PDE without any linearity properties is called fully nonlinear"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Elliptic PDE (discriminant)",
+      "anchor": {
+        "section": "Second order equations",
+        "snippet": "Solutions of elliptic PDEs are as smooth as the coefficients allow"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `elliptic` occurrences refer to elliptic curves, not PDE classification by discriminant B²−AC.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Parabolic PDE (discriminant)",
+      "anchor": {
+        "section": "Second order equations",
+        "snippet": "Equations that are parabolic at every point can be transformed into a form analogous to the heat equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No PDE-discriminant classification is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hyperbolic PDE (discriminant)",
+      "anchor": {
+        "section": "Second order equations",
+        "snippet": "hyperbolic equations retain any discontinuities of functions or derivatives in the initial data"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No PDE-discriminant classification is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Elliptic classification by eigenvalues",
+      "anchor": {
+        "section": "Second order equations",
+        "snippet": "Elliptic: the eigenvalues are all positive or all negative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Higher-dimensional eigenvalue classification of second-order operators is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Parabolic classification by eigenvalues",
+      "anchor": {
+        "section": "Second order equations",
+        "snippet": "Parabolic: the eigenvalues are all positive or all negative, except one that is zero"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hyperbolic classification by eigenvalues",
+      "anchor": {
+        "section": "Second order equations",
+        "snippet": "Hyperbolic: there is only one negative eigenvalue and all the rest are positive"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ultrahyperbolic classification",
+      "anchor": {
+        "section": "Second order equations",
+        "snippet": "Ultrahyperbolic: there is more than one positive eigenvalue and more than one negative eigenvalue"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Characteristic surface",
+      "anchor": {
+        "section": "Systems of first-order equations and characteristic surfaces",
+        "snippet": "then S is a characteristic surface for the operator L at a given point if the characteristic form vanishes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Characteristic surfaces of PDE operators are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Elliptic first-order system",
+      "anchor": {
+        "section": "Systems of first-order equations and characteristic surfaces",
+        "snippet": "A first-order system Lu = 0 is elliptic if no surface is characteristic for L"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hyperbolic first-order system",
+      "anchor": {
+        "section": "Systems of first-order equations and characteristic surfaces",
+        "snippet": "A first-order system is hyperbolic at a point if there is a spacelike surface S with normal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Strictly hyperbolic system",
+      "anchor": {
+        "section": "Systems of first-order equations and characteristic surfaces",
+        "snippet": "The system is strictly hyperbolic if these roots are always distinct"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Separable partial differential equation",
+      "anchor": {
+        "section": "Separation of variables",
+        "snippet": "This is possible for simple PDEs, which are called separable partial differential equations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize separation of variables or separable PDEs.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Characteristic curve",
+      "anchor": {
+        "section": "Method of characteristics",
+        "snippet": "The characteristic surface in n = 2 - dimensional space is called a characteristic curve"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Method of characteristics",
+      "anchor": {
+        "section": "Method of characteristics",
+        "snippet": "changing coordinates in the domain to straighten these curves allows separation of variables, and is called the method of characteristics"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The method of characteristics is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Superposition principle for linear PDEs",
+      "anchor": {
+        "section": "Superposition principle",
+        "snippet": "are solutions of linear PDE in some function space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.HarmonicAt.add",
+        "module": "Mathlib.Analysis.InnerProductSpace.Harmonic.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "A general superposition principle for linear PDEs is not stated; only special instances such as `HarmonicAt.add` / `const_smul` for the Laplace equation are present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Weak solution",
+      "anchor": {
+        "section": "Weak solutions",
+        "snippet": "Weak solutions are functions that satisfy the PDE, yet in other meanings than regular sense"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has distributions and Sobolev spaces (`Mathlib.Analysis.Distribution.Sobolev`) but no notion of `weak solution` of a PDE.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Weak solution example",
+      "anchor": {
+        "section": "Weak solutions",
+        "snippet": "An example for a weak solution is as follows"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The illustrative weak-solution example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Well-posedness",
+      "anchor": {
+        "section": "Well-posedness",
+        "snippet": "Well-posedness refers to a common schematic package of information about a PDE"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Hadamard well-posedness predicate for PDEs exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Regularity",
+      "anchor": {
+        "section": "Regularity",
+        "snippet": "Regularity refers to the integrability and differentiability of weak solutions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's many `Regular*` declarations are unrelated (topology, measure theory, etc.); PDE regularity of weak solutions is not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

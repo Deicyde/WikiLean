@@ -1,0 +1,233 @@
+{
+  "slug": "Elliptic_function",
+  "wikipedia_title": "Elliptic function",
+  "display_title": "Elliptic function",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Elliptic function",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A meromorphic function is called an elliptic function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PeriodPair.meromorphic_weierstrassP",
+        "module": "Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes the period-lattice infrastructure (`PeriodPair`) and shows the Weierstrass ℘ is meromorphic and periodic, but lacks a general definition of an arbitrary elliptic function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Period lattice",
+      "anchor": {
+        "section": "Period lattice and fundamental domain",
+        "snippet": "is called the period lattice"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PeriodPair.lattice",
+        "module": "Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass",
+        "match_kind": "exact"
+      },
+      "note": "`PeriodPair.lattice` is the ℤ-span of two ℝ-linearly independent complex periods, matching the article's period lattice.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fundamental domain",
+      "anchor": {
+        "section": "Period lattice and fundamental domain",
+        "snippet": "is a fundamental domain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZSpan.fundamentalDomain",
+        "module": "Mathlib.Algebra.Module.ZLattice.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ZSpan.fundamentalDomain` realizes the standard half-open parallelepiped fundamental domain of a ℤ-lattice basis.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Liouville's 1st theorem",
+      "anchor": {
+        "section": "1st theorem",
+        "snippet": "A holomorphic elliptic function is constant."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement that a holomorphic doubly-periodic function is constant appears in Mathlib (only the classical Liouville theorem for bounded entire functions is imported).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Liouville's 2nd theorem",
+      "anchor": {
+        "section": "2nd theorem",
+        "snippet": "Every elliptic function has finitely many poles"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no general statement about residue sums of elliptic functions over a fundamental domain.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Liouville's 3rd theorem",
+      "anchor": {
+        "section": "3rd theorem",
+        "snippet": "A non-constant elliptic function takes on every value the same number of times"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the order/value-distribution theorem for elliptic functions was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Weierstrass ℘-function",
+      "anchor": {
+        "section": "Weierstrass ℘-function",
+        "snippet": "For a given period lattice"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PeriodPair.weierstrassP",
+        "module": "Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass",
+        "match_kind": "exact"
+      },
+      "note": "`PeriodPair.weierstrassP` defines ℘ via the standard series `∑ (1/(z-l)² - 1/l²)` over the lattice.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "℘ is an even elliptic function",
+      "anchor": {
+        "section": "Weierstrass ℘-function",
+        "snippet": "is an even elliptic function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PeriodPair.weierstrassP_neg",
+        "module": "Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass",
+        "match_kind": "exact"
+      },
+      "note": "`weierstrassP_neg` gives `℘(-z) = ℘(z)` and `periodic_weierstrassP` plus `meromorphic_weierstrassP` supply the elliptic-function content.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Derivative of ℘ is odd",
+      "anchor": {
+        "section": "Weierstrass ℘-function",
+        "snippet": "is an odd function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PeriodPair.derivWeierstrassP_neg",
+        "module": "Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass",
+        "match_kind": "exact"
+      },
+      "note": "`derivWeierstrassP_neg` states `℘'(-z) = -℘'(z)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Rational expression in ℘ and ℘'",
+      "anchor": {
+        "section": "Weierstrass ℘-function",
+        "snippet": "Every elliptic function with respect to a given period lattice"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem expressing every elliptic function as a rational function in ℘ and ℘' was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Differential equation for ℘",
+      "anchor": {
+        "section": "Weierstrass ℘-function",
+        "snippet": "satisfies the differential equation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PeriodPair.derivWeierstrassP_sq",
+        "module": "Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass",
+        "match_kind": "exact"
+      },
+      "note": "`derivWeierstrassP_sq` proves `℘'(z)² = 4·℘(z)³ - g₂·℘(z) - g₃` for `z` off the lattice.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Field of elliptic functions isomorphism",
+      "anchor": {
+        "section": "Weierstrass ℘-function",
+        "snippet": "the field of elliptic functions is isomorphic to the field"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not construct the field of elliptic functions or its isomorphism with `ℂ(X)[Y]/(Y² - 4X³ + g₂X + g₃)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Abel elliptic functions",
+      "anchor": {
+        "section": "Relation to elliptic integrals",
+        "snippet": "Abel discovered elliptic functions by taking the inverse function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Abel's inverse-elliptic-integral functions are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Jacobi elliptic functions",
+      "anchor": {
+        "section": "Relation to elliptic integrals",
+        "snippet": "Jacobi considered the integral function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Jacobi theta functions but no Jacobi elliptic functions (sn, cn, dn).",
+      "provenance": "ai"
+    }
+  ]
+}

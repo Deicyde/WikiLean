@@ -1,0 +1,937 @@
+{
+  "slug": "Indian_mathematics",
+  "wikipedia_title": "Indian mathematics",
+  "display_title": "Indian mathematics",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "theorem",
+      "label": "Pythagorean theorem (Śulba Sūtras)",
+      "anchor": {
+        "section": "Śulba Sūtras",
+        "snippet": "of an oblong (rectangle) produces both"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.dist_sq_eq_dist_sq_add_dist_sq_iff_angle_eq_pi_div_two",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.RightAngle",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib states the Pythagorean theorem as a right-angle characterization in general inner-product/Euclidean spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Baudhayana Pythagorean triples",
+      "anchor": {
+        "section": "Śulba Sūtras",
+        "snippet": "which contains examples of simple Pythagorean triples"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PythagoreanTriple",
+        "module": "Mathlib.NumberTheory.PythagoreanTriples",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines the general PythagoreanTriple predicate and classifies them, covering specific triples like (3,4,5).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Pythagorean theorem for a square (Baudhayana)",
+      "anchor": {
+        "section": "Śulba Sūtras",
+        "snippet": "produces an area double the size of the original square"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.dist_sq_eq_dist_sq_add_dist_sq_iff_angle_eq_pi_div_two",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.RightAngle",
+        "match_kind": "generalization"
+      },
+      "note": "The equal-legs case (diagonal of a square has squared length twice the side) follows from the general Pythagorean theorem but the area-doubling statement is not separately stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Pythagorean theorem for a rectangle (Baudhayana)",
+      "anchor": {
+        "section": "Śulba Sūtras",
+        "snippet": "makes an area which the vertical and horizontal sides make together"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.dist_sq_eq_dist_sq_add_dist_sq_iff_angle_eq_pi_div_two",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.RightAngle",
+        "match_kind": "generalization"
+      },
+      "note": "This is exactly the Pythagorean theorem, formalized in general Euclidean spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Approximation of the square root of two (Baudhayana)",
+      "anchor": {
+        "section": "Śulba Sūtras",
+        "snippet": "Baudhayana gives an expression for the square root of two"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has √2 and irrational_sqrt_two but not Baudhayana's specific rational approximation 1+1/3+1/(3·4)−1/(3·4·34).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Construction of Meru-prastāra (Pascal's triangle)",
+      "anchor": {
+        "section": "Pingala (300 BCE – 200 BCE)",
+        "snippet": "the sum of the digits in the two squares lying above it"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.choose_succ_succ",
+        "module": "Mathlib.Data.Nat.Choose.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Nat.choose_succ_succ is exactly Pascal's rule: each entry equals the sum of the two entries above it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Combinatorial identity (Pingala)",
+      "anchor": {
+        "section": "Pingala (300 BCE – 200 BCE)",
+        "snippet": "Pingala was aware of the combinatorial identity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.sum_range_choose",
+        "module": "Mathlib.Data.Nat.Choose.Sum",
+        "match_kind": "exact"
+      },
+      "note": "Nat.sum_range_choose proves ∑ₖ C(n,k) = 2ⁿ, the row-sum identity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Classification of numbers (Jain)",
+      "anchor": {
+        "section": "Jain mathematics (400 BCE – 200 CE)",
+        "snippet": "classify numbers into three classes: enumerable, innumerable and infinite"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This historical tripartite classification is not a Mathlib notion, though it loosely echoes finite/countable/uncountable cardinality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Five types of infinity (Jain)",
+      "anchor": {
+        "section": "Jain mathematics (400 BCE – 200 CE)",
+        "snippet": "their texts define five different types of infinity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Jain fivefold classification of infinity has no counterpart in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Factorials (Anuyogadwara Sutra)",
+      "anchor": {
+        "section": "Jain mathematics (400 BCE – 200 CE)",
+        "snippet": "the earliest known description of factorials in Indian mathematics"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.factorial",
+        "module": "Mathlib.Data.Nat.Factorial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Nat.factorial is the standard recursive definition of n!.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bhuta-sankhya object numbers",
+      "anchor": {
+        "section": "Numerals and the decimal number system",
+        "snippet": "later labelled Bhuta-sankhya"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This word-numeral notation system is not a formal mathematical object in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Bakhshali equalisation problem",
+      "anchor": {
+        "section": "Bakhshali Manuscript",
+        "snippet": "Find the price of each animal and the total value for the animals possessed by each merchant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific linear word problem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Trigonometric functions (Surya Siddhanta)",
+      "anchor": {
+        "section": "Fourth to sixth centuries",
+        "snippet": "uses the following as trigonometric functions for the first time"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.sin",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines Real.sin/Real.cos (and versine = 1−cos is derivable), the modern unit-radius forms of jya/kojya/utkrama-jya.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Value of π (Aryabhata)",
+      "anchor": {
+        "section": "Fourth to sixth centuries",
+        "snippet": "The value of π , correct to 4 decimal places"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.pi_gt_d4",
+        "module": "Mathlib.Analysis.Real.Pi.Bounds",
+        "match_kind": "exact"
+      },
+      "note": "Real.pi_gt_d4 (3.1415 < π) with Real.pi_lt_d4 (π < 3.1416) establishes π to four decimals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Definition of sine (Aryabhata)",
+      "anchor": {
+        "section": "Fourth to sixth centuries",
+        "snippet": "Defined the sine ( jya ) as the modern relationship between half an angle and half a chord"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.sin",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Real.sin is the modern sine function corresponding to Aryabhata's jya (up to radius scaling).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sine, cosine and versine tables (Aryabhata)",
+      "anchor": {
+        "section": "Fourth to sixth centuries",
+        "snippet": "Contains the earliest tables of sine, cosine and versine values"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has the trig functions but no numerical sine/cosine/versine value tables.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sine difference formula (Aryabhata)",
+      "anchor": {
+        "section": "Fourth to sixth centuries",
+        "snippet": "Contains the trigonometric formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Aryabhata's second-order finite-difference recurrence for the sine table is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum of cubes formula (Aryabhata)",
+      "anchor": {
+        "section": "Fourth to sixth centuries",
+        "snippet": "The formula for the sum of the cubes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No closed-form lemma for ∑i³ exists in Mathlib (only the linear Gauss sum Finset.sum_range_id).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "General solution of the indeterminate linear equation (Aryabhata)",
+      "anchor": {
+        "section": "Fourth to sixth centuries",
+        "snippet": "General solution of the indeterminate linear equation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Int.gcd_eq_gcd_ab",
+        "module": "Mathlib.Data.Int.GCD",
+        "match_kind": "invocation"
+      },
+      "note": "Bézout's identity (Int.gcd_eq_gcd_ab) provides a particular solution to ax+by=gcd, but the parametrized general solution of the kuṭṭaka is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sine-cosine relations (Varahamihira)",
+      "anchor": {
+        "section": "Fourth to sixth centuries",
+        "snippet": "the following formulas relating sine and cosine functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.sin_sq_add_cos_sq",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The Pythagorean identity sin²+cos²=1 and complementary-angle relations are all in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Brahmagupta's theorem",
+      "anchor": {
+        "section": "Seventh and eighth centuries",
+        "snippet": "always bisects the opposite side"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Brahmagupta's theorem on perpendicular diagonals of a cyclic quadrilateral is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Brahmagupta's formula",
+      "anchor": {
+        "section": "Seventh and eighth centuries",
+        "snippet": "of a cyclic quadrilateral with sides of lengths"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The area formula for a cyclic quadrilateral is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Brahmagupta's theorem on rational triangles",
+      "anchor": {
+        "section": "Seventh and eighth centuries",
+        "snippet": "A triangle with rational sides"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Brahmagupta's construction of rational triangles with rational area is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Arithmetic rules for zero and negatives (Brahmagupta)",
+      "anchor": {
+        "section": "Seventh and eighth centuries",
+        "snippet": "rules for arithmetical operations involving zero and negative numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mul_zero",
+        "module": "Mathlib.Algebra.GroupWithZero.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "These are basic ring/field lemmas in Mathlib (mul_zero, add_zero, neg_neg, neg_mul, etc.).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Solution of the quadratic equation (Brahmagupta)",
+      "anchor": {
+        "section": "Seventh and eighth centuries",
+        "snippet": "the first explicit (although still not completely general) solution of the quadratic equation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "quadratic_eq_zero_iff",
+        "module": "Mathlib.Algebra.QuadraticDiscriminant",
+        "match_kind": "generalization"
+      },
+      "note": "quadratic_eq_zero_iff gives the quadratic formula over a general field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Brahmagupta's identity",
+      "anchor": {
+        "section": "Seventh and eighth centuries",
+        "snippet": "which was a generalisation of an earlier identity of Diophantus"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "sq_add_mul_sq_mul_sq_add_mul_sq",
+        "module": "Mathlib.Algebra.Ring.Identities",
+        "match_kind": "exact"
+      },
+      "note": "This is exactly Brahmagupta's identity (a²+nb²)(c²+nd²)=… stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Brahmagupta's lemma (Pell's equation)",
+      "anchor": {
+        "section": "Seventh and eighth centuries",
+        "snippet": "Lemma (Brahmagupta)"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.NumberTheory.Pell",
+        "match_kind": null
+      },
+      "note": "Mathlib develops Pell's equation x²−dy²=1 and the composition/group structure of its solutions, but not Brahmagupta's general composition lemma for x²−Ny²=k.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Brahmagupta's theorem on Pell's equation",
+      "anchor": {
+        "section": "Seventh and eighth centuries",
+        "snippet": "has an integer solution for any one of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.NumberTheory.Pell",
+        "match_kind": null
+      },
+      "note": "Mathlib's Pell theory covers solvability of x²−dy²=1 but not Brahmagupta's auxiliary-equation generation result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Brahmagupta's Pell equation example",
+      "anchor": {
+        "section": "Seventh and eighth centuries",
+        "snippet": "Find integers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific numerical Pell instance is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sine of an acute angle without a table (Bhaskara I)",
+      "anchor": {
+        "section": "Seventh and eighth centuries",
+        "snippet": "A formula for calculating the sine of an acute angle without the use of a table"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bhaskara I's rational sine approximation formula is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ardhaccheda (Virasena)",
+      "anchor": {
+        "section": "Ninth to twelfth centuries",
+        "snippet": "the concept of ardhaccheda , the number of times a number could be halved"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.log",
+        "module": "Mathlib.Data.Nat.Log",
+        "match_kind": "generalization"
+      },
+      "note": "Nat.log 2 captures the binary logarithm / number of halvings for powers of two; the 2-adic valuation is also available.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Volume of a frustum (Virasena)",
+      "anchor": {
+        "section": "Ninth to twelfth centuries",
+        "snippet": "The derivation of the volume of a frustum by a sort of infinite procedure"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No frustum volume formula is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Area of an ellipse (Mahavira)",
+      "anchor": {
+        "section": "Ninth to twelfth centuries",
+        "snippet": "Formulae derived to calculate the area of an ellipse and quadrilateral inside a circle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no explicit area-of-ellipse (πab) lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Square root of a negative number (Mahavira)",
+      "anchor": {
+        "section": "Ninth to twelfth centuries",
+        "snippet": "Asserted that the square root of a negative number did not exist"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib encodes this via sq_nonneg (no real has a negative square) and Real.sqrt returning 0 on negatives, but there is no single lemma phrased as 'no real square root of a negative'.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum of squares of an arithmetic progression (Mahavira)",
+      "anchor": {
+        "section": "Ninth to twelfth centuries",
+        "snippet": "the sum of a series whose terms are squares of an arithmetical progression"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No closed-form lemma for the sum of squares of an arithmetic progression exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "General solutions of higher order polynomials (Mahavira)",
+      "anchor": {
+        "section": "Ninth to twelfth centuries",
+        "snippet": "Gave the general solutions of the higher order polynomial equations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No such general polynomial solution is formalized (and Mathlib's Abel–Ruffini shows it is impossible in general).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Volume of a sphere (Shridhara)",
+      "anchor": {
+        "section": "Ninth to twelfth centuries",
+        "snippet": "A good rule for finding the volume of a sphere"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanSpace.volume_ball",
+        "module": "Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls",
+        "match_kind": "generalization"
+      },
+      "note": "EuclideanSpace.volume_ball gives the n-dimensional ball volume (yielding 4/3·π·r³ for n=3) but the 3-D sphere formula is not a separately stated lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Solving quadratic equations (Shridhara)",
+      "anchor": {
+        "section": "Ninth to twelfth centuries",
+        "snippet": "The formula for solving quadratic equations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "quadratic_eq_zero_iff",
+        "module": "Mathlib.Algebra.QuadraticDiscriminant",
+        "match_kind": "generalization"
+      },
+      "note": "quadratic_eq_zero_iff is the general quadratic formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Derivative of sine (Manjula)",
+      "anchor": {
+        "section": "Ninth to twelfth centuries",
+        "snippet": "who realised that the expression"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.deriv_sin",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv",
+        "match_kind": "exact"
+      },
+      "note": "Real.deriv_sin proves deriv sin = cos.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Early form of Rolle's theorem (Bhaskara II)",
+      "anchor": {
+        "section": "Ninth to twelfth centuries",
+        "snippet": "Stated early form of Rolle's theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_deriv_eq_zero",
+        "module": "Mathlib.Analysis.Calculus.LocalExtr.Rolle",
+        "match_kind": "generalization"
+      },
+      "note": "exists_deriv_eq_zero is the full statement of Rolle's theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cosine as derivative of sine (Bhaskara II)",
+      "anchor": {
+        "section": "Ninth to twelfth centuries",
+        "snippet": "This can be interpreted as the discovery that cosine is the derivative of sine"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.deriv_sin",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv",
+        "match_kind": "exact"
+      },
+      "note": "Real.deriv_sin = cos is exactly the statement that cosine is the derivative of sine.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Value of π to five places (Bhaskara II)",
+      "anchor": {
+        "section": "Ninth to twelfth centuries",
+        "snippet": "Computed π , correct to five decimal places"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.pi_gt_d6",
+        "module": "Mathlib.Analysis.Real.Pi.Bounds",
+        "match_kind": "exact"
+      },
+      "note": "Real.pi_gt_d6 (3.141592 < π) and Real.pi_lt_d6 (π < 3.141593) pin π to well beyond five decimals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Proof of the Pythagorean theorem (Bhaskara II)",
+      "anchor": {
+        "section": "Ninth to twelfth centuries",
+        "snippet": "Gave a proof of the Pythagorean theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.dist_sq_eq_dist_sq_add_dist_sq_iff_angle_eq_pi_div_two",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.RightAngle",
+        "match_kind": "generalization"
+      },
+      "note": "The Pythagorean theorem is proved in Mathlib for general Euclidean spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "A positive number has two square roots (Bhaskara II)",
+      "anchor": {
+        "section": "Ninth to twelfth centuries",
+        "snippet": "The recognition of a positive number having two square roots"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mul_self_eq_mul_self_iff",
+        "module": "Mathlib.Algebra.Ring.Commute",
+        "match_kind": "generalization"
+      },
+      "note": "mul_self_eq_mul_self_iff (a·a=b·b ↔ a=b ∨ a=−b) expresses that a square has exactly the two roots ±√.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Division by zero is infinity (Bhaskara II)",
+      "anchor": {
+        "section": "Ninth to twelfth centuries",
+        "snippet": "Gave a proof for division by zero being infinity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib adopts the opposite convention, div_zero: x/0 = 0, so this claim is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Trigonometric formulas (Bhaskara II)",
+      "anchor": {
+        "section": "Ninth to twelfth centuries",
+        "snippet": "The trigonometric formulas"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.sin_add",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "The sine/cosine addition formulas sin(a±b), cos(a±b) are in Mathlib (Real.sin_add, Real.cos_add).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Series expansions for trig functions (Kerala)",
+      "anchor": {
+        "section": "Kerala School",
+        "snippet": "The most important results, series expansion for trigonometric functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.hasSum_sin",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Series",
+        "match_kind": "exact"
+      },
+      "note": "Real.hasSum_sin/Real.hasSum_cos give the power-series expansions of sine and cosine.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Infinite geometric series (Kerala)",
+      "anchor": {
+        "section": "Kerala School",
+        "snippet": "The (infinite) geometric series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tsum_geometric_of_lt_one",
+        "module": "Mathlib.Analysis.SpecificLimits.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "tsum_geometric_of_lt_one sums the geometric series ∑rⁿ = (1−r)⁻¹.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum of powers for large n (Kerala)",
+      "anchor": {
+        "section": "Kerala School",
+        "snippet": "A semi-rigorous proof"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Finset.sum_range_pow",
+        "module": "Mathlib.NumberTheory.Bernoulli",
+        "match_kind": null
+      },
+      "note": "Faulhaber's formula (Finset.sum_range_pow) gives exact power sums via Bernoulli numbers, but not the Kerala asymptotic ∑iᵏ ≈ nᵏ⁺¹/(k+1).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Taylor–Maclaurin series for sin, cos, arctan (Kerala)",
+      "anchor": {
+        "section": "Kerala School",
+        "snippet": "infinite series for sin x, cos x, and arctan x"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.hasSum_arctan",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Arctan",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib has the series for sin and cos (Real.hasSum_sin/cos) and for arctan (Real.hasSum_arctan).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Leibniz formula for π (Kerala)",
+      "anchor": {
+        "section": "Kerala School",
+        "snippet": "to obtain the Leibniz formula for π"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.tendsto_sum_pi_div_four",
+        "module": "Mathlib.Analysis.Real.Pi.Leibniz",
+        "match_kind": "exact"
+      },
+      "note": "Real.tendsto_sum_pi_div_four is exactly the Madhava–Leibniz series 1−1/3+1/5−… = π/4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rational approximation of π (Kerala)",
+      "anchor": {
+        "section": "Kerala School",
+        "snippet": "Using the improved series to derive a rational expression"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Kerala-school improved (error-corrected) rational expression for π is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Differentiation of trig functions (Kerala)",
+      "anchor": {
+        "section": "Kerala School",
+        "snippet": "method of differentiation of some trigonometric functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.deriv_sin",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv",
+        "match_kind": "exact"
+      },
+      "note": "Derivatives of the trig functions (Real.deriv_sin, Real.deriv_cos) are formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Integer solutions to 21 systems (Citrabhanu)",
+      "anchor": {
+        "section": "Kerala School",
+        "snippet": "gave integer solutions to 21 types of systems of two simultaneous algebraic equations in two unknowns"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Citrabhanu's catalogue of 21 specific two-variable systems is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Version of the mean value theorem (Parameshvara)",
+      "anchor": {
+        "section": "Kerala School",
+        "snippet": "a version of the mean value theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_hasDerivAt_eq_slope",
+        "module": "Mathlib.Analysis.Calculus.Deriv.MeanValue",
+        "match_kind": "generalization"
+      },
+      "note": "exists_hasDerivAt_eq_slope is Lagrange's mean value theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cows and calves problem (Narayana)",
+      "anchor": {
+        "section": "Others",
+        "snippet": "How many cows and calves are there altogether after 20 years"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific word problem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Narayana's recurrence sequence",
+      "anchor": {
+        "section": "Others",
+        "snippet": "Translated into the modern mathematical language of recurrence sequences"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Narayana's cows sequence (a_n = a_{n-1}+a_{n-3}) is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Supergolden ratio limit (Narayana)",
+      "anchor": {
+        "section": "Others",
+        "snippet": "The limit ratio between consecutive terms is the supergolden ratio"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has goldenRatio but neither the supergolden ratio nor this limit result.",
+      "provenance": "ai"
+    }
+  ]
+}

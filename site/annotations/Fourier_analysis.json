@@ -1,0 +1,457 @@
+{
+  "slug": "Fourier_analysis",
+  "wikipedia_title": "Fourier analysis",
+  "display_title": "Fourier analysis",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Fourier analysis",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is the study of the way general functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fourier analysis as a field/area of study is a meta-description, not a single formalizable statement, though Mathlib has extensive Fourier machinery.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fourier synthesis",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the operation of rebuilding the function from these pieces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Integrable.fourier_inversion",
+        "module": "Mathlib.Analysis.Fourier.Inversion",
+        "match_kind": "exact"
+      },
+      "note": "Rebuilding f from its transform is exactly the inverse transform whose correctness is the Fourier inversion theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fourier transformation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The decomposition process itself is called a Fourier transformation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "VectorFourier.fourierIntegral",
+        "module": "Mathlib.Analysis.Fourier.FourierTransform",
+        "match_kind": "exact"
+      },
+      "note": "The Fourier transform is defined as fourierIntegral via an additive character and bilinear pairing.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Transforms are linear and unitary (Parseval/Plancherel)",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "The transforms are linear operators and, with proper normalization, are unitary as well"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Lp.fourierTransformₗᵢ",
+        "module": "Mathlib.Analysis.Fourier.LpSpace",
+        "match_kind": "exact"
+      },
+      "note": "The L² Fourier transform is built as a linear isometry equivalence (unitary), with Plancherel as norm_fourier_eq/inner_fourier_eq.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponentials are eigenfunctions of differentiation",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "The exponential functions are eigenfunctions of differentiation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "hasDerivAt_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.Exponential",
+        "match_kind": "special_case"
+      },
+      "note": "hasDerivAt_exp states the derivative of exp equals exp, i.e. exp is an eigenfunction of differentiation with eigenvalue 1 (cf. Real.hasDerivAt_fourierChar for the 2πiξ eigenvalue).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Convolution theorem",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "By the convolution theorem , Fourier transforms turn the complicated convolution operation into simple multiplication"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.fourier_mul_convolution_eq",
+        "module": "Mathlib.Analysis.Fourier.Convolution",
+        "match_kind": "exact"
+      },
+      "note": "The Fourier transform of a convolution equals the pointwise product of transforms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "JPEG compression via discrete cosine transform",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "JPEG compression uses a variant of the Fourier transformation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no discrete cosine transform or JPEG-related formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Five variants of Fourier analysis",
+      "anchor": {
+        "section": "Variants of Fourier analysis",
+        "snippet": "There are five different variants of Fourier analysis depending on the characteristics of the input signal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This taxonomy of transform variants is expository, not a formal mathematical statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "DFT is the only numerically computable variant",
+      "anchor": {
+        "section": "Variants of Fourier analysis",
+        "snippet": "The DFT is the only variant that can be calculated numerically"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an informal computability remark, not a formalized theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Continuous-time Fourier transform formula",
+      "anchor": {
+        "section": "Continuous time Fourier transform (CTFT)",
+        "snippet": "is given by the complex number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.fourierIntegral",
+        "module": "Mathlib.Analysis.Fourier.FourierTransform",
+        "match_kind": "exact"
+      },
+      "note": "Real.fourierIntegral is the integral defining the continuous Fourier transform on ℝ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inverse Fourier transform formula",
+      "anchor": {
+        "section": "Continuous time Fourier transform (CTFT)",
+        "snippet": "which is the inverse transform formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.fourierIntegralInv",
+        "module": "Mathlib.Analysis.Fourier.FourierTransform",
+        "match_kind": "exact"
+      },
+      "note": "Real.fourierIntegralInv is the integral defining the inverse Fourier transform.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fourier transform of a periodic function is a Dirac comb",
+      "anchor": {
+        "section": "Continuous time Fourier series (CTFS)",
+        "snippet": "The Fourier transform of a periodic function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Dirac comb or distributional Fourier transform of a periodic function (Poisson summation is the closest scalar identity).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fourier series",
+      "anchor": {
+        "section": "Continuous time Fourier series (CTFS)",
+        "snippet": "The inverse transform, known as Fourier series , is a representation of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AddCircle.hasSum_fourier_series_of_summable",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "exact"
+      },
+      "note": "fourierCoeff and the series ∑ fourierCoeff n • fourier n give the Fourier series representation, shown to sum to f when coefficients are summable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sufficient condition for recovery (dual of Nyquist–Shannon)",
+      "anchor": {
+        "section": "Continuous time Fourier series (CTFS)",
+        "snippet": "A sufficient condition for recovering"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AddCircle.hasSum_fourier_series_of_summable",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib gives summability of Fourier coefficients as a sufficient condition for recovery, but not the bandlimited dual-of-Nyquist sampling condition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "DTFT as dual of the Fourier series",
+      "anchor": {
+        "section": "Discrete-time Fourier transform (DTFT)",
+        "snippet": "The DTFT is the mathematical dual of the time-domain Fourier series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no discrete-time Fourier transform of a sequence into a periodic spectrum.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Poisson summation formula",
+      "anchor": {
+        "section": "Discrete-time Fourier transform (DTFT)",
+        "snippet": "this Fourier series can now be recognized as a form of the Poisson summation formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.tsum_eq_tsum_fourier_of_rpow_decay",
+        "module": "Mathlib.Analysis.Fourier.PoissonSummation",
+        "match_kind": "special_case"
+      },
+      "note": "Poisson summation is formalized for functions on ℝ with suitable decay (and for Schwartz functions).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Whittaker–Shannon interpolation / perfect recovery",
+      "anchor": {
+        "section": "Discrete-time Fourier transform (DTFT)",
+        "snippet": "A sufficient condition for perfect recovery is that the non-zero portion of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no sampling theorem or Whittaker–Shannon interpolation formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "DTFT of a periodic sequence is a Dirac comb",
+      "anchor": {
+        "section": "Discrete Fourier transform (DFT)",
+        "snippet": "the DTFT of a periodic sequence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the DTFT nor the Dirac comb is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Discrete Fourier transform of one cycle",
+      "anchor": {
+        "section": "Discrete Fourier transform (DFT)",
+        "snippet": "is customarily known as the DFT of one cycle of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.dft",
+        "module": "Mathlib.Analysis.Fourier.ZMod",
+        "match_kind": "exact"
+      },
+      "note": "ZMod.dft is the discrete Fourier transform on ℤ/Nℤ as a linear equivalence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inverse DFT (discrete Fourier series)",
+      "anchor": {
+        "section": "Discrete Fourier transform (DFT)",
+        "snippet": "The inverse transform, also known as a discrete Fourier series , is given by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.invDFT_def",
+        "module": "Mathlib.Analysis.Fourier.ZMod",
+        "match_kind": "exact"
+      },
+      "note": "The inverse DFT is the symm of ZMod.dft, with formula given by invDFT_def.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "DFT computed via FFT",
+      "anchor": {
+        "section": "Discrete Fourier transform (DFT)",
+        "snippet": "The DFT can be computed using a fast Fourier transform (FFT) algorithm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no fast Fourier transform algorithm or its complexity analysis.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Periodic functions have discrete spectra",
+      "anchor": {
+        "section": "Summary",
+        "snippet": "both the Fourier transform and the DTFT comprise only a discrete set of frequency components"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AddCircle.fourierCoeff",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": null
+      },
+      "note": "Discreteness is implicit in representing periodic functions by ℤ-indexed Fourier coefficients, but there is no theorem stating periodicity implies a discrete spectrum.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "One-to-one mapping of even/odd components",
+      "anchor": {
+        "section": "Symmetry properties",
+        "snippet": "there is a one-to-one mapping between the four components of a complex time function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize the even/odd real/imaginary component correspondence under the Fourier transform.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Transform of a real-valued function is conjugate symmetric",
+      "anchor": {
+        "section": "Symmetry properties",
+        "snippet": "The transform of a real-valued function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no lemma that the Fourier transform of a real-valued function is Hermitian/conjugate-symmetric (only AddCircle.fourier_neg for the basis characters).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Uncertainty principle time–frequency trade-off",
+      "anchor": {
+        "section": "Time–frequency transforms",
+        "snippet": "by the uncertainty principle , there is a trade-off between these"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Fourier/Heisenberg uncertainty principle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fourier transform on locally compact abelian groups",
+      "anchor": {
+        "section": "Fourier transforms on arbitrary locally compact abelian topological groups",
+        "snippet": "the Fourier transform takes functions on a group to functions on the dual group"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ZMod.dft",
+        "module": "Mathlib.Analysis.Fourier.ZMod",
+        "match_kind": "special_case"
+      },
+      "note": "The dual-group Fourier transform is formalized for finite abelian groups (via characters/PontryaginDuality and ZMod.dft) but not for general locally compact abelian groups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "General convolution theorem",
+      "anchor": {
+        "section": "Fourier transforms on arbitrary locally compact abelian topological groups",
+        "snippet": "This treatment also allows a general formulation of the convolution theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.fourier_mul_convolution_eq",
+        "module": "Mathlib.Analysis.Fourier.Convolution",
+        "match_kind": "special_case"
+      },
+      "note": "The convolution theorem is formalized on ℝ/vector spaces, but not in the general locally-compact-abelian-group formulation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Lagrange resolvents as the DFT of order 3",
+      "anchor": {
+        "section": "History",
+        "snippet": "which is the DFT of order 3"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Although ZMod.dft instantiates a DFT, the identification of Lagrange resolvents with the order-3 DFT is not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

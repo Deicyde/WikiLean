@@ -1,0 +1,935 @@
+{
+  "slug": "Metric_tensor",
+  "wikipedia_title": "Metric tensor",
+  "display_title": "Metric tensor",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Metric tensor (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a metric tensor (or simply metric ) is an additional structure on a manifold"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Bundle.RiemannianMetric",
+        "module": "Mathlib.Topology.VectorBundle.Riemannian",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `RiemannianMetric` packages a smoothly/continuously varying inner product on the tangent (or any) bundle, matching the informal notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Positive-definite metric tensor and Riemannian manifold",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A manifold equipped with a positive-definite metric tensor is known as a Riemannian manifold"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsRiemannianManifold",
+        "module": "Mathlib.Geometry.Manifold.Riemannian.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsRiemannianManifold I M` is the Prop-valued typeclass for a manifold with a (positive-definite) Riemannian metric on its tangent spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Metric tensor as covariant symmetric tensor",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Thus a metric tensor is a covariant symmetric tensor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Bundle.RiemannianMetric",
+        "module": "Mathlib.Topology.VectorBundle.Riemannian",
+        "match_kind": "exact"
+      },
+      "note": "The structure `RiemannianMetric` stores `inner b : E b →L[ℝ] E b →L[ℝ] ℝ` with a `symm` field, i.e., a symmetric covariant 2-tensor on the bundle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Parametric surface",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "Thus a parametric surface is (in today's terms) a vector-valued function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no dedicated `ParametricSurface` concept; one would work directly with smooth maps `ℝ² → ℝ³`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Arc length on a parametric surface",
+      "anchor": {
+        "section": "Arc length",
+        "snippet": "The arc length of that curve is given by the integral"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "pathELength",
+        "module": "Mathlib.Geometry.Manifold.Riemannian.PathELength",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `pathELength` for paths in Riemannian manifolds and `eVariationOn` for arc length in metric spaces, but no surface-specific arc-length integral via a first fundamental form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Line element and first fundamental form",
+      "anchor": {
+        "section": "Arc length",
+        "snippet": "The quantity ds in ( 1 ) is called the line element , while ds 2 is called the first fundamental form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no `lineElement` or `firstFundamentalForm` definition for surfaces in ℝ³.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Metric tensor of a surface (via transformation law)",
+      "anchor": {
+        "section": "Coordinate transformations",
+        "snippet": "with the transformation law ( 3 ) is known as the metric tensor of the surface"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Bundle.RiemannianMetric",
+        "module": "Mathlib.Topology.VectorBundle.Riemannian",
+        "match_kind": "generalization"
+      },
+      "note": "Coordinate-based, transformation-law-driven surface metric is not present, but `RiemannianMetric` is the coordinate-free generalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Invariance of first fundamental form under coordinate change",
+      "anchor": {
+        "section": "Invariance of arclength under coordinate transformations",
+        "snippet": "the first fundamental form ( 1 ) is invariant under changes in the coordinate system"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No coordinate-transformation theorem for the first fundamental form is stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inner product of tangent vectors via metric",
+      "anchor": {
+        "section": "Length and angle",
+        "snippet": "the metric tensor allows one to compute the dot product of tangent vectors in a manner independent of the parametric description"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Continuous.inner_bundle",
+        "module": "Mathlib.Topology.VectorBundle.Riemannian",
+        "match_kind": "exact"
+      },
+      "note": "Once a continuous Riemannian bundle structure is fixed, the inner product `⟪v, w⟫` on tangent fibers is well-defined and behaves continuously.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Symmetry and bilinearity of the surface metric",
+      "anchor": {
+        "section": "Length and angle",
+        "snippet": "This is a symmetric function in a and b"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Bundle.RiemannianMetric.symm",
+        "module": "Mathlib.Topology.VectorBundle.Riemannian",
+        "match_kind": "exact"
+      },
+      "note": "`RiemannianMetric.symm` enforces symmetry, and bilinearity is built into the `→L[ℝ] _ →L[ℝ] ℝ` shape of `inner`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Length of a tangent vector",
+      "anchor": {
+        "section": "Length and angle",
+        "snippet": "the length of a tangent vector a is given by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "norm_tangentSpace_vectorSpace",
+        "module": "Mathlib.Geometry.Manifold.Riemannian.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "The induced norm on tangent spaces is `‖v‖ = √⟪v, v⟫`, coming from the `InnerProductSpace ℝ (TangentSpace I x)` instance derived from `RiemannianBundle`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Angle between tangent vectors",
+      "anchor": {
+        "section": "Length and angle",
+        "snippet": "the angle θ between two vectors a and b is calculated by"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductGeometry.angle",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`InnerProductGeometry.angle` defines the angle in an inner product space, which applies fiberwise to tangent spaces but is not specifically packaged for Riemannian manifolds.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Surface area via parameterization",
+      "anchor": {
+        "section": "Area",
+        "snippet": "the surface area of M is given by the integral"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no surface-area formula for parametrized surfaces (no `surfaceArea` over `‖∂u × ∂v‖`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Surface area via determinant (Lagrange's identity)",
+      "anchor": {
+        "section": "Area",
+        "snippet": "By Lagrange's identity for the cross product, the integral can be written"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No surface-area-as-determinant formulation is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Metric tensor at a point",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A metric tensor at p is a function g p ( X p , Y p ) which takes as inputs a pair of tangent vectors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Bundle.RiemannianMetric.inner",
+        "module": "Mathlib.Topology.VectorBundle.Riemannian",
+        "match_kind": "exact"
+      },
+      "note": "`RiemannianMetric.inner b : E b →L[ℝ] E b →L[ℝ] ℝ` is exactly the pointwise metric tensor at `b`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Metric tensor field on a manifold",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A metric tensor field g on M assigns to each point p of M a metric tensor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Bundle.ContMDiffRiemannianMetric",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.Riemannian",
+        "match_kind": "exact"
+      },
+      "note": "`ContMDiffRiemannianMetric` assigns a smooth family of inner products to each tangent fiber; with `IsContMDiffRiemannianBundle` recording smoothness.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "A metric tensor field g on M assigns to each point p of M a metric tensor"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle g(X,Y)(p)=g_{p}(X_{p},Y_{p})}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Components of the metric in a frame",
+      "anchor": {
+        "section": "Components of the metric",
+        "snippet": "The components of the metric in any basis of vector fields , or frame"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `RiemannianMetric` is intrinsic and does not unpack `g_{ij}` components in a chosen frame.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Covariant transformation of metric components",
+      "anchor": {
+        "section": "Components of the metric",
+        "snippet": "the system of quantities g ij [ f ] is said to transform covariantly with respect to changes in the frame"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no `g_{ij}` change-of-frame transformation law in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Metric components in coordinates",
+      "anchor": {
+        "section": "Metric in coordinates",
+        "snippet": "The metric g has components relative to this frame given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not expose coordinate components `g(∂ᵢ, ∂ⱼ)` of a Riemannian metric in a chart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Transformation of metric components under coordinate change",
+      "anchor": {
+        "section": "Metric in coordinates",
+        "snippet": "This new system of functions is related to the original g ij ( f ) by means of the chain rule"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement of the chain-rule transformation law for metric components in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Positive-definite metric and Riemannian metric",
+      "anchor": {
+        "section": "Signature of a metric",
+        "snippet": "If the metric is positive-definite at every m ∈ M , then g is called a Riemannian metric"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Bundle.RiemannianMetric.pos",
+        "module": "Mathlib.Topology.VectorBundle.Riemannian",
+        "match_kind": "exact"
+      },
+      "note": "The `pos` field of `RiemannianMetric` enforces positive-definiteness fiberwise, matching the Riemannian-metric definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pseudo-Riemannian metric and signature",
+      "anchor": {
+        "section": "Signature of a metric",
+        "snippet": "the signature of g is this signature, and g is called a pseudo-Riemannian metric"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no pseudo-Riemannian metric (its Riemannian bundle is by definition positive-definite).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sylvester's law of inertia for metric diagonalization",
+      "anchor": {
+        "section": "Signature of a metric",
+        "snippet": "By Sylvester's law of inertia , a basis of tangent vectors X i can be chosen locally"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "QuadraticForm.sigPos_of_equiv_weightedSumOfSquares",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Signature",
+        "match_kind": "special_case"
+      },
+      "note": "Sylvester's law of inertia is proved for quadratic forms on vector spaces, but not transported to the local diagonalization of a (pseudo-)Riemannian metric on a manifold.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Signature is constant on connected manifold",
+      "anchor": {
+        "section": "Signature of a metric",
+        "snippet": "If M is connected , then the signature of q m does not depend on m"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement about constancy of the signature of a (pseudo-)metric on a connected manifold.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Signature of a metric",
+      "anchor": {
+        "section": "Signature of a metric",
+        "snippet": "The signature of g is the pair of integers ( p , n − p )"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "QuadraticForm.sigPos",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Signature",
+        "match_kind": "special_case"
+      },
+      "note": "`QuadraticForm.sigPos`/`sigNeg` give the signature for a quadratic form on a vector space, but no `signature` of a metric tensor on a manifold.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Lorentzian and ultrahyperbolic metrics",
+      "anchor": {
+        "section": "Signature of a metric",
+        "snippet": "If M is four-dimensional with signature (1, 3) or (3, 1) , then the metric is called Lorentzian"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define Lorentzian or ultrahyperbolic metrics.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inverse metric",
+      "anchor": {
+        "section": "Inverse metric",
+        "snippet": "One can consider the inverse matrix G [ f ] −1 , which is identified with the inverse metric"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no `inverseMetric` in Mathlib for a Riemannian bundle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Contravariant transformation of inverse metric",
+      "anchor": {
+        "section": "Inverse metric",
+        "snippet": "The inverse metric transforms contravariantly"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Contravariant transformation law for the inverse metric is absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Basis-independence of inverse metric on covectors",
+      "anchor": {
+        "section": "Inverse metric",
+        "snippet": "The resulting definition, although it involves the choice of basis f , does not actually depend on f in an essential way"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement of basis-independence for an inverse metric on cotangent vectors.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lowering the index",
+      "anchor": {
+        "section": "Raising and lowering indices",
+        "snippet": "is called lowering the index"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDualMap",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "special_case"
+      },
+      "note": "Index-lowering on a single inner product space is realized by `toDualMap : E →ₗᵢ⋆[𝕜] StrongDual 𝕜 E`, but no fiberwise/manifold-level index-lowering operator is provided.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Raising the index",
+      "anchor": {
+        "section": "Raising and lowering indices",
+        "snippet": "associating to the (covariant) components of a covector a [ f ] the (contravariant) components of a vector v [ f ] given is called raising the index"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "special_case"
+      },
+      "note": "The inverse `(InnerProductSpace.toDual ℝ E).symm` realizes index-raising on inner product spaces; no Riemannian-bundle version exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Immersion and immersed submanifold",
+      "anchor": {
+        "section": "Induced metric",
+        "snippet": "The mapping φ is called an immersion if its differential is injective at every point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsImmersion",
+        "module": "Mathlib.Geometry.Manifold.Immersion",
+        "match_kind": "exact"
+      },
+      "note": "`IsImmersion I J n f` captures `f` having injective differential at every point of a smooth manifold.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "First fundamental form (induced metric in ℝ³)",
+      "anchor": {
+        "section": "Induced metric",
+        "snippet": "the induced metric tensor is called the first fundamental form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no `firstFundamentalForm` for an immersed surface in ℝ³.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pushforward of a tangent vector",
+      "anchor": {
+        "section": "Induced metric",
+        "snippet": "This is called the pushforward of v along φ"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mfderiv",
+        "module": "Mathlib.Geometry.Manifold.MFDeriv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`mfderiv I J f x : TangentSpace I x →L[ℝ] TangentSpace J (f x)` is the pushforward / differential of `f` at `x`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Induced metric",
+      "anchor": {
+        "section": "Induced metric",
+        "snippet": "the induced metric is defined by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pullback / induced Riemannian metric along an immersion is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Matrix form of induced metric via Jacobian",
+      "anchor": {
+        "section": "Induced metric",
+        "snippet": "It follows from a straightforward calculation that the matrix of the induced metric"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Jᵀ G J` matrix formula for the induced metric is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Intrinsic metric tensor via fiber bundles",
+      "anchor": {
+        "section": "Intrinsic definitions of a metric",
+        "snippet": "a metric tensor is a function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Bundle.RiemannianMetric",
+        "module": "Mathlib.Topology.VectorBundle.Riemannian",
+        "match_kind": "exact"
+      },
+      "note": "`RiemannianMetric` (and `ContinuousRiemannianMetric`) gives the intrinsic fiber-bundle definition of a metric.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Metric as section of dual tensor product bundle",
+      "anchor": {
+        "section": "Metric as a section of a bundle",
+        "snippet": "any bilinear mapping ( 10 ) gives rise naturally to a section g ⊗"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsContinuousRiemannianBundle",
+        "module": "Mathlib.Topology.VectorBundle.Riemannian",
+        "match_kind": "generalization"
+      },
+      "note": "`IsContinuousRiemannianBundle` records the continuous section `b ↦ g b : E b →L[ℝ] E b →L[ℝ] ℝ`, i.e., a continuous section of the bilinear-form bundle, without invoking a `T*M ⊗ T*M` construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Symmetry of g⊗ as tensor",
+      "anchor": {
+        "section": "Metric as a section of a bundle",
+        "snippet": "Since g is symmetric as a bilinear mapping, it follows that g ⊗ is a symmetric tensor"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Bundle.RiemannianMetric.symm",
+        "module": "Mathlib.Topology.VectorBundle.Riemannian",
+        "match_kind": "special_case"
+      },
+      "note": "Symmetry of the metric as a bilinear form is the `symm` field of `RiemannianMetric`, but Mathlib does not phrase it as symmetry of a section of `T*M ⊗ T*M`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Metric in a vector bundle",
+      "anchor": {
+        "section": "Metric in a vector bundle",
+        "snippet": "More generally, one may speak of a metric in a vector bundle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsContinuousRiemannianBundle",
+        "module": "Mathlib.Topology.VectorBundle.Riemannian",
+        "match_kind": "exact"
+      },
+      "note": "`IsContinuousRiemannianBundle F E` is exactly a continuously varying inner product on the fibers of a real vector bundle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Musical isomorphism (tangent–cotangent)",
+      "anchor": {
+        "section": "Tangent–cotangent isomorphism",
+        "snippet": "The metric tensor gives a natural isomorphism from the tangent bundle to the cotangent bundle , sometimes called the musical isomorphism"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has the Riesz musical isomorphism `toDual : E ≃ₗᵢ⋆[𝕜] StrongDual 𝕜 E` for a single inner product space, but no bundle-level `TM ≃ T*M` isomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "S_g is a symmetric linear isomorphism",
+      "anchor": {
+        "section": "Tangent–cotangent isomorphism",
+        "snippet": "S g is a linear isomorphism"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "special_case"
+      },
+      "note": "`InnerProductSpace.toDual` is a (conjugate-)linear isometric equivalence to the dual; the symmetric-isomorphism phrasing tied to a metric is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Correspondence between symmetric bilinear forms and symmetric isomorphisms",
+      "anchor": {
+        "section": "Tangent–cotangent isomorphism",
+        "snippet": "There is thus a natural one-to-one correspondence between symmetric bilinear forms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The bijection between symmetric bilinear forms on `V` and self-adjoint isomorphisms `V → V*` is not stated in this form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Arclength of a parametric curve on a Riemannian manifold",
+      "anchor": {
+        "section": "Arclength and the line element",
+        "snippet": "The arclength of the curve is defined by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "pathELength",
+        "module": "Mathlib.Geometry.Manifold.Riemannian.PathELength",
+        "match_kind": "exact"
+      },
+      "note": "`pathELength I γ a b = ∫⁻ t in Icc a b, ‖mfderiv γ t 1‖ₑ` is exactly the arclength integral on a Riemannian manifold.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "First fundamental form and line element",
+      "anchor": {
+        "section": "Arclength and the line element",
+        "snippet": "is called the first fundamental form associated to the metric, while ds is the line element"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Bundle.RiemannianMetric.inner",
+        "module": "Mathlib.Topology.VectorBundle.Riemannian",
+        "match_kind": "generalization"
+      },
+      "note": "The metric inner product on tangent spaces stands in for the first fundamental form, but `lineElement`/`firstFundamentalForm` names are not introduced.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Coordinate-independence of length formulas",
+      "anchor": {
+        "section": "Arclength and the line element",
+        "snippet": "While these formulas use coordinate expressions, they are in fact independent of the coordinates chosen"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "pathELength",
+        "module": "Mathlib.Geometry.Manifold.Riemannian.PathELength",
+        "match_kind": "generalization"
+      },
+      "note": "`pathELength` is defined intrinsically via `mfderiv`, so coordinate-independence holds by construction (no separate change-of-coordinates lemma is needed).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Energy of a curve",
+      "anchor": {
+        "section": "The energy, variational principles and geodesics",
+        "snippet": "another frequently defined quantity is the (kinetic) energy of the curve"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no `kineticEnergy` of a curve in a Riemannian manifold.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Geodesic equations from variational principles",
+      "anchor": {
+        "section": "The energy, variational principles and geodesics",
+        "snippet": "the geodesic equations may be obtained by applying variational principles to either the length or the energy"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Geodesics and the Euler–Lagrange / geodesic equations are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Canonical Borel measure from metric tensor",
+      "anchor": {
+        "section": "Canonical measure and volume form",
+        "snippet": "if M is a manifold with a (pseudo-)Riemannian metric tensor g , then there is a unique positive Borel measure"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no canonical Riemannian volume measure on a manifold in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Canonical measure and volume form",
+          "snippet": "if M is a manifold with a (pseudo-)Riemannian metric tensor g , then there is a unique positive Borel measure"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Lambda f=\\int _{U}f\\,d\\mu _{g}=\\int _{\\varphi (U)}f\\circ \\varphi ^{-1}(x){\\sqrt {\\left|\\det g\\right|}}\\,dx}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Volume form on an oriented Riemannian manifold",
+      "anchor": {
+        "section": "Canonical measure and volume form",
+        "snippet": "it is possible to define a natural volume form from the metric tensor"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Orientation.volumeForm",
+        "module": "Mathlib.Analysis.InnerProductSpace.Orientation",
+        "match_kind": "special_case"
+      },
+      "note": "`Orientation.volumeForm` defines a canonical top-form on an oriented finite-dimensional inner product space, but not on an oriented Riemannian manifold.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Canonical measure and volume form",
+          "snippet": "it is possible to define a natural volume form from the metric tensor"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\omega ={\\sqrt {\\left|\\det g\\right|}}\\,dx^{1}\\wedge \\cdots \\wedge dx^{n}}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Two-dimensional Euclidean metric",
+      "anchor": {
+        "section": "Euclidean metric",
+        "snippet": "the two-dimensional Euclidean metric tensor"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "riemannianMetricVectorSpace",
+        "module": "Mathlib.Geometry.Manifold.Riemannian.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`riemannianMetricVectorSpace F` puts the canonical Riemannian metric on any inner product space `F` (e.g. `EuclideanSpace ℝ (Fin 2)`), but no specifically two-dimensional Euclidean metric is named.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Euclidean metric in polar coordinates",
+      "anchor": {
+        "section": "Euclidean metric",
+        "snippet": "Polar coordinates ( r , θ )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Polar coordinates exist (`Real.polarCoord`) but the Euclidean metric `dr² + r² dθ²` in those coordinates is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Euclidean metric in curvilinear coordinates",
+      "anchor": {
+        "section": "Euclidean metric",
+        "snippet": "The metric tensor with respect to arbitrary (possibly curvilinear) coordinates"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `gᵢⱼ = ∂y·∂y` curvilinear-coordinate formula for the Euclidean metric in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Round metric on the sphere",
+      "anchor": {
+        "section": "The round metric on a sphere",
+        "snippet": "The unit sphere in ℝ 3 comes equipped with a natural metric induced from the ambient Euclidean metric"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No round Riemannian metric on `Metric.sphere` / `Sphere` is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Minkowski metric (special relativity)",
+      "anchor": {
+        "section": "Lorentzian metrics from relativity",
+        "snippet": "In flat Minkowski space ( special relativity ), with coordinates"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Minkowski metric is not in Mathlib (no Lorentzian metrics at all).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Schwarzschild metric",
+      "anchor": {
+        "section": "Lorentzian metrics from relativity",
+        "snippet": "The Schwarzschild metric describes the spacetime around a spherically symmetric body"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Schwarzschild metric is not defined in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

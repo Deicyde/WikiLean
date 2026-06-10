@@ -1,0 +1,1209 @@
+{
+  "slug": "Dirac_equation",
+  "wikipedia_title": "Dirac equation",
+  "display_title": "Dirac equation",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Dirac spinors",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "are vectors of four complex numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of a Dirac spinor; the underlying ℂ⁴ is just a generic vector space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero-mass limit reduces to Weyl equation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "in the limit of zero mass, the Dirac equation reduces to the Weyl equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the Dirac nor Weyl equation exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Klein–Gordon starting equation",
+      "anchor": {
+        "section": "Dirac's relativistic quantum mechanics",
+        "snippet": "His argument begins with the Klein–Gordon equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Klein–Gordon equation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linearization ansatz",
+      "anchor": {
+        "section": "Dirac's relativistic quantum mechanics",
+        "snippet": "the square root could be rewritten in a linear form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This physics ansatz has no Mathlib counterpart.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Anticommutation conditions on the variables",
+      "anchor": {
+        "section": "Dirac's relativistic quantum mechanics",
+        "snippet": "Dirac found that the variables must satisfy"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CliffordAlgebra.ι_mul_ι_add_swap",
+        "module": "Mathlib.LinearAlgebra.CliffordAlgebra.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The anticommutation relations are the Clifford-algebra defining identity, captured generally by `ι_mul_ι_add_swap`, but the specific α/β matrices are absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "The Dirac equation",
+      "anchor": {
+        "section": "Dirac's relativistic quantum mechanics",
+        "snippet": "He thus arrived at the Dirac equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Dirac equation as a PDE is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Matrices form a Clifford algebra",
+      "anchor": {
+        "section": "Dirac's relativistic quantum mechanics",
+        "snippet": "they form a mathematical structure known of since the early 1880s, the Clifford algebra"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CliffordAlgebra",
+        "module": "Mathlib.LinearAlgebra.CliffordAlgebra.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines Clifford algebras generally via a quadratic form, but does not construct the specific matrix algebra of the Dirac matrices.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dirac field",
+      "anchor": {
+        "section": "Covariant formulation",
+        "snippet": "the key property of the field is that it transforms as a Dirac spinor"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Dirac field is a physics object with no Mathlib formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lorentz covariant Dirac equation",
+      "anchor": {
+        "section": "Covariant formulation",
+        "snippet": "the Lorentz covariant formulation of the Dirac equation is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The covariant Dirac equation is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Gamma matrices and the Dirac algebra",
+      "anchor": {
+        "section": "Covariant formulation",
+        "snippet": "These are a set of four matrices generating the Dirac algebra"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CliffordAlgebra",
+        "module": "Mathlib.LinearAlgebra.CliffordAlgebra.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The Dirac algebra is a Clifford algebra Cl(1,3), which Mathlib has generically, but the gamma matrices themselves are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dirac algebra is a Clifford algebra",
+      "anchor": {
+        "section": "Covariant formulation",
+        "snippet": "The Dirac algebra is a special case of the more general mathematical structure known as a Clifford algebra"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CliffordAlgebra",
+        "module": "Mathlib.LinearAlgebra.CliffordAlgebra.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's general `CliffordAlgebra` is exactly the structure of which the Dirac algebra is a special case, though that instance is not built.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dirac representation",
+      "anchor": {
+        "section": "Covariant formulation",
+        "snippet": "is known as the Dirac representation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific Dirac basis of gamma matrices is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Chiral representation",
+      "anchor": {
+        "section": "Covariant formulation",
+        "snippet": "The first is the chiral representation, which is useful when decomposing"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The chiral (Weyl) basis of gamma matrices is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Majorana representation",
+      "anchor": {
+        "section": "Covariant formulation",
+        "snippet": "The second is the Majorana representation, for which all gamma matrices are imaginary"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Majorana basis of gamma matrices is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Adjoint Dirac equation",
+      "anchor": {
+        "section": "Covariant formulation",
+        "snippet": "the adjoint Dirac equation can be found"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The adjoint Dirac equation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Lorentz invariance of bilinears",
+      "anchor": {
+        "section": "Covariant formulation",
+        "snippet": "is not Lorentz invariant, but"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lorentz invariance of spinor bilinears is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-covariant (Hamiltonian) form",
+      "anchor": {
+        "section": "Covariant formulation",
+        "snippet": "The Dirac equation can be rewritten in a non-covariant form similar to that of the Schrödinger equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hamiltonian form of the Dirac equation is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dirac action",
+      "anchor": {
+        "section": "Dirac action",
+        "snippet": "the Dirac action is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Dirac action functional is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dirac equation as Euler–Lagrange equation",
+      "anchor": {
+        "section": "Dirac action",
+        "snippet": "The equation then arises as the Euler–Lagrange equation of this action"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Euler–Lagrange field-theory machinery yielding the Dirac equation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dirac spinor as wave function",
+      "anchor": {
+        "section": "Meaning of the Dirac fields",
+        "snippet": "corresponds to a four-component spinor wave function describing the state of a Dirac fermion"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The spinor wave function interpretation is physics with no Mathlib formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Position probability density",
+      "anchor": {
+        "section": "Meaning of the Dirac fields",
+        "snippet": "Its position probability density , the probability of finding the fermion in a region of space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This quantum-mechanical probability density is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Operator-valued spinor field",
+      "anchor": {
+        "section": "Meaning of the Dirac fields",
+        "snippet": "the Dirac spinor is quantized to be an operator-valued spinor field"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quantized operator-valued fields are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Operator Dirac equation",
+      "anchor": {
+        "section": "Meaning of the Dirac fields",
+        "snippet": "The Dirac equation then becomes an operator equation describing the state-independent evolution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The operator form of the Dirac equation is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Grassmann-valued path integral field",
+      "anchor": {
+        "section": "Meaning of the Dirac fields",
+        "snippet": "is an anti-commuting Grassmann-valued field that only acts as an integration variable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ExteriorAlgebra",
+        "module": "Mathlib.LinearAlgebra.ExteriorAlgebra.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The anticommuting Grassmann algebra is the exterior algebra, which Mathlib has, but Grassmann-valued fields and path integrals are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Classical spinor field theory and SL(2,C)",
+      "anchor": {
+        "section": "Meaning of the Dirac fields",
+        "snippet": "The Dirac equation also arises in describing the time evolution of a spinor field in classical field theory"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Although SL(2,ℂ) exists as `Matrix.SpecialLinearGroup`, classical spinor field dynamics is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Group representation",
+      "anchor": {
+        "section": "Lorentz transformations",
+        "snippet": "A representation is a particular choice of matrices that faithfully"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation",
+        "module": "Mathlib.RepresentationTheory.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `Representation k G V` (a monoid hom `G →* (V →ₗ[k] V)`) is the standard, more general formalization of a linear group representation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lorentz Lie algebra bracket",
+      "anchor": {
+        "section": "Lorentz transformations",
+        "snippet": "with the bracket for the Lorentz algebra given by"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LieRing",
+        "module": "Mathlib.Algebra.Lie.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the general Lie bracket via `LieRing`, but the specific so(1,3) Lorentz algebra and its structure constants are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Vector representation generators",
+      "anchor": {
+        "section": "Lorentz transformations",
+        "snippet": "the representation acting on real vectors is given by the six matrices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The explicit six so(1,3) generators in the vector representation are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lorentz transformation by exponentiation",
+      "anchor": {
+        "section": "Lorentz transformations",
+        "snippet": "The Lorentz transformation matrix can then be acquired from these generators through an exponentiation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "NormedSpace.exp",
+        "module": "Mathlib.Analysis.Normed.Algebra.Exponential",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the (matrix) exponential `exp`, but not the Lorentz-group-specific exp map from so(1,3) to SO(1,3).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Spinor representation generators",
+      "anchor": {
+        "section": "Lorentz transformations",
+        "snippet": "Another representation for the Lorentz algebra is the spinor representation where the generators are given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The σ^{μν} spinor-representation generators built from gamma-matrix commutators are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Spinor representation is two-to-one (double cover)",
+      "anchor": {
+        "section": "Lorentz transformations",
+        "snippet": "is not one-to-one since there are two consistent choices"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "spinGroup",
+        "module": "Mathlib.LinearAlgebra.CliffordAlgebra.SpinGroup",
+        "match_kind": null
+      },
+      "note": "Mathlib defines `spinGroup` and its conjugation action on vectors, but the two-to-one covering of the (special) orthogonal group is not proven.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lorentz covariance of the Dirac equation",
+      "anchor": {
+        "section": "Lorentz transformations",
+        "snippet": "The Dirac equation is a Lorentz covariant equation, meaning that it takes the form in all inertial reference frames"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lorentz covariance of the Dirac equation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lorentz invariance of the Dirac action",
+      "anchor": {
+        "section": "Lorentz transformations",
+        "snippet": "the Dirac action is Lorentz invariant, meaning that it is the same in all reference frames"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lorentz invariance of the Dirac action is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Global U(1) vector symmetry",
+      "anchor": {
+        "section": "Symmetries",
+        "snippet": "acting on the phase of the spinor"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This global U(1) phase symmetry of the Dirac field is a physics statement absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Conserved vector current (Noether)",
+      "anchor": {
+        "section": "Symmetries",
+        "snippet": "This has a corresponding conserved current that can be derived from the action using Noether's theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Noether's theorem and conserved currents are not formalized in Mathlib (matches for 'Noether' are all 'Noetherian').",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Axial symmetry in the massless limit",
+      "anchor": {
+        "section": "Symmetries",
+        "snippet": "known as the axial symmetry"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The axial (chiral) symmetry is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Axial current",
+      "anchor": {
+        "section": "Symmetries",
+        "snippet": "The current corresponding to the axial symmetry is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The axial current is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Axial current is a pseudovector",
+      "anchor": {
+        "section": "Symmetries",
+        "snippet": "This transforms as a pseudovector , meaning that its spatial part is odd under parity transformations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Parity transformation properties of the axial current are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chiral anomaly obstructs gauging",
+      "anchor": {
+        "section": "Symmetries",
+        "snippet": "at the quantum level it has a chiral anomaly that provides an obstruction towards gauging"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The chiral anomaly is a quantum-field-theory result with no Mathlib formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Stress-energy tensor from translations",
+      "anchor": {
+        "section": "Symmetries",
+        "snippet": "Invariance under the four spacetime translations yields the Dirac stress-energy tensor"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Dirac stress-energy tensor is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lorentz currents",
+      "anchor": {
+        "section": "Symmetries",
+        "snippet": "Invariance under Lorentz transformations meanwhile yields a set of currents indexed by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Noether currents associated with Lorentz invariance are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Each component solves Klein–Gordon",
+      "anchor": {
+        "section": "Plane wave solutions",
+        "snippet": "gives rise to the Klein–Gordon equation for each component of the spinor"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the Klein–Gordon nor Dirac equation is in Mathlib, so this relation is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Dirac solutions are Klein–Gordon solutions",
+      "anchor": {
+        "section": "Plane wave solutions",
+        "snippet": "any solution to the Dirac equation is also automatically a solution to the Klein–Gordon equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This implication between the two equations is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Positive frequency plane wave solutions",
+      "anchor": {
+        "section": "Plane wave solutions",
+        "snippet": "The Dirac equation admits positive frequency plane wave solutions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Plane-wave solutions of the Dirac equation are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Negative frequency solutions",
+      "anchor": {
+        "section": "Plane wave solutions",
+        "snippet": "It also admits negative frequency solutions taking the same form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Negative-frequency Dirac solutions are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Momentum-space Dirac equation",
+      "anchor": {
+        "section": "Plane wave solutions",
+        "snippet": "Both these spinor polarizations satisfy the momentum space Dirac equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The momentum-space Dirac equation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "General solution in chiral representation",
+      "anchor": {
+        "section": "Plane wave solutions",
+        "snippet": "In the chiral representation the general solution is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The general Dirac solution in the chiral basis is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Generalization to arbitrary dimension",
+      "anchor": {
+        "section": "Related Dirac equations",
+        "snippet": "it can be directly generalized to arbitrary dimension and metric signatures"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Although Clifford algebras exist in arbitrary dimension in Mathlib, the Dirac equation itself is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Spinor covariant derivative",
+      "anchor": {
+        "section": "Related Dirac equations",
+        "snippet": "through the introduction of a spinor covariant derivative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The spinor covariant derivative is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dirac equation in curved spacetime",
+      "anchor": {
+        "section": "Related Dirac equations",
+        "snippet": "The Dirac equation in curved spacetime then takes the form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The curved-spacetime Dirac equation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Nonlinear Dirac equation",
+      "anchor": {
+        "section": "Related Dirac equations",
+        "snippet": "gives rise to the nonlinear Dirac equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The nonlinear Dirac equation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Breit equation",
+      "anchor": {
+        "section": "Related Dirac equations",
+        "snippet": "the Breit equation describes multi-electron systems interacting electromagnetically"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Breit equation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Two-body Dirac equation",
+      "anchor": {
+        "section": "Related Dirac equations",
+        "snippet": "The two-body Dirac equation is a similar multi-body equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The two-body Dirac equation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dirac–Hestenes equation",
+      "anchor": {
+        "section": "Related Dirac equations",
+        "snippet": "A geometric reformulation of the Dirac equation is known as the Dirac–Hestenes equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Dirac–Hestenes equation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dirac–Kähler equation",
+      "anchor": {
+        "section": "Related Dirac equations",
+        "snippet": "Another related geometric equation is the Dirac–Kähler equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Dirac–Kähler equation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Decomposition into Weyl spinors",
+      "anchor": {
+        "section": "Weyl and Majorana equations",
+        "snippet": "The Dirac spinor can be decomposed into a pair of Weyl spinors of opposite chirality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Weyl spinors and chirality decomposition are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reduction to coupled Weyl equations",
+      "anchor": {
+        "section": "Weyl and Majorana equations",
+        "snippet": "the Dirac equation reduces to the pair of equations for the Weyl spinors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The reduction to coupled Weyl equations is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Massless decoupling into Weyl equations",
+      "anchor": {
+        "section": "Weyl and Majorana equations",
+        "snippet": "in the massless limit the Weyl spinors decouple and the Dirac equation is equivalent to a pair of Weyl equations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Massless decoupling into Weyl equations is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Majorana equation",
+      "anchor": {
+        "section": "Weyl and Majorana equations",
+        "snippet": "A closely related equation is the Majorana equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Majorana equation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Majorana spinor reality condition",
+      "anchor": {
+        "section": "Weyl and Majorana equations",
+        "snippet": "These are spinors that satisfy a reality condition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Majorana reality condition on spinors is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-relativistic limit is the Pauli equation",
+      "anchor": {
+        "section": "Pauli equation",
+        "snippet": "the Dirac equation reduces to the Pauli equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the Dirac nor Pauli equation is in Mathlib, so this limit is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pauli equation for a charged fermion",
+      "anchor": {
+        "section": "Pauli equation",
+        "snippet": "The equation describes a fermion of charge"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Pauli equation is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gyromagnetic ratio equals two",
+      "anchor": {
+        "section": "Pauli equation",
+        "snippet": "the gyromagnetic ratio of the fermion described by the Dirac equation is exactly"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The g=2 gyromagnetic ratio prediction is a physics result with no Mathlib formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Elevating a global to a local symmetry",
+      "anchor": {
+        "section": "Vector symmetry",
+        "snippet": "the Lagrangian can always be modified in a way to elevate a global symmetry to a local symmetry"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The gauging procedure for symmetries is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Gauge field transformation",
+      "anchor": {
+        "section": "Vector symmetry",
+        "snippet": "known as a gauge field, must be introduced"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gauge fields and their transformation laws are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Gauge covariant derivative",
+      "anchor": {
+        "section": "Vector symmetry",
+        "snippet": "by replacing the derivative term with a new gauge covariant derivative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The gauge covariant derivative is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gauged action gives quantum electrodynamics",
+      "anchor": {
+        "section": "Vector symmetry",
+        "snippet": "introducing the kinetic term for the gauge field results in the action for quantum electrodynamics"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The QED action is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Largest global symmetry U(N)",
+      "anchor": {
+        "section": "General symmetries",
+        "snippet": "The largest global symmetry of this action is then given by the unitary group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Although U(N) exists as `Matrix.unitaryGroup`, the claim that it is the largest global symmetry of the Dirac action is physics not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gauging requires an N-dimensional unitary representation",
+      "anchor": {
+        "section": "General symmetries",
+        "snippet": "the symmetry being gauged must admit an"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This gauging requirement is a physics statement not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Gauge field in the adjoint representation",
+      "anchor": {
+        "section": "General symmetries",
+        "snippet": "which necessarily transforms in the adjoint representation of the gauge group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The adjoint Lie-algebra action exists in Mathlib (`LieAlgebra.ad`), but the non-abelian gauge field is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "SU(N) fundamental transformation of spinors",
+      "anchor": {
+        "section": "General symmetries",
+        "snippet": "Spinors transforming in the fundamental representation transform as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "SU(N) exists as `Matrix.specialUnitaryGroup`, but the fundamental transformation law of spinors is a physics statement absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "SU(N) gauge field transformation",
+      "anchor": {
+        "section": "General symmetries",
+        "snippet": "which transforms in the adjoint representation as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The non-abelian gauge field transformation law is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quantum chromodynamics action",
+      "anchor": {
+        "section": "General symmetries",
+        "snippet": "By also introducing the kinetic term for the gauge field, one constructs the action for quantum chromodynamics"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The QCD action is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Yang–Mills field strength tensor",
+      "anchor": {
+        "section": "General symmetries",
+        "snippet": "the Yang–Mills fields strength tensor is defined as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Yang–Mills field strength tensor is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "SU(3) and SU(2) in the Standard Model",
+      "anchor": {
+        "section": "General symmetries",
+        "snippet": "describes strong interactions of the quark sector of the Standard Model"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "SU(3) and SU(2) exist as `Matrix.specialUnitaryGroup`, but their Standard Model roles are physics not in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,505 @@
+{
+  "slug": "Coprime_integers",
+  "wikipedia_title": "Coprime integers",
+  "display_title": "Coprime integers",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Coprime integers",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "two integers a and b are coprime"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Coprime",
+        "module": "Mathlib.Data.Nat.GCD.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Coprime m n := Nat.gcd m n = 1` is the standard definition (with `IsCoprime` as the Bézout-style version in Mathlib.RingTheory.Coprime.Basic).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "8 and 9 are coprime",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The numbers 8 and 9 are coprime"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific lemma for the numeric instance gcd(8,9)=1 was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "6 and 9 are not coprime",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "6 and 9 are not coprime"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific lemma for the numeric non-instance of gcd(6,9)=3 was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Notation for coprimality",
+      "anchor": {
+        "section": "Notation and testing",
+        "snippet": "the standard way of expressing this fact in mathematical notation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.coprime_iff_gcd_eq_one",
+        "module": "Mathlib.Data.Nat.GCD.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The notational fact gcd(a,b)=1 ↔ Coprime is expressed via `Nat.coprime_iff_gcd_eq_one`, but Mathlib does not introduce the `(a,b)=1` notation itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euclidean algorithm tests coprimality",
+      "anchor": {
+        "section": "Notation and testing",
+        "snippet": "A fast way to determine whether two numbers are coprime"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.gcd",
+        "module": "Init.Data.Nat.Gcd",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib uses the Euclidean recursion (`Nat.gcd`) to compute gcd and thus test coprimality, but the methodological claim itself is not stated as a theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euler's totient function",
+      "anchor": {
+        "section": "Notation and testing",
+        "snippet": "The number of integers coprime with a positive integer"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.totient",
+        "module": "Mathlib.Data.Nat.Totient",
+        "match_kind": "exact"
+      },
+      "note": "Defined as `#{a ∈ range n | n.Coprime a}` exactly matching Wikipedia's count.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Setwise and pairwise coprime",
+      "anchor": {
+        "section": "Notation and testing",
+        "snippet": "A set of integers can also be called coprime"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Pairwise",
+        "module": "Mathlib.RingTheory.Coprime.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Pairwise coprime is expressed via `Pairwise (IsCoprime on f)` / `Set.Pairwise s (IsCoprime · ·)`, but a named `Setwise.Coprime` predicate (gcd of the whole set = 1) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "{2,3,4} setwise but not pairwise coprime",
+      "anchor": {
+        "section": "Notation and testing",
+        "snippet": "The set {2, 3, 4} is coprime"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific lemma instantiating this example was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "1 and -1 coprime with every integer",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The numbers 1 and −1 are the only integers coprime with every integer"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.coprime_one_left",
+        "module": "Mathlib.Data.Nat.GCD.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`Nat.coprime_one_left`/`Nat.coprime_one_right` (and `isCoprime_one_left`/`right`) cover the affirmative direction; the uniqueness characterization isn't stated as a single lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalent conditions for coprimality",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "A number of conditions are equivalent to a and b being coprime"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Int.isCoprime_iff_gcd_eq_one",
+        "module": "Mathlib.RingTheory.Int.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Several equivalences exist individually (`isCoprime_iff_gcd_eq_one`, `isCoprime_iff_exists`, `Nat.coprime_iff_isRelPrime`), but they are not bundled into one `TFAE`-style statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cancellation modulo a",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "As a consequence of the third point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.ModEq.cancel_left_div_gcd",
+        "module": "Mathlib.Data.Nat.ModEq",
+        "match_kind": "generalization"
+      },
+      "note": "Cancellation of a coprime factor in a congruence is captured by `Nat.ModEq.cancel_left_div_gcd`/`cancel_right_div_gcd` (which specializes to ordinary cancellation when the multiplier is coprime to the modulus).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euclid's lemma",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "this also follows from the first point by Euclid's lemma"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCoprime.dvd_of_dvd_mul_right",
+        "module": "Mathlib.RingTheory.Coprime.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Formalized as `IsCoprime.dvd_of_dvd_mul_right` (and the Int version in `Mathlib.Data.Int.GCD` is explicitly labeled `Euclid's lemma`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Coprimality of powers",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "As a consequence of the first point, if a and b are coprime, then so are any powers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCoprime.pow",
+        "module": "Mathlib.RingTheory.Coprime.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "`IsCoprime.pow`/`Nat.Coprime.pow` (with `_left`, `_right`, `_iff` variants) prove that powers preserve coprimality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Generalization of Euclid's lemma",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "If a and b are coprime and a divides the product bc"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCoprime.dvd_of_dvd_mul_right",
+        "module": "Mathlib.RingTheory.Coprime.Basic",
+        "match_kind": "exact"
+      },
+      "note": "This is the same statement as Euclid's lemma above and is proved as `IsCoprime.dvd_of_dvd_mul_right`/`_left`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Visibility from origin characterization",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "would be \"visible\" via an unobstructed line of sight from the origin"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No 'visibility from origin' lattice-point lemma was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Probability of coprimality is 6/pi^2",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "the probability that two randomly chosen integers are coprime is 6"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The density/limit statement 6/π² for pairwise coprimality is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Coprimality of 2^a-1 and 2^b-1",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Two natural numbers a and b are coprime if and only if the numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `2^a-1`/two_pow-minus-one coprimality did not turn up a corresponding lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Setwise coprime set",
+      "anchor": {
+        "section": "Coprimality in sets",
+        "snippet": "can also be called coprime or setwise coprime"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no named predicate for 'gcd of a whole set equals 1'; only the binary `IsCoprime`/`Nat.Coprime` and the pairwise version exist.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "6, 10, 15 setwise coprime",
+      "anchor": {
+        "section": "Coprimality in sets",
+        "snippet": "the integers 6, 10, 15 are coprime"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific example instance was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pairwise coprime",
+      "anchor": {
+        "section": "Coprimality in sets",
+        "snippet": "If every pair in a set of integers is coprime"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Pairwise",
+        "module": "Mathlib.RingTheory.Ideal.Quotient.Operations",
+        "match_kind": "invocation"
+      },
+      "note": "Expressed throughout Mathlib as `Pairwise (IsCoprime on f)` / `Set.Pairwise s fun i j => IsCoprime (g i) (g j)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "4, 5, 6 setwise but not pairwise coprime",
+      "anchor": {
+        "section": "Coprimality in sets",
+        "snippet": "the integers 4, 5, 6 are (setwise) coprime"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific example instance was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Infinite pairwise coprime sets",
+      "anchor": {
+        "section": "Coprimality in sets",
+        "snippet": "It is possible for an infinite set of integers to be pairwise coprime"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma constructing an infinite pairwise-coprime family (Fermat numbers, primes, etc.) under that label was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Limit of probability P_N is 6/pi^2",
+      "anchor": {
+        "section": "Probability of coprimality",
+        "snippet": "one can show that in the limit"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The asymptotic density theorem P_N → 6/π² is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Probability of k integers setwise coprime",
+      "anchor": {
+        "section": "Probability of coprimality",
+        "snippet": "the probability of k randomly chosen integers being setwise coprime"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The 1/ζ(k) density of k-tuples that are setwise coprime is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Ternary tree of coprime pairs",
+      "anchor": {
+        "section": "Generating all coprime pairs",
+        "snippet": "All pairs of positive coprime numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Stern-Brocot/ternary-tree enumeration of coprime pairs is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Calkin-Wilf tree generates coprime pairs",
+      "anchor": {
+        "section": "Generating all coprime pairs",
+        "snippet": "Another (much simpler) way to generate a tree of positive coprime pairs"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Calkin`/`Wilf`/`Stern_Brocot` in Mathlib found no matches.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Gear design application",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "In machine design, an even, uniform gear wear"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Engineering application; not a mathematical statement in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cryptography application",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "In pre-computer cryptography"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Historical/applied note; not a mathematical statement formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coprime polynomials",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "polynomials whose greatest common divisor is 1 are called coprime polynomials"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCoprime",
+        "module": "Mathlib.RingTheory.Coprime.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`IsCoprime p q` applied to polynomials over a field gives coprime polynomials (used extensively in e.g. `Mathlib.Algebra.Polynomial.PartialFractions`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Coprime ideals",
+      "anchor": {
+        "section": "Coprimality in ring ideals",
+        "snippet": "Two ideals A and B in a commutative ring R are called coprime"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.isCoprime_iff_add",
+        "module": "Mathlib.RingTheory.Ideal.Operations",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal.isCoprime_iff_add : IsCoprime I J ↔ I + J = 1` captures the standard definition of coprime ideals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Generalized Chinese remainder theorem",
+      "anchor": {
+        "section": "Coprimality in ring ideals",
+        "snippet": "The Chinese remainder theorem can be generalized to any commutative ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.quotientInfRingEquivPiQuotient",
+        "module": "Mathlib.RingTheory.Ideal.Quotient.Operations",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal.quotientInfRingEquivPiQuotient` is the generalized CRT for finitely many pairwise coprime ideals in a commutative ring.",
+      "provenance": "ai"
+    }
+  ]
+}

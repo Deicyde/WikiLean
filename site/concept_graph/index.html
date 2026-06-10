@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WikiLean concept graph — Mathlib vs Wikidata</title>
+<style>
+  :root {
+    --bg: #faf7f0;
+    --panel: #f3ecde;
+    --rule: #d9cfb6;
+    --ink: #2a241a;
+    --muted: #6f5933;
+    --accent: #7a3920;
+    --ml: #2e6fab;
+    --wd: #c78420;
+    --both: #3d7a3d;
+    --hl: #d23a2a;
+  }
+  html, body { height: 100%; }
+  body { margin: 0; font: 13px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: var(--ink); background: var(--bg); }
+  #app { display: grid; grid-template-columns: 240px 1fr 300px; grid-template-rows: 1fr; height: 100vh; min-height: 0; }
+  aside { padding: 14px 16px; background: var(--panel); overflow-y: auto; min-height: 0; }
+  #side { border-right: 1px solid var(--rule); }
+  #info { border-left: 1px solid var(--rule); }
+  canvas { display: block; width: 100%; height: 100%; cursor: grab; background: var(--bg); }
+  canvas.dragging { cursor: grabbing; }
+  h1 { font-size: 14px; margin: 0 0 4px; letter-spacing: 0.01em; }
+  h1 small { font-weight: 400; color: var(--muted); }
+  h2 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; margin: 18px 0 6px; color: var(--muted); }
+  label { display: flex; align-items: center; gap: 6px; padding: 3px 0; cursor: pointer; user-select: none; }
+  label .swatch { display: inline-block; width: 14px; height: 4px; border-radius: 2px; }
+  label input { margin: 0; }
+  input[type="text"] { width: 100%; box-sizing: border-box; padding: 6px 8px; border: 1px solid #c9bd9f; background: #fff; border-radius: 4px; font: inherit; color: var(--ink); }
+  input[type="text"]:focus { outline: none; border-color: var(--accent); }
+  .stat { display: flex; justify-content: space-between; padding: 2px 0; }
+  .stat .v { font-variant-numeric: tabular-nums; color: var(--muted); }
+  #info h3 { font-size: 16px; margin: 0 0 6px; }
+  #info .qid { color: var(--muted); font-size: 12px; margin-bottom: 10px; }
+  #info code { background: #ede4cb; padding: 1px 4px; border-radius: 3px; font-size: 12px; }
+  #info a { color: var(--accent); text-decoration: none; }
+  #info a:hover { text-decoration: underline; }
+  #info .field { margin: 4px 0; }
+  #info .field b { color: var(--muted); font-weight: 600; }
+  #info .links { display: flex; flex-direction: column; gap: 4px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--rule); }
+  .empty { color: #99876a; font-style: italic; }
+  .hint { font-size: 11px; color: var(--muted); margin-top: 10px; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div id="app">
+  <aside id="side">
+    <h1>WikiLean <small>concept graph</small></h1>
+    <div class="hint">Each node is a Wikidata concept that the catalog links to a Mathlib declaration. Edges are dependency / reference relations.</div>
+
+    <h2>Edge sources</h2>
+    <label><input type="checkbox" id="show-mathlib" checked><span class="swatch" style="background:var(--ml)"></span> Mathlib only</label>
+    <label><input type="checkbox" id="show-wikidata" checked><span class="swatch" style="background:var(--wd)"></span> Wikidata only</label>
+    <label><input type="checkbox" id="show-both" checked><span class="swatch" style="background:var(--both)"></span> Both (overlap)</label>
+
+    <h2>Search</h2>
+    <input type="text" id="search" placeholder="Concept label…" autocomplete="off">
+
+    <h2>Stats</h2>
+    <div id="stats"></div>
+
+    <div class="hint" style="margin-top:18px">
+      Drag to pan · scroll to zoom · click a node for details. Highlight a node to see its incident edges.
+    </div>
+  </aside>
+  <canvas id="canvas"></canvas>
+  <aside id="info">
+    <p class="empty">Click a node to inspect.</p>
+  </aside>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script>
+const COLORS = {
+  mathlib: '#2e6fab',
+  wikidata: '#c78420',
+  both: '#3d7a3d',
+  highlight: '#d23a2a',
+  nodeFormalized: '#3a7148',
+  nodeUnformalized: '#c2b896',
+  nodeDefault: '#6b5536',
+};
+
+(async () => {
+  const data = await (await fetch('data.json')).json();
+
+  // Collapse parallel edges per (from,to) into one with a set of sources.
+  const edgeMap = new Map();
+  for (const e of data.edges) {
+    const k = e.from + '>' + e.to;
+    let bucket = edgeMap.get(k);
+    if (!bucket) { bucket = { source: e.from, target: e.to, sources: new Set() }; edgeMap.set(k, bucket); }
+    bucket.sources.add(e.source);
+  }
+  const validEdges = [];
+  for (const e of edgeMap.values()) {
+    const inMl = e.sources.has('mathlib');
+    const inWd = e.sources.has('wikidata');
+    e.cat = (inMl && inWd) ? 'both' : (inMl ? 'mathlib' : 'wikidata');
+    validEdges.push(e);
+  }
+
+  const nodeById = new Map();
+  for (const n of data.nodes) nodeById.set(n.qid, { ...n, id: n.qid });
+  const nodes = [...nodeById.values()];
+
+  // Drop edges whose endpoints are missing (defensive).
+  const edges = validEdges.filter(e => nodeById.has(e.source) && nodeById.has(e.target));
+
+  // ---------- canvas + camera ----------
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  let cssW = 0, cssH = 0;
+  const resize = () => {
+    const r = canvas.getBoundingClientRect();
+    cssW = r.width; cssH = r.height;
+    canvas.width = cssW * devicePixelRatio;
+    canvas.height = cssH * devicePixelRatio;
+    ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+    scheduleDraw();
+  };
+
+  let scale = 0.9, tx = 0, ty = 0, centered = false;
+  const screenToWorld = (sx, sy) => [(sx - tx) / scale, (sy - ty) / scale];
+
+  // ---------- force simulation ----------
+  const sim = d3.forceSimulation(nodes)
+    .force('link', d3.forceLink(edges).id(d => d.id).distance(28).strength(0.35))
+    .force('charge', d3.forceManyBody().strength(-22).distanceMax(380))
+    .force('center', d3.forceCenter(0, 0))
+    .force('collide', d3.forceCollide(4))
+    .alpha(1).alphaDecay(0.025).velocityDecay(0.4)
+    .on('tick', scheduleDraw);
+
+  // ---------- UI state ----------
+  const show = { mathlib: true, wikidata: true, both: true };
+  let highlighted = null;
+  let searchTerm = '';
+
+  function nodeColor(n, matched) {
+    if (matched) return COLORS.highlight;
+    if (n.status === 'formalized') return COLORS.nodeFormalized;
+    if (!n.primary_decl) return COLORS.nodeUnformalized;
+    return COLORS.nodeDefault;
+  }
+  function matchesSearch(n) {
+    return searchTerm && (n.label || '').toLowerCase().includes(searchTerm);
+  }
+
+  let needsDraw = false;
+  function scheduleDraw() {
+    if (needsDraw) return;
+    needsDraw = true;
+    requestAnimationFrame(() => { needsDraw = false; draw(); });
+  }
+
+  function draw() {
+    if (!centered) {
+      tx = cssW / 2; ty = cssH / 2; centered = true;
+    }
+    ctx.clearRect(0, 0, cssW, cssH);
+    ctx.save();
+    ctx.translate(tx, ty);
+    ctx.scale(scale, scale);
+    ctx.lineCap = 'round';
+
+    const inv = 1 / scale;
+
+    // Draw edges by category, "both" last so it sits on top.
+    const order = ['mathlib', 'wikidata', 'both'];
+    for (const cat of order) {
+      if (!show[cat]) continue;
+      ctx.strokeStyle = COLORS[cat];
+      ctx.globalAlpha = cat === 'both' ? 0.75 : 0.28;
+      ctx.lineWidth = (cat === 'both' ? 1.0 : 0.6) * inv;
+      ctx.beginPath();
+      for (const e of edges) {
+        if (e.cat !== cat) continue;
+        ctx.moveTo(e.source.x, e.source.y);
+        ctx.lineTo(e.target.x, e.target.y);
+      }
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+
+    // Highlighted node's incident edges.
+    if (highlighted) {
+      ctx.strokeStyle = COLORS.highlight;
+      ctx.lineWidth = 1.6 * inv;
+      ctx.beginPath();
+      for (const e of edges) {
+        if (e.source.id === highlighted.id || e.target.id === highlighted.id) {
+          ctx.moveTo(e.source.x, e.source.y);
+          ctx.lineTo(e.target.x, e.target.y);
+        }
+      }
+      ctx.stroke();
+    }
+
+    // Nodes.
+    for (const n of nodes) {
+      const matched = matchesSearch(n);
+      const isHl = n === highlighted;
+      const r = (isHl ? 6 : matched ? 4.5 : 2.4) * inv;
+      ctx.fillStyle = nodeColor(n, matched);
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Label for highlighted.
+    if (highlighted) {
+      ctx.fillStyle = '#2a241a';
+      ctx.font = (12 * inv) + 'px -apple-system, sans-serif';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(' ' + (highlighted.label || highlighted.id), highlighted.x + 7 * inv, highlighted.y);
+    }
+
+    ctx.restore();
+  }
+
+  // ---------- interaction ----------
+  let panning = false, panStart = null;
+  canvas.addEventListener('mousedown', ev => {
+    panning = true;
+    canvas.classList.add('dragging');
+    panStart = [ev.clientX - tx, ev.clientY - ty];
+  });
+  window.addEventListener('mousemove', ev => {
+    if (!panning) return;
+    tx = ev.clientX - panStart[0];
+    ty = ev.clientY - panStart[1];
+    scheduleDraw();
+  });
+  window.addEventListener('mouseup', () => {
+    panning = false;
+    canvas.classList.remove('dragging');
+  });
+  canvas.addEventListener('wheel', ev => {
+    ev.preventDefault();
+    const r = canvas.getBoundingClientRect();
+    const mx = ev.clientX - r.left, my = ev.clientY - r.top;
+    const [wx, wy] = screenToWorld(mx, my);
+    const factor = Math.exp(-ev.deltaY * 0.0015);
+    scale = Math.max(0.05, Math.min(20, scale * factor));
+    tx = mx - wx * scale;
+    ty = my - wy * scale;
+    scheduleDraw();
+  }, { passive: false });
+
+  canvas.addEventListener('click', ev => {
+    if (panning && panStart && (Math.abs(ev.clientX - panStart[0] - tx) > 3 || Math.abs(ev.clientY - panStart[1] - ty) > 3)) return;
+    const r = canvas.getBoundingClientRect();
+    const [wx, wy] = screenToWorld(ev.clientX - r.left, ev.clientY - r.top);
+    const pickR = 8 / scale;
+    let best = null, bestD2 = pickR * pickR;
+    for (const n of nodes) {
+      const d2 = (n.x - wx) ** 2 + (n.y - wy) ** 2;
+      if (d2 < bestD2) { bestD2 = d2; best = n; }
+    }
+    highlighted = best;
+    renderInfo();
+    scheduleDraw();
+  });
+
+  // ---------- info panel ----------
+  const info = document.getElementById('info');
+  function renderInfo() {
+    if (!highlighted) {
+      info.innerHTML = '<p class="empty">Click a node to inspect.</p>';
+      return;
+    }
+    const n = highlighted;
+    const counts = { mathlib: 0, wikidata: 0, both: 0 };
+    for (const e of edges) {
+      if (e.source.id === n.id || e.target.id === n.id) counts[e.cat]++;
+    }
+    const wikiUrl = n.slug ? `https://en.wikipedia.org/wiki/${encodeURIComponent(n.slug)}` : null;
+    const wdUrl = `https://www.wikidata.org/wiki/${n.qid}`;
+    const docsUrl = n.primary_decl
+      ? `https://leanprover-community.github.io/mathlib4_docs/find/?pattern=${encodeURIComponent(n.primary_decl)}`
+      : null;
+
+    const parts = [];
+    parts.push(`<h3>${esc(n.label || n.qid)}</h3>`);
+    parts.push(`<div class="qid">${n.qid}${n.importance ? ' · ' + esc(n.importance) : ''}${n.status ? ' · ' + esc(n.status) : ''}</div>`);
+    if (n.primary_decl) parts.push(`<div class="field"><b>Decl</b> · <code>${esc(n.primary_decl)}</code></div>`);
+    if (n.module) parts.push(`<div class="field"><b>Module</b> · <code>${esc(n.module)}</code></div>`);
+    parts.push(`<div class="field" style="margin-top:10px"><b>Edges</b> · <span style="color:var(--ml)">${counts.mathlib} mathlib</span> · <span style="color:var(--wd)">${counts.wikidata} wikidata</span> · <span style="color:var(--both)">${counts.both} both</span></div>`);
+    parts.push('<div class="links">');
+    if (wikiUrl) parts.push(`<a href="${wikiUrl}" target="_blank" rel="noopener">Wikipedia →</a>`);
+    parts.push(`<a href="${wdUrl}" target="_blank" rel="noopener">Wikidata →</a>`);
+    if (docsUrl) parts.push(`<a href="${docsUrl}" target="_blank" rel="noopener">Mathlib docs →</a>`);
+    parts.push('</div>');
+    info.innerHTML = parts.join('');
+  }
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+  }
+
+  // ---------- wire UI ----------
+  document.getElementById('show-mathlib').addEventListener('change', e => { show.mathlib = e.target.checked; scheduleDraw(); });
+  document.getElementById('show-wikidata').addEventListener('change', e => { show.wikidata = e.target.checked; scheduleDraw(); });
+  document.getElementById('show-both').addEventListener('change', e => { show.both = e.target.checked; scheduleDraw(); });
+  document.getElementById('search').addEventListener('input', e => {
+    searchTerm = e.target.value.toLowerCase().trim();
+    scheduleDraw();
+  });
+
+  const stats = document.getElementById('stats');
+  const counts = { mathlib: 0, wikidata: 0, both: 0 };
+  for (const e of edges) counts[e.cat]++;
+  stats.innerHTML = `
+    <div class="stat"><span>Nodes</span><span class="v">${nodes.length.toLocaleString()}</span></div>
+    <div class="stat"><span>Mathlib only</span><span class="v">${counts.mathlib.toLocaleString()}</span></div>
+    <div class="stat"><span>Wikidata only</span><span class="v">${counts.wikidata.toLocaleString()}</span></div>
+    <div class="stat"><span>Both</span><span class="v">${counts.both.toLocaleString()}</span></div>
+  `;
+
+  resize();
+  window.addEventListener('resize', resize);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+{
+  "slug": "Invertible_matrix",
+  "wikipedia_title": "Invertible matrix",
+  "display_title": "Invertible matrix",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {AB} =\\mathbf {BA} =\\mathbf {I} _{n},}"
+      },
+      "status": "formalized",
+      "decl": "Invertible",
+      "module": "Mathlib.Algebra.Group.Invertible.Defs",
+      "note": "The defining two-sided inverse condition AB = BA = I is exactly the `Invertible` typeclass."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {A} ={\\begin{pmatrix}-1&{\\tfrac {3}{2}}\\\\1&-1\\end{pmatrix}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Specific 2×2 numerical example used to illustrate Gaussian elimination, not a standalone Mathlib declaration."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left(\\!\\!{\\begin{array}{cc|cc}-1&{\\tfrac {3}{2}}&1&0\\\\1&-1&0&1\\end{array}}\\!\\!\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "An augmented matrix in a worked numerical example, not a separate Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left(\\!\\!{\\begin{array}{cc|cc}-1&{\\tfrac {3}{2}}&1&0\\\\0&{\\tfrac {1}{2}}&1&1\\end{array}}\\!\\!\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Intermediate step of a specific Gaussian-elimination calculation, not a Mathlib declaration."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left(\\!\\!{\\begin{array}{cc|cc}-1&0&-2&-3\\\\0&{\\tfrac {1}{2}}&1&1\\end{array}}\\!\\!\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Further intermediate row-reduction step in the example; not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left(\\!\\!{\\begin{array}{cc|cc}1&0&2&3\\\\0&1&2&2\\end{array}}\\!\\!\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Final reduced augmented matrix in the worked example, not a Mathlib declaration."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {A} ^{-1}={\\begin{pmatrix}2&3\\\\2&2\\end{pmatrix}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Concrete numerical inverse for the worked example, not a Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\mathbf {W} _{1}&=\\mathbf {C} \\mathbf {A} ^{-1},\\\\[3mu]\\mathbf {W} _{2}&=\\mathbf {W} _{1}\\mathbf {C} ^{T}=\\mathbf {C} \\mathbf {A} ^{-1}\\mathbf {C} ^{T},\\\\[3mu]\\mathbf {W} _{3}&=\\mathbf {S} ^{-1}\\mathbf {W} _{1}=\\mathbf {S} ^{-1}\\mathbf {C} \\mathbf {A} ^{-1},\\\\[3mu]\\mathbf {W} _{4}&=\\mathbf {W} _{1}^{T}\\mathbf {W} _{3}=\\mathbf {A} ^{-1}\\mathbf {C} ^{T}\\mathbf {S} ^{-1}\\mathbf {C} \\mathbf {A} ^{-1},\\end{aligned}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Auxiliary intermediate quantities for the blockwise inversion algorithm, not exposed as Mathlib declarations."
+    }
+  ]
+}

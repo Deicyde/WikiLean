@@ -1,0 +1,329 @@
+{
+  "slug": "1",
+  "wikipedia_title": "1",
+  "display_title": "1",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "1 is the first natural number after 0",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "The number 1 is the first natural number after"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.succ",
+        "module": null,
+        "match_kind": "invocation"
+      },
+      "note": "The natural number 1 is definitionally Nat.succ 0, the successor of 0 in the (core Lean) inductive type ℕ that Mathlib builds on.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Construction by succession",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "is constructed by succession"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.succ",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "ℕ is the inductive type generated from 0 by the successor constructor Nat.succ, exactly the construction-by-succession described.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "1 is neither prime nor composite",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "it is regarded as neither a prime nor a composite number"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.not_prime_one",
+        "module": "Mathlib.Data.Nat.Prime.Defs",
+        "match_kind": null
+      },
+      "note": "Nat.not_prime_one formalizes ¬Prime 1, but Mathlib has no dedicated 'composite' predicate to capture the full neither-prime-nor-composite claim.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multiplicative identity",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "is the multiplicative identity of the integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "one_mul",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "one_mul/mul_one state 1 is the multiplicative identity in any MulOneClass/monoid, which includes ℤ as a special case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Powers of 1 equal 1",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "any other power of 1 is always equal to 1 itself"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "one_pow",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "one_pow states (1 : M) ^ n = 1 for all n in any monoid, exactly matching the claim.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multiplicative identity in a unital ring or field",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "it denotes the multiplicative identity in any unital ring or field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulOneClass",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "MulOneClass axiomatizes 1 with one_mul/mul_one as the two-sided multiplicative identity, generalizing the unital-ring/field case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unit (element with multiplicative inverse)",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "An element with a multiplicative inverse is called a unit"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsUnit",
+        "module": "Mathlib.Algebra.Group.Units.Defs",
+        "match_kind": "exact"
+      },
+      "note": "IsUnit a is defined as a being in the range of the coercion from Units, i.e. having a two-sided multiplicative inverse.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "1 as identity for power semigroup",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "so that 1 is also the identity for any power semigroup"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Set.mulOneClass",
+        "module": "Mathlib.Algebra.Group.Pointwise.Set.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib's pointwise Set monoid (Set.mulOneClass) has {1} as identity, but this is not phrased as the 'power semigroup' identity statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "1 is its own factorial",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "1 is its own factorial"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.factorial_one",
+        "module": "Mathlib.Data.Nat.Factorial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Nat.factorial_one states 1! = 1, exactly the claim that 1 is its own factorial.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Empty product is 1",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "the empty product , that is the product of a set of zero numbers, is also 1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.prod_empty",
+        "module": "Mathlib.Algebra.BigOperators.Group.Finset.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Finset.prod_empty states the product over the empty Finset equals 1.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Peano axioms starting point",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "1 was treated as the starting point of the sequence of natural numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's ℕ is the inductive (Peano) naturals but starts at 0 with no explicit Peano-axiom structure designating 1 as the starting point (PNat starts at 1 but is unrelated to the historical axiomatization).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Von Neumann construction of 1",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "a set containing only the element 0"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines ordinals via well-orders and has a von Neumann cumulative hierarchy (ZFSet.vonNeumann), but does not construct the natural number 1 as the set {0}.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unary numeral system",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "The unary numeral system , as used in tallying"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.unaryCast",
+        "module": "Mathlib.Data.Nat.Cast.Defs",
+        "match_kind": null
+      },
+      "note": "Nat.unaryCast builds a value by repeated +1 (the unary representation of n), the closest analog, but there is no general unary numeral system.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unit interval",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "normalized to fall within the unit interval"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "unitInterval",
+        "module": "Mathlib.Topology.UnitInterval",
+        "match_kind": "exact"
+      },
+      "note": "unitInterval is defined as Set.Icc (0:ℝ) 1, the unit interval.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "1 as probability of a certain event",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "1 is the probability of an event that is absolutely or almost certain to occur"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsProbabilityMeasure",
+        "module": "Mathlib.MeasureTheory.Measure.Typeclasses.Probability",
+        "match_kind": "special_case"
+      },
+      "note": "IsProbabilityMeasure requires measure_univ : μ univ = 1, i.e. the certain event (whole space) has probability 1.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unit vectors",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "vectors are often normalized into unit vectors"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "norm_smul_inv_norm",
+        "module": "Mathlib.Analysis.Normed.Module.RCLike.Basic",
+        "match_kind": null
+      },
+      "note": "norm_smul_inv_norm shows ‖(‖x‖⁻¹) • x‖ = 1, i.e. normalization yields a norm-1 vector, but there is no dedicated 'unit vector' type/definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Benford's law",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "which states that the probability for a specific leading digit"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No grep hits for Benford's law in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Legendre's constant",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "1 is the value of Legendre's constant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No grep hits for Legendre's constant in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Weil's conjecture on Tamagawa numbers",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "The Weil's conjecture on Tamagawa numbers states that the Tamagawa number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No grep hits for Tamagawa numbers in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Church numeral for 1",
+      "anchor": {
+        "section": "In other fields",
+        "snippet": "the Church numeral for 1 is represented by the function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize Church numerals / lambda-calculus encodings of natural numbers.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,319 @@
+{
+  "slug": "E_mathematical_constant",
+  "wikipedia_title": "E (mathematical constant)",
+  "display_title": "E (mathematical constant)",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\lim _{n\\to \\infty }\\left(1+{\\frac {1}{n}}\\right)^{n},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "The classical limit definition of e is not among the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e=\\sum \\limits _{n=0}^{\\infty }{\\frac {1}{n!}}=1+{\\frac {1}{1}}+{\\frac {1}{1\\cdot 2}}+{\\frac {1}{1\\cdot 2\\cdot 3}}+\\cdots .}"
+      },
+      "status": "partial",
+      "decl": "Real.exp",
+      "module": "Mathlib.Analysis.Complex.Exponential",
+      "note": "Real.exp is defined via the Cauchy-sequence series; specialising at 1 gives this sum but no standalone equality decl is listed."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e=\\exp(1),}"
+      },
+      "status": "formalized",
+      "decl": "Real.exp",
+      "module": "Mathlib.Analysis.Complex.Exponential",
+      "note": "In Mathlib e is literally Real.exp 1, matching this identity directly."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{1}^{e}{\\frac {dx}{x}}=1.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "No integral-of-1/x characterisation of e is in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\lim _{n\\to \\infty }\\left(1+{\\frac {1}{n}}\\right)^{n},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "The Bernoulli limit definition of e is not in the supplied decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e=\\sum _{n=0}^{\\infty }{\\frac {1}{n!}}={\\frac {1}{0!}}+{\\frac {1}{1!}}+{\\frac {1}{2!}}+{\\frac {1}{3!}}+{\\frac {1}{4!}}+\\cdots ,}"
+      },
+      "status": "partial",
+      "decl": "Real.exp",
+      "module": "Mathlib.Analysis.Complex.Exponential",
+      "note": "Real.exp's series definition encodes this sum at x=1, though no explicit equality lemma is listed."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle x(t)=x_{0}\\cdot e^{kt}=x_{0}\\cdot e^{t/\\tau }.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Exponential growth/decay model is an application, not a standalone decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\phi (x)={\\frac {1}{\\sqrt {2\\pi }}}e^{-{\\frac {1}{2}}x^{2}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Standard normal density is not among the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle n!\\sim {\\sqrt {2\\pi n}}\\left({\\frac {n}{e}}\\right)^{n}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Stirling's approximation is not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e=\\lim _{n\\to \\infty }{\\frac {n}{\\sqrt[{n}]{n!}}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "This Stirling-consequence limit for e is not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e^{x}=\\sum _{n=0}^{\\infty }{\\frac {x^{n}}{n!}}.}"
+      },
+      "status": "partial",
+      "decl": "Real.exp",
+      "module": "Mathlib.Analysis.Complex.Exponential",
+      "note": "Real.exp is defined via this very Taylor series, though no explicit equality lemma appears in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int _{1}^{e}{\\frac {1}{t}}\\,dt=1.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "No integral characterisation of e is among the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {d}{dx}}Ke^{x}=Ke^{x},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Derivative of Ke^x is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\int Ke^{x}\\,dx=Ke^{x}+C.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Antiderivative of Ke^x is not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle y(x)=Ke^{x}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Family of functions Ke^x is descriptive, not a Mathlib decl in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle y'=y.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "ODE y'=y is stated descriptively; no matching decl in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left(1+{\\frac {1}{x}}\\right)^{x}<e<\\left(1+{\\frac {1}{x}}\\right)^{x+1}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "This two-sided bound on e via (1+1/x)^x is not among the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e^{x}\\geq x+1}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Inequality e^x ≥ x+1 is not in the supplied decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(x)=x^{\\frac {1}{x}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Steiner's x^(1/x) function is not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(x)=x^{x}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "The function x^x and its minimum are not in the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e^{x}=1+{x \\over 1!}+{x^{2} \\over 2!}+{x^{3} \\over 3!}+\\cdots =\\sum _{n=0}^{\\infty }{\\frac {x^{n}}{n!}}.}"
+      },
+      "status": "partial",
+      "decl": "Complex.exp",
+      "module": "Mathlib.Analysis.Complex.Exponential",
+      "note": "Complex.exp is defined as the limit of this Cauchy series, though no explicit equality lemma appears in the list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e^{ix}=\\cos x+i\\sin x,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Euler's formula itself is not in the provided list (only its π-special case)."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e^{i\\pi }+1=0,}"
+      },
+      "status": "formalized",
+      "decl": "Complex.exp_pi_mul_I",
+      "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+      "note": "Complex.exp_pi_mul_I states exp(π·I)=−1, equivalent to Euler's identity."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\ln(-1)=i\\pi .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Principal-branch log(−1)=iπ is not among the supplied decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle (\\cos x+i\\sin x)^{n}=\\left(e^{ix}\\right)^{n}=e^{inx}=\\cos nx+i\\sin nx}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "De Moivre's formula is not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\cos x={\\frac {e^{ix}+e^{-ix}}{2}},\\qquad \\sin x={\\frac {e^{ix}-e^{-ix}}{2i}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Exponential expressions for cos and sin are not in the supplied decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle H(\\xi )=-\\sum _{i=1}^{k}p(A_{i})\\ln p(A_{i}).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Shannon entropy definition is not among the provided decls."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e={\\frac {2}{1}}\\left({\\frac {4}{3}}\\right)^{1/2}\\left({\\frac {6\\cdot 8}{5\\cdot 7}}\\right)^{1/4}\\left({\\frac {10\\cdot 12\\cdot 14\\cdot 16}{9\\cdot 11\\cdot 13\\cdot 15}}\\right)^{1/8}\\cdots .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Pippenger-style infinite product for e is not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle e=\\sum _{k=0}^{\\infty }{\\frac {1}{k!}}.}"
+      },
+      "status": "partial",
+      "decl": "Real.exp",
+      "module": "Mathlib.Analysis.Complex.Exponential",
+      "note": "Real.exp's defining series at 1 gives this sum but no explicit equality decl is listed."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\binom {p(a,b)}{q(a,b)}}={\\begin{cases}{\\binom {1}{b}},&{\\text{if }}b=a+1{\\text{,}}\\\\{\\binom {p(a,m)q(m,b)+p(m,b)}{q(a,m)q(m,b)}},&{\\text{otherwise, where }}m=\\lfloor (a+b)/2\\rfloor .\\end{cases}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Binary-splitting recurrence for computing e is not in the provided list."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle 1+{\\frac {p(0,n)}{q(0,n)}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Binary-splitting partial-sum expression for e is not in the provided list."
+    }
+  ]
+}

@@ -1,0 +1,1299 @@
+{
+  "slug": "Fundamental_group",
+  "wikipedia_title": "Fundamental group",
+  "display_title": "Fundamental group",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Fundamental group (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the fundamental group of a topological space is the group of the equivalence classes under homotopy of the loops contained in the space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FundamentalGroup",
+        "module": "Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup",
+        "match_kind": "exact"
+      },
+      "note": "`FundamentalGroup X x` is defined as `End (FundamentalGroupoid.mk x)`, matching the informal definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Homotopy invariance of fundamental group",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "topological spaces that are homotopy equivalent (or the stronger case of homeomorphic ) have isomorphic fundamental groups"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FundamentalGroupoidFunctor.equivOfHomotopyEquiv",
+        "module": "Mathlib.AlgebraicTopology.FundamentalGroupoid.InducedMaps",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the equivalence of fundamental groupoids under homotopy equivalence, but no direct `MulEquiv` of fundamental groups extracted from it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Loop based at a point",
+      "anchor": {
+        "section": "Homotopy of loops",
+        "snippet": "a loop based at"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LoopSpace",
+        "module": "Mathlib.Topology.Homotopy.HomotopyGroup",
+        "match_kind": "exact"
+      },
+      "note": "A loop at `x` is `Path x x`, abbreviated `LoopSpace X x` (notation `Ω`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homotopy of loops",
+      "anchor": {
+        "section": "Homotopy of loops",
+        "snippet": "A homotopy is a continuous interpolation between two loops"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Path.Homotopy",
+        "module": "Mathlib.Topology.Homotopy.Path",
+        "match_kind": "exact"
+      },
+      "note": "`Path.Homotopy p₀ p₁` is the type of homotopies between two paths (loops) relative to endpoints.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Homotopy of loops",
+          "snippet": "A homotopy is a continuous interpolation between two loops"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle h\\colon [0,1]\\times [0,1]\\to X,}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Homotopy is an equivalence relation",
+      "anchor": {
+        "section": "Homotopy of loops",
+        "snippet": "is an equivalence relation so that the set of equivalence classes can be considered"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Path.Homotopic.equivalence",
+        "module": "Mathlib.Topology.Homotopy.Path",
+        "match_kind": "exact"
+      },
+      "note": "Homotopy relation on paths is proved an equivalence with `Path.Homotopic.equivalence` and the corresponding `Setoid`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Homotopy of loops",
+          "snippet": "is an equivalence relation so that the set of equivalence classes can be considered"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\pi _{1}(X,x_{0}):=\\{{\\text{all loops }}\\gamma {\\text{ based at }}x_{0}\\}/{\\text{homotopy}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Fundamental group at a base point",
+      "anchor": {
+        "section": "Homotopy of loops",
+        "snippet": "This set (with the group structure described below) is called the fundamental group of the topological space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FundamentalGroup",
+        "module": "Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup",
+        "match_kind": "exact"
+      },
+      "note": "`FundamentalGroup X x` carries a `Group` instance via the End-monoid of the fundamental groupoid.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Homotopy of loops",
+          "snippet": "This set (with the group structure described below) is called the fundamental group of the topological space"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\pi _{1}(X,x_{0}):=\\{{\\text{all loops }}\\gamma {\\text{ based at }}x_{0}\\}/{\\text{homotopy}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Product of loops (concatenation)",
+      "anchor": {
+        "section": "Group structure",
+        "snippet": "their product is defined as the loop"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Path.trans",
+        "module": "Mathlib.Topology.Connected.PathConnected",
+        "match_kind": "exact"
+      },
+      "note": "Concatenation of paths is `Path.trans`, used to build the group operation on the fundamental groupoid.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Well-defined product on homotopy classes",
+      "anchor": {
+        "section": "Group structure",
+        "snippet": "It can be shown that this product does not depend on the choice of representatives and therefore gives a well-defined operation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Path.Homotopic.Quotient.trans",
+        "module": "Mathlib.Topology.Homotopy.Path",
+        "match_kind": "exact"
+      },
+      "note": "Composition on `Path.Homotopic.Quotient` is defined via `Quotient.map₂` using `Path.Homotopic.hcomp` (the product is well-defined).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Group structure on fundamental group",
+      "anchor": {
+        "section": "Group structure",
+        "snippet": "This operation turns"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FundamentalGroup.instGroup",
+        "module": "Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup",
+        "match_kind": "exact"
+      },
+      "note": "A `Group` instance on `FundamentalGroup X x` is provided via `End` of the fundamental groupoid.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Associativity up to homotopy",
+      "anchor": {
+        "section": "Group structure",
+        "snippet": "The associativity axiom"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Path.Homotopic.trans_assoc",
+        "module": "Mathlib.AlgebraicTopology.FundamentalGroupoid.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Path.Homotopic.trans_assoc` provides the homotopy realizing associativity of path concatenation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Base point independence for path-connected spaces",
+      "anchor": {
+        "section": "Dependence of the base point",
+        "snippet": "this choice makes no difference as long as the space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FundamentalGroup.fundamentalGroupMulEquivOfPathConnected",
+        "module": "Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup",
+        "match_kind": "exact"
+      },
+      "note": "`fundamentalGroupMulEquivOfPathConnected` gives a `MulEquiv` between fundamental groups at any two basepoints in a path-connected space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Trivial fundamental group of Euclidean / contractible spaces",
+      "anchor": {
+        "section": "Concrete examples",
+        "snippet": "in Euclidean space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimplyConnectedSpace.ofContractible",
+        "module": "Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected",
+        "match_kind": "generalization"
+      },
+      "note": "Contractible spaces are simply connected via `SimplyConnectedSpace.ofContractible`, and `RealTopologicalVectorSpace.contractibleSpace` makes Euclidean spaces contractible.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Simply connected space",
+      "anchor": {
+        "section": "The 2-sphere",
+        "snippet": "A path-connected space whose fundamental group is trivial is called simply connected"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimplyConnectedSpace",
+        "module": "Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected",
+        "match_kind": "exact"
+      },
+      "note": "`SimplyConnectedSpace X` is defined via the fundamental groupoid being equivalent to `Discrete Unit`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Spheres are simply connected",
+      "anchor": {
+        "section": "The 2-sphere",
+        "snippet": "the 2-sphere"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Only a `proof_wanted` exists for the 3-sphere in `PoincareConjecture`; the simple connectedness of `Sⁿ` for n ≥ 2 is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fundamental group of the circle",
+      "anchor": {
+        "section": "The circle",
+        "snippet": "the fundamental group of the circle is isomorphic to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `FundamentalGroup` computation for `Circle`/`S¹` is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fundamental group of the figure eight",
+      "anchor": {
+        "section": "The figure eight",
+        "snippet": "The fundamental group of the figure eight is the free group on two letters"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Figure-eight space and its fundamental group are not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "The figure eight",
+          "snippet": "The fundamental group of the figure eight is the free group on two letters"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\gamma =a^{n_{1}}b^{m_{1}}\\cdots a^{n_{k}}b^{m_{k}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle [a]\\cdot [b]\\neq [b]\\cdot [a]}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Fundamental group of a bouquet of circles",
+      "anchor": {
+        "section": "The figure eight",
+        "snippet": "the fundamental group of a bouquet of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the bouquet of circles or its free fundamental group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fundamental group of a wedge sum",
+      "anchor": {
+        "section": "The figure eight",
+        "snippet": "The fundamental group of a wedge sum of two path connected spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Wedge sums of topological spaces and their fundamental groups are not in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "The figure eight",
+          "snippet": "The fundamental group of a wedge sum of two path connected spaces"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\pi _{1}(X\\vee Y)\\cong \\pi _{1}(X)*\\pi _{1}(Y)}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Fundamental group of the punctured plane",
+      "anchor": {
+        "section": "The figure eight",
+        "snippet": "The fundamental group of the plane punctured at"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No computation of `π₁(ℝ² \\ {points})` exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fundamental group of a graph is free",
+      "anchor": {
+        "section": "Graphs",
+        "snippet": "the fundamental group of a graph is a free group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no fundamental-group treatment of topological graphs in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Graph of 16 vertices in 4 rows",
+      "anchor": {
+        "section": "Graphs",
+        "snippet": "suppose"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific example graph and its fundamental group computation are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Knot group",
+      "anchor": {
+        "section": "Knot groups",
+        "snippet": "Knot groups are by definition the fundamental group of the complement of a knot"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Knots and knot groups are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Knot group of the trefoil",
+      "anchor": {
+        "section": "Knot groups",
+        "snippet": "the knot group of the trefoil knot is known to be the braid group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the trefoil knot nor its knot group is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fundamental group of an orientable surface",
+      "anchor": {
+        "section": "Oriented surfaces",
+        "snippet": "The fundamental group of a genus- n orientable surface can be computed in terms of generators and relations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Genus-`n` surfaces and their surface-group presentation are not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Oriented surfaces",
+          "snippet": "The fundamental group of a genus- n orientable surface can be computed in terms of generators and relations"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left\\langle A_{1},B_{1},\\ldots ,A_{n},B_{n}\\left|A_{1}B_{1}A_{1}^{-1}B_{1}^{-1}\\cdots A_{n}B_{n}A_{n}^{-1}B_{n}^{-1}\\right.\\right\\rangle .}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Fundamental group of the torus",
+      "anchor": {
+        "section": "Oriented surfaces",
+        "snippet": "This includes the torus"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement that `π₁(T²) ≅ ℤ²` exists in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Oriented surfaces",
+          "snippet": "This includes the torus"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left\\langle A_{1},B_{1}\\left|A_{1}B_{1}A_{1}^{-1}B_{1}^{-1}\\right.\\right\\rangle \\cong \\mathbb {Z} ^{2}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Fundamental group of a topological group is abelian",
+      "anchor": {
+        "section": "Topological groups",
+        "snippet": "The fundamental group of a topological group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Although `HSpace` is defined and `IsTopologicalGroup.hSpace` is an instance, no theorem deduces commutativity of `FundamentalGroup` from this.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Eckmann–Hilton argument for H-spaces",
+      "anchor": {
+        "section": "Topological groups",
+        "snippet": "the Eckmann–Hilton argument shows that it does in fact agree with the above concatenation of loops"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EckmannHilton.commGroup",
+        "module": "Mathlib.GroupTheory.EckmannHilton",
+        "match_kind": "generalization"
+      },
+      "note": "The abstract Eckmann–Hilton argument is formalized and used in `HomotopyGroup` to prove `π_(n+2)` is commutative, but not specifically applied to H-spaces' fundamental groups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fundamental group of an H-space is abelian",
+      "anchor": {
+        "section": "Topological groups",
+        "snippet": "is abelian for any H-space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`HSpace` is defined but no theorem states the fundamental group of an H-space is commutative.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Induced homomorphism",
+      "anchor": {
+        "section": "Functoriality",
+        "snippet": "The resulting group homomorphism , called the induced homomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FundamentalGroup.map",
+        "module": "Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup",
+        "match_kind": "exact"
+      },
+      "note": "`FundamentalGroup.map f x` is the `MonoidHom` induced by a continuous map `f` on fundamental groups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fundamental group is a functor",
+      "anchor": {
+        "section": "Functoriality",
+        "snippet": "the formation of associating to a topological space its fundamental group is therefore a functor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FundamentalGroupoid.fundamentalGroupoidFunctor",
+        "module": "Mathlib.AlgebraicTopology.FundamentalGroupoid.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes the fundamental groupoid as a functor `TopCat ⥤ Grpd`; `FundamentalGroup.map` provides the pointed/group-level version.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Homotopy equivalent spaces have isomorphic fundamental groups",
+      "anchor": {
+        "section": "Functoriality",
+        "snippet": "two homotopy equivalent path-connected spaces have isomorphic fundamental groups"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FundamentalGroupoidFunctor.equivOfHomotopyEquiv",
+        "module": "Mathlib.AlgebraicTopology.FundamentalGroupoid.InducedMaps",
+        "match_kind": "generalization"
+      },
+      "note": "Equivalence of fundamental groupoids under homotopy equivalence is formalized; the resulting `MulEquiv` on `FundamentalGroup` is not extracted as a named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fundamental group preserves products and coproducts",
+      "anchor": {
+        "section": "Functoriality",
+        "snippet": "The fundamental group functor takes products to products and coproducts to coproducts"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FundamentalGroupoidFunctor.preservesProduct",
+        "module": "Mathlib.AlgebraicTopology.FundamentalGroupoid.Product",
+        "match_kind": "generalization"
+      },
+      "note": "Product preservation (`piIso`, `prodIso`, `preservesProduct`) is in Mathlib; the coproduct/wedge case is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Seifert–van Kampen theorem",
+      "anchor": {
+        "section": "Functoriality",
+        "snippet": "a special case of the Seifert–van Kampen theorem , which states that the fundamental group functor takes pushouts along inclusions to pushouts"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Seifert–van Kampen is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hurewicz theorem (first homology)",
+      "anchor": {
+        "section": "Relationship to first homology group",
+        "snippet": "A special case of the Hurewicz theorem asserts that the first singular homology group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the Hurewicz theorem (n=1 or general) exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "First homology is the abelianization",
+      "anchor": {
+        "section": "Relationship to first homology group",
+        "snippet": "is isomorphic to the abelianization of the fundamental group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `Abelianization` but no link `H₁(X) ≅ Abelianization (π₁ X)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fundamental group of a wedge as free product",
+      "anchor": {
+        "section": "Gluing topological spaces",
+        "snippet": "is the free product of the fundamental groups of the"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement that the fundamental group of a wedge is a free product is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Covering space",
+      "anchor": {
+        "section": "Coverings",
+        "snippet": "is called a covering or"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCoveringMap",
+        "module": "Mathlib.Topology.Covering.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsCoveringMap f` is defined in `Topology.Covering.Basic`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Universal covering",
+      "anchor": {
+        "section": "Universal covering",
+        "snippet": "A covering is called a universal covering if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of `UniversalCover` or analogous structure exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Deck transformations identify with fundamental group",
+      "anchor": {
+        "section": "Universal covering",
+        "snippet": "identifies with the group of deck transformations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Deck transformations are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Existence of universal covering",
+      "anchor": {
+        "section": "Universal covering",
+        "snippet": "Any path connected, locally path connected and locally simply connected topological space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Construction of a universal covering space is absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Uniformization theorem",
+      "anchor": {
+        "section": "Universal covering",
+        "snippet": "the uniformization theorem shows that any simply connected Riemann surface is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The uniformization theorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fundamental group of a free quotient",
+      "anchor": {
+        "section": "Universal covering",
+        "snippet": "The quotient of a free action of a discrete group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem identifying `π₁(Y/Γ)` with `Γ` for free actions exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fundamental group of real projective space",
+      "anchor": {
+        "section": "Universal covering",
+        "snippet": "the real"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No computation of `π₁(ℝPⁿ)` exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fundamental group of homogeneous space G/H",
+      "anchor": {
+        "section": "Lie groups",
+        "snippet": "Then the homogeneous space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No fundamental-group result for homogeneous spaces `G/H` exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Universal covering of a topological group is a topological group",
+      "anchor": {
+        "section": "Lie groups",
+        "snippet": "the universal covering space of a path connected topological group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Universal covering group construction is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Kernel of covering lies in center",
+      "anchor": {
+        "section": "Lie groups",
+        "snippet": "it must act trivially, so that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement about kernels of covering homomorphisms of topological groups in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Universal covering group",
+      "anchor": {
+        "section": "Lie groups",
+        "snippet": "is called the universal covering group of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Universal covering group is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Long exact sequence of a fibration",
+      "anchor": {
+        "section": "Fibrations",
+        "snippet": "The great importance of fibrations to the computation of homotopy groups stems from a long exact sequence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No long exact sequence of a fibration is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fibration reduces to isomorphism when base is simply connected",
+      "anchor": {
+        "section": "Fibrations",
+        "snippet": "this sequence reduces to an isomorphism"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized; relies on the missing long exact sequence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fiber sequence for SU(n)",
+      "anchor": {
+        "section": "Classical Lie groups",
+        "snippet": "Such fiber sequences can be used to inductively compute fundamental groups of compact classical Lie groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No fiber-sequence argument for `SU(n)` is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SU(n) is simply connected",
+      "anchor": {
+        "section": "Classical Lie groups",
+        "snippet": "is simply connected for all"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement about simple connectedness of `SU(n)` in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Noncompact Lie groups reduce to compact case",
+      "anchor": {
+        "section": "Classical Lie groups",
+        "snippet": "The fundamental group of noncompact Lie groups can be reduced to the compact case"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Maximal-compact-subgroup reduction is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fundamental group via maximal torus and coroots",
+      "anchor": {
+        "section": "Classical Lie groups",
+        "snippet": "A second method of computing fundamental groups applies to all connected compact Lie groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general computation of `π₁(G)` via cocharacter lattice/coroots in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Edge-path and edge-equivalence",
+      "anchor": {
+        "section": "Edge-path group of a simplicial complex",
+        "snippet": "an edge-path in"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Edge-paths in simplicial complexes are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Edge-path group",
+      "anchor": {
+        "section": "Edge-path group of a simplicial complex",
+        "snippet": "The edge-path group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Edge-path group is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Edge-path group is the fundamental group",
+      "anchor": {
+        "section": "Edge-path group of a simplicial complex",
+        "snippet": "The edge-path group is naturally isomorphic to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement of the edge-path/fundamental-group isomorphism in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Edge-path group via generators and relations",
+      "anchor": {
+        "section": "Edge-path group of a simplicial complex",
+        "snippet": "The edge-path group can be described explicitly in terms of generators and relations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No combinatorial generators-and-relations presentation of edge-path groups in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Every finitely presented group is a fundamental group of a finite simplicial complex",
+      "anchor": {
+        "section": "Edge-path group of a simplicial complex",
+        "snippet": "every finitely presented group arises as the fundamental group of a finite simplicial complex"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No realization theorem for finitely presented groups by simplicial complexes in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Universal cover as simplicial complex via edge-paths",
+      "anchor": {
+        "section": "Edge-path group of a simplicial complex",
+        "snippet": "The universal covering space of a finite connected simplicial complex"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Edge-path construction of universal covering is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Every group is the fundamental group of a 2-dimensional CW-complex",
+      "anchor": {
+        "section": "Realizability",
+        "snippet": "Every group can be realized as the fundamental group of a connected CW-complex of dimension 2 (or higher)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "CW-complex realizability of arbitrary groups is not formalized; Mathlib lacks CW-complex API for this.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Finitely presented groups realized by 4-manifolds",
+      "anchor": {
+        "section": "Realizability",
+        "snippet": "Every finitely presented group can be realized as the fundamental group of a compact"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Restrictions on 3-manifold fundamental groups",
+      "anchor": {
+        "section": "Realizability",
+        "snippet": "no free abelian group of rank 4 or higher can be realized as the fundamental group of a manifold of dimension 3 or less"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No 3-manifold fundamental-group restrictions in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Realization in compact Hausdorff spaces and measurable cardinals",
+      "anchor": {
+        "section": "Realizability",
+        "snippet": "every group can be realized as the fundamental group of a compact Hausdorff space if and only if there is no measurable cardinal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Higher homotopy groups",
+      "anchor": {
+        "section": "Higher homotopy groups",
+        "snippet": "the higher homotopy groups"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HomotopyGroup.Pi",
+        "module": "Mathlib.Topology.Homotopy.HomotopyGroup",
+        "match_kind": "exact"
+      },
+      "note": "`HomotopyGroup.Pi n X x` (notation `π_ n`) is the `n`-th homotopy group, with `Group` and `CommGroup` instances.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hurewicz theorem for n-sphere",
+      "anchor": {
+        "section": "Higher homotopy groups",
+        "snippet": "the Hurewicz theorem implies that for all"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Hurewicz theorem or `πₙ(Sⁿ) ≅ ℤ` in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Loop space",
+      "anchor": {
+        "section": "Loop space",
+        "snippet": "is known as the loop space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LoopSpace",
+        "module": "Mathlib.Topology.Homotopy.HomotopyGroup",
+        "match_kind": "exact"
+      },
+      "note": "`LoopSpace X x := Path x x` is the based loop space, with notation `Ω`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fundamental group as path components of loop space",
+      "anchor": {
+        "section": "Loop space",
+        "snippet": "The fundamental group of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HomotopyGroup.pi1MulEquivFundamentalGroup",
+        "module": "Mathlib.Topology.Homotopy.HomotopyGroup",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib relates `π_1 X x` to `FundamentalGroup X x`, but the precise statement `π₁(X) ≅ π₀(ΩX)` is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fundamental groupoid",
+      "anchor": {
+        "section": "Fundamental groupoid",
+        "snippet": "The fundamental groupoid is a variant of the fundamental group that is useful in situations where the choice of a base point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FundamentalGroupoid",
+        "module": "Mathlib.AlgebraicTopology.FundamentalGroupoid.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`FundamentalGroupoid X` is defined with a `Groupoid` instance using homotopy classes of paths.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Groupoid reproduces fundamental group",
+      "anchor": {
+        "section": "Fundamental groupoid",
+        "snippet": "It reproduces the fundamental group since"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FundamentalGroup",
+        "module": "Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup",
+        "match_kind": "exact"
+      },
+      "note": "`FundamentalGroup X x := End (FundamentalGroupoid.mk x)` is literally the automorphism group at `x` in the fundamental groupoid.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "van Kampen for fundamental groupoids",
+      "anchor": {
+        "section": "Fundamental groupoid",
+        "snippet": "The van Kampen theorem admits a version for fundamental groupoids"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Groupoid version of van Kampen is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Local systems correspond to representations of fundamental group",
+      "anchor": {
+        "section": "Local systems",
+        "snippet": "any local system"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Local systems and the equivalence with representations of `π₁` are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Étale fundamental group",
+      "anchor": {
+        "section": "Étale fundamental group",
+        "snippet": "the so-called étale fundamental group is used as a replacement for the fundamental group"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.PreGaloisCategory.IsFundamentalGroup",
+        "module": "Mathlib.CategoryTheory.Galois.IsFundamentalgroup",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes an abstract Galois-category fundamental group (`IsFundamentalGroup F G`), but the étale fundamental group of a scheme is not constructed.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Étale fundamental group as profinite completion",
+      "anchor": {
+        "section": "Étale fundamental group",
+        "snippet": "the former is the profinite completion of the latter"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Comparison between topological and étale fundamental groups (profinite completion) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fundamental group of a root system / algebraic group",
+      "anchor": {
+        "section": "Fundamental group of algebraic groups",
+        "snippet": "The fundamental group of a root system is defined in analogy to the computation for Lie groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fundamental group attached to a root system is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fundamental group of a simplicial set",
+      "anchor": {
+        "section": "Fundamental group of simplicial sets",
+        "snippet": "The fundamental group of an arbitrary simplicial set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No fundamental group construction for simplicial sets is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Homotopy on 1-simplices of a Kan complex",
+      "anchor": {
+        "section": "Fundamental group of simplicial sets",
+        "snippet": "The homotopy relation between 1-simplices of a simplicial set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Homotopy of 1-simplices in a Kan complex is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

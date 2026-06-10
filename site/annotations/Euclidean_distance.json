@@ -1,0 +1,537 @@
+{
+  "slug": "Euclidean_distance",
+  "wikipedia_title": "Euclidean distance",
+  "display_title": "Euclidean distance",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Euclidean distance",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the Euclidean distance between two points in a Euclidean space is the length of the line segment between them"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.dist_eq",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "exact"
+      },
+      "note": "EuclideanSpace.dist_eq gives dist x y = √(∑ i, dist (x i) (y i) ^ 2) for the standard Euclidean space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Distance between non-point objects",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The distance between two objects that are not points is usually defined to be the smallest distance among pairs of points from the two objects"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Metric.infDist",
+        "module": "Mathlib.Topology.MetricSpace.HausdorffDistance",
+        "match_kind": "generalization"
+      },
+      "note": "Metric.infDist defines the infimum of distances from a point to a set; the symmetric set-to-set version is via Metric.hausdorffDist-related infrastructure rather than a named decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Distance on the real line",
+      "anchor": {
+        "section": "One dimension",
+        "snippet": "The distance between any two points on the real line is the absolute value of the numerical difference of their coordinates"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.dist_eq",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Real.dist_eq states dist x y = |x - y| on ℝ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Alternative one-dimensional formula",
+      "anchor": {
+        "section": "One dimension",
+        "snippet": "A more complicated formula, giving the same value, but generalizing more readily to higher dimensions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanSpace.dist_eq",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "special_case"
+      },
+      "note": "EuclideanSpace.dist_eq specialized to Fin 1 yields the √((x-y)²) formula, but no dedicated lemma is stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Distance in the Euclidean plane",
+      "anchor": {
+        "section": "Two dimensions",
+        "snippet": "In the Euclidean plane"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.dist_eq",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "special_case"
+      },
+      "note": "Specializing EuclideanSpace.dist_eq to Fin 2 yields the planar Euclidean distance √((x₁-y₁)² + (x₂-y₂)²).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Derivation via Pythagorean theorem",
+      "anchor": {
+        "section": "Two dimensions",
+        "snippet": "This can be seen by applying the Pythagorean theorem to a right triangle with horizontal and vertical sides"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanGeometry.dist_sq_eq_dist_sq_add_dist_sq_iff_angle_eq_pi_div_two",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.RightAngle",
+        "match_kind": "generalization"
+      },
+      "note": "The Pythagorean theorem in Euclidean geometry is formalized but no specific derivation of the planar distance formula from it is stated as a lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Formula via Pythagorean addition",
+      "anchor": {
+        "section": "Two dimensions",
+        "snippet": "In terms of the Pythagorean addition operation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define a named `Pythagorean addition` operation a ⊕ b = √(a² + b²).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Distance from polar coordinates",
+      "anchor": {
+        "section": "Two dimensions",
+        "snippet": "It is also possible to compute the distance for points given by polar coordinates"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma expresses Euclidean distance between two points in polar form via the law of cosines.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Distance for complex numbers",
+      "anchor": {
+        "section": "Two dimensions",
+        "snippet": "expressed as complex numbers in the complex plane"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.dist_eq",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.CircleMap",
+        "match_kind": "exact"
+      },
+      "note": "Complex.dist_eq gives dist x y = ‖x - y‖ (= |x - y|) for x, y : ℂ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Distance in three dimensions",
+      "anchor": {
+        "section": "Higher dimensions",
+        "snippet": "In three dimensions, for points given by their Cartesian coordinates, the distance is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.dist_eq",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "special_case"
+      },
+      "note": "EuclideanSpace.dist_eq specialized to Fin 3 yields the standard 3D distance formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Distance in n-dimensional Euclidean space",
+      "anchor": {
+        "section": "Higher dimensions",
+        "snippet": "In general, for points given by Cartesian coordinates in"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.dist_eq",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "exact"
+      },
+      "note": "EuclideanSpace.dist_eq directly states dist x y = √(∑ i, dist (x i) (y i) ^ 2).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Distance via Euclidean norm",
+      "anchor": {
+        "section": "Higher dimensions",
+        "snippet": "The Euclidean distance may also be expressed more compactly in terms of the Euclidean norm of the Euclidean vector difference"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.norm_eq",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "exact"
+      },
+      "note": "EuclideanSpace.norm_eq combined with the general dist_eq_norm gives dist x y = ‖x - y‖.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Distance between non-point objects (formula list)",
+      "anchor": {
+        "section": "Objects other than points",
+        "snippet": "For pairs of objects that are not both points, the distance can most simply be defined as the smallest distance between any two points from the two objects"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Metric.infDist",
+        "module": "Mathlib.Topology.MetricSpace.HausdorffDistance",
+        "match_kind": "generalization"
+      },
+      "note": "Metric.infDist captures point-to-set infimum distance; explicit closed-form distances for lines, planes, spheres, etc. are not given as a single list.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Parallel curve via point-to-curve distance",
+      "anchor": {
+        "section": "Objects other than points",
+        "snippet": "The distance from a point to a curve can be used to define its parallel curve"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of parallel curve.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Symmetry of Euclidean distance",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "It is symmetric"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dist_comm",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "dist_comm holds in any pseudometric space, including EuclideanSpace.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Positivity of Euclidean distance",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "It is positive , meaning that the distance between every two distinct points is a positive number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dist_pos",
+        "module": "Mathlib.Topology.MetricSpace.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "dist_pos states 0 < dist x y ↔ x ≠ y in any MetricSpace.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Triangle inequality",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "It obeys the triangle inequality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dist_triangle",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "dist_triangle x y z : dist x z ≤ dist x y + dist y z holds in every pseudometric space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Ptolemy's inequality",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Another property, Ptolemy's inequality , concerns the Euclidean distances among four points"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.mul_dist_le_mul_dist_add_mul_dist",
+        "module": "Mathlib.Geometry.Euclidean.Inversion.Basic",
+        "match_kind": "exact"
+      },
+      "note": "EuclideanGeometry.mul_dist_le_mul_dist_add_mul_dist proves |AC|·|BD| ≤ |AB|·|CD| + |BC|·|AD|.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Beckman–Quarles theorem",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "According to the Beckman–Quarles theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No mention of Beckman–Quarles theorem in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Squared Euclidean distance",
+      "anchor": {
+        "section": "Squared Euclidean distance",
+        "snippet": "The value resulting from this omission is the square of the Euclidean distance, and is called the squared Euclidean distance"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanSpace.dist_eq",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "invocation"
+      },
+      "note": "Squaring EuclideanSpace.dist_eq yields ∑ i, dist (x i) (y i) ^ 2, but no dedicated `sq_dist` lemma is named.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Euclidean minimum spanning tree",
+      "anchor": {
+        "section": "Squared Euclidean distance",
+        "snippet": "the Euclidean minimum spanning tree can be determined using only the ordering between distances"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Euclidean minimum spanning tree construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Method of least squares",
+      "anchor": {
+        "section": "Squared Euclidean distance",
+        "snippet": "it is used in the method of least squares"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No least-squares decl found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Squared distance is not a metric",
+      "anchor": {
+        "section": "Squared Euclidean distance",
+        "snippet": "Squared Euclidean distance does not form a metric space, as it does not satisfy the triangle inequality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement that squared distance fails the triangle inequality is recorded in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convexity of squared distance",
+      "anchor": {
+        "section": "Squared Euclidean distance",
+        "snippet": "However it is a smooth, strictly convex function of the two points"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Even.strictConvexOn_pow",
+        "module": "Mathlib.Analysis.Convex.SpecificFunctions.Deriv",
+        "match_kind": "generalization"
+      },
+      "note": "Strict convexity of x ↦ x^n for even n is available, but no lemma directly establishes strict convexity of (x,y) ↦ ‖x-y‖².",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euclidean distance matrix",
+      "anchor": {
+        "section": "Squared Euclidean distance",
+        "snippet": "The collection of all squared distances between pairs of points from a finite set may be stored in a Euclidean distance matrix"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Euclidean distance matrix construction in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euclidean norm",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "its distance is associated with a norm called the Euclidean norm , defined as the distance of each vector from the origin"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.norm_eq",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "exact"
+      },
+      "note": "EuclideanSpace.norm_eq gives ‖x‖ = √(∑ i, ‖x i‖ ^ 2).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Dvoretzky's theorem",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "By Dvoretzky's theorem , every finite-dimensional normed vector space has a high-dimensional subspace on which the norm is approximately Euclidean"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Dvoretzky theorem in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "L2 norm extension",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "It can be extended to infinite-dimensional vector spaces as the L 2 norm or L 2 distance"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lp",
+        "module": "Mathlib.Analysis.Normed.Lp.lpSpace",
+        "match_kind": "generalization"
+      },
+      "note": "The `lp` space (and MeasureTheory.Lp) provides the L² norm/distance on infinite-dimensional sequence/function spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euclidean topology",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "The Euclidean distance gives Euclidean space the structure of a topological space , the Euclidean topology"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "invocation"
+      },
+      "note": "EuclideanSpace is a MetricSpace and thus carries the induced (Euclidean) topology automatically.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Chebyshev distance",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "Chebyshev distance"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PiLp",
+        "module": "Mathlib.Analysis.Normed.Lp.PiLp",
+        "match_kind": "generalization"
+      },
+      "note": "PiLp ∞ encodes the sup (Chebyshev) distance via the standard Pi metric structure; no decl is named `Chebyshev`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Taxicab distance",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "Taxicab distance"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PiLp",
+        "module": "Mathlib.Analysis.Normed.Lp.PiLp",
+        "match_kind": "special_case"
+      },
+      "note": "PiLp 1 yields the taxicab (ℓ¹) distance, but no `Taxicab` decl is named in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Minkowski distance",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "Minkowski distance"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PiLp",
+        "module": "Mathlib.Analysis.Normed.Lp.PiLp",
+        "match_kind": "exact"
+      },
+      "note": "PiLp p (n → 𝕜) realizes the Minkowski ℓᵖ distance for any 1 ≤ p ≤ ∞.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Geodesic distance",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "the Euclidean distance should be distinguished from the geodesic distance, the length of a shortest curve that belongs to the surface"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no general intrinsic/geodesic distance on submanifolds or surfaces.",
+      "provenance": "ai"
+    }
+  ]
+}

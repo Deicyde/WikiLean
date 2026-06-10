@@ -1,0 +1,393 @@
+{
+  "slug": "Lagranges_theorem_group_theory",
+  "wikipedia_title": "Lagrange's theorem (group theory)",
+  "display_title": "Lagrange's theorem (group theory)",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "theorem",
+      "label": "Lagrange's theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Lagrange's theorem — If H is a subgroup "
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subgroup.card_subgroup_dvd_card",
+        "module": "Mathlib.GroupTheory.Coset.Card",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib states this verbatim as Lagrange's theorem: `Nat.card s ∣ Nat.card α` for any subgroup `s : Subgroup α`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lagrange's theorem (statement in lead)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Lagrange's theorem states that if H is a subgroup of any finite group G"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subgroup.card_subgroup_dvd_card",
+        "module": "Mathlib.GroupTheory.Coset.Card",
+        "match_kind": "exact"
+      },
+      "note": "Same statement as the boxed theorem; the docstring in Coset/Card.lean explicitly labels it `**Lagrange's Theorem**`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Index variant of Lagrange's theorem",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "not only is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subgroup.index_mul_card",
+        "module": "Mathlib.GroupTheory.Index",
+        "match_kind": "exact"
+      },
+      "note": "`H.index * Nat.card H = Nat.card G` directly formalizes the equality |G:H|·|H| = |G|; the companion `card_eq_card_quotient_mul_card_subgroup` states it via `α ⧸ s`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Infinite case via cardinal numbers",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "This variant holds even if"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Subgroup.groupEquivQuotientProdSubgroup",
+        "module": "Mathlib.GroupTheory.Coset.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The noncomputable equivalence `α ≃ (α ⧸ s) × s` gives the cardinal-arithmetic Lagrange formula in disguise, but there is no Mathlib lemma asserting `Cardinal.mk α = Cardinal.mk (α ⧸ s) * Cardinal.mk s` directly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Left cosets partition G",
+      "anchor": {
+        "section": "Proof",
+        "snippet": "the set of left cosets forms a partition of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuotientGroup.leftRel",
+        "module": "Mathlib.GroupTheory.Coset.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "The setoid `QuotientGroup.leftRel s` (with `α ⧸ s := Quotient (leftRel s)`) realises the left-coset partition as equivalence classes by construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Extension of Lagrange's theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Extension of Lagrange's theorem — If H i"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subgroup.relIndex_mul_index",
+        "module": "Mathlib.GroupTheory.Index",
+        "match_kind": "exact"
+      },
+      "note": "For `H ≤ K`, `H.relIndex K * K.index = H.index` formalises the tower equality [G:H] = [G:K]·[K:H].",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Decomposition of cosets between three subgroups",
+      "anchor": {
+        "section": "Extension",
+        "snippet": "each left coset of H decomposes into"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Subgroup.relIndex_mul_index",
+        "module": "Mathlib.GroupTheory.Index",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the numerical relation `relIndex_mul_index` but not an explicit lemma asserting that each left K-coset decomposes into [K:H] left H-cosets as a set partition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Recovering original Lagrange equation",
+      "anchor": {
+        "section": "Extension",
+        "snippet": "we can recover the original equation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subgroup.index_mul_card",
+        "module": "Mathlib.GroupTheory.Index",
+        "match_kind": "invocation"
+      },
+      "note": "Setting `H = ⊥` in `relIndex_mul_index` together with `index_mul_card` recovers the standard Lagrange equation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Order of an element divides group order",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "the order of any element"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "orderOf_dvd_natCard",
+        "module": "Mathlib.GroupTheory.OrderOfElement",
+        "match_kind": "exact"
+      },
+      "note": "`orderOf x ∣ Nat.card G` directly formalises the divisibility of element order by group order.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fermat's little theorem and Euler's theorem as consequences",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "This can be used to prove Fermat's little theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.ModEq.pow_totient",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Euler's theorem `x ^ φ n ≡ 1 [MOD n]` (with `ZMod.pow_card_sub_one_eq_one` as Fermat's little) is stated in Mathlib and labelled the Fermat-Euler totient theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Groups of prime order are cyclic and simple",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "any group of prime order is cyclic and simple"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isCyclic_of_prime_card",
+        "module": "Mathlib.GroupTheory.SpecificGroups.Cyclic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`isCyclic_of_prime_card` gives the cyclic conclusion and `isSimpleGroup_of_prime_card` (in Mathlib.GroupTheory.SpecificGroups.Cyclic) gives simplicity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Infinitude of primes via Lagrange",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "there are infinitely many primes"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.exists_infinite_primes",
+        "module": "Mathlib.Data.Nat.Prime.Infinite",
+        "match_kind": "generalization"
+      },
+      "note": "The infinitude of primes itself is formalised, but the specific Lagrange-based argument (via |(Z/pZ)*| dividing) is not given as a distinct Mathlib proof.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Failure of the converse of Lagrange's theorem",
+      "anchor": {
+        "section": "Existence of subgroups of given order",
+        "snippet": "there does not necessarily exist a subgroup of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma directly asserts the existence of a divisor d of |G| with no subgroup of order d (the failure of the converse is folklore around the A4 counterexample).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "CLT group",
+      "anchor": {
+        "section": "Existence of subgroups of given order",
+        "snippet": "\"Converse of Lagrange's Theorem\" (CLT) group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `CLT` in Mathlib/GroupTheory returns no matches; no definition of CLT group exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "CLT groups are solvable; supersolvable implies CLT",
+      "anchor": {
+        "section": "Existence of subgroups of given order",
+        "snippet": "a CLT group must be solvable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither `CLT` nor `supersolvable` appears in Mathlib/GroupTheory; this implication chain is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cauchy's theorem (partial converse)",
+      "anchor": {
+        "section": "Existence of subgroups of given order",
+        "snippet": "Cauchy's theorem guarantees the existence of an element"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_prime_orderOf_dvd_card",
+        "module": "Mathlib.GroupTheory.Perm.Cycle.Type",
+        "match_kind": "exact"
+      },
+      "note": "The root-namespace lemma is explicitly documented as Cauchy's theorem and provides an element of order `p` whenever `p ∣ |G|`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sylow's theorem (partial converse)",
+      "anchor": {
+        "section": "Existence of subgroups of given order",
+        "snippet": "Sylow's theorem extends this to the existence of a subgroup"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Sylow.exists_subgroup_card_pow_prime",
+        "module": "Mathlib.GroupTheory.Sylow",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib provides the existence of subgroups of every prime-power order dividing |G| as a generalisation of Sylow's first theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hall's theorems (partial converse)",
+      "anchor": {
+        "section": "Existence of subgroups of given order",
+        "snippet": "Hall's theorems assert the existence of a subgroup"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Schur-Zassenhaus but no theorem asserting existence of Hall π-subgroups in solvable groups; grep for `hallSubgroup`/`exists_hall` returns nothing.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "A4 has no subgroup of order 6",
+      "anchor": {
+        "section": "Counterexample of the converse of Lagrange's theorem",
+        "snippet": "We will examine the alternating group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma directly states that `alternatingGroup (Fin 4)` has no subgroup of order 6, though `Nat.card ≠ 6` appears as a hypothesis in the alternating-simplicity development.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Klein four-group V in A4",
+      "anchor": {
+        "section": "Counterexample of the converse of Lagrange's theorem",
+        "snippet": "the non-cyclic subgroup of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "alternatingGroup.kleinFour",
+        "module": "Mathlib.GroupTheory.SpecificGroups.Alternating.KleinFour",
+        "match_kind": "exact"
+      },
+      "note": "The Klein four subgroup of `alternatingGroup α` is defined and shown to satisfy `IsKleinFour`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lagrange's polynomial result",
+      "anchor": {
+        "section": "History",
+        "snippet": "the number of different polynomials that are obtained is always a factor of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lagrange's original 1770/71 polynomial-orbit-count result is not formalised in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gauss's special case for (Z/pZ)*",
+      "anchor": {
+        "section": "History",
+        "snippet": "Carl Friedrich Gauss proved Lagrange's theorem for the special case"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.pow_card_sub_one_eq_one",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Gauss's special case (Fermat's little theorem in (Z/pZ)*) is Mathlib's `ZMod.pow_card_sub_one_eq_one`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cauchy's proof for symmetric group",
+      "anchor": {
+        "section": "History",
+        "snippet": "Augustin-Louis Cauchy proved Lagrange's theorem for the symmetric group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Lagrange's theorem in full generality but not Cauchy's historical 1844 specialisation to the symmetric group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Jordan's proof for permutation groups",
+      "anchor": {
+        "section": "History",
+        "snippet": "Camille Jordan finally proved Lagrange's theorem for the case of any permutation group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Jordan's historical proof for permutation groups is subsumed by Mathlib's general Lagrange theorem and is not formalised as a distinct result.",
+      "provenance": "ai"
+    }
+  ]
+}

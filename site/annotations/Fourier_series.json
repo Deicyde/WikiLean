@@ -1,0 +1,699 @@
+{
+  "slug": "Fourier_series",
+  "wikipedia_title": "Fourier series",
+  "display_title": "Fourier series",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Fourier series of a periodic function",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The Fourier series of a complex-valued"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fourierCoeff",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines the n-th Fourier coefficient of a function on `AddCircle T` via `fourierCoeff`, together with the exponential monomials `fourier n`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "The Fourier series of a complex-valued"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sum _{n=-\\infty }^{\\infty }c_{n}e^{i2\\pi {\\tfrac {n}{P}}x},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c_{n}={\\frac {1}{P}}\\int _{0}^{P}s(x)\\ e^{-i2\\pi {\\tfrac {n}{P}}x}\\,dx.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle s(x)=\\sum _{n=-\\infty }^{\\infty }c_{n}e^{i2\\pi {\\tfrac {n}{P}}x}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Partial sums of a Fourier series",
+      "anchor": {
+        "section": "Synthesis",
+        "snippet": "A Fourier series can be written in several equivalent forms"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "hasSum_fourier_series_L2",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib expresses convergence through `HasSum` of `fourierCoeff f i • fourier i` rather than naming partial sums explicitly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Fourier series of the sawtooth function",
+      "anchor": {
+        "section": "Example",
+        "snippet": "Consider a sawtooth function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the sawtooth-function example was found in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Example",
+          "snippet": "Consider a sawtooth function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle s(x)=s(x+2\\pi k)={\\frac {x}{\\pi }},\\quad \\mathrm {for} -\\pi &lt;x&lt;\\pi ,{\\text{ and }}k\\in \\mathbb {Z} .}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}a_{0}&amp;=0.\\\\a_{n}&amp;={\\frac {1}{\\pi }}\\int _{-\\pi }^{\\pi }s(x)\\cos(nx)\\,dx=0,\\quad n\\geq 1.\\\\b_{n}&amp;={\\frac {1}{\\pi }}\\int _{-\\pi }^{\\pi }s(x)\\sin(nx)\\,dx\\\\&amp;=-{\\frac {2}{\\pi n}}\\cos(n\\pi )+{\\frac {2}{\\pi ^{2}n^{2}}}\\sin(n\\pi )\\\\&amp;={\\frac {2\\,(-1)^{n+1}}{\\pi n}},\\quad n\\geq 1.\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}s(x)&amp;=a_{0}+\\sum _{n=1}^{\\infty }\\left[a_{n}\\cos \\left(nx\\right)+b_{n}\\sin \\left(nx\\right)\\right]\\\\[4pt]&amp;={\\frac {2}{\\pi }}\\sum _{n=1}^{\\infty }{\\frac {(-1)^{n+1}}{n}}\\sin(nx),\\quad \\mathrm {for} \\ (x-\\pi )\\ {\\text{is not a multiple of}}\\ 2\\pi .\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Amplitude-phase form of a Fourier series",
+      "anchor": {
+        "section": "Amplitude-phase form",
+        "snippet": "the Fourier series can also be represented as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib uses only the complex exponential form; an amplitude-phase reformulation is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Basel problem via Parseval",
+      "anchor": {
+        "section": "Other applications",
+        "snippet": "Another application is to solve the Basel problem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "hasSum_zeta_two",
+        "module": "Mathlib.NumberTheory.ZetaValues",
+        "match_kind": "exact"
+      },
+      "note": "`hasSum_zeta_two` proves ∑ 1/n² = π²/6 in Mathlib using Fourier-series machinery (`hasSum_one_div_nat_pow_mul_fourier`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Symmetry of Fourier transform components",
+      "anchor": {
+        "section": "Symmetry relations",
+        "snippet": "The transform of a real-valued function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "fourier_neg",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has `fourier_neg` (conjugation symmetry of monomials), but no packaged lemma on real/even/odd-part symmetries of Fourier coefficients.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Riemann–Lebesgue lemma",
+      "anchor": {
+        "section": "Riemann–Lebesgue lemma",
+        "snippet": "is integrable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendsto_integral_exp_smul_cocompact",
+        "module": "Mathlib.Analysis.Fourier.RiemannLebesgueLemma",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves the Riemann–Lebesgue lemma on finite-dimensional real vector spaces, which specializes to vanishing Fourier coefficients at infinity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Parseval's theorem for Fourier series",
+      "anchor": {
+        "section": "Parseval's theorem",
+        "snippet": "periodic over an interval of length"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "hasSum_sq_fourierCoeff",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "exact"
+      },
+      "note": "`hasSum_sq_fourierCoeff` (and `hasSum_sq_fourierCoeffOn`) gives Parseval's identity for L² functions on `AddCircle T`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Parseval's theorem",
+          "snippet": "periodic over an interval of length"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {1}{P}}\\int _{P}|s(x)|^{2}\\,dx=\\sum _{n=-\\infty }^{\\infty }{\\Bigl |}S[n]{\\Bigr |}^{2}.}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Plancherel's theorem (Riesz–Fischer)",
+      "anchor": {
+        "section": "Plancherel's theorem",
+        "snippet": "then there is a unique function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fourierBasis",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "exact"
+      },
+      "note": "`fourierBasis` is a `HilbertBasis ℤ ℂ (Lp ℂ 2 haarAddCircle)`, giving the isometric isomorphism with ℓ²(ℤ,ℂ).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fourier coefficients of pointwise product",
+      "anchor": {
+        "section": "Convolution theorems",
+        "snippet": "discrete convolution of the"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem in Mathlib expresses `fourierCoeff (f*g)` as the discrete convolution of `fourierCoeff f` and `fourierCoeff g` on `AddCircle T`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Convolution theorems",
+          "snippet": "discrete convolution of the"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle h_{P}(x)\\triangleq s_{P}(x)\\cdot r_{P}(x)}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle H[n]=\\{S*R\\}[n].}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Fourier coefficients of periodic convolution",
+      "anchor": {
+        "section": "Convolution theorems",
+        "snippet": "periodic convolution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Fourier-transform convolution theorems (`Real.fourier_bilin_convolution_eq`) but no analogue for Fourier coefficients on `AddCircle T`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Characterization of Fourier coefficient sequences",
+      "anchor": {
+        "section": "Convolution theorems",
+        "snippet": "doubly infinite sequence"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "fourierBasis",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "invocation"
+      },
+      "note": "Surjectivity of `fourierBasis.repr` onto ℓ²(ℤ,ℂ) gives the L² characterization implicitly but is not stated as a standalone theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fourier coefficients of the derivative",
+      "anchor": {
+        "section": "Derivative property",
+        "snippet": "times differentiable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `fourier_deriv` for the Fourier transform, but no derivative formula for `fourierCoeff` on `AddCircle T`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fourier series on a compact group",
+      "anchor": {
+        "section": "Compact groups",
+        "snippet": "one can produce Fourier series on any compact group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib develops Fourier series only on `AddCircle T` and finite abelian groups, not on general compact groups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Peter–Weyl theorem",
+      "anchor": {
+        "section": "Compact groups",
+        "snippet": "Peter–Weyl theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No occurrence of Peter–Weyl was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fourier series on a Riemannian manifold",
+      "anchor": {
+        "section": "Riemannian manifolds",
+        "snippet": "the natural generalization is to use the eigensolutions of the Laplace–Beltrami operator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Laplace–Beltrami / spherical-harmonics Fourier-expansion framework is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fourier transform on locally compact Abelian groups",
+      "anchor": {
+        "section": "Locally compact Abelian groups",
+        "snippet": "straightforward generalization to Locally Compact Abelian"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PontryaginDual",
+        "module": "Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib handles the finite-abelian case via `PontryaginDuality`, but no general LCA-group Fourier transform is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fourier–Stieltjes series",
+      "anchor": {
+        "section": "Fourier-Stieltjes series",
+        "snippet": "the Fourier-Stieltjes series can be defined as the Fourier series whose coefficients are given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fourier–Stieltjes series are not defined in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Fourier-Stieltjes series",
+          "snippet": "the Fourier-Stieltjes series can be defined as the Fourier series whose coefficients are given by"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c_{n}={\\hat {\\mu }}(n)={\\frac {1}{P}}\\int _{0}^{P}\\ e^{-i2\\pi {\\tfrac {n}{P}}x}\\,d\\mu (x),\\quad \\forall n\\in \\mathbb {Z} ,}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Riesz representation for Fourier–Stieltjes coefficients",
+      "anchor": {
+        "section": "Fourier-Stieltjes series",
+        "snippet": "is a function of bounded variation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem relating Fourier–Stieltjes coefficients to BV functions via Riesz representation exists in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Fourier-Stieltjes series",
+          "snippet": "is a function of bounded variation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c_{n}={\\frac {1}{P}}\\int _{0}^{P}\\ e^{-i2\\pi {\\tfrac {n}{P}}x}\\,dF(x),\\quad \\forall n\\in \\mathbb {Z} ,}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Fourier–Schwartz series (distributions)",
+      "anchor": {
+        "section": "Fourier-Stieltjes series",
+        "snippet": "the series is sometimes described as a Fourier-Schwartz series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has tempered-distribution Fourier transforms but not a `AddCircle`-distribution Fourier-series framework.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fourier series on the square",
+      "anchor": {
+        "section": "Fourier series on a square",
+        "snippet": "We can also define the Fourier series for functions of two variables"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UnitAddTorus.mFourierCoeff",
+        "module": "Mathlib.Analysis.Fourier.AddCircleMulti",
+        "match_kind": "generalization"
+      },
+      "note": "`AddCircleMulti` defines multivariate Fourier monomials `mFourier` and coefficients on `UnitAddTorus d`, generalizing the 2D-square case.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Fourier series on a square",
+          "snippet": "We can also define the Fourier series for functions of two variables"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}f(x,y)&amp;=\\sum _{j,k\\in \\mathbb {Z} }c_{j,k}e^{ijx}e^{iky},\\\\[5pt]c_{j,k}&amp;={\\frac {1}{4\\pi ^{2}}}\\int _{-\\pi }^{\\pi }\\int _{-\\pi }^{\\pi }f(x,y)e^{-ijx}e^{-iky}\\,dx\\,dy.\\end{aligned}}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Bravais lattice",
+      "anchor": {
+        "section": "Fourier series of a Bravais-lattice-periodic function",
+        "snippet": "A three-dimensional Bravais lattice is defined as the set of vectors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of a Bravais lattice was found in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Fourier series of a Bravais-lattice-periodic function",
+          "snippet": "A three-dimensional Bravais lattice is defined as the set of vectors"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {R} =n_{1}\\mathbf {a} _{1}+n_{2}\\mathbf {a} _{2}+n_{3}\\mathbf {a} _{3}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Fourier series of a Bravais-lattice-periodic function",
+      "anchor": {
+        "section": "Fourier series of a Bravais-lattice-periodic function",
+        "snippet": "The Fourier series for"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fourier expansions for Bravais-lattice-periodic functions are not formalized in Mathlib.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Fourier series of a Bravais-lattice-periodic function",
+          "snippet": "The Fourier series for"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle g(x_{1},x_{2},x_{3})=\\sum _{m_{1},m_{2},m_{3}\\in \\mathbb {Z} }\\,c(m_{1},m_{2},m_{3})\\,e^{i2\\pi \\left({\\tfrac {m_{1}}{a_{1}}}x_{1}+{\\tfrac {m_{2}}{a_{2}}}x_{2}+{\\tfrac {m_{3}}{a_{3}}}x_{3}\\right)}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {a} _{i}\\cdot \\mathbf {b_{j}} =2\\pi \\delta _{ij},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {Q} \\cdot \\mathbf {r} =\\left(m_{1}\\mathbf {b} _{1}+m_{2}\\mathbf {b} _{2}+m_{3}\\mathbf {b} _{3}\\right)\\cdot \\left(x_{1}{\\frac {\\mathbf {a} _{1}}{a_{1}}}+x_{2}{\\frac {\\mathbf {a} _{2}}{a_{2}}}+x_{3}{\\frac {\\mathbf {a} _{3}}{a_{3}}}\\right)=2\\pi \\left(x_{1}{\\frac {m_{1}}{a_{1}}}+x_{2}{\\frac {m_{2}}{a_{2}}}+x_{3}{\\frac {m_{3}}{a_{3}}}\\right),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(\\mathbf {r} )=\\sum _{\\mathbf {Q} }c(\\mathbf {Q} )\\,e^{i\\mathbf {Q} \\cdot \\mathbf {r} },}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle c(\\mathbf {Q} )={\\frac {1}{a_{3}}}\\int _{0}^{a_{3}}dx_{3}\\,{\\frac {1}{a_{2}}}\\int _{0}^{a_{2}}dx_{2}\\,{\\frac {1}{a_{1}}}\\int _{0}^{a_{1}}dx_{1}\\,f\\left(x_{1}{\\frac {\\mathbf {a} _{1}}{a_{1}}}+x_{2}{\\frac {\\mathbf {a} _{2}}{a_{2}}}+x_{3}{\\frac {\\mathbf {a} _{3}}{a_{3}}}\\right)e^{-i\\mathbf {Q} \\cdot \\mathbf {r} }.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {r} =x_{1}{\\frac {\\mathbf {a} _{1}}{a_{1}}}+x_{2}{\\frac {\\mathbf {a} _{2}}{a_{2}}}+x_{3}{\\frac {\\mathbf {a} _{3}}{a_{3}}},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{bmatrix}x\\\\y\\\\z\\end{bmatrix}}=\\mathbf {J} {\\begin{bmatrix}x_{1}\\\\x_{2}\\\\x_{3}\\end{bmatrix}}={\\begin{bmatrix}{\\frac {\\mathbf {a} _{1}}{a_{1}}},{\\frac {\\mathbf {a} _{2}}{a_{2}}},{\\frac {\\mathbf {a} _{3}}{a_{3}}}\\end{bmatrix}}{\\begin{bmatrix}x_{1}\\\\x_{2}\\\\x_{3}\\end{bmatrix}}\\,,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {J} ={\\begin{bmatrix}{\\dfrac {\\partial x}{\\partial x_{1}}}&amp;{\\dfrac {\\partial x}{\\partial x_{2}}}&amp;{\\dfrac {\\partial x}{\\partial x_{3}}}\\\\[12pt]{\\dfrac {\\partial y}{\\partial x_{1}}}&amp;{\\dfrac {\\partial y}{\\partial x_{2}}}&amp;{\\dfrac {\\partial y}{\\partial x_{3}}}\\\\[12pt]{\\dfrac {\\partial z}{\\partial x_{1}}}&amp;{\\dfrac {\\partial z}{\\partial x_{2}}}&amp;{\\dfrac {\\partial z}{\\partial x_{3}}}\\end{bmatrix}}\\,.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Fourier series in Hilbert space L^2",
+      "anchor": {
+        "section": "Hilbert space",
+        "snippet": "the space of square-integrable functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fourierBasis",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "exact"
+      },
+      "note": "`fourierBasis` realizes the L² Fourier-series decomposition as a Hilbert basis indexed by ℤ.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Hilbert space",
+          "snippet": "the space of square-integrable functions"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\langle f,g\\rangle ={\\frac {1}{2\\pi }}\\int _{-\\pi }^{\\pi }f(x){\\overline {g(x)}}\\,dx.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)=\\sum _{n=-\\infty }^{\\infty }c_{n}e^{inx},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f=\\sum _{n=-\\infty }^{\\infty }\\langle f,e_{n}\\rangle \\,e_{n}.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Sines and cosines form an orthonormal basis of L^2",
+      "anchor": {
+        "section": "Hilbert space",
+        "snippet": "the sines and cosines form an orthogonal set"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "orthonormal_fourier",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves orthonormality of complex exponentials (`orthonormal_fourier`) and that they form a Hilbert basis, but not the real sin/cos version explicitly.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Hilbert space",
+          "snippet": "the sines and cosines form an orthogonal set"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{-\\pi }^{\\pi }\\cos(mx)\\,\\cos(nx)\\,dx={\\frac {1}{2}}\\int _{-\\pi }^{\\pi }\\cos((n-m)x)+\\cos((n+m)x)\\,dx=\\pi \\delta _{mn},\\quad m,n\\geq 1,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{-\\pi }^{\\pi }\\sin(mx)\\,\\sin(nx)\\,dx={\\frac {1}{2}}\\int _{-\\pi }^{\\pi }\\cos((n-m)x)-\\cos((n+m)x)\\,dx=\\pi \\delta _{mn},\\quad m,n\\geq 1}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{-\\pi }^{\\pi }\\cos(mx)\\,\\sin(nx)\\,dx={\\frac {1}{2}}\\int _{-\\pi }^{\\pi }\\sin((n+m)x)+\\sin((n-m)x)\\,dx=0;}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left\\{{\\frac {1}{\\sqrt {2}}},{\\frac {\\cos x}{\\sqrt {2}}},{\\frac {\\sin x}{\\sqrt {2}}},\\dots ,{\\frac {\\cos(nx)}{\\sqrt {2}}},{\\frac {\\sin(nx)}{\\sqrt {2}}},\\dots \\right\\},}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Best trigonometric polynomial approximation",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HilbertBasis.hasSum_repr",
+        "module": "Mathlib.Analysis.InnerProductSpace.L2Space",
+        "match_kind": "invocation"
+      },
+      "note": "The best-approximation property follows from `fourierBasis` being a Hilbert basis (orthogonal projection onto its span), but is not stated specifically for trig polynomials.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniform convergence for C^1 functions via Cauchy–Schwarz",
+      "anchor": {
+        "section": "Convergence theorems",
+        "snippet": "absolutely summable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "hasSum_fourier_series_of_summable",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves uniform convergence under summability of Fourier coefficients but does not derive this directly from a C¹ hypothesis.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Carleson's theorem",
+      "anchor": {
+        "section": "Convergence theorems",
+        "snippet": "Carleson's theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Carleson's theorem on a.e. convergence of L² Fourier series is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "L^2 convergence of Fourier series",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "hasSum_fourier_series_L2",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "exact"
+      },
+      "note": "`hasSum_fourier_series_L2` proves convergence of the Fourier series to f in the L²-norm on `AddCircle T`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Uniform convergence of Fourier series",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "hasSum_fourier_series_of_summable",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "exact"
+      },
+      "note": "`hasSum_fourier_series_of_summable` gives uniform convergence of the Fourier series whenever the coefficient sequence is summable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Kolmogorov's everywhere-divergent Fourier series",
+      "anchor": {
+        "section": "Divergence",
+        "snippet": "Andrey Kolmogorov published an article"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Kolmogorov's construction of an L¹ function with everywhere-divergent Fourier series is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Continuous function with Fourier series diverging at 0",
+      "anchor": {
+        "section": "Divergence",
+        "snippet": "It is possible to give explicit examples of a continuous function whose Fourier series diverges at 0"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit example of a continuous function with Fourier series diverging at 0 was found in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

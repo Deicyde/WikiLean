@@ -1,0 +1,1513 @@
+{
+  "slug": "Algebraic_number_field",
+  "wikipedia_title": "Algebraic number field",
+  "display_title": "Algebraic number field",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Algebraic number field",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "an algebraic number field (or simply number field ) is an extension field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField",
+        "module": "Mathlib.NumberTheory.NumberField.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`NumberField` is a field of characteristic zero that is finite-dimensional over ℚ, matching the notion of a finite extension of ℚ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Field",
+      "anchor": {
+        "section": "Prerequisites",
+        "snippet": "A field consists of a set of elements together with two operations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Field",
+        "module": "Mathlib.Algebra.Field.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Field` extends `CommRing` and `DivisionRing`, capturing the two operations with inverses for nonzero elements.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Finite-dimensional vector space",
+      "anchor": {
+        "section": "Prerequisites",
+        "snippet": "the vector space is said to be of finite dimension"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FiniteDimensional",
+        "module": "Mathlib.LinearAlgebra.FiniteDimensional.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`FiniteDimensional K V` is an abbreviation for `Module.Finite K V`, i.e. a finitely generated (finite-dimensional) vector space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Number field (definition)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is a finite- degree field extension of the field of rational numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField",
+        "module": "Mathlib.NumberTheory.NumberField.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`NumberField` is defined as a field finite-dimensional over ℚ (with char zero, automatic), the finite-degree extension condition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Rational numbers as smallest number field",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The smallest and most basic number field is the field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Rat.numberField",
+        "module": "Mathlib.NumberTheory.NumberField.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "The instance `Rat.numberField` shows ℚ is a number field, though its minimality is only an informal remark.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Gaussian rationals",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "form the first (historically) non-trivial example of a number field"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "GaussianInt",
+        "module": "Mathlib.NumberTheory.Zsqrtd.GaussianInt",
+        "match_kind": null
+      },
+      "note": "Mathlib has the Gaussian integers ℤ[i] (`GaussianInt`) but not the Gaussian rationals ℚ(i) as a named field object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Nonzero Gaussian rationals are invertible",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Non-zero Gaussian rational numbers are invertible"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "GaussianInt",
+        "module": "Mathlib.NumberTheory.Zsqrtd.GaussianInt",
+        "match_kind": null
+      },
+      "note": "ℚ(i) arises as the fraction field of ℤ[i] (a field by the general fraction-field construction), but isn't a named declaration and this specific invertibility claim is not stated.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Examples",
+          "snippet": "Non-zero Gaussian rational numbers are invertible"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}&amp;(a+bi)+(c+di)=(a+c)+(b+d)i\\\\&amp;(a+bi)\\cdot (c+di)=(ac-bd)+(ad+bc)i\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (a+bi)\\left({\\frac {a}{a^{2}+b^{2}}}-{\\frac {b}{a^{2}+b^{2}}}i\\right)={\\frac {(a+bi)(a-bi)}{a^{2}+b^{2}}}=1.}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Gaussian rationals are two-dimensional number field",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "It follows that the Gaussian rationals form a number field that is two-dimensional as a vector space over"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No named Gaussian rationals field exists, so its 2-dimensionality over ℚ is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Examples",
+          "snippet": "It follows that the Gaussian rationals form a number field that is two-dimensional as a vector space over"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}&amp;(a+bi)+(c+di)=(a+c)+(b+d)i\\\\&amp;(a+bi)\\cdot (c+di)=(ac-bd)+(ad+bc)i\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (a+bi)\\left({\\frac {a}{a^{2}+b^{2}}}-{\\frac {b}{a^{2}+b^{2}}}i\\right)={\\frac {(a+bi)(a-bi)}{a^{2}+b^{2}}}=1.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Quadratic field",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is a number field obtained by adjoining the square root"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Zsqrtd",
+        "module": "Mathlib.NumberTheory.Zsqrtd.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib has ℤ[√d] (`Zsqrtd`) and general field adjunction (`AdjoinRoot`), but no dedicated quadratic number field ℚ(√d).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cyclotomic field",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "by adjoining a primitive n -th root of unity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CyclotomicField",
+        "module": "Mathlib.NumberTheory.Cyclotomic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`CyclotomicField n K` is the splitting field of the n-th cyclotomic polynomial, i.e. K adjoined a primitive n-th root of unity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Reals and complexes are not number fields",
+      "anchor": {
+        "section": "Non-examples",
+        "snippet": "hence, they are not number fields"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement that ℝ or ℂ fail to be number fields (being infinite-dimensional over ℚ) is recorded.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Pairs of rationals is not a field",
+      "anchor": {
+        "section": "Non-examples",
+        "snippet": "However, it is not a field, since it has zero divisors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific fact that ℚ × ℚ has zero divisors and is not a field is not a recorded result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic field extension",
+      "anchor": {
+        "section": "Algebraicity, and ring of integers",
+        "snippet": "is algebraic if every element"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra.IsAlgebraic",
+        "module": "Mathlib.RingTheory.Algebraic.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Algebra.IsAlgebraic R A` holds iff every element of A is algebraic over R.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite-degree extensions are algebraic",
+      "anchor": {
+        "section": "Algebraicity, and ring of integers",
+        "snippet": "Every field extension of finite degree is algebraic."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra.IsAlgebraic.of_finite",
+        "module": "Mathlib.RingTheory.Algebraic.Integral",
+        "match_kind": "exact"
+      },
+      "note": "`Algebra.IsAlgebraic.of_finite` shows a module-finite algebra is algebraic.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Monic polynomial",
+      "anchor": {
+        "section": "Algebraicity, and ring of integers",
+        "snippet": "A polynomial with this property is known as a monic polynomial ."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.Monic",
+        "module": "Mathlib.Algebra.Polynomial.Degree.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial.Monic p` means the leading coefficient of p equals 1.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic integer",
+      "anchor": {
+        "section": "Algebraicity, and ring of integers",
+        "snippet": "is called an algebraic integer"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsIntegral",
+        "module": "Mathlib.RingTheory.IntegralClosure.IsIntegral.Defs",
+        "match_kind": "exact"
+      },
+      "note": "An algebraic integer is `IsIntegral ℤ x`, i.e. a root of a monic integer polynomial.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Every integer is an algebraic integer",
+      "anchor": {
+        "section": "Algebraicity, and ring of integers",
+        "snippet": "is an algebraic integer, as it is the zero of the linear monic polynomial"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isIntegral_algebraMap",
+        "module": "Mathlib.RingTheory.IntegralClosure.IsIntegral.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`isIntegral_algebraMap` gives that every base-ring element (in particular each integer) is integral.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rational algebraic integer is an integer",
+      "anchor": {
+        "section": "Algebraicity, and ring of integers",
+        "snippet": "It can be shown that any algebraic integer that is also a rational number must actually be an integer"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GCDMonoid.toIsIntegrallyClosed",
+        "module": "Mathlib.Algebra.GCDMonoid.IntegrallyClosed",
+        "match_kind": "special_case"
+      },
+      "note": "ℤ is integrally closed (via `GCDMonoid.toIsIntegrallyClosed`), so a rational integral over ℤ lies in ℤ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum and product of algebraic integers",
+      "anchor": {
+        "section": "Algebraicity, and ring of integers",
+        "snippet": "the sum and the product of any two algebraic integers is still an algebraic integer"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsIntegral.add",
+        "module": "Mathlib.RingTheory.IntegralClosure.Algebra.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsIntegral.add` and `IsIntegral.mul` show integrality is preserved by sums and products.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ring of integers",
+      "anchor": {
+        "section": "Algebraicity, and ring of integers",
+        "snippet": "called the ring of integers of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField.RingOfIntegers",
+        "module": "Mathlib.NumberTheory.NumberField.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`NumberField.RingOfIntegers K` is the integral closure of ℤ in K.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ring of integers is an integral domain",
+      "anchor": {
+        "section": "Algebraicity, and ring of integers",
+        "snippet": "A field contains no zero divisors and this property is inherited by any subring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField.RingOfIntegers",
+        "module": "Mathlib.NumberTheory.NumberField.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "`RingOfIntegers` is declared `deriving IsDomain`, reflecting that a subring of a field has no zero divisors.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number field is field of fractions of its ring of integers",
+      "anchor": {
+        "section": "Algebraicity, and ring of integers",
+        "snippet": "is the field of fractions of the integral domain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField.RingOfIntegers",
+        "module": "Mathlib.NumberTheory.NumberField.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The instance `[NumberField K] : IsFractionRing (𝓞 K) K` makes K the field of fractions of its ring of integers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dedekind ring",
+      "anchor": {
+        "section": "Algebraicity, and ring of integers",
+        "snippet": "is called a Dedekind ring (or Dedekind domain )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsDedekindDomain",
+        "module": "Mathlib.RingTheory.DedekindDomain.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsDedekindDomain` formalizes Dedekind domains, and `𝓞 K` is given this instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Unique factorization of ideals",
+      "anchor": {
+        "section": "Unique factorization",
+        "snippet": "there is a unique factorization of ideals into a product of prime ideals"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.uniqueFactorizationMonoid",
+        "module": "Mathlib.RingTheory.DedekindDomain.Ideal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal.uniqueFactorizationMonoid` gives unique factorization of ideals of a Dedekind domain into primes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Factorization of an ideal into prime ideals",
+      "anchor": {
+        "section": "Unique factorization",
+        "snippet": "of quadratic integers factors into prime ideals as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This particular numerical ideal factorization example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Failure of unique factorization in quadratic integers",
+      "anchor": {
+        "section": "Unique factorization",
+        "snippet": "the uniqueness of the factorization fails"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific failure of unique factorization in a quadratic integer ring is not formalized as an example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euclidean domains are unique factorization domains",
+      "anchor": {
+        "section": "Unique factorization",
+        "snippet": "Euclidean domains are unique factorization domains"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanDomain.to_principal_ideal_domain",
+        "module": "Mathlib.RingTheory.PrincipalIdealDomain",
+        "match_kind": "invocation"
+      },
+      "note": "Euclidean domains are PIDs (`EuclideanDomain.to_principal_ideal_domain`), and PIDs are UFDs (`PrincipalIdealRing.to_uniqueFactorizationMonoid`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Ideal class group is finite",
+      "anchor": {
+        "section": "Analytic objects: ζ-functions, L -functions, and class number formula",
+        "snippet": "This group is always finite"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField.instFintypeClassGroup",
+        "module": "Mathlib.NumberTheory.NumberField.ClassNumber",
+        "match_kind": "exact"
+      },
+      "note": "The `Fintype (ClassGroup (𝓞 K))` instance establishes finiteness of the class group of a number field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unique factorization iff class number one",
+      "anchor": {
+        "section": "Analytic objects: ζ-functions, L -functions, and class number formula",
+        "snippet": "possesses unique factorization if and only if it is a principal ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField.classNumber_eq_one_iff",
+        "module": "Mathlib.NumberTheory.NumberField.ClassNumber",
+        "match_kind": "exact"
+      },
+      "note": "`classNumber_eq_one_iff` states class number 1 ↔ `𝓞 K` is a principal ideal ring (equivalent to unique factorization).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dedekind zeta function",
+      "anchor": {
+        "section": "Analytic objects: ζ-functions, L -functions, and class number formula",
+        "snippet": "It involves the Dedekind zeta function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField.dedekindZeta",
+        "module": "Mathlib.NumberTheory.NumberField.DedekindZeta",
+        "match_kind": "exact"
+      },
+      "note": "`NumberField.dedekindZeta` defines the Dedekind zeta function of a number field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Class number formula",
+      "anchor": {
+        "section": "Analytic objects: ζ-functions, L -functions, and class number formula",
+        "snippet": "The class number formula states that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField.tendsto_sub_one_mul_dedekindZeta_nhdsGT",
+        "module": "Mathlib.NumberTheory.NumberField.DedekindZeta",
+        "match_kind": "exact"
+      },
+      "note": "This theorem gives the residue of the Dedekind zeta function at s=1, the analytic class number formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Dirichlet's theorem on arithmetic progressions",
+      "anchor": {
+        "section": "Analytic objects: ζ-functions, L -functions, and class number formula",
+        "snippet": "Dirichlet's theorem asserts that in any arithmetic progression"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.infinite_setOf_prime_and_eq_mod",
+        "module": "Mathlib.NumberTheory.LSeries.PrimesInAP",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.infinite_setOf_prime_and_eq_mod` proves there are infinitely many primes in each invertible residue class mod q.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Integral basis",
+      "anchor": {
+        "section": "Integral basis",
+        "snippet": "An integral basis for a number field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField.RingOfIntegers.basis",
+        "module": "Mathlib.NumberTheory.NumberField.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`RingOfIntegers.basis` is a ℤ-basis of `𝓞 K`, i.e. an integral basis.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Power basis",
+      "anchor": {
+        "section": "Power basis",
+        "snippet": "there are particular ones known as power bases, that are bases of the form"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PowerBasis",
+        "module": "Mathlib.RingTheory.PowerBasis",
+        "match_kind": "exact"
+      },
+      "note": "`PowerBasis R S` bundles a generator whose powers form a basis.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Primitive element theorem",
+      "anchor": {
+        "section": "Power basis",
+        "snippet": "By the primitive element theorem , there exists such an"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Field.exists_primitive_element",
+        "module": "Mathlib.FieldTheory.PrimitiveElement",
+        "match_kind": "exact"
+      },
+      "note": "`Field.exists_primitive_element` proves a finite separable extension has a primitive element.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Power basis",
+          "snippet": "By the primitive element theorem , there exists such an"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x^{3}-x^{2}-2x-8.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Power integral basis and monogenic field",
+      "anchor": {
+        "section": "Power basis",
+        "snippet": "is called a power integral basis"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PowerBasis",
+        "module": "Mathlib.RingTheory.PowerBasis",
+        "match_kind": null
+      },
+      "note": "Power-basis machinery exists, but there is no dedicated 'power integral basis of 𝓞 K' or 'monogenic field' predicate.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Power basis",
+          "snippet": "is called a power integral basis"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x^{3}-x^{2}-2x-8.}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Non-monogenic field (Dedekind's example)",
+      "anchor": {
+        "section": "Power basis",
+        "snippet": "An example of a number field that is not monogenic was first given by Dedekind"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dedekind's specific non-monogenic field example is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Power basis",
+          "snippet": "An example of a number field that is not monogenic was first given by Dedekind"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x^{3}-x^{2}-2x-8.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Regular representation",
+      "anchor": {
+        "section": "Regular representation, trace and discriminant",
+        "snippet": "is called the regular representation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra.lmul",
+        "module": "Mathlib.Algebra.Algebra.Bilinear",
+        "match_kind": "exact"
+      },
+      "note": "`Algebra.lmul R A : A →ₐ[R] End R A` sends x to left-multiplication, the regular representation.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Regular representation, trace and discriminant",
+          "snippet": "is called the regular representation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A=A(x)=(a_{ij})_{1\\leq i,j\\leq n}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle xe_{i}=\\sum _{j=1}^{n}a_{ij}e_{j},\\quad a_{ij}\\in \\mathbb {Q} .}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Trace and norm of a field element",
+      "anchor": {
+        "section": "Regular representation, trace and discriminant",
+        "snippet": "is called the trace of the field element"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra.trace",
+        "module": "Mathlib.RingTheory.Trace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Algebra.trace` (and `Algebra.norm`) give the trace/norm as the trace/determinant of the multiplication map.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Regular representation, trace and discriminant",
+          "snippet": "is called the trace of the field element"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A=A(x)=(a_{ij})_{1\\leq i,j\\leq n}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle xe_{i}=\\sum _{j=1}^{n}a_{ij}e_{j},\\quad a_{ij}\\in \\mathbb {Q} .}"
+        }
+      ]
+    },
+    {
+      "kind": "example",
+      "label": "Trace and norm computation",
+      "anchor": {
+        "section": "Example",
+        "snippet": "We proceed to calculate the trace"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific worked trace/norm computation is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Example",
+          "snippet": "We proceed to calculate the trace"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\{1,\\zeta _{3}{\\sqrt[{3}]{2}},(\\zeta _{3}{\\sqrt[{3}]{2}})^{2}\\}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x=a+b\\zeta _{3}{\\sqrt[{3}]{2}}+c(\\zeta _{3}{\\sqrt[{3}]{2}})^{2}=a+b\\theta +c\\theta ^{2}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}xy=a(y_{0}+y_{1}\\theta +y_{2}\\theta ^{2})+\\\\b(2y_{2}+y_{0}\\theta +y_{1}\\theta ^{2})+\\\\c(2y_{1}+2y_{2}\\theta +y_{0}\\theta ^{2}).\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{bmatrix}a_{11}&amp;a_{12}&amp;a_{13}\\\\a_{21}&amp;a_{22}&amp;a_{23}\\\\a_{31}&amp;a_{32}&amp;a_{33}\\end{bmatrix}}{\\begin{bmatrix}y_{0}\\\\y_{1}\\\\y_{2}\\end{bmatrix}}={\\begin{bmatrix}ay_{0}+2cy_{1}+2by_{2}\\\\by_{0}+ay_{1}+2cy_{2}\\\\cy_{0}+by_{1}+ay_{2}\\end{bmatrix}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle A(x)={\\begin{bmatrix}a&amp;2c&amp;2b\\\\b&amp;a&amp;2c\\\\c&amp;b&amp;a\\end{bmatrix}}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Linearity of trace and multiplicativity of norm",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Tr( x ) is a linear function of x"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra.trace",
+        "module": "Mathlib.RingTheory.Trace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Algebra.trace` is bundled as an R-linear map and `Algebra.norm` as a monoid hom, encoding linearity and multiplicativity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Trace form",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The trace form derived is a bilinear form defined by means of the trace"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra.traceForm",
+        "module": "Mathlib.RingTheory.Trace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Algebra.traceForm` is the symmetric bilinear form (x,y) ↦ trace(xy).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Properties",
+          "snippet": "The trace form derived is a bilinear form defined by means of the trace"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle Tr_{K/L}:K\\otimes _{L}K\\to L}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle Tr_{K/L}(x\\otimes y)=Tr_{K/L}(x\\cdot y)}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Discriminant of a number field",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "is defined as det( t )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField.discr",
+        "module": "Mathlib.NumberTheory.NumberField.Discriminant.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`NumberField.discr` is the discriminant via `Algebra.discr` of an integral basis (determinant of the trace form).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Properties",
+          "snippet": "is defined as det( t )"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle Tr_{K/L}:K\\otimes _{L}K\\to L}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle Tr_{K/L}(x\\otimes y)=Tr_{K/L}(x\\cdot y)}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Algebraic integer iff characteristic polynomial is integral monic",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "is an algebraic integer if and only if the characteristic polynomial"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsIntegral",
+        "module": "Mathlib.RingTheory.IntegralClosure.IsIntegral.Defs",
+        "match_kind": null
+      },
+      "note": "Integrality is defined via existence of a monic integer polynomial, but the specific characteristic-polynomial criterion is not a single named lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Integral basis and discriminant computation",
+      "anchor": {
+        "section": "Example with integral basis",
+        "snippet": "where x satisfies x 3 − 11 x 2 + x + 1 = 0"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific integral-basis and discriminant computation is not formalized.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Example with integral basis",
+          "snippet": "where x satisfies x 3 − 11 x 2 + x + 1 = 0"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{bmatrix}3&amp;11&amp;61\\\\11&amp;119&amp;653\\\\61&amp;653&amp;3589\\end{bmatrix}}.}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Place of a number field",
+      "anchor": {
+        "section": "Places",
+        "snippet": "is an equivalence class of absolute values"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "NumberField.InfinitePlace",
+        "module": "Mathlib.NumberTheory.NumberField.InfinitePlace.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib defines `InfinitePlace` and `FinitePlace` separately rather than a single 'place = equivalence class of absolute values' object.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Places",
+          "snippet": "is an equivalence class of absolute values"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle |\\cdot |_{0}=|\\cdot |_{1}^{\\lambda }}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Ostrowski's theorem for the rationals",
+      "anchor": {
+        "section": "Places",
+        "snippet": "the following non-trivial norms occur ( Ostrowski's theorem )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Rat.AbsoluteValue.equiv_real_or_padic",
+        "module": "Mathlib.NumberTheory.Ostrowski",
+        "match_kind": "exact"
+      },
+      "note": "`equiv_real_or_padic` shows every nontrivial absolute value on ℚ is equivalent to the real or a p-adic one.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "p-adic absolute value",
+      "anchor": {
+        "section": "Places",
+        "snippet": "the p -adic absolute value is defined by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "padicNorm",
+        "module": "Mathlib.NumberTheory.Padics.PadicNorm",
+        "match_kind": "exact"
+      },
+      "note": "`padicNorm p q` defines the p-adic absolute value on ℚ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Ostrowski's theorem (places of a number field)",
+      "anchor": {
+        "section": "Places",
+        "snippet": "This statement is a theorem also called Ostrowski's theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "NumberField.FinitePlace.equivHeightOneSpectrum",
+        "module": "Mathlib.NumberTheory.NumberField.Completion.FinitePlace",
+        "match_kind": null
+      },
+      "note": "Infinite places (via embeddings) and finite places (via `equivHeightOneSpectrum`) are formalized, but not packaged as a single Ostrowski classification for number fields.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sixth root of unity field embeddings",
+      "anchor": {
+        "section": "Examples (2)",
+        "snippet": "provides a rich example for constructing explicit real and complex Archimedean embeddings"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This particular ℚ(ζ₆) embedding example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Computing Archimedean places (real and complex places)",
+      "anchor": {
+        "section": "Archimedean places",
+        "snippet": "Calculating the archimedean places of a number field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField.InfinitePlace.isReal_or_isComplex",
+        "module": "Mathlib.NumberTheory.NumberField.InfinitePlace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Infinite (archimedean) places arise from complex embeddings and `isReal_or_isComplex` classifies each as real or complex.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Totally real and totally complex fields",
+      "anchor": {
+        "section": "Archimedean places",
+        "snippet": "is called totally real (resp. totally complex )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField.IsTotallyReal",
+        "module": "Mathlib.NumberTheory.NumberField.InfinitePlace.TotallyRealComplex",
+        "match_kind": "exact"
+      },
+      "note": "`NumberField.IsTotallyReal` and `IsTotallyComplex` formalize these properties via the infinite places.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ultrametric (non-Archimedean) place",
+      "anchor": {
+        "section": "Non-Archimedean or ultrametric places",
+        "snippet": "Such an absolute value is called an ultrametric , non-Archimedean or"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsNonarchimedean",
+        "module": "Mathlib.Algebra.Order.Ring.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsNonarchimedean f` means f(a+b) ≤ max(f a, f b), the ultrametric inequality.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Non-Archimedean or ultrametric places",
+          "snippet": "Such an absolute value is called an ultrametric , non-Archimedean or"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle |y|_{f_{i}}=|N_{f_{i}}(y)|_{p}^{1/m}}"
+        }
+      ]
+    },
+    {
+      "kind": "proposition",
+      "label": "Ultrametric absolute value bounded by one on integers",
+      "anchor": {
+        "section": "Non-Archimedean or ultrametric places",
+        "snippet": "For any ultrametric place v we have that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsDedekindDomain.HeightOneSpectrum.intValuation_le_one",
+        "module": "Mathlib.RingTheory.DedekindDomain.AdicValuation",
+        "match_kind": "generalization"
+      },
+      "note": "`intValuation_le_one` shows the v-adic valuation is ≤ 1 on the ring of integers, for any Dedekind domain.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ultrametric place defines a prime ideal",
+      "anchor": {
+        "section": "Prime ideals in O K",
+        "snippet": "For an ultrametric place v , the subset of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField.FinitePlace.equivHeightOneSpectrum",
+        "module": "Mathlib.NumberTheory.NumberField.Completion.FinitePlace",
+        "match_kind": "exact"
+      },
+      "note": "`equivHeightOneSpectrum` is the bijection between finite (ultrametric) places and maximal/prime ideals of 𝓞 K.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Prime ideal gives a discrete valuation",
+      "anchor": {
+        "section": "Prime ideals in O K",
+        "snippet": "a discrete valuation can be defined by setting"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsDedekindDomain.HeightOneSpectrum.valuation",
+        "module": "Mathlib.RingTheory.DedekindDomain.AdicValuation",
+        "match_kind": "exact"
+      },
+      "note": "`HeightOneSpectrum.valuation` defines the v-adic (discrete) valuation associated to a nonzero prime ideal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Localization is a discrete valuation ring",
+      "anchor": {
+        "section": "Prime ideals in O K",
+        "snippet": "is a discrete valuation ring , in particular a local ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLocalization.AtPrime.isDiscreteValuationRing_of_dedekind_domain",
+        "module": "Mathlib.RingTheory.DedekindDomain.Dvr",
+        "match_kind": "exact"
+      },
+      "note": "This shows localizing a Dedekind domain at a nonzero prime gives a discrete valuation ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Three-way equivalence of places, prime ideals, localizations",
+      "anchor": {
+        "section": "Prime ideals in O K",
+        "snippet": "there is a three-way equivalence between ultrametric absolute values, prime ideals, and localizations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "NumberField.FinitePlace.equivHeightOneSpectrum",
+        "module": "Mathlib.NumberTheory.NumberField.Completion.FinitePlace",
+        "match_kind": null
+      },
+      "note": "The individual correspondences (place↔ideal, ideal→valuation, localization→DVR) are formalized but not assembled into one packaged three-way equivalence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Going up and going down theorems",
+      "anchor": {
+        "section": "Lying over theorem and places",
+        "snippet": "are the going up and going down theorems"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.exists_ideal_over_prime_of_isIntegral",
+        "module": "Mathlib.RingTheory.Ideal.GoingUp",
+        "match_kind": "exact"
+      },
+      "note": "Going-up is `exists_ideal_over_prime_of_isIntegral` and going-down is captured by `Algebra.HasGoingDown` in `Mathlib.RingTheory.Ideal.GoingDown`.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Lying over theorem and places",
+          "snippet": "are the going up and going down theorems"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\text{Spec}}({\\mathcal {O}}_{L})\\to {\\text{Spec}}({\\mathcal {O}}_{K})}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle K={\\frac {\\mathbb {Q} [X]}{Q(X)}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}K\\otimes _{\\mathbb {Q} }\\mathbb {Q} _{p}&amp;={\\frac {\\mathbb {Q} [X]}{Q(X)}}\\otimes _{\\mathbb {Q} }\\mathbb {Q} _{p}\\\\&amp;={\\frac {\\mathbb {Q} _{p}[X]}{Q(X)}}\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle Q(X)=\\prod _{v|p}Q_{v}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}K\\otimes _{\\mathbb {Q} }\\mathbb {Q} _{p}&amp;\\cong {\\frac {\\mathbb {Q} _{p}[X]}{\\prod _{v|p}Q_{v}(X)}}\\\\&amp;\\cong \\bigoplus _{v|p}K_{v}\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}i_{v}:&amp;K\\to K_{v}\\\\&amp;\\theta \\mapsto \\theta _{v}\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle K_{v}=i_{v}(K)\\mathbb {Q} _{p}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Ideal lying over",
+      "anchor": {
+        "section": "Lying over theorem and places",
+        "snippet": "We say that an ideal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.LiesOver",
+        "module": "Mathlib.RingTheory.Ideal.Over",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal.LiesOver P p` formalizes that P contracts to p (lies over p).",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Lying over theorem and places",
+          "snippet": "We say that an ideal"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\text{Spec}}({\\mathcal {O}}_{L})\\to {\\text{Spec}}({\\mathcal {O}}_{K})}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle K={\\frac {\\mathbb {Q} [X]}{Q(X)}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}K\\otimes _{\\mathbb {Q} }\\mathbb {Q} _{p}&amp;={\\frac {\\mathbb {Q} [X]}{Q(X)}}\\otimes _{\\mathbb {Q} }\\mathbb {Q} _{p}\\\\&amp;={\\frac {\\mathbb {Q} _{p}[X]}{Q(X)}}\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle Q(X)=\\prod _{v|p}Q_{v}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}K\\otimes _{\\mathbb {Q} }\\mathbb {Q} _{p}&amp;\\cong {\\frac {\\mathbb {Q} _{p}[X]}{\\prod _{v|p}Q_{v}(X)}}\\\\&amp;\\cong \\bigoplus _{v|p}K_{v}\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}i_{v}:&amp;K\\to K_{v}\\\\&amp;\\theta \\mapsto \\theta _{v}\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle K_{v}=i_{v}(K)\\mathbb {Q} _{p}}"
+        }
+      ]
+    },
+    {
+      "kind": "theorem",
+      "label": "Lying over theorem",
+      "anchor": {
+        "section": "Lying over theorem and places",
+        "snippet": "one incarnation of the theorem states a prime ideal in"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.exists_ideal_over_prime_of_isIntegral",
+        "module": "Mathlib.RingTheory.Ideal.GoingUp",
+        "match_kind": "exact"
+      },
+      "note": "This theorem provides, over an integral extension, a prime lying over any given prime.",
+      "provenance": "ai",
+      "anchors": [
+        {
+          "section": "Lying over theorem and places",
+          "snippet": "one incarnation of the theorem states a prime ideal in"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\text{Spec}}({\\mathcal {O}}_{L})\\to {\\text{Spec}}({\\mathcal {O}}_{K})}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle K={\\frac {\\mathbb {Q} [X]}{Q(X)}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}K\\otimes _{\\mathbb {Q} }\\mathbb {Q} _{p}&amp;={\\frac {\\mathbb {Q} [X]}{Q(X)}}\\otimes _{\\mathbb {Q} }\\mathbb {Q} _{p}\\\\&amp;={\\frac {\\mathbb {Q} _{p}[X]}{Q(X)}}\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle Q(X)=\\prod _{v|p}Q_{v}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}K\\otimes _{\\mathbb {Q} }\\mathbb {Q} _{p}&amp;\\cong {\\frac {\\mathbb {Q} _{p}[X]}{\\prod _{v|p}Q_{v}(X)}}\\\\&amp;\\cong \\bigoplus _{v|p}K_{v}\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}i_{v}:&amp;K\\to K_{v}\\\\&amp;\\theta \\mapsto \\theta _{v}\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle K_{v}=i_{v}(K)\\mathbb {Q} _{p}}"
+        }
+      ]
+    },
+    {
+      "kind": "definition",
+      "label": "Ramification",
+      "anchor": {
+        "section": "Ramification",
+        "snippet": "Ramification , generally speaking, describes a geometric phenomenon"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ideal.ramificationIdx",
+        "module": "Mathlib.NumberTheory.RamificationInertia.Ramification",
+        "match_kind": null
+      },
+      "note": "The geometric description is informal, but ramification is made precise via `Ideal.ramificationIdx`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Branched covering of the power map",
+      "anchor": {
+        "section": "Ramification",
+        "snippet": "has n points in each fiber over t"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This geometric branched-covering analogy is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ramification indices",
+      "anchor": {
+        "section": "Ramification",
+        "snippet": "and numbers (called ramification indices)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.ramificationIdx",
+        "module": "Mathlib.NumberTheory.RamificationInertia.Ramification",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal.ramificationIdx` defines the ramification index e of a prime in an extension.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ramified prime",
+      "anchor": {
+        "section": "Ramification",
+        "snippet": "Whenever one ramification index is bigger than one, the prime p is said to ramify"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ideal.ramificationIdx",
+        "module": "Mathlib.NumberTheory.RamificationInertia.Ramification",
+        "match_kind": null
+      },
+      "note": "Ramification index is formalized and `Algebra.IsUnramifiedAt` captures non-ramification, but there is no dedicated 'p ramifies' predicate matching this phrasing.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ramification is a local property",
+      "anchor": {
+        "section": "Ramification",
+        "snippet": "Ramification is a purely local property"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no single named theorem asserting that ramification is a purely local property.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ramification index computation",
+      "anchor": {
+        "section": "An example",
+        "snippet": "In order to compute the ramification index of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific ramification-index computation example is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Dedekind discriminant theorem",
+      "anchor": {
+        "section": "Dedekind discriminant theorem",
+        "snippet": "This is the Dedekind discriminant theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField.not_dvd_discr_iff_forall_liesOver",
+        "module": "Mathlib.NumberTheory.NumberField.Discriminant.Different",
+        "match_kind": "exact"
+      },
+      "note": "This states a prime p does not divide the discriminant iff every prime over it is unramified, the Dedekind discriminant theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Galois group of cyclotomic field",
+      "anchor": {
+        "section": "Galois groups and Galois cohomology",
+        "snippet": "of the cyclotomic field extension of degree n (see above) is given by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCyclotomicExtension.autEquivPow",
+        "module": "Mathlib.NumberTheory.Cyclotomic.Gal",
+        "match_kind": "exact"
+      },
+      "note": "`autEquivPow` gives Gal(L/K) ≅ (ZMod n)ˣ for a cyclotomic extension.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Absolute Galois group",
+      "anchor": {
+        "section": "Galois groups and Galois cohomology",
+        "snippet": "leading to the absolute Galois group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "absoluteGaloisGroup",
+        "module": "Mathlib.FieldTheory.AbsoluteGaloisGroup",
+        "match_kind": "exact"
+      },
+      "note": "`absoluteGaloisGroup K` is defined as the automorphism group of the algebraic closure over K.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of Galois theory",
+      "anchor": {
+        "section": "Galois groups and Galois cohomology",
+        "snippet": "The fundamental theorem of Galois theory links fields in between"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsGalois.intermediateFieldEquivSubgroup",
+        "module": "Mathlib.FieldTheory.Galois.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`intermediateFieldEquivSubgroup` is the order-isomorphism between intermediate fields and subgroups of the Galois group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Kronecker–Weber theorem",
+      "anchor": {
+        "section": "Galois groups and Galois cohomology",
+        "snippet": "By the Kronecker–Weber theorem , the maximal abelian extension of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Kronecker–Weber theorem is not formalized in Mathlib (only listed as a target).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hilbert class field",
+      "anchor": {
+        "section": "Galois groups and Galois cohomology",
+        "snippet": "Also notable is the Hilbert class field , the maximal abelian unramified field extension of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hilbert class field is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Brauer group",
+      "anchor": {
+        "section": "Galois groups and Galois cohomology",
+        "snippet": "originally conceived to classify division algebras over"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BrauerGroup",
+        "module": "Mathlib.Algebra.BrauerGroup.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`BrauerGroup K` is the quotient of finite-dimensional central simple algebras over K by the Brauer equivalence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Global fields",
+      "anchor": {
+        "section": "Local and global fields",
+        "snippet": "both types of field are called global fields"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FunctionField",
+        "module": "Mathlib.NumberTheory.FunctionField",
+        "match_kind": null
+      },
+      "note": "Number fields and function fields exist separately (`NumberField`, `FunctionField`) but there is no unifying 'global field' notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hasse principle",
+      "anchor": {
+        "section": "Hasse principle",
+        "snippet": "The local-global principle or Hasse principle asserts that for quadratic equations, the converse holds, as well"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hasse–Minkowski local-global principle is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Adele ring and ideles",
+      "anchor": {
+        "section": "Adeles and ideles",
+        "snippet": "the adele ring is set up. A multiplicative variant is referred to as ideles"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "NumberField.AdeleRing",
+        "module": "Mathlib.NumberTheory.NumberField.AdeleRing",
+        "match_kind": null
+      },
+      "note": "`NumberField.AdeleRing` formalizes the adele ring, but the idele group (its multiplicative variant) is not a named declaration.",
+      "provenance": "ai"
+    }
+  ]
+}

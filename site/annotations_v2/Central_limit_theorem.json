@@ -1,0 +1,579 @@
+{
+  "slug": "Central_limit_theorem",
+  "wikipedia_title": "Central limit theorem",
+  "display_title": "Central limit theorem",
+  "schema_version": 1,
+  "source": "claude-agent-sdk/annotate_articles.py",
+  "annotations": [
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\bar {X}}_{n}\\equiv {\\frac {X_{1}+\\cdots +X_{n}}{n}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Sample-mean notation; Mathlib uses Finset.sum/n inline rather than a named sample-average constant."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\sqrt {n}}\\left({\\bar {X}}_{n}-\\mu \\right)\\mathrel {\\overset {d}{\\longrightarrow }} {\\mathcal {N}}\\left(0,\\sigma ^{2}\\right).}"
+      },
+      "status": "formalized",
+      "decl": "tendstoInDistribution_inv_sqrt_mul_sum_sub",
+      "module": "Mathlib.Probability.CentralLimitTheorem",
+      "note": "Exactly the i.i.d. CLT with mean μ and variance σ²; Mathlib states it in (√n)⁻¹(Σ X_k - nμ) form."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\lim _{n\\to \\infty }\\mathbb {P} \\left[{\\sqrt {n}}({\\bar {X}}_{n}-\\mu )\\leq z\\right]=\\lim _{n\\to \\infty }\\mathbb {P} \\left[{\\frac {{\\sqrt {n}}({\\bar {X}}_{n}-\\mu )}{\\sigma }}\\leq {\\frac {z}{\\sigma }}\\right]=\\Phi \\left({\\frac {z}{\\sigma }}\\right),}"
+      },
+      "status": "partial",
+      "decl": "tendstoInDistribution_inv_sqrt_mul_sum_sub",
+      "module": "Mathlib.Probability.CentralLimitTheorem",
+      "note": "CDF-form restatement; Mathlib proves the underlying weak convergence but not this pointwise CDF identity directly."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\lim _{n\\to \\infty }\\;\\sup _{z\\in \\mathbb {R} }\\;\\left|\\mathbb {P} \\left[{\\sqrt {n}}({\\bar {X}}_{n}-\\mu )\\leq z\\right]-\\Phi \\left({\\frac {z}{\\sigma }}\\right)\\right|=0~,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Uniform CDF convergence (a Berry–Esseen-type strengthening) is not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle s_{n}^{2}=\\sum _{i=1}^{n}\\sigma _{i}^{2}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Auxiliary definition for the Lyapunov CLT, which is not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\lim _{n\\to \\infty }\\;{\\frac {1}{s_{n}^{2+\\delta }}}\\,\\sum _{i=1}^{n}\\operatorname {E} \\left[\\left|X_{i}-\\mu _{i}\\right|^{2+\\delta }\\right]=0}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Lyapunov's condition is not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {1}{s_{n}}}\\,\\sum _{i=1}^{n}\\left(X_{i}-\\mu _{i}\\right)\\mathrel {\\overset {d}{\\longrightarrow }} {\\mathcal {N}}(0,1).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Lyapunov CLT (non-i.i.d. independent case) is not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\lim _{n\\to \\infty }{\\frac {1}{s_{n}^{2}}}\\sum _{i=1}^{n}\\operatorname {E} \\left[(X_{i}-\\mu _{i})^{2}\\cdot \\mathbf {1} _{\\left\\{\\left|X_{i}-\\mu _{i}\\right|>\\varepsilon s_{n}\\right\\}}\\right]=0}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Lindeberg condition is not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {1}{s_{n}}}\\sum _{i=1}^{n}\\left(X_{i}-\\mu _{i}\\right)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Lindeberg–Feller CLT standardized sum is not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {N_{n}-E(N_{n})}{\\sqrt {{\\text{Var}}(N_{n})}}}\\xrightarrow {\\quad d\\quad } {\\mathcal {N}}(0,1)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Hypothesis of Robbins' randomly-indexed CLT; not formalized."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {\\sum _{i=1}^{N_{n}}X_{i}-\\mu E(N_{n})}{\\sqrt {\\sigma ^{2}E(N_{n})+\\mu ^{2}{\\text{Var}}(N_{n})}}}\\xrightarrow {\\quad d\\quad } {\\mathcal {N}}(0,1)}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Robbins' CLT for random sums is not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {X} _{i}={\\begin{bmatrix}X_{i}^{(1)}\\\\\\vdots \\\\X_{i}^{(k)}\\end{bmatrix}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Notational definition of a random vector; not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sum _{i=1}^{n}\\mathbf {X} _{i}={\\begin{bmatrix}X_{1}^{(1)}\\\\\\vdots \\\\X_{1}^{(k)}\\end{bmatrix}}+{\\begin{bmatrix}X_{2}^{(1)}\\\\\\vdots \\\\X_{2}^{(k)}\\end{bmatrix}}+\\cdots +{\\begin{bmatrix}X_{n}^{(1)}\\\\\\vdots \\\\X_{n}^{(k)}\\end{bmatrix}}={\\begin{bmatrix}\\sum _{i=1}^{n}X_{i}^{(1)}\\\\\\vdots \\\\\\sum _{i=1}^{n}X_{i}^{(k)}\\end{bmatrix}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Componentwise sum of random vectors; expository, not a Mathlib statement."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\mathbf {{\\bar {X}}_{n}} ={\\begin{bmatrix}{\\bar {X}}_{i}^{(1)}\\\\\\vdots \\\\{\\bar {X}}_{i}^{(k)}\\end{bmatrix}}={\\frac {1}{n}}\\sum _{i=1}^{n}\\mathbf {X} _{i}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Multivariate sample-mean notation; not a standalone Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {1}{\\sqrt {n}}}\\sum _{i=1}^{n}\\left[\\mathbf {X} _{i}-\\operatorname {E} \\left(\\mathbf {X} _{i}\\right)\\right]={\\frac {1}{\\sqrt {n}}}\\sum _{i=1}^{n}(\\mathbf {X} _{i}-{\\boldsymbol {\\mu }})={\\sqrt {n}}\\left({\\overline {\\mathbf {X} }}_{n}-{\\boldsymbol {\\mu }}\\right).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Algebraic identity for centered multivariate sums; not formalized as a standalone lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\sqrt {n}}\\left({\\overline {\\mathbf {X} }}_{n}-{\\boldsymbol {\\mu }}\\right)\\mathrel {\\overset {d}{\\longrightarrow }} {\\mathcal {N}}_{k}(0,{\\boldsymbol {\\Sigma }}),}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Multivariate CLT; Mathlib's CLT is one-dimensional only."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\boldsymbol {\\Sigma }}={\\begin{bmatrix}{\\operatorname {Var} \\left(X_{1}^{(1)}\\right)}&\\operatorname {Cov} \\left(X_{1}^{(1)},X_{1}^{(2)}\\right)&\\operatorname {Cov} \\left(X_{1}^{(1)},X_{1}^{(3)}\\right)&\\cdots &\\operatorname {Cov} \\left(X_{1}^{(1)},X_{1}^{(k)}\\right)\\\\\\operatorname {Cov} \\left(X_{1}^{(2)},X_{1}^{(1)}\\right)&\\operatorname {Var} \\left(X_{1}^{(2)}\\right)&\\operatorname {Cov} \\left(X_{1}^{(2)},X_{1}^{(3)}\\right)&\\cdots &\\operatorname {Cov} \\left(X_{1}^{(2)},X_{1}^{(k)}\\right)\\\\\\operatorname {Cov} \\left(X_{1}^{(3)},X_{1}^{(1)}\\right)&\\operatorname {Cov} \\left(X_{1}^{(3)},X_{1}^{(2)}\\right)&\\operatorname {Var} \\left(X_{1}^{(3)}\\right)&\\cdots &\\operatorname {Cov} \\left(X_{1}^{(3)},X_{1}^{(k)}\\right)\\\\\\vdots &\\vdots &\\vdots &\\ddots &\\vdots \\\\\\operatorname {Cov} \\left(X_{1}^{(k)},X_{1}^{(1)}\\right)&\\operatorname {Cov} \\left(X_{1}^{(k)},X_{1}^{(2)}\\right)&\\operatorname {Cov} \\left(X_{1}^{(k)},X_{1}^{(3)}\\right)&\\cdots &\\operatorname {Var} \\left(X_{1}^{(k)}\\right)\\\\\\end{bmatrix}}~.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Explicit covariance-matrix display; no Mathlib decl unfolding Σ this way."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left|\\mathbb {P} [S\\in U]-\\mathbb {P} [Z\\in U]\\right|\\leq C\\,d^{1/4}\\gamma ~,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Bentkus-type multivariate Berry–Esseen bound; not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle a_{n}(X_{1}+\\dots +X_{n})-b_{n}\\to Z.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Generalized CLT to α-stable laws; Mathlib has no stable-distribution theory."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sigma ^{2}=\\lim _{n\\rightarrow \\infty }{\\frac {\\operatorname {E} \\left(S_{n}^{2}\\right)}{n}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Long-run variance under α-mixing; not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sigma ^{2}=\\operatorname {E} \\left(X_{1}^{2}\\right)+2\\sum _{k=1}^{\\infty }\\operatorname {E} \\left(X_{1}X_{1+k}\\right),}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Series expression for the long-run variance; not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sum _{n}\\alpha _{n}^{\\frac {\\delta }{2(2+\\delta )}}<\\infty .}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Strong-mixing summability condition; Mathlib has no α-mixing theory."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle Z_{n}={\\frac {X_{1}+\\cdots +X_{n}-n\\mu }{\\sqrt {n\\sigma ^{2}}}}=\\sum _{i=1}^{n}{\\frac {X_{i}-\\mu }{\\sqrt {n\\sigma ^{2}}}}=\\sum _{i=1}^{n}{\\frac {1}{\\sqrt {n}}}Y_{i},}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Proof-internal algebraic rewrite of the normalized sum; not a separate Mathlib lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\begin{aligned}\\varphi _{Z_{n}}\\!(t)=\\varphi _{\\sum _{i=1}^{n}{{\\frac {1}{\\sqrt {n}}}Y_{i}}}\\!(t)\\ &=\\ \\varphi _{Y_{1}}\\!\\!\\left({\\frac {t}{\\sqrt {n}}}\\right)\\varphi _{Y_{2}}\\!\\!\\left({\\frac {t}{\\sqrt {n}}}\\right)\\cdots \\varphi _{Y_{n}}\\!\\!\\left({\\frac {t}{\\sqrt {n}}}\\right)\\\\[1ex]&=\\ \\left[\\varphi _{Y_{1}}\\!\\!\\left({\\frac {t}{\\sqrt {n}}}\\right)\\right]^{n},\\end{aligned}}}"
+      },
+      "status": "partial",
+      "decl": "charFun_inv_sqrt_mul_sum",
+      "module": "Mathlib.Probability.CentralLimitTheorem",
+      "note": "Mathlib's lemma gives the same characteristic function as a power, modulo formulation in (√n)⁻¹ * Σ X_k form."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\varphi _{Y_{1}}\\!\\left({\\frac {t}{\\sqrt {n}}}\\right)=1-{\\frac {t^{2}}{2n}}+o\\!\\left({\\frac {t^{2}}{n}}\\right),\\quad \\left({\\frac {t}{\\sqrt {n}}}\\right)\\to 0}"
+      },
+      "status": "partial",
+      "decl": "tendsto_charFun_inv_sqrt_mul_pow",
+      "module": "Mathlib.Probability.CentralLimitTheorem",
+      "note": "Taylor expansion of charFun is used internally via taylor_charFun_two; not stated as a standalone expansion lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\varphi _{Z_{n}}(t)=\\left(1-{\\frac {t^{2}}{2n}}+o\\left({\\frac {t^{2}}{n}}\\right)\\right)^{n}\\rightarrow e^{-{\\frac {1}{2}}t^{2}},\\quad n\\to \\infty .}"
+      },
+      "status": "formalized",
+      "decl": "tendsto_charFun_inv_sqrt_mul_pow",
+      "module": "Mathlib.Probability.CentralLimitTheorem",
+      "note": "Mathlib proves precisely that the nth power of the rescaled characteristic function tends to exp(-t²/2)."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\bar {X}}_{n}={\\frac {X_{1}+\\cdots +X_{n}}{n}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Repeated sample-mean notation; no dedicated Mathlib constant."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {\\sqrt {n}}{\\sigma }}\\left({\\bar {X}}_{n}-\\mu \\right)=Z_{n}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Proof-internal algebraic identity equating two normalizations; not a separate Mathlib lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle f(n)=a_{1}\\varphi _{1}(n)+a_{2}\\varphi _{2}(n)+O{\\big (}\\varphi _{3}(n){\\big )}\\qquad (n\\to \\infty ).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Generic asymptotic expansion schema; not a specific Mathlib decl."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\lim _{n\\to \\infty }{\\frac {f(n)}{\\varphi _{1}(n)}}=a_{1}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Asymptotic leading-coefficient identity; expository, not a named Mathlib result."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\lim _{n\\to \\infty }{\\frac {f(n)-a_{1}\\varphi _{1}(n)}{\\varphi _{2}(n)}}=a_{2}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Subleading-term identification; not formalized as a Mathlib lemma."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {S_{n}-n\\mu }{\\sqrt {n}}}\\to \\xi ,}"
+      },
+      "status": "partial",
+      "decl": "tendstoInDistribution_inv_sqrt_mul_sum_sub",
+      "module": "Mathlib.Probability.CentralLimitTheorem",
+      "note": "The classical CLT in S_n - nμ form is what Mathlib actually states; same content, different scaling."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle S_{n}\\approx \\mu n+\\xi {\\sqrt {n}}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Informal asymptotic expansion; not stated as a formal Mathlib result."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {S_{n}-a_{n}}{b_{n}}}\\rightarrow \\Xi ,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Convergence to a stable law; not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle S_{n}\\approx a_{n}+\\Xi b_{n}.}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Informal stable-domain expansion; not formalized."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\sigma ^{2}=\\operatorname {E} (X_{1}^{2})+2\\sum _{i=1}^{\\infty }\\operatorname {E} (X_{1}X_{1+i})}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Long-run variance formula for stationary sequences; not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {X_{1}+\\cdots +X_{n}}{\\sqrt {n}}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Normalized sum in the convex-body CLT context; that theorem is not formalized."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left|\\mathbb {P} \\left(a\\leq {\\frac {X_{1}+\\cdots +X_{n}}{\\sqrt {n}}}\\leq b\\right)-{\\frac {1}{\\sqrt {2\\pi }}}\\int _{a}^{b}e^{-{\\frac {1}{2}}t^{2}}\\,dt\\right|\\leq {\\frac {C}{n}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Klartag-type Berry–Esseen bound under log-concavity; not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle \\left|\\mathbb {P} \\left(a\\leq c_{1}X_{1}+\\cdots +c_{n}X_{n}\\leq b\\right)-{\\frac {1}{\\sqrt {2\\pi }}}\\int _{a}^{b}e^{-{\\frac {1}{2}}t^{2}}\\,dt\\right|\\leq C\\left(c_{1}^{4}+\\dots +c_{n}^{4}\\right).}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Linear-combination Berry–Esseen bound for log-concave vectors; not formalized."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle r_{1}^{2}+r_{2}^{2}+\\cdots =\\infty \\quad {\\text{ and }}\\quad {\\frac {r_{k}^{2}}{r_{1}^{2}+\\cdots +r_{k}^{2}}}\\to 0,}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Salem–Zygmund hypotheses on amplitudes; not formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {X_{1}+\\cdots +X_{k}}{\\sqrt {r_{1}^{2}+\\cdots +r_{k}^{2}}}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Normalized lacunary trigonometric sum (Salem–Zygmund); not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {X_{n}-\\operatorname {E} (X_{n})}{\\sqrt {\\operatorname {Var} (X_{n})}}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Standardized area of a Gaussian polytope; not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "math_alttext",
+        "value": "{\\displaystyle {\\frac {X_{n_{1}}+\\cdots +X_{n_{k}}}{\\sqrt {k}}}}"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Komlós-type subsequence CLT statistic; not formalized."
+    },
+    {
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Lindeberg–Lévy CLT — Suppose X 1 , X 2 , X 3 &#x2026; {\\disp"
+      },
+      "status": "formalized",
+      "decl": "tendstoInDistribution_inv_sqrt_mul_sum_sub",
+      "module": "Mathlib.Probability.CentralLimitTheorem",
+      "note": "This is exactly the classical i.i.d. CLT formalized in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Lyapunov CLT &#91; 6 &#93; — Suppose { X 1 , &#x2026; , X n "
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "The Lyapunov CLT is not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Robbins CLT &#91; 7 &#93; &#91; 8 &#93; — Let { X i , i &#x2"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Robbins' CLT for random sums is not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem &#91; 10 &#93; — Let X 1 , &#x2026; , X n , &#x2026;"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Multivariate Berry–Esseen for convex sets; Mathlib's CLT is 1-D only."
+    },
+    {
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Statement of GCLT — A non-degenerate random variable Z is α "
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Generalized CLT characterizing α-stable laws; Mathlib lacks stable distributions."
+    },
+    {
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem — Suppose that { X 1 , &#x2026; , X n , &#x2026; } {"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "CLT for α-mixing stationary sequences; not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem — Let a martingale M n {\\textstyle M_{n}} satisfy 1 "
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Martingale-difference CLT is not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Lemma &#91; 33 &#93; — Suppose X 1 , X 2 , &#x2026; {\\displa"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Variance formula for weighted stationary sums; not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem — There exists a sequence ε n ↓ 0 for which the foll"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Klartag-type convex-body CLT (log-concave isotropic); not formalized."
+    },
+    {
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem — Let X 1 , ..., X n satisfy the assumptions of the "
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Berry–Esseen bound for log-concave isotropic sums; not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem ( Salem – Zygmund ) — Let U be a random variable dis"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Salem–Zygmund CLT for lacunary trigonometric series; not formalized."
+    },
+    {
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem — Let A 1 , ..., A n be independent random points on"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "CLT for area of Gaussian random polytopes; not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem — Let M be a random orthogonal n × n matrix distribu"
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "CLT for linear functionals of Haar-random orthogonal matrices; not in Mathlib."
+    },
+    {
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem — Let random variables X 1 , X 2 , ... ∈ L 2 (Ω) be "
+      },
+      "status": "not_formalized",
+      "decl": null,
+      "module": null,
+      "note": "Komlós-style subsequence CLT in L²; not formalized."
+    }
+  ]
+}
