@@ -153,28 +153,38 @@ into `wiki/public/assets/`. Edit sources, then run build-public, never edit
   echo-validation post-pass (unknown id → NEW; dropped id → _preserve_human
   re-insert). **Prerequisite for:** annotation_events, tombstones, flags-by-id,
   patrol diffs, v4 migration.
-- [ ] **Worker API read/write path:** GET /api/article/:slug.json; PIPELINE_TOKEN
-  bearer branch in getUser (backed by a real 'pipeline' users row); bot POSTs carry
-  expected_version + explicit revid. Sequence: revisions kind/meta backfill must
-  precede first bearer write (user_id='pipeline' breaks NULL-keyed conventions).
-- [ ] **Server-side provenance stamping keyed on actor:** session saves force
-  provenance='human' on changed/new annotations only (diff by id); bearer writes
-  never get 'human'. Human-preservation assertion in the POST handler (server-side
-  twin of _preserve_human: no write may lose a provenance='human' annotation, with
-  an explicit carve-out later for anchor-only rewrites by update jobs).
-- [ ] **Tombstones:** editor delete → {id, anchor, provenance:'human',
-  status:'rejected'} instead of splice; wrap.ts + render.py + coverage counts skip
-  rejected; moderation prompt treats it as a veto; add 'rejected' to the shared enum
-  in the same patch.
-- [ ] **moderation_state table + GET /api/work** (priority ORDER BY as decided above).
+- [x] **Worker API read/write path** — DONE 2026-06-10 (deployed 613da078). GET
+  /api/article/:slug.json (public); bearer branch in getUser vs PIPELINE_TOKEN
+  secret (backed by users row 'pipeline', role 'bot'; kill switch = delete row or
+  role='blocked'); bot POSTs REQUIRE base_version (400), may carry revid (atomic
+  re-pin in the same UPDATE) + meta (revisions.meta, 16KB cap); revisions
+  kind='pipeline'/'edit'/'revert' + parent_id stamped. Token in wiki/.dev.vars.
+- [x] **Server-side provenance stamping + human preservation** — DONE. Session
+  saves: changed/new → forced 'human', unchanged keep stored provenance (anti-
+  laundering both directions; judged with provenance stripped). Bot saves:
+  provenance verbatim + findLostHuman 422 if any stored human annotation
+  (incl. tombstones) is missing or altered (deep-equal, id-else-anchor-sig match).
+  Anchor-only carve-out for update jobs still TODO when stage-1 re-anchoring lands.
+- [x] **Tombstones** — DONE. Editor delete on persisted annotations → status
+  'rejected' + provenance 'human' (spread-preserving); never-persisted still
+  splice. Both engines skip rejected in lockstep (matched=true semantics — not
+  anchor rot); excluded from badges + anonymous __WL_ANNOTATIONS__ (null
+  placeholder keeps data-anno-indices aligned); editors still see/undo vetoes.
+- [x] **moderation_state + GET /api/work** — DONE. Bot-only; modes review|wp-update;
+  priority: flag_count DESC, wp_drifted DESC, human-edited-since-review,
+  last_reviewed_at ASC NULLS FIRST; per-row reason string. Bot saves upsert
+  last_reviewed_at/version + conditional wp_drifted reset.
 - [ ] **Unified runner `site/moderate.py`** (new|review|wp-update; --auth; --mode;
   budget/abort semantics inherited from batch_annotate.run; WIKILEAN_MATHLIB env
   replaces the hardcoded path; mathlib_sha + model + prompt_sha recorded per run).
   find_old_articles() replaced by the D1-backed selector. seed-delta/refresh retire.
-- [ ] **Wikipedia drift detection:** Worker cron (prop=info lastrevid, 50 titles/req;
-  ~15 req/day at 709 articles; free-plan chunking via KV cursor if needed) writing
-  articles.latest_revid/last_upstream_check (never bumps version). Capture
-  redirect/missing flags → page-move/deletion states.
+- [x] **Wikipedia drift detection** — DONE (cron 17 6 * * * deployed; first tick
+  pending). wiki/src/drift.ts: prop=info batches of 50, ≤8 batches/run with KV
+  cursor (drift:cursor in RENDER_CACHE), full sweep every ~2 days at 709 articles.
+  Drifted → latest_revid + moderation_state.wp_drifted=1; missing → state
+  'deleted'; redirect → 'moved' (NB: redirects=0 param deliberately OMITTED —
+  MediaWiki treats presence as true). Never bumps version. Staleness banner
+  injected per-request when latest_revid > revid, with ?diff=cur&oldid= link.
 - [ ] **Stage-0 re-pin** in moderate.py wp-update: fetch new-revid HTML (render.py
   gains target_revid param + revid-keyed cache), dry-run wrap; if matched==total,
   apply with new revid via bot POST. Stages 1-2 (TextQuoteSelector fuzzy ≥0.95 /
@@ -276,6 +286,16 @@ into `wiki/public/assets/`. Edit sources, then run build-public, never edit
   integration review (found + fixed the MAX_FIELD_LEN=200 blocker) → deploy → live
   smoke test (XSS sinks escaped, 403 cross-origin, CC BY-SA footer, 401 anon). Jack
   promoted to admin. Pre-deploy D1 backup taken.
+- 2026-06-10 — **P1 Waves A+B shipped.** Wave A: rescue pull (7 articles' human
+  edits now on disk + git), 18-test integration harness, migration 0004 applied to
+  prod (949 seed/15 edit backfill verified), WP_HTML TTL + double-read fix, budget
+  memo ($1.34/article; quarterly review of 709 solo-feasible). Wave B (deployed
+  613da078, 64/64 tests): bearer pipeline path + provenance stamping +
+  human-preservation 422 + /api/work + tombstones + drift cron + staleness banner.
+  Pipeline user seeded; PIPELINE_TOKEN secret set (value in wiki/.dev.vars).
+  Smoke-tested live: :slug.json shape, /api/work 403/jobs, bot-save 400 contract.
+  Note: numeric-slug articles (0, 1, 100…) checked — genuine number articles, not
+  junk. Next: Wave C (ID backfill, moderate.py, wp-update stage-0, discovery).
 - 2026-06-10 — **VERSION-CONTROL RISK SURFACED:** `wiki/`, `site/`, `docs/`,
   `CONTRIBUTING.md` are untracked in git — the whole live backend has never been
   committed. P0 (and everything before it) exists only in the working tree + the live
