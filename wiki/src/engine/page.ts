@@ -36,9 +36,19 @@ interface ClientAnno {
   mathlib_url?: string;
 }
 
-export function buildClientData(annotations: Annotation[]): ClientAnno[] {
-  const out: ClientAnno[] = [];
+export function buildClientData(annotations: Annotation[]): Array<ClientAnno | null> {
+  const out: Array<ClientAnno | null> = [];
   for (const a of annotations) {
+    // Human-deletion tombstones (status="rejected") must not ship to
+    // anonymous readers — they're unrendered noise and would leak vetoed
+    // content. A null placeholder (not a filter) keeps the array index-
+    // aligned with data-anno-indices in the wrapped HTML; tombstones are
+    // never wrapped, so no index references the null, and script.js
+    // .filter(Boolean)s its lookups anyway. Mirrored in render.py client_data.
+    if (a.status === "rejected") {
+      out.push(null);
+      continue;
+    }
     const m = a.mathlib ?? {};
     const decl = m.decl || a.decl;
     const module = m.module || a.module;
@@ -74,6 +84,8 @@ export interface PageInput {
 export function renderArticlePage(input: PageInput): string {
   const { slug, displayTitle, wikipediaTitle, body, annotations, matched, wpHtml } = input;
 
+  // "rejected" (human-deletion tombstone) is deliberately absent from
+  // `counts`, so tombstones never reach the header badges or `desc`.
   const counts = { formalized: 0, partial: 0, not_formalized: 0 } as Record<string, number>;
   for (const a of annotations) {
     if (a.status in counts) counts[a.status] += 1;
@@ -83,6 +95,10 @@ export function renderArticlePage(input: PageInput): string {
   const nDisplayTotal = (wpHtml.match(/<span class="mwe-math-element mwe-math-element-block">/g) ?? []).length;
   let nDisplayAnnotated = 0;
   for (let i = 0; i < annotations.length; i++) {
+    // Tombstones report matched=true from the wrap engine ("excluded, not an
+    // anchor failure") but emit no wrap, so any math element they once
+    // covered counts as unannotated again.
+    if (annotations[i].status === "rejected") continue;
     if (matched[i] && annotations[i].anchor?.type === "math_alttext") nDisplayAnnotated += 1;
   }
   const nUntouched = Math.max(0, nDisplayTotal - nDisplayAnnotated);
