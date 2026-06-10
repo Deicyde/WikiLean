@@ -1,0 +1,64 @@
+# Automated daily backup of the live WikiLean D1 database.
+#
+# This mirrors `wiki/scripts/backup-d1.sh` (which runs `wrangler d1 export`)
+# but on GitHub-hosted infrastructure, so backups happen even when no one's
+# laptop is on. The export of the `wikilean` D1 database is uploaded as a
+# workflow artifact and retained for 30 days.
+#
+# ── Required repo secret ──────────────────────────────────────────────────
+#   CLOUDFLARE_API_TOKEN — a Cloudflare API token with D1 read/export scope
+#   (D1:Read on the WikiLean account). Add it under:
+#       repo Settings → Secrets and variables → Actions → New repository secret
+#   Name it exactly CLOUDFLARE_API_TOKEN. Without it, the workflow will fail
+#   at the export step. The Cloudflare account id is read from wiki/wrangler.jsonc
+#   and exported below as CLOUDFLARE_ACCOUNT_ID so wrangler targets the right
+#   account non-interactively.
+#
+# ── Running it manually ───────────────────────────────────────────────────
+#   GitHub UI:  Actions tab → "Backup D1" → "Run workflow".
+#   gh CLI:     gh workflow run backup-d1.yml
+#   Download the resulting artifact from the run's summary page.
+#
+# ── Restore (into a fresh empty D1 of the same name) ──────────────────────
+#   cd wiki && npx wrangler d1 execute wikilean --remote --file=wikilean-<ts>.sql
+
+name: Backup D1
+
+on:
+  schedule:
+    # Daily at 08:27 UTC (off-peak).
+    - cron: "27 8 * * *"
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    # Runs from the repo root on purpose: wrangler resolves the database by
+    # name via the API (CLOUDFLARE_ACCOUNT_ID below), so this workflow has no
+    # dependency on wiki/wrangler.jsonc being present in the checkout.
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: "02e868c47ebe2b175a0609df94e857e6"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Compute timestamp
+        id: stamp
+        run: echo "ts=$(date -u +%Y%m%dT%H%M%SZ)" >> "$GITHUB_OUTPUT"
+
+      - name: Export D1 (wikilean)
+        run: npx --yes wrangler d1 export wikilean --remote --output="wikilean-${{ steps.stamp.outputs.ts }}.sql"
+
+      - name: Upload backup artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wikilean-d1-${{ steps.stamp.outputs.ts }}
+          path: wikilean-${{ steps.stamp.outputs.ts }}.sql
+          retention-days: 30
+          if-no-files-found: error
