@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib states this verbatim as Lagrange's theorem: `Nat.card s ∣ Nat.card α` for any subgroup `s : Subgroup α`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d3e5e53a8636"
     },
     {
       "kind": "theorem",
@@ -35,7 +36,8 @@
         "match_kind": "exact"
       },
       "note": "Same statement as the boxed theorem; the docstring in Coset/Card.lean explicitly labels it `**Lagrange's Theorem**`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "835c2d5bc694"
     },
     {
       "kind": "proposition",
@@ -51,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "`H.index * Nat.card H = Nat.card G` directly formalizes the equality |G:H|·|H| = |G|; the companion `card_eq_card_quotient_mul_card_subgroup` states it via `α ⧸ s`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "12ed090f28be"
     },
     {
       "kind": "proposition",
@@ -67,7 +70,8 @@
         "match_kind": "generalization"
       },
       "note": "The noncomputable equivalence `α ≃ (α ⧸ s) × s` gives the cardinal-arithmetic Lagrange formula in disguise, but there is no Mathlib lemma asserting `Cardinal.mk α = Cardinal.mk (α ⧸ s) * Cardinal.mk s` directly.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "76f520da749a"
     },
     {
       "kind": "proposition",
@@ -83,7 +87,8 @@
         "match_kind": "invocation"
       },
       "note": "The setoid `QuotientGroup.leftRel s` (with `α ⧸ s := Quotient (leftRel s)`) realises the left-coset partition as equivalence classes by construction.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "69bf15a89dce"
     },
     {
       "kind": "theorem",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "For `H ≤ K`, `H.relIndex K * K.index = H.index` formalises the tower equality [G:H] = [G:K]·[K:H].",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4abf18e25ee3"
     },
     {
       "kind": "proposition",
@@ -115,7 +121,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib has the numerical relation `relIndex_mul_index` but not an explicit lemma asserting that each left K-coset decomposes into [K:H] left H-cosets as a set partition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a53df169940c"
     },
     {
       "kind": "proposition",
@@ -131,7 +138,8 @@
         "match_kind": "invocation"
       },
       "note": "Setting `H = ⊥` in `relIndex_mul_index` together with `index_mul_card` recovers the standard Lagrange equation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4d2434372d56"
     },
     {
       "kind": "proposition",
@@ -147,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "`orderOf x ∣ Nat.card G` directly formalises the divisibility of element order by group order.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c5aae6496e65"
     },
     {
       "kind": "proposition",
@@ -163,7 +172,8 @@
         "match_kind": "exact"
       },
       "note": "Euler's theorem `x ^ φ n ≡ 1 [MOD n]` (with `ZMod.pow_card_sub_one_eq_one` as Fermat's little) is stated in Mathlib and labelled the Fermat-Euler totient theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e922daad1537"
     },
     {
       "kind": "proposition",
@@ -179,7 +189,8 @@
         "match_kind": "exact"
       },
       "note": "`isCyclic_of_prime_card` gives the cyclic conclusion and `isSimpleGroup_of_prime_card` (in Mathlib.GroupTheory.SpecificGroups.Cyclic) gives simplicity.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "76781ac36c2d"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": "generalization"
       },
       "note": "The infinitude of primes itself is formalised, but the specific Lagrange-based argument (via |(Z/pZ)*| dividing) is not given as a distinct Mathlib proof.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9d6df45bf6d0"
     },
     {
       "kind": "proposition",
@@ -211,7 +223,8 @@
         "match_kind": null
       },
       "note": "No Mathlib lemma directly asserts the existence of a divisor d of |G| with no subgroup of order d (the failure of the converse is folklore around the A4 counterexample).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8324874bc573"
     },
     {
       "kind": "definition",
@@ -227,7 +240,8 @@
         "match_kind": null
       },
       "note": "Grep for `CLT` in Mathlib/GroupTheory returns no matches; no definition of CLT group exists.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7f5bb907bf2a"
     },
     {
       "kind": "proposition",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "Neither `CLT` nor `supersolvable` appears in Mathlib/GroupTheory; this implication chain is absent.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1a88ad0b3f72"
     },
     {
       "kind": "theorem",
@@ -259,7 +274,8 @@
         "match_kind": "exact"
       },
       "note": "The root-namespace lemma is explicitly documented as Cauchy's theorem and provides an element of order `p` whenever `p ∣ |G|`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c59d30421174"
     },
     {
       "kind": "theorem",
@@ -275,7 +291,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib provides the existence of subgroups of every prime-power order dividing |G| as a generalisation of Sylow's first theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7450759de63e"
     },
     {
       "kind": "theorem",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "Mathlib has Schur-Zassenhaus but no theorem asserting existence of Hall π-subgroups in solvable groups; grep for `hallSubgroup`/`exists_hall` returns nothing.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6c006bb2f83a"
     },
     {
       "kind": "example",
@@ -307,7 +325,8 @@
         "match_kind": null
       },
       "note": "No Mathlib lemma directly states that `alternatingGroup (Fin 4)` has no subgroup of order 6, though `Nat.card ≠ 6` appears as a hypothesis in the alternating-simplicity development.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "266bc85d1d7e"
     },
     {
       "kind": "definition",
@@ -323,7 +342,8 @@
         "match_kind": "exact"
       },
       "note": "The Klein four subgroup of `alternatingGroup α` is defined and shown to satisfy `IsKleinFour`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "addbac05bf08"
     },
     {
       "kind": "proposition",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "Lagrange's original 1770/71 polynomial-orbit-count result is not formalised in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ea1d500122f3"
     },
     {
       "kind": "theorem",
@@ -355,7 +376,8 @@
         "match_kind": "special_case"
       },
       "note": "Gauss's special case (Fermat's little theorem in (Z/pZ)*) is Mathlib's `ZMod.pow_card_sub_one_eq_one`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cdb28789ccdf"
     },
     {
       "kind": "theorem",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "Mathlib has Lagrange's theorem in full generality but not Cauchy's historical 1844 specialisation to the symmetric group.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f999b6245293"
     },
     {
       "kind": "theorem",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "Jordan's historical proof for permutation groups is subsumed by Mathlib's general Lagrange theorem and is not formalised as a distinct result.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f283f20620d4"
     }
   ]
 }

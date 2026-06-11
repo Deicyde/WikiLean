@@ -19,7 +19,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib has the binary case via `SetRel α β := Set (α × β)`, but no general n-ary relation type over an arbitrary sequence of sets.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "aa0e5d5d2ed5"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": null
       },
       "note": "No notion of arity attached to a relation appears in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2527604b2f50"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "special_case"
       },
       "note": "`Function.graph` gives the graph of a function as a `SetRel`; the more general 'graph of a relation' (the underlying set in the n-ary case) is not separately formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f6ecc408705c"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "special_case"
       },
       "note": "For the binary case Mathlib provides the scoped notation `a ~[R] b` for `(a,b) ∈ R`; no n-ary analogue exists.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "58872e6f37a8"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": null
       },
       "note": "No notion of the i-th domain of an n-ary relation in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "146c6d29c420"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": null
       },
       "note": "The 'nonsimple domain' terminology is database-theoretic and not present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a98500b39eb9"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": "special_case"
       },
       "note": "For binary relations, `SetRel.dom`/`SetRel.cod` give the active domain/codomain (projections of the support); no n-ary version exists.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ffd761b5850a"
     },
     {
       "kind": "definition",
@@ -131,7 +138,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib defines `Relator.LeftTotal` and `Relator.RightTotal` for binary relations; no general 'total on i-th domain' for n-ary.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1e87df0badd8"
     },
     {
       "kind": "definition",
@@ -147,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "`Relator.LeftTotal` (`∀ a, ∃ b, R a b`) and `Relator.RightTotal` (`∀ b, ∃ a, R a b`) match the binary notions exactly.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cb5efe83d861"
     },
     {
       "kind": "definition",
@@ -163,7 +172,8 @@
         "match_kind": null
       },
       "note": "The relational 'unique on a set'/primary-key terminology is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4f3aedc753d6"
     },
     {
       "kind": "definition",
@@ -179,7 +189,8 @@
         "match_kind": "exact"
       },
       "note": "`Relator.LeftUnique` and `Relator.RightUnique` match the binary left-/right-unique definitions exactly.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0f20be26c649"
     },
     {
       "kind": "definition",
@@ -195,7 +206,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib distinguishes `SetRel α α` from `SetRel α β` implicitly through types, but does not name the homogeneous/heterogeneous dichotomy.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a7c20aaad571"
     },
     {
       "kind": "definition",
@@ -211,7 +223,8 @@
         "match_kind": null
       },
       "note": "No specific declaration about the empty n-ary relation over an empty sequence of domains.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "352d8c2846b4"
     },
     {
       "kind": "definition",
@@ -227,7 +240,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib treats relations as `Prop`-valued functions natively; `Set.indicator` provides general characteristic functions but not as a notion tied to relations specifically.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c5008b320b8f"
     },
     {
       "kind": "definition",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "Mathlib uses `α → β → ... → Prop` directly as n-ary predicates; there is no named 'n-ary predicate' wrapper.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e8acd6a0ae2b"
     },
     {
       "kind": "theorem",
@@ -259,7 +274,8 @@
         "match_kind": null
       },
       "note": "No bundled n-ary relation type indexed by `Fin n → Type*` carrying a subset of the product is defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7eb01c2c5717"
     },
     {
       "kind": "definition",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "Nullary relations as a distinguished concept are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ec5eb33cf31c"
     },
     {
       "kind": "definition",
@@ -291,7 +308,8 @@
         "match_kind": "generalization"
       },
       "note": "Unary relations correspond to `Set α` (or `α → Prop`), which Mathlib uses throughout, but they are not labelled 'unary relations'.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b3681e95aa37"
     },
     {
       "kind": "proposition",
@@ -307,7 +325,8 @@
         "match_kind": null
       },
       "note": "This informal observation is not stated as a lemma in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "68e80337dadf"
     },
     {
       "kind": "definition",
@@ -323,7 +342,8 @@
         "match_kind": "exact"
       },
       "note": "`SetRel α β := Set (α × β)` formalizes binary relations exactly, with extensive supporting API.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fbb1835aea56"
     },
     {
       "kind": "example",
@@ -339,7 +359,8 @@
         "match_kind": "exact"
       },
       "note": "Equality `Eq` (and inequality `Ne`) are pervasive core/Mathlib binary relations.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c2379ade9087"
     },
     {
       "kind": "example",
@@ -355,7 +376,8 @@
         "match_kind": "exact"
       },
       "note": "The `Dvd` typeclass and its `∣` notation provide the divisibility relation throughout Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ac2d4c48e877"
     },
     {
       "kind": "example",
@@ -371,7 +393,8 @@
         "match_kind": "exact"
       },
       "note": "The `Membership` typeclass with `∈` notation provides set membership as a binary relation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f7c07172d622"
     },
     {
       "kind": "definition",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "Ternary relations are written ad hoc as `α → β → γ → Prop`; no dedicated 'ternary relation' definition exists.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "62961be874a3"
     },
     {
       "kind": "example",
@@ -403,7 +427,8 @@
         "match_kind": null
       },
       "note": "This illustrative example is not present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fcfb1ee8fe10"
     }
   ]
 }

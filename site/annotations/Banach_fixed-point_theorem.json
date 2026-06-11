@@ -22,7 +22,8 @@
         "match_kind": "exact"
       },
       "note": "`ContractingWith K f := K < 1 ∧ LipschitzWith K f` on an `EMetricSpace`; combined with `LipschitzWith` from `Mathlib.Topology.EMetricSpace.Lipschitz` it captures the article's `d(T(x),T(y)) ≤ q·d(x,y)` with `q < 1`.",
-      "provenance": "human"
+      "provenance": "human",
+      "id": "cff0ae21d7c9"
     },
     {
       "kind": "proposition",
@@ -38,7 +39,8 @@
         "match_kind": "exact"
       },
       "note": "`exists_fixedPoint` packages existence, uniqueness (via `fixedPoint_unique`) and the iteration convergence `Tendsto (fun n ↦ f^[n] x) atTop (𝓝 y)` — exactly the article's three conclusions. The unique fixed point itself is `ContractingWith.fixedPoint`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ec80a2f4b815"
     },
     {
       "kind": "proposition",
@@ -60,7 +62,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib has both the a priori bound `dist (f^[n] x) (fixedPoint f hf) ≤ dist x (f x) · K^n / (1-K)` (= 2nd inequality) and the a posteriori bound `aposteriori_dist_iterate_fixedPoint_le` (= 3rd inequality); the 1st and 4th follow from `ContractingWith.dist_le_mul` iterated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a9cc68ec752d"
     },
     {
       "kind": "definition",
@@ -76,7 +79,8 @@
         "match_kind": "exact"
       },
       "note": "`LipschitzWith K f := ∀ x y, edist (f x) (f y) ≤ K · edist x y`; the article's `q` is the `K` parameter.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f33d47c2d90c"
     },
     {
       "kind": "example",
@@ -102,7 +106,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle T:[1,\\infty )\\to [1,\\infty ),\\,\\,T(x)=x+{\\tfrac {1}{x}}\\,,}"
         }
-      ]
+      ],
+      "id": "158881f71cbd"
     },
     {
       "kind": "proposition",
@@ -120,7 +125,8 @@
         "match_kind": null
       },
       "note": "Edelstein's theorem: on a compact metric space, any map satisfying d(T(x),T(y))<d(x,y) for all distinct x,y has a unique fixed point. No matching decl in Mathlib's `Mathlib/Topology/MetricSpace/Contracting.lean` or elsewhere.",
-      "provenance": "human"
+      "provenance": "human",
+      "id": "f59433b787fe"
     },
     {
       "kind": "proposition",
@@ -136,7 +142,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib's Picard–Lindelöf is proved exactly via Banach's theorem applied to the integral (Picard) operator; see `ODE.picard` and `FunSpace.exists_isFixedPt_next` which use `ContractingWith.isFixedPt_fixedPoint_iterate`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "462afb908a2c"
     },
     {
       "kind": "proposition",
@@ -152,7 +159,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib's `ApproximatesLinearOn.toOpenPartialHomeomorph` produces a homeomorphism on a neighborhood (taking `I + g` to its image), but does NOT explicitly carry the bi-Lipschitz conclusion. The article's stronger claim — that `(I+g)^{-1}` is also of the form `I+h` with `h` Lipschitz of constant `k/(1-k)` — does not appear to be a standalone Mathlib decl.",
-      "provenance": "human"
+      "provenance": "human",
+      "id": "7f5985910d9f"
     },
     {
       "kind": "proposition",
@@ -168,7 +176,8 @@
         "match_kind": "exact"
       },
       "note": "The inverse function theorem in Banach spaces, proved via `ApproximatesLinearOn` (which is itself a Banach-fixed-point argument).",
-      "provenance": "human"
+      "provenance": "human",
+      "id": "e25757416531"
     },
     {
       "kind": "proposition",
@@ -184,7 +193,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib has `Polynomial.newtonMap` for Newton's method on polynomial roots in a commutative ring (and its quadratic-convergence-style theorems), but not the general analytic-Newton-via-Banach-FPT statement the article alludes to.",
-      "provenance": "human"
+      "provenance": "human",
+      "id": "b32c7105d1cc"
     },
     {
       "kind": "proposition",
@@ -200,7 +210,8 @@
         "match_kind": null
       },
       "note": "The Nash embedding theorem (every Riemannian manifold can be isometrically embedded into Euclidean space) is not formalized in Mathlib.",
-      "provenance": "human"
+      "provenance": "human",
+      "id": "92b3ccf9ef53"
     },
     {
       "kind": "proposition",
@@ -216,7 +227,8 @@
         "match_kind": null
       },
       "note": "Bessaga (1959): if every iterate `f^n` of a set self-map has a unique fixed point, then for any `q ∈ (0,1)` there is a complete metric making `f` a `q`-contraction. No such metric-construction lemma exists in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "68863f164322"
     },
     {
       "kind": "proposition",
@@ -232,7 +244,8 @@
         "match_kind": null
       },
       "note": "Hitzler–Seda: for a T₁ self-map with unique fixed point that every orbit converges to, an ultrametric exists making it a `1/2`-contraction. Not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "17b30ad50d55"
     },
     {
       "kind": "proposition",
@@ -248,7 +261,8 @@
         "match_kind": "exact"
       },
       "note": "If `f^[n]` is `ContractingWith K`, then the (unique) fixed point of `f^[n]` is also a fixed point of `f`; combined with `fixedPoint_unique` this yields existence+uniqueness for `f` itself.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9fba9c515b21"
     },
     {
       "kind": "proposition",
@@ -274,7 +288,8 @@
         "match_kind": null
       },
       "note": "Generalization assuming `d(T^n x, T^n y) ≤ c_n · d(x,y)` for each n, with `∑ c_n < ∞`. No matching decl found in Mathlib's contracting/Lipschitz library.",
-      "provenance": "human"
+      "provenance": "human",
+      "id": "691b55b2cbd5"
     },
     {
       "kind": "example",
@@ -292,7 +307,8 @@
         "match_kind": null
       },
       "note": "Banach FPT applied to f(x)=x+sin x on [3π/4, 5π/4]: starting from x₀=3, the iteration π = f(f(f(…f(3)…))) converges to π. Mathlib does not formalize this specific numerical example.",
-      "provenance": "human"
+      "provenance": "human",
+      "id": "785eb35d1d12"
     }
   ]
 }

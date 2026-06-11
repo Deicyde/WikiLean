@@ -19,7 +19,8 @@
         "match_kind": "special_case"
       },
       "note": "The forward-difference case `f(x+h) - f(x)` is defined as `fwdDiff h f` with notation `Δ_[h]`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "467761c92d1a"
     },
     {
       "kind": "definition",
@@ -45,7 +46,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\Delta [f](x)=f(x+1)-f(x).}"
         }
-      ]
+      ],
+      "id": "2557a01cd614"
     },
     {
       "kind": "definition",
@@ -71,7 +73,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\Delta [f](x)=f(x+1)-f(x).}"
         }
-      ]
+      ],
+      "id": "6a7c95bc2ef2"
     },
     {
       "kind": "definition",
@@ -87,7 +90,8 @@
         "match_kind": "exact"
       },
       "note": "Definition `fwdDiff h f n = f (n + h) - f n` matches the Wikipedia forward difference exactly.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1afcc87876eb"
     },
     {
       "kind": "definition",
@@ -113,7 +117,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\nabla _{h}[f](x)=f(x)-f(x-h)=\\Delta _{h}[f](x-h).}"
         }
-      ]
+      ],
+      "id": "17bc9fff46ef"
     },
     {
       "kind": "definition",
@@ -139,7 +144,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\delta _{h}[f](x)=f(x+{\\tfrac {h}{2}})-f(x-{\\tfrac {h}{2}})=\\Delta _{\\tfrac {h}{2}}[f](x)+\\nabla _{\\tfrac {h}{2}}[f](x).}"
         }
-      ]
+      ],
+      "id": "2a7b56177e90"
     },
     {
       "kind": "definition",
@@ -165,7 +171,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle f'(x)=\\lim _{h\\to 0}{\\frac {f(x+h)-f(x)}{h}}.}"
         }
-      ]
+      ],
+      "id": "afda5040f83d"
     },
     {
       "kind": "proposition",
@@ -191,7 +198,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\frac {\\Delta _{h}[f](x)}{h}}-f'(x)=o(h)\\to 0\\quad {\\text{as }}h\\to 0.}"
         }
-      ]
+      ],
+      "id": "831783fb3fe6"
     },
     {
       "kind": "proposition",
@@ -217,7 +225,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\frac {\\nabla _{h}[f](x)}{h}}-f'(x)=o(h)\\to 0\\quad {\\text{as }}h\\to 0.}"
         }
-      ]
+      ],
+      "id": "e1ddecf26d27"
     },
     {
       "kind": "proposition",
@@ -243,7 +252,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\frac {\\delta _{h}[f](x)}{h}}-f'(x)=o\\left(h^{2}\\right).}"
         }
-      ]
+      ],
+      "id": "a7a77757be63"
     },
     {
       "kind": "example",
@@ -259,7 +269,8 @@
         "match_kind": null
       },
       "note": "Illustrative example; no corresponding formal statement in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ee98c2e7b11f"
     },
     {
       "kind": "proposition",
@@ -285,7 +296,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle f''(x)\\approx {\\frac {\\delta _{h}^{2}[f](x)}{h^{2}}}={\\frac {{\\frac {f(x+h)-f(x)}{h}}-{\\frac {f(x)-f(x-h)}{h}}}{h}}={\\frac {f(x+h)-2f(x)+f(x-h)}{h^{2}}}~.}"
         }
-      ]
+      ],
+      "id": "154baed043e8"
     },
     {
       "kind": "definition",
@@ -319,7 +331,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\delta _{h}^{n}[f](x)=\\sum _{j=0}^{n}(-1)^{j}{\\binom {n}{j}}f\\left(x+\\left({\\frac {n}{2}}-j\\right)h\\right)~.}"
         }
-      ]
+      ],
+      "id": "fb15774bdc6b"
     },
     {
       "kind": "proposition",
@@ -335,7 +348,8 @@
         "match_kind": "invocation"
       },
       "note": "The explicit alternating-sum-of-shifts formula (the binomial-transform identity) is `fwdDiff_iter_eq_sum_shift`; the `binomial transform` name is not used.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6d4611f5144e"
     },
     {
       "kind": "proposition",
@@ -361,7 +375,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\frac {\\Delta _{h}[f](x)-{\\frac {1}{2}}\\Delta _{h}^{2}[f](x)}{h}}=-{\\frac {f(x+2h)-4f(x+h)+3f(x)}{2h}}}"
         }
-      ]
+      ],
+      "id": "939b41bbd6ca"
     },
     {
       "kind": "proposition",
@@ -387,7 +402,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle f''(x)\\approx {\\frac {f'(x+h)-f'(x-h)}{2h}}~.}"
         }
-      ]
+      ],
+      "id": "a13b7c8668bf"
     },
     {
       "kind": "proposition",
@@ -413,7 +429,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\Delta _{h}^{n}[P](x)=ah^{n}n!}"
         }
-      ]
+      ],
+      "id": "06764d5b86b3"
     },
     {
       "kind": "proposition",
@@ -439,7 +456,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\Delta _{h}[Q](x)=Q(x+h)-Q(x)=[a(x+h)+b]-[ax+b]=ah=ah^{1}1!}"
         }
-      ]
+      ],
+      "id": "321224d2b546"
     },
     {
       "kind": "proposition",
@@ -465,7 +483,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\Delta _{h}^{m-1}[R](x)=ah^{m-1}(m-1)!}"
         }
-      ]
+      ],
+      "id": "20c45ca1326b"
     },
     {
       "kind": "example",
@@ -481,7 +500,8 @@
         "match_kind": null
       },
       "note": "Interpolation-by-differences-table example has no dedicated Mathlib formalization.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5ea42821db07"
     },
     {
       "kind": "proposition",
@@ -507,7 +527,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\Delta _{kh}^{n}\\left(f,x\\right)=\\sum \\limits _{j_{1}=0}^{k-1}\\sum \\limits _{j_{2}=0}^{k-1}\\cdots \\sum \\limits _{j_{n}=0}^{k-1}\\Delta _{h}^{n}\\left(f,x+j_{1}h+j_{2}h+\\cdots +j_{n}h\\right).}"
         }
-      ]
+      ],
+      "id": "79a806e70c9d"
     },
     {
       "kind": "definition",
@@ -523,7 +544,8 @@
         "match_kind": "exact"
       },
       "note": "`f(y + n•h) = ∑ k ∈ range (n+1), n.choose k • Δ_[h]^[k] f y` is labelled the Gregory–Newton formula.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2e389b22d40b"
     },
     {
       "kind": "example",
@@ -553,7 +575,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle (x)_{k}=x(x-1)(x-2)\\cdots (x-k+1)}"
         }
-      ]
+      ],
+      "id": "7c5e405caccf"
     },
     {
       "kind": "example",
@@ -579,7 +602,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\begin{matrix}{\\begin{array}{|c||c|c|c|}\\hline x&amp;f=\\Delta ^{0}&amp;\\Delta ^{1}&amp;\\Delta ^{2}\\\\\\hline 1&amp;{\\underline {2}}&amp;&amp;\\\\&amp;&amp;{\\underline {0}}&amp;\\\\2&amp;2&amp;&amp;{\\underline {2}}\\\\&amp;&amp;2&amp;\\\\3&amp;4&amp;&amp;\\\\\\hline \\end{array}}&amp;\\quad {\\begin{aligned}f(x)&amp;=\\Delta ^{0}\\cdot 1+\\Delta ^{1}\\cdot {\\dfrac {(x-x_{0})_{1}}{1!}}+\\Delta ^{2}\\cdot {\\dfrac {(x-x_{0})_{2}}{2!}}\\quad (x_{0}=1)\\\\\\\\&amp;=2\\cdot 1+0\\cdot {\\dfrac {x-1}{1}}+2\\cdot {\\dfrac {(x-1)(x-2)}{2}}\\\\\\\\&amp;=2+(x-1)(x-2)\\\\\\end{aligned}}\\end{matrix}}}"
         }
-      ]
+      ],
+      "id": "ba0454129add"
     },
     {
       "kind": "definition",
@@ -613,7 +637,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle f(\\xi )=\\Delta 0\\cdot P\\left(\\xi \\right).}"
         }
-      ]
+      ],
+      "id": "fc92d6d80fa1"
     },
     {
       "kind": "theorem",
@@ -629,7 +654,8 @@
         "match_kind": "exact"
       },
       "note": "Mahler's theorem is `hasSum_mahler`: every continuous `f : C(ℤ_[p], E)` equals the sum `∑ mahlerTerm (Δ_[1]^[n] f 0) n`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3066c8cb6e5f"
     },
     {
       "kind": "theorem",
@@ -645,7 +671,8 @@
         "match_kind": null
       },
       "note": "No Carlson's theorem (uniqueness of entire-function interpolation) in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c949a616f65e"
     },
     {
       "kind": "definition",
@@ -671,7 +698,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\Delta _{h}=\\operatorname {T} _{h}-\\operatorname {I} ,}"
         }
-      ]
+      ],
+      "id": "71f904f040da"
     },
     {
       "kind": "definition",
@@ -687,7 +715,8 @@
         "match_kind": "exact"
       },
       "note": "Higher-order iteration is `Δ_[h]^[n]` via `Function.iterate`, with explicit form in `fwdDiff_iter_eq_sum_shift`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8867bb6d8a59"
     },
     {
       "kind": "proposition",
@@ -703,7 +732,8 @@
         "match_kind": "exact"
       },
       "note": "Bundled as a `Module.End ℤ (M → G)`; ingredients are `fwdDiff_add` and `fwdDiff_const_smul`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6872d043db6a"
     },
     {
       "kind": "proposition",
@@ -733,7 +763,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle h\\operatorname {D} =\\ln(1+\\Delta _{h})=\\Delta _{h}-{\\tfrac {1}{2}}\\,\\Delta _{h}^{2}+{\\tfrac {1}{3}}\\,\\Delta _{h}^{3}-\\cdots ~.}"
         }
-      ]
+      ],
+      "id": "808251bd50bc"
     },
     {
       "kind": "example",
@@ -759,7 +790,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\sin \\left(x\\operatorname {T} _{h}^{-1}\\right)=x-{\\frac {(x)_{3}}{3!}}+{\\frac {(x)_{5}}{5!}}-{\\frac {(x)_{7}}{7!}}+\\cdots }"
         }
-      ]
+      ],
+      "id": "5aaa83abcf62"
     },
     {
       "kind": "proposition",
@@ -775,7 +807,8 @@
         "match_kind": null
       },
       "note": "No statement that exponentials are eigenfunctions of `Δ_h`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bfc0ee6f43d8"
     },
     {
       "kind": "example",
@@ -801,7 +834,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\delta (x)\\mapsto {\\frac {\\sin \\left[{\\frac {\\pi }{2}}\\left(1+{\\frac {x}{h}}\\right)\\right]}{\\pi (x+h)}},}"
         }
-      ]
+      ],
+      "id": "b36d6951ab87"
     },
     {
       "kind": "definition",
@@ -817,7 +851,8 @@
         "match_kind": null
       },
       "note": "No indefinite-sum / antidifference operator declared in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "17a8b9d3f8c8"
     },
     {
       "kind": "proposition",
@@ -843,7 +878,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\Delta c=0}"
         }
-      ]
+      ],
+      "id": "cbc99dfd764e"
     },
     {
       "kind": "proposition",
@@ -859,7 +895,8 @@
         "match_kind": "exact"
       },
       "note": "`Δ_[h] (f • g) = Δf • g + f • Δg + Δf • Δg`, exactly the discrete product rule.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3779e412506a"
     },
     {
       "kind": "proposition",
@@ -875,7 +912,8 @@
         "match_kind": null
       },
       "note": "No finite-difference quotient rule found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a36cacde96bc"
     },
     {
       "kind": "proposition",
@@ -891,7 +929,8 @@
         "match_kind": "exact"
       },
       "note": "Linearity over finite sums (`Δ` commutes with `∑`) is `fwdDiff_finsetSum`; telescoping / fundamental-theorem-style summation identities are not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bfadbb5a9263"
     },
     {
       "kind": "definition",
@@ -917,7 +956,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\Delta _{h}^{\\mu }[f](x)=\\sum _{k=0}^{N}\\mu _{k}f(x+kh),}"
         }
-      ]
+      ],
+      "id": "fd693469905c"
     },
     {
       "kind": "definition",
@@ -933,7 +973,8 @@
         "match_kind": "generalization"
       },
       "note": "The incidence-algebra Möbius function `IncidenceAlgebra.mu` realizes Möbius inversion on a poset.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "820c60ceb26a"
     },
     {
       "kind": "definition",
@@ -959,7 +1000,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\begin{aligned}f_{x}(x,y)&amp;\\approx {\\frac {f(x+h,y)-f(x-h,y)}{2h}}\\\\f_{y}(x,y)&amp;\\approx {\\frac {f(x,y+k)-f(x,y-k)}{2k}}\\\\f_{xx}(x,y)&amp;\\approx {\\frac {f(x+h,y)-2f(x,y)+f(x-h,y)}{h^{2}}}\\\\f_{yy}(x,y)&amp;\\approx {\\frac {f(x,y+k)-2f(x,y)+f(x,y-k)}{k^{2}}}\\\\f_{xy}(x,y)&amp;\\approx {\\frac {f(x+h,y+k)-f(x+h,y-k)-f(x-h,y+k)+f(x-h,y-k)}{4hk}}.\\end{aligned}}}"
         }
-      ]
+      ],
+      "id": "dd62e7dd8063"
     },
     {
       "kind": "proposition",
@@ -985,7 +1027,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle f_{xy}(x,y)\\approx {\\frac {f(x+h,y+k)-f(x+h,y)-f(x,y+k)+2f(x,y)-f(x-h,y)-f(x,y-k)+f(x-h,y-k)}{2hk}},}"
         }
-      ]
+      ],
+      "id": "406f5b80a2e3"
     },
     {
       "kind": "proposition",
@@ -1001,7 +1044,8 @@
         "match_kind": null
       },
       "note": "Computational-cost analysis is outside Mathlib's scope.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ae620ba582e0"
     }
   ]
 }

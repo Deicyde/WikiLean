@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "`PFun α β` is defined as `α → Part β`, directly modeling a partial function from `α` to `β`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bbb3ba8f1661"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "exact"
       },
       "note": "`PFun.Dom f` is defined as the set `{a | (f a).Dom}`, the set of inputs on which `f` is defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fd1dbaccfc21"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "invocation"
       },
       "note": "Total functions are the ordinary `α → β`; `PFun.lift` coerces them into partial functions with `PFun.dom_coe` showing the domain is `Set.univ`, but no separate `Total` predicate is defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "68271ac06626"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "invocation"
       },
       "note": "`PFun.graph'` turns a partial function into a `SetRel`, but the converse characterization (univalent relations correspond to partial functions) is not formalized as such.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bd10b97bf4d7"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat.Partrec` is defined as the inductive predicate on `ℕ →. ℕ` capturing partial recursive functions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "74bf54122daa"
     },
     {
       "kind": "example",
@@ -99,7 +104,8 @@
         "match_kind": null
       },
       "note": "No explicit partial function for integer square root restricted to perfect squares is present; `Nat.sqrt` is total.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4f25debd0141"
     },
     {
       "kind": "example",
@@ -115,7 +121,8 @@
         "match_kind": null
       },
       "note": "`Real.sqrt` is total in Mathlib (returns 0 on negatives) rather than encoded as a partial function on ℝ.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6fc611f94528"
     },
     {
       "kind": "definition",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "Same as the `PFun.Dom` declaration above, a `Set α` subset on which `f` is defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "589f57fe1ce3"
     },
     {
       "kind": "definition",
@@ -147,7 +155,8 @@
         "match_kind": "invocation"
       },
       "note": "`PFun.dom_coe` shows lifted (total) functions have `Dom = Set.univ`, but there is no standalone `PFun.Total` predicate.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "02b5021ea31f"
     },
     {
       "kind": "definition",
@@ -163,7 +172,8 @@
         "match_kind": null
       },
       "note": "No `PFun.Injective`/`PFun.Surjective`/`PFun.Bijective` predicate exists; `PFun.asSubtype` lets one state these via `Function.Injective` etc., but the named predicates are absent.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0b018bdca7bc"
     },
     {
       "kind": "definition",
@@ -179,7 +189,8 @@
         "match_kind": "generalization"
       },
       "note": "`PEquiv α β` represents a bijection between subsets of `α` and `β` via `Option`-valued partial functions, capturing the partial-bijection notion.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ef4f0e4783ea"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": "special_case"
       },
       "note": "`PEquiv.symm` inverts a partial bijection to another partial bijection, but no general inversion theorem for injective `PFun`s is stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "67f30b65f18a"
     },
     {
       "kind": "definition",
@@ -211,7 +223,8 @@
         "match_kind": "generalization"
       },
       "note": "A partial transformation `α →. α` is a special case of `PFun α α`, but there is no dedicated `PartialTransformation` name.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "eacf64da45f2"
     },
     {
       "kind": "definition",
@@ -227,7 +240,8 @@
         "match_kind": "invocation"
       },
       "note": "The type `PFun α β` itself plays the role of the set of all partial functions from `α` to `β`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1fdcebf92d6d"
     },
     {
       "kind": "proposition",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "No cardinality formula `|Y∪{∗}|^|X|` for `PFun X Y` is stated in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0e027bef483e"
     },
     {
       "kind": "example",
@@ -259,7 +274,8 @@
         "match_kind": null
       },
       "note": "Pictorial example with no formal counterpart.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0cb98b2efeff"
     },
     {
       "kind": "example",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "`Real.log` is defined as a total function (zero on non-positives) rather than a `PFun`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d7bf496e5ef3"
     },
     {
       "kind": "example",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "`Nat.sub` is a total truncated subtraction in Mathlib/core, not modeled as a `PFun`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d7299690a7e5"
     },
     {
       "kind": "definition",
@@ -307,7 +325,8 @@
         "match_kind": "invocation"
       },
       "note": "`Part.none` plays the role of the bottom/undefined value for `Part`-valued partial functions, but no explicit denotational `⊥` semantics is developed.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "79c0299cfbcd"
     },
     {
       "kind": "example",
@@ -323,7 +342,8 @@
         "match_kind": null
       },
       "note": "Informal CS analogy, not a Mathlib statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9258472c47a3"
     },
     {
       "kind": "proposition",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "This characterization of when composition is total in the partial-function category is not stated in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fdfa76f4a090"
     },
     {
       "kind": "proposition",
@@ -355,7 +376,8 @@
         "match_kind": "exact"
       },
       "note": "`partialFunEquivPointed : PartialFun ≌ Pointed` gives the (noncomputable, classical) equivalence between the categories.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "966293386136"
     },
     {
       "kind": "proposition",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "No category of sets-with-partial-bijections nor its self-duality is formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e2bcb29d02dc"
     },
     {
       "kind": "definition",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "No `PartialAlgebra` or analogous notion was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8d269cfca5cf"
     },
     {
       "kind": "example",
@@ -403,7 +427,8 @@
         "match_kind": null
       },
       "note": "Mathlib's `Field` uses total inversion with `0⁻¹ = 0`, not a partial operation; no partial-algebra view of fields is recorded.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3a652c9946d0"
     },
     {
       "kind": "definition",
@@ -419,7 +444,8 @@
         "match_kind": null
       },
       "note": "No semigroup-of-partial-transformations construction is present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "28e1dbb81060"
     },
     {
       "kind": "definition",
@@ -435,7 +461,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not formalize the symmetric inverse semigroup on a set.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1eb9d7d725ff"
     },
     {
       "kind": "example",
@@ -451,7 +478,8 @@
         "match_kind": "special_case"
       },
       "note": "`ChartedSpace H M` has an atlas of `OpenPartialHomeomorph`s (partial homeomorphisms with open source/target), which embodies the chart-as-partial-function idea but uses `PartialHomeomorph`/`PartialEquiv` rather than `PFun`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a1111b20c7af"
     }
   ]
 }

@@ -19,7 +19,8 @@
         "match_kind": "special_case"
       },
       "note": "`EuclideanSpace ℝ (Fin n)` is the standard concrete model; abstract Euclidean vector spaces are `InnerProductSpace ℝ E` with `FiniteDimensional`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "08ba543e364a"
     },
     {
       "kind": "proposition",
@@ -35,7 +36,8 @@
         "match_kind": "invocation"
       },
       "note": "Every finite-dimensional real inner product space has a `stdOrthonormalBasis` giving a `LinearIsometryEquiv` with `EuclideanSpace ℝ (Fin n)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "89c088a49be9"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib encodes this as `InnerProductSpace ℝ E` together with `FiniteDimensional ℝ E`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1746619ee855"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib models a Euclidean affine space as a `NormedAddTorsor V P` with `V` a finite-dimensional real inner product space (notation `AffineSpace`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ebb4490a020b"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "generalization"
       },
       "note": "Dimension of the direction module is `Module.finrank ℝ V`, e.g. `finrank_euclideanSpace_fin` for the standard model.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7e69365f1395"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": "generalization"
       },
       "note": "The `AddTorsor V P` structure makes `P` a set of points acted on by translations from the vector group `V`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6ddf64025086"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": "exact"
       },
       "note": "The notation `v +ᵥ P` (or `P + v` after swapping) is the `VAdd` action used in every `AddTorsor`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0a7e279f7c42"
     },
     {
       "kind": "proposition",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "The existence/uniqueness of `Q -ᵥ P` is built into the `AddTorsor` axioms (`vsub_vadd`, `vadd_vsub`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a3b55a8bb373"
     },
     {
       "kind": "example",
@@ -147,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "Any additive group is canonically an `AddTorsor` over itself, so a Euclidean vector space carries the affine structure tautologically.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1f8676259c82"
     },
     {
       "kind": "example",
@@ -163,7 +172,8 @@
         "match_kind": "exact"
       },
       "note": "`EuclideanSpace ℝ (Fin n)` is precisely `ℝⁿ` with the standard inner product, defined via `PiLp 2`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fe2f0367d96d"
     },
     {
       "kind": "proposition",
@@ -179,7 +189,8 @@
         "match_kind": "invocation"
       },
       "note": "An `OrthonormalBasis` gives a `LinearIsometryEquiv E ≃ₗᵢ EuclideanSpace ℝ ι`, and combined with `vaddConst` at a chosen origin one gets an `AffineIsometryEquiv`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c7f2f339099d"
     },
     {
       "kind": "definition",
@@ -195,7 +206,8 @@
         "match_kind": "exact"
       },
       "note": "`AffineSubspace k P` is exactly the affine-subspace (flat) notion.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7b1c980c41c3"
     },
     {
       "kind": "definition",
@@ -211,7 +223,8 @@
         "match_kind": "exact"
       },
       "note": "`AffineSubspace.direction` returns the linear submodule of displacement vectors of an affine subspace.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d5d194d5ebfd"
     },
     {
       "kind": "proposition",
@@ -227,7 +240,8 @@
         "match_kind": "exact"
       },
       "note": "`AffineSubspace.mk' p direction` constructs the unique affine subspace through `p` with given direction submodule.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7377628a2757"
     },
     {
       "kind": "proposition",
@@ -243,7 +257,8 @@
         "match_kind": "exact"
       },
       "note": "`Submodule.toAffineSubspace` embeds a linear subspace as an affine subspace containing `0`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b85652f78e82"
     },
     {
       "kind": "definition",
@@ -259,7 +274,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib does not name `Line` as a separate concept, but a line is realised as `affineSpan ℝ {p, q}` (or any 1-dim `AffineSubspace`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "759542abec3e"
     },
     {
       "kind": "proposition",
@@ -275,7 +291,8 @@
         "match_kind": "invocation"
       },
       "note": "The `affineSpan` of two points is the unique 1-dim flat containing them, but the uniqueness statement is not packaged as a named lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0a27977990e0"
     },
     {
       "kind": "definition",
@@ -291,7 +308,8 @@
         "match_kind": "exact"
       },
       "note": "`affineSegment ℝ x y` (and `segment ℝ` for vector spaces) is the line segment between two points.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "778f70710724"
     },
     {
       "kind": "definition",
@@ -307,7 +325,8 @@
         "match_kind": "exact"
       },
       "note": "`AffineSubspace.Parallel` (notation `∥`) is defined as equality of directions for affine subspaces of the same dimension.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "befe350f7b48"
     },
     {
       "kind": "proposition",
@@ -323,7 +342,8 @@
         "match_kind": null
       },
       "note": "No grep hit for a Playfair-style existence/uniqueness lemma in Mathlib's affine API.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4e37e21c8a7e"
     },
     {
       "kind": "proposition",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "No statement of this dichotomy for affine lines in a 2-dim space was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f58f7f0c56e4"
     },
     {
       "kind": "definition",
@@ -355,7 +376,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib's `Parallel` requires equal directions; the asymmetric weakening for different dimensions is not separately named.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "db9a4ffa468e"
     },
     {
       "kind": "definition",
@@ -371,7 +393,8 @@
         "match_kind": "exact"
       },
       "note": "Notation `⟪x, y⟫_ℝ` (and `Matrix.dotProduct`) realises the dot product.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "42386f455257"
     },
     {
       "kind": "definition",
@@ -387,7 +410,8 @@
         "match_kind": "exact"
       },
       "note": "`EuclideanSpace.norm_eq` shows the norm equals `√(∑ i, ‖x i‖²)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "34855a9729e3"
     },
     {
       "kind": "definition",
@@ -403,7 +427,8 @@
         "match_kind": "exact"
       },
       "note": "`EuclideanSpace.dist_eq` and `dist_eq_norm_vsub` together give the Euclidean distance as `‖P -ᵥ Q‖`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "00b609169f4e"
     },
     {
       "kind": "definition",
@@ -419,7 +444,8 @@
         "match_kind": "invocation"
       },
       "note": "There is no separate `length` of `affineSegment`, but `dist P Q` plays this role; no dedicated definition was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6e1757a1196e"
     },
     {
       "kind": "proposition",
@@ -435,7 +461,8 @@
         "match_kind": "exact"
       },
       "note": "`dist_triangle` is the metric-space triangle inequality, applicable to every Euclidean space.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "593ed4314ab7"
     },
     {
       "kind": "proposition",
@@ -451,7 +478,8 @@
         "match_kind": "exact"
       },
       "note": "`dist_add_dist_eq_iff` states `dist a b + dist b c = dist a c ↔ Wbtw ℝ a b c`, the equality case in inner-product space.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "08bbfe59818d"
     },
     {
       "kind": "proposition",
@@ -467,7 +495,8 @@
         "match_kind": "generalization"
       },
       "note": "Completeness of `PiLp p β` (hence of `EuclideanSpace 𝕜 ι`) is an instance; abstract finite-dim real inner product spaces are also `CompleteSpace`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7794488bb1ef"
     },
     {
       "kind": "definition",
@@ -483,7 +512,8 @@
         "match_kind": "exact"
       },
       "note": "Orthogonality is just `⟪x, y⟫ = 0`; the equivalence with `angle = π/2` is `inner_eq_zero_iff_angle_eq_pi_div_two`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3b57ff65009f"
     },
     {
       "kind": "definition",
@@ -499,7 +529,8 @@
         "match_kind": "exact"
       },
       "note": "`Submodule.IsOrtho U V` (notation `U ⟂ V`) means every vector in `U` is orthogonal to every vector in `V`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "da510ed0d611"
     },
     {
       "kind": "definition",
@@ -515,7 +546,8 @@
         "match_kind": "generalization"
       },
       "note": "The affine version (perpendicular affine subspaces) is expressed via orthogonality of their `direction`s; no dedicated `AffineSubspace.Perpendicular` was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5a3e8a25ec37"
     },
     {
       "kind": "definition",
@@ -531,7 +563,8 @@
         "match_kind": "invocation"
       },
       "note": "Right angle is `∠ B A C = π/2`, expressed through `EuclideanGeometry.angle` plus `angle_eq_pi_div_two`-style lemmas.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a5c9e48ed7b7"
     },
     {
       "kind": "theorem",
@@ -547,7 +580,8 @@
         "match_kind": "exact"
       },
       "note": "Listed in `docs/100.yaml` as the formalization of the Pythagorean theorem; vector form is `norm_add_sq_real` together with `inner = 0`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c2d4391d338b"
     },
     {
       "kind": "definition",
@@ -563,7 +597,8 @@
         "match_kind": "exact"
       },
       "note": "`InnerProductGeometry.angle x y = Real.arccos (⟪x,y⟫ / (‖x‖ * ‖y‖))`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "237aa1224f3f"
     },
     {
       "kind": "proposition",
@@ -579,7 +614,8 @@
         "match_kind": "exact"
       },
       "note": "Cauchy–Schwarz appears as `norm_inner_le_norm`; its quotient form `abs_real_inner_div_norm_mul_norm_le_one` shows the arccos argument lies in `[-1, 1]`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ac2174598a59"
     },
     {
       "kind": "definition",
@@ -595,7 +631,8 @@
         "match_kind": "exact"
       },
       "note": "`Orientation.oangle` defines the oriented angle in a 2-dim oriented real inner product space.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5e27a8212653"
     },
     {
       "kind": "proposition",
@@ -611,7 +648,8 @@
         "match_kind": "exact"
       },
       "note": "`angle_smul_left_of_pos` and `angle_smul_right_of_pos` give invariance of `angle` under positive scalar multiples.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f419fd4ffa8a"
     },
     {
       "kind": "definition",
@@ -627,7 +665,8 @@
         "match_kind": "exact"
       },
       "note": "`EuclideanGeometry.angle p₁ p₂ p₃` (notation `∠`) is the angle at `p₂` between `p₂→p₁` and `p₂→p₃`, exactly the segment-angle.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f355f68067a9"
     },
     {
       "kind": "definition",
@@ -643,7 +682,8 @@
         "match_kind": null
       },
       "note": "No dedicated `Line.angle` / unsigned angle between two affine lines was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5af39bfd35ba"
     },
     {
       "kind": "proposition",
@@ -659,7 +699,8 @@
         "match_kind": "exact"
       },
       "note": "`stdOrthonormalBasis ℝ E` produces an orthonormal basis of any finite-dim real inner product space; Gram–Schmidt is in `Mathlib.Analysis.InnerProductSpace.GramSchmidtOrtho`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c41a2a194f27"
     },
     {
       "kind": "definition",
@@ -675,7 +716,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib has `OrthonormalBasis` for the linear part; an explicit \"Cartesian frame\" = origin + orthonormal basis structure is not packaged as a named type.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1ee1515e7002"
     },
     {
       "kind": "definition",
@@ -691,7 +733,8 @@
         "match_kind": "exact"
       },
       "note": "`OrthonormalBasis.repr` is the `LinearIsometryEquiv` sending a vector to its coordinate tuple in `EuclideanSpace`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b5564837a01c"
     },
     {
       "kind": "definition",
@@ -707,7 +750,8 @@
         "match_kind": "invocation"
       },
       "note": "Point coordinates are obtained as `OrthonormalBasis.repr (P -ᵥ O)`, but there is no single named decl for affine Cartesian coordinates.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "35eb494787f9"
     },
     {
       "kind": "definition",
@@ -723,7 +767,8 @@
         "match_kind": "generalization"
       },
       "note": "Skew/affine coordinates are realised via `Basis.repr` after picking an origin; not packaged separately.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8d714073842f"
     },
     {
       "kind": "definition",
@@ -739,7 +784,8 @@
         "match_kind": "exact"
       },
       "note": "`AffineBasis` with `AffineBasis.coord` gives the barycentric coordinates.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d965036a9c8b"
     },
     {
       "kind": "definition",
@@ -755,7 +801,8 @@
         "match_kind": null
       },
       "note": "Generic \"any homeomorphism with `ℝⁿ` is a coordinate system\" is not stated as a Mathlib definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e40992068410"
     },
     {
       "kind": "definition",
@@ -771,7 +818,8 @@
         "match_kind": "exact"
       },
       "note": "`IsometryEquiv` is the type of distance-preserving bijections (`Isometry` for the map alone).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6bb26b88baad"
     },
     {
       "kind": "proposition",
@@ -787,7 +835,8 @@
         "match_kind": "invocation"
       },
       "note": "An origin-preserving isometry between real inner-product spaces is linear (Mazur–Ulam) and `LinearIsometry.inner_map_map` then gives preservation of inner products.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1050b0358443"
     },
     {
       "kind": "proposition",
@@ -803,7 +852,8 @@
         "match_kind": "invocation"
       },
       "note": "Mazur–Ulam (in `MazurUlam.lean`) shows isometries of normed real vector spaces are affine; combined with preservation of `0` it gives linearity.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b7327da95a18"
     },
     {
       "kind": "proposition",
@@ -819,7 +869,8 @@
         "match_kind": "invocation"
       },
       "note": "Follows from `LinearEquiv.finrank_eq` applied to the linear part of an isometry, but not stated as a separate named lemma for Euclidean spaces.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9779d79169f0"
     },
     {
       "kind": "proposition",
@@ -835,7 +886,8 @@
         "match_kind": "generalization"
       },
       "note": "Affine isometries are affine maps, hence send affine subspaces (lines, planes) to affine subspaces; no single named lemma for the geometric statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "081e087f1ee9"
     },
     {
       "kind": "example",
@@ -851,7 +903,8 @@
         "match_kind": "exact"
       },
       "note": "`AffineIsometryEquiv.vaddConst O` is the canonical isometry `V ≃ᵃⁱ P` defined by `v ↦ O +ᵥ v`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b2de15e63622"
     },
     {
       "kind": "example",
@@ -867,7 +920,8 @@
         "match_kind": "invocation"
       },
       "note": "An origin plus an `OrthonormalBasis` yield an `AffineIsometryEquiv P ≃ EuclideanSpace ℝ (Fin n)` by composing `vaddConst` with `OrthonormalBasis.repr`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6e2fe31a5fd6"
     },
     {
       "kind": "proposition",
@@ -883,7 +937,8 @@
         "match_kind": "invocation"
       },
       "note": "Every finite-dim real inner product space is isometric to `EuclideanSpace ℝ (Fin n)` via `(stdOrthonormalBasis ℝ E).repr`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d76829e398a7"
     },
     {
       "kind": "definition",
@@ -899,7 +954,8 @@
         "match_kind": "exact"
       },
       "note": "`AffineIsometryEquiv P P` with its group instance is exactly the Euclidean group of `P` (listed in `docs/undergrad.yaml`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "505a30ea1a61"
     },
     {
       "kind": "proposition",
@@ -915,7 +971,8 @@
         "match_kind": null
       },
       "note": "No grep hit for the translations subgroup of `AffineIsometryEquiv` being normal.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dfa469db3caf"
     },
     {
       "kind": "proposition",
@@ -931,7 +988,8 @@
         "match_kind": "exact"
       },
       "note": "`AffineIsometryEquiv.linearIsometryEquiv` extracts the linear part of an affine isometry.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "48a623df0d5b"
     },
     {
       "kind": "proposition",
@@ -947,7 +1005,8 @@
         "match_kind": "generalization"
       },
       "note": "The map `AffineIsometryEquiv → LinearIsometryEquiv` exists and is a group hom, but surjectivity is not stated as a named lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bbe3a4acf4df"
     },
     {
       "kind": "proposition",
@@ -963,7 +1022,8 @@
         "match_kind": null
       },
       "note": "No lemma identifying the stabilizer of a point in the Euclidean group with the orthogonal group was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f8e72f595cf6"
     },
     {
       "kind": "proposition",
@@ -979,7 +1039,8 @@
         "match_kind": null
       },
       "note": "No semidirect-product decomposition of the Euclidean group was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e6cf1878a824"
     },
     {
       "kind": "definition",
@@ -995,7 +1056,8 @@
         "match_kind": null
       },
       "note": "Although `Matrix.specialOrthogonalGroup` exists, the special Euclidean group (orientation-preserving isometries of `P`) is not packaged.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5cc9e61f64e8"
     },
     {
       "kind": "definition",
@@ -1011,7 +1073,8 @@
         "match_kind": "exact"
       },
       "note": "`Module.reflection` is the linear reflection, and `EuclideanGeometry.reflection` (in `Geometry/Euclidean/Projection.lean`) defines reflection across an affine subspace.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c6cc452415eb"
     },
     {
       "kind": "proposition",
@@ -1027,7 +1090,8 @@
         "match_kind": null
       },
       "note": "No such decomposition statement was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c9c31bba48df"
     },
     {
       "kind": "definition",
@@ -1043,7 +1107,8 @@
         "match_kind": "exact"
       },
       "note": "`EuclideanSpace ℝ (Fin n)` carries the standard `TopologicalSpace`/`MetricSpace` instance inherited from `PiLp 2`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d47b0d5c98f6"
     },
     {
       "kind": "definition",
@@ -1059,7 +1124,8 @@
         "match_kind": "exact"
       },
       "note": "`Metric.isOpen_iff` characterises open sets in any metric space by containing an open ball around each point.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dc4d2c3c8c11"
     },
     {
       "kind": "proposition",
@@ -1075,7 +1141,8 @@
         "match_kind": null
       },
       "note": "Topological (covering) dimension of `ℝⁿ` is not formalized; only `Module.finrank` and Hausdorff dimension are available.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "67f55a7fbf94"
     },
     {
       "kind": "theorem",
@@ -1091,7 +1158,8 @@
         "match_kind": null
       },
       "note": "Grep finds no `invariance_of_domain` or Brouwer-style statement in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e22b783e5f11"
     },
     {
       "kind": "proposition",
@@ -1107,7 +1175,8 @@
         "match_kind": "exact"
       },
       "note": "`Metric.isCompact_iff_isClosed_bounded` is the Heine–Borel theorem for proper metric spaces, which includes finite-dim real inner product spaces.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "05cd5c5a41e7"
     },
     {
       "kind": "theorem",
@@ -1123,7 +1192,8 @@
         "match_kind": null
       },
       "note": "Artin's meta-theorem comparing synthetic vs analytic axiomatizations of Euclidean geometry is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ad85ed0df24a"
     },
     {
       "kind": "definition",
@@ -1139,7 +1209,8 @@
         "match_kind": "generalization"
       },
       "note": "Non-degenerate quadratic forms exist in Mathlib (`QuadraticForm.Nondegenerate`), but no named `PseudoEuclideanSpace` structure was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4b867176565a"
     },
     {
       "kind": "example",
@@ -1155,7 +1226,8 @@
         "match_kind": null
       },
       "note": "Grep finds no `MinkowskiSpace` or Lorentzian-signature definition in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c8625ef3c9c1"
     }
   ]
 }

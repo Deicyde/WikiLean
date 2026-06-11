@@ -19,7 +19,8 @@
         "match_kind": null
       },
       "note": "Regular expressions and their matched languages are defined, but Mathlib does not define language regularity via regex nor link it to the automaton-based `IsRegular`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "832d6fb1cd43"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "exact"
       },
       "note": "`Language.IsRegular L` is defined exactly as existence of a finite-state DFA whose accepted language is `L`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7a7b284e1297"
     },
     {
       "kind": "theorem",
@@ -51,7 +53,8 @@
         "match_kind": null
       },
       "note": "The RegularExpressions file explicitly notes that equivalence of regular expressions and DFAs/NFAs is not yet shown in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d14ee53639c2"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": null
       },
       "note": "The inductive `RegularExpression` (zero, epsilon, char, plus, comp, star) with `matches'` encodes this recursive construction, but it is not tied to a recursive `IsRegular` predicate.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "242a264c4084"
     },
     {
       "kind": "example",
@@ -83,7 +87,8 @@
         "match_kind": null
       },
       "note": "No lemma stating that singleton/finite languages are regular exists, despite the `IsRegular` framework.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a4760ea7938d"
     },
     {
       "kind": "example",
@@ -99,7 +104,8 @@
         "match_kind": null
       },
       "note": "These specific example languages are not constructed or shown regular in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3a3a6362e557"
     },
     {
       "kind": "example",
@@ -115,7 +121,8 @@
         "match_kind": null
       },
       "note": "The pumping lemma (`DFA.pumping_lemma`, also `NFA.pumping_lemma`) — the standard tool to prove non-regularity — is formalized, but this specific non-regularity result is not.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7e95dc6b6674"
     },
     {
       "kind": "theorem",
@@ -131,7 +138,8 @@
         "match_kind": null
       },
       "note": "DFA/NFA equivalence (`NFA.toDFA_correct`, `DFA.toNFA_correct`) and the Myhill–Nerode characterization are formalized, but other equivalences (regex, MSO logic, regular grammars) are not.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6910c01ed017"
     },
     {
       "kind": "theorem",
@@ -147,7 +155,8 @@
         "match_kind": null
       },
       "note": "Closure under complement, union (`.add`), intersection (`.inf`) and reversal (`.reverse`) is proven, but closure under concatenation, Kleene star, and homomorphisms is not.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1b6a193ffc7b"
     },
     {
       "kind": "proposition",
@@ -163,7 +172,8 @@
         "match_kind": null
       },
       "note": "`Language.leftQuotient` (quotient by a word) exists and underlies Myhill–Nerode, but closure of regular languages under quotient by an arbitrary language is not proven.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ffee83dc0962"
     },
     {
       "kind": "proposition",
@@ -179,7 +189,8 @@
         "match_kind": "exact"
       },
       "note": "`NFA.reverse` builds the automaton by reversing all transitions and swapping start/accept, with `NFA.mem_accepts_reverse` proving it accepts the reversed language.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "56a02c486e66"
     },
     {
       "kind": "theorem",
@@ -195,7 +206,8 @@
         "match_kind": null
       },
       "note": "No decidability result for equivalence of DFAs/regular languages is present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a279c2ccb905"
     },
     {
       "kind": "proposition",
@@ -211,7 +223,8 @@
         "match_kind": null
       },
       "note": "Membership is decidable via `RegularExpression.rmatch` (with a `DecidablePred (· ∈ P.matches')` instance), but emptiness, universality, containment and disjointness decidability are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f4ba7bf9b07e"
     },
     {
       "kind": "proposition",
@@ -227,7 +240,8 @@
         "match_kind": null
       },
       "note": "No complexity-theoretic results about the universality problem are formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d16e823d743d"
     },
     {
       "kind": "proposition",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "PSPACE-completeness of the universality problem is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "aa880d71490b"
     },
     {
       "kind": "proposition",
@@ -259,7 +274,8 @@
         "match_kind": null
       },
       "note": "Exponential space lower bounds for regular-expression universality are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "49c67fda264f"
     },
     {
       "kind": "theorem",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "This model-theoretic characterization of regular languages is not present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fb02eb40253b"
     },
     {
       "kind": "proposition",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "No space-complexity class characterization of REGULAR is formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f212b8f7bc64"
     },
     {
       "kind": "proposition",
@@ -307,7 +325,8 @@
         "match_kind": null
       },
       "note": "Circuit-complexity separations involving AC^0 and parity are not formalized in this context.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a51c969f0e8f"
     },
     {
       "kind": "proposition",
@@ -323,7 +342,8 @@
         "match_kind": null
       },
       "note": "The non-containment of AC^0 in REGULAR is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "86ff8429b7bc"
     },
     {
       "kind": "theorem",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "Space lower bounds for recognizing non-regular languages are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b6fe79e17363"
     },
     {
       "kind": "proposition",
@@ -355,7 +376,8 @@
         "match_kind": null
       },
       "note": "The DSPACE(o(log log n)) = REGULAR collapse result is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "05ae70176e4c"
     },
     {
       "kind": "proposition",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "Both `Language.IsRegular` and `Language.IsContextFree` are defined, but the inclusion of regular languages into context-free languages is not proven.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d035c43ede4d"
     },
     {
       "kind": "example",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "This specific separating example between context-free and regular languages is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a604be4bbd43"
     },
     {
       "kind": "definition",
@@ -403,7 +427,8 @@
         "match_kind": null
       },
       "note": "There is no defined subclass of finite languages within the formal-language hierarchy in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f072ac6bd368"
     },
     {
       "kind": "definition",
@@ -419,7 +444,8 @@
         "match_kind": null
       },
       "note": "Star-free languages are not defined in Mathlib (no `StarFree` notion exists).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "772c8d9d3461"
     },
     {
       "kind": "definition",
@@ -435,7 +461,8 @@
         "match_kind": null
       },
       "note": "The generating function counting words of each length in a language is not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7a09cb96262c"
     },
     {
       "kind": "theorem",
@@ -451,7 +478,8 @@
         "match_kind": null
       },
       "note": "Rationality of the generating function of a regular language is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2ba4eba7298e"
     },
     {
       "kind": "proposition",
@@ -467,7 +495,8 @@
         "match_kind": null
       },
       "note": "No result that the word-count sequence of a regular language satisfies a linear (constant-recursive) recurrence is present.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2bc2c4237331"
     },
     {
       "kind": "example",
@@ -483,7 +512,8 @@
         "match_kind": null
       },
       "note": "Catalan numbers and `DyckWord` exist in Mathlib, but the non-regularity of the Dyck language is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "078d41f9a19e"
     },
     {
       "kind": "proposition",
@@ -499,7 +529,8 @@
         "match_kind": null
       },
       "note": "Asymptotic growth bounds on the number of words in a regular language are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0749351ad6e5"
     },
     {
       "kind": "definition",
@@ -515,7 +546,8 @@
         "match_kind": null
       },
       "note": "The zeta function of a formal language is not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "989df7e51e85"
     },
     {
       "kind": "proposition",
@@ -531,7 +563,8 @@
         "match_kind": null
       },
       "note": "Results about rationality of zeta functions of regular or cyclic languages are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "edbf3d8f0771"
     }
   ]
 }

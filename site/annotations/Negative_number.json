@@ -19,7 +19,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib has the `Neg` typeclass (core Lean) and `InvolutiveNeg`, providing the unary `-` operation, but no standalone definition `negative := -x for positive x`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8bfb458b0b90"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "invocation"
       },
       "note": "The predicate `x < 0` is just the order on a `LinearOrderedField`; no dedicated `IsNegative` definition exists, but `neg_lt_zero` characterizes negativity.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e39fccebd3c5"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "invocation"
       },
       "note": "Mathlib expresses positivity directly as `0 < x`; there is no separate `IsPositive` predicate but order infrastructure is fully present.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dc9d01306fa2"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "`SignType.sign : α →o SignType` returns the sign of an element in a suitable ordered structure.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e0759f9a78b3"
     },
     {
       "kind": "proposition",
@@ -83,7 +87,8 @@
         "match_kind": "generalization"
       },
       "note": "`lt_trichotomy a b : a < b ∨ a = b ∨ b < a` instantiated at `b = 0` gives the article's trichotomy for any linear order, in particular `ℝ`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a4accae954ba"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat` (core Lean, used throughout Mathlib) is the type of natural numbers; `Int` is the type of integers.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9881c85b4966"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": "generalization"
       },
       "note": "The linear order on ℝ encodes the number-line order; `lt_trichotomy` and `LinearOrder` formalize the informal left/right comparison.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0e11b844463e"
     },
     {
       "kind": "example",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "`neg_lt_neg_iff : -a < -b ↔ b < a` (and `abs_lt`) formalize that a more-negative number is smaller.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4cefec809f6b"
     },
     {
       "kind": "definition",
@@ -147,7 +155,8 @@
         "match_kind": "invocation"
       },
       "note": "Positivity is encoded as the predicate `0 < x`; Mathlib has no `IsPositive` wrapper but uses this throughout.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6b7cc651ca9d"
     },
     {
       "kind": "definition",
@@ -163,7 +172,8 @@
         "match_kind": null
       },
       "note": "Mathlib uses the raw predicates `0 ≤ a` and `a ≤ 0` rather than named definitions `Nonneg`/`Nonpos`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5f84c14ec993"
     },
     {
       "kind": "definition",
@@ -179,7 +189,8 @@
         "match_kind": "exact"
       },
       "note": "`sub_neg_of_lt : a < b → a - b < 0` is exactly this characterization.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "37f19ee7750d"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": "exact"
       },
       "note": "`sub_neg_of_lt` states precisely that `a < b` implies `a - b < 0`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7b881526e581"
     },
     {
       "kind": "definition",
@@ -211,7 +223,8 @@
         "match_kind": "exact"
       },
       "note": "The `Neg` (unary) and `Sub` (binary) typeclasses (with `-` notation overloaded) capture both meanings of the minus sign.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9d5ba8ef1d20"
     },
     {
       "kind": "example",
@@ -227,7 +240,8 @@
         "match_kind": "exact"
       },
       "note": "`neg_pos`/`neg_neg_of_pos` express that negating a positive number yields a negative number.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6e715caedcfc"
     },
     {
       "kind": "proposition",
@@ -243,7 +257,8 @@
         "match_kind": "exact"
       },
       "note": "`Left.add_neg`/`Left.add_neg_of_neg_of_nonpos` give that the sum of two negative numbers is negative.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e6af7235fc13"
     },
     {
       "kind": "proposition",
@@ -259,7 +274,8 @@
         "match_kind": "exact"
       },
       "note": "`sub_eq_add_neg : a - b = a + -b` formalizes treating addition with negatives as subtraction.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dd2885cc896b"
     },
     {
       "kind": "proposition",
@@ -275,7 +291,8 @@
         "match_kind": "exact"
       },
       "note": "`SubNegMonoid.sub_eq_add_neg` (and its theorem form `sub_eq_add_neg`) is exactly this identity.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c6d4caef3be9"
     },
     {
       "kind": "proposition",
@@ -291,7 +308,8 @@
         "match_kind": "exact"
       },
       "note": "`sub_neg_eq_add : a - -b = a + b` formalizes this.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1d861b943169"
     },
     {
       "kind": "proposition",
@@ -307,7 +325,8 @@
         "match_kind": "exact"
       },
       "note": "`mul_neg_of_pos_of_neg`, `mul_neg_of_neg_of_pos`, `mul_pos_of_neg_of_neg`, and `mul_pos` collectively encode all sign rules of multiplication.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d7a05f7e448d"
     },
     {
       "kind": "proposition",
@@ -323,7 +342,8 @@
         "match_kind": "exact"
       },
       "note": "`mul_pos_iff : 0 < a * b ↔ 0 < a ∧ 0 < b ∨ a < 0 ∧ b < 0` is the iff form of the sign-of-product rule.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "500771ca6358"
     },
     {
       "kind": "proposition",
@@ -339,7 +359,8 @@
         "match_kind": "exact"
       },
       "note": "`div_pos_of_neg_of_neg`, `div_neg_of_neg_of_pos`, `div_neg_of_pos_of_neg`, and `div_pos` cover the four sign-rule cases for division.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0cc14302eb48"
     },
     {
       "kind": "proposition",
@@ -355,7 +376,8 @@
         "match_kind": "exact"
       },
       "note": "`div_pos_iff : 0 < a / b ↔ 0 < a ∧ 0 < b ∨ a < 0 ∧ b < 0` precisely captures the same-sign rule for division.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "77c455184571"
     },
     {
       "kind": "definition",
@@ -371,7 +393,8 @@
         "match_kind": "exact"
       },
       "note": "The `Neg` typeclass and the unary `-` notation are the formalization of negation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "eb8275f47b2f"
     },
     {
       "kind": "proposition",
@@ -387,7 +410,8 @@
         "match_kind": "exact"
       },
       "note": "`neg_add_cancel : -a + a = 0` (in any `AddGroup`) says the negation is the additive inverse.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "862d24f6d366"
     },
     {
       "kind": "definition",
@@ -403,7 +427,8 @@
         "match_kind": "exact"
       },
       "note": "`neg_zero` and `InvolutiveNeg.neg_neg : - -x = x` give the two stated identities.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "249f9497fea8"
     },
     {
       "kind": "definition",
@@ -419,7 +444,8 @@
         "match_kind": "exact"
       },
       "note": "`|a| = a ⊔ -a` is defined for `Lattice`s with `Neg`, with `abs_nonneg` confirming the nonnegativity property.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d4b1c37407b2"
     },
     {
       "kind": "definition",
@@ -435,7 +461,8 @@
         "match_kind": null
       },
       "note": "Mathlib uses core Lean's `Int` (defined via `ofNat`/`negSucc`) rather than the Grothendieck pair construction `ℕ × ℕ / ~`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7a0e87691fbe"
     },
     {
       "kind": "definition",
@@ -451,7 +478,8 @@
         "match_kind": null
       },
       "note": "The specific relation `(a,b) ~ (c,d) ↔ a + d = b + c` for the pair construction of ℤ is not in Mathlib since ℤ is defined differently.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "52f7fc4102e3"
     },
     {
       "kind": "definition",
@@ -467,7 +495,8 @@
         "match_kind": null
       },
       "note": "Mathlib's `Int` is not constructed as a quotient of `ℕ × ℕ`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9585aeeec4b2"
     },
     {
       "kind": "proposition",
@@ -483,7 +512,8 @@
         "match_kind": "generalization"
       },
       "note": "`Int.instCommRing : CommRing ℤ` shows ℤ is a (commutative) ring.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "80944fd56cd7"
     },
     {
       "kind": "definition",
@@ -499,7 +529,8 @@
         "match_kind": "exact"
       },
       "note": "The `LinearOrder ℤ` instance gives the total order on integers.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "41951d3c3e8c"
     },
     {
       "kind": "definition",
@@ -515,7 +546,8 @@
         "match_kind": "generalization"
       },
       "note": "The abstract structure (zero, neg, one, sub on ℤ) exists via `CommRing ℤ`, but the specific representatives in the pair construction are not used.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2141737ca98d"
     },
     {
       "kind": "theorem",
@@ -531,7 +563,8 @@
         "match_kind": "exact"
       },
       "note": "`neg_eq_of_add_eq_zero_left` and `neg_eq_of_add_eq_zero_right` express uniqueness of the additive inverse in any `AddGroup`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b323fffc5416"
     }
   ]
 }

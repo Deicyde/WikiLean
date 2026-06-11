@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat.Coprime m n := Nat.gcd m n = 1` is the standard definition (with `IsCoprime` as the Bézout-style version in Mathlib.RingTheory.Coprime.Basic).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5975535a526a"
     },
     {
       "kind": "example",
@@ -35,7 +36,8 @@
         "match_kind": null
       },
       "note": "No specific lemma for the numeric instance gcd(8,9)=1 was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3f3c58ec2e92"
     },
     {
       "kind": "example",
@@ -51,7 +53,8 @@
         "match_kind": null
       },
       "note": "No specific lemma for the numeric non-instance of gcd(6,9)=3 was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "71091ca1a9ce"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "invocation"
       },
       "note": "The notational fact gcd(a,b)=1 ↔ Coprime is expressed via `Nat.coprime_iff_gcd_eq_one`, but Mathlib does not introduce the `(a,b)=1` notation itself.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e119e7be2531"
     },
     {
       "kind": "proposition",
@@ -83,7 +87,8 @@
         "match_kind": "invocation"
       },
       "note": "Mathlib uses the Euclidean recursion (`Nat.gcd`) to compute gcd and thus test coprimality, but the methodological claim itself is not stated as a theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5e730f91baad"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "Defined as `#{a ∈ range n | n.Coprime a}` exactly matching Wikipedia's count.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0f4c7505ab1d"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": "invocation"
       },
       "note": "Pairwise coprime is expressed via `Pairwise (IsCoprime on f)` / `Set.Pairwise s (IsCoprime · ·)`, but a named `Setwise.Coprime` predicate (gcd of the whole set = 1) is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b84a6c253058"
     },
     {
       "kind": "example",
@@ -131,7 +138,8 @@
         "match_kind": null
       },
       "note": "No specific lemma instantiating this example was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "82ae578524ae"
     },
     {
       "kind": "proposition",
@@ -147,7 +155,8 @@
         "match_kind": "special_case"
       },
       "note": "`Nat.coprime_one_left`/`Nat.coprime_one_right` (and `isCoprime_one_left`/`right`) cover the affirmative direction; the uniqueness characterization isn't stated as a single lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "227339dc2a01"
     },
     {
       "kind": "proposition",
@@ -163,7 +172,8 @@
         "match_kind": "invocation"
       },
       "note": "Several equivalences exist individually (`isCoprime_iff_gcd_eq_one`, `isCoprime_iff_exists`, `Nat.coprime_iff_isRelPrime`), but they are not bundled into one `TFAE`-style statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "afd5eea43ea2"
     },
     {
       "kind": "proposition",
@@ -179,7 +189,8 @@
         "match_kind": "generalization"
       },
       "note": "Cancellation of a coprime factor in a congruence is captured by `Nat.ModEq.cancel_left_div_gcd`/`cancel_right_div_gcd` (which specializes to ordinary cancellation when the multiplier is coprime to the modulus).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a0cee505c797"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": "exact"
       },
       "note": "Formalized as `IsCoprime.dvd_of_dvd_mul_right` (and the Int version in `Mathlib.Data.Int.GCD` is explicitly labeled `Euclid's lemma`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bdf780756591"
     },
     {
       "kind": "proposition",
@@ -211,7 +223,8 @@
         "match_kind": "exact"
       },
       "note": "`IsCoprime.pow`/`Nat.Coprime.pow` (with `_left`, `_right`, `_iff` variants) prove that powers preserve coprimality.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "119e85d30615"
     },
     {
       "kind": "proposition",
@@ -227,7 +240,8 @@
         "match_kind": "exact"
       },
       "note": "This is the same statement as Euclid's lemma above and is proved as `IsCoprime.dvd_of_dvd_mul_right`/`_left`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6a7d2e1928b9"
     },
     {
       "kind": "proposition",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "No 'visibility from origin' lattice-point lemma was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2e71faa3caa0"
     },
     {
       "kind": "proposition",
@@ -259,7 +274,8 @@
         "match_kind": null
       },
       "note": "The density/limit statement 6/π² for pairwise coprimality is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e94326971fa1"
     },
     {
       "kind": "proposition",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "Grep for `2^a-1`/two_pow-minus-one coprimality did not turn up a corresponding lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "28fbd412cad8"
     },
     {
       "kind": "definition",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no named predicate for 'gcd of a whole set equals 1'; only the binary `IsCoprime`/`Nat.Coprime` and the pairwise version exist.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bdf28f326157"
     },
     {
       "kind": "example",
@@ -307,7 +325,8 @@
         "match_kind": null
       },
       "note": "No specific example instance was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cfc2c321cdbb"
     },
     {
       "kind": "definition",
@@ -323,7 +342,8 @@
         "match_kind": "invocation"
       },
       "note": "Expressed throughout Mathlib as `Pairwise (IsCoprime on f)` / `Set.Pairwise s fun i j => IsCoprime (g i) (g j)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "062363119c1e"
     },
     {
       "kind": "example",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "No specific example instance was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2895ff12b620"
     },
     {
       "kind": "example",
@@ -355,7 +376,8 @@
         "match_kind": null
       },
       "note": "No Mathlib lemma constructing an infinite pairwise-coprime family (Fermat numbers, primes, etc.) under that label was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1229ef3300be"
     },
     {
       "kind": "theorem",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "The asymptotic density theorem P_N → 6/π² is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f956859df2d0"
     },
     {
       "kind": "proposition",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "The 1/ζ(k) density of k-tuples that are setwise coprime is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e9fab05ba3b5"
     },
     {
       "kind": "theorem",
@@ -403,7 +427,8 @@
         "match_kind": null
       },
       "note": "The Stern-Brocot/ternary-tree enumeration of coprime pairs is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5c0c629da982"
     },
     {
       "kind": "theorem",
@@ -419,7 +444,8 @@
         "match_kind": null
       },
       "note": "Grep for `Calkin`/`Wilf`/`Stern_Brocot` in Mathlib found no matches.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9a0067601cec"
     },
     {
       "kind": "example",
@@ -435,7 +461,8 @@
         "match_kind": null
       },
       "note": "Engineering application; not a mathematical statement in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b5ff05cec695"
     },
     {
       "kind": "example",
@@ -451,7 +478,8 @@
         "match_kind": null
       },
       "note": "Historical/applied note; not a mathematical statement formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a8c1b3cf362f"
     },
     {
       "kind": "definition",
@@ -467,7 +495,8 @@
         "match_kind": "generalization"
       },
       "note": "`IsCoprime p q` applied to polynomials over a field gives coprime polynomials (used extensively in e.g. `Mathlib.Algebra.Polynomial.PartialFractions`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1a3f0ca01ad0"
     },
     {
       "kind": "definition",
@@ -483,7 +512,8 @@
         "match_kind": "exact"
       },
       "note": "`Ideal.isCoprime_iff_add : IsCoprime I J ↔ I + J = 1` captures the standard definition of coprime ideals.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "619477e59c07"
     },
     {
       "kind": "theorem",
@@ -499,7 +529,8 @@
         "match_kind": "exact"
       },
       "note": "`Ideal.quotientInfRingEquivPiQuotient` is the generalized CRT for finitely many pairwise coprime ideals in a commutative ring.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7762a03eaa44"
     }
   ]
 }

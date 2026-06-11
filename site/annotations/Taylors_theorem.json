@@ -19,7 +19,8 @@
         "match_kind": null
       },
       "note": "Mathlib formalizes Taylor's theorem (approximation by the degree-n Taylor polynomial) via taylorWithinEval and the remainder theorems such as taylor_mean_remainder_lagrange.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "99c0f5e45cda"
     },
     {
       "kind": "proposition",
@@ -35,7 +36,8 @@
         "match_kind": "exact"
       },
       "note": "hasDerivAt_iff_isLittleO states exactly that differentiability is equivalent to a linear approximation with little-o error, i.e. the first-order Taylor approximation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1daa5f5a293c"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "special_case"
       },
       "note": "The quadratic approximation is the n=2 case of the general Taylor polynomial taylorWithinEval.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "461f7d09a4de"
     },
     {
       "kind": "proposition",
@@ -67,7 +70,8 @@
         "match_kind": null
       },
       "note": "The error orders o((x-x₀)ⁿ) are formalized in taylor_isLittleO, which underlies this comparison, but the qualitative 'more accurate' statement itself is not a theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4b44d4b9e825"
     },
     {
       "kind": "proposition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "taylor_isLittleO proves f x − taylorWithinEval f n s x₀ x = o((x−x₀)ⁿ), i.e. the degree-n approximation error vanishes faster than (x−x₀)ⁿ.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "24e75d18365e"
     },
     {
       "kind": "proposition",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "taylor_isLittleO (and taylor_tendsto) capture precisely the asymptotic statement that the remainder is o((x−x₀)ⁿ) as x→x₀.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "60ccbe8c12f0"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": "exact"
       },
       "note": "taylorWithin (and its evaluation taylorWithinEval) define the Taylor polynomial ∑ₖ f⁽ᵏ⁾(x₀)/k! (x−x₀)ᵏ.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ffcd91ccfa22"
     },
     {
       "kind": "proposition",
@@ -131,7 +138,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no theorem characterizing the Taylor polynomial as the unique polynomial whose remainder is o((x−x₀)ⁿ).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9e8e59fd8592"
     },
     {
       "kind": "definition",
@@ -147,7 +155,8 @@
         "match_kind": null
       },
       "note": "The remainder appears throughout as the expression f x − taylorWithinEval f n s x₀ x, but there is no standalone named definition of Rₖ.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "39121b8c33cb"
     },
     {
       "kind": "theorem",
@@ -163,7 +172,8 @@
         "match_kind": "special_case"
       },
       "note": "taylor_isLittleO gives the Peano-form conclusion but under the stronger hypothesis ContDiffOn (C^n on a convex set) rather than mere k-fold differentiability at the point.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b40a88e2dbcd"
     },
     {
       "kind": "proposition",
@@ -179,7 +189,8 @@
         "match_kind": "exact"
       },
       "note": "taylor_mean_remainder is the general mean-value form (with auxiliary g) from which the Lagrange and Cauchy forms are derived as special cases.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4fe4c60bc9e3"
     },
     {
       "kind": "theorem",
@@ -195,7 +206,8 @@
         "match_kind": "exact"
       },
       "note": "Both the Lagrange form (taylor_mean_remainder_lagrange) and Cauchy form (taylor_mean_remainder_cauchy) are formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7344a520659d"
     },
     {
       "kind": "theorem",
@@ -211,7 +223,8 @@
         "match_kind": "exact"
       },
       "note": "taylor_integral_remainder gives f x − Pₙ = ∫ₓ₀ˣ (x−t)ⁿ/n! • f⁽ⁿ⁺¹⁾(t) dt for C^{n+1} functions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7a4dd8cd9748"
     },
     {
       "kind": "proposition",
@@ -227,7 +240,8 @@
         "match_kind": "generalization"
       },
       "note": "taylor_mean_remainder_bound bounds the remainder by C·(x−a)^{n+1}/n! given a bound C on the (n+1)th derivative (vector-valued; the constant uses n! rather than (n+1)!).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ada33f78ee6f"
     },
     {
       "kind": "definition",
@@ -243,7 +257,8 @@
         "match_kind": "generalization"
       },
       "note": "exists_taylor_mean_remainder_bound provides a single constant C bounding the remainder by C·(x−a)^{n+1} uniformly over the interval.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e46d487b9d79"
     },
     {
       "kind": "example",
@@ -259,7 +274,8 @@
         "match_kind": null
       },
       "note": "Mathlib has Real.exp_bound estimating the error of the exponential's Taylor partial sums, but not this specific worked numerical example.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7917bc8f19c4"
     },
     {
       "kind": "definition",
@@ -275,7 +291,8 @@
         "match_kind": "exact"
       },
       "note": "AnalyticAt (and AnalyticOnNhd) define a function as locally given by a convergent power series.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "34fee9d55b7f"
     },
     {
       "kind": "proposition",
@@ -291,7 +308,8 @@
         "match_kind": "exact"
       },
       "note": "radius_inv_eq_limsup (and radius_eq_liminf) is the Cauchy–Hadamard theorem expressing the radius via limsup ‖pₙ‖^{1/n}.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9ebe4a4a0778"
     },
     {
       "kind": "proposition",
@@ -307,7 +325,8 @@
         "match_kind": "generalization"
       },
       "note": "HasFPowerSeriesOnBall.tendstoUniformlyOn proves the partial sums converge uniformly on any closed ball strictly inside the radius of convergence.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f87b8828b15b"
     },
     {
       "kind": "definition",
@@ -323,7 +342,8 @@
         "match_kind": "special_case"
       },
       "note": "The Taylor polynomials are taylorWithin (equivalently FormalMultilinearSeries.partialSum of the power series), the finite truncations of the series.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7284fa0749c9"
     },
     {
       "kind": "proposition",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "Mathlib proves the Taylor series of an analytic function converges to it on its ball, but not the specific 'uniformly bounded derivatives ⟹ convergence' criterion.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6172f135c7be"
     },
     {
       "kind": "definition",
@@ -355,7 +376,8 @@
         "match_kind": null
       },
       "note": "The Taylor series is built via FormalMultilinearSeries.ofScalars with coefficients iteratedDeriv n f x / n!, but there is no dedicated named real 'Taylor series' definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "13e653d45628"
     },
     {
       "kind": "proposition",
@@ -371,7 +393,8 @@
         "match_kind": "exact"
       },
       "note": "exists_taylor_mean_remainder_bound gives exactly: for each order n there exists a constant C with ‖Rₙ‖ ≤ C·(x−a)^{n+1} on the interval.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bf6ba1825264"
     },
     {
       "kind": "proposition",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "Uniform convergence of the series (tendstoUniformlyOn) and analyticity of the sum exist separately, but not packaged as this combined statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "905d9b0abb49"
     },
     {
       "kind": "example",
@@ -403,7 +427,8 @@
         "match_kind": "exact"
       },
       "note": "expNegInvGlue is smooth (expNegInvGlue.contDiff) yet not analytic at 0 (expNegInvGlue.not_analyticAt_zero), the standard flat non-analytic example.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f49a220b1167"
     },
     {
       "kind": "proposition",
@@ -419,7 +444,8 @@
         "match_kind": "exact"
       },
       "note": "A holomorphic function admits a local power-series (Taylor) expansion: DifferentiableOn.analyticOnNhd (and Differentiable.hasFPowerSeriesOnBall).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1c455caafa1e"
     },
     {
       "kind": "proposition",
@@ -435,7 +461,8 @@
         "match_kind": "exact"
       },
       "note": "This is the Cauchy integral formula ∮ f(z)/(z−w) dz = 2πi·f(w) for differentiable f.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7c3759069704"
     },
     {
       "kind": "proposition",
@@ -451,7 +478,8 @@
         "match_kind": "exact"
       },
       "note": "DifferentiableOn.contDiffOn (and Differentiable.contDiff) proves a complex differentiable function on an open set is C^∞ there.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bf2ced1d45b6"
     },
     {
       "kind": "proposition",
@@ -467,7 +495,8 @@
         "match_kind": "exact"
       },
       "note": "This bounds ‖f⁽ⁿ⁾(c)‖ ≤ n!·C/Rⁿ from boundary values, i.e. Cauchy's estimate for derivatives.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "740c6a03e549"
     },
     {
       "kind": "theorem",
@@ -483,7 +512,8 @@
         "match_kind": "exact"
       },
       "note": "DifferentiableOn.analyticOnNhd / Differentiable.analyticAt prove complex differentiability implies analyticity.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "817d239859c2"
     },
     {
       "kind": "proposition",
@@ -499,7 +529,8 @@
         "match_kind": null
       },
       "note": "The phenomenon is captured by Cauchy's estimate bounding derivatives (hence the remainder) via boundary values, but the explicit remainder-domination statement is not separately formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "569d5f2a4af0"
     },
     {
       "kind": "example",
@@ -515,7 +546,8 @@
         "match_kind": null
       },
       "note": "This specific example (1/(1+x²) and its radius of convergence determined by complex poles) is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "eeb9936c0260"
     },
     {
       "kind": "definition",
@@ -531,7 +563,8 @@
         "match_kind": "exact"
       },
       "note": "HasFDerivAt defines differentiability at a via a continuous linear map with little-o error, generalizing to arbitrary normed spaces.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "354129dfc980"
     },
     {
       "kind": "definition",
@@ -547,7 +580,8 @@
         "match_kind": "exact"
       },
       "note": "fderiv is the (unique) Fréchet derivative / differential of f at a point.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "67c4dbf37742"
     },
     {
       "kind": "definition",
@@ -563,7 +597,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not use multi-index notation for derivatives; it works with iteratedFDeriv (symmetric continuous multilinear maps) instead.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4eb6504316df"
     },
     {
       "kind": "definition",
@@ -579,7 +614,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib's ContDiffAt captures k-times continuous differentiability via iteratedFDeriv, slightly stronger than mere k-fold differentiability at a point.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "94a293d702b5"
     },
     {
       "kind": "proposition",
@@ -595,7 +631,8 @@
         "match_kind": null
       },
       "note": "Mathlib's Taylor theorem is one-dimensional (ℝ → E); the file explicitly lists higher-dimensional generalization as a TODO.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d00af69ad030"
     },
     {
       "kind": "proposition",
@@ -611,7 +648,8 @@
         "match_kind": null
       },
       "note": "No multivariate Taylor remainder estimates are formalized; only the one-dimensional case exists.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bad7368f42a6"
     },
     {
       "kind": "theorem",
@@ -627,7 +665,8 @@
         "match_kind": null
       },
       "note": "There is no multivariate Taylor's theorem in Mathlib; the Taylor file targets only ℝ → E and notes higher dimensions as a TODO.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5a28465845f7"
     },
     {
       "kind": "example",
@@ -643,7 +682,8 @@
         "match_kind": null
       },
       "note": "This two-dimensional worked example is not formalized, as multivariate Taylor polynomials are absent from Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "770da67ddf2f"
     }
   ]
 }

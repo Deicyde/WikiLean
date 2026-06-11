@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "`Setoid.classes r` is defined as the set of equivalence classes `{ s | ∃ y, s = { x | r x y } }`, exactly splitting α into classes.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9bc22180c685"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "exact"
       },
       "note": "The equivalence class of `y` is `{ x | r x y }`, witnessed in Mathlib by `Setoid.mem_classes`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9915664acf7f"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib has both `Quotient r` (core) and `Setoid.classes r`, with `Setoid.quotientEquivClasses` giving the canonical bijection.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "47d4b9df15f2"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "The Lean core `Setoid α` structure (with `iseqv : Equivalence r`) is the standard formalization, with `refl'`/`symm'`/`trans'` lemmas in `Mathlib.Data.Setoid.Basic`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5405338aacfc"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib defines `{ x | r x y } ∈ r.classes` via `Setoid.mem_classes`, formalizing `[a] = {x | x ~ a}`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ca5971a7e6c8"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no proper-class machinery; the meta-distinction between sets and proper classes for isomorphism collections is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3d70cd75cf65"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": "exact"
       },
       "note": "The canonical surjection `Quotient.mk` and its surjectivity are formalized in `Mathlib.Data.Quot` (`Quotient.mk_surjective`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e9fc85f1630d"
     },
     {
       "kind": "definition",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "`Quotient.out` is a (noncomputable) section choosing a representative of each class, satisfying `Quotient.mk_out`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e1b21a06f496"
     },
     {
       "kind": "definition",
@@ -147,7 +155,8 @@
         "match_kind": "special_case"
       },
       "note": "`ZMod n` represents classes by `Fin n` (canonical least-nonneg residue), but the general notion of \"canonical representative section\" is not abstracted.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5bf30010a2bd"
     },
     {
       "kind": "definition",
@@ -163,7 +172,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib uses `ZMod n`/`Int.emod` for the mod-m remainder representative, but no generic \"representative-function-of-a-section\" abstraction.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dac88514445d"
     },
     {
       "kind": "proposition",
@@ -179,7 +189,8 @@
         "match_kind": "exact"
       },
       "note": "`Setoid.isPartition_classes` states `r.classes` is a partition (`∅ ∉ classes ∧ ∀ a, ∃! b ∈ classes, a ∈ b`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "47916849896a"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": "exact"
       },
       "note": "`Setoid.Partition.orderIso` gives an order isomorphism between `Setoid α` and partitions of `α`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "df4605176c53"
     },
     {
       "kind": "proposition",
@@ -211,7 +223,8 @@
         "match_kind": "exact"
       },
       "note": "`Quotient.eq` plus `Setoid.eq_of_mem_classes` formalize the equivalences `a ~ b ↔ ⟦a⟧ = ⟦b⟧ ↔ [a] ∩ [b] ≠ ∅`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bf964029378c"
     },
     {
       "kind": "example",
@@ -227,7 +240,8 @@
         "match_kind": null
       },
       "note": "This informal example about rectangles by area is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "459f7493dc7c"
     },
     {
       "kind": "example",
@@ -243,7 +257,8 @@
         "match_kind": "exact"
       },
       "note": "`ZMod 2` and `ZMod 3` (and `Int.ModEq`) formalize integer congruence mod a natural number.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "34a73a7edd49"
     },
     {
       "kind": "example",
@@ -259,7 +274,8 @@
         "match_kind": "special_case"
       },
       "note": "`Rat` is formalized but as reduced fractions (numerator/denominator coprime), not as an explicit quotient of ℤ × ℤ\\{0} by the cross-multiplication equivalence.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "131710f44bd5"
     },
     {
       "kind": "example",
@@ -275,7 +291,8 @@
         "match_kind": "generalization"
       },
       "note": "`Projectivization` formalizes projective space as a quotient by linear-span equivalence, generalizing the parallel-lines-with-points-at-infinity example.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ea4f426db2ab"
     },
     {
       "kind": "example",
@@ -291,7 +308,8 @@
         "match_kind": "exact"
       },
       "note": "`Setoid.bot_def` identifies `(⊥ : Setoid α)` with equality `(· = ·)`, whose classes are singletons.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6bc69518ccc1"
     },
     {
       "kind": "definition",
@@ -307,7 +325,8 @@
         "match_kind": null
       },
       "note": "The cluster-graph viewpoint relating equivalence relations to disjoint unions of complete graphs is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a3825507c705"
     },
     {
       "kind": "definition",
@@ -323,7 +342,8 @@
         "match_kind": "exact"
       },
       "note": "`Quotient.lift f h` requires the hypothesis `∀ a b, a ≈ b → f a = f b`, exactly the invariance/well-definedness condition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "846355fbbd67"
     },
     {
       "kind": "definition",
@@ -339,7 +359,8 @@
         "match_kind": "exact"
       },
       "note": "`Quotient.lift` realizes a function that is constant on each class as a function on the quotient.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6ecf22a5af99"
     },
     {
       "kind": "definition",
@@ -355,7 +376,8 @@
         "match_kind": "exact"
       },
       "note": "`Setoid.ker f` is the equivalence relation `f x = f y` induced by `f`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2196eab3289d"
     },
     {
       "kind": "definition",
@@ -371,7 +393,8 @@
         "match_kind": "exact"
       },
       "note": "`Quotient.map f h` lifts a relation-preserving function `f : α → β` to a function `Quotient sa → Quotient sb`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "38e6f15304be"
     },
     {
       "kind": "definition",
@@ -387,7 +410,8 @@
         "match_kind": "exact"
       },
       "note": "`instTopologicalSpaceQuotient` endows `Quotient s` with the quotient topology from a topological space `X`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "eac3429e9077"
     },
     {
       "kind": "definition",
@@ -403,7 +427,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib has many quotient algebraic structures (e.g. `QuotientGroup`, `Ideal.Quotient`, `Submodule.Quotient`) built from congruence relations, though there is no single \"quotient algebra\" abstraction.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1bebee258c05"
     },
     {
       "kind": "definition",
@@ -419,7 +444,8 @@
         "match_kind": "exact"
       },
       "note": "`MulAction.orbitRel G α` is the orbit equivalence, and `Quotient (MulAction.orbitRel G α)` is the orbit space.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "052e403ec57d"
     },
     {
       "kind": "example",
@@ -435,7 +461,8 @@
         "match_kind": "exact"
       },
       "note": "`QuotientGroup.instIsTopologicalGroup` shows `G ⧸ N` is a topological group when `G` is a topological group and `N` is a normal subgroup.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "284e584a3996"
     }
   ]
 }

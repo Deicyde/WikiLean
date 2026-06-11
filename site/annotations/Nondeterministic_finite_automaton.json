@@ -19,7 +19,8 @@
         "match_kind": "generalization"
       },
       "note": "The `DFA` structure (step, start, accept over types α, σ) is the standard DFA, generalized to allow infinite state types.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7a089d0ac67d"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "generalization"
       },
       "note": "The `NFA` structure has a set-valued transition function and a set of start states, matching the NFA definition (generalized to infinite states).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "da2e47654484"
     },
     {
       "kind": "proposition",
@@ -51,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "`DFA.toNFA` converts a DFA to an NFA and `DFA.toNFA_correct` proves the language is preserved.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7050ce3c8a8b"
     },
     {
       "kind": "proposition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "`NFA.toDFA` is the subset construction and `NFA.toDFA_correct` proves `M.toDFA.accepts = M.accepts`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1ac950ae990d"
     },
     {
       "kind": "proposition",
@@ -83,7 +87,8 @@
         "match_kind": "invocation"
       },
       "note": "Follows from `NFA.toDFA_correct` together with the `Language.IsRegular` definition, but no single lemma states `M.accepts.IsRegular` directly.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "adcb225d73c9"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": "generalization"
       },
       "note": "The `NFA` structure encodes the (Q, Σ, δ, q₀, F) tuple with Q, Σ as type parameters and a set of start states.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9b7beebd4b0c"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": "exact"
       },
       "note": "`NFA.accepts` is the language of words for which some accept state is reachable, matching L(M).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9cdac541d5da"
     },
     {
       "kind": "definition",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "`NFA.accepts_iff_exists_path` characterizes acceptance via the existence of a `NFA.Path` (a sequence of states r₀…rₙ).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0df4f5c537f2"
     },
     {
       "kind": "definition",
@@ -147,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "`NFA.evalFrom` (a `List.foldl` of `stepSet`) is exactly the recursively-extended reachable-set transition function δ*.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4a9d732c18ea"
     },
     {
       "kind": "proposition",
@@ -163,7 +172,8 @@
         "match_kind": null
       },
       "note": "Mathlib's `NFA` already permits a set of start states, but the reduction construction to a single start state is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "81ee6200ea6f"
     },
     {
       "kind": "example",
@@ -179,7 +189,8 @@
         "match_kind": null
       },
       "note": "This specific concrete example automaton is not present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c2b1494b5896"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": "exact"
       },
       "note": "`DFA.toNFA` embeds a DFA into an NFA with singleton transition sets, with `DFA.toNFA_correct` confirming equivalence.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1b6624e4ac86"
     },
     {
       "kind": "theorem",
@@ -211,7 +223,8 @@
         "match_kind": "exact"
       },
       "note": "`NFA.toDFA` is the powerset/subset construction and `NFA.toDFA_correct` proves it recognizes the same language.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "005ceaf738e7"
     },
     {
       "kind": "proposition",
@@ -227,7 +240,8 @@
         "match_kind": null
       },
       "note": "`NFA.toDFA` uses `Set σ` as states but no cardinality bound (2^n) on the resulting DFA is stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9adf9bcb4af2"
     },
     {
       "kind": "definition",
@@ -243,7 +257,8 @@
         "match_kind": "exact"
       },
       "note": "`εNFA` has a transition function on `Option α`, where `none` encodes ε-moves.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "209434518ece"
     },
     {
       "kind": "definition",
@@ -259,7 +274,8 @@
         "match_kind": "generalization"
       },
       "note": "The `εNFA` structure encodes the (Q, Σ, δ, q₀, F) tuple with ε-transitions via `Option`, generalized to a set of start states.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "eab763e41b69"
     },
     {
       "kind": "definition",
@@ -275,7 +291,8 @@
         "match_kind": "generalization"
       },
       "note": "`εNFA.εClosure` of a singleton `{s}` gives the ε-closure of a single state; Mathlib defines it for any set.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e79bdcb1afd0"
     },
     {
       "kind": "definition",
@@ -291,7 +308,8 @@
         "match_kind": "exact"
       },
       "note": "`εNFA.εClosure S` is the inductively-defined set reachable from any state of `S` by ε-transitions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6b1130a4846b"
     },
     {
       "kind": "definition",
@@ -307,7 +325,8 @@
         "match_kind": "exact"
       },
       "note": "`εNFA.evalFrom`/`εNFA.eval` extend the ε-step function to strings via folding `stepSet` after taking ε-closures.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "999cd2f1ad0c"
     },
     {
       "kind": "definition",
@@ -323,7 +342,8 @@
         "match_kind": "exact"
       },
       "note": "`εNFA.accepts` is the language of words whose evaluation reaches an accept state.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1b362db43370"
     },
     {
       "kind": "example",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "This specific concrete ε-NFA example is not present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9b5311ecd76a"
     },
     {
       "kind": "theorem",
@@ -355,7 +376,8 @@
         "match_kind": "exact"
       },
       "note": "`εNFA.toNFA` builds an equivalent ε-free NFA and `εNFA.toNFA_correct` proves the languages agree.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1cde713b54f6"
     },
     {
       "kind": "proposition",
@@ -371,7 +393,8 @@
         "match_kind": "exact"
       },
       "note": "`εNFA.toNFA_evalFrom_match` establishes the evalFrom (extended transition) functions of the ε-NFA and its constructed NFA coincide.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "81bdcae9aaee"
     },
     {
       "kind": "proposition",
@@ -387,7 +410,8 @@
         "match_kind": "invocation"
       },
       "note": "Obtainable by composing `εNFA.toNFA` with `NFA.toDFA`, but no single decl states ε-NFA/DFA equivalence directly.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1f042a2a73bf"
     },
     {
       "kind": "theorem",
@@ -403,7 +427,8 @@
         "match_kind": "invocation"
       },
       "note": "Closure under union, intersection, complement, and reversal is formalized for `Language.IsRegular`, but concatenation and Kleene star closure are not.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e9277d5cdddc"
     },
     {
       "kind": "proposition",
@@ -419,7 +444,8 @@
         "match_kind": "exact"
       },
       "note": "`Language.IsRegular.add` proves regular (NFA-recognizable) languages are closed under union.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "054b2599f776"
     },
     {
       "kind": "proposition",
@@ -435,7 +461,8 @@
         "match_kind": "exact"
       },
       "note": "`Language.IsRegular.inf` proves regular languages are closed under intersection (via the product DFA).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2f60344432fe"
     },
     {
       "kind": "proposition",
@@ -451,7 +478,8 @@
         "match_kind": null
       },
       "note": "No lemma stating regular/NFA-recognizable languages are closed under concatenation (`*`) exists in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5462dac6240a"
     },
     {
       "kind": "proposition",
@@ -467,7 +495,8 @@
         "match_kind": "exact"
       },
       "note": "`Language.IsRegular.compl` proves regular languages are closed under complement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fd9b050c6d7f"
     },
     {
       "kind": "proposition",
@@ -483,7 +512,8 @@
         "match_kind": null
       },
       "note": "No lemma stating regular/NFA-recognizable languages are closed under Kleene star exists in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8147c6ef700c"
     },
     {
       "kind": "proposition",
@@ -499,7 +529,8 @@
         "match_kind": "invocation"
       },
       "note": "Follows from `NFA.toDFA_correct` plus `Language.IsRegular`, but no direct `NFA.accepts.IsRegular` lemma is stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9623a44e7b20"
     },
     {
       "kind": "proposition",
@@ -515,7 +546,8 @@
         "match_kind": "exact"
       },
       "note": "`NFA.toDFA_correct` proves the constructed DFA accepts the same language as the NFA.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "db674afd0f18"
     },
     {
       "kind": "proposition",
@@ -531,7 +563,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no computational-complexity (time/space) analysis of NFA simulation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a8ad61b9f76a"
     },
     {
       "kind": "proposition",
@@ -547,7 +580,8 @@
         "match_kind": null
       },
       "note": "The NFA emptiness problem and its complexity are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "981072ffe6d2"
     },
     {
       "kind": "theorem",
@@ -563,7 +597,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no PSPACE-completeness or complexity-class framework for NFA universality.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2f0c2dc4bc8a"
     },
     {
       "kind": "proposition",
@@ -579,7 +614,8 @@
         "match_kind": null
       },
       "note": "The NFA language-inclusion problem and its PSPACE-completeness are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "67a8478720b9"
     },
     {
       "kind": "theorem",
@@ -595,7 +631,8 @@
         "match_kind": null
       },
       "note": "Counting accepted words and #P-hardness are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b51421bfb0eb"
     },
     {
       "kind": "proposition",
@@ -611,7 +648,8 @@
         "match_kind": "exact"
       },
       "note": "`NFA.toDFA_correct` and `DFA.toNFA_correct` together establish that NFAs and DFAs recognize exactly the same languages.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a5ce2ec5a6d8"
     }
   ]
 }

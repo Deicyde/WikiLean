@@ -19,7 +19,8 @@
         "match_kind": "special_case"
       },
       "note": "Ordnode is a weight-balanced BST whose left<node<right ordering invariant is captured by Ordnode.Bounded, but a plain (unbalanced) BST is not separately defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "45f521eeaca2"
     },
     {
       "kind": "proposition",
@@ -35,7 +36,8 @@
         "match_kind": null
       },
       "note": "Mathlib defines Tree.height but proves no running-time/complexity bounds for tree operations.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4c1c27c0e7ca"
     },
     {
       "kind": "proposition",
@@ -51,7 +53,8 @@
         "match_kind": null
       },
       "note": "No complexity/halving analysis of search is formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b90887cf4d50"
     },
     {
       "kind": "proposition",
@@ -67,7 +70,8 @@
         "match_kind": null
       },
       "note": "Average- and worst-case complexity analysis is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "50196460d94c"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": null
       },
       "note": "Ordnode.Bounded enforces that every element lies strictly between its lo/hi bounds, encoding the BST strict-order arrangement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8acfc09b68f8"
     },
     {
       "kind": "proposition",
@@ -99,7 +104,8 @@
         "match_kind": null
       },
       "note": "Mathlib's Ordnode is always kept balanced, and no degeneration-to-list result is stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5db36c92f4a2"
     },
     {
       "kind": "proposition",
@@ -115,7 +121,8 @@
         "match_kind": null
       },
       "note": "Ordnode.find implements the recursive compare-at-root-then-descend BST search, though the prose procedure itself is not stated as a theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6e1d4a5b3fb4"
     },
     {
       "kind": "proposition",
@@ -131,7 +138,8 @@
         "match_kind": null
       },
       "note": "The running-time bound of BST search is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7baff45a5deb"
     },
     {
       "kind": "definition",
@@ -147,7 +155,8 @@
         "match_kind": null
       },
       "note": "Ordnode.findGt returns the smallest element of the tree greater than a given value, matching the successor's defining property (no correctness lemma proven).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8e8bb0415d74"
     },
     {
       "kind": "definition",
@@ -163,7 +172,8 @@
         "match_kind": null
       },
       "note": "Ordnode.findLt returns the largest element of the tree less than a given value, matching the predecessor's defining property (no correctness lemma proven).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2ad5837b1db5"
     },
     {
       "kind": "proposition",
@@ -179,7 +189,8 @@
         "match_kind": null
       },
       "note": "Ordnode.insert (with insert.valid preserving the invariant) implements insertion, but it rebalances rather than always leaving the new element as a leaf.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f2f787035ee6"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": null
       },
       "note": "Ordnode.erase implements BST deletion, but the specific leaf-case behavior is not isolated as a theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "37d5ffb8947a"
     },
     {
       "kind": "proposition",
@@ -211,7 +223,8 @@
         "match_kind": null
       },
       "note": "Ordnode.erase handles single-child deletion within its rebalancing recursion, but the one-child case is not stated separately.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "63af5a7a307c"
     },
     {
       "kind": "proposition",
@@ -227,7 +240,8 @@
         "match_kind": null
       },
       "note": "When erasing a two-child node, Ordnode.erase calls Ordnode.glue to merge the two subtrees, the analogue of the successor-replacement case.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "aff2e5993393"
     },
     {
       "kind": "definition",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "Ordnode.toList performs an in-order traversal (toList_node = toList l ++ x :: toList r, i.e. left, root, right).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "482f8e198a28"
     },
     {
       "kind": "proposition",
@@ -259,7 +274,8 @@
         "match_kind": null
       },
       "note": "toList and the Bounded ordering invariant exist, but no lemma proving that toList of a valid Ordnode is sorted/non-decreasing is present.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "697628c281ae"
     },
     {
       "kind": "definition",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "Tree.traverse (and Tree.map) visit in node → left → right order, i.e. preorder, though no list-producing preorder function is named as such.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a537e9eaa089"
     },
     {
       "kind": "definition",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "No post-order (left, right, root) traversal is defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "71ed6049529b"
     },
     {
       "kind": "proposition",
@@ -307,7 +325,8 @@
         "match_kind": null
       },
       "note": "Mathlib only models the self-balancing Ordnode; degeneration of unbalanced BSTs is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4059896aa303"
     },
     {
       "kind": "definition",
@@ -323,7 +342,8 @@
         "match_kind": null
       },
       "note": "Mathlib defines Tree.height but has no height-balance (AVL-style) predicate; its Ordnode.Balanced is a size/weight-balance condition instead.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a40abd90554c"
     },
     {
       "kind": "definition",
@@ -339,7 +359,8 @@
         "match_kind": "special_case"
       },
       "note": "Ordnode.Balanced/BalancedSz is a weight-balance criterion on subtree sizes (Adams/Nievergelt–Reingold bounded-balance trees), a specific instance of the weight-balanced-tree notion.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "972ad5304a64"
     },
     {
       "kind": "example",
@@ -355,7 +376,8 @@
         "match_kind": null
       },
       "note": "Ordnode.ofList (foldr insert) followed by Ordnode.toList realizes tree sort, but no theorem proves the composite output is sorted.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "93ff8778e276"
     },
     {
       "kind": "example",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "Ordnode.eraseMin (with findMin) removes the leftmost/minimum element as in min-priority extraction, but the priority-queue framing is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5cc461c876de"
     },
     {
       "kind": "example",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "Ordnode.eraseMax (with findMax) removes the rightmost/maximum element as in max-priority extraction, but the priority-queue framing is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bbc4ee3cc756"
     }
   ]
 }

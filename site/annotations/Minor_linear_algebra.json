@@ -19,7 +19,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib has `Matrix.submatrix` for reindexing/extracting submatrices but no named `minor` definition; one would take `det` of a submatrix.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3f6e3b3f989e"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "generalization"
       },
       "note": "The construction `A.submatrix i.succAbove j.succAbove` appears in `det_succ_row`, but Mathlib has no named `firstMinor` (i,j) definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c289f1bd7174"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "invocation"
       },
       "note": "Cofactors appear only inline in the Laplace-expansion formula `(-1)^(i+j) * det (A.submatrix i.succAbove j.succAbove)`; no standalone `cofactor` definition exists.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dc1ddc20b47c"
     },
     {
       "kind": "example",
@@ -67,7 +70,8 @@
         "match_kind": null
       },
       "note": "No worked numerical example of a first minor/cofactor exists in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1139f657f041"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "generalization"
       },
       "note": "k×k minors are expressible as `det (A.submatrix r c)` for injections `r, c : Fin k → _`, but no named `Matrix.minor` concept exists.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "60b19ca139f4"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": "special_case"
       },
       "note": "`det_fin_zero` gives `det = 1` for the empty matrix, which is the order-zero minor convention, though not framed as a minor.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "34e6510e703b"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib's `submatrix` is reindex-based rather than index-set-based; no `[A]_{I,J}` notation/definition is present.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "40a55c037927"
     },
     {
       "kind": "definition",
@@ -131,7 +138,8 @@
         "match_kind": null
       },
       "note": "No definition of the complementary minor (deleting the chosen rows/columns) exists in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9e44fcf590fb"
     },
     {
       "kind": "theorem",
@@ -147,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.det_succ_row` and `Matrix.det_succ_column` give the Laplace cofactor expansion along any row or column of an (n+1)×(n+1) matrix.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ccdfa02c9e1e"
     },
     {
       "kind": "definition",
@@ -163,7 +172,8 @@
         "match_kind": "invocation"
       },
       "note": "The cofactor matrix isn't given a name; only its transpose `Matrix.adjugate` is defined (via Cramer's rule rather than minors).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0d9267a6cf0b"
     },
     {
       "kind": "theorem",
@@ -179,7 +189,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.inv_def` states `A⁻¹ = A.det⁻¹ʳ • A.adjugate`, matching the adjugate inverse formula.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4fbc23493423"
     },
     {
       "kind": "definition",
@@ -195,7 +206,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.adjugate` is defined via the Cramer map and documented as the transpose of the cofactor matrix.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "97c752078f6d"
     },
     {
       "kind": "theorem",
@@ -211,7 +223,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no expression of the inverse in terms of higher-order minors of the matrix.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ed35bad37a3f"
     },
     {
       "kind": "proposition",
@@ -227,7 +240,8 @@
         "match_kind": null
       },
       "note": "No characterization of `Matrix.rank` via existence of a nonzero r×r minor is present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d2ecf9736012"
     },
     {
       "kind": "definition",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "No `principalMinor` definition appears in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "04dd80532232"
     },
     {
       "kind": "definition",
@@ -259,7 +274,8 @@
         "match_kind": null
       },
       "note": "No `leadingPrincipalMinor` definition appears in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bdaebf4d7b98"
     },
     {
       "kind": "definition",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no notion of a `basicMinor`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "762e694231b4"
     },
     {
       "kind": "proposition",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "Sylvester's criterion is not present in `Mathlib/LinearAlgebra/Matrix/PosDef.lean` or elsewhere.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b8ea8ec89c70"
     },
     {
       "kind": "theorem",
@@ -307,7 +325,8 @@
         "match_kind": null
       },
       "note": "Only the square-case `Matrix.det_mul` is in Mathlib; the general Cauchy–Binet formula for minors of a product is not present.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e3e3cb90b0c0"
     },
     {
       "kind": "proposition",
@@ -323,7 +342,8 @@
         "match_kind": null
       },
       "note": "While Mathlib has exterior powers and even `exteriorPower.cofactorLinear` in a stably-free setup, no result identifies k-minors of a matrix with entries of its k-th exterior power.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0c068f2263a0"
     },
     {
       "kind": "example",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "No worked wedge-product computation of 2×2 minors is present.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "26b899607a23"
     },
     {
       "kind": "definition",
@@ -355,7 +376,8 @@
         "match_kind": null
       },
       "note": "Mathlib uses `adjugate` exclusively and does not introduce `adjunct` terminology.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d83a03f4532f"
     }
   ]
 }

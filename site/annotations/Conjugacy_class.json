@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "`IsConj a b` is defined as the existence of a unit `c` with `c * a * c⁻¹ = b`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a9594358ee92"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "exact"
       },
       "note": "`ConjClasses α` is the quotient of the monoid by the `IsConj` setoid, i.e. the set of conjugacy classes.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6c7c03884da8"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no general `ClassFunction` type, but `FDRep.char_conj` shows characters are class functions and any function on `ConjClasses` is one.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "138c9062a784"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": null
       },
       "note": "`conjugatesOfSet` collects all conjugates of elements of a set; the conjugate `gSg⁻¹` of a subgroup is given by the pointwise action (`MulAut.conj g • H`), but no dedicated subset-conjugacy relation is defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cb96f5266791"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "`Subgroup.Normal` is defined by conjugation-closure, equivalent (via `Normal.conj_smul_eq_self`) to the conjugate subgroup equaling itself.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cceb723a7b69"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "`MulAut.conj : G →* MulAut G` sends `g` to the inner automorphism `h ↦ g * h * g⁻¹`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "698769362ecc"
     },
     {
       "kind": "example",
@@ -115,7 +121,8 @@
         "match_kind": "special_case"
       },
       "note": "Matrix similarity is exactly `IsConj` on the matrix monoid (units = invertible matrices), but is not separately named in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "723abe9b200a"
     },
     {
       "kind": "theorem",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "This instance (Sylow's second theorem) states `G` acts pretransitively on Sylow `p`-subgroups, i.e. they are all conjugate.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bcd74fcee442"
     },
     {
       "kind": "definition",
@@ -147,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "`isConj_iff` gives `IsConj a b ↔ ∃ c, c * a * c⁻¹ = b` in a group, the textbook definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0fffa278447b"
     },
     {
       "kind": "definition",
@@ -163,7 +172,8 @@
         "match_kind": "special_case"
       },
       "note": "Matrix similarity is `IsConj` specialized to the matrix monoid, with no dedicated `Matrix.similar` definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c778db08d40b"
     },
     {
       "kind": "proposition",
@@ -189,7 +199,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\operatorname {Cl} (a)=\\left\\{gag^{-1}:g\\in G\\right\\}}"
         }
-      ]
+      ],
+      "id": "2a7fe506a5e3"
     },
     {
       "kind": "definition",
@@ -215,7 +226,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\operatorname {Cl} (a)=\\left\\{gag^{-1}:g\\in G\\right\\}}"
         }
-      ]
+      ],
+      "id": "cba2cadd6a12"
     },
     {
       "kind": "proposition",
@@ -231,7 +243,8 @@
         "match_kind": "generalization"
       },
       "note": "`ConjClasses.mk_bijOn` shows the center bijects with the singleton (non-`noncenter`) conjugacy classes; `IsConj.eq_of_left_mem_center` gives the elementwise direction.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "46e3707d0b2d"
     },
     {
       "kind": "proposition",
@@ -247,7 +260,8 @@
         "match_kind": "generalization"
       },
       "note": "`SemiconjBy.orderOf_eq` gives equal orders for semiconjugate (hence conjugate) elements.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "12dfc4ac6342"
     },
     {
       "kind": "proposition",
@@ -263,7 +277,8 @@
         "match_kind": "exact"
       },
       "note": "`IsConj.pow` states `IsConj a b → IsConj (a ^ n) (b ^ n)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "010592d42d32"
     },
     {
       "kind": "proposition",
@@ -279,7 +294,8 @@
         "match_kind": null
       },
       "note": "`MulAut.conj` (whose kernel is the center and whose range is the inner automorphisms) exists, but the isomorphism `G ⧸ Z(G) ≃* Inn(G)` is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b4785f938d25"
     },
     {
       "kind": "example",
@@ -295,7 +311,8 @@
         "match_kind": null
       },
       "note": "Conjugacy of permutations is classified by cycle type, but the specific count of 3 classes for S₃ is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1fbe252d4d47"
     },
     {
       "kind": "example",
@@ -311,7 +328,8 @@
         "match_kind": null
       },
       "note": "Cycle-type classification of conjugacy classes exists, but the specific count of 5 classes for S₄ is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "abb0628e88cc"
     },
     {
       "kind": "proposition",
@@ -337,7 +355,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\frac {n!}{\\left(k_{1}!\\,m_{1}^{k_{1}}\\right)\\left(k_{2}!\\,m_{2}^{k_{2}}\\right)\\cdots \\left(k_{s}!\\,m_{s}^{k_{s}}\\right)}}.}"
         }
-      ]
+      ],
+      "id": "4d26494a0ec2"
     },
     {
       "kind": "example",
@@ -353,7 +372,8 @@
         "match_kind": null
       },
       "note": "`card_conjClasses_odd` counts conjugacy classes of `DihedralGroup n` only for odd `n`; the even case in the article is not covered.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "52d91ae1633c"
     },
     {
       "kind": "proposition",
@@ -379,7 +399,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle g\\cdot x:=gxg^{-1}.}"
         }
-      ]
+      ],
+      "id": "47769001f935"
     },
     {
       "kind": "proposition",
@@ -405,7 +426,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle bab^{-1}=cac^{-1}\\Longleftrightarrow \\left(c^{-1}b\\right)a=a\\left(c^{-1}b\\right)\\Longleftrightarrow z=c^{-1}b\\in \\operatorname {C} _{G}(a).}"
         }
-      ]
+      ],
+      "id": "d0425a547dde"
     },
     {
       "kind": "proposition",
@@ -421,7 +443,8 @@
         "match_kind": "invocation"
       },
       "note": "`ConjClasses.card_carrier` gives class size = `card G / card (centralizer)`, hence (via the orbit–stabilizer product) it divides the group order.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "653793b51e63"
     },
     {
       "kind": "theorem",
@@ -451,7 +474,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle |G|=|{\\operatorname {Z} (G)}|+\\sum _{i}\\left[G:\\operatorname {C} _{G}(x_{i})\\right],}"
         }
-      ]
+      ],
+      "id": "578093973f61"
     },
     {
       "kind": "theorem",
@@ -467,7 +491,8 @@
         "match_kind": "exact"
       },
       "note": "`IsPGroup.center_nontrivial` states a nontrivial finite p-group has nontrivial center.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e060004cb462"
     },
     {
       "kind": "proposition",
@@ -483,7 +508,8 @@
         "match_kind": "exact"
       },
       "note": "`commutative_of_card_eq_prime_sq` (and `commGroupOfCardEqPrimeSq`) prove groups of order `p²` are commutative.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3a2e3e3c0878"
     },
     {
       "kind": "theorem",
@@ -499,7 +525,8 @@
         "match_kind": "generalization"
       },
       "note": "This states `#{commuting pairs} = #ConjClasses × |G|`, equivalent to the number of classes being the average centralizer size.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ce94b5bd65a0"
     },
     {
       "kind": "definition",
@@ -515,7 +542,8 @@
         "match_kind": null
       },
       "note": "Conjugation of a subgroup as `gHg⁻¹` is realized by the pointwise action `MulAut.conj g • H`, but the binary subset-conjugacy relation is not separately defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "62198d1d208a"
     },
     {
       "kind": "proposition",
@@ -545,7 +573,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle |{\\operatorname {Cl} (S)}|=[G:N(S)].}"
         }
-      ]
+      ],
+      "id": "eec77d959037"
     },
     {
       "kind": "proposition",
@@ -561,7 +590,8 @@
         "match_kind": "generalization"
       },
       "note": "`Subgroup.equivSMul` gives `H ≃* (a • H)`, the isomorphism between a subgroup and its conjugate.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bd7a048c3a4a"
     },
     {
       "kind": "proposition",
@@ -577,7 +607,8 @@
         "match_kind": null
       },
       "note": "No formalization relating conjugacy classes of the fundamental group to free homotopy classes of loops was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "73a7e021e323"
     },
     {
       "kind": "theorem",
@@ -593,7 +624,8 @@
         "match_kind": null
       },
       "note": "Character orthogonality for irreducible representations is formalized, but the theorem equating the number of irreducibles with the number of conjugacy classes is not.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "298a3ea95367"
     }
   ]
 }

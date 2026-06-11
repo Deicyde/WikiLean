@@ -19,7 +19,8 @@
         "match_kind": "generalization"
       },
       "note": "`AnalyticOnNhd 𝕜 f s` over `𝕜 = ℝ` is the same notion (analytic at every point of `s`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4a9aaa9be1b2"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "generalization"
       },
       "note": "`HasFPowerSeriesAt f p x` formalizes that `f` equals the sum of its (Taylor-like) power series locally.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "61b878819435"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "`AnalyticAt ℝ f x` is exactly the pointwise definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "01b0c5ef452f"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "`AnalyticAt ℂ f x` instantiates the same definition over the complex field.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f9a5803caa65"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "`AnalyticOnNhd ℂ f s` matches the complex-analytic-on-open-set notion.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e5956c28a235"
     },
     {
       "kind": "example",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "`AnalyticAt.aeval_polynomial` shows polynomial evaluations are analytic everywhere.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b40cee94cbf9"
     },
     {
       "kind": "example",
@@ -115,7 +121,8 @@
         "match_kind": "exact"
       },
       "note": "`exp_analytic` (and `analyticAt_exp_of_mem_ball`) prove that `exp` is analytic at every point.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c384058ec7aa"
     },
     {
       "kind": "example",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "`analyticAt_sin`, `analyticAt_cos` (both ℂ and ℝ versions) are proven, along with `analyticOnNhd_cos` etc.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "143d050ffcbf"
     },
     {
       "kind": "example",
@@ -147,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "`analyticAt_clog` proves the principal branch of `Complex.log` is analytic on the slit plane; `analyticAt_log` covers real positive `x`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a735f2517e3a"
     },
     {
       "kind": "example",
@@ -163,7 +172,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib has analyticity of integer/complex powers via `AnalyticOn.cpow`, `analyticAt_pow`, and `differentiableOn_zpow.analyticOnNhd`, though no single unifying statement matches the prose.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "094832ec9a5d"
     },
     {
       "kind": "example",
@@ -179,7 +189,8 @@
         "match_kind": "special_case"
       },
       "note": "Specific special functions (zeta, Gamma, hurwitzZeta, etc.) are shown analytic on their domains, but there is no overarching statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "943e4027936e"
     },
     {
       "kind": "example",
@@ -195,7 +206,8 @@
         "match_kind": null
       },
       "note": "Grep finds no general statement that algebraic functions are analytic off poles/branch points.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9a8e7239bfe3"
     },
     {
       "kind": "example",
@@ -211,7 +223,8 @@
         "match_kind": null
       },
       "note": "No explicit statement `¬ AnalyticAt ℝ abs 0` was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a53915690e21"
     },
     {
       "kind": "example",
@@ -227,7 +240,8 @@
         "match_kind": null
       },
       "note": "This is an informal heuristic with no corresponding theorem in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0823284d6787"
     },
     {
       "kind": "example",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "No theorem asserting `¬ AnalyticAt ℂ conj z` appears in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "913e20719df9"
     },
     {
       "kind": "example",
@@ -259,7 +274,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib proves the bump-like `expNegInvGlue` is smooth but `¬ AnalyticAt ℝ expNegInvGlue 0`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "abf93024c611"
     },
     {
       "kind": "theorem",
@@ -275,7 +291,8 @@
         "match_kind": "special_case"
       },
       "note": "Some characterizations (power series, smoothness with controlled derivatives via `ContDiff`/`AnalyticOnNhd.contDiffOn`) exist but no unified equivalence theorem was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d7cf7178f8c6"
     },
     {
       "kind": "theorem",
@@ -291,7 +308,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib's `AnalyticAt`/`HasFPowerSeriesAt` is set up over arbitrary normed spaces `E`, so multivariable real analyticity is the same notion.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2d10dc9294c1"
     },
     {
       "kind": "proposition",
@@ -307,7 +325,8 @@
         "match_kind": "exact"
       },
       "note": "`AnalyticAt.add`, `AnalyticAt.mul`, and `AnalyticAt.comp` (also `AnalyticOnNhd` versions) are all in `Constructions.lean`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ad0cd783dab1"
     },
     {
       "kind": "proposition",
@@ -323,7 +342,8 @@
         "match_kind": "exact"
       },
       "note": "`AnalyticAt.inv` takes an analytic `f` with `f x ≠ 0` and gives `AnalyticAt 𝕜 (f⁻¹) x`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "53b6e4672085"
     },
     {
       "kind": "proposition",
@@ -339,7 +359,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib constructs formal left/right inverses of power series with positive radius (`leftInv`, `rightInv`, `radius_rightInv_pos_of_radius_pos`), but a direct theorem `AnalyticAt.symm` for the inverse function on the domain was not located.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6d39774a6a2a"
     },
     {
       "kind": "proposition",
@@ -355,7 +376,8 @@
         "match_kind": "exact"
       },
       "note": "`AnalyticAt.contDiffAt` and `AnalyticOnNhd.contDiffOn`/`contDiff` give analytic ⇒ `ContDiff` of any order.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f8f2b3215e33"
     },
     {
       "kind": "proposition",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "Grep finds no Mathlib statement about a Fréchet topology on the space of analytic functions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0e7039c84671"
     },
     {
       "kind": "proposition",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "No corresponding incompleteness result is in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8a247e2b7314"
     },
     {
       "kind": "theorem",
@@ -403,7 +427,8 @@
         "match_kind": "exact"
       },
       "note": "Stated in `Analytic.IsolatedZeros`/`Uniqueness` as `eqOn_of_preconnected_of_frequently_eq` and `eqOn_of_preconnected_of_eventuallyEq`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7c2aa407db53"
     },
     {
       "kind": "proposition",
@@ -419,7 +444,8 @@
         "match_kind": "invocation"
       },
       "note": "Follows from the identity theorem in Mathlib but no direct `derivAll = 0 ⇒ const` lemma was located by grep.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2db6965ff0d0"
     },
     {
       "kind": "proposition",
@@ -435,7 +461,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib's `AnalyticOnNhd.contDiffOn` gives infinite differentiability on the neighborhood of analyticity.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fd24f1fa6260"
     },
     {
       "kind": "theorem",
@@ -451,7 +478,8 @@
         "match_kind": "exact"
       },
       "note": "`DifferentiableOn.analyticOnNhd` and `analyticAt_iff_eventually_differentiableAt` establish the equivalence on open sets in `ℂ`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2c48c9aa6bbd"
     },
     {
       "kind": "theorem",
@@ -467,7 +495,8 @@
         "match_kind": "exact"
       },
       "note": "`liouville_theorem_aux` and downstream lemmas in `Analysis/Complex/Liouville.lean` give Liouville's theorem for bounded entire functions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ba846386006c"
     },
     {
       "kind": "proposition",
@@ -483,7 +512,8 @@
         "match_kind": "exact"
       },
       "note": "`HasFPowerSeriesOnBall f p x r` with `r ≤ p.radius` formalizes convergence on the open ball of radius `r`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c1e59c2bfb75"
     },
     {
       "kind": "proposition",
@@ -499,7 +529,8 @@
         "match_kind": null
       },
       "note": "No general construction of a complex-analytic extension of a real-analytic function was located in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fa602a64e88c"
     },
     {
       "kind": "proposition",
@@ -515,7 +546,8 @@
         "match_kind": "exact"
       },
       "note": "`HasFPowerSeriesAt` with `HasFPowerSeriesOnBall.radius_pos` provides convergence on a positive-radius neighborhood.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e2514dca992f"
     },
     {
       "kind": "definition",
@@ -531,7 +563,8 @@
         "match_kind": "exact"
       },
       "note": "`FormalMultilinearSeries.radius` defines the radius of convergence as the supremum of bounded `‖pₙ‖ rⁿ`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2c866952e53a"
     },
     {
       "kind": "definition",
@@ -547,7 +580,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib's radius of convergence applies to a chosen power series; no separate `radiusOfHolomorphy` for the holomorphic function itself was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b33925519535"
     },
     {
       "kind": "example",
@@ -563,7 +597,8 @@
         "match_kind": "special_case"
       },
       "note": "`expSeries_radius_eq_top` shows the exp series has radius `∞`; same for `binomialSeries_radius_eq_top_of_nat`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "37f5ec2983b1"
     },
     {
       "kind": "example",
@@ -579,7 +614,8 @@
         "match_kind": null
       },
       "note": "This explanatory remark has no specific Mathlib counterpart.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6b90e953b798"
     },
     {
       "kind": "example",
@@ -595,7 +631,8 @@
         "match_kind": "special_case"
       },
       "note": "`binomialSeries_radius_eq_one` is in Mathlib but boundary-convergence/non-extension claims were not located.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f2df7f1a2664"
     },
     {
       "kind": "definition",
@@ -611,7 +648,8 @@
         "match_kind": null
       },
       "note": "Mathlib has examples of analytic continuation (e.g. `riemannZeta`) but no abstract definition of the continuation process.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b443ebe7f9c8"
     },
     {
       "kind": "theorem",
@@ -627,7 +665,8 @@
         "match_kind": "exact"
       },
       "note": "Uniqueness follows from `AnalyticOnNhd.eqOn_of_preconnected_of_eventuallyEq` (the identity theorem) on connected sets.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6e323f8e12c8"
     },
     {
       "kind": "example",
@@ -643,7 +682,8 @@
         "match_kind": "special_case"
       },
       "note": "`Complex.log` is analytic on the slit plane via `analyticAt_clog`, but the multi-valued continuation around 0 isn't formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bb06d9054dbb"
     },
     {
       "kind": "example",
@@ -659,7 +699,8 @@
         "match_kind": null
       },
       "note": "Multi-valued continuation of algebraic functions is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a4a759a52a00"
     },
     {
       "kind": "example",
@@ -675,7 +716,8 @@
         "match_kind": "exact"
       },
       "note": "`differentiableOn_riemannZeta` and its `analyticOnNhd` corollary establish the analytic continuation of `ζ` to `ℂ ∖ {1}`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ceaab2768839"
     },
     {
       "kind": "theorem",
@@ -691,7 +733,8 @@
         "match_kind": null
       },
       "note": "No statement about non-discreteness of zero sets in several complex variables was located.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a4c1708210f5"
     },
     {
       "kind": "proposition",
@@ -707,7 +750,8 @@
         "match_kind": null
       },
       "note": "Domains of holomorphy and related several-complex-variables theory are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bc12e65f3ba5"
     },
     {
       "kind": "definition",
@@ -723,7 +767,8 @@
         "match_kind": "generalization"
       },
       "note": "`AnalyticAt 𝕜 f x` is defined for `𝕜` a general `NontriviallyNormedField`, covering any complete valued field.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ec775abb8cd7"
     },
     {
       "kind": "example",
@@ -739,7 +784,8 @@
         "match_kind": null
       },
       "note": "No specific p-adic power series convergence criterion was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9f2c2b5c00a7"
     },
     {
       "kind": "proposition",
@@ -755,7 +801,8 @@
         "match_kind": null
       },
       "note": "Non-Archimedean-specific convergence statements on closed discs are not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "13163c1b220e"
     },
     {
       "kind": "definition",
@@ -771,7 +818,8 @@
         "match_kind": null
       },
       "note": "Tate algebras are not defined in Mathlib (grep returned no matches).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0e47b18ae00f"
     }
   ]
 }

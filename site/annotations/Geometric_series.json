@@ -19,7 +19,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib has no standalone `GeometricSeries` type, but the series `∑ x^n` is encoded via `formalMultilinearSeries_geometric` and via `∑' n, x^n` in summability lemmas.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "06b3dfc0d172"
     },
     {
       "kind": "proposition",
@@ -35,7 +36,8 @@
         "match_kind": null
       },
       "note": "No Mathlib lemma was found stating that each term `a r^n` is the geometric mean of its neighbors `a r^(n-1)` and `a r^(n+1)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f234b3403986"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not define `GeometricProgression` as a named structure; `fun n => a * r^n` is used directly without a dedicated abstraction.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "01f07295737a"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "The finite geometric sum `∑ i ∈ range n, x^i` is the central object of `Mathlib/Algebra/Ring/GeomSum.lean` and `Mathlib/Algebra/Field/GeomSum.lean`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "925ef0838fdd"
     },
     {
       "kind": "proposition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "`geom_sum_eq` states `∑ i ∈ range n, x^i = (x^n - 1)/(x - 1)` for `x ≠ 1` in a field.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "06215bb4ec70"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "The infinite geometric series is captured as `∑' n, ξ^n` with summability/value lemmas like `hasSum_geometric_of_norm_lt_one` and `tsum_geometric_of_norm_lt_one`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "201131beaf62"
     },
     {
       "kind": "example",
@@ -115,7 +121,8 @@
         "match_kind": null
       },
       "note": "A search for `Grandi` in Mathlib returned no matches; the divergence of `∑ (-1)^n` is not stated as a named result.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "76a6f49af2c1"
     },
     {
       "kind": "example",
@@ -131,7 +138,8 @@
         "match_kind": "generalization"
       },
       "note": "`Real.ofDigits` formalizes `0.d₀d₁d₂... = ∑' n, dₙ/b^(n+1)` via a geometric-like sum, but there is no dedicated lemma identifying repeating decimals with a geometric-series closed form.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a82f9e05b6ae"
     },
     {
       "kind": "theorem",
@@ -147,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "`summable_geometric_iff_norm_lt_one` characterizes summability of `ξ^n` exactly by `‖ξ‖ < 1`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ce967465a74b"
     },
     {
       "kind": "example",
@@ -163,7 +172,8 @@
         "match_kind": null
       },
       "note": "No Mathlib lemma states periodicity of geometric partial sums when `r` is a root of unity.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0f08529afe72"
     },
     {
       "kind": "proposition",
@@ -179,7 +189,8 @@
         "match_kind": null
       },
       "note": "No specific Mathlib statement about the rate (`|r|^n` decay) of geometric-series convergence as a named result was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ec080310007f"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": null
       },
       "note": "No Mathlib statement classifies the qualitative convergence pattern (monotone vs alternating vs spiraling) of geometric series by `arg r`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "95351d1a35ef"
     },
     {
       "kind": "theorem",
@@ -211,7 +223,8 @@
         "match_kind": "exact"
       },
       "note": "`geom_sum_eq` gives `∑ i ∈ range n, x^i = (x^n - 1)/(x - 1)`, the standard closed-form partial sum.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "415a27b09121"
     },
     {
       "kind": "theorem",
@@ -227,7 +240,8 @@
         "match_kind": "exact"
       },
       "note": "`hasSum_geometric_of_norm_lt_one` states `HasSum (ξ^·) (1-ξ)⁻¹` when `‖ξ‖ < 1`, which is absolute convergence in normed fields.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "770ffb2c48d0"
     },
     {
       "kind": "proposition",
@@ -243,7 +257,8 @@
         "match_kind": "exact"
       },
       "note": "`formalMultilinearSeries_geometric` packages `1 + x + x² + …` as a `FormalMultilinearSeries`, i.e. a power series.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b31cede0864d"
     },
     {
       "kind": "theorem",
@@ -259,7 +274,8 @@
         "match_kind": "exact"
       },
       "note": "`formalMultilinearSeries_geometric_radius` proves `(formalMultilinearSeries_geometric 𝕜 A).radius = 1` under `NormOneClass A`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3d8932e47ab3"
     },
     {
       "kind": "example",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "A search for `Koch`/`snowflake` only turned up `Mathlib/Topology/MetricSpace/Snowflaking.lean` (a different concept); the Koch snowflake area is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e4be9330549e"
     },
     {
       "kind": "example",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "Zeno's dichotomy as a worked example is not in Mathlib, although `tsum_geometric_two : ∑' n, (1/2)^n = 2` provides the underlying identity.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4d0542d53904"
     },
     {
       "kind": "proposition",
@@ -307,7 +325,8 @@
         "match_kind": "exact"
       },
       "note": "Euclid IX.35 in modern form is `(∑ i ∈ range n, x^i)·(x - 1) = x^n - 1`, which is exactly `geom_sum_mul`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ce6f7cf4d56d"
     },
     {
       "kind": "theorem",
@@ -323,7 +342,8 @@
         "match_kind": null
       },
       "note": "A grep for `Archimedes`/`parabola` found no formalization of the parabola area = (4/3)·triangle result.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "63c2fe2d644a"
     },
     {
       "kind": "example",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "This pedagogical 2D geometric-series picture is not formalized as a Mathlib statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "71aeb62d953d"
     },
     {
       "kind": "theorem",
@@ -355,7 +376,8 @@
         "match_kind": "generalization"
       },
       "note": "`hasSum_coe_mul_geometric_of_norm_lt_one` formalizes `∑ n · r^n = r/(1-r)²` for `‖r‖ < 1`, which specializes (at `r = 1/2`) to Oresme's `∑ n/2^n = 2`, but Oresme's exact case is not a named lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bc01ffe93d38"
     },
     {
       "kind": "definition",
@@ -371,7 +393,8 @@
         "match_kind": "exact"
       },
       "note": "`geom_sum_mul` and the rest of `Mathlib/Algebra/Ring/GeomSum.lean` develop the finite geometric series over an arbitrary (commutative) ring.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a1976301e57a"
     },
     {
       "kind": "example",
@@ -387,7 +410,8 @@
         "match_kind": "generalization"
       },
       "note": "The general `summable_geometric_of_norm_lt_one` for `HasSummableGeomSeries` normed rings instantiates to the p-adic case, but no specific 2-adic geometric-series example is recorded.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2bcf40b3bd14"
     },
     {
       "kind": "definition",
@@ -403,7 +427,8 @@
         "match_kind": "exact"
       },
       "note": "`geom_sum_mul` and `Commute.geom_sum₂_mul` in `Mathlib/Algebra/Ring/GeomSum.lean` are stated for general (possibly non-commutative) rings.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "12a3ff302a5f"
     }
   ]
 }

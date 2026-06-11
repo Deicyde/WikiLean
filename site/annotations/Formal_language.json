@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "`Language α := Set (List α)` directly formalizes a formal language as a set of strings over an alphabet `α`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "274661e4bf44"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "invocation"
       },
       "note": "Mathlib has no standalone `Alphabet` definition; the alphabet is the implicit type parameter `α` of `Language α`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b2962940d73d"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "invocation"
       },
       "note": "Words are not given their own Mathlib name; they are represented as `List α` (per the file docstring \"strings are implemented as lists over the alphabet\").",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c12c2cd0f332"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not define a distinguished notation for the set of all words over an alphabet (it would just be `Set.univ : Set (List α)` or the top element of `Language α`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "306abe91bb1e"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": null
       },
       "note": "Word length is `List.length`, which lives in Lean core (`Init`), not in `Mathlib/`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a1b5083bb3ea"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": null
       },
       "note": "The empty word is `[] : List α` (`List.nil`), which is defined in Lean core, not in `Mathlib/`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8a02091a8249"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": null
       },
       "note": "Word concatenation is `List.append` / `++`, defined in Lean core, not in `Mathlib/`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c8e4edacefef"
     },
     {
       "kind": "definition",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "`Language α := Set (List α)` is exactly a subset of the strings over alphabet `α`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ccbbdf7a757f"
     },
     {
       "kind": "definition",
@@ -147,7 +155,8 @@
         "match_kind": "invocation"
       },
       "note": "Well-formedness is encoded as membership in the language via `Membership (List α) (Language α)`; no separate `WellFormed` predicate exists.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b66ba924f645"
     },
     {
       "kind": "example",
@@ -163,7 +172,8 @@
         "match_kind": null
       },
       "note": "This particular toy example language is not constructed in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9085ec3d0b27"
     },
     {
       "kind": "example",
@@ -179,7 +189,8 @@
         "match_kind": null
       },
       "note": "The specific membership claim for the toy example is not stated in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "988ad8fd6cf4"
     },
     {
       "kind": "example",
@@ -195,7 +206,8 @@
         "match_kind": null
       },
       "note": "No dedicated `FiniteLanguage` construction or enumeration lemma is provided; finite languages are just `Set.Finite` languages.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "49112d5ae721"
     },
     {
       "kind": "definition",
@@ -211,7 +223,8 @@
         "match_kind": "exact"
       },
       "note": "`(0 : Language α) := (∅ : Set _)` (also documented as `Language.zero_def`) is exactly the empty language.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c2f1f4a9b1f1"
     },
     {
       "kind": "example",
@@ -227,7 +240,8 @@
         "match_kind": null
       },
       "note": "The specific examples listed in the article (e.g. balanced parentheses, palindromes) are not constructed by name in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f7a8c5d69494"
     },
     {
       "kind": "definition",
@@ -243,7 +257,8 @@
         "match_kind": "exact"
       },
       "note": "`Mul (Language α)` is defined as `image2 (· ++ ·)`, exactly the language concatenation, with characterization `Language.mem_mul`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "526f28f054c3"
     },
     {
       "kind": "definition",
@@ -259,7 +274,8 @@
         "match_kind": "exact"
       },
       "note": "Intersection comes from the inherited `CompleteAtomicBooleanAlgebra` on `Language α`, with `mem_inf : x ∈ l ⊓ m ↔ x ∈ l ∧ x ∈ m`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "885a143ce3fc"
     },
     {
       "kind": "definition",
@@ -275,7 +291,8 @@
         "match_kind": "exact"
       },
       "note": "Complement `lᶜ` is inherited from the `BooleanAlgebra` instance on `Language α` (see `Language.compl_compl`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "271d5ed61a24"
     },
     {
       "kind": "definition",
@@ -291,7 +308,8 @@
         "match_kind": "exact"
       },
       "note": "`KStar (Language α)` and `Language.kstar_def` define `l∗` as the set of flattenings of lists of words drawn from `l`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7d46cd00eb54"
     },
     {
       "kind": "definition",
@@ -307,7 +325,8 @@
         "match_kind": "exact"
       },
       "note": "`Language.reverse l := { w | w.reverse ∈ l }` exactly formalizes the reversal of a language.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ed276ab08186"
     },
     {
       "kind": "definition",
@@ -323,7 +342,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not define a general \"class of languages is closed under an operation\" predicate; individual closure results are stated ad hoc.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7e4b24f742ee"
     },
     {
       "kind": "proposition",
@@ -339,7 +359,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib proves only closure of context-free languages under reversal (`Language.IsContextFree.reverse`); closure under union, concatenation, and intersection with regular languages is not present.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "41bbc8ad6427"
     },
     {
       "kind": "definition",
@@ -355,7 +376,8 @@
         "match_kind": "exact"
       },
       "note": "`FirstOrder.Language.Theory := Set L.Sentence` is exactly a set of sentences in a (first-order) formal language.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "83f469017e07"
     },
     {
       "kind": "definition",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no standalone notion of \"formal system\" (alphabet + grammar + inference rules) as a single object.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "56b630432746"
     },
     {
       "kind": "definition",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "No syntactic deduction/proof-tree object exists in Mathlib's ModelTheory; consequence is only defined semantically via `Theory.Model` / `⊨`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0f0f8abbd227"
     },
     {
       "kind": "definition",
@@ -403,7 +427,8 @@
         "match_kind": null
       },
       "note": "Without a syntactic deduction relation, Mathlib has no \"theorem of a formal system\" predicate; only semantic entailment via `Theory.ModelsBoundedFormula` is available.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0facd243bef8"
     },
     {
       "kind": "definition",
@@ -419,7 +444,8 @@
         "match_kind": "exact"
       },
       "note": "`FirstOrder.Language.Structure` interprets function and relation symbols on a carrier type, providing the standard model-theoretic interpretation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4a0d9be72ff5"
     },
     {
       "kind": "definition",
@@ -435,7 +461,8 @@
         "match_kind": "exact"
       },
       "note": "`Theory.Model T M` (notation `M ⊨ T`), together with `Sentence.Realize`, formalizes a model of a (set of) formulas in a first-order language.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "68c181ebd3ef"
     }
   ]
 }

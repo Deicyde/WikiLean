@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "The principle of mathematical induction on ℕ is built into Lean as Nat.rec; Mathlib's Nat.le_induction in Mathlib.Data.Nat.Init packages the usual ‘base + step’ form.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3f460946b5d3"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "exact"
       },
       "note": "Nat.le_induction in Mathlib.Data.Nat.Init explicitly takes a base case and a successor (induction) step.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "23d8c178b0cb"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "generalization"
       },
       "note": "Structural induction is realized via Lean's auto-generated .rec principles and Mathlib's WellFounded.induction (see Mathlib/Order/WellFounded.lean).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1ba15c295327"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "Nat.le_induction encodes the standard P(0) ∧ (∀ n, P n → P (n+1)) → ∀ n, P n schema.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ee4bbceecf52"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "invocation"
       },
       "note": "The induction hypothesis is a meta-mathematical notion; in Mathlib it appears as the recursive argument of induction principles such as Nat.le_induction, not as a separate definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "af60ecb9ac3f"
     },
     {
       "kind": "proposition",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "Finset.sum_range_id gives ∑ i ∈ range n, i = n(n-1)/2, the standard Gauss summation formula.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "eacda1a3ac61"
     },
     {
       "kind": "example",
@@ -115,7 +121,8 @@
         "match_kind": "invocation"
       },
       "note": "The lemma Finset.sum_range_id is established in Mathlib; the inductive proof is internal to that file.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "464c4e8f4d37"
     },
     {
       "kind": "proposition",
@@ -131,7 +138,8 @@
         "match_kind": null
       },
       "note": "Grep for sin patterns in Mathlib/Analysis turned up |sin x| ≤ |x| and Lipschitz bounds but no |sin (n·x)| ≤ n |sin x| statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "49d95e2ea571"
     },
     {
       "kind": "example",
@@ -147,7 +155,8 @@
         "match_kind": null
       },
       "note": "No proof of |sin nx| ≤ n |sin x| located in Mathlib's trigonometry files.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d8f3c5428099"
     },
     {
       "kind": "definition",
@@ -163,7 +172,8 @@
         "match_kind": "exact"
       },
       "note": "Nat.le_induction proves ∀ n ≥ b, P n from P b and the successor step, matching induction with arbitrary base.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c373b0fe1b17"
     },
     {
       "kind": "example",
@@ -179,7 +189,8 @@
         "match_kind": null
       },
       "note": "No Frobenius/Chicken-McNugget statement for the {4,5} numerical semigroup found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "016fdd1cce9c"
     },
     {
       "kind": "definition",
@@ -195,7 +206,8 @@
         "match_kind": "generalization"
       },
       "note": "Double induction is realized via product/lexicographic well-foundedness; Mathlib/Order/RelClasses.lean shows induction in two variables using WellFoundedLT.induction nested.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "aebdf6f21a51"
     },
     {
       "kind": "definition",
@@ -211,7 +223,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib has WellFounded.induction_bot / induction_bot' (Mathlib/Order/WellFounded.lean) capturing the descent principle, but no decl named ‘infinite descent’ was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c16ef9429330"
     },
     {
       "kind": "definition",
@@ -227,7 +240,8 @@
         "match_kind": null
       },
       "note": "Bounded/limited induction (induction up to a fixed bound, a proof-theoretic notion) was not located in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9a5438b19293"
     },
     {
       "kind": "definition",
@@ -257,7 +271,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\forall k\\,\\left(P\\!\\left(\\left\\lfloor {\\frac {k}{2}}\\right\\rfloor \\right)\\to P(k)\\right)}"
         }
-      ]
+      ],
+      "id": "9bb968d507d5"
     },
     {
       "kind": "definition",
@@ -273,7 +288,8 @@
         "match_kind": "exact"
       },
       "note": "Nat.strong_induction_on (and Nat.strongRecOn') in Mathlib/Data/Nat/Init.lean is the standard complete-induction principle on ℕ.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a642f1561feb"
     },
     {
       "kind": "theorem",
@@ -289,7 +305,8 @@
         "match_kind": "invocation"
       },
       "note": "Both principles are theorems in Mathlib (derived from Nat.rec), but no explicit equivalence statement between them was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f51d53f6402f"
     },
     {
       "kind": "example",
@@ -315,7 +332,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle F_{n}={\\frac {\\varphi ^{n}-\\psi ^{n}}{\\varphi -\\psi }}}"
         }
-      ]
+      ],
+      "id": "1674dfbe86ba"
     },
     {
       "kind": "example",
@@ -331,7 +349,8 @@
         "match_kind": "special_case"
       },
       "note": "The existence of a prime divisor (proved by strong induction) is Nat.exists_prime_and_dvd; the full UFD statement is in Mathlib.RingTheory.UniqueFactorizationDomain.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4a17a7349d76"
     },
     {
       "kind": "example",
@@ -357,7 +376,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle S(n):\\,\\,n\\geq 12\\implies \\,\\exists \\,a,b\\in \\mathbb {N} .\\,\\,n=4a+5b}"
         }
-      ]
+      ],
+      "id": "86791852b7d0"
     },
     {
       "kind": "definition",
@@ -373,7 +393,8 @@
         "match_kind": "generalization"
       },
       "note": "Nat.decreasingInduction in Mathlib/Data/Nat/Init.lean provides downward induction, the ‘backward’ half of Cauchy's forward-backward scheme.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "16584bf3d61b"
     },
     {
       "kind": "example",
@@ -389,7 +410,8 @@
         "match_kind": null
       },
       "note": "Cohen's all-horses-same-color paradox is a pedagogical example not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "955b46bbf4d7"
     },
     {
       "kind": "definition",
@@ -415,7 +437,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\forall P\\,{\\Bigl (}P(0)\\land \\forall k{\\bigl (}P(k)\\to P(k+1){\\bigr )}\\to \\forall n\\,{\\bigl (}P(n){\\bigr )}{\\Bigr )},}"
         }
-      ]
+      ],
+      "id": "98144bb62798"
     },
     {
       "kind": "definition",
@@ -431,7 +454,8 @@
         "match_kind": null
       },
       "note": "ℕ is built into Lean's core (not via an axiomatic Peano system); no PeanoAxioms structure was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ae5394cea2f2"
     },
     {
       "kind": "theorem",
@@ -457,7 +481,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\forall A{\\Bigl (}0\\in A\\land \\forall k\\in \\mathbb {N} {\\bigl (}k\\in A\\to (k+1)\\in A{\\bigr )}\\to \\mathbb {N} \\subseteq A{\\Bigr )}}"
         }
-      ]
+      ],
+      "id": "e08a0e11af8d"
     },
     {
       "kind": "definition",
@@ -473,7 +498,8 @@
         "match_kind": "exact"
       },
       "note": "WellFounded.induction (and Ordinal.induction in Mathlib/SetTheory/Ordinal) provide the transfinite/well-founded induction principle.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e3c9ee03b85c"
     },
     {
       "kind": "theorem",
@@ -489,7 +515,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib proves the equivalence well-founded ↔ every nonempty set has a minimum element (wellFounded_iff_has_min), implicitly the natural-number equivalence between induction and well-ordering.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "648a29e456eb"
     },
     {
       "kind": "example",
@@ -505,7 +532,8 @@
         "match_kind": null
       },
       "note": "No counterexample illustrating successor-induction failure on a non-ω well-ordered set was located in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5167f5c23184"
     }
   ]
 }

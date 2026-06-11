@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib formalizes the (Post-)Turing machine as a function `Λ → Γ → Option (Λ × Stmt)` operating on a `Tape`, the standard equivalent of Turing's one-tape model.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7d82ed612b14"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": null
       },
       "note": "Mathlib proves specific model simulations but has no general definition of Turing completeness.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6e067a129d79"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "generalization"
       },
       "note": "`REPred` defines recursively enumerable predicates over any `Primcodable` type (subsuming languages of strings) as domains of partial recursive functions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a8f365116901"
     },
     {
       "kind": "proposition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "`ComputablePred.halting_problem` proves the predicate `fun c => (eval c n).Dom` is not computable.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c2156c2f50cd"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": null
       },
       "note": "Mathlib provides a universal partial recursive function `eval` (a code interpreter) rather than an actual universal Turing machine.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "61d996fc6bf8"
     },
     {
       "kind": "proposition",
@@ -99,7 +104,8 @@
         "match_kind": null
       },
       "note": "The Church–Turing thesis is an informal claim and is not (and cannot be) a formal theorem in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c06cc3262c73"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": "generalization"
       },
       "note": "The tape, head, state register, and instruction table are formalized via `Turing.Tape`, `Turing.TM0.Cfg` (label + tape), and `Turing.TM0.Machine`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a0dae184a73c"
     },
     {
       "kind": "definition",
@@ -131,7 +138,8 @@
         "match_kind": null
       },
       "note": "Mathlib encodes the machine as a single transition function rather than the explicit 7-tuple (Q,Γ,b,Σ,δ,q₀,F) with accept states.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b2144d162a1f"
     },
     {
       "kind": "definition",
@@ -147,7 +155,8 @@
         "match_kind": null
       },
       "note": "`Turing.TM0.eval` returns a `Part` whose domain captures halting, but Mathlib's TM0 has no accept/reject-state notion of acceptance.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6dcd0d53716a"
     },
     {
       "kind": "example",
@@ -163,7 +172,8 @@
         "match_kind": null
       },
       "note": "No busy beaver machine is constructed in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b112b699451d"
     },
     {
       "kind": "proposition",
@@ -179,7 +189,8 @@
         "match_kind": null
       },
       "note": "Linear bounded automata are not defined in Mathlib and this reduction is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d719ac7da1a0"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": null
       },
       "note": "No stay/no-shift variant or equivalence proof exists in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "923875e95642"
     },
     {
       "kind": "definition",
@@ -211,7 +223,8 @@
         "match_kind": null
       },
       "note": "Mathlib's transition function uses separate `move`/`write` statements rather than the combined 5-tuple instruction convention.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e4cf1cad737f"
     },
     {
       "kind": "definition",
@@ -227,7 +240,8 @@
         "match_kind": null
       },
       "note": "This alternative 5-tuple convention is not directly used; Mathlib's `TM0.Stmt` is `move` or `write`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cb9934441b70"
     },
     {
       "kind": "proposition",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "This construction over a fixed instruction set is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "346aba7ca942"
     },
     {
       "kind": "definition",
@@ -259,7 +274,8 @@
         "match_kind": null
       },
       "note": "`Turing.TM0.Cfg` bundles the current label and full tape, capturing the concept though not Turing's specific 'state formula' notation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "646b02db2efa"
     },
     {
       "kind": "definition",
@@ -275,7 +291,8 @@
         "match_kind": "exact"
       },
       "note": "`Turing.TM0.Cfg` is exactly the complete configuration: the machine state together with its tape.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8862e2ffe35a"
     },
     {
       "kind": "definition",
@@ -291,7 +308,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib's docstring describes `Cfg` as the 'instantaneous configurations', matching the instantaneous description.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e7c7b31cd10b"
     },
     {
       "kind": "example",
@@ -307,7 +325,8 @@
         "match_kind": null
       },
       "note": "No busy beaver machine or its trace is formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "45505405da49"
     },
     {
       "kind": "proposition",
@@ -323,7 +342,8 @@
         "match_kind": null
       },
       "note": "Mathlib proves concrete model equivalences (e.g. `TM1to0.tr_eval`, TM2↔partrec) but not the general 'no more powerful' meta-statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0039fd215743"
     },
     {
       "kind": "proposition",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "Pushdown automata and this equivalence are not present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d91a5300b84c"
     },
     {
       "kind": "proposition",
@@ -355,7 +376,8 @@
         "match_kind": null
       },
       "note": "Mathlib's TM2 is a multi-stack machine model proven Turing-equivalent (via ToPartrec), but the explicit two-stack PDA equivalence is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3514f7a11f45"
     },
     {
       "kind": "definition",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no named definition of Turing equivalence, only individual simulation theorems.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6731766405e6"
     },
     {
       "kind": "proposition",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "DFAs are formalized (`Mathlib.Computability.DFA`) but read-only TMs and this equivalence are not.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1c5ce3212370"
     },
     {
       "kind": "proposition",
@@ -403,7 +427,8 @@
         "match_kind": null
       },
       "note": "Turing completeness of programming languages is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "72f90023b28d"
     },
     {
       "kind": "example",
@@ -419,7 +444,8 @@
         "match_kind": null
       },
       "note": "No statement about ANSI C exists in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0b4678952157"
     },
     {
       "kind": "definition",
@@ -435,7 +461,8 @@
         "match_kind": null
       },
       "note": "Mathlib's Turing machines are deterministic by construction; no choice/c-machine variant is defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1e3224a87846"
     },
     {
       "kind": "definition",
@@ -451,7 +478,8 @@
         "match_kind": "generalization"
       },
       "note": "`Nat.RecursiveIn O f` formalizes oracle (relative) computability recursion-theoretically rather than as a TM with an oracle tape.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3baff701b7a0"
     },
     {
       "kind": "proposition",
@@ -467,7 +495,8 @@
         "match_kind": null
       },
       "note": "Nondeterministic Turing machines are not defined in Mathlib, so this simulation is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "afa71cbe9ec2"
     },
     {
       "kind": "theorem",
@@ -483,7 +512,8 @@
         "match_kind": null
       },
       "note": "`exists_code` shows `eval` is a universal partial recursive function, the recursion-theoretic analogue of Turing's universal machine.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "89b73248af29"
     },
     {
       "kind": "theorem",
@@ -499,7 +529,8 @@
         "match_kind": null
       },
       "note": "No complexity bound on universal multitape simulation is formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bd4f1db4f679"
     },
     {
       "kind": "proposition",
@@ -515,7 +546,8 @@
         "match_kind": null
       },
       "note": "Mathlib defines DFAs/NFAs but does not prove a power hierarchy relating them to Turing machines.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2a6760614eae"
     },
     {
       "kind": "proposition",
@@ -531,7 +563,8 @@
         "match_kind": null
       },
       "note": "No model of a real computer or such a comparison is formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ef6da712586e"
     },
     {
       "kind": "definition",
@@ -547,7 +580,8 @@
         "match_kind": null
       },
       "note": "The RASP / random-access machine model is not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "097f757d69aa"
     },
     {
       "kind": "example",
@@ -563,7 +597,8 @@
         "match_kind": null
       },
       "note": "No complexity comparison of binary search across machine models is formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ab0e06fe90de"
     },
     {
       "kind": "definition",
@@ -579,7 +614,8 @@
         "match_kind": null
       },
       "note": "The arithmetic model of computation is not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0a646680f375"
     },
     {
       "kind": "example",
@@ -595,7 +631,8 @@
         "match_kind": null
       },
       "note": "No bit-complexity analysis of the Euclidean algorithm across models is formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9566d4cf91b7"
     },
     {
       "kind": "definition",
@@ -611,7 +648,8 @@
         "match_kind": null
       },
       "note": "Strongly polynomial time is not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5563b2114288"
     },
     {
       "kind": "definition",
@@ -627,7 +665,8 @@
         "match_kind": null
       },
       "note": "The decision problem for first-order validity is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ace62615b082"
     },
     {
       "kind": "definition",
@@ -643,7 +682,8 @@
         "match_kind": null
       },
       "note": "Gandy's operations of the analytical engine are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c315778723e6"
     },
     {
       "kind": "proposition",
@@ -659,7 +699,8 @@
         "match_kind": null
       },
       "note": "This characterization in terms of Gandy's operations is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e26cf7243516"
     },
     {
       "kind": "definition",
@@ -675,7 +716,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib defines computability via partial recursive functions (`Computable`/`Partrec`), the standard formalization identified with effective calculability, rather than via Turing machines directly.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "385338707f7d"
     },
     {
       "kind": "theorem",
@@ -691,7 +733,8 @@
         "match_kind": null
       },
       "note": "The undecidability of the Entscheidungsproblem is not formalized; Mathlib only has the (related) halting problem result.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "23fdf93b19e8"
     },
     {
       "kind": "example",
@@ -707,7 +750,8 @@
         "match_kind": null
       },
       "note": "Turing's specific 'prints 0' undecidability argument is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "823d9ad301d7"
     }
   ]
 }

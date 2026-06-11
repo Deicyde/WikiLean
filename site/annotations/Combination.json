@@ -19,7 +19,8 @@
         "match_kind": null
       },
       "note": "A combination (selection of distinct members) is exactly a finite subset, formalized as `Finset`, though no declaration is named \"combination\".",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "495f95818854"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "exact"
       },
       "note": "`Finset.powersetCard n s` is the finset of all k-element subsets, and `mem_powersetCard` characterizes a k-combination as `s ⊆ t ∧ card s = n`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d9cc924eb567"
     },
     {
       "kind": "proposition",
@@ -51,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "`Finset.ext`/`Finset.ext_iff` states two finsets are equal iff they have the same members.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dd6e5e3f2003"
     },
     {
       "kind": "proposition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "`Finset.card_powersetCard` proves `card (powersetCard n s) = Nat.choose (card s) n`, exactly the count of k-combinations.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fe1777a081f2"
     },
     {
       "kind": "proposition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat.choose_eq_factorial_div_factorial` gives `choose n k = n! / (k! * (n-k)!)` for `k ≤ n`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5f5bb5230759"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "Selection without repetition is a k-element subset, captured by `Finset.powersetCard`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "69eeab47622f"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": "exact"
       },
       "note": "A combination with repetition (multiset of fixed size) is formalized as the type `Sym α k`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2a1c16aec5db"
     },
     {
       "kind": "example",
@@ -131,7 +138,8 @@
         "match_kind": null
       },
       "note": "This is an illustrative example with no corresponding Mathlib declaration.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "89b538a5bee4"
     },
     {
       "kind": "definition",
@@ -147,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "The generating relation `(x+y)^n = ∑ choose n k * ...` is the binomial theorem `add_pow`, though Mathlib defines `choose` inductively rather than by this relation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ad47b29bebf4"
     },
     {
       "kind": "proposition",
@@ -163,7 +172,8 @@
         "match_kind": null
       },
       "note": "That choose counts k-subsets is `Finset.card_powersetCard`, but the specific generating-function-coefficient bridge is not a single named declaration.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9db925bd1de6"
     },
     {
       "kind": "proposition",
@@ -179,7 +189,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat.choose_succ_succ` gives `choose (n+1) (k+1) = choose n k + choose n (k+1)`, Pascal's recursion (also `Nat.choose_eq_choose_pred_add`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1129e913b283"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat.choose_eq_descFactorial_div_factorial` gives `choose n k = descFactorial n k / k!`, the falling-product-over-k! formula.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5331dac43ed9"
     },
     {
       "kind": "proposition",
@@ -211,7 +223,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat.choose_symm` proves `choose n (n-k) = choose n k` for `k ≤ n`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c5e49b2999a9"
     },
     {
       "kind": "proposition",
@@ -227,7 +240,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat.choose_mul_factorial_mul_factorial` gives the symmetric identity `choose n k * k! * (n-k)! = n!`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dd367bc7e522"
     },
     {
       "kind": "proposition",
@@ -243,7 +257,8 @@
         "match_kind": "exact"
       },
       "note": "Adjacency relations are formalized, e.g. `Nat.succ_mul_choose_eq` and `Nat.choose_succ_right_eq`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "178b9d92892e"
     },
     {
       "kind": "example",
@@ -259,7 +274,8 @@
         "match_kind": null
       },
       "note": "The specific numeric computation `choose 52 5 = 2598960` is not present as a declaration.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "22d9ee098c47"
     },
     {
       "kind": "proposition",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "Mathlib has colex ordering of finsets (`Finset.Colex`, `orderIsoColex` for all subsets) but not the explicit combinadic bijection from `[0, choose n k)` to k-combinations.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bad467f0f3c9"
     },
     {
       "kind": "proposition",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "This describes an enumeration algorithm with no corresponding formalized procedure.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "45af6291eff0"
     },
     {
       "kind": "definition",
@@ -307,7 +325,8 @@
         "match_kind": "exact"
       },
       "note": "A multisubset of size k from S is exactly `Sym α k`, the type of multisets of cardinality k over α.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "504ff79c2b58"
     },
     {
       "kind": "proposition",
@@ -323,7 +342,8 @@
         "match_kind": null
       },
       "note": "The multisubset count is formalized via `Sym.card_sym_eq_multichoose`, but the explicit equality with the number of nonnegative integer solutions of `x₁+...+xₙ=k` is not a named declaration.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c29c6c602d4b"
     },
     {
       "kind": "definition",
@@ -339,7 +359,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat.multichoose n k` is defined as the number of size-k multisets from an n-element type.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8f3af808ffaa"
     },
     {
       "kind": "proposition",
@@ -355,7 +376,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat.multichoose_eq` proves `multichoose n k = (n + k - 1).choose k`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c37a07122588"
     },
     {
       "kind": "proposition",
@@ -371,7 +393,8 @@
         "match_kind": "exact"
       },
       "note": "`Sym.card_sym_eq_choose` proves `card (Sym α k) = choose (card α + k - 1) k`, the stars-and-bars result, though the stars-and-bars argument itself is not a separate object.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bdae3c37ddd2"
     },
     {
       "kind": "proposition",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "Various multichoose lemmas exist (`multichoose_eq`, `multichoose_succ_succ`, etc.) but the specific cited multichoose identities are not individually named.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dba80d15e767"
     },
     {
       "kind": "example",
@@ -403,7 +427,8 @@
         "match_kind": null
       },
       "note": "This is a worked numeric example with no corresponding declaration.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8b8ead2cc1ef"
     },
     {
       "kind": "proposition",
@@ -419,7 +444,8 @@
         "match_kind": "exact"
       },
       "note": "`Finset.card_powerset` gives `card (powerset s) = 2 ^ card s`, and `Nat.sum_range_choose` proves `∑ choose n k = 2^n`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b917df4ea83e"
     },
     {
       "kind": "example",
@@ -435,7 +461,8 @@
         "match_kind": null
       },
       "note": "This is a concrete enumeration example with no corresponding declaration.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b9a2b69d1488"
     },
     {
       "kind": "proposition",
@@ -451,7 +478,8 @@
         "match_kind": null
       },
       "note": "This describes a sampling algorithm with no corresponding formalized procedure.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0a766101b0ef"
     },
     {
       "kind": "proposition",
@@ -467,7 +495,8 @@
         "match_kind": null
       },
       "note": "`Nat.multinomial` defines the coefficient (documented as counting arrangements), but no theorem proves the bijective \"ways to put objects into bins\" count.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "eb1bdbf3e727"
     },
     {
       "kind": "proposition",
@@ -483,7 +512,8 @@
         "match_kind": "special_case"
       },
       "note": "`Nat.binomial_eq_choose` proves `multinomial {a,b} f = (f a + f b).choose (f a)`, the two-bin special case.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c32e814c9707"
     }
   ]
 }

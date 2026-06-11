@@ -19,7 +19,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib models tuples as functions `Fin n → α` (or dependent versions) with the standard `Fin.cons`/`Fin.snoc` API.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6db4f08ec6cf"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "generalization"
       },
       "note": "An n-tuple in Mathlib is just a function `Fin n → α`, indexed via the finite type `Fin n`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "42a60a45b35f"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "special_case"
       },
       "note": "The unique function `Fin 0 → α` is given by `Fin.elim0`, witnessing the empty tuple.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2ef844f10b56"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "Ordered pairs are formalized as the core `Prod` type, and 1-tuples are `Fin.cons x Fin.elim0`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6b7ca56b4bb3"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib's tuples are by definition functions `Fin n → α`, exactly the function-with-domain-{0,…,n−1} model.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0b0a3a7e9f47"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": null
       },
       "note": "Mathlib uses the `Fin n → α` model, not a nested-pair recursive construction.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "91610d42a855"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": null
       },
       "note": "This is a naming convention, not a formal statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5456deae59cf"
     },
     {
       "kind": "example",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "`Complex.equivRealProd` gives the equivalence `ℂ ≃ ℝ × ℝ`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2897d6d68200"
     },
     {
       "kind": "proposition",
@@ -147,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "Two functions (hence tuples `Fin n → α`) are equal iff their components agree, via `funext_iff`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "379cbd9eead1"
     },
     {
       "kind": "proposition",
@@ -163,7 +172,8 @@
         "match_kind": null
       },
       "note": "Meta-comparison between tuple and set semantics, not a formal theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "673f301e45f6"
     },
     {
       "kind": "definition",
@@ -179,7 +189,8 @@
         "match_kind": "special_case"
       },
       "note": "`Fin.elim0` is the unique function out of the empty type `Fin 0`, i.e. the empty tuple.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "222d6cc2e1e5"
     },
     {
       "kind": "definition",
@@ -195,7 +206,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not identify tuples specifically with the surjective function onto their image.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8da6b83ad0b7"
     },
     {
       "kind": "definition",
@@ -211,7 +223,8 @@
         "match_kind": null
       },
       "note": "Mathlib treats functions as primitive; there is no canonical `Function.graph` identifying a function with its set-theoretic graph.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e04e1a3e2599"
     },
     {
       "kind": "definition",
@@ -227,7 +240,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not use a nested-ordered-pair model for tuples.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c1323503d995"
     },
     {
       "kind": "definition",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not encode tuples as set-theoretic objects this way.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d39bf646c89b"
     },
     {
       "kind": "definition",
@@ -259,7 +274,8 @@
         "match_kind": null
       },
       "note": "The recursive (a, (n−1)-tuple) encoding is not Mathlib's model.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5782832bd706"
     },
     {
       "kind": "definition",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "This set-theoretic variant is not present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0afe5ae47b76"
     },
     {
       "kind": "definition",
@@ -291,7 +308,8 @@
         "match_kind": "invocation"
       },
       "note": "`ZFSet.pair` defines the Kuratowski ordered pair in ZFC, but Mathlib does not iterate it to form general n-tuples.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "223d15fc908f"
     },
     {
       "kind": "proposition",
@@ -307,7 +325,8 @@
         "match_kind": "exact"
       },
       "note": "`Fintype.card_fun` states `card (α → β) = card β ^ card α`, which gives `m^n` for `α = Fin n`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fbd09c7181ea"
     },
     {
       "kind": "definition",
@@ -323,7 +342,8 @@
         "match_kind": "exact"
       },
       "note": "Product types are realized by `Prod` (and iterated products) in core Lean/Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f66b8c9b5b66"
     },
     {
       "kind": "definition",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "Lean's `structure` mechanism implements record types but there is no Mathlib decl modeling labeled relational tuples.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5e4e45d219cc"
     },
     {
       "kind": "definition",
@@ -355,7 +376,8 @@
         "match_kind": "exact"
       },
       "note": "Lean's `PUnit`/`Unit` is the unique-inhabitant unit type, serving as the 0-tuple.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a7d939b3b099"
     }
   ]
 }

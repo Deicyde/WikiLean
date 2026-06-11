@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib defines `Ideal.IsPrime I` as `I ≠ ⊤ ∧ ∀ {x y}, x * y ∈ I → x ∈ I ∨ y ∈ I`, exactly matching the standard prime-ideal concept this informal sentence describes.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d00faac65457"
     },
     {
       "kind": "example",
@@ -35,7 +36,8 @@
         "match_kind": "generalization"
       },
       "note": "`Ideal.span_singleton_prime` gives `IsPrime (span {p}) ↔ Prime p` in any commutative ring; combined with `isPrime_bot` for `NoZeroDivisors`, this classifies the prime ideals of `ℤ` as `(p)` and `(0)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "376aa89dc806"
     },
     {
       "kind": "proposition",
@@ -51,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "`IsPrime.isPrimary` and `IsPrime.isRadical` (in `Mathlib.RingTheory.Ideal.Operations`) give the primary and semiprime/radical parts. Mathlib has no notion of `primitive ideal` (annihilator of a simple module) for noncommutative rings, so the first conjunct is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "55b2a15c6202"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib's `class Ideal.IsPrime` has fields `ne_top'` (P ≠ R) and `mem_or_mem'` (x*y ∈ P → x ∈ P ∨ y ∈ P), and `isPrime_iff` gives the conjunction form. This matches Wikipedia's two-property definition verbatim (and works for any semiring).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fff6fa8ca2f5"
     },
     {
       "kind": "proposition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat.Prime.dvd_mul` (and the alias `Prime.dvd_or_dvd` for the general `Prime` predicate) gives Euclid's lemma; an `Int` version is available via `Int.Prime.dvd_mul`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3c47ee737d2a"
     },
     {
       "kind": "proposition",
@@ -99,7 +104,8 @@
         "match_kind": "generalization"
       },
       "note": "`Ideal.span_singleton_prime : p ≠ 0 → (IsPrime (span {p}) ↔ Prime p)` proves the iff in any commutative ring; specializing to `R = ℤ` (with `Nat.prime_iff_prime_int`) gives the Wikipedia statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "992a18d99dac"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": "exact"
       },
       "note": "`PrimeSpectrum R` is defined as the structure bundling an ideal `asIdeal` with a proof `isPrime`; `equivSubtype` shows it is order-isomorphic to `{I : Ideal R // I.IsPrime}`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "19ee7b83c4c7"
     },
     {
       "kind": "definition",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "`AlgebraicGeometry.AffineScheme` is the category of affine schemes; the Zariski topology on `PrimeSpectrum R` is in `Mathlib.RingTheory.Spectrum.Prime.Topology` and the structure sheaf is in `Mathlib.AlgebraicGeometry.StructureSheaf`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "23d7e338223b"
     },
     {
       "status": "formalized",
@@ -147,7 +155,8 @@
       "anchor": {
         "section": "Alternative Definition",
         "snippet": "A proper ideal I of R is prime if it has the following property"
-      }
+      },
+      "id": "235b056281c8"
     },
     {
       "kind": "proposition",
@@ -163,7 +172,8 @@
         "match_kind": "invocation"
       },
       "note": "The equivalence is witnessed by `Ideal.primeCompl P : Submonoid α` (the complement of a prime ideal is closed under multiplication and contains 1), built directly from `IsPrime.mem_or_mem` and `one_notMem`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "398655ad7a6c"
     },
     {
       "kind": "example",
@@ -179,7 +189,8 @@
         "match_kind": "special_case"
       },
       "note": "`span_singleton_prime` with the prime element `2 : ℤ` shows `(2)` is a prime ideal of `ℤ` (and `Int.ideal_span_isMaximal_of_prime` makes it maximal). No standalone `2ℤ is prime` lemma; it is this special case.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c310003b70ee"
     },
     {
       "kind": "example",
@@ -195,7 +206,8 @@
         "match_kind": "exact"
       },
       "note": "`span_singleton_prime (hp : p ≠ 0) : IsPrime (span {p}) ↔ Prime p` says a prime element generates a principal prime ideal.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "07966f22ef84"
     },
     {
       "kind": "example",
@@ -211,7 +223,8 @@
         "match_kind": "generalization"
       },
       "note": "Over a field `K`, `K[X]` is a PID, so `isMaximal_of_irreducible` gives that an irreducible polynomial generates a maximal (hence prime, via `IsMaximal.isPrime`) ideal; in a PID/UFD irreducible = prime so `span_singleton_prime` also applies.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8cc2ebe92e8e"
     },
     {
       "kind": "proposition",
@@ -227,7 +240,8 @@
         "match_kind": "exact"
       },
       "note": "`irreducible_of_eisenstein_criterion` is the classic Eisenstein criterion; `Polynomial.generalizedEisenstein` is a generalized form.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ddd56492e000"
     },
     {
       "kind": "example",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "This specific worked example (the elliptic-curve ideal in `ℂ[X,Y]` being prime) is not in Mathlib; the general machinery (`Ideal.IsPrime`, `span`) exists but not this concrete computation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c2727a181ce8"
     },
     {
       "kind": "example",
@@ -259,7 +274,8 @@
         "match_kind": null
       },
       "note": "No standalone lemma that the specific ideal `(2, X) ⊆ ℤ[X]` is prime. Related tools exist (`Ideal.isPrime_map_C_iff_isPrime`; quotient ≅ 𝔽₂) but the concrete example is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8e3574cdcda9"
     },
     {
       "kind": "definition",
@@ -275,7 +291,8 @@
         "match_kind": "exact"
       },
       "note": "`Ideal.IsMaximal I` is defined as `IsCoatom I`, i.e. maximal among proper ideals; `isMaximal_iff` unfolds it.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ebfeecdff67d"
     },
     {
       "kind": "proposition",
@@ -291,7 +308,8 @@
         "match_kind": "exact"
       },
       "note": "`IsMaximal.isPrime` (and the instance `IsMaximal.isPrime'`) proves every maximal ideal of a commutative semiring is prime.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5655ada6f99c"
     },
     {
       "kind": "proposition",
@@ -307,7 +325,8 @@
         "match_kind": "generalization"
       },
       "note": "A PID is a domain of Krull dimension ≤ 1, so `IsPrime.isMaximal_of_ne_bot` ([NoZeroDivisors][KrullDimLE 1]) gives nonzero prime ⇒ maximal; also `Ideal.IsPrime.isMaximal` for `DimensionLEOne` domains. No lemma stated directly under `IsPrincipalIdealRing`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3cf9ba61222d"
     },
     {
       "kind": "theorem",
@@ -323,7 +342,8 @@
         "match_kind": "exact"
       },
       "note": "Over an algebraically closed field, `isMaximal_iff_eq_vanishingIdeal_singleton` says maximal ideals of `MvPolynomial σ K` are exactly vanishing ideals of points; the main statement is `vanishingIdeal_zeroLocus_eq_radical`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "384016d21778"
     },
     {
       "kind": "example",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no development of the ring of smooth functions on a manifold as an algebraic object, so the ideal of functions vanishing at a point (and its primality/maximality) is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "15c5fa5db677"
     },
     {
       "kind": "example",
@@ -355,7 +376,8 @@
         "match_kind": "exact"
       },
       "note": "`Ideal.Quotient.isDomain_iff_prime : IsDomain (R ⧸ I) ↔ I.IsPrime` is the general principle whose negation Wikipedia is using on the specific non-example.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "665f378521c3"
     },
     {
       "kind": "example",
@@ -371,7 +393,8 @@
         "match_kind": "invocation"
       },
       "note": "Mathlib formalizes the general iff `IsDomain (R/I) ↔ I.IsPrime` and has CRT (`Ideal.quotientInfRingEquivPiQuotient`), but the specific worked computation showing the quotient has zero divisors is not packaged as a lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d4c3cfa44144"
     },
     {
       "kind": "example",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "The specific concrete non-example (a particular non-prime ideal verified in the Wikipedia text) is not stated as a lemma in Mathlib; only the general criterion `Ideal.Quotient.isDomain_iff_prime` is available.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8d2ea21ccd4e"
     },
     {
       "kind": "example",
@@ -403,7 +427,8 @@
         "match_kind": null
       },
       "note": "The specific worked counterexample exhibiting an `a*b ∈ I` with `a, b ∉ I` is not a Mathlib lemma; the abstract framework `not_isPrime_iff` (in `Mathlib.RingTheory.Ideal.Prime`) gives the schema but no concrete instantiation is provided.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6b4401436c23"
     },
     {
       "kind": "proposition",
@@ -419,7 +444,8 @@
         "match_kind": "exact"
       },
       "note": "`Ideal.Quotient.isDomain_iff_prime : IsDomain (R ⧸ I) ↔ I.IsPrime`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "be389f87c4fa"
     },
     {
       "kind": "proposition",
@@ -435,7 +461,8 @@
         "match_kind": "exact"
       },
       "note": "Both directions: `IsDomain.of_bot_isPrime` (⊥ prime ⇒ domain) and the instance `isPrime_bot` ([Nontrivial][NoZeroDivisors] ⇒ ⊥ prime).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "68790a1d8dd2"
     },
     {
       "kind": "proposition",
@@ -451,7 +478,8 @@
         "match_kind": "related"
       },
       "note": "The prime spectrum of the zero ring is empty (`IsEmpty (PrimeSpectrum R)` for a `Subsingleton` ring): any prime needs `I ≠ ⊤`, but `⊤ = ⊥` there.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bf5a6c30f242"
     },
     {
       "kind": "proposition",
@@ -467,7 +495,8 @@
         "match_kind": "special_case"
       },
       "note": "`Ideal.primeCompl` packages the complement of a prime ideal as a `Submonoid` (multiplicatively closed, contains 1) — the forward direction. The full iff (closed + proper ⇒ prime) is not a single named lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "57b43c087226"
     },
     {
       "kind": "theorem",
@@ -483,7 +512,8 @@
         "match_kind": "exact"
       },
       "note": "`exists_maximal [Nontrivial α]` gives Krull's theorem (a nontrivial ring has a maximal ideal); with `IsMaximal.isPrime` this yields a prime ideal.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e2c7c4817a1b"
     },
     {
       "kind": "theorem",
@@ -499,7 +529,8 @@
         "match_kind": "exact"
       },
       "note": "`isPrime_of_maximally_disjoint`: an ideal maximally disjoint from a `Submonoid S` is prime (the primality conclusion of Krull's lemma).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fd69205cef7c"
     },
     {
       "kind": "example",
@@ -515,7 +546,8 @@
         "match_kind": "related"
       },
       "note": "Powers of an element are `Submonoid.powers` (a multiplicatively closed set); disjointness from a prime relates to non-nilpotency (`disjoint_powers_iff_notMem`). The m-system framing is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4c01777a15a5"
     },
     {
       "kind": "proposition",
@@ -531,7 +563,8 @@
         "match_kind": "exact"
       },
       "note": "Instance `IsPrime.comap` (and explicit `comap_isPrime`): `comap f K` is prime when `K` is prime.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "afc1012cc5dc"
     },
     {
       "kind": "proposition",
@@ -547,7 +580,8 @@
         "match_kind": null
       },
       "note": "Mathlib has positive results (e.g. `IsMaximal.comap_bijective`) but no formalized counterexample that `comap` of a maximal ideal can fail to be maximal.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "32fcecbe62bb"
     },
     {
       "kind": "definition",
@@ -563,7 +597,8 @@
         "match_kind": "exact"
       },
       "note": "`Ideal.IsMinimalPrime I p` (minimal prime over `I`) and the abbreviation `IsMinimalPrime p = (⊥).IsMinimalPrime p`; existence via `exists_minimalPrimes_le`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "45e008de18a0"
     },
     {
       "kind": "proposition",
@@ -579,7 +614,8 @@
         "match_kind": "exact"
       },
       "note": "`minimalPrimes.equivIrreducibleComponents` gives the correspondence between minimal primes and irreducible components of `Spec`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "104877ce420f"
     },
     {
       "kind": "proposition",
@@ -595,7 +631,8 @@
         "match_kind": null
       },
       "note": "No formalized counterexample that the sum (`⊔`) of two prime ideals can fail to be prime.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e4ce497013e4"
     },
     {
       "kind": "proposition",
@@ -611,7 +648,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no predicate for `irreducible ideal` in this factorization sense, nor a counterexample distinguishing it from prime.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f4a664e3c056"
     },
     {
       "kind": "proposition",
@@ -627,7 +665,8 @@
         "match_kind": "related"
       },
       "note": "Related characterizations exist (`isField_iff_maximal_bot`, `not_isField_iff_exists_prime`), but the exact statement `every proper ideal prime ⇒ field` is not a stated lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4285df8c8e33"
     },
     {
       "kind": "proposition",
@@ -643,7 +682,8 @@
         "match_kind": "exact"
       },
       "note": "`span_singleton_prime (hp : p ≠ 0) : IsPrime (span {p}) ↔ Prime p`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b93b3f8eaa28"
     },
     {
       "kind": "proposition",
@@ -659,7 +699,8 @@
         "match_kind": "exact"
       },
       "note": "Kaplansky's criterion (`iff_exists_prime_mem_of_isPrime`): a domain is a UFD iff every nonzero prime ideal contains a prime element; the forward direction gives exactly this property.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "53fe4d27cdfc"
     },
     {
       "kind": "proposition",
@@ -675,7 +716,8 @@
         "match_kind": "exact"
       },
       "note": "`isIrreducible_iff_vanishingIdeal_isPrime` states that a closed subset of `PrimeSpectrum R` is irreducible iff its vanishing ideal is prime — the scheme-theoretic incarnation of the Wikipedia correspondence.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2a8fa27f399d"
     },
     {
       "kind": "definition",
@@ -691,7 +733,8 @@
         "match_kind": "exact"
       },
       "note": "`structure Scheme extends LocallyRingedSpace` defines a scheme as a locally ringed space locally isomorphic to `Spec R`, exactly the generalization Wikipedia describes.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4e9ffd002c04"
     },
     {
       "kind": "proposition",
@@ -707,7 +750,8 @@
         "match_kind": null
       },
       "note": "Mathlib formalizes `UniqueFactorizationMonoid` and Dedekind domains, and proves rings of integers are Dedekind, but the specific negative existential `∃ K, ¬UniqueFactorizationMonoid (𝓞 K)` (e.g. for `ℚ(√−5)`) is not present as a lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7094368fa499"
     },
     {
       "kind": "definition",
@@ -723,7 +767,8 @@
         "match_kind": null
       },
       "note": "Mathlib's `Ideal.IsPrime` uses the elementwise commutative form (`x*y ∈ P → x ∈ P ∨ y ∈ P`), and there is no two-sided-ideal `AB ⊆ P → A ⊆ P ∨ B ⊆ P` definition for noncommutative rings (the file's own TODO notes this gap).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1ed62af8ba9e"
     },
     {
       "kind": "proposition",
@@ -739,7 +784,8 @@
         "match_kind": null
       },
       "note": "Without a noncommutative `IsPrime` predicate in Mathlib, the equivalence to the commutative definition has no statement to prove.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "847c6068fa04"
     },
     {
       "kind": "proposition",
@@ -755,7 +801,8 @@
         "match_kind": null
       },
       "note": "No noncommutative `IsPrime` predicate exists in Mathlib, so this implication is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e05405b96612"
     },
     {
       "kind": "definition",
@@ -771,7 +818,8 @@
         "match_kind": null
       },
       "note": "The notion of `completely prime ideal` (specific to the noncommutative theory) has no separate definition in Mathlib; only the commutative-style `Ideal.IsPrime` exists.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "32e5eb863ff7"
     },
     {
       "kind": "proposition",
@@ -787,7 +835,8 @@
         "match_kind": null
       },
       "note": "Mathlib has neither `completely prime` nor a noncommutative `IsPrime` predicate, so this implication and its counterexample are absent.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4374f3cea5cc"
     },
     {
       "kind": "example",
@@ -803,7 +852,8 @@
         "match_kind": null
       },
       "note": "Although Mathlib defines matrix rings and knows `Matrix (Fin n) (Fin n) k` is simple over a field, the specific statement that `(⊥)` is prime-but-not-completely-prime in matrix rings is not present (and `completely prime` is undefined).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3177c248ec8b"
     },
     {
       "kind": "definition",
@@ -819,7 +869,8 @@
         "match_kind": null
       },
       "note": "The list of equivalent formulations of `P` prime in the noncommutative sense is not formalized because the underlying noncommutative `IsPrime` predicate is absent from Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "782f2a512195"
     },
     {
       "kind": "proposition",
@@ -835,7 +886,8 @@
         "match_kind": null
       },
       "note": "The condition `(a)(b) ⊆ P → a ∈ P ∨ b ∈ P` in the noncommutative sense is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "125d08be8cd3"
     },
     {
       "kind": "proposition",
@@ -851,7 +903,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not formalize one-sided right ideals as a first-class concept, and the right-ideal-product characterization of noncommutative-prime is absent.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4739ef153163"
     },
     {
       "kind": "proposition",
@@ -867,7 +920,8 @@
         "match_kind": null
       },
       "note": "Analogous to the right-ideal case: Mathlib does not have a left-ideal-product characterization of (noncommutative) prime ideals.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6affdbffb0f0"
     },
     {
       "kind": "proposition",
@@ -883,7 +937,8 @@
         "match_kind": null
       },
       "note": "The `aRb ⊆ P → a ∈ P ∨ b ∈ P` characterization (the key noncommutative reformulation) is not present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "693993d4e448"
     },
     {
       "kind": "definition",
@@ -899,7 +954,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no `m-system` definition. The closely related commutative notion — `primeCompl` being a `Submonoid` — appears in `Mathlib.RingTheory.Ideal.Prime`, but a true m-system (closed under `arb` for some `r`) is absent.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "52421c49accb"
     },
     {
       "kind": "proposition",
@@ -915,7 +971,8 @@
         "match_kind": "special_case"
       },
       "note": "For (semi)commutative rings, `Ideal.primeCompl` shows the complement of a prime ideal is a multiplicative submonoid — the commutative special case of the m-system statement. The noncommutative m-system version itself is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5072c338b990"
     },
     {
       "kind": "proposition",
@@ -931,7 +988,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no notion of primitive ideal (annihilator of a simple module), so this is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "137b8606e9af"
     },
     {
       "kind": "proposition",
@@ -947,7 +1005,8 @@
         "match_kind": "special_case"
       },
       "note": "In the commutative setting both hold: `IsMaximal.isPrime`, and `exists_minimalPrimes_le` shows every prime over `I` contains a minimal prime over `I`. The noncommutative two-sided version is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2d3ac9f0d51f"
     },
     {
       "kind": "proposition",
@@ -963,7 +1022,8 @@
         "match_kind": "special_case"
       },
       "note": "The `domain iff ⊥ completely prime` half is `IsDomain.of_bot_isPrime` / `isPrime_bot`. There is no `prime ring` predicate in Mathlib, so the noncommutative `prime ring iff ⊥ prime` half is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c80262522a77"
     },
     {
       "kind": "proposition",
@@ -979,7 +1039,8 @@
         "match_kind": "generalization"
       },
       "note": "The associated-prime machinery (`IsAssociatedPrime`, `exists_le_isAssociatedPrime_of_isNoetherianRing`) shows a maximal annihilator (colon) ideal is prime — the Noetherian version of this fact.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "51e7f94c16e0"
     },
     {
       "kind": "theorem",
@@ -995,7 +1056,8 @@
         "match_kind": "exact"
       },
       "note": "`subset_union_prime` is prime avoidance (Atiyah-Macdonald 1.11): if `I ⊆ ⋃ f i` with all but two `f i` prime, then `I ≤ f i` for some `i`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "493f49cb771a"
     },
     {
       "kind": "proposition",
@@ -1011,7 +1073,8 @@
         "match_kind": "exact"
       },
       "note": "`IsPrime.inf_le' : (⨅ i ∈ s, f i) ≤ P ↔ ∃ i ∈ s, f i ≤ P` (and binary `IsPrime.inf_le`); contrapositive gives that a prime not containing any `I_j` does not contain their intersection.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bd00f4882c49"
     },
     {
       "kind": "theorem",
@@ -1027,7 +1090,8 @@
         "match_kind": "special_case"
       },
       "note": "Commutative version (maximal disjoint from a `Submonoid` ⇒ prime) is `isPrime_of_maximally_disjoint`. The m-system (noncommutative) generalization is not formalized since m-systems are absent.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2cd23d0df6fd"
     },
     {
       "kind": "example",
@@ -1043,7 +1107,8 @@
         "match_kind": "related"
       },
       "note": "Powers of an element form `Submonoid.powers`; disjointness from a prime relates to non-nilpotency (`disjoint_powers_iff_notMem`). The m-system framing itself is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c1b2c6a73d19"
     },
     {
       "kind": "definition",
@@ -1059,7 +1124,8 @@
         "match_kind": null
       },
       "note": "Mathlib has localization-specific saturation notions but no general `saturated subset (closed under divisors)` definition matching this article's usage.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c9a60adde675"
     },
     {
       "kind": "proposition",
@@ -1075,7 +1141,8 @@
         "match_kind": "special_case"
       },
       "note": "`primeCompl` shows the complement is a submonoid (multiplicatively closed). The `saturated` (closed under divisors) property is not separately formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "eae49ef0ffa0"
     },
     {
       "kind": "theorem",
@@ -1091,7 +1158,8 @@
         "match_kind": null
       },
       "note": "This structure theorem (complement of a saturated mult. closed set is a union of primes) is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "960a6f0be859"
     },
     {
       "kind": "proposition",
@@ -1107,7 +1175,8 @@
         "match_kind": "special_case"
       },
       "note": "`sInf_isPrime_of_isChain` proves the intersection of a nonempty chain of primes is prime. The union (`sSup`) of a chain of primes being prime is not formalized as a named lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9b1a9351e2e2"
     },
     {
       "kind": "proposition",
@@ -1123,7 +1192,8 @@
         "match_kind": "special_case"
       },
       "note": "Existence of minimal primes below any prime is `exists_minimalPrimes_le`; maximal ideals (maximal primes) exist by `exists_maximal`. No single lemma packages `the prime poset has both maximal and minimal elements`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e7b527806445"
     },
     {
       "kind": "proposition",
@@ -1139,7 +1209,8 @@
         "match_kind": "generalization"
       },
       "note": "`IsOka.isPrime_of_maximal_not` formalizes the general principle: an ideal maximal w.r.t. failing any Oka predicate is prime. `isPrime_of_maximally_disjoint` (in `Mathlib.RingTheory.Ideal.Maximal`) is another instance of producing primes as maximal elements.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "51a57eb9e834"
     },
     {
       "kind": "proposition",
@@ -1155,7 +1226,8 @@
         "match_kind": "special_case"
       },
       "note": "`isPrime_of_maximally_disjoint` proves: in a commutative (semi)ring, an ideal maximal among those disjoint from a `Submonoid S` is prime. This is the commutative special case (submonoid in place of general m-system) of the Wikipedia statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d9ccd67bf6ea"
     },
     {
       "kind": "proposition",
@@ -1171,7 +1243,8 @@
         "match_kind": "generalization"
       },
       "note": "`exists_le_isAssociatedPrime_of_isNoetherianRing` constructs an associated prime as an ideal maximal among annihilator colon ideals `(⊥ : Submodule R M).colon {y}` and shows it is prime — formalizing the Wikipedia statement in the Noetherian setting.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2edd5f7a5f78"
     },
     {
       "kind": "proposition",
@@ -1187,7 +1260,8 @@
         "match_kind": "exact"
       },
       "note": "`isOka_isPrincipal : IsOka Submodule.IsPrincipal` combined with `IsOka.isPrime_of_maximal_not` gives exactly: an ideal maximal among non-principal ideals is prime (the engine of `IsPrincipalIdealRing.of_prime`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "20f9e46b4f83"
     },
     {
       "kind": "proposition",
@@ -1203,7 +1277,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib formalizes the finitely-generated analog: `isOka_fg` plus `IsOka.isPrime_of_maximal_not` says a maximal-not-fg ideal is prime (used in `IsNoetherianRing.of_prime`). The `countably generated` variant from Wikipedia is not directly present.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e2b3e9ce9517"
     }
   ]
 }

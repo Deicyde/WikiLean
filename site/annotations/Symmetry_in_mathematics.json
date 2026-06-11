@@ -19,7 +19,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no single generic 'symmetry' notion; the closest is CategoryTheory.Aut (self-isomorphisms of an object), with structure-specific versions like MulAut, Equiv.Perm, Isometry.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f24e3e0fb2ad"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "exact"
       },
       "note": "Function.Even f is defined as ∀ a, f (-a) = f a, exactly matching the definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ea22c658d214"
     },
     {
       "kind": "example",
@@ -51,7 +53,8 @@
         "match_kind": null
       },
       "note": "Evenness facts for example functions exist (e.g. Real.cos_neg, abs_neg) but are not packaged as Function.Even instances.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d5cb9822da0b"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "Function.Odd f is defined as ∀ a, f (-a) = -(f a), exactly matching the definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "36643df36318"
     },
     {
       "kind": "example",
@@ -83,7 +87,8 @@
         "match_kind": null
       },
       "note": "Oddness facts for example functions exist (e.g. Real.sin_neg) but are not packaged as Function.Odd instances.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a103c7f8cb64"
     },
     {
       "kind": "proposition",
@@ -99,7 +104,8 @@
         "match_kind": null
       },
       "note": "The building block integral_comp_neg (∫ f(-x) over a..b = ∫ f over -b..-a) exists, but there is no named lemma stating ∫_{-A}^{A} of an odd function is zero.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a8525f2a6435"
     },
     {
       "kind": "proposition",
@@ -115,7 +121,8 @@
         "match_kind": null
       },
       "note": "Infrastructure (integral_comp_neg) exists but no named lemma states ∫_{-A}^{A} of an even function equals twice ∫_0^A.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a4d3cdd506f9"
     },
     {
       "kind": "proposition",
@@ -131,7 +138,8 @@
         "match_kind": null
       },
       "note": "No result relating parity of a function to the parity of its Taylor/Maclaurin coefficients was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3e890b7f81c9"
     },
     {
       "kind": "proposition",
@@ -147,7 +155,8 @@
         "match_kind": null
       },
       "note": "No result relating oddness of a function to its Maclaurin series containing only odd powers was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ba3b27043579"
     },
     {
       "kind": "proposition",
@@ -163,7 +172,8 @@
         "match_kind": null
       },
       "note": "No theorem relating evenness of a periodic function to vanishing of sine Fourier coefficients was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6c4ec28e97c3"
     },
     {
       "kind": "proposition",
@@ -179,7 +189,8 @@
         "match_kind": null
       },
       "note": "No theorem relating oddness of a periodic function to vanishing of cosine Fourier coefficients was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6aa66bcdd58e"
     },
     {
       "kind": "definition",
@@ -195,7 +206,8 @@
         "match_kind": "exact"
       },
       "note": "Matrix.IsSymm A is defined as Aᵀ = A on Matrix n n α, exactly a square matrix equal to its transpose.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c17a8a7c4ad0"
     },
     {
       "kind": "proposition",
@@ -211,7 +223,8 @@
         "match_kind": null
       },
       "note": "Squareness is enforced structurally by the type of Matrix.IsSymm (defined only for Matrix n n α), not stated as a theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6468d8585b21"
     },
     {
       "kind": "proposition",
@@ -227,7 +240,8 @@
         "match_kind": "exact"
       },
       "note": "Matrix.IsSymm.apply gives A j i = A i j, i.e. entries are symmetric across the main diagonal.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5f6a4392dcc4"
     },
     {
       "kind": "example",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "A concrete worked example of a particular symmetric 3×3 matrix is not present as a named declaration.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "593c8ff360a0"
     },
     {
       "kind": "proposition",
@@ -259,7 +274,8 @@
         "match_kind": "exact"
       },
       "note": "Matrix.isSymm_diagonal proves (diagonal v).IsSymm for any vector v.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b8f120cd73a1"
     },
     {
       "kind": "definition",
@@ -275,7 +291,8 @@
         "match_kind": "generalization"
       },
       "note": "Matrix.isHermitian_iff_isSymmetric states IsHermitian A ↔ A.toEuclideanLin.IsSymmetric (self-adjoint operator); for real matrices IsHermitian coincides with IsSymm.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "df8a38f712b1"
     },
     {
       "kind": "definition",
@@ -291,7 +308,8 @@
         "match_kind": "generalization"
       },
       "note": "Equiv.Perm α is the group of permutations of α (with group instance); Sₙ is the special case Equiv.Perm (Fin n).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b6024272a64a"
     },
     {
       "kind": "proposition",
@@ -307,7 +325,8 @@
         "match_kind": "exact"
       },
       "note": "Fintype.card_perm proves Fintype.card (Perm α) = (Fintype.card α)!.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a7653bdadc7d"
     },
     {
       "kind": "definition",
@@ -323,7 +342,8 @@
         "match_kind": "exact"
       },
       "note": "MvPolynomial.IsSymmetric φ is defined as invariance under all permutations of variables via rename, matching the definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "00a13d02443d"
     },
     {
       "kind": "theorem",
@@ -339,7 +359,8 @@
         "match_kind": "exact"
       },
       "note": "esymmAlgHom_surjective (and esymmAlgEquiv) show every symmetric polynomial lies in the image of the elementary symmetric polynomials.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "29f760918631"
     },
     {
       "kind": "example",
@@ -355,7 +376,8 @@
         "match_kind": null
       },
       "note": "The example polynomials (e.g. X₁+X₂, X₁X₂) are elementary symmetric polynomials, proven symmetric by esymm_isSymmetric, but not stated as standalone examples.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4bf1e05ef573"
     },
     {
       "kind": "example",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "Such examples are power-sum / elementary symmetric polynomials (psum, esymm) proven symmetric, but the specific three-variable instance is not a named declaration.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a0fa549a20cb"
     },
     {
       "kind": "definition",
@@ -387,7 +410,8 @@
         "match_kind": "exact"
       },
       "note": "SymmetricPower (Sym[R] ι M) is the tensor power quotiented by the permutation relation, formalizing tensors invariant under permutation of arguments.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b80cc4b3102e"
     },
     {
       "kind": "proposition",
@@ -403,7 +427,8 @@
         "match_kind": null
       },
       "note": "SymmetricPower is defined, but the file explicitly lists relating it to homogeneous polynomials as a TODO, so the isomorphism is not yet proven.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d8804124dcf9"
     },
     {
       "kind": "definition",
@@ -419,7 +444,8 @@
         "match_kind": null
       },
       "note": "Polynomial.Gal acts on the roots via galActionHom into Equiv.Perm (rootSet), with galActionHom_injective showing the faithful permutation action of the Galois group on roots.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6c3001ddb487"
     },
     {
       "kind": "definition",
@@ -435,7 +461,8 @@
         "match_kind": "exact"
       },
       "note": "CategoryTheory.Aut X := X ≅ X is the self-isomorphisms of an object, exactly an automorphism.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ad8abaa7e1d4"
     },
     {
       "kind": "definition",
@@ -451,7 +478,8 @@
         "match_kind": "exact"
       },
       "note": "CategoryTheory.Aut X carries a Group instance, formalizing that automorphisms of an object form a group.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fd8605a2155a"
     },
     {
       "kind": "example",
@@ -467,7 +495,8 @@
         "match_kind": "special_case"
       },
       "note": "Equiv.Perm X is the group of bijections (automorphisms) of the set X, i.e. its symmetric group.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8c5c3ce88968"
     },
     {
       "kind": "example",
@@ -483,7 +512,8 @@
         "match_kind": null
       },
       "note": "No declaration was found establishing that negation is the unique nontrivial additive automorphism of ℤ.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "957c6229df34"
     },
     {
       "kind": "example",
@@ -499,7 +529,8 @@
         "match_kind": "exact"
       },
       "note": "MulAut G is the group of self-isomorphisms of a group, and MulAut.conj gives the inner automorphisms g ↦ g·_·g⁻¹.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ef202a50f7fd"
     },
     {
       "kind": "example",
@@ -515,7 +546,8 @@
         "match_kind": "exact"
       },
       "note": "LinearMap.GeneralLinearGroup R M := (M →ₗ[R] M)ˣ is the group of invertible linear operators, i.e. GL(V) (endomorphisms are Module.End).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "399a8b21fb8b"
     },
     {
       "kind": "example",
@@ -531,7 +563,8 @@
         "match_kind": "generalization"
       },
       "note": "RingAut R := RingEquiv R R is the group of ring automorphisms; a field automorphism is this applied to a field.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "200f9a2f9d5d"
     },
     {
       "kind": "definition",
@@ -547,7 +580,8 @@
         "match_kind": null
       },
       "note": "This quantum-mechanical characterization of bosons/fermions via wavefunction symmetry is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5b3301cfae4c"
     },
     {
       "kind": "proposition",
@@ -563,7 +597,8 @@
         "match_kind": null
       },
       "note": "The Pauli exclusion principle and its equivalence to wavefunction antisymmetry are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "82d7a7c42157"
     },
     {
       "kind": "proposition",
@@ -579,7 +614,8 @@
         "match_kind": "generalization"
       },
       "note": "For a bilinear form, IsAlt (B x x = 0 for all x) implies -B x y = B y x via IsAlt.neg_eq, i.e. vanishing diagonal forces antisymmetry.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "84c98d07bd7c"
     },
     {
       "kind": "definition",
@@ -595,7 +631,8 @@
         "match_kind": "exact"
       },
       "note": "Symmetric r is defined as ∀ ⦃x y⦄, r x y → r y x, exactly matching the definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6e876ce31441"
     },
     {
       "kind": "definition",
@@ -611,7 +648,8 @@
         "match_kind": "exact"
       },
       "note": "Isometry f is defined as preserving the (extended) distance edist (f x) (f y) = edist x y.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "461ecae1972d"
     },
     {
       "kind": "definition",
@@ -627,7 +665,8 @@
         "match_kind": null
       },
       "note": "Congruent v₁ v₂ is defined via equal pairwise distances of indexed point sets, the metric-space formulation of being related by an isometry.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7fbc451d42cf"
     },
     {
       "kind": "definition",
@@ -643,7 +682,8 @@
         "match_kind": null
       },
       "note": "Symmetries of differential equations are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5d5a79ab78fb"
     },
     {
       "kind": "definition",
@@ -659,7 +699,8 @@
         "match_kind": null
       },
       "note": "Lie (continuous) point symmetries of differential equations are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9dce1fcae122"
     },
     {
       "kind": "proposition",
@@ -675,7 +716,8 @@
         "match_kind": null
       },
       "note": "The relationship between Lie symmetries and first integrals of differential equations is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "60eae6f32712"
     },
     {
       "kind": "proposition",
@@ -691,7 +733,8 @@
         "match_kind": null
       },
       "note": "The discrete uniform distribution (PMF.uniformOfFintype) is defined, but no theorem characterizes it as the unique permutation-invariant distribution.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "463170792bc9"
     },
     {
       "kind": "proposition",
@@ -707,7 +750,8 @@
         "match_kind": null
       },
       "note": "The continuous uniform distribution (IsUniform) is defined, but its characterization via interval-interchange symmetry is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "52609925be1d"
     },
     {
       "kind": "proposition",
@@ -723,7 +767,8 @@
         "match_kind": null
       },
       "note": "The notion of a probability distribution invariant under reflection (a symmetric distribution) is not formalized as such.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "eea57283e382"
     },
     {
       "kind": "proposition",
@@ -739,7 +784,8 @@
         "match_kind": null
       },
       "note": "Distributions invariant under taking reciprocals are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0a6d555fa315"
     }
   ]
 }

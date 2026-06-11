@@ -19,7 +19,8 @@
         "match_kind": null
       },
       "note": "Mathlib formalizes digit sequences via Nat.digits (little-endian list of base-b digits) but has no standalone notion of a digit as a symbol.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2adccc13fda7"
     },
     {
       "kind": "proposition",
@@ -35,7 +36,8 @@
         "match_kind": null
       },
       "note": "Nat.digits_lt_base proves every base-b digit is < b (so values range 0..b-1), but the cardinality claim 'number of distinct digits = base' is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9bf70ac98543"
     },
     {
       "kind": "example",
@@ -51,7 +53,8 @@
         "match_kind": null
       },
       "note": "These concrete base examples are not stated as lemmas in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4ffd99cd8a33"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "Nat.ofDigits interprets a digit list as a number, with ofDigits_eq_sum_mapIdx giving the explicit sum of digit times place value.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "988c8486200e"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": null
       },
       "note": "Nat.digits_lt_base establishes that digits lie in 0..radix-1, but the radix-to-digit-set correspondence is not a separate definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "87299cf2e6fd"
     },
     {
       "kind": "example",
@@ -99,7 +104,8 @@
         "match_kind": null
       },
       "note": "This is a specific worked numeric example, not a Mathlib statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a9b909acbc00"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": null
       },
       "note": "The place value b^i (each position scaled by an extra factor of b) is implicit in ofDigits_eq_sum_mapIdx, but 'place value' is not a named defined concept.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "82f9479bc12d"
     },
     {
       "kind": "proposition",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "Nat.ofDigits_eq_sum_mapIdx states ofDigits b L = sum of a * b^i, exactly the digit-times-base-power place value formula.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "08a53fbb7e61"
     },
     {
       "kind": "example",
@@ -147,7 +155,8 @@
         "match_kind": null
       },
       "note": "Fractional/decimal place values are not handled by Nat.digits, which only treats natural numbers.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5926e7c00b81"
     },
     {
       "kind": "definition",
@@ -163,7 +172,8 @@
         "match_kind": null
       },
       "note": "No balanced ternary representation exists in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8486a4f37efb"
     },
     {
       "kind": "definition",
@@ -179,7 +189,8 @@
         "match_kind": null
       },
       "note": "Digit-sum infrastructure and n ≡ (digits 10 n).sum [MOD 9] exist, but the iterated single-digit digital root function itself is not defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2062e340487f"
     },
     {
       "kind": "definition",
@@ -195,7 +206,8 @@
         "match_kind": null
       },
       "note": "Nat.modEq_nine_digits_sum formalizes the underlying congruence n ≡ digit-sum mod 9, but the arithmetic-checking procedure is not formalized as such.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4f16cefb19cd"
     },
     {
       "kind": "proposition",
@@ -211,7 +223,8 @@
         "match_kind": null
       },
       "note": "The fact n ≡ digit-sum mod 9 (modEq_nine_digits_sum) plus Nat.ModEq's compatibility with addition derives the check, but it is not stated as a single lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "55895c0e2192"
     },
     {
       "kind": "definition",
@@ -227,7 +240,8 @@
         "match_kind": null
       },
       "note": "No repunit definition exists in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d7f91a8dccef"
     },
     {
       "kind": "example",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "No repunit concept or this example exists in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e6f8be2ba00d"
     },
     {
       "kind": "definition",
@@ -259,7 +274,8 @@
         "match_kind": null
       },
       "note": "No repdigit definition exists in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "37cc1d1078db"
     },
     {
       "kind": "example",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "No repdigit concept or this example exists in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "644f3c7b78bf"
     },
     {
       "kind": "definition",
@@ -291,7 +308,8 @@
         "match_kind": "generalization"
       },
       "note": "List.Palindrome defines lists equal to their reverse and is applied to (digits 10 n) in eleven_dvd_of_palindrome, but there is no dedicated 'palindromic number' definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1b3da563d7ff"
     },
     {
       "kind": "definition",
@@ -307,7 +325,8 @@
         "match_kind": null
       },
       "note": "No Lychrel number or reverse-and-add iteration is formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3e9a1f2aec34"
     }
   ]
 }

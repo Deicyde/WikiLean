@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "`T_real_cos` (and its complex counterpart `T_complex_cos`) state `(T ℝ n).eval (cos θ) = cos (n * θ)`, the trigonometric definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "83baea43278e"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "exact"
       },
       "note": "`U_real_cos` and `U_complex_cos` express `(U R n).eval (cos θ) * sin θ = sin ((n + 1) * θ)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6ce81edf1efc"
     },
     {
       "kind": "proposition",
@@ -51,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "`leadingCoeff_le_of_forall_abs_le_one` and `leadingCoeff_eq_iff_of_forall_abs_le_one` characterize `T_n` as the unique polynomial of degree `n` with maximal leading coefficient `2^(n-1)` under the `|P| ≤ 1` constraint on `[-1,1]`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bc2644a5af9d"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "`T` is defined by the recurrence `T (n+2) = 2 * X * T (n+1) - T n` with `T_zero = 1`, `T_one = X`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f413fc0a6de3"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "`U` is defined by `U (n+2) = 2 * X * U (n+1) - U n` with `U_zero = 1`, `U_one = 2 * X`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a4110237c5e6"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": "invocation"
       },
       "note": "The identity `T_n(cos θ) = cos(n θ)` is proved as `T_complex_cos`/`T_real_cos`, but uniqueness of such polynomials is not packaged as a single statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "eef1ed0c7f1c"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": null
       },
       "note": "Mathlib relates `T_n` to `cos` and `cosh` but does not state the `(cos θ + i sin θ)^n` form explicitly.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5c3a86191cc1"
     },
     {
       "kind": "proposition",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "`degree_T`/`natDegree_T` give `(T R n).natDegree = n.natAbs` over a domain with `NeZero (2 : R)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2fcfd0e9b6d8"
     },
     {
       "kind": "proposition",
@@ -147,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "`T_real_cosh` proves `(T ℝ n).eval (cosh θ) = cosh (n * θ)`, the standard extension for `|x| ≥ 1`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7ef72e51379d"
     },
     {
       "kind": "theorem",
@@ -163,7 +172,8 @@
         "match_kind": null
       },
       "note": "Ritt's theorem characterizing commuting polynomial families as essentially Chebyshev or power maps is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6f6e6e714aee"
     },
     {
       "kind": "definition",
@@ -179,7 +189,8 @@
         "match_kind": "invocation"
       },
       "note": "`S_sq_add_S_sq` proves a Pell-type identity for the rescaled `S` polynomial; no direct Pell-equation definition of `T_n^2 - (x^2 - 1) U_{n-1}^2 = 1` is stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "daad1fda51fa"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no statement of the ordinary generating function for `T_n`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b518bddc68a2"
     },
     {
       "kind": "proposition",
@@ -211,7 +223,8 @@
         "match_kind": null
       },
       "note": "No exponential generating function statement for Chebyshev polynomials is present.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b36559ee2c4e"
     },
     {
       "kind": "proposition",
@@ -227,7 +240,8 @@
         "match_kind": null
       },
       "note": "Not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "88263275912d"
     },
     {
       "kind": "proposition",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "Not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1d8689f0779e"
     },
     {
       "kind": "proposition",
@@ -259,7 +274,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no connection between Chebyshev polynomials and Lucas sequences.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e996d3704783"
     },
     {
       "kind": "proposition",
@@ -275,7 +291,8 @@
         "match_kind": "exact"
       },
       "note": "`T_eq_U_sub_X_mul_U`, `U_eq_X_mul_U_add_T`, `T_eq_X_mul_U_sub_U` express T in terms of U and vice versa.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d50e148060e3"
     },
     {
       "kind": "proposition",
@@ -291,7 +308,8 @@
         "match_kind": "invocation"
       },
       "note": "`U_mem_span_T` shows `U_n` lies in the span of `T_0,…,T_n` but the explicit telescoping sum formula is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "76b6d8986125"
     },
     {
       "kind": "proposition",
@@ -307,7 +325,8 @@
         "match_kind": "exact"
       },
       "note": "`T_derivative_eq_U` proves `derivative (T R n) = n * U R (n - 1)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6bf4814bf2aa"
     },
     {
       "kind": "proposition",
@@ -323,7 +342,8 @@
         "match_kind": null
       },
       "note": "Turán-type inequalities for Chebyshev polynomials are not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5f6d9a9acd7a"
     },
     {
       "kind": "proposition",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "The integral identities relating ∫T_n and U_n (and conversely) are not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a14426381503"
     },
     {
       "kind": "proposition",
@@ -355,7 +376,8 @@
         "match_kind": "invocation"
       },
       "note": "Mathlib gives the trigonometric/hyperbolic evaluations but not the explicit `((x+√(x²-1))^n + (x-√(x²-1))^n)/2` style formulas.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f164807d4b8b"
     },
     {
       "kind": "proposition",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "The closed-form binomial-coefficient expression for T_n is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "00335575927d"
     },
     {
       "kind": "proposition",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "No hypergeometric representation of Chebyshev polynomials is present.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1d37ae58e4fe"
     },
     {
       "kind": "proposition",
@@ -403,7 +427,8 @@
         "match_kind": null
       },
       "note": "The explicit monomial-sum formula for U_n is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c22749a95b3b"
     },
     {
       "kind": "proposition",
@@ -419,7 +444,8 @@
         "match_kind": "exact"
       },
       "note": "`T_eval_neg` and `U_eval_neg` show `(T R n).eval (-x) = (-1)^n * (T R n).eval x`, capturing the even/odd parity.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "375c7e0769bf"
     },
     {
       "kind": "proposition",
@@ -435,7 +461,8 @@
         "match_kind": "exact"
       },
       "note": "`rootMultiplicity_T_real`/`rootMultiplicity_U_real` together with `roots_T_real`/`roots_U_real` show the `n` listed roots are simple and lie in `(-1,1)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9b6f0f2b1d60"
     },
     {
       "kind": "proposition",
@@ -451,7 +478,8 @@
         "match_kind": "exact"
       },
       "note": "`roots_T_real` gives the standard Chebyshev nodes `cos((2k+1)π/(2n))`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8b2195411404"
     },
     {
       "kind": "proposition",
@@ -467,7 +495,8 @@
         "match_kind": "exact"
       },
       "note": "`isExtrOn_T_real_iff` (and `isLocalExtr_T_real_iff`) identify the extrema of `T_n` on `[-1,1]` as `cos(kπ/n)` for `k ≤ n`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6c50dd934a70"
     },
     {
       "kind": "proposition",
@@ -483,7 +512,8 @@
         "match_kind": null
       },
       "note": "The Shabat (dessins d'enfants) characterization of T_n is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1aea629a37d3"
     },
     {
       "kind": "proposition",
@@ -499,7 +529,8 @@
         "match_kind": null
       },
       "note": "Mathlib formalizes extrema of `T_n` but not the analogous statement for `U_n`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e17ad6604856"
     },
     {
       "kind": "proposition",
@@ -515,7 +546,8 @@
         "match_kind": null
       },
       "note": "No statement about minimal polynomials of `2cos(2π/n)` via Chebyshev is in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "19e55fcd1742"
     },
     {
       "kind": "proposition",
@@ -531,7 +563,8 @@
         "match_kind": "exact"
       },
       "note": "`T_derivative_eq_U` formalizes the derivative identity `T_n' = n U_{n-1}`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4dd652a9f6d8"
     },
     {
       "kind": "proposition",
@@ -547,7 +580,8 @@
         "match_kind": "exact"
       },
       "note": "`derivative_T_eval_one` proves `(T R n)'.eval 1 = n^2`, with similar lemmas at -1 and iterates.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "aadcc936b69a"
     },
     {
       "kind": "proposition",
@@ -563,7 +597,8 @@
         "match_kind": "exact"
       },
       "note": "`iterate_derivative_T_eval_one` and `..._zero_recurrence` capture the higher derivative formulas at the endpoints.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7cc819beb19c"
     },
     {
       "kind": "proposition",
@@ -579,7 +614,8 @@
         "match_kind": null
       },
       "note": "No statement of the antiderivative `∫T_n = (T_{n+1}/(n+1) - T_{n-1}/(n-1))/2` is present.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3ba4417be11a"
     },
     {
       "kind": "proposition",
@@ -595,7 +631,8 @@
         "match_kind": null
       },
       "note": "Not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "05f0f29b8d1e"
     },
     {
       "kind": "proposition",
@@ -611,7 +648,8 @@
         "match_kind": "exact"
       },
       "note": "`T_mul_T` proves `2 * T R m * T R k = T R (m + k) + T R (m - k)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "709d4247e87c"
     },
     {
       "kind": "proposition",
@@ -627,7 +665,8 @@
         "match_kind": null
       },
       "note": "No `U_mul_U` analogue of the product identity is present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "32d8ea85ab80"
     },
     {
       "kind": "proposition",
@@ -643,7 +682,8 @@
         "match_kind": "exact"
       },
       "note": "`T_mul` proves `T R (m * n) = (T R m).comp (T R n)`, the nesting property.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "18205aeb5f1d"
     },
     {
       "kind": "proposition",
@@ -659,7 +699,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not formalize divisibility of `T_{mn}` by `T_m` (under parity conditions).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6f97637c88de"
     },
     {
       "kind": "proposition",
@@ -675,7 +716,8 @@
         "match_kind": "exact"
       },
       "note": "Orthogonality of `T_n` w.r.t. `(1 - x^2)^{-1/2}` on `(-1,1]` is proved, with self-integrals `π` and `π/2` for `n = 0` and `n > 0`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5f0a432db774"
     },
     {
       "kind": "proposition",
@@ -691,7 +733,8 @@
         "match_kind": null
       },
       "note": "Orthogonality of `U_n` is listed as a TODO in `Orthogonality.lean`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "43755ac2ec61"
     },
     {
       "kind": "proposition",
@@ -707,7 +750,8 @@
         "match_kind": "exact"
       },
       "note": "`one_sub_X_sq_mul_derivative_derivative_T_eq_poly_in_T` and the analogue for `U` are the Chebyshev ODEs.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cb3af0446b9b"
     },
     {
       "kind": "proposition",
@@ -723,7 +767,8 @@
         "match_kind": null
       },
       "note": "No discrete orthogonality at Chebyshev nodes is stated in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fa1d737ca732"
     },
     {
       "kind": "proposition",
@@ -739,7 +784,8 @@
         "match_kind": null
       },
       "note": "Not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2244d4211dc0"
     },
     {
       "kind": "theorem",
@@ -755,7 +801,8 @@
         "match_kind": "exact"
       },
       "note": "Equivalent extremal property is formalized via `leadingCoeff_le_of_forall_abs_le_one` and the equality characterisation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "97750c73eef1"
     },
     {
       "kind": "proposition",
@@ -771,7 +818,8 @@
         "match_kind": null
       },
       "note": "The Chebyshev equioscillation theorem is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "39a329320531"
     },
     {
       "kind": "proposition",
@@ -787,7 +835,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not formalize Gegenbauer or Jacobi polynomials.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "71ded3809440"
     },
     {
       "kind": "proposition",
@@ -803,7 +852,8 @@
         "match_kind": "exact"
       },
       "note": "`dickson_one_one_eq_chebyshev_C` and `dickson_two_one_eq_chebyshev_S` identify Dickson polynomials with rescaled `T` and `U`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "41ca1810cc3d"
     },
     {
       "kind": "proposition",
@@ -819,7 +869,8 @@
         "match_kind": null
       },
       "note": "Not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "459df2c1f309"
     },
     {
       "kind": "proposition",
@@ -835,7 +886,8 @@
         "match_kind": null
       },
       "note": "Legendre polynomials are not in Mathlib, so no such relation exists.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5bde7f1b1024"
     },
     {
       "kind": "proposition",
@@ -851,7 +903,8 @@
         "match_kind": null
       },
       "note": "No tridiagonal-determinant representation of Chebyshev polynomials is stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1d8b7e6f2c26"
     },
     {
       "kind": "example",
@@ -867,7 +920,8 @@
         "match_kind": "exact"
       },
       "note": "`T_zero = 1`, `T_one = X`, `T_two = 2 X^2 - 1` are proved; higher values follow from the recurrence.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b12041937e0b"
     },
     {
       "kind": "example",
@@ -883,7 +937,8 @@
         "match_kind": "exact"
       },
       "note": "`U_zero`, `U_one = 2 X`, `U_two = 4 X^2 - 1` are formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c5d716c0065a"
     },
     {
       "kind": "proposition",
@@ -899,7 +954,8 @@
         "match_kind": null
       },
       "note": "Bundling `T_n` into a Hilbert/orthonormal basis is listed as TODO in `Orthogonality.lean`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3095413efa36"
     },
     {
       "kind": "proposition",
@@ -915,7 +971,8 @@
         "match_kind": "invocation"
       },
       "note": "Polynomials of degree `< N` are spanned by `T_0,…,T_{N−1}` (via `chebyshevTsequence`), but Chebyshev-series convergence for general functions is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "98bdb0987430"
     },
     {
       "kind": "example",
@@ -931,7 +988,8 @@
         "match_kind": null
       },
       "note": "Not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8a9035f0b927"
     },
     {
       "kind": "example",
@@ -947,7 +1005,8 @@
         "match_kind": null
       },
       "note": "Not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6a0913c731f2"
     },
     {
       "kind": "proposition",
@@ -963,7 +1022,8 @@
         "match_kind": "invocation"
       },
       "note": "Mathlib formalizes Chebyshev–Gauss quadrature (`integral_eq_sumZeroes` using the roots, not the Lobatto endpoint-inclusive nodes).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2210f9a90f20"
     },
     {
       "kind": "proposition",
@@ -979,7 +1039,8 @@
         "match_kind": "invocation"
       },
       "note": "`chebyshevTsequence` together with `Sequence.span_degreeLT` shows polynomials of bounded degree are linear combinations of `T_n`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0a1b1d88f00f"
     },
     {
       "kind": "definition",
@@ -995,7 +1056,8 @@
         "match_kind": "exact"
       },
       "note": "`Polynomial.Chebyshev.C` and `S` are the Vieta–Lucas and Vieta–Fibonacci polynomials, with `C_n(2x) = 2T_n(x)` and `S_n(2x) = U_n(x)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f0f4dec8490c"
     },
     {
       "kind": "definition",
@@ -1011,7 +1073,8 @@
         "match_kind": null
       },
       "note": "Shifted Chebyshev polynomials `T_n*(x) = T_n(2x − 1)` are not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9fd048d9acd3"
     },
     {
       "kind": "definition",
@@ -1027,7 +1090,8 @@
         "match_kind": null
       },
       "note": "Third- and fourth-kind Chebyshev polynomials (V_n, W_n) are not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3742fa7c1524"
     },
     {
       "kind": "proposition",
@@ -1043,7 +1107,8 @@
         "match_kind": null
       },
       "note": "Not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1551a9b6e78d"
     },
     {
       "kind": "proposition",
@@ -1059,7 +1124,8 @@
         "match_kind": null
       },
       "note": "Only T and U recurrences are present; third/fourth kind not defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "32eff32f989a"
     },
     {
       "kind": "proposition",
@@ -1075,7 +1141,8 @@
         "match_kind": null
       },
       "note": "No factorization of `T_n`/`U_n` via cyclotomic polynomials is in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "57213de372a6"
     },
     {
       "kind": "proposition",
@@ -1091,7 +1158,8 @@
         "match_kind": null
       },
       "note": "Not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9d176cb5b3f1"
     },
     {
       "kind": "definition",
@@ -1107,7 +1175,8 @@
         "match_kind": null
       },
       "note": "Not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bf21cf2949f6"
     },
     {
       "kind": "example",
@@ -1123,7 +1192,8 @@
         "match_kind": null
       },
       "note": "Not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ba783bc39bae"
     }
   ]
 }

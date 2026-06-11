@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "Complex conjugation is the `star` operation of `Complex.instStarRing`; `conj_re` and `conj_im` (in `Mathlib/Data/Complex/Basic.lean`) confirm the same-real-part / negated-imaginary-part definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4d00d7cc8ba6"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": null
       },
       "note": "Polar coordinates for complex numbers are formalized as `Complex.polarCoord`, but there is no dedicated lemma stating `conj (r e^{iθ}) = r e^{-iθ}` in this form.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0e74bfb217aa"
     },
     {
       "kind": "proposition",
@@ -51,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "`Complex.mul_conj` states `z * conj z = (normSq z : ℂ)`, exhibiting the product as a (coerced) real number.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0141a622cc64"
     },
     {
       "kind": "theorem",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "`RCLike.aeval_conj` gives `aeval (conj z) p = conj (aeval z p)` for `p : ℝ[X]`, immediately yielding the conjugate-root theorem (used as `simpa [dvd_iff_isRoot, aeval_conj]` in `Analysis/Complex/Polynomial/Basic.lean`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e52025aef33b"
     },
     {
       "kind": "proposition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "`starRingEnd ℂ` is a ring homomorphism (a `RingHom`), so `map_add`, `map_sub`, `map_mul`, `map_div` give distributivity over all arithmetic operations.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a2a5c7e7fb0a"
     },
     {
       "kind": "proposition",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "`Complex.conj_eq_iff_im` states `conj z = z ↔ z.im = 0`, with `conj_eq_iff_real` giving the equivalent characterisation via realness.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0131542f7c82"
     },
     {
       "kind": "proposition",
@@ -115,7 +121,8 @@
         "match_kind": "exact"
       },
       "note": "`Complex.norm_conj` (and `RCLike.norm_conj`) state `‖conj z‖ = ‖z‖`; `Complex.normSq_conj` provides the squared version.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5b51a429960d"
     },
     {
       "kind": "proposition",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "The `InvolutiveStar` field `star_involutive : Function.Involutive star` applies to `ℂ` via `Complex.instStarRing` (cf. `star_involutive x := by simp only [eta, neg_neg]` at `Data/Complex/Basic.lean:440`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "72ab8baea36e"
     },
     {
       "kind": "proposition",
@@ -147,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "`Complex.mul_conj` yields `z * conj z = (normSq z : ℂ)` where `normSq z = ‖z‖²` (`Complex.sq_abs` / `Complex.normSq_eq_abs`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1e4a42c7ad91"
     },
     {
       "kind": "proposition",
@@ -163,7 +172,8 @@
         "match_kind": "exact"
       },
       "note": "`Complex.exp_conj` (used in `JacobiTheta`) and `Complex.log_conj` (in `Analysis/SpecialFunctions/Complex/Log.lean:123`, with side hypothesis `x.arg ≠ π`) give the exp/log cases; integer-power compatibility follows from `map_pow`/`map_zpow` on the ring homomorphism `starRingEnd ℂ`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "923344b73011"
     },
     {
       "kind": "theorem",
@@ -179,7 +189,8 @@
         "match_kind": "invocation"
       },
       "note": "`RCLike.aeval_conj` is the workhorse and is invoked (via `simpa [dvd_iff_isRoot, aeval_conj]`) in `Analysis/Complex/Polynomial/Basic.lean:180` precisely to derive that non-real roots come in conjugate pairs.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c81429d097f2"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": null
       },
       "note": "I found no Schwarz-reflection-style lemma `conj (f z) = f (conj z)` for holomorphic functions taking reals to reals in Mathlib (searched for `SchwarzReflection`, `reflection_principle`, `conj.*holomorph`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "58b64d583d36"
     },
     {
       "kind": "theorem",
@@ -211,7 +223,8 @@
         "match_kind": "exact"
       },
       "note": "`Complex.conjAe : ℂ ≃ₐ[ℝ] ℂ` realizes conjugation as an ℝ-algebra automorphism, with `Complex.real_algHom_eq_id_or_conj` showing it is (with the identity) the only one; `Complex.conjCLE`/`conjCAE` give the homeomorphism upgrade.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6ab5067336c4"
     },
     {
       "kind": "proposition",
@@ -227,7 +240,8 @@
         "match_kind": "exact"
       },
       "note": "`Complex.re_eq_add_conj` (`(z.re : ℂ) = (z + conj z)/2`) and `Complex.sub_conj` (`z - conj z = (2 z.im) i`) cover real/imaginary parts; modulus via `mul_conj`, but I found no direct lemma recovering the argument from `z` and `conj z`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5118a43528ed"
     },
     {
       "kind": "example",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "I found no formalization of lines in ℂ expressed in the form `\\overline c z + c \\overline z = k`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "753a10809ec1"
     },
     {
       "kind": "definition",
@@ -259,7 +274,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.conjTranspose` (notation `ᴴ`) is defined and packaged as a star operation, additive equiv, linear map, and (in the square case) a `StarRingEquiv` to the opposite ring.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b49662995c3b"
     },
     {
       "kind": "definition",
@@ -275,7 +291,8 @@
         "match_kind": "exact"
       },
       "note": "Quaternion conjugation is the `star` of `Quaternion.instStarRing` (line 605, `star_involutive x := by simp [Star.star]`), with companion lemmas `Quaternion.star_mul_self`, `self_mul_star`, etc.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8a442b81f538"
     },
     {
       "kind": "proposition",
@@ -291,7 +308,8 @@
         "match_kind": "exact"
       },
       "note": "`StarMul.star_mul : ∀ r s, star (r * s) = star s * star r` (line 123) is exactly the antimultiplicative-with-reversal property satisfied by complex, matrix, quaternion star operations.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1465bc628c46"
     },
     {
       "kind": "definition",
@@ -307,7 +325,8 @@
         "match_kind": null
       },
       "note": "Mathlib has `StarModule` capturing conjugate-linear / star-semilinear structure on a module, but no dedicated `RealStructure` type for an antilinear involution making the real-fixed subspace a real form of a complex vector space.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b5669639ff4d"
     }
   ]
 }

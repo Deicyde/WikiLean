@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "`ProbabilityTheory.covariance X Y μ = ∫ ω, (X ω - μ[X]) * (Y ω - μ[Y]) ∂μ` directly captures the informal notion.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5aa123b5ed05"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "exact"
       },
       "note": "Defined as `∫ ω, (X ω - μ[X]) * (Y ω - μ[Y]) ∂μ`, exactly matching the deviation-product definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "09b4fb7e458a"
     },
     {
       "kind": "proposition",
@@ -51,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "`covariance_eq_sub` gives `cov[X,Y;μ] = μ[X*Y] - μ[X]*μ[Y]` assuming `IsProbabilityMeasure μ` and `MemLp _ 2 μ`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f4d6ae0ef774"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": null
       },
       "note": "`ProbabilityTheory.covariance` is restricted to ℝ-valued random variables; no complex-valued analogue with conjugation found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b295e2939e51"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": null
       },
       "note": "No definition of pseudo-covariance (E[(Z-EZ)(W-EW)] without conjugation) appears in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f0235fc8f61d"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": "special_case"
       },
       "note": "The general `covariance` integrates against any measure; the equiprobable finite-sample case follows by instantiation but no dedicated lemma was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "142bc82e5bd2"
     },
     {
       "kind": "proposition",
@@ -115,7 +121,8 @@
         "match_kind": null
       },
       "note": "The pairwise-difference identity `(1/n²)∑ᵢ∑ⱼ ½(xᵢ-xⱼ)(yᵢ-yⱼ)` was not found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e0043fc56a74"
     },
     {
       "kind": "definition",
@@ -131,7 +138,8 @@
         "match_kind": "special_case"
       },
       "note": "Subsumed by the general `covariance` against a weighted (e.g. finite/discrete) measure, but no dedicated discrete-formula lemma exists.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ee25c277c324"
     },
     {
       "kind": "definition",
@@ -147,7 +155,8 @@
         "match_kind": null
       },
       "note": "No formula expressing `cov` as a double sum `∑ᵢ∑ⱼ pᵢⱼ (xᵢ-μₓ)(yⱼ-μᵧ)` was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f49ca400f516"
     },
     {
       "kind": "example",
@@ -163,7 +172,8 @@
         "match_kind": "invocation"
       },
       "note": "The bilinearity lemmas (`covariance_add_left/right`, `covariance_smul_left/right`) plus `IndepFun.covariance_eq_zero` let one derive the example, but the specific worked example is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b94e0d71f831"
     },
     {
       "kind": "example",
@@ -179,7 +189,8 @@
         "match_kind": null
       },
       "note": "No worked example computing covariance from a tabulated joint pmf appears in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "138156df1d66"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": "exact"
       },
       "note": "`covariance_self` proves `cov[X, X; μ] = Var[X; μ]` for AEMeasurable `X`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "90b1f7c58245"
     },
     {
       "kind": "proposition",
@@ -211,7 +223,8 @@
         "match_kind": "exact"
       },
       "note": "Bilinearity is given by `covariance_add_left/right`, `covariance_smul_left/right`, `covariance_const_left/right`, `covariance_comm`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5db66a4c8199"
     },
     {
       "kind": "proposition",
@@ -227,7 +240,8 @@
         "match_kind": "exact"
       },
       "note": "`covariance_sum_sum'` expands `cov[∑ᵢ Xᵢ, ∑ⱼ Yⱼ; μ] = ∑ᵢ∑ⱼ cov[Xᵢ, Yⱼ; μ]`; combined with `covariance_const_mul_*` this covers weighted sums.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e172d4231700"
     },
     {
       "kind": "theorem",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "Mathlib has Hoeffding's inequality/lemma for sub-Gaussian variables but not the covariance identity `cov(X,Y) = ∫∫(F(x,y) - F_X(x)F_Y(y)) dx dy`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cb7c2ab980a6"
     },
     {
       "kind": "definition",
@@ -259,7 +274,8 @@
         "match_kind": null
       },
       "note": "No named `Uncorrelated` predicate exists; the property `cov[X,Y;μ] = 0` is used directly throughout.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "36621addaa60"
     },
     {
       "kind": "proposition",
@@ -275,7 +291,8 @@
         "match_kind": "exact"
       },
       "note": "`IndepFun.covariance_eq_zero` shows independent `X,Y` with `MemLp _ 2 μ` have `cov[X, Y; μ] = 0`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4703a190cb17"
     },
     {
       "kind": "example",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "No counterexample (e.g., `Y = X²` with symmetric `X`) demonstrating uncorrelated-but-dependent is formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "52a117916d9e"
     },
     {
       "kind": "proposition",
@@ -307,7 +325,8 @@
         "match_kind": "generalization"
       },
       "note": "`HasGaussianLaw.iIndepFun_of_covariance_eq_zero` proves jointly Gaussian with pairwise zero covariance implies independence (generalises the 2-variable Wikipedia statement).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "93a74d3dcb4b"
     },
     {
       "kind": "definition",
@@ -323,7 +342,8 @@
         "match_kind": null
       },
       "note": "No named predicates for positive/negative correlation; sign of `cov` is used directly.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4670dc641373"
     },
     {
       "kind": "proposition",
@@ -339,7 +359,8 @@
         "match_kind": "exact"
       },
       "note": "Bilinearity, symmetry (`covariance_comm`) and positive-semidefiniteness (`isPosSemidef_covarianceBilin`) are all established.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "88187cf75c60"
     },
     {
       "kind": "proposition",
@@ -355,7 +376,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not construct the inner-product structure on the quotient of finite-variance variables modulo a.s.-constant differences.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b3c3810ad327"
     },
     {
       "kind": "theorem",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "No explicit `|cov[X,Y;μ]|² ≤ Var[X;μ] * Var[Y;μ]` lemma found; the positive-semidefinite bilinear form is available but the inequality is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "48adc42e99c7"
     },
     {
       "kind": "definition",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "No sample-covariance estimator (using `1/(N-1)` Bessel-corrected sums) was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b67d4c04d1dd"
     },
     {
       "kind": "proposition",
@@ -403,7 +427,8 @@
         "match_kind": null
       },
       "note": "Unbiased-estimator framework and unbiasedness of sample mean/covariance is absent from Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c7460dd3ae72"
     },
     {
       "kind": "definition",
@@ -419,7 +444,8 @@
         "match_kind": "generalization"
       },
       "note": "`covarianceBilin` and `covarianceOperator` capture the covariance as a bilinear form/operator on Hilbert space, generalising the matrix; no `Matrix`-valued covariance is defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "27c27a4ece52"
     },
     {
       "kind": "proposition",
@@ -435,7 +461,8 @@
         "match_kind": "generalization"
       },
       "note": "`covarianceBilin_map` shows `covarianceBilin (μ.map L) u v = covarianceBilin μ (L.adjoint u) (L.adjoint v)`, the operator analogue of `A Σ Aᵀ`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0e0b272909d3"
     },
     {
       "kind": "definition",
@@ -451,7 +478,8 @@
         "match_kind": null
       },
       "note": "No cross-covariance matrix between two random vectors is defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "440f4dbe75a0"
     },
     {
       "kind": "definition",
@@ -467,7 +495,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib has `covarianceBilin` for a single ℝ-Hilbert-space measure but no cross-covariance form between two distinct random vectors, and no complex/sesquilinear version.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "96d9a21e61df"
     },
     {
       "kind": "definition",
@@ -483,7 +512,8 @@
         "match_kind": null
       },
       "note": "Grep for `Pearson`/`correlation`/`correlationCoeff` in `Mathlib/` returned no results; the normalized coefficient `cov/(σ_X σ_Y)` is not defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e68208cdf48a"
     }
   ]
 }

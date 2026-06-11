@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "`LinearOrder` extends `PartialOrder` with the `le_total` field, exactly a partial order in which any two elements are comparable.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d5a392860cd6"
     },
     {
       "kind": "proposition",
@@ -35,7 +36,8 @@
         "match_kind": null
       },
       "note": "Mathlib takes reflexivity as a `Preorder` axiom (`le_refl`) rather than deriving it from totality, so this derivation is not stated as a lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "228100e8f892"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "A type carrying a `LinearOrder` instance is precisely a totally ordered set.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e726f177fb14"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "The Szpilrajn theorem `extend_partialOrder` (and `LinearExtension`) gives a linear order extending any given partial order.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c3b1bfaa6dad"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "For any `LinearOrder α`, the `<` relation has an `IsStrictTotalOrder α (· < ·)` instance, the strict order associated with `≤`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f141246754e8"
     },
     {
       "kind": "proposition",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "`le_iff_lt_or_eq` states `a ≤ b ↔ a < b ∨ a = b`, i.e. `≤` is the reflexive closure of `<` (and `linearOrderOfSTO` builds the order from a strict total order).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cb625b2ace9b"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": "exact"
       },
       "note": "`IsStrictTotalOrder` is a trichotomous strict order, matching a relation in which any two distinct elements are comparable.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "545caba0d0db"
     },
     {
       "kind": "proposition",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "The instance `asymm_of_isTrans_of_irrefl [IsTrans α r] [Std.Irrefl r] : Std.Asymm r` derives asymmetry from transitivity and irreflexivity.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8e69690f88d0"
     },
     {
       "kind": "example",
@@ -147,7 +155,8 @@
         "match_kind": "special_case"
       },
       "note": "`Subtype.instLinearOrder` gives a `LinearOrder` on any subtype `{x // p x}` of a linear order.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a0e40d08bd52"
     },
     {
       "kind": "example",
@@ -163,7 +172,8 @@
         "match_kind": "special_case"
       },
       "note": "`instance : LinearOrder Empty := .ofSubsingleton` provides the (necessarily unique) linear order on the empty type.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b6c56bef23c0"
     },
     {
       "kind": "example",
@@ -179,7 +189,8 @@
         "match_kind": "special_case"
       },
       "note": "`Ordinal` carries a `LinearOrder` instance (indeed a well order), so any set of ordinals is totally ordered.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6fd423d30d1f"
     },
     {
       "kind": "example",
@@ -195,7 +206,8 @@
         "match_kind": "exact"
       },
       "note": "`LinearOrder.lift` (and `Function.Injective.linearOrder`) transfers a linear order along an injective map `f : α → β`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bbf6e536072b"
     },
     {
       "kind": "example",
@@ -211,7 +223,8 @@
         "match_kind": "exact"
       },
       "note": "`Pi.Lex.linearOrder` is the lexicographic linear order on a family `∀ i, β i` of linear orders indexed by a well-founded order.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "86ef72a7738f"
     },
     {
       "kind": "example",
@@ -227,7 +240,8 @@
         "match_kind": "special_case"
       },
       "note": "`Real.linearOrder` equips ℝ with its usual linear order.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dd102789b340"
     },
     {
       "kind": "example",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "ℕ has a `LinearOrder` and `NoMaxOrder` instance, but its characterization as the initial unbounded total order is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7e55901ad32a"
     },
     {
       "kind": "example",
@@ -259,7 +274,8 @@
         "match_kind": null
       },
       "note": "ℤ has a `LinearOrder` (with no max/min order), but the categorical 'initial' characterization is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f80618e9e99f"
     },
     {
       "kind": "example",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "ℚ has a `LinearOrder` and is densely ordered/dense in ℝ, but the 'initial dense total order' characterization itself is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a86a33b7dd1c"
     },
     {
       "kind": "example",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "ℝ's linear order and order-topology connectedness are formalized, but the initiality characterization is not.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "043812aa98e7"
     },
     {
       "kind": "example",
@@ -307,7 +325,8 @@
         "match_kind": "exact"
       },
       "note": "Ordered fields are spelled `[Field K] [LinearOrder K] [IsStrictOrderedRing K]`, so the total order is part of the structure by definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "179f332c9eb0"
     },
     {
       "kind": "proposition",
@@ -323,7 +342,8 @@
         "match_kind": "generalization"
       },
       "note": "`inducedOrderRingIso` gives a unique order-ring isomorphism between any two conditionally complete (Dedekind-complete) linear ordered fields, in particular to ℝ.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "13eaba8df340"
     },
     {
       "kind": "example",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "Finite linear orders (and `List.Lex` dictionary orders) are formalized, but there is no specific 'alphabet' linear order.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "be5e72141563"
     },
     {
       "kind": "definition",
@@ -355,7 +376,8 @@
         "match_kind": "exact"
       },
       "note": "`IsChain` is a set on which the relation is total, i.e. a totally ordered subset.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f5fd3cea4373"
     },
     {
       "kind": "theorem",
@@ -371,7 +393,8 @@
         "match_kind": "exact"
       },
       "note": "`zorn_le` states that if every chain is bounded above then there is a maximal element.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6a08f6c9f3e4"
     },
     {
       "kind": "definition",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "Mathlib models ascending/descending chains as monotone sequences `ℕ →o α` rather than via a bundled 'chain' definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c47afd0d345a"
     },
     {
       "kind": "definition",
@@ -403,7 +427,8 @@
         "match_kind": "generalization"
       },
       "note": "The DCC is `WellFoundedLT` (order-dual of `WellFoundedGT`), and `monotone_chain_condition` proves chains eventually stabilize.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ec2adefa4bd9"
     },
     {
       "kind": "definition",
@@ -419,7 +444,8 @@
         "match_kind": "exact"
       },
       "note": "`IsNoetherianRing` is defined via `IsNoetherian R R` (well-founded `>` / ACC on ideals), with `isNoetherianRing_iff_ideal_fg` an equivalent form.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a307e15c3d25"
     },
     {
       "kind": "definition",
@@ -435,7 +461,8 @@
         "match_kind": "exact"
       },
       "note": "`RelSeries.length` is the number of relations (inequalities) in a chain/series.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d1b925413adc"
     },
     {
       "kind": "definition",
@@ -451,7 +478,8 @@
         "match_kind": "exact"
       },
       "note": "`LinearOrder.toLattice` realizes any linear order as a lattice with `min`/`max` as meet/join.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0e89a120d27c"
     },
     {
       "kind": "proposition",
@@ -467,7 +495,8 @@
         "match_kind": "exact"
       },
       "note": "An instance `[LinearOrder α] : DistribLattice α` in Order/Lattice.lean makes every linear order a distributive lattice.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "61bcb8207260"
     },
     {
       "kind": "theorem",
@@ -483,7 +512,8 @@
         "match_kind": "special_case"
       },
       "note": "`Fintype.to_wellFoundedLT` gives `WellFoundedLT` for any finite preorder, hence finite linear orders are well orders.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a1702114b608"
     },
     {
       "kind": "theorem",
@@ -499,7 +529,8 @@
         "match_kind": "exact"
       },
       "note": "`monoEquivOfFin` is an order isomorphism between a finite linear order and `Fin (card α)`, the initial segment of ℕ.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c886c1c7fa95"
     },
     {
       "kind": "proposition",
@@ -515,7 +546,8 @@
         "match_kind": "exact"
       },
       "note": "`monoEquivOfFin α h : α ≃o Fin k` is exactly the order-preserving bijection with the first `k` naturals.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a0b2169e6f3d"
     },
     {
       "kind": "proposition",
@@ -531,7 +563,8 @@
         "match_kind": null
       },
       "note": "The category `LinOrd` exists alongside `PartOrd`, but its identification as a full subcategory of `PartOrd` is not established.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ba3621bc66f6"
     },
     {
       "kind": "proposition",
@@ -547,7 +580,8 @@
         "match_kind": "generalization"
       },
       "note": "`StrictMono.orderIsoOfSurjective` upgrades a surjective order-respecting (strictly monotone) map to an `OrderIso`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "84dce8237c62"
     },
     {
       "kind": "definition",
@@ -563,7 +597,8 @@
         "match_kind": "exact"
       },
       "note": "`Set.Ioo a b = {x | a < x ∧ x < b}` defines the open intervals (with `Ioi`/`Iio` for unbounded ones).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "daf1a9b29e31"
     },
     {
       "kind": "definition",
@@ -579,7 +614,8 @@
         "match_kind": "exact"
       },
       "note": "`OrderTopology` (via `Preorder.topology`) is the topology generated by the open intervals/rays.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "88044c5d9cdf"
     },
     {
       "kind": "proposition",
@@ -595,7 +631,8 @@
         "match_kind": "exact"
       },
       "note": "`OrderTopology.t5Space`/`OrderTopology.completelyNormalSpace` show the order topology is T5 (completely/hereditarily normal).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8f26d9fc47a4"
     },
     {
       "kind": "definition",
@@ -611,7 +648,8 @@
         "match_kind": "exact"
       },
       "note": "`ConditionallyCompleteLinearOrder` is exactly a linear order where every nonempty bounded-above set has a least upper bound.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b7a10720ba55"
     },
     {
       "kind": "proposition",
@@ -627,7 +665,8 @@
         "match_kind": null
       },
       "note": "Related results (preconnected order topology implies densely ordered; conditional completeness gives connectedness) exist, but the exact 'connected ⇒ complete' implication is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "828d685564ed"
     },
     {
       "kind": "theorem",
@@ -643,7 +682,8 @@
         "match_kind": null
       },
       "note": "Mathlib relates order-connectedness to conditional completeness and density (no gaps) but does not state this exact biconditional.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "38095859be46"
     },
     {
       "kind": "theorem",
@@ -659,7 +699,8 @@
         "match_kind": null
       },
       "note": "One direction (closed intervals in a conditionally complete order are compact) is `isCompact_Icc`, but the full biconditional characterization is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "acc0722f129e"
     },
     {
       "kind": "proposition",
@@ -675,7 +716,8 @@
         "match_kind": "exact"
       },
       "note": "`compactSpace_of_completeLinearOrder` shows a complete linear order is a compact space in the order topology.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8470bd3ce724"
     },
     {
       "kind": "definition",
@@ -691,7 +733,8 @@
         "match_kind": "exact"
       },
       "note": "`Sum.Lex.linearOrder` is the linear order on `α ⊕ₗ β` placing all of `α` before `β`, the ordinal sum of two orders.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f4cd24c79c00"
     },
     {
       "kind": "definition",
@@ -707,7 +750,8 @@
         "match_kind": "generalization"
       },
       "note": "`Sigma.Lex` is the lexicographic order on the indexed sum `Σ i, α i`, the natural total order summing a family of orders over an index set.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b99fa737799e"
     },
     {
       "kind": "definition",
@@ -723,7 +767,8 @@
         "match_kind": "exact"
       },
       "note": "`Prod.Lex.instLinearOrder` gives the lexicographic linear (total) order on `α ×ₗ β`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b31c23ba7bbf"
     },
     {
       "kind": "definition",
@@ -739,7 +784,8 @@
         "match_kind": "exact"
       },
       "note": "`Prod.instPartialOrder` is the componentwise (product) partial order on `α × β`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "079d26838972"
     },
     {
       "kind": "definition",
@@ -755,7 +801,8 @@
         "match_kind": null
       },
       "note": "The reflexive closure of the componentwise strict product order (`a<c ∧ b<d`, plus equality) is not provided as a standard order instance in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c90cdc85e27c"
     },
     {
       "kind": "proposition",
@@ -771,7 +818,8 @@
         "match_kind": "generalization"
       },
       "note": "Pulling back a strict weak order along a function `f` (`f ⁻¹'o r`) is a strict weak order via the `instIsStrictWeakOrder` instance, e.g. `f x < f y` for `f` into ℝ.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "997fa1d7ab7e"
     },
     {
       "kind": "definition",
@@ -787,7 +835,8 @@
         "match_kind": "exact"
       },
       "note": "`PartialOrder` extends `Preorder` (reflexive, transitive) with antisymmetry, exactly a reflexive antisymmetric transitive relation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bcb4829073a1"
     },
     {
       "kind": "definition",
@@ -803,7 +852,8 @@
         "match_kind": "exact"
       },
       "note": "A totally ordered group is spelled `[Group α] [LinearOrder α] [IsOrderedMonoid α]`, i.e. a group with an order-compatible total order.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "10939db6eced"
     }
   ]
 }

@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "`HasEigenvector f μ x` requires `x ∈ eigenspace f μ ∧ x ≠ 0`, capturing the informal notion of a nonzero vector whose direction is preserved.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d417bd4aeeb0"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "exact"
       },
       "note": "`HasEigenvalue f μ` is the scaling factor of an eigenvector.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c0a2f64affa2"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "invocation"
       },
       "note": "Matrix eigenvectors are handled by applying `HasEigenvector` to `Matrix.toLin'` or `toLin b b`, e.g. `hasEigenvector_toLin'_diagonal`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0a898addaa78"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "`LinearMap.spectrum_toMatrix` and `Matrix.spectrum_toLin` show the spectra agree under `toMatrix`/`toLin`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7ce8580ec1d3"
     },
     {
       "kind": "definition",
@@ -93,7 +97,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle T(\\mathbf {v} )=\\lambda \\mathbf {v} ,}"
         }
-      ]
+      ],
+      "id": "ce06acc5ae74"
     },
     {
       "kind": "example",
@@ -109,7 +114,8 @@
         "match_kind": null
       },
       "note": "This is an illustrative pictorial example not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b94648eaa6a2"
     },
     {
       "kind": "definition",
@@ -139,7 +145,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle A\\mathbf {v} =\\lambda \\mathbf {v} ,}"
         }
-      ]
+      ],
+      "id": "593b735058a5"
     },
     {
       "kind": "definition",
@@ -155,7 +162,8 @@
         "match_kind": "generalization"
       },
       "note": "`eigenspace` and `Eigenvalues` are defined; `Matrix.IsHermitian.eigenvectorBasis` gives an eigenbasis in the Hermitian case, but no general `eigenbasis`/`eigensystem` term.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dc347363b61c"
     },
     {
       "kind": "definition",
@@ -181,7 +189,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\mathbf {x} =\\lambda \\mathbf {y} .}"
         }
-      ]
+      ],
+      "id": "4c97269081d0"
     },
     {
       "kind": "definition",
@@ -197,7 +206,8 @@
         "match_kind": "invocation"
       },
       "note": "Same as the general definition, applied via `Matrix.toLin'`; see `hasEigenvector_toLin'_diagonal`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8ab4973554ea"
     },
     {
       "kind": "proposition",
@@ -213,7 +223,8 @@
         "match_kind": "exact"
       },
       "note": "`eigenspace_def` shows `eigenspace f μ = LinearMap.ker (f - μ • 1)`, i.e. `(A - λI)v = 0`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e3fe4f617be5"
     },
     {
       "kind": "proposition",
@@ -229,7 +240,8 @@
         "match_kind": "exact"
       },
       "note": "Eigenvalues are exactly the roots of the characteristic polynomial; equivalently `det(λI − A) = 0` via `eval_charpoly`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1aa582c83f5d"
     },
     {
       "kind": "definition",
@@ -245,7 +257,8 @@
         "match_kind": "exact"
       },
       "note": "Both `LinearMap.charpoly` and `Matrix.charpoly` are defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e54fb41ac438"
     },
     {
       "kind": "proposition",
@@ -261,7 +274,8 @@
         "match_kind": "exact"
       },
       "note": "`charpoly_natDegree` gives degree `n`; `Polynomial.card_roots_le_degree` bounds the roots.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2258deabe732"
     },
     {
       "kind": "example",
@@ -287,7 +301,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle A={\\begin{bmatrix}2&amp;1\\\\1&amp;2\\end{bmatrix}}.}"
         }
-      ]
+      ],
+      "id": "36a8560ecb5d"
     },
     {
       "kind": "proposition",
@@ -303,7 +318,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib proves `f` is integral over `R` via `charpoly`; the precise corollary about algebraic eigenvalues is not stated directly.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0a7719ba67c3"
     },
     {
       "kind": "proposition",
@@ -319,7 +335,8 @@
         "match_kind": "generalization"
       },
       "note": "General fact about conjugate roots of real polynomials exists; not specialized to eigenvalues.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f140fe9cec43"
     },
     {
       "kind": "definition",
@@ -335,7 +352,8 @@
         "match_kind": "exact"
       },
       "note": "`spectrum R a` is defined; specialized to matrices via `Matrix.mem_spectrum_iff_isRoot_charpoly`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "189c31301e9c"
     },
     {
       "kind": "definition",
@@ -351,7 +369,8 @@
         "match_kind": "exact"
       },
       "note": "`spectralRadius 𝕜 a` is the supremum of `‖k‖₊` over `k ∈ spectrum 𝕜 a`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2da640c30437"
     },
     {
       "kind": "definition",
@@ -367,7 +386,8 @@
         "match_kind": "generalization"
       },
       "note": "`rootMultiplicity` of `charpoly` gives algebraic multiplicity but no dedicated `algebraicMultiplicity` for eigenvalues.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fb7068b487d5"
     },
     {
       "kind": "definition",
@@ -383,7 +403,8 @@
         "match_kind": "generalization"
       },
       "note": "`IsSemisimple` is for endomorphisms (not single eigenvalues); no `simpleEigenvalue` predicate.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8d3aa9dc79c7"
     },
     {
       "kind": "definition",
@@ -399,7 +420,8 @@
         "match_kind": "invocation"
       },
       "note": "`eigenspace` applied to `Matrix.toLin'`; e.g. `iSup_eigenspace_toLin'_diagonal_eq_top`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8f6b1cbef8f3"
     },
     {
       "kind": "proposition",
@@ -415,7 +437,8 @@
         "match_kind": "exact"
       },
       "note": "By construction `eigenspace f μ` has type `Submodule R M`, hence closed under addition and scalar multiplication.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "62e8afe0f5c0"
     },
     {
       "kind": "definition",
@@ -441,7 +464,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\gamma _{A}(\\lambda )=n-\\operatorname {rank} (A-\\lambda I).}"
         }
-      ]
+      ],
+      "id": "846f11b9e70e"
     },
     {
       "kind": "proposition",
@@ -467,7 +491,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle 1\\leq \\gamma _{A}(\\lambda )\\leq \\mu _{A}(\\lambda )\\leq n}"
         }
-      ]
+      ],
+      "id": "972f3ee99a2d"
     },
     {
       "kind": "proposition",
@@ -493,7 +518,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle EB={\\begin{bmatrix}*&amp;*\\\\\\mathbf {0} _{k\\times (n-k)}&amp;\\mathbf {0} _{k\\times k}\\end{bmatrix}}.}"
         }
-      ]
+      ],
+      "id": "9c5e23fedfa9"
     },
     {
       "kind": "proposition",
@@ -509,7 +535,8 @@
         "match_kind": "generalization"
       },
       "note": "For semisimple endomorphisms over an algebraically closed field the eigenspaces span; combined with `eigenspaces_iSupIndep` they form a direct sum decomposition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2c2bf355d5af"
     },
     {
       "kind": "proposition",
@@ -535,7 +562,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\operatorname {tr} (A)=\\sum _{i=1}^{n}a_{ii}=\\sum _{i=1}^{n}\\lambda _{i}=\\lambda _{1}+\\lambda _{2}+\\cdots +\\lambda _{n}.}"
         }
-      ]
+      ],
+      "id": "b035890d42a4"
     },
     {
       "kind": "proposition",
@@ -561,7 +589,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\det(A)=\\prod _{i=1}^{n}\\lambda _{i}=\\lambda _{1}\\lambda _{2}\\cdots \\lambda _{n}.}"
         }
-      ]
+      ],
+      "id": "95583262f462"
     },
     {
       "kind": "proposition",
@@ -577,7 +606,8 @@
         "match_kind": "exact"
       },
       "note": "`HasEigenvalue.pow` shows `(f^n).HasEigenvalue (μ^n)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f2a5b31ee55e"
     },
     {
       "kind": "proposition",
@@ -593,7 +623,8 @@
         "match_kind": "exact"
       },
       "note": "`spectrum.zero_notMem_iff` states `IsUnit a ↔ 0 ∉ spectrum R a`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "61046cfbf03d"
     },
     {
       "kind": "proposition",
@@ -609,7 +640,8 @@
         "match_kind": "exact"
       },
       "note": "`IsHermitian.eigenvalues : n → ℝ` returns real eigenvalues; `eigenvalues_mem_spectrum_real` puts them in `spectrum ℝ A`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "899e47b0f9e3"
     },
     {
       "kind": "proposition",
@@ -625,7 +657,8 @@
         "match_kind": "exact"
       },
       "note": "`PosSemidef.eigenvalues_nonneg` and `IsHermitian.posSemidef_iff_eigenvalues_nonneg` cover the positive case.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "133eeb37e571"
     },
     {
       "kind": "proposition",
@@ -641,7 +674,8 @@
         "match_kind": "generalization"
       },
       "note": "`Unitary.spectrum_subset_circle` and `spectrum.norm_eq_one_of_unitary` give |λ|=1 for unitary elements in C*-algebras, applying to unitary matrices.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "06ff04121a14"
     },
     {
       "kind": "proposition",
@@ -657,7 +691,8 @@
         "match_kind": "generalization"
       },
       "note": "Power case is `HasEigenvalue.pow`; the spectral-mapping statement for general polynomials of `A` (incl. `I+A`) is not stated in this exact form.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0e965f7bf46e"
     },
     {
       "kind": "definition",
@@ -683,7 +718,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle A\\mathbf {v} =\\lambda \\mathbf {v} .}"
         }
-      ]
+      ],
+      "id": "5d3ce849e878"
     },
     {
       "kind": "definition",
@@ -709,7 +745,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle A^{\\textsf {T}}\\mathbf {u} ^{\\textsf {T}}=\\kappa \\mathbf {u} ^{\\textsf {T}}.}"
         }
-      ]
+      ],
+      "id": "037b9783797c"
     },
     {
       "kind": "proposition",
@@ -725,7 +762,8 @@
         "match_kind": "generalization"
       },
       "note": "`charpoly_transpose` shows `Aᵀ` and `A` have the same characteristic polynomial, hence the same eigenvalues.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3dde34ab61d2"
     },
     {
       "kind": "theorem",
@@ -741,7 +779,8 @@
         "match_kind": "exact"
       },
       "note": "`(Aᵀ).charpoly = A.charpoly`, so by `mem_spectrum_iff_isRoot_charpoly` they share eigenvalues.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c61397839533"
     },
     {
       "kind": "proposition",
@@ -757,7 +796,8 @@
         "match_kind": null
       },
       "note": "Equality of geometric multiplicities of `A` and `Aᵀ` not located.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "720b49154c3e"
     },
     {
       "kind": "definition",
@@ -773,7 +813,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib formalizes the spectral/diagonalization theorem for Hermitian matrices; no general `IsDiagonalizable` predicate.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1bda3de6d5ae"
     },
     {
       "kind": "theorem",
@@ -789,7 +830,8 @@
         "match_kind": "generalization"
       },
       "note": "Captured via semisimplicity / eigenspaces spanning; no explicit `diagonalizable_iff_eigenvectors_basis` lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "008e5f28db65"
     },
     {
       "kind": "definition",
@@ -805,7 +847,8 @@
         "match_kind": "generalization"
       },
       "note": "Generalized eigenspaces and `JordanChevalley` decomposition exist; full Jordan normal form and `defective` predicate are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "52f3757be9c0"
     },
     {
       "kind": "theorem",
@@ -821,7 +864,8 @@
         "match_kind": "exact"
       },
       "note": "The Rayleigh quotient `iSup` is an eigenvalue for symmetric operators in finite dimensions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0da24c9f3151"
     },
     {
       "kind": "example",
@@ -837,7 +881,8 @@
         "match_kind": null
       },
       "note": "Concrete numeric example.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "596777f7a37a"
     },
     {
       "kind": "example",
@@ -853,7 +898,8 @@
         "match_kind": null
       },
       "note": "Concrete numeric example.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "145464b5ba78"
     },
     {
       "kind": "example",
@@ -879,7 +925,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\begin{aligned}\\lambda _{1}&amp;=1\\\\\\lambda _{2}&amp;=-{\\frac {1}{2}}+i{\\frac {\\sqrt {3}}{2}}\\\\\\lambda _{3}&amp;=\\lambda _{2}^{*}=-{\\frac {1}{2}}-i{\\frac {\\sqrt {3}}{2}}\\end{aligned}}}"
         }
-      ]
+      ],
+      "id": "965ae819186f"
     },
     {
       "kind": "example",
@@ -905,7 +952,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle A={\\begin{bmatrix}1&amp;0&amp;0\\\\0&amp;2&amp;0\\\\0&amp;0&amp;3\\end{bmatrix}}.}"
         }
-      ]
+      ],
+      "id": "65e3b5a11aaf"
     },
     {
       "kind": "example",
@@ -921,7 +969,8 @@
         "match_kind": "generalization"
       },
       "note": "Block triangular structure of the characteristic matrix is formalized; the explicit statement that eigenvalues are the diagonal entries of a triangular matrix is not located as a single lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b6d60b1a7e31"
     },
     {
       "kind": "example",
@@ -951,7 +1000,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\det(A-\\lambda I)={\\begin{vmatrix}2-\\lambda &amp;0&amp;0&amp;0\\\\1&amp;2-\\lambda &amp;0&amp;0\\\\0&amp;1&amp;3-\\lambda &amp;0\\\\0&amp;0&amp;1&amp;3-\\lambda \\end{vmatrix}}=(2-\\lambda )^{2}(3-\\lambda )^{2}.}"
         }
-      ]
+      ],
+      "id": "58b7343e26ae"
     },
     {
       "kind": "theorem",
@@ -977,7 +1027,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle |v_{i\\alpha }|^{2}={\\frac {\\prod _{k}{(\\lambda _{i}(A)-\\lambda _{k}(A_{\\alpha }))}}{\\prod _{k\\neq i}{(\\lambda _{i}(A)-\\lambda _{k}(A))}}},}"
         }
-      ]
+      ],
+      "id": "86c4a121a7a7"
     },
     {
       "kind": "definition",
@@ -993,7 +1044,8 @@
         "match_kind": "generalization"
       },
       "note": "Eigenfunctions are instances of `HasEigenvector` for linear differential operators; no dedicated infrastructure.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1d1be289874e"
     },
     {
       "kind": "example",
@@ -1019,7 +1071,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\frac {d}{dt}}f(t)=\\lambda f(t).}"
         }
-      ]
+      ],
+      "id": "e211833224d2"
     },
     {
       "kind": "definition",
@@ -1035,7 +1088,8 @@
         "match_kind": "exact"
       },
       "note": "`HasEigenvector` is defined for endomorphisms of any module.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2a3ff7ad65cc"
     },
     {
       "kind": "definition",
@@ -1061,7 +1115,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle E=\\left\\{\\mathbf {v} :T(\\mathbf {v} )=\\lambda \\mathbf {v} \\right\\},}"
         }
-      ]
+      ],
+      "id": "0d09f7d8594c"
     },
     {
       "kind": "definition",
@@ -1077,7 +1132,8 @@
         "match_kind": null
       },
       "note": "No dedicated `eigenline` term; expressible as `finrank K (eigenspace f μ) = 1`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "50d33cb7cd04"
     },
     {
       "kind": "definition",
@@ -1093,7 +1149,8 @@
         "match_kind": "generalization"
       },
       "note": "Expressible as `finrank K (eigenspace f μ)`; no named `geometricMultiplicity`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "481dd30ed58c"
     },
     {
       "kind": "theorem",
@@ -1109,7 +1166,8 @@
         "match_kind": "exact"
       },
       "note": "`eigenspaces_iSupIndep` and `eigenvectors_linearIndependent` express this independence.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1966456f72bb"
     },
     {
       "kind": "proposition",
@@ -1125,7 +1183,8 @@
         "match_kind": "exact"
       },
       "note": "Each eigenspace is an invariant submodule; closure under `⨆` preserves invariance.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f7751f513779"
     },
     {
       "kind": "definition",
@@ -1141,7 +1200,8 @@
         "match_kind": "exact"
       },
       "note": "`spectrum R a` defined for any element of an `R`-algebra.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5f12e12940ae"
     },
     {
       "kind": "definition",
@@ -1157,7 +1217,8 @@
         "match_kind": "exact"
       },
       "note": "Weights and weight spaces are defined in the Lie algebra library.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "86c36c8e6915"
     },
     {
       "kind": "definition",
@@ -1173,7 +1234,8 @@
         "match_kind": null
       },
       "note": "Geometric Langlands / Hecke eigensheaves not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bb4adf02ac90"
     },
     {
       "kind": "example",
@@ -1199,7 +1261,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\lambda ^{k}-a_{1}\\lambda ^{k-1}-a_{2}\\lambda ^{k-2}-\\cdots -a_{k-1}\\lambda -a_{k}=0,}"
         }
-      ]
+      ],
+      "id": "454459e6045d"
     },
     {
       "kind": "theorem",
@@ -1215,7 +1278,8 @@
         "match_kind": "generalization"
       },
       "note": "Abel–Ruffini is formalized for polynomials; not specialized to eigenvalues.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1ea850c3750b"
     },
     {
       "kind": "example",
@@ -1245,7 +1309,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\begin{bmatrix}4&amp;1\\\\6&amp;3\\end{bmatrix}}{\\begin{bmatrix}x\\\\y\\end{bmatrix}}=6\\cdot {\\begin{bmatrix}x\\\\y\\end{bmatrix}}}"
         }
-      ]
+      ],
+      "id": "a5f3ceef1da4"
     },
     {
       "kind": "proposition",
@@ -1261,7 +1326,8 @@
         "match_kind": null
       },
       "note": "Power iteration algorithm not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3822148b4c89"
     },
     {
       "kind": "proposition",
@@ -1287,7 +1353,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\lambda ={\\frac {\\mathbf {v} ^{*}A\\mathbf {v} }{\\mathbf {v} ^{*}\\mathbf {v} }}}"
         }
-      ]
+      ],
+      "id": "ffe2a2fd36bd"
     },
     {
       "kind": "proposition",
@@ -1303,7 +1370,8 @@
         "match_kind": null
       },
       "note": "Specific eigenvalue computation for 2D rotation matrices not located.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c5aea7f1fbfa"
     },
     {
       "kind": "proposition",
@@ -1319,7 +1387,8 @@
         "match_kind": null
       },
       "note": "Squeeze mapping concept not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7cdfe54c4243"
     },
     {
       "kind": "definition",
@@ -1335,7 +1404,8 @@
         "match_kind": null
       },
       "note": "PCA not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9b5145835198"
     },
     {
       "kind": "definition",
@@ -1351,7 +1421,8 @@
         "match_kind": null
       },
       "note": "Spectral graph theory (graph eigenvalues) not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "753d3fc46621"
     },
     {
       "kind": "definition",
@@ -1367,7 +1438,8 @@
         "match_kind": null
       },
       "note": "Not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "39fa1cc12d2d"
     },
     {
       "kind": "theorem",
@@ -1383,7 +1455,8 @@
         "match_kind": null
       },
       "note": "Perron–Frobenius theorem not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "20018863387a"
     },
     {
       "kind": "example",
@@ -1413,7 +1486,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle m{\\ddot {x}}=-kx}"
         }
-      ]
+      ],
+      "id": "9b56cfc19f7b"
     },
     {
       "kind": "definition",
@@ -1429,7 +1503,8 @@
         "match_kind": null
       },
       "note": "Physical application, not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8a2d99a11ca3"
     },
     {
       "kind": "definition",
@@ -1445,7 +1520,8 @@
         "match_kind": null
       },
       "note": "Physical application, not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3731cd693117"
     },
     {
       "kind": "example",
@@ -1471,7 +1547,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle H\\psi _{E}=E\\psi _{E}\\,}"
         }
-      ]
+      ],
+      "id": "ba92f2e44428"
     },
     {
       "kind": "definition",
@@ -1487,7 +1564,8 @@
         "match_kind": null
       },
       "note": "Physical application, not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5dc48fc1bc0f"
     },
     {
       "kind": "definition",
@@ -1503,7 +1581,8 @@
         "match_kind": null
       },
       "note": "Quantum chemistry, not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9094657d7732"
     },
     {
       "kind": "example",
@@ -1519,7 +1598,8 @@
         "match_kind": null
       },
       "note": "Geological application, not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0ef6d6f79002"
     },
     {
       "kind": "definition",
@@ -1535,7 +1615,8 @@
         "match_kind": null
       },
       "note": "Epidemiology, not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c8bde9bd717f"
     },
     {
       "kind": "definition",
@@ -1551,7 +1632,8 @@
         "match_kind": null
       },
       "note": "Image-processing application, not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d07c3535d94e"
     }
   ]
 }

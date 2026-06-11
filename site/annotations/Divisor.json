@@ -19,7 +19,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib defines `a ∣ b` via the `semigroupDvd` instance `∃ c, b = a * c`, which specializes to divisibility of integers.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "78d1614445d8"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "generalization"
       },
       "note": "`dvd_def : a ∣ b ↔ ∃ c, b = a * c` is the formal statement that `b` is evenly divisible by `a`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9122e76bd850"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "generalization"
       },
       "note": "`dvd_def` formalizes divisibility in any semigroup, hence in `ℤ`; the nonzero-divisor convention is the standard `Dvd` definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e04cd9d3439a"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": null
       },
       "note": "Mathlib adopts the convention `0 ∣ 0` via `semigroupDvd` but does not formalize a meta-comparison of the two conventions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "de7756aaf303"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "`Even` is defined in `Mathlib.Algebra.Group.Even` as `∃ r, a = r + r` and `Odd a := ∃ k, a = 2 * k + 1` in `Mathlib.Algebra.Ring.Parity`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a5459a41dc82"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": null
       },
       "note": "No grep hits for a `trivialDivisors`/`nontrivialDivisors` notion; Mathlib does not name the units and associates as trivial divisors explicitly.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "47bbdf1128ad"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": null
       },
       "note": "No `Composite`/`IsComposite` predicate appears for integers in Mathlib; the converse `Irreducible`/`Prime` predicates exist but `Composite` itself is absent.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5ac5f6af260f"
     },
     {
       "kind": "example",
@@ -131,7 +138,8 @@
         "match_kind": null
       },
       "note": "No specific lemma `7 ∣ 42` is recorded; such trivial instances are left to `decide`/`norm_num`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1f6919fb2caf"
     },
     {
       "kind": "example",
@@ -147,7 +155,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no enumerated example for the proper integer divisors of 6.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "87a1137e6c5e"
     },
     {
       "kind": "example",
@@ -163,7 +172,8 @@
         "match_kind": null
       },
       "note": "While `Nat.divisors 42` is computable, no named lemma enumerates the divisors of 42 explicitly.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "96ad94ea1b89"
     },
     {
       "kind": "example",
@@ -179,7 +189,8 @@
         "match_kind": null
       },
       "note": "No Hasse-diagram example for divisors of 60 is present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7d776fea70e1"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": "exact"
       },
       "note": "`dvd_trans : a ∣ b → b ∣ c → a ∣ c` and the `IsTrans α Dvd.dvd` instance witness transitivity of divisibility.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "762c6bba0800"
     },
     {
       "kind": "proposition",
@@ -211,7 +223,8 @@
         "match_kind": "exact"
       },
       "note": "`Associated x y` is defined as `∃ u : αˣ, x * u = y`, capturing the associate relation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b3be80b347c8"
     },
     {
       "kind": "theorem",
@@ -227,7 +240,8 @@
         "match_kind": "generalization"
       },
       "note": "Euclid's lemma is stated as `IsCoprime.dvd_of_dvd_mul_right : IsCoprime x z → x ∣ y * z → x ∣ y`, generalizing the integer form.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ccb2872c136d"
     },
     {
       "kind": "proposition",
@@ -243,7 +257,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat.Prime.dvd_mul : p.Prime → (p ∣ m * n ↔ p ∣ m ∨ p ∣ n)` formalizes this property.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "45af660d70d8"
     },
     {
       "kind": "definition",
@@ -259,7 +274,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat.properDivisors n` is the finset of divisors of `n` other than `n` itself, matching the aliquot-part definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "605617e6d9de"
     },
     {
       "kind": "definition",
@@ -275,7 +291,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat.Prime p := Irreducible p`, equivalently `prime_def_lt : 2 ≤ p ∧ ∀ m < p, m ∣ p → m = 1`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "16c8dc885e0f"
     },
     {
       "kind": "proposition",
@@ -291,7 +308,8 @@
         "match_kind": "special_case"
       },
       "note": "`Nat.divisors_prime_pow` and `Nat.mem_divisors_prime_pow` characterize divisors via prime factorization; the general statement follows from `isMultiplicative_sigma`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5b23ef85b765"
     },
     {
       "kind": "definition",
@@ -307,7 +325,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat.Perfect`, `Nat.Abundant`, and `Nat.Deficient` are defined in `Mathlib.NumberTheory.Divisors` and `Mathlib.NumberTheory.FactorisationProperties`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cf2a1877997a"
     },
     {
       "kind": "proposition",
@@ -323,7 +342,8 @@
         "match_kind": "exact"
       },
       "note": "`isMultiplicative_sigma` shows `σ k` (including `σ 0`, the divisor-count function) is a multiplicative arithmetic function.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8e2cc88835fd"
     },
     {
       "kind": "proposition",
@@ -339,7 +359,8 @@
         "match_kind": "exact"
       },
       "note": "`sigma_one_apply : σ 1 n = ∑ d ∈ divisors n, d` defines the sum-of-divisors function.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "22909997b9ae"
     },
     {
       "kind": "proposition",
@@ -355,7 +376,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat.card_divisors : #n.divisors = ∏ p ∈ n.primeFactors, (n.factorization p + 1)` gives the product-of-exponents-plus-one formula.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e87e2b410c65"
     },
     {
       "kind": "proposition",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "The Dirichlet divisor asymptotic `(1/n)∑ d(k) ∼ ln n + 2γ - 1` is not present in Mathlib (no hits for divisor-average or Dirichlet divisor problem).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f3a0c9a906a3"
     },
     {
       "kind": "theorem",
@@ -387,7 +410,8 @@
         "match_kind": "generalization"
       },
       "note": "`Associates α` carries a `Lattice` instance with `gcd`/`lcm` as meet/join, witnessing the divisibility lattice for UFDs including `ℕ`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "99423e3a712f"
     }
   ]
 }

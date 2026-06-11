@@ -19,7 +19,8 @@
         "match_kind": null
       },
       "note": "Lean/Mathlib's `OfScientific.ofScientific` literal machinery (m × 10^±e) implements scientific notation, but there is no general mathematical definition of the concept.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1450c7fefd71"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": null
       },
       "note": "`OfScientific.ofScientific` takes a mantissa `m`, sign `s`, and exponent `e`, but the significand/exponent terminology is not separately formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "240ed3c58e3e"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not model decimal floating-point computer arithmetic systems.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6b299bcc7da6"
     },
     {
       "kind": "proposition",
@@ -67,7 +70,8 @@
         "match_kind": null
       },
       "note": "`Int.log` plus its bounds `Int.zpow_log_le_self`/`Int.lt_zpow_succ_log_self` provide the exponent placing any positive real in [b^n, b^(n+1)), but no explicit `r = m·10^n` decomposition lemma is stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "431e0c036bc1"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": null
       },
       "note": "`Int.log b r` is exactly the normalizing exponent, with `Int.zpow_log_le_self`/`Int.lt_zpow_succ_log_self` giving b^log ≤ r < b^(log+1) (i.e. 1 ≤ r/b^log < b), but the normalized-form definition itself is not packaged.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "03202ccd94b4"
     },
     {
       "kind": "proposition",
@@ -99,7 +104,8 @@
         "match_kind": null
       },
       "note": "`Int.log_of_right_le_one` shows `log b r = -Nat.clog b ⌈r⁻¹⌉₊ ≤ 0` for r ≤ 1, matching the negative-exponent claim, though stated about `Int.log` rather than scientific notation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e621f665f665"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": null
       },
       "note": "This is merely an alternative name and carries no formalizable mathematical content.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "44e3a3f63ba2"
     },
     {
       "kind": "definition",
@@ -131,7 +138,8 @@
         "match_kind": null
       },
       "note": "The engineering-notation convention (exponent a multiple of 3) is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8f774be79610"
     },
     {
       "kind": "example",
@@ -147,7 +155,8 @@
         "match_kind": null
       },
       "note": "A units example with no Mathlib counterpart.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "20bd906b8b57"
     },
     {
       "kind": "definition",
@@ -163,7 +172,8 @@
         "match_kind": null
       },
       "note": "Lean's `OfScientific.ofScientific m s e` literal syntax realizes E-notation (`mEn = m·10^n`), but the notation convention is not stated as a definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ed775fd506a6"
     },
     {
       "kind": "example",
@@ -179,7 +189,8 @@
         "match_kind": null
       },
       "note": "A specific numeric notation example with no formalized statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1fe8a9a056d8"
     },
     {
       "kind": "definition",
@@ -195,7 +206,8 @@
         "match_kind": null
       },
       "note": "The notion of significant figures (measurement precision) is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "35fc9b7cd9f6"
     },
     {
       "kind": "proposition",
@@ -211,7 +223,8 @@
         "match_kind": null
       },
       "note": "The scaling into [1,10) is the same normalization captured by `Int.zpow_log_le_self`/`Int.lt_zpow_succ_log_self`, but no conversion procedure is formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "39b29daeab50"
     },
     {
       "kind": "proposition",
@@ -227,7 +240,8 @@
         "match_kind": null
       },
       "note": "A measurement-recording convention, not a mathematical statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6d724c2e979f"
     },
     {
       "kind": "example",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "A physical-constant example with no Mathlib counterpart.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2f3cee291a22"
     },
     {
       "kind": "example",
@@ -259,7 +274,8 @@
         "match_kind": null
       },
       "note": "A physical-constant example, not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b4c5aed63cf9"
     },
     {
       "kind": "example",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "A physical-constant example, not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bbaad355d3e8"
     },
     {
       "kind": "example",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "A physical-measurement example, not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fcdbd97a3c5b"
     },
     {
       "kind": "example",
@@ -307,7 +325,8 @@
         "match_kind": null
       },
       "note": "A units-definition example, not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6289a148b605"
     },
     {
       "kind": "example",
@@ -323,7 +342,8 @@
         "match_kind": null
       },
       "note": "An economics example with no Mathlib counterpart.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bf2330052111"
     },
     {
       "kind": "definition",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "An informal description of conversion, not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a0ae4c0de7d0"
     },
     {
       "kind": "proposition",
@@ -355,7 +376,8 @@
         "match_kind": null
       },
       "note": "A digit-shifting procedure, not formalized as such.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "88d9484b028c"
     },
     {
       "kind": "proposition",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "An informal conversion procedure, not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "79baf257f85b"
     },
     {
       "kind": "proposition",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "Re-expressing m·10^n with a different exponent is an informal procedure, not a formalized statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b64c398cc6fe"
     },
     {
       "kind": "proposition",
@@ -417,7 +441,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle x_{1}=m_{1}\\times 10^{n_{1}}}"
         }
-      ]
+      ],
+      "id": "33e3d9df73a6"
     },
     {
       "kind": "proposition",
@@ -447,7 +472,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\frac {x_{0}}{x_{1}}}={\\frac {m_{0}}{m_{1}}}\\times 10^{n_{0}-n_{1}}}"
         }
-      ]
+      ],
+      "id": "09c036621f95"
     },
     {
       "kind": "proposition",
@@ -463,7 +489,8 @@
         "match_kind": null
       },
       "note": "Aligning exponents then factoring via distributivity is an informal procedure, not formalized as a scientific-notation rule.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "523b32acf02f"
     },
     {
       "kind": "proposition",
@@ -479,7 +506,8 @@
         "match_kind": null
       },
       "note": "A meta-remark that any base may be used; `Int.log` is base-parameterized but no scientific-notation statement is formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c2cd40078056"
     },
     {
       "kind": "example",
@@ -495,7 +523,8 @@
         "match_kind": null
       },
       "note": "A binary notation example, not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "14e0c820620c"
     },
     {
       "kind": "definition",
@@ -511,7 +540,8 @@
         "match_kind": null
       },
       "note": "A typographic notation convention, not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9cafae2651b4"
     },
     {
       "kind": "definition",
@@ -527,7 +557,8 @@
         "match_kind": null
       },
       "note": "Typographic notation conventions, not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1a63094911fe"
     },
     {
       "kind": "definition",
@@ -543,7 +574,8 @@
         "match_kind": null
       },
       "note": "A typographic notation convention (hex-float 'p'), not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "13f2952af58d"
     },
     {
       "kind": "proposition",
@@ -559,7 +591,8 @@
         "match_kind": null
       },
       "note": "Reinterpreting engineering notation as base-1000 is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f02ff29863c8"
     }
   ]
 }

@@ -19,7 +19,8 @@
         "match_kind": null
       },
       "note": "Informal motivating arithmetic example not stated as a Mathlib lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ca5678766454"
     },
     {
       "kind": "example",
@@ -35,7 +36,8 @@
         "match_kind": null
       },
       "note": "Informal example; no dedicated lemma in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "63763c66a8ba"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "`Int.ModEq n a b` is defined exactly as a % n = b % n, with the equivalent dvd characterization in `Int.modEq_iff_dvd`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ec499fe59251"
     },
     {
       "kind": "proposition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib provides the equivalence-relation instance and the compatibility lemmas `Int.ModEq.add`, `.sub`, `.mul` (and analogues for `Nat.ModEq`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "80669a35c5b8"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib uses the core `Int.emod`/`Nat.mod` for the modulo operation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "93df5d88fbee"
     },
     {
       "kind": "proposition",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "By definition `Int.ModEq n a b ↔ a % n = b % n`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7238307d894a"
     },
     {
       "kind": "proposition",
@@ -115,7 +121,8 @@
         "match_kind": null
       },
       "note": "`Int.ModEq` permits any integer modulus but there is no dedicated lemma asserting that the relation is unchanged under negation of the modulus.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c00bad0c6106"
     },
     {
       "kind": "example",
@@ -131,7 +138,8 @@
         "match_kind": null
       },
       "note": "Specific numerical example, not stated as a Mathlib lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2f5b21592efd"
     },
     {
       "kind": "example",
@@ -147,7 +155,8 @@
         "match_kind": null
       },
       "note": "Illustrative example only.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c979078e9ae5"
     },
     {
       "kind": "proposition",
@@ -163,7 +172,8 @@
         "match_kind": "exact"
       },
       "note": "Equivalence is captured by the `Equivalence` instance built from `Int.ModEq.refl`, `.symm`, `.trans` (line 87).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f19d492baa09"
     },
     {
       "kind": "proposition",
@@ -179,7 +189,8 @@
         "match_kind": "exact"
       },
       "note": "Compatibility with translation/scaling/multiplication is covered by `Int.ModEq.add`, `.add_left`, `.mul_left`, `.mul`, `.neg`, `.sub`, `.pow`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a68db73901fb"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat.ModEq.pow_totient` gives `x^φ n ≡ 1 [MOD n]` when `x` is coprime with `n`, yielding the exponent-mod-φ(m) rule.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "01ca049676bc"
     },
     {
       "kind": "proposition",
@@ -211,7 +223,8 @@
         "match_kind": "exact"
       },
       "note": "`Int.ModEq.of_mul_left` and `Int.ModEq.of_mul_right` give exactly this.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c74ac0a95971"
     },
     {
       "kind": "proposition",
@@ -227,7 +240,8 @@
         "match_kind": "exact"
       },
       "note": "Cancellation results are in `Int.ModEq.mul_left_cancel'`, `.mul_right_cancel'`, and the gcd-aware `cancel_left_div_gcd` family.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8b0544d99ed1"
     },
     {
       "kind": "proposition",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "The gcd-divided cancellation lemmas underpin moving to division, but no single lemma states the article's `(a/c) ≡ (b/c)` reformulation directly.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "777b60c99080"
     },
     {
       "kind": "definition",
@@ -259,7 +274,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib defines `Inv (ZMod n)` (line 714) so that `a * a⁻¹ = 1` when gcd is 1, e.g. `ZMod.mul_inv_eq_gcd` / `ZMod.coe_mul_inv_eq_one`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e0f63371a6e8"
     },
     {
       "kind": "proposition",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "Bézout coefficients via `Int.gcdA`/`Nat.xgcd` exist, but Mathlib does not package an explicit `inverse via Bézout` algorithm/lemma for ZMod.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "52d818402d96"
     },
     {
       "kind": "proposition",
@@ -291,7 +308,8 @@
         "match_kind": "exact"
       },
       "note": "Encoded by the `Field (ZMod p)` instance under `[Fact p.Prime]`, so every nonzero element is invertible.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9b22ae98b182"
     },
     {
       "kind": "theorem",
@@ -307,7 +325,8 @@
         "match_kind": "exact"
       },
       "note": "`ZMod.pow_card` (line 583) and `ZMod.pow_card_sub_one_eq_one` (line 606) give Fermat's little theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8e0400e0eb16"
     },
     {
       "kind": "theorem",
@@ -323,7 +342,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat.ModEq.pow_totient` is exactly Euler's theorem `a^φ(n) ≡ 1 [MOD n]`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "525cb7c86eb0"
     },
     {
       "kind": "proposition",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "The underlying identity `a^{p-1}=1` is `ZMod.pow_card_sub_one_eq_one`, but Mathlib does not packaged this as a named formula for `a⁻¹ = a^{p-2}`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bdd8f470a883"
     },
     {
       "kind": "proposition",
@@ -355,7 +376,8 @@
         "match_kind": null
       },
       "note": "Follows from `Nat.ModEq.pow_totient` but no dedicated `x^a ≡ x^b` lemma indexed by `a ≡ b [MOD φ m]` is in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5563960d43f0"
     },
     {
       "kind": "theorem",
@@ -371,7 +393,8 @@
         "match_kind": "exact"
       },
       "note": "`ZMod.wilsons_lemma` gives `(p-1)! = -1 (ZMod p)` and `Nat.prime_iff_fac_equiv_neg_one` is the iff form.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c88eebe2a4b5"
     },
     {
       "kind": "theorem",
@@ -387,7 +410,8 @@
         "match_kind": "exact"
       },
       "note": "`ZMod.chineseRemainder`/`Nat.chineseRemainder` formalize CRT; further generalizations exist as `Ideal.quotientInfRingEquivPiQuotient`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a1de112af231"
     },
     {
       "kind": "theorem",
@@ -403,7 +427,8 @@
         "match_kind": "generalization"
       },
       "note": "`Polynomial.card_roots` bounds roots of a nonzero polynomial over an integral domain by its degree, which specializes to the Z/p case.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b2930b169184"
     },
     {
       "kind": "definition",
@@ -419,7 +444,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib's general `IsPrimitiveRoot` plus `IsCyclic (ZMod n)ˣ` encode the notion of primitive root mod m.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2d159a4073e5"
     },
     {
       "kind": "theorem",
@@ -435,7 +461,8 @@
         "match_kind": "exact"
       },
       "note": "`ZMod.isCyclic_units_iff` characterizes exactly when `(ZMod n)ˣ` is cyclic, i.e. primitive roots exist.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0d44470fa7e7"
     },
     {
       "kind": "definition",
@@ -451,7 +478,8 @@
         "match_kind": "generalization"
       },
       "note": "Quadratic residues mod p are formalized via `IsSquare (a : ZMod p)`, used e.g. in `ZMod.euler_criterion`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1c60471241cf"
     },
     {
       "kind": "theorem",
@@ -467,7 +495,8 @@
         "match_kind": "exact"
       },
       "note": "`ZMod.euler_criterion` states `IsSquare a ↔ a^(p/2) = 1` for `a ≠ 0` in `ZMod p`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "401329edafbd"
     },
     {
       "kind": "definition",
@@ -483,7 +512,8 @@
         "match_kind": "exact"
       },
       "note": "Residue classes are elements of `ZMod n` (equivalently `ℤ ⧸ Ideal.span {(n:ℤ)}`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c56df1ec68ab"
     },
     {
       "kind": "proposition",
@@ -499,7 +529,8 @@
         "match_kind": "exact"
       },
       "note": "Combined with `Int.emod_nonneg` and `Int.emod_emod_of_dvd`, `Int.emod_lt_of_pos` picks the unique representative in `[0, m)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c1e72bd52392"
     },
     {
       "kind": "definition",
@@ -515,7 +546,8 @@
         "match_kind": "exact"
       },
       "note": "The residue is `a % m` (`Int.emod`/`Nat.mod`) and corresponds to `ZMod.val` in `ZMod n`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "add18b29cda7"
     },
     {
       "kind": "proposition",
@@ -531,7 +563,8 @@
         "match_kind": "exact"
       },
       "note": "Follows from the `Equivalence` instance on `Int.ModEq`; the quotient is `ZMod n`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f9ba6d12e6c3"
     },
     {
       "kind": "definition",
@@ -547,7 +580,8 @@
         "match_kind": null
       },
       "note": "No dedicated `complete residue system` definition; Mathlib uses `ZMod n` directly.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "58f5d99a6419"
     },
     {
       "kind": "example",
@@ -563,7 +597,8 @@
         "match_kind": null
       },
       "note": "Specific illustrative example, not a Mathlib lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c0a0317fef60"
     },
     {
       "kind": "example",
@@ -579,7 +614,8 @@
         "match_kind": null
       },
       "note": "Illustrative example only.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "09a758051e87"
     },
     {
       "kind": "definition",
@@ -595,7 +631,8 @@
         "match_kind": null
       },
       "note": "Mathlib has `(ZMod n)ˣ` and `ZMod.unitsEquivCoprime { x // Coprime x.val n }` rather than a 'reduced residue system' name.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6873168fbec4"
     },
     {
       "kind": "definition",
@@ -611,7 +648,8 @@
         "match_kind": null
       },
       "note": "Covering systems are not defined in Mathlib (grep finds no occurrences).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e205a4d53e72"
     },
     {
       "kind": "definition",
@@ -627,7 +665,8 @@
         "match_kind": "exact"
       },
       "note": "`ZMod n` is defined in `Mathlib/Data/ZMod/Defs.lean` line 149.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "aed9e579861e"
     },
     {
       "kind": "proposition",
@@ -643,7 +682,8 @@
         "match_kind": "exact"
       },
       "note": "`ZMod 0 = ℤ` is realized by `IsDomain (ZMod 0)`/`CharZero (ZMod 0)`; `ZMod 1` is a `Subsingleton`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d9b8ed864db8"
     },
     {
       "kind": "proposition",
@@ -659,7 +699,8 @@
         "match_kind": "exact"
       },
       "note": "`ZMod n` carries a `CommRing` instance (inherited via `Fin n` / `ℤ`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2e5f81dc4a1f"
     },
     {
       "kind": "proposition",
@@ -675,7 +716,8 @@
         "match_kind": "exact"
       },
       "note": "`Int.quotientSpanNatEquivZMod` provides the ring iso `ℤ ⧸ (n) ≃+* ZMod n`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8d5122fa919a"
     },
     {
       "kind": "proposition",
@@ -691,7 +733,8 @@
         "match_kind": "exact"
       },
       "note": "`zmodCyclicMulEquiv` shows any cyclic group is `MulEquiv` to `Multiplicative (ZMod n)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "73e209b22bc4"
     },
     {
       "kind": "theorem",
@@ -707,7 +750,8 @@
         "match_kind": "exact"
       },
       "note": "`Field (ZMod p)` is the instance under `[Fact p.Prime]`; conversely a `ZMod n` field forces `n` prime.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f69709ba5790"
     },
     {
       "kind": "theorem",
@@ -723,7 +767,8 @@
         "match_kind": "exact"
       },
       "note": "`GaloisField p n` plus `GaloisField.algEquivGaloisField` give existence and uniqueness of the finite field of order p^n.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "de120255ab55"
     },
     {
       "kind": "definition",
@@ -739,7 +784,8 @@
         "match_kind": "exact"
       },
       "note": "`(ZMod n)ˣ` is the multiplicative group; `ZMod.unitsEquivCoprime` identifies it with elements coprime to n.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "995872ccda7e"
     },
     {
       "kind": "example",
@@ -755,7 +801,8 @@
         "match_kind": null
       },
       "note": "Application example, no ISBN/IBAN checksum formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ed039f91d47b"
     },
     {
       "kind": "example",
@@ -771,7 +818,8 @@
         "match_kind": null
       },
       "note": "Application example; no Mathlib formalization.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a8ac208c667c"
     },
     {
       "kind": "example",
@@ -787,7 +835,8 @@
         "match_kind": null
       },
       "note": "Application example; no Mathlib formalization.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5c0f556a10b7"
     },
     {
       "kind": "proposition",
@@ -803,7 +852,8 @@
         "match_kind": null
       },
       "note": "Complexity statement, not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "04a159a5c13b"
     },
     {
       "kind": "proposition",
@@ -819,7 +869,8 @@
         "match_kind": null
       },
       "note": "NP-completeness result, not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "71e818d26dde"
     }
   ]
 }

@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "The `Functor` structure bundles `obj`, `map`, `map_id` and `map_comp`, matching the article's definition exactly.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b1763e051c99"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib formalizes a contravariant functor C→D as an ordinary functor `Cᵒᵖ ⥤ D` out of the opposite category, with no separate dedicated type.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d9c1aa8ded11"
     },
     {
       "kind": "proposition",
@@ -51,7 +53,8 @@
         "match_kind": null
       },
       "note": "Mathlib handles variance via opposite categories rather than tracking variance, so the rule about composing covariant/contravariant functors is not stated as a proposition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "596bb81bb6cc"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "Ordinary (covariant) functors are exactly `CategoryTheory.Functor`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a3ed45c38274"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "special_case"
       },
       "note": "A cofunctor is a contravariant functor, represented in Mathlib as a functor `Cᵒᵖ ⥤ D`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "693d4e156850"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "`Functor.op` sends `F : C ⥤ D` to the induced functor `Cᵒᵖ ⥤ Dᵒᵖ`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "16741ebd2e2e"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": "special_case"
       },
       "note": "Bifunctors are functors `C × D ⥤ E` out of the product category `prod`, used throughout Mathlib (e.g. `Functor.uncurry`, `curriedTensor`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fd7e0cb370dc"
     },
     {
       "kind": "definition",
@@ -131,7 +138,8 @@
         "match_kind": null
       },
       "note": "Mathlib has bifunctors (`C × D ⥤ E`) and some trifunctor constructions (`Localization.Trifunctor`) but no general n-ary multifunctor concept.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e7553994bc57"
     },
     {
       "kind": "proposition",
@@ -147,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "The consequence that a functor preserves isomorphisms is `Functor.map_isIso`/`Functor.mapIso`; preservation of identities and composition are the axioms `map_id`/`map_comp` themselves.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6d576ea6fee8"
     },
     {
       "kind": "proposition",
@@ -163,7 +172,8 @@
         "match_kind": "exact"
       },
       "note": "`Functor.comp` (notation `⋙`) composes functors and is associative with identity `𝟭`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3eb69b56ffc0"
     },
     {
       "kind": "proposition",
@@ -179,7 +189,8 @@
         "match_kind": "exact"
       },
       "note": "`SingleObj M` is the one-object category whose endomorphism monoid is `M` (with `End (SingleObj.star M) ≃ M`), realizing the monoid–category correspondence.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "aed64fc5f592"
     },
     {
       "kind": "example",
@@ -195,7 +206,8 @@
         "match_kind": "special_case"
       },
       "note": "A diagram of shape J is a functor `J ⥤ C`, the representation Mathlib uses throughout the limits library.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "abc60f3a6fdb"
     },
     {
       "kind": "example",
@@ -211,7 +223,8 @@
         "match_kind": "special_case"
       },
       "note": "A presheaf is a contravariant functor, represented in Mathlib as `Cᵒᵖ ⥤ D`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f6a705b4405b"
     },
     {
       "kind": "example",
@@ -227,7 +240,8 @@
         "match_kind": "exact"
       },
       "note": "`TopCat.Presheaf X` is defined as `(Opens X)ᵒᵖ ⥤ C`, exactly a presheaf on the space X.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "82d03791ee72"
     },
     {
       "kind": "example",
@@ -243,7 +257,8 @@
         "match_kind": "exact"
       },
       "note": "`Functor.const J : C ⥤ (J ⥤ C)` sends each object to the constant functor at it.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "52ee4a122f1d"
     },
     {
       "kind": "example",
@@ -259,7 +274,8 @@
         "match_kind": "special_case"
       },
       "note": "An endofunctor is a functor `C ⥤ C`; Mathlib uses these pervasively (e.g. for monads) without a dedicated type.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e32808412af8"
     },
     {
       "kind": "example",
@@ -275,7 +291,8 @@
         "match_kind": "exact"
       },
       "note": "`Functor.id C` (notation `𝟭 C`) is the identity endofunctor.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d48df1443cd3"
     },
     {
       "kind": "example",
@@ -291,7 +308,8 @@
         "match_kind": "exact"
       },
       "note": "`Functor.diag : C ⥤ C × C` is the diagonal functor; the general diagonal into a functor category is `Functor.const`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "240a978e2c72"
     },
     {
       "kind": "example",
@@ -307,7 +325,8 @@
         "match_kind": "exact"
       },
       "note": "`Limits.lim : (J ⥤ C) ⥤ C` assigns to each diagram its limit (given `HasLimitsOfShape`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "40de8cea42cf"
     },
     {
       "kind": "example",
@@ -323,7 +342,8 @@
         "match_kind": null
       },
       "note": "Mathlib has `Set.powerset` but no categorical power-set functor `Type ⥤ Type` with its action on functions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1a16197fd845"
     },
     {
       "kind": "example",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "`Module.Dual` with the contravariant action `LinearMap.dualMap` (and `dualMap_id`/`dualMap_comp_dualMap`) exists, but is not packaged as a category-theoretic functor on a category of vector spaces.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4b54b2888c1a"
     },
     {
       "kind": "example",
@@ -355,7 +376,8 @@
         "match_kind": null
       },
       "note": "Mathlib formalizes the fundamental groupoid functor `TopCat ⥤ Grpd` (and `FundamentalGroup`), but not the pointed π₁ : Top* ⥤ Grp described here.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "98948c6c8163"
     },
     {
       "kind": "example",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "Mathlib defines `C(X, ℝ)` (`ContinuousMap`) but no contravariant functor on a category of spaces sending X to its ring of continuous functions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6b2ca4354d97"
     },
     {
       "kind": "example",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "`TangentBundle` is defined, but there is no category of smooth manifolds nor a tangent-bundle functor in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "703b952f0d16"
     },
     {
       "kind": "example",
@@ -403,7 +427,8 @@
         "match_kind": "special_case"
       },
       "note": "A group G is realized as a one-object groupoid `SingleObj G`; G-sets correspond to functors `SingleObj G ⥤ Type` (cf. `CategoryTheory.Action`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2b95542e76e4"
     },
     {
       "kind": "example",
@@ -419,7 +444,8 @@
         "match_kind": null
       },
       "note": "The Lie algebra of a Lie group is constructed via left-invariant derivations (`Mathlib.Geometry.Manifold.GroupLieAlgebra`), but not packaged as a functor from a category of Lie groups.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7c4e2ddde5b4"
     },
     {
       "kind": "example",
@@ -435,7 +461,8 @@
         "match_kind": "generalization"
       },
       "note": "`MonoidalCategory.tensor : C × C ⥤ C` is the tensor bifunctor (covariant in both arguments) for any monoidal category, e.g. `ModuleCat`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7428457d99a2"
     },
     {
       "kind": "example",
@@ -451,7 +478,8 @@
         "match_kind": "exact"
       },
       "note": "`forget C : C ⥤ Type` (and `forget₂` between concrete categories) are the forgetful functors.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "14cf5f9910b1"
     },
     {
       "kind": "example",
@@ -467,7 +495,8 @@
         "match_kind": "special_case"
       },
       "note": "Free functors left-adjoint to forgetful functors are formalized, e.g. `MonCat.free : Type ⥤ MonCat` with its `adj` adjunction.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "eb2b66df38e1"
     },
     {
       "kind": "example",
@@ -483,7 +512,8 @@
         "match_kind": "generalization"
       },
       "note": "The hom-bifunctor `Functor.hom : Cᵒᵖ × C ⥤ Type` is formalized for any category; the Ab-internal-hom-valued version is a special case.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c27aff78feb5"
     },
     {
       "kind": "example",
@@ -499,7 +529,8 @@
         "match_kind": "exact"
       },
       "note": "`Functor.IsRepresentable` (with data `Functor.RepresentableBy`) captures functors `Cᵒᵖ ⥤ Type` naturally isomorphic to a `yoneda.obj X`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0c1319501d0b"
     },
     {
       "kind": "definition",
@@ -515,7 +546,8 @@
         "match_kind": "exact"
       },
       "note": "`Functor.category` is the category structure on `C ⥤ D` whose morphisms are natural transformations.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1b339a71347c"
     },
     {
       "kind": "example",
@@ -531,7 +563,8 @@
         "match_kind": null
       },
       "note": "The Haskell-style `Functor` typeclass (`fmap`) is a programming construct; Lean's core `Functor` class lives outside `Mathlib/`, so it is not present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0bfbff1e87b9"
     }
   ]
 }

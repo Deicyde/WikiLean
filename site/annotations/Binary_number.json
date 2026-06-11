@@ -19,7 +19,8 @@
         "match_kind": "special_case"
       },
       "note": "No dedicated 'binary number' type, but `Nat.digits 2 n` gives a natural number's base-2 representation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8fbb99db4b70"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no dyadic-rational structure (the only 'dyadic' references are topological partitions in Urysohn's lemma).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a7b554490898"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "special_case"
       },
       "note": "`Nat.ofDigits`/`Nat.digits` formalize positional notation for any base, of which base 2 is a special case.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "79185f791297"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "special_case"
       },
       "note": "`Nat.bits : ℕ → List Bool` represents the binary digits as Booleans, with `Nat.testBit` giving the bit at a position.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a0415e602f6f"
     },
     {
       "kind": "proposition",
@@ -83,7 +87,8 @@
         "match_kind": "special_case"
       },
       "note": "`ofDigits b (digits b n) = n` at base 2 expresses that every natural number is recovered from its bit sequence.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "abe82c91ce8a"
     },
     {
       "kind": "example",
@@ -99,7 +104,8 @@
         "match_kind": null
       },
       "note": "Purely notational equivalence (subscripts/prefixes), not a mathematical statement formalizable in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "91d0b256f8f5"
     },
     {
       "kind": "example",
@@ -115,7 +121,8 @@
         "match_kind": null
       },
       "note": "Concerns pronunciation conventions, which carry no formalizable content.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "28f2078331f2"
     },
     {
       "kind": "example",
@@ -131,7 +138,8 @@
         "match_kind": null
       },
       "note": "An informal statement about decimal symbols; only the related bound `Nat.digits_lt_base` exists, not this claim.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e2fa46482eb9"
     },
     {
       "kind": "definition",
@@ -147,7 +155,8 @@
         "match_kind": null
       },
       "note": "The incrementing/counting procedure on digit strings is not formalized as such (only `Nat.succ` on the numbers).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0f419549a466"
     },
     {
       "kind": "proposition",
@@ -163,7 +172,8 @@
         "match_kind": "special_case"
       },
       "note": "`ofDigits b L = Σ aᵢ·bⁱ` is exactly place value as powers of the base, specializing to 2ⁱ at base 2.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4899adb07f71"
     },
     {
       "kind": "example",
@@ -179,7 +189,8 @@
         "match_kind": "invocation"
       },
       "note": "This specific conversion is an invocation of `Nat.ofDigits 2`, computable but not a stored declaration.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1eb3f962bacd"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": "generalization"
       },
       "note": "Addition itself is fully formalized; `bodd (m+n) = bxor (bodd m) (bodd n)` captures the single-bit sum rule, but the carry table is not a named result.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6c1d0940fcea"
     },
     {
       "kind": "definition",
@@ -211,7 +223,8 @@
         "match_kind": null
       },
       "note": "Carry is implicit in `Nat.add` but not defined as a standalone concept in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "175b05c019d2"
     },
     {
       "kind": "example",
@@ -227,7 +240,8 @@
         "match_kind": null
       },
       "note": "A worked hand-addition-with-carries example; the carrying algorithm on digit strings is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e309b3a400d1"
     },
     {
       "kind": "proposition",
@@ -243,7 +257,8 @@
         "match_kind": "special_case"
       },
       "note": "`bodd (m+n) = bxor (bodd m) (bodd n)` formalizes the sum bit as XOR, though the carry-as-AND half-adder rule is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "493ca007eddf"
     },
     {
       "kind": "proposition",
@@ -259,7 +274,8 @@
         "match_kind": null
       },
       "note": "This human addition shortcut for long carry runs is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1e91453c7683"
     },
     {
       "kind": "example",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "A worked example of the long-carry method, which is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fef7dc174778"
     },
     {
       "kind": "proposition",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "The observation that bit addition (XOR with carry) differs from logical OR is not stated as a Mathlib result.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2bf4e87ab8f6"
     },
     {
       "kind": "proposition",
@@ -307,7 +325,8 @@
         "match_kind": null
       },
       "note": "Subtraction is formalized as `Nat.sub`/integer subtraction, but the single-digit borrow table is not a named declaration.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4cee3c603812"
     },
     {
       "kind": "definition",
@@ -323,7 +342,8 @@
         "match_kind": null
       },
       "note": "Borrowing is not formalized as a defined concept in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d7bba0903be1"
     },
     {
       "kind": "proposition",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no two's-complement representation or this subtraction formula.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8ee2fa613131"
     },
     {
       "kind": "proposition",
@@ -355,7 +376,8 @@
         "match_kind": "generalization"
       },
       "note": "`n * ofDigits b l = ofDigits b (l.map (n*·))` captures distributing a multiplier over digits, the core of the partial-products idea.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d04e3620924c"
     },
     {
       "kind": "proposition",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "The observation that multiplying by a bit yields 0 or the multiplicand is not stated as a Mathlib lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f17130639478"
     },
     {
       "kind": "example",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "A worked hand-multiplication example; the digit-wise partial-products algorithm is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0f12626db626"
     },
     {
       "kind": "proposition",
@@ -403,7 +427,8 @@
         "match_kind": null
       },
       "note": "No declaration states a·b = a∧b for single bits; only the related `Nat.and_two_pow` exists for bitwise AND.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ae503a90a90e"
     },
     {
       "kind": "proposition",
@@ -419,7 +444,8 @@
         "match_kind": "generalization"
       },
       "note": "Division is formalized (`Nat.div`); dividing by a power of the base equals dropping low digits, but the long-division algorithm itself is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f0616b9a8eac"
     },
     {
       "kind": "example",
@@ -435,7 +461,8 @@
         "match_kind": null
       },
       "note": "A worked binary long-division example; the algorithm is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "64df5d945645"
     },
     {
       "kind": "proposition",
@@ -451,7 +478,8 @@
         "match_kind": "generalization"
       },
       "note": "`Nat.sqrt` computes the integer square root but uses a different (non digit-by-digit) algorithm.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "342e37347482"
     },
     {
       "kind": "theorem",
@@ -467,7 +495,8 @@
         "match_kind": null
       },
       "note": "No Mathlib theorem characterizes terminating base-2 expansions via power-of-2 denominators.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "81590730af35"
     },
     {
       "kind": "example",
@@ -483,7 +512,8 @@
         "match_kind": null
       },
       "note": "This specific non-terminating instance is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c67980ec4217"
     },
     {
       "kind": "example",
@@ -499,7 +529,8 @@
         "match_kind": null
       },
       "note": "The repeating binary expansion of 1/3 is not formalized as a stored result.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1b0613a4d222"
     },
     {
       "kind": "definition",
@@ -515,7 +546,8 @@
         "match_kind": "generalization"
       },
       "note": "`Nat.bitwise (f : Bool → Bool → Bool)` applies an operation bit-by-bit; `Nat.land`/`Nat.lor`/`Nat.xor` are concrete instances.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2df3b6d7aa54"
     },
     {
       "kind": "proposition",
@@ -531,7 +563,8 @@
         "match_kind": "exact"
       },
       "note": "`m <<< n = m * 2 ^ n` is exactly shift-left equals multiplication by a power of two.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2a034bb06cc7"
     },
     {
       "kind": "proposition",
@@ -547,7 +580,8 @@
         "match_kind": "special_case"
       },
       "note": "`digits b n = n % b :: digits b (n / b)` is precisely the repeated-division-with-remainder algorithm, at base 2.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5485d230bb42"
     },
     {
       "kind": "example",
@@ -563,7 +597,8 @@
         "match_kind": "invocation"
       },
       "note": "A specific conversion computable via `Nat.digits 2 357`, not a stored declaration.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "feb301d6171f"
     },
     {
       "kind": "proposition",
@@ -579,7 +614,8 @@
         "match_kind": "special_case"
       },
       "note": "`ofDigits b (digits b n) = n` formalizes that `ofDigits` inverts `digits`, specializing to base 2.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ea3cc8d557b9"
     },
     {
       "kind": "example",
@@ -595,7 +631,8 @@
         "match_kind": "invocation"
       },
       "note": "A specific conversion that is an invocation of `Nat.ofDigits 2`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f1dae58053b5"
     },
     {
       "kind": "proposition",
@@ -611,7 +648,8 @@
         "match_kind": "generalization"
       },
       "note": "`ofDigits b L = foldr (fun x y => x + b*y) 0 L` is the Horner-form evaluation, though it is not labeled as Horner's scheme.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a2a487d1ddf6"
     },
     {
       "kind": "proposition",
@@ -627,7 +665,8 @@
         "match_kind": "generalization"
       },
       "note": "`Real.digits` extracts digits of a real in [0,1) via floors, but the repeated-doubling algorithm is not itself a theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6325b044bf7d"
     },
     {
       "kind": "example",
@@ -643,7 +682,8 @@
         "match_kind": null
       },
       "note": "This specific repeating binary fraction is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cc01451fd61b"
     },
     {
       "kind": "example",
@@ -659,7 +699,8 @@
         "match_kind": null
       },
       "note": "The binary expansion of 0.1 is not formalized as a stored result.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "29db688bbc1b"
     },
     {
       "kind": "proposition",
@@ -675,7 +716,8 @@
         "match_kind": null
       },
       "note": "No theorem characterizes terminating binary fractions as integer/2ᵏ (dyadic rationals).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c6ce099653cc"
     },
     {
       "kind": "proposition",
@@ -691,7 +733,8 @@
         "match_kind": null
       },
       "note": "The asymptotically faster divide-and-conquer base-conversion algorithm is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9310fc49ece3"
     },
     {
       "kind": "proposition",
@@ -707,7 +750,8 @@
         "match_kind": null
       },
       "note": "No Mathlib lemma relates base-b^k digits to groups of k base-b digits (here 16 = 2⁴).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5d499a3eb2cc"
     },
     {
       "kind": "example",
@@ -723,7 +767,8 @@
         "match_kind": null
       },
       "note": "The digit-substitution grouping between hex and binary is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c48126386e2d"
     },
     {
       "kind": "example",
@@ -739,7 +784,8 @@
         "match_kind": null
       },
       "note": "Grouping bits into hex digits is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b206e890737e"
     },
     {
       "kind": "example",
@@ -755,7 +801,8 @@
         "match_kind": "invocation"
       },
       "note": "A specific conversion that is an invocation of `Nat.ofDigits 16`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "96ee2492b6d4"
     },
     {
       "kind": "proposition",
@@ -771,7 +818,8 @@
         "match_kind": null
       },
       "note": "No Mathlib lemma relates base-8 digits to groups of three bits (8 = 2³).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2545308d891b"
     },
     {
       "kind": "example",
@@ -787,7 +835,8 @@
         "match_kind": null
       },
       "note": "The octal-to-binary digit-grouping substitution is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e0d25530c33e"
     },
     {
       "kind": "example",
@@ -803,7 +852,8 @@
         "match_kind": "invocation"
       },
       "note": "A specific conversion that is an invocation of `Nat.ofDigits 8`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "817fdf8405a7"
     },
     {
       "kind": "definition",
@@ -819,7 +869,8 @@
         "match_kind": "generalization"
       },
       "note": "`Real.ofDigits` represents reals in [0,1) as Σ dᵢ·b^{-(i+1)}, i.e. via negative powers of the base.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f78bdae8aaf3"
     },
     {
       "kind": "example",
@@ -835,7 +886,8 @@
         "match_kind": "invocation"
       },
       "note": "The fractional part .01₂ = 1/4 is an invocation of `Real.ofDigits`; the combined integer-plus-fraction value is not a stored result.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a33386b11bd5"
     },
     {
       "kind": "theorem",
@@ -851,7 +903,8 @@
         "match_kind": null
       },
       "note": "No theorem states that dyadic rationals have terminating binary expansions (no dyadic-rational structure exists).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1a3ae4733cd1"
     },
     {
       "kind": "proposition",
@@ -867,7 +920,8 @@
         "match_kind": null
       },
       "note": "Eventual periodicity of base-b expansions of rationals is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c342fc014841"
     },
     {
       "kind": "theorem",
@@ -883,7 +937,8 @@
         "match_kind": null
       },
       "note": "The characterization linking non-eventually-periodic expansions to irrationality is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cb25457a782f"
     },
     {
       "kind": "example",
@@ -899,7 +954,8 @@
         "match_kind": null
       },
       "note": "This specific patterned-but-irrational example is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8ec2855e37ab"
     },
     {
       "kind": "example",
@@ -915,7 +971,8 @@
         "match_kind": "invocation"
       },
       "note": "The example's content (√2 is irrational, hence non-terminating/non-recurring) is `irrational_sqrt_two`, though its binary digits are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b51d4a359280"
     }
   ]
 }

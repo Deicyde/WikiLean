@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "Defined as `Cardinal.aleph0 := lift #ℕ`, with `Cardinal.mk_nat : #ℕ = ℵ₀` giving exactly the Wikipedia definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a4eae9b296ef"
     },
     {
       "kind": "proposition",
@@ -35,7 +36,8 @@
         "match_kind": "exact"
       },
       "note": "`Cardinal.mk_eq_aleph0 : [Countable α] [Infinite α] → #α = ℵ₀` characterizes cardinality ℵ₀ as countably infinite (denumerable).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c456ace0d1ee"
     },
     {
       "kind": "example",
@@ -51,7 +53,8 @@
         "match_kind": null
       },
       "note": "Grep for an explicit ω+ω order on the positive integers yields no specific construction in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "759c63108d6c"
     },
     {
       "kind": "proposition",
@@ -67,7 +70,8 @@
         "match_kind": "generalization"
       },
       "note": "`aleph0_le_mk_iff : ℵ₀ ≤ #α ↔ Infinite α` proves the conclusion in Mathlib's choice-based foundation (stronger than the countable-choice hypothesis Wikipedia mentions).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8e5db3a434de"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "Notation `ℵ₁ := aleph 1` together with `succ_aleph0 : succ ℵ₀ = ℵ₁` and `ord_aleph 1 = ω₁` show ℵ₁ is the cardinality of countable ordinals.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4b2691af060f"
     },
     {
       "kind": "proposition",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "`aleph_one_le_iff : ℵ₁ ≤ c ↔ ℵ₀ < c` (equivalently `lt_aleph_one_iff`) states that nothing lies strictly between ℵ₀ and ℵ₁.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a2e090b5c57b"
     },
     {
       "kind": "proposition",
@@ -115,7 +121,8 @@
         "match_kind": "generalization"
       },
       "note": "`isRegular_aleph_one` together with `bsup_lt_ord_of_isRegular` gives boundedness of small-cardinality families in ω₁, but no single lemma is stated directly as `Countable s → BddAbove s` for `s ⊆ ω₁`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fce01aaffb60"
     },
     {
       "kind": "example",
@@ -131,7 +138,8 @@
         "match_kind": null
       },
       "note": "No general closure-under-countable-operations construction using ω₁ appears as a stated lemma in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "335788efc5f7"
     },
     {
       "kind": "definition",
@@ -147,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "`Cardinal.continuum := 2 ^ ℵ₀` (notation `𝔠`), and `Cardinal.mk_real : #ℝ = 𝔠` in `Mathlib.Analysis.Real.Cardinality`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f410e109fc43"
     },
     {
       "kind": "theorem",
@@ -163,7 +172,8 @@
         "match_kind": null
       },
       "note": "Mathlib proves only `aleph_one_le_continuum : ℵ₁ ≤ 𝔠`; the CH equality `ℵ₁ = 𝔠` is independent of ZFC and not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c50f28873f3f"
     },
     {
       "kind": "theorem",
@@ -179,7 +189,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no metamathematical formalization of forcing/models giving the independence of CH.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a000650ac5e3"
     },
     {
       "kind": "definition",
@@ -195,7 +206,8 @@
         "match_kind": "special_case"
       },
       "note": "`ℵ_ ω` instantiates `Cardinal.aleph` at the first infinite ordinal; e.g. `isSingular_aleph_omega0 : (ℵ_ ω).IsSingular` uses exactly this value.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8e45679b56ad"
     },
     {
       "kind": "proposition",
@@ -211,7 +223,8 @@
         "match_kind": null
       },
       "note": "`isSingular_aleph_omega0` shows ℵ_ω has cofinality ω; combined with König's theorem (cof(2^ℵ₀) > ℵ₀) this gives ℵ_ω ≠ 𝔠, but no direct lemma `aleph_omega ≠ continuum` is stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "83231e9a1d83"
     },
     {
       "kind": "definition",
@@ -227,7 +240,8 @@
         "match_kind": "exact"
       },
       "note": "Cofinality is defined as `Ordinal.cof`, and `IsSingular`/`IsRegular` capture the cofinality = ω case (cf. `isSingular_aleph_iff`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "175c2bddeea0"
     },
     {
       "kind": "definition",
@@ -243,7 +257,8 @@
         "match_kind": "exact"
       },
       "note": "`SuccOrder Cardinal` instance gives `Order.succ : Cardinal → Cardinal`, with `succ_def : succ c = sInf {c' | c < c'}`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "06d8d98b8c5d"
     },
     {
       "kind": "definition",
@@ -259,7 +274,8 @@
         "match_kind": "exact"
       },
       "note": "`Cardinal.aleph : Ordinal ↪o Cardinal` defines `ℵ_ α` for any ordinal α; `succ_aleph` and `aleph_limit` recover the standard transfinite recursion.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "681894efb9c1"
     },
     {
       "kind": "definition",
@@ -275,7 +291,8 @@
         "match_kind": "exact"
       },
       "note": "`Ordinal.omega` (notation `ω_ o`) enumerates infinite initial ordinals; `Ordinal.IsInitial` defines initiality and `isInitial_omega` shows `ω_ o` is initial.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c04712d0a83b"
     },
     {
       "kind": "proposition",
@@ -291,7 +308,8 @@
         "match_kind": "exact"
       },
       "note": "`mem_range_aleph_iff : c ∈ range aleph ↔ ℵ₀ ≤ c` says every infinite cardinal is `ℵ_ α` for some ordinal α.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2149a2d3f756"
     },
     {
       "kind": "proposition",
@@ -307,7 +325,8 @@
         "match_kind": "exact"
       },
       "note": "`Cardinal.aleph : Ordinal ↪o Cardinal` is the order-embedding form; `isNormal_aleph` shows it is a normal function.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "50a25b201122"
     },
     {
       "kind": "proposition",
@@ -323,7 +342,8 @@
         "match_kind": "exact"
       },
       "note": "`le_omega_self : o ≤ omega o` (and the cardinal form `Ordinal.card_le_aleph : o.card ≤ ℵ_ o`) state α ≤ ω_α.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a221bda05ff5"
     },
     {
       "kind": "example",
@@ -339,7 +359,8 @@
         "match_kind": "exact"
       },
       "note": "`aleph_lt_aleph` (and `succ_aleph`) imply `ℵ_ α < ℵ_ (α+1)`, giving strict inequality `α < ℵ_ α` at successors.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f0338a813046"
     },
     {
       "kind": "example",
@@ -355,7 +376,8 @@
         "match_kind": null
       },
       "note": "Grep finds no construction of the first ℵ-fixed point (limit of ℵ₀, ℵ_{ℵ₀}, …) in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b2594abbec1f"
     },
     {
       "kind": "theorem",
@@ -371,7 +393,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib's `IsInaccessible` is strongly inaccessible; `IsInaccessible.aleph_ord : ℵ_ c.ord = c` gives the fixed-point property for the strong version, but weakly inaccessible cardinals are not defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "85eed3eb78cb"
     },
     {
       "kind": "proposition",
@@ -387,7 +410,8 @@
         "match_kind": "exact"
       },
       "note": "`ord_aleph : (ℵ_ o).ord = ω_ o` together with `isInitial_omega` shows every aleph is the cardinality of its initial ordinal.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "551e8d0a3c3f"
     },
     {
       "kind": "proposition",
@@ -403,7 +427,8 @@
         "match_kind": "exact"
       },
       "note": "`range_aleph = Set.Ici ℵ₀` says the alephs are exactly the infinite cardinals, so finite cardinals are not alephs (well-orderability of finite types is automatic).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cb24441f0630"
     },
     {
       "kind": "theorem",
@@ -419,7 +444,8 @@
         "match_kind": null
       },
       "note": "Mathlib works in ZFC where AC is built in, so it does not formalize the ZF equivalence `(every infinite cardinal is an aleph) ↔ AC`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0fbb6e19be91"
     },
     {
       "kind": "definition",
@@ -435,7 +461,8 @@
         "match_kind": null
       },
       "note": "Mathlib defines `Cardinal` via quotients/equivalence of types (not Scott's trick), and grep finds no `Scott` construction for cardinal representatives.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9afb74397005"
     }
   ]
 }

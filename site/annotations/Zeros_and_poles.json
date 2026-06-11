@@ -19,7 +19,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib has no standalone `Pole` predicate, but poles are captured by `meromorphicOrderAt f x < 0` together with `MeromorphicAt.inv` characterising 1/f locally.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a0981897784f"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "generalization"
       },
       "note": "`MeromorphicOn f U := ∀ x ∈ U, MeromorphicAt f x` uses the (equivalent) local-zpow-times-analytic formulation rather than the 'either f or 1/f is holomorphic' phrasing.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "06cb6a8b6b2d"
     },
     {
       "kind": "proposition",
@@ -51,7 +53,8 @@
         "match_kind": "generalization"
       },
       "note": "Inverting preserves meromorphy via `MeromorphicAt.inv_iff`, and the sign-flip of orders under inversion (`meromorphicOrderAt_inv`) realises the zero↔pole duality.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a8a09fc3f096"
     },
     {
       "kind": "proposition",
@@ -67,7 +70,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no formalisation of meromorphy on the Riemann sphere nor the equal-sum-of-orders statement on a compact complex space.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "733879216ffb"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "generalization"
       },
       "note": "Holomorphy on an open set is expressed via `DifferentiableOn ℂ` / `AnalyticOnNhd ℂ`, which coincide for complex-differentiable functions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "99dfd61f8260"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": "generalization"
       },
       "note": "Same notion as the lead, formalised by `MeromorphicOn` using the equivalent zpow-smul-analytic local form.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "df46698d90dd"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": "generalization"
       },
       "note": "Zero/pole sets are encoded indirectly via the integer-valued `divisor` (positive ↔ zero, negative ↔ pole); no named `Zero`/`Pole` predicates exist.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7fbaeec59bbf"
     },
     {
       "kind": "definition",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "`meromorphicOrderAt f x : WithTop ℤ` is precisely the signed order, with `meromorphicOrderAt_eq_int_iff` giving the local `(z - x)^n • g` characterisation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cb30d764a177"
     },
     {
       "kind": "proposition",
@@ -147,7 +155,8 @@
         "match_kind": "generalization"
       },
       "note": "The isolated-zero principle and `MeromorphicOn.codiscreteWithin_setOf_ne_zero` in `IsolatedZeros.lean` show the zero/pole set is discrete.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9c4913ff6e2f"
     },
     {
       "kind": "definition",
@@ -163,7 +172,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib's order takes values in `WithTop ℤ`, so poles correspond to negative integers by definition, matching the sign convention.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ee6f9833193c"
     },
     {
       "kind": "example",
@@ -179,7 +189,8 @@
         "match_kind": null
       },
       "note": "`Complex.Gamma` exists and is shown differentiable away from non-positive integers, but a `MeromorphicOn Complex.Gamma Set.univ` statement and the pole-order computation are not present.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e0cd25e8a65b"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": "generalization"
       },
       "note": "The local representation `f z = (z - x)^n • g z` with `g` analytic is formalised, but no explicit Laurent-series-with-finite-principal-part object is constructed.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "001eb150905f"
     },
     {
       "kind": "definition",
@@ -211,7 +223,8 @@
         "match_kind": null
       },
       "note": "Mathlib's meromorphy is defined only at points of `𝕜`; there is no `MeromorphicAt ∞` notion via the one-point compactification.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d931533b507d"
     },
     {
       "kind": "definition",
@@ -227,7 +240,8 @@
         "match_kind": null
       },
       "note": "No order at infinity is defined for meromorphic functions in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fe1b1161ac7e"
     },
     {
       "kind": "example",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not state that a polynomial has a pole of order equal to its degree at the point at infinity.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "edffa2812ded"
     },
     {
       "kind": "definition",
@@ -259,7 +274,8 @@
         "match_kind": "generalization"
       },
       "note": "The underlying one-point compactification `OnePoint ℂ` exists topologically, but Mathlib has no dedicated `RiemannSphere` term with its complex-manifold structure.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3a2a1e4d549c"
     },
     {
       "kind": "theorem",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "No statement about meromorphy on the Riemann sphere or a vanishing degree of its divisor is present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0ae8de4cedd1"
     },
     {
       "kind": "proposition",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "Mathlib formalises rational functions algebraically but does not prove their meromorphy on the Riemann sphere or the degree formula for the sum of orders.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bb9e4818b671"
     },
     {
       "kind": "example",
@@ -307,7 +325,8 @@
         "match_kind": null
       },
       "note": "This worked example, including the behavior at infinity, is not formalised.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a81ec860549b"
     },
     {
       "kind": "example",
@@ -323,7 +342,8 @@
         "match_kind": null
       },
       "note": "Specific example with prescribed pole and zero orders is not formalised.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dfff9e48e305"
     },
     {
       "kind": "example",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "This particular essential-singularity-at-infinity example is not formalised.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d8ed1999cbfe"
     },
     {
       "kind": "example",
@@ -355,7 +376,8 @@
         "match_kind": null
       },
       "note": "Identifying f(z)=z as having a pole at infinity and a zero at 0 on the Riemann sphere is not formalised.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d609dc9a58fa"
     },
     {
       "kind": "definition",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no API defining meromorphic functions or their zeros/poles on a general one-dimensional complex manifold.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b03a28e9b566"
     },
     {
       "kind": "definition",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "The chart-based definition of (mero)morphy on a complex manifold is not present in Mathlib's meromorphic API.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cdad75b6dd3a"
     },
     {
       "kind": "theorem",
@@ -403,7 +427,8 @@
         "match_kind": null
       },
       "note": "The theorem that a meromorphic function on a compact complex curve has divisor of degree zero is not formalised in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8497a7358ea7"
     }
   ]
 }

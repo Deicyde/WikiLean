@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "A probability space is a measure space whose measure is a probability measure, captured by the `IsProbabilityMeasure` typeclass (`measure_univ = 1`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6269b3108401"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": null
       },
       "note": "The sample space is just the ambient type carrying a `MeasurableSpace`/`MeasureSpace`; Mathlib has no separately named 'sample space' declaration.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5843e598e776"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "The event space (a σ-algebra) is exactly the `MeasurableSpace` structure, closed under complement and countable union.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3f3a162542e2"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "The probability function is a `Measure` constrained by `IsProbabilityMeasure` to assign total mass one.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1a4503eaa42b"
     },
     {
       "kind": "example",
@@ -83,7 +87,8 @@
         "match_kind": null
       },
       "note": "This illustrative die example is not present in Mathlib, though uniform distributions on finite types exist generally.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6d0216bacd08"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib models the (Ω, F, P) triple as a `MeasureSpace` plus an `IsProbabilityMeasure` typeclass rather than as one bundled structure.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9387d33ed953"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": null
       },
       "note": "The sample space is the underlying type and an outcome an element of it; neither is a distinct named Mathlib declaration.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f41cd5bdb4d1"
     },
     {
       "kind": "definition",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "`MeasurableSpace` is the σ-algebra of events with fields `measurableSet_empty`, `measurableSet_compl`, `measurableSet_iUnion`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "787d8763afec"
     },
     {
       "kind": "definition",
@@ -147,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "An event (a measurable subset of the sample space) is `MeasurableSet s`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4fcd745030a7"
     },
     {
       "kind": "definition",
@@ -163,7 +172,8 @@
         "match_kind": "exact"
       },
       "note": "`ProbabilityMeasure` is the bundled type of measures with total mass one (equivalently `Measure` with `IsProbabilityMeasure`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "be892d94765e"
     },
     {
       "kind": "definition",
@@ -179,7 +189,8 @@
         "match_kind": "exact"
       },
       "note": "`IsProbabilityMeasure` is literally defined by the single field `measure_univ : μ univ = 1`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "af8a55f70c44"
     },
     {
       "kind": "definition",
@@ -195,7 +206,8 @@
         "match_kind": "generalization"
       },
       "note": "`MeasureSpace` extends `MeasurableSpace` (the σ-algebra axioms) with a measure; adding `IsProbabilityMeasure` gives the expanded probability-space definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4009f86065f6"
     },
     {
       "kind": "proposition",
@@ -211,7 +223,8 @@
         "match_kind": "exact"
       },
       "note": "`MeasurableSet.iInter` proves a countable intersection of measurable sets is measurable.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d81a75aa9f60"
     },
     {
       "kind": "definition",
@@ -227,7 +240,8 @@
         "match_kind": "exact"
       },
       "note": "`PMF α` (a function `α → ℝ≥0∞` summing to 1) is exactly a discrete probability distribution / probability mass function.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "36e4a2aba41f"
     },
     {
       "kind": "proposition",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "Mathlib has σ-algebra generation (`generateFrom`) but no specific lemma stating the bijection between countable partitions and discrete σ-algebras.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a0739c759dff"
     },
     {
       "kind": "proposition",
@@ -259,7 +274,8 @@
         "match_kind": null
       },
       "note": "This is an informal remark about degenerate zero-probability outcomes, not a formalizable statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0b6cc9b14a00"
     },
     {
       "kind": "definition",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "Mathlib formalizes the negation `NoAtoms` (all singletons have measure zero) rather than a named definition of an atom of a measure.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fecc6f0d14cd"
     },
     {
       "kind": "proposition",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "The decomposition of a measure into an atomic part plus a non-atomic part is not formalized in Mathlib (only the Lebesgue/Hahn-type decompositions exist).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5916b68de751"
     },
     {
       "kind": "proposition",
@@ -307,7 +325,8 @@
         "match_kind": "invocation"
       },
       "note": "`Set.Countable.measure_zero` shows countable sets are null under `NoAtoms`, which yields uncountability when total mass is one, but the conclusion is not stated as a lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2468140e0b81"
     },
     {
       "kind": "definition",
@@ -323,7 +342,8 @@
         "match_kind": "exact"
       },
       "note": "Sets belonging to the σ-algebra are exactly `MeasurableSet`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "83607f1e5aaa"
     },
     {
       "kind": "definition",
@@ -339,7 +359,8 @@
         "match_kind": "generalization"
       },
       "note": "`Measure.IsComplete` (every null set is measurable) is the general completeness property; a complete probability space is the special case where the measure is a probability measure.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "124c638c477f"
     },
     {
       "kind": "example",
@@ -355,7 +376,8 @@
         "match_kind": "special_case"
       },
       "note": "`PMF.bernoulli p` models a coin flip on `Bool`; a fair coin is the special case p = 1/2, but no fair-coin example is stated as such.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e6c07a358107"
     },
     {
       "kind": "example",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "This particular three-toss worked example is not present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d5c3b619da52"
     },
     {
       "kind": "example",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "This applied sampling example is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2c5b85419e68"
     },
     {
       "kind": "example",
@@ -403,7 +427,8 @@
         "match_kind": null
       },
       "note": "Mathlib proves `volume` on the unit interval `I = [0,1]` is an `IsProbabilityMeasure` (an anonymous instance), formalizing the uniform distribution on [0,1].",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b1c29248d08e"
     },
     {
       "kind": "example",
@@ -419,7 +444,8 @@
         "match_kind": null
       },
       "note": "An infinite Bernoulli sequence (product measure on {H,T}^ℕ) is not formalized as this specific example.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c03e2840fcc5"
     },
     {
       "kind": "definition",
@@ -435,7 +461,8 @@
         "match_kind": "exact"
       },
       "note": "A random variable is a measurable function, defined as `Measurable f` (preimages of measurable sets are measurable).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5cc3a2d19f06"
     },
     {
       "kind": "definition",
@@ -451,7 +478,8 @@
         "match_kind": "invocation"
       },
       "note": "Pr(X ∈ A) = μ(X⁻¹ A) is the pushforward (law) `(μ.map X) A` via `Measure.map`, though the shorthand notation itself is not defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c1600d06e26c"
     },
     {
       "kind": "proposition",
@@ -467,7 +495,8 @@
         "match_kind": "exact"
       },
       "note": "The `⊤` measurable space makes every set measurable (the power set) and is the top of the σ-algebra `CompleteLattice`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a051794a73e2"
     },
     {
       "kind": "proposition",
@@ -483,7 +512,8 @@
         "match_kind": "exact"
       },
       "note": "`borel α := generateFrom {s | IsOpen s}` is the smallest σ-algebra containing the open sets.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "eaeca2c841d7"
     },
     {
       "kind": "definition",
@@ -509,7 +539,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle P(B\\mid A)={P(B\\cap A) \\over P(A)}}"
         }
-      ]
+      ],
+      "id": "fbd5a179bae4"
     },
     {
       "kind": "proposition",
@@ -525,7 +556,8 @@
         "match_kind": "exact"
       },
       "note": "`cond_isProbabilityMeasure` proves `μ[|s]` is an `IsProbabilityMeasure` when `μ s ≠ 0` (finite case).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "96afe23d63ff"
     },
     {
       "kind": "definition",
@@ -541,7 +573,8 @@
         "match_kind": "exact"
       },
       "note": "`IndepSet s t μ` formalizes independence of two events, characterized by μ(s ∩ t) = μ(s)·μ(t).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "99fc3bcfe677"
     },
     {
       "kind": "definition",
@@ -557,7 +590,8 @@
         "match_kind": "exact"
       },
       "note": "`IndepFun f g μ` formalizes independence of two random variables via independence of their generated σ-algebras.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d8c7c22f7379"
     },
     {
       "kind": "definition",
@@ -573,7 +607,8 @@
         "match_kind": "generalization"
       },
       "note": "Mutual exclusivity (A ∩ B = ∅) is the order-theoretic `Disjoint A B` specialized to sets.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a28c99eea1c3"
     },
     {
       "kind": "proposition",
@@ -589,7 +624,8 @@
         "match_kind": "exact"
       },
       "note": "`measure_union` gives μ(s₁ ∪ s₂) = μ(s₁) + μ(s₂) for disjoint sets.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6120a1e79458"
     },
     {
       "kind": "definition",
@@ -605,7 +641,8 @@
         "match_kind": "exact"
       },
       "note": "The 'A and B' / 'A or B' events are the set operations `Set.inter` (∩) and `Set.union` (∪); only the probabilistic naming is informal.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4aeeb343153b"
     }
   ]
 }

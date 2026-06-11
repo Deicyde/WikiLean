@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "`Order.cof α` is defined as the infimum of cardinalities of cofinal subsets, exactly this definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "19f05679004b"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": null
       },
       "note": "Mathlib defines cofinality via cardinality, not via least ordinal; `ord_cof_eq` provides a cofinal subset of order type `(Order.cof α).ord` but not this alternative definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "80b0ca33b22e"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "generalization"
       },
       "note": "`Order.cof` is defined for any preorder (including directed sets), but the net/subnet generalization is not tied to it in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "73a8a6c16446"
     },
     {
       "kind": "example",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "`cof_eq_one_iff` states `cof α = 1 ↔ ∃ x, IsTop x`, and `cof_eq_one` gives `cof α = 1` for `OrderTop α`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cd6174919681"
     },
     {
       "kind": "example",
@@ -83,7 +87,8 @@
         "match_kind": null
       },
       "note": "A nonzero finite ordinal is a successor so `cof_succ`/`cof_eq_one_iff` give 1, but there is no general 'finite directed set has cofinality 1' lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7b77b0a4ee0b"
     },
     {
       "kind": "example",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "`cof_succ (o) : cof (succ o) = 1` is exactly this.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b159fc7ddf5b"
     },
     {
       "kind": "proposition",
@@ -115,7 +121,8 @@
         "match_kind": "exact"
       },
       "note": "`IsCofinal.mem_of_isMax` states that any maximal element belongs to every cofinal set.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "009b598f6c71"
     },
     {
       "kind": "proposition",
@@ -131,7 +138,8 @@
         "match_kind": null
       },
       "note": "No lemma equating the cofinality of a finite poset with its count of maximal elements was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "59555ddc89b6"
     },
     {
       "kind": "example",
@@ -147,7 +155,8 @@
         "match_kind": null
       },
       "note": "`mk_subset_mk_lt_cof`/`mk_bounded_subset` compute cardinalities of bounded subsets but do not state the cofinality of this inclusion poset as an example.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4830bfc7c40b"
     },
     {
       "kind": "example",
@@ -163,7 +172,8 @@
         "match_kind": "exact"
       },
       "note": "`cof_nat : cof ℕ = ℵ₀` gives the conclusion; `not_bddAbove_iff_isCofinal` captures cofinal = unbounded in ℕ.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9ddd4efdf27b"
     },
     {
       "kind": "example",
@@ -179,7 +189,8 @@
         "match_kind": null
       },
       "note": "No `Order.cof ℝ = ℵ₀` lemma exists (`cof_eq_aleph0` needs countability, which ℝ lacks).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8ae9fec063cb"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": null
       },
       "note": "This is an informal meta-observation with no corresponding formal statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4d32809e394b"
     },
     {
       "kind": "proposition",
@@ -211,7 +223,8 @@
         "match_kind": null
       },
       "note": "`ord_cof_eq` produces a well-ordered cofinal subset for already-well-founded linear orders, not the extraction from an arbitrary totally ordered cofinal subset.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "46be5a93749f"
     },
     {
       "kind": "proposition",
@@ -227,7 +240,8 @@
         "match_kind": null
       },
       "note": "No formalization of this non-isomorphism observation was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "233a4b4c0b5b"
     },
     {
       "kind": "proposition",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "No lemma establishing order-isomorphism of minimal-order-type cofinal subsets was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "852699928e5c"
     },
     {
       "kind": "definition",
@@ -259,7 +274,8 @@
         "match_kind": "exact"
       },
       "note": "`Ordinal.cof o` is defined as the `Order.cof` of any linear order isomorphic to `o`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4e87ea87fc01"
     },
     {
       "kind": "definition",
@@ -275,7 +291,8 @@
         "match_kind": "exact"
       },
       "note": "`cof_type : (typeLT α).cof = Order.cof α` identifies cofinality of a well-ordered set with that of its order type.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "aaa46daeabb1"
     },
     {
       "kind": "proposition",
@@ -291,7 +308,8 @@
         "match_kind": "generalization"
       },
       "note": "`exists_isFundamentalSeq` gives a strictly increasing (via `IsFundamentalSeq.iSup_eq`) cofinal sequence of length `o.cof.ord`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cd528dad2c96"
     },
     {
       "kind": "proposition",
@@ -307,7 +325,8 @@
         "match_kind": "exact"
       },
       "note": "`cof_eq_aleph0_of_isSuccLimit (ho : IsSuccLimit o) (ho' : o < ω₁) : cof o = ℵ₀` is exactly this.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "86d73e7cc71b"
     },
     {
       "kind": "proposition",
@@ -323,7 +342,8 @@
         "match_kind": null
       },
       "note": "This existential/illustrative dichotomy is not stated as a formal result.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5b7059435b77"
     },
     {
       "kind": "proposition",
@@ -339,7 +359,8 @@
         "match_kind": "exact"
       },
       "note": "`cof_zero : cof 0 = 0` is exactly this.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5d5beb6b82b8"
     },
     {
       "kind": "proposition",
@@ -355,7 +376,8 @@
         "match_kind": "exact"
       },
       "note": "`cof_succ (o) : cof (succ o) = 1` is exactly this.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8256e75613a6"
     },
     {
       "kind": "proposition",
@@ -371,7 +393,8 @@
         "match_kind": "exact"
       },
       "note": "`isRegular_cof (h : IsSuccLimit o) : IsRegular o.cof`, where `IsRegular` includes infiniteness.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1eddad02862a"
     },
     {
       "kind": "definition",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "Mathlib defines `IsRegular` for cardinals (infinite, equal to its cofinality), but has no notion of a regular ordinal.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a0953417d282"
     },
     {
       "kind": "definition",
@@ -403,7 +427,8 @@
         "match_kind": null
       },
       "note": "Mathlib defines `IsSingular` for cardinals, but has no notion of a singular ordinal.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "51a793963e04"
     },
     {
       "kind": "proposition",
@@ -419,7 +444,8 @@
         "match_kind": null
       },
       "note": "Without a regular-ordinal definition, this statement (regular ordinals are `ord` of cardinals) is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4e3ba9598385"
     },
     {
       "kind": "proposition",
@@ -435,7 +461,8 @@
         "match_kind": null
       },
       "note": "No formal statement about limits of regular ordinals being initial yet possibly singular was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3cc23a29c798"
     },
     {
       "kind": "proposition",
@@ -451,7 +478,8 @@
         "match_kind": "exact"
       },
       "note": "`isRegular_aleph_add_one (o) : IsRegular (ℵ_ (o + 1))` is exactly that successor alephs are regular.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "572f892c3d09"
     },
     {
       "kind": "proposition",
@@ -467,7 +495,8 @@
         "match_kind": "exact"
       },
       "note": "`cof_ord_cof (o) : o.cof.ord.cof = o.cof` is exactly the idempotency/regularity of cofinality.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fedf0b8ced20"
     },
     {
       "kind": "definition",
@@ -493,7 +522,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\operatorname {cf} (\\kappa )=\\min \\left\\{|I|\\ :\\ \\kappa =\\sum _{i\\in I}\\lambda _{i}\\ \\land \\forall i\\in I\\colon \\lambda _{i}&lt;\\kappa \\right\\}.}"
         }
-      ]
+      ],
+      "id": "00cea46d8828"
     },
     {
       "kind": "proposition",
@@ -519,7 +549,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\operatorname {cf} (\\kappa )=\\min \\left\\{|I|\\ :\\ \\kappa =\\sum _{i\\in I}\\lambda _{i}\\ \\land \\forall i\\in I\\colon \\lambda _{i}&lt;\\kappa \\right\\}.}"
         }
-      ]
+      ],
+      "id": "3ddac8d2fe53"
     },
     {
       "kind": "proposition",
@@ -545,7 +576,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\kappa =\\bigcup _{i\\in \\kappa }\\{i\\}}"
         }
-      ]
+      ],
+      "id": "232d0e1a54d8"
     },
     {
       "kind": "theorem",
@@ -561,7 +593,8 @@
         "match_kind": "exact"
       },
       "note": "`lt_power_cof_ord : c < c ^ c.ord.cof` and `lt_cof_ord_power : a < (b ^ a).ord.cof` are the König cofinality inequalities.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3ec53d42726a"
     },
     {
       "kind": "proposition",
@@ -591,7 +624,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle 2^{\\aleph _{0}}\\neq \\aleph _{\\omega }.}"
         }
-      ]
+      ],
+      "id": "a70c3c6cb44c"
     },
     {
       "kind": "proposition",
@@ -621,7 +655,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle 2^{\\aleph _{0}}\\neq \\aleph _{\\omega }.}"
         }
-      ]
+      ],
+      "id": "549317180d8f"
     },
     {
       "kind": "proposition",
@@ -647,7 +682,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\operatorname {cf} (\\aleph _{\\delta })=\\operatorname {cf} (\\delta ).}"
         }
-      ]
+      ],
+      "id": "f4a7a3d958a4"
     },
     {
       "kind": "proposition",
@@ -673,7 +709,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\operatorname {cf} (\\aleph _{\\delta })=\\aleph _{\\delta }.}"
         }
-      ]
+      ],
+      "id": "5ef2e4c82fb7"
     }
   ]
 }

@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "`Cardinal.cantor` states `a < 2 ^ a` for every cardinal, i.e. a set has strictly smaller cardinality than its power set.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "11a0b8acb347"
     },
     {
       "kind": "example",
@@ -35,7 +36,8 @@
         "match_kind": "generalization"
       },
       "note": "The finite case `n < 2^n` is a direct instance of the general `Cardinal.cantor`, which holds for all (including finite) cardinals.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5b2499f03f24"
     },
     {
       "kind": "proposition",
@@ -51,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "`Cardinal.mk_real : #ℝ = 𝔠 = 2^ℵ₀` gives reals = power set of ℕ, and `Cardinal.aleph0_lt_continuum` shows this exceeds ℵ₀ = #ℤ.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9f049b0a76bb"
     },
     {
       "kind": "proposition",
@@ -67,7 +70,8 @@
         "match_kind": "invocation"
       },
       "note": "The `NoMaxOrder Cardinal` instance (Order.lean:344) is derived directly from `Cardinal.cantor`, formalizing that no largest cardinal exists.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "858d404a3218"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "`Cardinal.le_def : #α ≤ #β ↔ Nonempty (α ↪ β)` is the definitional characterization of cardinal comparison via injections.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9de21b3f4361"
     },
     {
       "kind": "proposition",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "`Function.cantor_surjective` states that no `f : α → Set α` is surjective, exactly the no-surjection-onto-power-set claim.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "773b6cdc4f7e"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": null
       },
       "note": "The diagonal set `{a | a ∉ f a}` appears inline within the proof of `Function.cantor_surjective` but is not a standalone named definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "eadeb2f90a92"
     },
     {
       "kind": "theorem",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "The boxed statement |A| < |𝒫(A)| is `Cardinal.cantor` (with the surjection form available as `Function.cantor_surjective`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "96ff69ed4452"
     },
     {
       "kind": "example",
@@ -147,7 +155,8 @@
         "match_kind": "special_case"
       },
       "note": "`Cardinal.aleph0_lt_continuum : ℵ₀ < 𝔠 = 2^ℵ₀` is exactly Cantor's theorem for the countably infinite set ℕ.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ba543cdd7972"
     },
     {
       "kind": "proposition",
@@ -163,7 +172,8 @@
         "match_kind": null
       },
       "note": "The underlying fact (no largest cardinal, via the `NoMaxOrder Cardinal` instance from `Cardinal.cantor`) is formalized, but the paradox of a set of all cardinals is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7cc1c9aea606"
     },
     {
       "kind": "definition",
@@ -179,7 +189,8 @@
         "match_kind": null
       },
       "note": "Mathlib's type theory has no unrestricted comprehension, and grep found no formalization of the Russell set `{x | x ∉ x}`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "af074a40118a"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": null
       },
       "note": "Russell's paradox does not arise in Lean's type theory and is not formalized in Mathlib (the closest analog being `Function.not_surjective_Type`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2b3cbed3d195"
     },
     {
       "kind": "proposition",
@@ -211,7 +223,8 @@
         "match_kind": "exact"
       },
       "note": "`Function.cantor_surjective` over `Set α` (= `α → Prop`, the 2-valued functions on α) is exactly Cantor's 1891 indicator-function formulation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "aaca2c17f8f5"
     },
     {
       "kind": "proposition",
@@ -227,7 +240,8 @@
         "match_kind": "exact"
       },
       "note": "Propositional functions on α are `α → Prop ≃ Set α`, so `#α < #(Set α)` (`Function.cantor_surjective`) is the claim that there are more predicates than objects.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7630b2377991"
     },
     {
       "kind": "theorem",
@@ -243,7 +257,8 @@
         "match_kind": "exact"
       },
       "note": "Zermelo's statement that every set has lesser cardinality than its power set is precisely `Cardinal.cantor`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "00cc16b5a2e9"
     },
     {
       "kind": "theorem",
@@ -259,7 +274,8 @@
         "match_kind": "special_case"
       },
       "note": "`Function.exists_fixed_point_of_surjective` is the Type-category instance of Lawvere's fixed-point theorem, as its docstring explicitly notes.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "14cb875b2e0e"
     }
   ]
 }

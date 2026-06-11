@@ -19,7 +19,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib has no top-level `ImproperIntegral` definition; the AECover framework and `intervalIntegral_tendsto_integral_Ioi` provide the underlying machinery.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5af8589e737e"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not formalize the textbook three-kind classification of improper integrals.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dd6082075abd"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "`intervalIntegral_tendsto_integral_Ioi` (and the `Iic` version) expresses the integral on `Ioi a` as the limit of definite integrals, exactly the improper-integral-as-limit definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5bdc0dbbb5f5"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "generalization"
       },
       "note": "Splitting at an interior singularity is not a named concept, but the AECover formalism can express such two-sided limits.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "db58a9dffa1b"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "generalization"
       },
       "note": "Endpoint singularities are handled implicitly through the AECover/Ioi-limit framework rather than as a dedicated definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "226465735a30"
     },
     {
       "kind": "example",
@@ -99,7 +104,8 @@
         "match_kind": "generalization"
       },
       "note": "`integral_Ioi_rpow_of_lt` evaluates `∫ x in Ioi c, x^a` for `a < -1`, which covers `a = -2`, `c = 1`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "219350ebdd7c"
     },
     {
       "kind": "example",
@@ -115,7 +121,8 @@
         "match_kind": "generalization"
       },
       "note": "The specific `∫₀¹ x^{-1/2}` example is not stated, but `integrableOn_Ioi_rpow_iff` and related lemmas cover its convergence behavior.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6a97af636840"
     },
     {
       "kind": "example",
@@ -131,7 +138,8 @@
         "match_kind": null
       },
       "note": "This specific doubly improper example is not present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6db4896e9976"
     },
     {
       "kind": "example",
@@ -147,7 +155,8 @@
         "match_kind": "generalization"
       },
       "note": "`not_integrableOn_Ioi_rpow` shows `x^s` is never integrable on `Ioi 0`, capturing the divergence of `1/x` and `1/√x`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e5a04dac6488"
     },
     {
       "kind": "example",
@@ -163,7 +172,8 @@
         "match_kind": "generalization"
       },
       "note": "Interval-additivity of integrals lets one split at an interior point, but the improper-splitting protocol is not a named lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "153376dd0ca1"
     },
     {
       "kind": "definition",
@@ -179,7 +189,8 @@
         "match_kind": "generalization"
       },
       "note": "Convergence is captured via integrability on `Ioi a` together with `intervalIntegral_tendsto_integral_Ioi`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5596c592bf1d"
     },
     {
       "kind": "definition",
@@ -195,7 +206,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not have a named concept of an improper integral diverging to `+∞`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d64ead917fa7"
     },
     {
       "kind": "definition",
@@ -211,7 +223,8 @@
         "match_kind": null
       },
       "note": "There is no `divergence by oscillation` concept in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "18216ce6934e"
     },
     {
       "kind": "definition",
@@ -227,7 +240,8 @@
         "match_kind": "generalization"
       },
       "note": "AECover supports two-sided limit definitions (e.g. via `Ioc (-n) n`) but the textbook two-limit definition is not a named lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6c47e6d9f14e"
     },
     {
       "kind": "example",
@@ -243,7 +257,8 @@
         "match_kind": "exact"
       },
       "note": "`integral_gaussian` proves `∫ x : ℝ, exp (-b * x^2) = √(π / b)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2831a0059358"
     },
     {
       "kind": "definition",
@@ -259,7 +274,8 @@
         "match_kind": null
       },
       "note": "Cauchy principal value is not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "24b4af0c5c0c"
     },
     {
       "kind": "proposition",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "Mathlib uses the Bochner/Lebesgue integral throughout; the comparison theorem itself is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c1348dc0842e"
     },
     {
       "kind": "proposition",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "Although `BoxIntegral.IntegrationParams.Henstock` is defined, the principle that HK eliminates improper integration is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ee9e4dcd3751"
     },
     {
       "kind": "theorem",
@@ -307,7 +325,8 @@
         "match_kind": null
       },
       "note": "Apostol's exact statement comparing Riemann integrability on compact subintervals with Lebesgue integrability is not present.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2b5ace04ffc8"
     },
     {
       "kind": "example",
@@ -323,7 +342,8 @@
         "match_kind": null
       },
       "note": "The notion of `properly improper` integrals is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ebc16a9d7bde"
     },
     {
       "kind": "definition",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "No singularity catalog for improper integrals exists in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "511ada77664e"
     },
     {
       "kind": "definition",
@@ -355,7 +376,8 @@
         "match_kind": null
       },
       "note": "Cauchy principal value is not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0dff1928d7a9"
     },
     {
       "kind": "definition",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "General summability methods for integrals are not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1fc8cd66ff3a"
     },
     {
       "kind": "definition",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "Cesàro summability for integrals is not formalized; only a Cesàro-type asymptotic for sequences appears in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bdb2388e2d69"
     },
     {
       "kind": "proposition",
@@ -403,7 +427,8 @@
         "match_kind": null
       },
       "note": "This equivalence is not in Mathlib since (C, α) summability of integrals is absent.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cd655553692d"
     },
     {
       "kind": "example",
@@ -419,7 +444,8 @@
         "match_kind": null
       },
       "note": "No Grandi-series integral example is formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "549fa6ff00d1"
     },
     {
       "kind": "definition",
@@ -435,7 +461,8 @@
         "match_kind": "generalization"
       },
       "note": "AECover is stated in arbitrary measure spaces, but the multivariable Riemann improper integral as such is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a2973ec966de"
     },
     {
       "kind": "definition",
@@ -451,7 +478,8 @@
         "match_kind": null
       },
       "note": "Mathlib uses the Bochner integral; the multivariable Riemann-on-cubes construction is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d340b69a0503"
     },
     {
       "kind": "definition",
@@ -467,7 +495,8 @@
         "match_kind": "exact"
       },
       "note": "`integrable_indicator_iff` characterizes integrability of the zero-extension via the indicator function.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "74ca8ee91144"
     },
     {
       "kind": "definition",
@@ -483,7 +512,8 @@
         "match_kind": "generalization"
       },
       "note": "`BoxIntegral` provides multivariable Riemann-style integrals over boxes, but the textbook 'integrate the zero-extension over a containing box' presentation is not given.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cde24d4cd5fc"
     },
     {
       "kind": "definition",
@@ -499,7 +529,8 @@
         "match_kind": null
       },
       "note": "The Riemann improper integral over an arbitrary unbounded domain via exhaustion by cubes is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2b8c43e02cf6"
     },
     {
       "kind": "definition",
@@ -515,7 +546,8 @@
         "match_kind": null
       },
       "note": "The truncate-at-cutoff-then-take-limit definition is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "af9151ee5e76"
     },
     {
       "kind": "definition",
@@ -531,7 +563,8 @@
         "match_kind": "exact"
       },
       "note": "`posPart_sub_negPart` formalizes `f = f⁺ - f⁻`; `posPart`/`negPart` are defined throughout the order/Lp library.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0cc116d99cf2"
     },
     {
       "kind": "proposition",
@@ -547,7 +580,8 @@
         "match_kind": "generalization"
       },
       "note": "`integrable_norm_iff` shows Bochner integrability is equivalent to integrability of `‖f‖`, but the Riemann-improper version of the article's claim is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d390a7710f96"
     }
   ]
 }

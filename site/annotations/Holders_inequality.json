@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib formalizes the central Hölder inequality `∫ f·g ≤ (∫ fᵖ)^(1/p)·(∫ gᵍ)^(1/q)` for conjugate exponents and ℝ≥0∞-valued measurable functions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7d47a79ef62f"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "exact"
       },
       "note": "`ENNReal.HolderConjugate p q` is defined as `p⁻¹ + q⁻¹ = 1` in `ℝ≥0∞` where `(∞)⁻¹ = 0`, exactly matching the Wikipedia convention.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7a93851b7a85"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "`essSup f μ` is defined as `(ae μ).limsup f`, capturing the essential supremum of a measurable function.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "15b59c303649"
     },
     {
       "kind": "proposition",
@@ -67,7 +70,8 @@
         "match_kind": "special_case"
       },
       "note": "The L² Cauchy–Schwarz inequality is the special case p=q=2 of Mathlib's Hölder inequality for Bochner integrals; the abstract Hilbert-space version is `norm_inner_le_norm`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3ab10fdc1be8"
     },
     {
       "kind": "proposition",
@@ -84,7 +88,8 @@
         "match_kind": "invocation"
       },
       "note": "Mathlib has the underlying pieces (Hölder + `MemLp.mono_exponent` for finite measures) but no single decl stating the relaxed `1/p + 1/q ≤ 1` Hölder on a probability space.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "577a867efeaf"
     },
     {
       "kind": "proposition",
@@ -100,7 +105,8 @@
         "match_kind": "exact"
       },
       "note": "Finite-sum Hölder inequalities for NNReal- and Real-valued sequences (`inner_le_Lp_mul_Lq` and variants) formalize the counting-measure case directly.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d2781e425452"
     },
     {
       "kind": "proposition",
@@ -116,7 +122,8 @@
         "match_kind": "generalization"
       },
       "note": "The multi-function Hölder `lintegral_prod_norm_pow_le` covers the counting-measure (sums) case as a special instance.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "809f2d08df24"
     },
     {
       "kind": "proposition",
@@ -132,7 +139,8 @@
         "match_kind": "exact"
       },
       "note": "`lp.tsum_mul_le_mul_norm` (and `NNReal.inner_le_Lp_mul_Lq_tsum`) state Hölder for the sequence spaces `ℓᵖ` and `ℓ^q`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5e0cf8eac2c3"
     },
     {
       "kind": "proposition",
@@ -148,7 +156,8 @@
         "match_kind": "special_case"
       },
       "note": "The Lebesgue-measure case follows by specializing the general Bochner Hölder inequality `integral_mul_norm_le_Lp_mul_Lq` to `volume`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4193c538fcce"
     },
     {
       "kind": "proposition",
@@ -164,7 +173,8 @@
         "match_kind": "special_case"
       },
       "note": "The probability/random-variable formulation `E[|XY|] ≤ E[|X|^p]^{1/p}·E[|Y|^q]^{1/q}` is a special case of the general Bochner Hölder when `μ` is a probability measure.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "52efed8d356f"
     },
     {
       "kind": "proposition",
@@ -180,7 +190,8 @@
         "match_kind": "exact"
       },
       "note": "`MemLp.mono_exponent` shows that for a finite measure (in particular a probability measure), `MemLp f q μ` and `p ≤ q` imply `MemLp f p μ`, i.e. the lower absolute moment is finite.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9e07f75e9c25"
     },
     {
       "kind": "proposition",
@@ -196,7 +207,8 @@
         "match_kind": "special_case"
       },
       "note": "The general Hölder inequality applies to any measure, including product measures; combined with Tonelli/`lintegral_prod` it yields the iterated-integral form, though no dedicated combined lemma exists.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2de53c9d7d64"
     },
     {
       "kind": "proposition",
@@ -212,7 +224,8 @@
         "match_kind": "exact"
       },
       "note": "This abstract Hölder estimate for `‖b(f,g)‖` under a bilinear bound generalizes the vector-valued case; see also `MemLp.of_bilin` and `ContinuousLinearMap.holder`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "206589396aac"
     },
     {
       "kind": "proposition",
@@ -228,7 +241,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no decl characterizing equality in Hölder's inequality for vector-valued functions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "19ce5e2ab2a3"
     },
     {
       "kind": "proposition",
@@ -244,7 +258,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not formalize the equality characterization for Hölder's inequality.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b05062940368"
     },
     {
       "kind": "theorem",
@@ -260,7 +275,8 @@
         "match_kind": "special_case"
       },
       "note": "`NNReal.isGreatest_Lp` proves the extremal characterization of the `ℓᵖ`-norm over a `Finset` (counting-measure case); the general integral version is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0c01176d1b72"
     },
     {
       "kind": "example",
@@ -276,7 +292,8 @@
         "match_kind": null
       },
       "note": "This counterexample/remark is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0763d579bc7f"
     },
     {
       "kind": "example",
@@ -292,7 +309,8 @@
         "match_kind": null
       },
       "note": "This counterexample about non-attainment for p=1 is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1880cdc02d0f"
     },
     {
       "kind": "proposition",
@@ -308,7 +326,8 @@
         "match_kind": "invocation"
       },
       "note": "`ContinuousLinearMap.lpPairing` constructs the bounded bilinear pairing `Lp E p →L Lp F q →L G` arising from Hölder, but Mathlib does not have a dedicated `L^q → (L^p)*` operator-norm/isometry decl in this generality.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0374ccded0f0"
     },
     {
       "kind": "theorem",
@@ -324,7 +343,8 @@
         "match_kind": "exact"
       },
       "note": "`lintegral_prod_norm_pow_le` formalizes Hölder for a finite family of functions with weights summing to 1.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "70c81398ab54"
     },
     {
       "kind": "proposition",
@@ -340,7 +360,8 @@
         "match_kind": null
       },
       "note": "The weighted-harmonic-mean L^p-norm interpolation inequality is not present as a named lemma in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5bbd53c432f6"
     },
     {
       "kind": "theorem",
@@ -356,7 +377,8 @@
         "match_kind": null
       },
       "note": "Littlewood's L^p interpolation inequality is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "32d4848960c6"
     },
     {
       "kind": "theorem",
@@ -372,7 +394,8 @@
         "match_kind": "exact"
       },
       "note": "`eLpNorm_le_eLpNorm_of_exponent_le` for `IsProbabilityMeasure` gives `‖f‖_p ≤ ‖f‖_q` when `p ≤ q`, which is Lyapunov's inequality on moments.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f55b5177659b"
     },
     {
       "kind": "theorem",
@@ -388,7 +411,8 @@
         "match_kind": null
       },
       "note": "No reverse Hölder inequality is present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8d5d9009d939"
     },
     {
       "kind": "theorem",
@@ -404,7 +428,8 @@
         "match_kind": null
       },
       "note": "The multi-function reverse Hölder inequality is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8a7d3447f265"
     },
     {
       "kind": "theorem",
@@ -420,7 +445,8 @@
         "match_kind": null
       },
       "note": "The symmetric-form Hölder inequality for positive vectors is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "130afd9c390e"
     },
     {
       "kind": "theorem",
@@ -436,7 +462,8 @@
         "match_kind": null
       },
       "note": "Multi-vector symmetric Hölder is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a3f1fea622f1"
     },
     {
       "kind": "theorem",
@@ -452,7 +479,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not contain a conditional-expectation Hölder inequality.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "db8d260ac662"
     },
     {
       "kind": "theorem",
@@ -468,7 +496,8 @@
         "match_kind": null
       },
       "note": "The abstract Hölder inequality for increasing seminorms on a function algebra is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9ecc89f97b9f"
     },
     {
       "kind": "definition",
@@ -484,7 +513,8 @@
         "match_kind": null
       },
       "note": "Hölder divergences (statistical dissimilarity measures) are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "598225762d75"
     }
   ]
 }

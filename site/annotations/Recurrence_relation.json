@@ -19,7 +19,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib has no general recurrence-relation definition; only the linear case is formalized as `LinearRecurrence`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d13be601f487"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "special_case"
       },
       "note": "The order is captured as a field of `LinearRecurrence`, but only for linear recurrences.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "82c18607b853"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "special_case"
       },
       "note": "`LinearRecurrence` formalizes linear recurrences (with constant coefficients) over a commutative semiring.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4d294e92c93f"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "`LinearRecurrence` is exactly the structure of a linear recurrence with constant coefficients.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a70883c5c8cb"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "special_case"
       },
       "note": "`mkSol` produces the unique solution from initial data inductively, but closed-form solutions are not formalized (see file docstring).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2a051bd20e53"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": null
       },
       "note": "No multidimensional recurrence relation concept is formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3e62af2cbdf3"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": "special_case"
       },
       "note": "Only linear first-order recurrences are covered (as `LinearRecurrence` with order = 1); general first-order recurrences are not defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2ac3dca8e0e8"
     },
     {
       "kind": "definition",
@@ -131,7 +138,8 @@
         "match_kind": "special_case"
       },
       "note": "Only the linear order-k case is formalized via `LinearRecurrence`; general (nonlinear) order-k recurrences are not.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "29352f9a62d0"
     },
     {
       "kind": "example",
@@ -147,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat.factorial` is defined by the recurrence and `factorial_succ` states `(n+1)! = (n+1) * n!`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f62d6e99873b"
     },
     {
       "kind": "example",
@@ -163,7 +172,8 @@
         "match_kind": null
       },
       "note": "The logistic map is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e1729e2709e7"
     },
     {
       "kind": "example",
@@ -179,7 +189,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat.fib_add_two` states `fib (n+2) = fib n + fib (n+1)`, exactly the Fibonacci recurrence.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "22928b5ff492"
     },
     {
       "kind": "example",
@@ -195,7 +206,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat.choose_succ_succ` gives Pascal's rule `choose (n+1) (k+1) = choose n k + choose n (k+1)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6adb90543d87"
     },
     {
       "kind": "definition",
@@ -211,7 +223,8 @@
         "match_kind": "exact"
       },
       "note": "`fwdDiff h f n = f (n + h) - f n` formalizes the forward difference operator.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4d04bb9acc41"
     },
     {
       "kind": "definition",
@@ -227,7 +240,8 @@
         "match_kind": "exact"
       },
       "note": "The first difference is `fwdDiff 1 a n = a (n+1) - a n`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0c997cfd6bd4"
     },
     {
       "kind": "definition",
@@ -243,7 +257,8 @@
         "match_kind": "generalization"
       },
       "note": "The second difference is obtained by iterating `fwdDiff` twice (`fwdDiff h^[2]`); no dedicated name exists.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2654bb1357d4"
     },
     {
       "kind": "definition",
@@ -259,7 +274,8 @@
         "match_kind": "generalization"
       },
       "note": "The k-th difference appears as `Function.iterate (fwdDiff h) k` (e.g. in `fwdDiff_iter_eq_sum_shift`) but is not separately defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b96666c533ab"
     },
     {
       "kind": "definition",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "Difference equations are not formalized as a distinct concept in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d160819bdca2"
     },
     {
       "kind": "proposition",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "The equivalence between order-k difference equations and order-k recurrences is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "43fd5f4ac21f"
     },
     {
       "kind": "definition",
@@ -307,7 +325,8 @@
         "match_kind": null
       },
       "note": "Multi-variable / n-dimensional recurrences are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9cb1dea3f04d"
     },
     {
       "kind": "proposition",
@@ -323,7 +342,8 @@
         "match_kind": null
       },
       "note": "No closed-form solution for first-order non-homogeneous linear recurrences with variable coefficients is in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "03fc4c92e7db"
     },
     {
       "kind": "proposition",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "The connection between homogeneous linear recurrences and generalized hypergeometric series is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "be4218197e02"
     },
     {
       "kind": "definition",
@@ -355,7 +376,8 @@
         "match_kind": null
       },
       "note": "P-recursive (holonomic) sequences are not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "14c30c0e0c61"
     },
     {
       "kind": "proposition",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not formalize variation-of-parameter solutions for non-homogeneous linear recurrences.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2c50070ef708"
     },
     {
       "kind": "proposition",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "First-order rational difference equations and their solutions are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a6876293e47e"
     },
     {
       "kind": "theorem",
@@ -403,7 +427,8 @@
         "match_kind": null
       },
       "note": "Stability criteria for higher-order linear recurrences are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fa50f6ff1490"
     },
     {
       "kind": "theorem",
@@ -419,7 +444,8 @@
         "match_kind": null
       },
       "note": "No formalization of convergence/stability of linear first-order matrix recurrences to a steady state.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7f346c582389"
     },
     {
       "kind": "theorem",
@@ -435,7 +461,8 @@
         "match_kind": null
       },
       "note": "Local stability of nonlinear first-order recurrences (e.g. via derivative at fixed point) is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d47c2db1abcf"
     },
     {
       "kind": "proposition",
@@ -451,7 +478,8 @@
         "match_kind": null
       },
       "note": "Cycle-stability criteria for nonlinear recurrences are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "06c0684be89f"
     },
     {
       "kind": "definition",
@@ -467,7 +495,8 @@
         "match_kind": null
       },
       "note": "Chaotic recurrences are not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1b897261cd3e"
     },
     {
       "kind": "example",
@@ -483,7 +512,8 @@
         "match_kind": null
       },
       "note": "Euler's method is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c255f87a042a"
     },
     {
       "kind": "example",
@@ -499,7 +529,8 @@
         "match_kind": null
       },
       "note": "The Nicholson–Bailey host-parasite model is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "81f27fe584db"
     },
     {
       "kind": "example",
@@ -515,7 +546,8 @@
         "match_kind": null
       },
       "note": "The binary-search recurrence T(n) = T(n/2) + O(1) is not formalized as such in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cd545ac16d89"
     },
     {
       "kind": "example",
@@ -531,7 +563,8 @@
         "match_kind": null
       },
       "note": "IIR comb filters are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "01f2d590cdbe"
     }
   ]
 }

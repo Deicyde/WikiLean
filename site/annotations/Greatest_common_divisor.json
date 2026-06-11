@@ -19,7 +19,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib's gcd (specializing to Nat.gcd/Int.gcd) formalizes the greatest common divisor as the divisibility-greatest common divisor.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1b72e2791bb7"
     },
     {
       "kind": "example",
@@ -35,7 +36,8 @@
         "match_kind": "invocation"
       },
       "note": "gcd 8 12 = 4 is a decidable computation of Nat.gcd, provable by `decide`/norm_num via the NormNum.GCD extension.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "196d611fc000"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "Int.gcd a b is the natural-number greatest common divisor of two integers, with extensive divisibility API in this module.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b24a3d416916"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "special_case"
       },
       "note": "gcd a 0 = a holds (for ℤ via Int.gcd this yields a.natAbs = |a|).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3a7cad41ffaa"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "special_case"
       },
       "note": "gcd a b = 0 ↔ a = 0 ∧ b = 0, so gcd 0 0 = 0 matches Mathlib's convention.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4a8c81bc424b"
     },
     {
       "kind": "proposition",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "a ∣ gcd b c ↔ a ∣ b ∧ a ∣ c states that common divisors are exactly the divisors of the gcd.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0578c50329cb"
     },
     {
       "kind": "example",
@@ -115,7 +121,8 @@
         "match_kind": "invocation"
       },
       "note": "gcd 54 24 = 6 is a decidable Nat.gcd computation provable by norm_num/decide.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2389e3f05679"
     },
     {
       "kind": "definition",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "Nat.Coprime m n is defined as gcd m n = 1, matching the coprimality definition (general ring version is IsCoprime).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "95fcbb765bcc"
     },
     {
       "kind": "example",
@@ -147,7 +155,8 @@
         "match_kind": null
       },
       "note": "The geometric tiling interpretation of the gcd is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c81ddf857279"
     },
     {
       "kind": "example",
@@ -163,7 +172,8 @@
         "match_kind": "invocation"
       },
       "note": "Dividing numerator and denominator by their gcd yields coprime quotients (lowest terms), but reducing fractions is an application rather than a named theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0a1813e49c68"
     },
     {
       "kind": "proposition",
@@ -179,7 +189,8 @@
         "match_kind": "invocation"
       },
       "note": "gcd a b * lcm a b = a * b gives lcm = a·b / gcd.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b1c1092ce21e"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": "exact"
       },
       "note": "(gcd a b).factorization = a.factorization ⊓ b.factorization, i.e. the gcd takes the minimum prime exponents.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9f9f2bef0684"
     },
     {
       "kind": "proposition",
@@ -211,7 +223,8 @@
         "match_kind": "special_case"
       },
       "note": "gcd of (a - b) and b equals gcd a b, the subtraction step of Euclid's algorithm.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "88a9b07b30aa"
     },
     {
       "kind": "proposition",
@@ -227,7 +240,8 @@
         "match_kind": "exact"
       },
       "note": "gcd a b = gcd (b % a) a is exactly the remainder form of the Euclidean algorithm (Nat.gcd is defined by this recursion).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "875b54811f0f"
     },
     {
       "kind": "definition",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no binary (Stein's) GCD algorithm implementation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "09d746935b43"
     },
     {
       "kind": "proposition",
@@ -259,7 +274,8 @@
         "match_kind": null
       },
       "note": "Computational complexity of the binary GCD algorithm is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f0c872c56c10"
     },
     {
       "kind": "proposition",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "Lehmer's GCD algorithm is not present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5d06110efa82"
     },
     {
       "kind": "proposition",
@@ -291,7 +308,8 @@
         "match_kind": "invocation"
       },
       "note": "gcd a b * lcm a b = a * b lets gcd be recovered from lcm as a·b / lcm.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "59ec42b54ad2"
     },
     {
       "kind": "proposition",
@@ -307,7 +325,8 @@
         "match_kind": null
       },
       "note": "The Thomae-function formula for gcd is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d011213ca08c"
     },
     {
       "kind": "theorem",
@@ -323,7 +342,8 @@
         "match_kind": null
       },
       "note": "Slavin's gcd formula is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6b03492601b8"
     },
     {
       "kind": "theorem",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "Schramm's entire-function formula for gcd is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3c31e79621cf"
     },
     {
       "kind": "proposition",
@@ -355,7 +376,8 @@
         "match_kind": null
       },
       "note": "Bit-complexity bounds for GCD computation are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "623ed5a38c48"
     },
     {
       "kind": "proposition",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "GCD complexity with fast multiplication is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4f3b91894311"
     },
     {
       "kind": "proposition",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "Complexity-class statements about GCD are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1d80e9680e5d"
     },
     {
       "kind": "proposition",
@@ -403,7 +427,8 @@
         "match_kind": null
       },
       "note": "The Chor–Goldreich parallel GCD algorithm is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2c5894c6af96"
     },
     {
       "kind": "proposition",
@@ -419,7 +444,8 @@
         "match_kind": "generalization"
       },
       "note": "gcd a a = a (Nat.gcd_self gives the natural-number special case).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cc091b634981"
     },
     {
       "kind": "proposition",
@@ -435,7 +461,8 @@
         "match_kind": "exact"
       },
       "note": "c ∣ gcd a b ↔ c ∣ a ∧ c ∣ b, so every common divisor divides the gcd (also Nat.gcd_greatest).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "86a98318d8e9"
     },
     {
       "kind": "proposition",
@@ -451,7 +478,8 @@
         "match_kind": "exact"
       },
       "note": "gcd a b = a * gcdA a b + b * gcdB a b is Bézout's identity expressing the gcd as an integer combination.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f8f424fe5933"
     },
     {
       "kind": "proposition",
@@ -467,7 +495,8 @@
         "match_kind": "special_case"
       },
       "note": "gcd a 0 = a (Int.gcd a 0 = a.natAbs = |a|), since everything divides 0.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4d70b7e33628"
     },
     {
       "kind": "proposition",
@@ -483,7 +512,8 @@
         "match_kind": "generalization"
       },
       "note": "If a is coprime to b and a ∣ b·c then a ∣ c (Nat.Coprime.dvd_of_dvd_mul_left gives the integer case).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b6fdbeb4a0dd"
     },
     {
       "kind": "proposition",
@@ -499,7 +529,8 @@
         "match_kind": "exact"
       },
       "note": "gcd (m*a) (m*b) = m * gcd a b expresses scaling of the gcd by a common factor.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2d6099ee8fb6"
     },
     {
       "kind": "proposition",
@@ -515,7 +546,8 @@
         "match_kind": "special_case"
       },
       "note": "gcd lemmas like gcd (a + m*b) b = gcd a b formalize invariance of the gcd under adding a multiple.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e3f2ac7d5cb6"
     },
     {
       "kind": "proposition",
@@ -531,7 +563,8 @@
         "match_kind": "exact"
       },
       "note": "For m ∣ a and m ∣ b, gcd (a/m) (b/m) = gcd a b / m.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2389d9cea742"
     },
     {
       "kind": "proposition",
@@ -547,7 +580,8 @@
         "match_kind": "exact"
       },
       "note": "Dividing a and b by their gcd produces coprime quotients.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c753470f23e7"
     },
     {
       "kind": "proposition",
@@ -563,7 +597,8 @@
         "match_kind": "generalization"
       },
       "note": "gcd a b = gcd b a in any NormalizedGCDMonoid (Nat.gcd_comm is the special case).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5d9442225c02"
     },
     {
       "kind": "proposition",
@@ -579,7 +614,8 @@
         "match_kind": "generalization"
       },
       "note": "gcd (gcd m n) k = gcd m (gcd n k) in any NormalizedGCDMonoid.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e46f188ec923"
     },
     {
       "kind": "proposition",
@@ -595,7 +631,8 @@
         "match_kind": "exact"
       },
       "note": "For coprime m, n, gcd k (m*n) = gcd k m * gcd k n, the multiplicative property of the gcd.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "89c5d7e22277"
     },
     {
       "kind": "proposition",
@@ -611,7 +648,8 @@
         "match_kind": "generalization"
       },
       "note": "gcd a b * lcm a b is associated to a * b (Nat.gcd_mul_lcm gives equality on ℕ).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d9050a27d2c6"
     },
     {
       "kind": "proposition",
@@ -627,7 +665,8 @@
         "match_kind": null
       },
       "note": "Full gcd/lcm distributive laws gcd a (lcm b c) = lcm (gcd a b) (gcd a c) are not stated as named lemmas, though the gcd/lcm and dvd infrastructure exists.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9f8be728d322"
     },
     {
       "kind": "proposition",
@@ -643,7 +682,8 @@
         "match_kind": "exact"
       },
       "note": "(gcd a b).factorization = a.factorization ⊓ b.factorization, the minimum-exponent product formula.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7d3677bd92f7"
     },
     {
       "kind": "proposition",
@@ -659,7 +699,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no complete-distributive-lattice instance on ℕ ordered by divisibility with gcd as meet and lcm as join.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "57234a0bca34"
     },
     {
       "kind": "proposition",
@@ -675,7 +716,8 @@
         "match_kind": null
       },
       "note": "The count of lattice points on the segment from origin to (a,b) being gcd(a,b) is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "190fb5f033c4"
     },
     {
       "kind": "proposition",
@@ -691,7 +733,8 @@
         "match_kind": null
       },
       "note": "The identity gcd(n^a−1, n^b−1) = n^gcd(a,b)−1 is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "db75cbe9b3d1"
     },
     {
       "kind": "proposition",
@@ -707,7 +750,8 @@
         "match_kind": "exact"
       },
       "note": "φ(gcd a b) * φ(a*b) = φ a * φ b * gcd a b, equivalent to the Wikipedia totient–gcd identity.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5987801b7b4e"
     },
     {
       "kind": "proposition",
@@ -723,7 +767,8 @@
         "match_kind": null
       },
       "note": "Pillai's gcd-summatory function and its formula are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ff191f7d07fa"
     },
     {
       "kind": "theorem",
@@ -739,7 +784,8 @@
         "match_kind": null
       },
       "note": "The probability 1/ζ(k) that k random integers are coprime is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ed8a784df654"
     },
     {
       "kind": "theorem",
@@ -755,7 +801,8 @@
         "match_kind": null
       },
       "note": "The asymptotic probability that gcd of k random integers equals d is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "497128d6a810"
     },
     {
       "kind": "proposition",
@@ -771,7 +818,8 @@
         "match_kind": null
       },
       "note": "Statements about the (non)existence of the expected gcd are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c0dc5b8496fb"
     },
     {
       "kind": "proposition",
@@ -787,7 +835,8 @@
         "match_kind": null
       },
       "note": "Well-definedness of the expected gcd for k ≥ 3 is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6a8477613283"
     },
     {
       "kind": "definition",
@@ -803,7 +852,8 @@
         "match_kind": "generalization"
       },
       "note": "GCDMonoid axiomatizes gcd on a CommMonoidWithZero, the general-ring notion of greatest common divisor.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2459b21b1491"
     },
     {
       "kind": "definition",
@@ -819,7 +869,8 @@
         "match_kind": "invocation"
       },
       "note": "A common divisor is just c ∣ a ∧ c ∣ b (expressed via Dvd); there is no dedicated named predicate, but dvd_gcd_iff characterizes such divisors.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1e525f4f01db"
     },
     {
       "kind": "definition",
@@ -835,7 +886,8 @@
         "match_kind": "generalization"
       },
       "note": "GCDMonoid.gcd with gcd_dvd_left/right and dvd_gcd captures d being a common divisor that every common divisor divides.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ddc108c0e607"
     },
     {
       "kind": "proposition",
@@ -851,7 +903,8 @@
         "match_kind": null
       },
       "note": "Mathlib's gcd is canonical and unique up to associates (gcd_greatest_associated), but there is no standalone theorem that any two abstract gcds are associate.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4be2c2b0cacf"
     },
     {
       "kind": "proposition",
@@ -867,7 +920,8 @@
         "match_kind": null
       },
       "note": "No Mathlib theorem asserts that GCDs can fail to exist in a general integral domain.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c99e4cfe496f"
     },
     {
       "kind": "proposition",
@@ -883,7 +937,8 @@
         "match_kind": "exact"
       },
       "note": "Any UniqueFactorizationMonoid admits a GCDMonoid structure, so any two elements have a gcd.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "31beadee6b46"
     },
     {
       "kind": "proposition",
@@ -899,7 +954,8 @@
         "match_kind": "exact"
       },
       "note": "EuclideanDomain.gcd is the algorithmic gcd, and EuclideanDomain.gcdMonoid gives the corresponding GCDMonoid instance.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1fd1bcc306ac"
     },
     {
       "kind": "example",
@@ -915,7 +971,8 @@
         "match_kind": null
       },
       "note": "A worked example of an integral domain whose two elements have no gcd is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "31da8764f803"
     },
     {
       "kind": "proposition",
@@ -931,7 +988,8 @@
         "match_kind": "exact"
       },
       "note": "span_gcd shows Ideal.span {gcd x y} = Ideal.span {x, y}, i.e. gcd generates the ideal generated by a and b.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "406909461b51"
     }
   ]
 }

@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "`Structure` interprets each n-ary function symbol as `(Fin n → M) → M` and each relation as `(Fin n → M) → Prop`, matching the informal notion.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "55751e488d22"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "exact"
       },
       "note": "`Theory.Model T M` holds exactly when `M` realizes every sentence of `T`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f41a7b435d11"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib splits the triple into domain `M`, signature `L`, and the `Structure` interpretation rather than one bundled object, but captures the same data.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7378a1fb3349"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": null
       },
       "note": "The domain is represented directly by the carrier type `M` in `[L.Structure M]`, with no dedicated declaration.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e603c79ccc49"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "`Language` is a pair `Functions, Relations : ℕ → Type` giving the function and relation symbols of each arity.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fd25f68bc440"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": null
       },
       "note": "Arity is encoded as the natural-number index `n` in `L.Functions n`/`L.Relations n` rather than as a separate arity function.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f77ccedbe20a"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": "exact"
       },
       "note": "`IsAlgebraic L` states every `L.Relations n` is empty, i.e. the signature has no relation symbols.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f1744ba3f0e9"
     },
     {
       "kind": "definition",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "The `funMap` and `RelMap` fields of `Structure` are precisely the interpretation assigning concrete functions/relations to symbols.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0471a562825f"
     },
     {
       "kind": "definition",
@@ -147,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "`L.Constants` is defined as `L.Functions 0`, the nullary (constant) function symbols, with interpretation `constantMap`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3baf319b77ba"
     },
     {
       "kind": "example",
@@ -173,7 +182,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\begin{alignedat}{3}{\\mathcal {Q}}&amp;=(\\mathbb {Q} ,\\sigma _{f},I_{\\mathcal {Q}})\\\\{\\mathcal {R}}&amp;=(\\mathbb {R} ,\\sigma _{f},I_{\\mathcal {R}})\\\\{\\mathcal {C}}&amp;=(\\mathbb {C} ,\\sigma _{f},I_{\\mathcal {C}})\\\\\\end{alignedat}}}"
         }
-      ]
+      ],
+      "id": "0267c74400c0"
     },
     {
       "kind": "example",
@@ -189,7 +199,8 @@
         "match_kind": "invocation"
       },
       "note": "`compatibleRingOfRing` turns any ring (including `ℤ`) into a `Language.ring` structure, but `ℤ` is not given as a dedicated worked example.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "10e099cf4929"
     },
     {
       "kind": "example",
@@ -205,7 +216,8 @@
         "match_kind": null
       },
       "note": "`Language.order` supplies the extra `≤` relation and `Language.sum` could combine it with `Language.ring`, but no dedicated ordered-field signature is defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6768ea65c4ad"
     },
     {
       "kind": "example",
@@ -221,7 +233,8 @@
         "match_kind": null
       },
       "note": "No first-order language with a single membership relation `∈` for set theory exists in Mathlib's ModelTheory.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9f6b1f6ddbd5"
     },
     {
       "kind": "definition",
@@ -237,7 +250,8 @@
         "match_kind": "exact"
       },
       "note": "`Substructure` is a subset closed under all function symbols, inheriting the interpretations from the ambient structure.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dda1e742fea1"
     },
     {
       "kind": "definition",
@@ -253,7 +267,8 @@
         "match_kind": "exact"
       },
       "note": "`ClosedUnder f s` expresses closure under a function symbol, and `Substructure.fun_mem`/`mem_closed_iff` require closure under all of them.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "72efe1b932b9"
     },
     {
       "kind": "proposition",
@@ -269,7 +284,8 @@
         "match_kind": "exact"
       },
       "note": "`Substructure.closure L s` is the least substructure containing `s`, characterized by `closure_le` and `subset_closure`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "898c72172494"
     },
     {
       "kind": "proposition",
@@ -285,7 +301,8 @@
         "match_kind": null
       },
       "note": "`closure` is built as a `LowerAdjoint`/`GaloisInsertion` closure operator and `mem_closure_iff_exists_term` implies finitarity, but it is not stated as a `finitary` closure operator.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8a81e22cad77"
     },
     {
       "kind": "proposition",
@@ -301,7 +318,8 @@
         "match_kind": "exact"
       },
       "note": "`mem_closed_iff` shows a set is closure-closed iff closed under every function symbol, which is exactly being a substructure's carrier.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3d33d56c76d2"
     },
     {
       "kind": "proposition",
@@ -317,7 +335,8 @@
         "match_kind": "generalization"
       },
       "note": "`L.Substructure M` is given a `CompleteLattice` instance, stronger than the asserted lattice.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a196e893e9b8"
     },
     {
       "kind": "example",
@@ -333,7 +352,8 @@
         "match_kind": null
       },
       "note": "The general `Substructure` framework exists but these specific `ℚ ⊆ ℝ ⊆ ℂ` field-language substructures are not worked out in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4c9768de9647"
     },
     {
       "kind": "example",
@@ -349,7 +369,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not formalize `ℤ` as a model-theoretic substructure of `ℝ` in the field signature.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d166e9c849f3"
     },
     {
       "kind": "example",
@@ -365,7 +386,8 @@
         "match_kind": "exact"
       },
       "note": "`Language.graph` has one binary relation `adj` and `SimpleGraph.structure` makes any simple graph a structure for it.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "75784c599dc2"
     },
     {
       "kind": "definition",
@@ -381,7 +403,8 @@
         "match_kind": "exact"
       },
       "note": "`Hom` (`M →[L] N`) is a map commuting with function interpretations and forward-preserving relations.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d951b7afe787"
     },
     {
       "kind": "proposition",
@@ -397,7 +420,8 @@
         "match_kind": null
       },
       "note": "`Hom.id`, `Hom.comp`, and `Hom.comp_assoc` give all the categorical data, but no `CategoryTheory.Category` instance on `L`-structures is registered.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "340f65c6ba41"
     },
     {
       "kind": "definition",
@@ -413,7 +437,8 @@
         "match_kind": "exact"
       },
       "note": "`StrongHomClass.map_rel` requires the relation-preservation to hold as an iff (both directions).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d6edca04aeba"
     },
     {
       "kind": "proposition",
@@ -429,7 +454,8 @@
         "match_kind": null
       },
       "note": "`StrongHomClass` captures strong homomorphisms, but with no category of structures there is no formalized subcategory.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0c97d26759e6"
     },
     {
       "kind": "definition",
@@ -445,7 +471,8 @@
         "match_kind": "exact"
       },
       "note": "`Embedding` (`M ↪[L] N`) is an injection commuting with functions and preserving relations in both directions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d225326a1c52"
     },
     {
       "kind": "proposition",
@@ -461,7 +488,8 @@
         "match_kind": "exact"
       },
       "note": "`Embedding.strongHomClass` makes embeddings strong homs and `StrongHomClass.toEmbedding` builds an embedding from an injective strong hom, giving the equivalence.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3f86bdf491b8"
     },
     {
       "kind": "proposition",
@@ -477,7 +505,8 @@
         "match_kind": null
       },
       "note": "`Substructure.subtype`/`inclusion` realize substructures via embeddings, but there is no category to phrase the subobject correspondence.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "956a2ffacb25"
     },
     {
       "kind": "example",
@@ -493,7 +522,8 @@
         "match_kind": null
       },
       "note": "The general substructure `inclusion` is an embedding (hence homomorphism), but the specific subgraph inclusion as a graph-language homomorphism is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "af5fea5c0bac"
     },
     {
       "kind": "definition",
@@ -509,7 +539,8 @@
         "match_kind": null
       },
       "note": "The computational homomorphism decision problem is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bd924a0c74db"
     },
     {
       "kind": "proposition",
@@ -525,7 +556,8 @@
         "match_kind": null
       },
       "note": "Constraint satisfaction problems and their reduction to the homomorphism problem are not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "75b26d69136c"
     },
     {
       "kind": "proposition",
@@ -541,7 +573,8 @@
         "match_kind": null
       },
       "note": "Database conjunctive query evaluation and its equivalence to the homomorphism problem are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ad3df08764c7"
     },
     {
       "kind": "definition",
@@ -557,7 +590,8 @@
         "match_kind": "exact"
       },
       "note": "`BoundedFormula.Realize` (with `Formula.Realize`/`Sentence.Realize`, notation `M ⊨ φ`) is the inductively defined satisfaction relation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "21e812b69fc0"
     },
     {
       "kind": "definition",
@@ -573,7 +607,8 @@
         "match_kind": "exact"
       },
       "note": "`Theory.Model T M` (notation `M ⊨ T`) holds iff `M` satisfies every sentence of `T`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "954608536243"
     },
     {
       "kind": "definition",
@@ -603,7 +638,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle (a_{1},\\ldots ,a_{n})\\in R\\Leftrightarrow {\\mathcal {M}}\\vDash \\varphi (a_{1},\\ldots ,a_{n})}"
         }
-      ]
+      ],
+      "id": "34b8ada5df1e"
     },
     {
       "kind": "definition",
@@ -629,7 +665,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\mathcal {M}}\\vDash \\forall x(x=m\\leftrightarrow \\varphi (x)).}"
         }
-      ]
+      ],
+      "id": "c1428178d131"
     },
     {
       "kind": "definition",
@@ -645,7 +682,8 @@
         "match_kind": "exact"
       },
       "note": "`Set.Definable A L s` is literally definability with parameters drawn from the set `A`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cc3c04224e98"
     },
     {
       "kind": "proposition",
@@ -661,7 +699,8 @@
         "match_kind": "exact"
       },
       "note": "`Definable.singleton` proves `{a}` is definable over `{a}`, i.e. each element is definable using itself as a parameter.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9f6f948ce9b2"
     },
     {
       "kind": "definition",
@@ -677,7 +716,8 @@
         "match_kind": null
       },
       "note": "Implicit definability of a relation is not defined in Mathlib's ModelTheory.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4972fe874025"
     },
     {
       "kind": "theorem",
@@ -693,7 +733,8 @@
         "match_kind": null
       },
       "note": "Beth's definability theorem is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c556100f6c87"
     },
     {
       "kind": "definition",
@@ -709,7 +750,8 @@
         "match_kind": null
       },
       "note": "Mathlib's first-order model theory is single-sorted; many-sorted structures are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0900a8fbd884"
     },
     {
       "kind": "example",
@@ -725,7 +767,8 @@
         "match_kind": null
       },
       "note": "There is no two-sorted model-theoretic treatment of vector spaces in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9c46860b7b28"
     },
     {
       "kind": "example",
@@ -741,7 +784,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no first-order theory of groups nor the notions of elementary class versus variety in model theory.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "68653be395a9"
     },
     {
       "kind": "definition",
@@ -757,7 +801,8 @@
         "match_kind": null
       },
       "note": "Model-theoretic structures use total `funMap`; partial algebras are not formalized in ModelTheory.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "145f3f85f1f1"
     },
     {
       "kind": "definition",
@@ -773,7 +818,8 @@
         "match_kind": null
       },
       "note": "The inductive type hierarchy for typed object languages is not formalized as a model-theoretic notion.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2dead7e2f117"
     },
     {
       "kind": "definition",
@@ -789,7 +835,8 @@
         "match_kind": null
       },
       "note": "Typed-language structures with a separate domain per type are not formalized in Mathlib's ModelTheory.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e4db1ed45d26"
     },
     {
       "kind": "definition",
@@ -805,7 +852,8 @@
         "match_kind": null
       },
       "note": "Higher-order structures with full semantics are not formalized in Mathlib's model theory.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "189d0ffceddb"
     },
     {
       "kind": "definition",
@@ -821,7 +869,8 @@
         "match_kind": null
       },
       "note": "Mathlib structures are over a `Type`, so proper-class models are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "87eb0e39fa1e"
     }
   ]
 }

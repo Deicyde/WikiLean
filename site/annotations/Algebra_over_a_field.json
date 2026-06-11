@@ -19,7 +19,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib's `Algebra R A` class for `CommSemiring R` and `Semiring A` generalizes the field-base notion.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d3a4b7903905"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "special_case"
       },
       "note": "Associative algebras are `Algebra` (over `Semiring A`); non-associative variants exist via `NonUnitalNonAssocSemiring`/`NonUnitalAlgHom` but there is no top-level `NonAssocAlgebra` class.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1b9b7b4c56ab"
     },
     {
       "kind": "example",
@@ -51,7 +53,8 @@
         "match_kind": "generalization"
       },
       "note": "`Matrix.instAlgebra` makes `Matrix n n α` an `R`-algebra over any base commutative ring, including ℝ.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8412cb021547"
     },
     {
       "kind": "example",
@@ -67,7 +70,8 @@
         "match_kind": null
       },
       "note": "`crossProduct` is defined as a bilinear map on `Fin 3 → R` but is not packaged as a (non-associative) algebra instance.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ca6b8892a6ef"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "The Mathlib `Algebra` class is unital by construction since it extends `Semiring A` (which has `1`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c816205e7e95"
     },
     {
       "kind": "example",
@@ -99,7 +104,8 @@
         "match_kind": "generalization"
       },
       "note": "`Matrix.instAlgebra` gives `Matrix n n α` as a unital `R`-algebra with identity `1` being the identity matrix.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "553882856130"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": "generalization"
       },
       "note": "`class Algebra (R A) extends SMul R A` axiomatizes precisely these compatibility identities via `commutes'` and `smul_def'`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b58028036d25"
     },
     {
       "kind": "definition",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "`AlgHom R A B` bundles a ring homomorphism that commutes with `algebraMap R _`, equivalent to a multiplicative `R`-linear map.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "90ddbf370b4f"
     },
     {
       "kind": "definition",
@@ -147,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "`AlgHom` extends `RingHom`, hence by definition sends `1` to `1`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "db08abf1b49b"
     },
     {
       "kind": "definition",
@@ -163,7 +172,8 @@
         "match_kind": "exact"
       },
       "note": "`AlgEquiv R A B` (`A ≃ₐ[R] B`) bundles a bijective `R`-algebra homomorphism.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7dc3b6bb6aed"
     },
     {
       "kind": "definition",
@@ -179,7 +189,8 @@
         "match_kind": "exact"
       },
       "note": "`structure Subalgebra R A` extends `Subsemiring A` with closure under `algebraMap`, matching the closure-under-multiplication-and-scalars notion.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "97d02114a29d"
     },
     {
       "kind": "example",
@@ -195,7 +206,8 @@
         "match_kind": null
       },
       "note": "The general infrastructure exists (`algebraMap ℝ ℂ`, `Subalgebra.range`/`Algebra.bot`) but the specific `ℝ ⊆ ℂ` subalgebra example isn't a named decl.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6a7fb2024d3c"
     },
     {
       "kind": "definition",
@@ -211,7 +223,8 @@
         "match_kind": "special_case"
       },
       "note": "`Ideal R` (a `Submodule R R`) is left-ideal-like for commutative rings; no dedicated `LeftIdeal` of an algebra is defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e30ab39828f7"
     },
     {
       "kind": "definition",
@@ -227,7 +240,8 @@
         "match_kind": "special_case"
       },
       "note": "`TwoSidedIdeal R` formalizes the two-sided notion for non-commutative rings; no dedicated `RightIdeal` of an algebra structure.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2b3b88297b59"
     },
     {
       "kind": "proposition",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "No `Ideal.toSubalgebra` or analogous lemma promoting an ideal to a subalgebra was found; also note proper ideals don't contain 1, so this needs a non-unital reading.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5d47389e8378"
     },
     {
       "kind": "definition",
@@ -259,7 +274,8 @@
         "match_kind": "exact"
       },
       "note": "Base change `A ⊗[R] B` carries an `S`-algebra structure via `Algebra.TensorProduct.leftAlgebra`, which is the extension-of-scalars construction.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ef6f087f7eb8"
     },
     {
       "kind": "definition",
@@ -275,7 +291,8 @@
         "match_kind": "exact"
       },
       "note": "Same as above: Mathlib's `Algebra` requires `Semiring A`, so all `Algebra` instances are unital.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "84d6633b45e2"
     },
     {
       "kind": "definition",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "No named `ZeroAlgebra` construction; one could express it via instances on a module with trivial multiplication but no library decl encodes this.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6db0fc8e8074"
     },
     {
       "kind": "definition",
@@ -307,7 +325,8 @@
         "match_kind": "special_case"
       },
       "note": "`Unitization R A` constructs the algebra `R × A` with the appropriate product; specialized to the zero-multiplication `A` it is exactly the unital zero algebra `K ⊕ V`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5488793f6a04"
     },
     {
       "kind": "example",
@@ -323,7 +342,8 @@
         "match_kind": "exact"
       },
       "note": "`DualNumber R` is defined as `TrivSqZeroExt R R` (a special case of `Unitization`), matching the dual-number construction.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a94f934ac208"
     },
     {
       "kind": "proposition",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "No correspondence lemma between `Submodule R V` and ideals of `Unitization R V` contained in the second summand was located.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "757ccf56de53"
     },
     {
       "kind": "example",
@@ -355,7 +376,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.instAlgebra : Algebra R (Matrix n n α)` is the matrix algebra over any base commutative semiring.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "02a3252709fa"
     },
     {
       "kind": "example",
@@ -371,7 +393,8 @@
         "match_kind": "generalization"
       },
       "note": "`MonoidAlgebra R M` is the convolution algebra on functions `M →₀ R`; when `M` is a group this is the usual group algebra.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fadbc4d12872"
     },
     {
       "kind": "example",
@@ -387,7 +410,8 @@
         "match_kind": "exact"
       },
       "note": "`Polynomial.algebraOfAlgebra : Algebra R A[X]` gives `R[x]` (= `A[X]`) the polynomial-algebra structure.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8b361d2ca2fe"
     },
     {
       "kind": "example",
@@ -403,7 +427,8 @@
         "match_kind": "exact"
       },
       "note": "`ContinuousMap.algebra : Algebra R C(α, A)` makes continuous functions into an `R`-algebra under pointwise operations.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5b9c18e38643"
     },
     {
       "kind": "example",
@@ -419,7 +444,8 @@
         "match_kind": "exact"
       },
       "note": "`IncidenceAlgebra` is defined in `Combinatorics/Enumerative/IncidenceAlgebra.lean`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "973e4a3a80c8"
     },
     {
       "kind": "example",
@@ -435,7 +461,8 @@
         "match_kind": "exact"
       },
       "note": "`Module.End.instAlgebra : Algebra R (Module.End S M)` provides the algebra of (linear) endomorphisms.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "32582445f7b1"
     },
     {
       "kind": "definition",
@@ -451,7 +478,8 @@
         "match_kind": null
       },
       "note": "Mathlib provides `NonUnitalNonAssocSemiring`/`NonUnitalAlgHom` and `Module` with bilinear multiplication, but no top-level `NonAssocAlgebra` class capturing precisely this notion.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "577d72a8a045"
     },
     {
       "kind": "definition",
@@ -467,7 +495,8 @@
         "match_kind": "exact"
       },
       "note": "`RingHom.toAlgebra : (R →+* A) → Algebra R A` (with image in the center) realizes this equivalent definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ece42be054ca"
     },
     {
       "kind": "proposition",
@@ -483,7 +512,8 @@
         "match_kind": null
       },
       "note": "`FaithfulSMul.algebraMap_injective` gives injectivity under a faithfulness hypothesis; the precise dichotomy (zero ring vs. injective) over a field is not stated as a lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a1de2a703c47"
     },
     {
       "kind": "definition",
@@ -499,7 +529,8 @@
         "match_kind": "exact"
       },
       "note": "`AlgHom` is defined as a `RingHom` whose `commutes'` field expresses compatibility with `algebraMap`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3be6c128f59d"
     },
     {
       "kind": "proposition",
@@ -515,7 +546,8 @@
         "match_kind": null
       },
       "note": "Bilinearity-from-basis is available via `Basis.constr` / `TensorProduct.lift`, but no dedicated lemma about determining algebra multiplication by its action on basis elements.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c3019a1cfd78"
     },
     {
       "kind": "definition",
@@ -531,7 +563,8 @@
         "match_kind": null
       },
       "note": "No `structureCoefficients`/`structureConstants` definition for algebras was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ebe6d5dad215"
     },
     {
       "kind": "theorem",
@@ -547,7 +580,8 @@
         "match_kind": null
       },
       "note": "Study's classification of low-dimensional unital associative ℂ-algebras is not present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "06b2d32fa05c"
     },
     {
       "kind": "proposition",
@@ -563,7 +597,8 @@
         "match_kind": null
       },
       "note": "No statement enumerating two-dimensional unital associative ℂ-algebras up to isomorphism is present.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3e96b58d50fb"
     },
     {
       "kind": "proposition",
@@ -579,7 +614,8 @@
         "match_kind": null
       },
       "note": "No enumeration of three-dimensional unital associative ℂ-algebras is present.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "22a94e1568c8"
     },
     {
       "kind": "definition",
@@ -595,7 +631,8 @@
         "match_kind": "exact"
       },
       "note": "`Algebra R A` already takes `R : CommSemiring`, directly realizing the ring (and even semiring) base generalization.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "aea262747016"
     },
     {
       "kind": "proposition",
@@ -611,7 +648,8 @@
         "match_kind": "exact"
       },
       "note": "There is an `instance : Algebra (Subring.center R) R` (and `Ring.toIntAlgebra : Algebra ℤ R`) in `Mathlib.Algebra.Algebra.Basic`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "78da87a19fda"
     },
     {
       "kind": "example",
@@ -627,7 +665,8 @@
         "match_kind": null
       },
       "note": "No `SplitBiquaternion` definition found; only ordinary `Quaternion` is in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "074c20b9d0a2"
     },
     {
       "kind": "proposition",
@@ -643,7 +682,8 @@
         "match_kind": "exact"
       },
       "note": "`RingHom.toAlgebra : (R →+* A) → Algebra R A` (for `φ` landing in the center) gives this construction directly.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "750ea3b85b46"
     }
   ]
 }

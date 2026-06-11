@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "`Computable f` defines a total function as computable iff it is partial recursive, the formal counterpart of this informal notion.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0de2ae7734d7"
     },
     {
       "kind": "proposition",
@@ -35,7 +36,8 @@
         "match_kind": null
       },
       "note": "An informal/unprovable thesis, not a mathematical statement formalizable in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2b181fd07b15"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": null
       },
       "note": "The complexity-theory notion of a function problem is not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bc5d604735e9"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "`Computable f := Partrec (f : α →. σ)` is exactly the formal definition of a computable function between `Primcodable` types.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "af405b36803f"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "The inductive `Nat.Partrec` is built from zero/succ/projections/pairing/composition/primitive recursion and `rfind` (unbounded minimization), i.e. the μ-recursive functions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f62933f91039"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "The program-based characterization corresponds to `Computable`, which Mathlib also proves equivalent to Turing-machine computation elsewhere.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e8ed1dd7317d"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": "exact"
       },
       "note": "The 'finite procedure' characterization is captured by `Computable` via partial recursive functions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "53edcf5d79ea"
     },
     {
       "kind": "definition",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "This restated summary of computability is the `Computable` predicate.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b6cee2236774"
     },
     {
       "kind": "definition",
@@ -147,7 +155,8 @@
         "match_kind": "generalization"
       },
       "note": "`ComputablePred p` (computable indicator function) formalizes a computable set, generalized from ℕ to any `Primcodable` type.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e475f3d97b04"
     },
     {
       "kind": "definition",
@@ -163,7 +172,8 @@
         "match_kind": "generalization"
       },
       "note": "`REPred p` is defined as the domain of a partial computable function, the standard formalization of a c.e. set, generalized to `Primcodable` types.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "68facd12da03"
     },
     {
       "kind": "proposition",
@@ -179,7 +189,8 @@
         "match_kind": null
       },
       "note": "Mathlib has the domain-of-partial-recursive characterization (`REPred`/`Partrec.dom_re`) but not the full list of equivalent conditions (range of a computable function, etc.).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f0d65a66897a"
     },
     {
       "kind": "definition",
@@ -195,7 +206,8 @@
         "match_kind": null
       },
       "note": "Relations can be expressed as `ComputablePred`/`REPred` over product `Primcodable` types, but there is no dedicated computable/c.e. relation definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "792743eb1d74"
     },
     {
       "kind": "definition",
@@ -211,7 +223,8 @@
         "match_kind": null
       },
       "note": "The alphabet appears only as the implicit type parameter `α` of `Language α`; there is no standalone 'alphabet' declaration.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bc0ed3e903d2"
     },
     {
       "kind": "definition",
@@ -227,7 +240,8 @@
         "match_kind": null
       },
       "note": "Words are represented as `List α` (a core type used by `Language`), not by a dedicated Mathlib 'word' declaration.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bcff8c2bb830"
     },
     {
       "kind": "definition",
@@ -243,7 +257,8 @@
         "match_kind": "exact"
       },
       "note": "`Language α := Set (List α)` is exactly a set of words over an alphabet.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6a6944021267"
     },
     {
       "kind": "definition",
@@ -259,7 +274,8 @@
         "match_kind": null
       },
       "note": "A computable language would be `ComputablePred` over `List α`, but Mathlib has no specific 'computable language' definition tying this to `Language`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d70685954e43"
     },
     {
       "kind": "definition",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "A c.e. language would be `REPred` over `List α`, but no dedicated definition connects this to the `Language` type.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "194a241d9eae"
     },
     {
       "kind": "example",
@@ -291,7 +308,8 @@
         "match_kind": "special_case"
       },
       "note": "Basic examples like successor, addition and multiplication are proven primitive recursive (`Nat.Primrec.succ/add/mul`), hence computable.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4e6c3a301e05"
     },
     {
       "kind": "proposition",
@@ -307,7 +325,8 @@
         "match_kind": "exact"
       },
       "note": "`Computable.comp` (with companion closure lemmas) establishes that computable functions are closed under composition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "82eee355c6d8"
     },
     {
       "kind": "example",
@@ -323,7 +342,8 @@
         "match_kind": null
       },
       "note": "This specific illustrative example about decimal runs in π is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "483caa56aa4a"
     },
     {
       "kind": "example",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "This illustrative remark about finite segments being computable is not stated as a result in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "33ac90169d3c"
     },
     {
       "kind": "proposition",
@@ -355,7 +376,8 @@
         "match_kind": null
       },
       "note": "The Church–Turing thesis is an informal claim, not a formalizable theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "22666fef85e8"
     },
     {
       "kind": "definition",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "The metamathematical notion of a provably total function relative to a proof system is not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9dfa850af583"
     },
     {
       "kind": "proposition",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "This metatheorem about a proof system's provably total functions is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e21909366a30"
     },
     {
       "kind": "definition",
@@ -403,7 +427,8 @@
         "match_kind": null
       },
       "note": "Mathlib uses well-founded/structural recursion pervasively but has no decl capturing this descriptive meta-notion of 'recursive definition'.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d27bca9a4ef0"
     },
     {
       "kind": "example",
@@ -419,7 +444,8 @@
         "match_kind": "exact"
       },
       "note": "`ack` defines the Ackermann function and `not_primrec₂_ack`/`computable₂_ack` prove it is computable but not primitive recursive.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "255a66382ca5"
     },
     {
       "kind": "proposition",
@@ -435,7 +461,8 @@
         "match_kind": null
       },
       "note": "No general Mathlib theorem states that functions defined by well-ordered recursion are computable.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "78445653f896"
     },
     {
       "kind": "theorem",
@@ -451,7 +478,8 @@
         "match_kind": null
       },
       "note": "This metalogical existence result about provability of totality is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "565f5e42dbd6"
     },
     {
       "kind": "proposition",
@@ -467,7 +495,8 @@
         "match_kind": null
       },
       "note": "`Code` is `Denumerable`, giving countably many partial recursive programs, but Mathlib has no direct theorem stating the set of computable functions is countable.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9e7746445823"
     },
     {
       "kind": "proposition",
@@ -483,7 +512,8 @@
         "match_kind": null
       },
       "note": "Mathlib lacks a notion of computable real number, so this statement is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "74ff2ef89f89"
     },
     {
       "kind": "proposition",
@@ -499,7 +529,8 @@
         "match_kind": null
       },
       "note": "There is no Mathlib theorem comparing the cardinalities of computable versus all subsets of ℕ.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5faef92ce60f"
     },
     {
       "kind": "theorem",
@@ -515,7 +546,8 @@
         "match_kind": null
       },
       "note": "Mathlib proves the closely related halting problem is undecidable (`ComputablePred.halting_problem`, plus `rice`), but not the undecidability of first-order validity itself.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2ba5c762452d"
     },
     {
       "kind": "definition",
@@ -531,7 +563,8 @@
         "match_kind": "generalization"
       },
       "note": "`ComputableIn O f` (built on `Nat.RecursiveIn`) defines computability relative to oracles, generalizing computability relative to a single set A.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0e8cb595823f"
     },
     {
       "kind": "definition",
@@ -547,7 +580,8 @@
         "match_kind": null
       },
       "note": "Hyperarithmetical theory and computation from computable ordinals are not developed in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0af9906a18e0"
     }
   ]
 }

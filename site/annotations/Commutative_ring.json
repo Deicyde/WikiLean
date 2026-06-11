@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "`Ring` is defined as a `Semiring` with negation making it an additive group.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "61d8bd07f9e7"
     },
     {
       "kind": "definition",
@@ -45,7 +46,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle a\\cdot b=b\\cdot a,}"
         }
-      ]
+      ],
+      "id": "59bdd405b09e"
     },
     {
       "kind": "example",
@@ -61,7 +63,8 @@
         "match_kind": "invocation"
       },
       "note": "`Int.instCommRing : CommRing ℤ` provides the commutative-ring structure on the integers.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b49cdb8fa501"
     },
     {
       "kind": "definition",
@@ -77,7 +80,8 @@
         "match_kind": "exact"
       },
       "note": "`Field` is a `CommRing` that is also a `DivisionRing` (inverses for nonzero elements).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "637d701ff927"
     },
     {
       "kind": "definition",
@@ -93,7 +97,8 @@
         "match_kind": "exact"
       },
       "note": "`Polynomial R` is the univariate polynomial ring over `R` (multivariate is `MvPolynomial`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1d91cf87cdbc"
     },
     {
       "kind": "example",
@@ -109,7 +114,8 @@
         "match_kind": "invocation"
       },
       "note": "`CommRing C(α, β)` gives the ring of continuous maps; taking `β = ℂ` yields complex-valued continuous functions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "79df1e0c3bb4"
     },
     {
       "kind": "definition",
@@ -125,7 +131,8 @@
         "match_kind": "exact"
       },
       "note": "`IsUnit a` states `a` equals some bundled unit `u : Mˣ`; `Units` (`Mˣ`) is the data version.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ab4662f5cfb5"
     },
     {
       "kind": "definition",
@@ -141,7 +148,8 @@
         "match_kind": "generalization"
       },
       "note": "There is no standalone `IsZeroDivisor` predicate; Mathlib has the class `NoZeroDivisors` and the `nonZeroDivisors` submonoid capturing absence/membership of zero divisors.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "40b3ec39caed"
     },
     {
       "kind": "definition",
@@ -157,7 +165,8 @@
         "match_kind": "exact"
       },
       "note": "`IsDomain` is a mixin extending `IsCancelMulZero` and `Nontrivial`; an integral domain is `[CommRing α] [IsDomain α]`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b556971883e3"
     },
     {
       "kind": "definition",
@@ -173,7 +182,8 @@
         "match_kind": "exact"
       },
       "note": "`IsNilpotent x` is defined as `∃ n : ℕ, x ^ n = 0`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9005962dfd61"
     },
     {
       "kind": "definition",
@@ -189,7 +199,8 @@
         "match_kind": "exact"
       },
       "note": "`IsLocalization M S` says `S` is the localization of `R` at submonoid `M`; the concrete construction is `Localization M`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7ebd2a4d2c01"
     },
     {
       "kind": "definition",
@@ -205,7 +216,8 @@
         "match_kind": "exact"
       },
       "note": "`IsFractionRing R K` abbreviates `IsLocalization (nonZeroDivisors R) K`; the concrete field is `FractionRing R`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fbc78cf2b64f"
     },
     {
       "kind": "proposition",
@@ -221,7 +233,8 @@
         "match_kind": "exact"
       },
       "note": "An instance gives every `Ideal α` over a CommSemiring/CommRing the `IsTwoSided` property, since `Ideal R := Submodule R R`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "680cecab4246"
     },
     {
       "kind": "definition",
@@ -237,7 +250,8 @@
         "match_kind": "exact"
       },
       "note": "`Module R M` extends `DistribMulAction R M` with `add_smul` and `zero_smul`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "25c085488726"
     },
     {
       "kind": "definition",
@@ -253,7 +267,8 @@
         "match_kind": "exact"
       },
       "note": "`Module.Free R M` is the class stating the `R`-module `M` admits a basis.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7f794ac778e8"
     },
     {
       "kind": "proposition",
@@ -269,7 +284,8 @@
         "match_kind": null
       },
       "note": "No declaration stating this counterexample (a non-free submodule of a free module) was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f275581d38c6"
     },
     {
       "kind": "definition",
@@ -285,7 +301,8 @@
         "match_kind": "exact"
       },
       "note": "`Module.Finite R M` requires `(⊤ : Submodule R M).FG`, i.e. a finite spanning set.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e24c936481aa"
     },
     {
       "kind": "proposition",
@@ -301,7 +318,8 @@
         "match_kind": "special_case"
       },
       "note": "Both directions exist (`isNoetherian_of_isNoetherianRing_of_finite`, `IsNoetherian.finite`, `isNoetherian_def`), but the exact biconditional is not a single named theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "47506cd69daa"
     },
     {
       "kind": "definition",
@@ -317,7 +335,8 @@
         "match_kind": "exact"
       },
       "note": "`Ideal R` is defined as the abbreviation `Submodule R R`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4a4e602d957c"
     },
     {
       "kind": "proposition",
@@ -343,7 +362,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle r_{1}f_{1}+r_{2}f_{2}+\\dots +r_{n}f_{n}.}"
         }
-      ]
+      ],
+      "id": "83535e164b98"
     },
     {
       "kind": "definition",
@@ -369,7 +389,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle r_{1}f_{1}+r_{2}f_{2}+\\dots +r_{n}f_{n}.}"
         }
-      ]
+      ],
+      "id": "7adbf48a9326"
     },
     {
       "kind": "definition",
@@ -385,7 +406,8 @@
         "match_kind": "exact"
       },
       "note": "`Submodule.IsPrincipal S` is `∃ a, S = span R {a}`; applied to `Ideal R` it gives principal ideals.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3e08dc808ce2"
     },
     {
       "kind": "definition",
@@ -401,7 +423,8 @@
         "match_kind": "exact"
       },
       "note": "`IsPrincipalIdealRing R` requires every ideal `S` to satisfy `S.IsPrincipal`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2704e924c858"
     },
     {
       "kind": "definition",
@@ -417,7 +440,8 @@
         "match_kind": "invocation"
       },
       "note": "Mathlib has no dedicated PID class; a PID is expressed by combining `[IsDomain R]` and `[IsPrincipalIdealRing R]`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b53cb5f58e34"
     },
     {
       "kind": "theorem",
@@ -443,7 +467,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle a=bc,}"
         }
-      ]
+      ],
+      "id": "c40a539a0bb3"
     },
     {
       "kind": "definition",
@@ -469,7 +494,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle a=bc,}"
         }
-      ]
+      ],
+      "id": "81881d505d3a"
     },
     {
       "kind": "example",
@@ -495,7 +521,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle a=bc,}"
         }
-      ]
+      ],
+      "id": "73f402ad42ba"
     },
     {
       "kind": "theorem",
@@ -521,7 +548,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle a=bc,}"
         }
-      ]
+      ],
+      "id": "6ee70c5b0160"
     },
     {
       "kind": "definition",
@@ -537,7 +565,8 @@
         "match_kind": "exact"
       },
       "note": "`Prime p` is nonzero, non-unit, and dividing a product implies dividing a factor.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "36f9f1e48298"
     },
     {
       "kind": "proposition",
@@ -553,7 +582,8 @@
         "match_kind": "exact"
       },
       "note": "`Prime.irreducible` shows a prime element is irreducible over a `CommMonoidWithZero` with `IsCancelMulZero` (covering domains).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b6059454ee84"
     },
     {
       "kind": "definition",
@@ -579,7 +609,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\left(a+I\\right)+\\left(b+I\\right)=\\left(a+b\\right)+I}"
         }
-      ]
+      ],
+      "id": "38675059b6b9"
     },
     {
       "kind": "example",
@@ -605,7 +636,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\left(a+I\\right)+\\left(b+I\\right)=\\left(a+b\\right)+I}"
         }
-      ]
+      ],
+      "id": "e03480787e1c"
     },
     {
       "kind": "definition",
@@ -621,7 +653,8 @@
         "match_kind": "invocation"
       },
       "note": "There is no `Ideal.IsProper` definition; properness is expressed inline as `I ≠ ⊤`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "67dc4959bc92"
     },
     {
       "kind": "definition",
@@ -637,7 +670,8 @@
         "match_kind": "exact"
       },
       "note": "`Ideal.IsMaximal I` is defined as `IsCoatom I`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "977760dcb0de"
     },
     {
       "kind": "proposition",
@@ -653,7 +687,8 @@
         "match_kind": "exact"
       },
       "note": "`Ideal.Quotient.maximal_ideal_iff_isField_quotient` states `I.IsMaximal ↔ IsField (R ⧸ I)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "645dd40cc365"
     },
     {
       "kind": "proposition",
@@ -669,7 +704,8 @@
         "match_kind": "exact"
       },
       "note": "`Ideal.exists_maximal` (Krull) gives `∃ M : Ideal α, M.IsMaximal` for any nontrivial (semi)ring.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c66a469494a9"
     },
     {
       "kind": "definition",
@@ -695,7 +731,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle 0\\subseteq I_{0}\\subseteq I_{1}\\subseteq \\dots \\subseteq I_{n}\\subseteq I_{n+1}\\dots }"
         }
-      ]
+      ],
+      "id": "abf6979c60cd"
     },
     {
       "kind": "theorem",
@@ -711,7 +748,8 @@
         "match_kind": "exact"
       },
       "note": "`Polynomial.isNoetherianRing` states `R[X]` is Noetherian when `R` is; `MvPolynomial.isNoetherianRing` covers finitely many variables.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "69ca7f537d33"
     },
     {
       "kind": "proposition",
@@ -727,7 +765,8 @@
         "match_kind": null
       },
       "note": "Only the building block (closure of a finite set is a Noetherian subring) exists; the union/colimit statement is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d15badd4e15a"
     },
     {
       "kind": "definition",
@@ -757,7 +796,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\mathbb {Z} \\supsetneq 2\\mathbb {Z} \\supsetneq 4\\mathbb {Z} \\supsetneq 8\\mathbb {Z} \\dots }"
         }
-      ]
+      ],
+      "id": "ab72aff44cd4"
     },
     {
       "kind": "theorem",
@@ -787,7 +827,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\mathbb {Z} \\supsetneq 2\\mathbb {Z} \\supsetneq 4\\mathbb {Z} \\supsetneq 8\\mathbb {Z} \\dots }"
         }
-      ]
+      ],
+      "id": "f4e5ac9f8001"
     },
     {
       "kind": "proposition",
@@ -817,7 +858,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\mathbb {Z} \\supsetneq 2\\mathbb {Z} \\supsetneq 4\\mathbb {Z} \\supsetneq 8\\mathbb {Z} \\dots }"
         }
-      ]
+      ],
+      "id": "503391adcab0"
     },
     {
       "kind": "definition",
@@ -847,7 +889,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle 6=2\\cdot 3=\\left(1+{\\sqrt {-5}}\\right)\\left(1-{\\sqrt {-5}}\\right).}"
         }
-      ]
+      ],
+      "id": "e4d4a06884aa"
     },
     {
       "kind": "theorem",
@@ -877,7 +920,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle 6=2\\cdot 3=\\left(1+{\\sqrt {-5}}\\right)\\left(1-{\\sqrt {-5}}\\right).}"
         }
-      ]
+      ],
+      "id": "eeddcbc7a169"
     },
     {
       "kind": "proposition",
@@ -893,7 +937,8 @@
         "match_kind": "exact"
       },
       "note": "`Ideal.IsMaximal.isPrime` turns a maximal ideal into a prime ideal.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1243ab1844b4"
     },
     {
       "kind": "proposition",
@@ -909,7 +954,8 @@
         "match_kind": "exact"
       },
       "note": "`isDomain_iff_prime : IsDomain (R ⧸ I) ↔ I.IsPrime`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2c6a52c929a5"
     },
     {
       "kind": "definition",
@@ -925,7 +971,8 @@
         "match_kind": "exact"
       },
       "note": "`IsLocalRing` (nontrivial, `a` or `1-a` is a unit) is equivalent to having a unique maximal ideal.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4593551270c0"
     },
     {
       "kind": "definition",
@@ -951,7 +998,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle D\\left(f\\right)=\\left\\{p\\in {\\text{Spec}}\\ R,f\\not \\in p\\right\\},}"
         }
-      ]
+      ],
+      "id": "28dad4e2cc70"
     },
     {
       "kind": "theorem",
@@ -967,7 +1015,8 @@
         "match_kind": "special_case"
       },
       "note": "Over an algebraically closed field with finitely many variables, maximal ideals correspond to singleton points, giving the bijection's content but no packaged `Equiv`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "556cd49991d4"
     },
     {
       "kind": "proposition",
@@ -983,7 +1032,8 @@
         "match_kind": "exact"
       },
       "note": "`minimalPrimes R ≃o (irreducibleComponents (PrimeSpectrum R))ᵒᵈ`, an order isomorphism.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "71db88e57c83"
     },
     {
       "kind": "proposition",
@@ -999,7 +1049,8 @@
         "match_kind": "generalization"
       },
       "note": "A Noetherian topological space has finitely many irreducible components; `PrimeSpectrum` of a Noetherian ring is such a space.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "067c0284788f"
     },
     {
       "kind": "theorem",
@@ -1015,7 +1066,8 @@
         "match_kind": "generalization"
       },
       "note": "Lasker–Noether: every submodule of a Noetherian module is a finite intersection of primary submodules; specializes to ideals (intersection, not product).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "517a4020a499"
     },
     {
       "kind": "definition",
@@ -1031,7 +1083,8 @@
         "match_kind": "exact"
       },
       "note": "`AffineScheme` is the essential image of the `Spec` functor, with `IsAffine X` characterizing affine schemes.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "52d3d20e396a"
     },
     {
       "kind": "proposition",
@@ -1047,7 +1100,8 @@
         "match_kind": "exact"
       },
       "note": "`ΓSpecIso` gives the isomorphism `Γ(Spec R, ⊤) ≅ R`, recovering `R` as global sections.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f61962c28e27"
     },
     {
       "kind": "definition",
@@ -1063,7 +1117,8 @@
         "match_kind": "exact"
       },
       "note": "`ringKrullDim R` is the Krull dimension of `PrimeSpectrum R`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a6086eeada76"
     },
     {
       "kind": "definition",
@@ -1079,7 +1134,8 @@
         "match_kind": "exact"
       },
       "note": "`ringKrullDim` is `krullDim (PrimeSpectrum R)`, where `Order.krullDim` is the supremum of lengths of chains of primes.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "95884b7d4dbe"
     },
     {
       "kind": "example",
@@ -1095,7 +1151,8 @@
         "match_kind": "exact"
       },
       "note": "`ringKrullDim_eq_zero_of_field` states `ringKrullDim F = 0` for a field `F`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "495c5daf8492"
     },
     {
       "kind": "proposition",
@@ -1111,7 +1168,8 @@
         "match_kind": "exact"
       },
       "note": "Under `[CommRing R] [IsNoetherianRing R] [IsLocalRing R]`, an instance provides `FiniteRingKrullDim R`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b0417f77d965"
     },
     {
       "kind": "definition",
@@ -1127,7 +1185,8 @@
         "match_kind": "exact"
       },
       "note": "`RingHom` (notation `→+*`) bundles `MonoidHom` and `AddMonoidHom` data of ring homomorphisms.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "23ad791a5fc2"
     },
     {
       "kind": "definition",
@@ -1143,7 +1202,8 @@
         "match_kind": "exact"
       },
       "note": "`RingHom.ker` is `Ideal.comap f ⊥`; `RingHom.range` is the image as a `Subring`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "44b5110b0a2b"
     },
     {
       "kind": "proposition",
@@ -1159,7 +1219,8 @@
         "match_kind": "exact"
       },
       "note": "`RingHom.ker` has type `Ideal R` and `RingHom.range` has type `Subring S` by definition, so this holds at the type level.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "43edc629407e"
     },
     {
       "kind": "definition",
@@ -1185,7 +1246,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\mathbf {Z} /n=\\bigoplus _{i=0}^{k}\\mathbf {Z} /p_{i},}"
         }
-      ]
+      ],
+      "id": "f9aebe7b108f"
     },
     {
       "kind": "theorem",
@@ -1211,7 +1273,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\mathbf {Z} /n=\\bigoplus _{i=0}^{k}\\mathbf {Z} /p_{i},}"
         }
-      ]
+      ],
+      "id": "bca4e4a23cb8"
     },
     {
       "kind": "proposition",
@@ -1237,7 +1300,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle (a+b)^{n}=\\sum _{k=0}^{n}{\\binom {n}{k}}a^{k}b^{n-k}}"
         }
-      ]
+      ],
+      "id": "e60ea3698949"
     },
     {
       "kind": "proposition",
@@ -1263,7 +1327,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle (a+b)^{n}=\\sum _{k=0}^{n}{\\binom {n}{k}}a^{k}b^{n-k}}"
         }
-      ]
+      ],
+      "id": "f0e92c3c9bfc"
     },
     {
       "kind": "proposition",
@@ -1279,7 +1344,8 @@
         "match_kind": "exact"
       },
       "note": "`instCommRing` gives `CommRing (A ⊗[R] B)` and `instAlgebra` the R-algebra structure, so the tensor product is a commutative R-algebra.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "affedc1e2cc7"
     },
     {
       "kind": "definition",
@@ -1295,7 +1361,8 @@
         "match_kind": "exact"
       },
       "note": "`Algebra.FiniteType` asserts `(⊤ : Subalgebra R A).FG`, i.e. `A` is finitely generated as an R-algebra.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a89e804db9c7"
     },
     {
       "kind": "definition",
@@ -1311,7 +1378,8 @@
         "match_kind": "exact"
       },
       "note": "`Module.Finite` asserts `(⊤ : Submodule R M).FG`, i.e. the module is finitely generated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b1ba6545b7a8"
     },
     {
       "kind": "definition",
@@ -1327,7 +1395,8 @@
         "match_kind": "generalization"
       },
       "note": "`IsLocalRing` is defined via the unit condition; the unique-maximal-ideal characterization is `IsLocalRing.maximalIdeal`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "26bf3d505023"
     },
     {
       "kind": "proposition",
@@ -1343,7 +1412,8 @@
         "match_kind": "exact"
       },
       "note": "`IsLocalization.AtPrime.isLocalRing` states a localization at a prime is a local ring.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "17094422d89a"
     },
     {
       "kind": "definition",
@@ -1359,7 +1429,8 @@
         "match_kind": "exact"
       },
       "note": "`IsLocalRing.ResidueField` is `R ⧸ maximalIdeal R` with a `Field` instance.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "57fadc92ce58"
     },
     {
       "kind": "theorem",
@@ -1375,7 +1446,8 @@
         "match_kind": "generalization"
       },
       "note": "Nakayama's lemma appears in several forms, e.g. `Submodule.eq_smul_of_le_smul_of_le_jacobson` and `exists_sub_one_mem_and_smul_eq_zero_of_fg_of_le_smul`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "204330bf118a"
     },
     {
       "kind": "definition",
@@ -1391,7 +1463,8 @@
         "match_kind": "exact"
       },
       "note": "`IsLocalRing.CotangentSpace` is `(maximalIdeal R).Cotangent`, i.e. m/m² as a residue-field vector space.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "748e3e30dd89"
     },
     {
       "kind": "proposition",
@@ -1407,7 +1480,8 @@
         "match_kind": "exact"
       },
       "note": "`ringKrullDim_le_spanFinrank_maximalIdeal` gives dim R ≤ minimal generators of m, equal to finrank of the cotangent space.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ff1c3d5b9408"
     },
     {
       "kind": "definition",
@@ -1433,7 +1507,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\bigoplus _{n}m^{n}/m^{n+1}}"
         }
-      ]
+      ],
+      "id": "313b54e52b0e"
     },
     {
       "kind": "proposition",
@@ -1459,7 +1534,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\bigoplus _{n}m^{n}/m^{n+1}}"
         }
-      ]
+      ],
+      "id": "73d2fc6537e2"
     },
     {
       "kind": "theorem",
@@ -1485,7 +1561,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\bigoplus _{n}m^{n}/m^{n+1}}"
         }
-      ]
+      ],
+      "id": "95815ce8e251"
     },
     {
       "kind": "definition",
@@ -1501,7 +1578,8 @@
         "match_kind": "exact"
       },
       "note": "`IsDiscreteValuationRing` is a local PID domain that is not a field; the additive valuation `addVal R` is defined in the same file.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6181029b61cd"
     },
     {
       "kind": "proposition",
@@ -1517,7 +1595,8 @@
         "match_kind": "special_case"
       },
       "note": "`finrank_CotangentSpace_eq_one_iff` equates DVR with finrank(m/m²)=1 for a Noetherian local domain, but no lemma states DVR iff (regular ∧ dim 1) directly.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7fef80b07582"
     },
     {
       "kind": "example",
@@ -1533,7 +1612,8 @@
         "match_kind": null
       },
       "note": "No formalization of the ring of germs of holomorphic functions on a Riemann surface being a DVR was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dde7939b57cc"
     },
     {
       "kind": "theorem",
@@ -1549,7 +1629,8 @@
         "match_kind": "exact"
       },
       "note": "Krull's height theorem (`height ≤ n` for a prime minimal over n generators), with `height_le_one_of_isPrincipal...` as the Hauptidealsatz, is the ring-theoretic form of the codimension bound.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6e51047a44c1"
     },
     {
       "kind": "definition",
@@ -1565,7 +1646,8 @@
         "match_kind": null
       },
       "note": "Grep for 'CompleteIntersection' returned no matches in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fd03d3d584cc"
     },
     {
       "kind": "proposition",
@@ -1581,7 +1663,8 @@
         "match_kind": null
       },
       "note": "No complete-intersection notion exists in Mathlib, so this implication is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "703a8ad78551"
     },
     {
       "kind": "definition",
@@ -1597,7 +1680,8 @@
         "match_kind": null
       },
       "note": "No notion of set-theoretic complete intersection was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "430496d67375"
     },
     {
       "kind": "definition",
@@ -1613,7 +1697,8 @@
         "match_kind": null
       },
       "note": "`Mathlib/RingTheory/Regular/RegularSequence.lean` has regular sequences but lists depth as a TODO; no depth definition exists.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "29d4862db6a7"
     },
     {
       "kind": "proposition",
@@ -1629,7 +1714,8 @@
         "match_kind": null
       },
       "note": "Depth is not defined in Mathlib, so the inequality depth ≤ dim cannot be stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "300afbce22f2"
     },
     {
       "kind": "definition",
@@ -1645,7 +1731,8 @@
         "match_kind": null
       },
       "note": "Grep for 'CohenMacaulay' across Mathlib returns no results.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "72ea49b2d24e"
     },
     {
       "kind": "proposition",
@@ -1661,7 +1748,8 @@
         "match_kind": null
       },
       "note": "Cohen–Macaulay rings are not defined in Mathlib, so this implication is absent.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5c4b1fc15cf3"
     },
     {
       "kind": "definition",
@@ -1677,7 +1765,8 @@
         "match_kind": "exact"
       },
       "note": "`IsIntegrallyClosed R` is defined as `IsIntegrallyClosedIn R (FractionRing R)`, i.e. integrally closed in its fraction field.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2a76a953b5de"
     },
     {
       "kind": "proposition",
@@ -1693,7 +1782,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib proves a Noetherian integrally closed domain of dim ≤ 1 is Dedekind with DVR localizations (and DVRs are regular), but no single 'normal dim-1 ⇒ regular' statement exists.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0d202d8d63c3"
     },
     {
       "kind": "definition",
@@ -1709,7 +1799,8 @@
         "match_kind": "exact"
       },
       "note": "`Ideal.adicTopology` is the topology with powers of `I` as a basis of neighborhoods of zero.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bab09d6553d1"
     },
     {
       "kind": "definition",
@@ -1725,7 +1816,8 @@
         "match_kind": "exact"
       },
       "note": "`AdicCompletion I M` is the inverse limit of the quotients `M ⧸ (I^n • ⊤)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "aaa57fc9670b"
     },
     {
       "kind": "definition",
@@ -1741,7 +1833,8 @@
         "match_kind": "exact"
       },
       "note": "`IsAdicComplete I M` asserts `M` is Hausdorff and precomplete with respect to `I`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dbc8a289d578"
     },
     {
       "kind": "theorem",
@@ -1757,7 +1850,8 @@
         "match_kind": "exact"
       },
       "note": "`IsAdicComplete.henselianRing` gives `HenselianRing R I` (Hensel's lemma) for I-adically complete rings.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "de3674a9ecba"
     },
     {
       "kind": "definition",
@@ -1773,7 +1867,8 @@
         "match_kind": "exact"
       },
       "note": "`Module.Projective R P` is the standard projectivity predicate; equivalence with 'direct summand of free' is provided via `of_free` and `projective_def`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "01c7ab81b2c0"
     },
     {
       "kind": "proposition",
@@ -1789,7 +1884,8 @@
         "match_kind": "generalization"
       },
       "note": "`free_of_flat_of_isLocalRing` proves a finite flat module over a local ring is free; finite projective modules are flat, generalizing the projective case.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "49f9c2e02cf0"
     },
     {
       "kind": "theorem",
@@ -1805,7 +1901,8 @@
         "match_kind": null
       },
       "note": "Grep for 'Quillen' only finds Quillen model-category material; no Quillen–Suslin theorem exists.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "31f30f23d399"
     },
     {
       "kind": "proposition",
@@ -1821,7 +1918,8 @@
         "match_kind": null
       },
       "note": "No global dimension definition exists in Mathlib, so Serre's characterization is absent.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "91bca1a3142f"
     },
     {
       "kind": "definition",
@@ -1837,7 +1935,8 @@
         "match_kind": "exact"
       },
       "note": "`Ext R C n` is defined as the derived functor of the Hom bifunctor in an abelian category.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "265f605deab3"
     },
     {
       "kind": "proposition",
@@ -1853,7 +1952,8 @@
         "match_kind": null
       },
       "note": "No characterization of regularity via vanishing of Ext groups with the residue field is present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "619316dd6eac"
     },
     {
       "kind": "proposition",
@@ -1869,7 +1969,8 @@
         "match_kind": null
       },
       "note": "Grep for 'Betti' in this commutative-algebra sense finds nothing; no polynomial-growth/complete-intersection result exists.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d4a1e8708727"
     },
     {
       "kind": "definition",
@@ -1885,7 +1986,8 @@
         "match_kind": "exact"
       },
       "note": "`Module.Flat` is the class of flat modules, defined via injectivity of `rTensor` on finitely generated submodules.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1a8383854e57"
     },
     {
       "kind": "proposition",
@@ -1901,7 +2003,8 @@
         "match_kind": "exact"
       },
       "note": "`free_of_flat_of_isLocalRing` states a finite flat module over a local ring is free.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cfec3c26def1"
     },
     {
       "kind": "proposition",
@@ -1917,7 +2020,8 @@
         "match_kind": null
       },
       "note": "No dimension formula dim S = dim R + dim(fiber) for flat algebras was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3553104b87ac"
     },
     {
       "kind": "theorem",
@@ -1933,7 +2037,8 @@
         "match_kind": "exact"
       },
       "note": "`littleWedderburn` is an instance showing every finite `DivisionRing` is a `Field`, hence commutative.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c2cffa915432"
     },
     {
       "kind": "theorem",
@@ -1949,7 +2054,8 @@
         "match_kind": null
       },
       "note": "No theorem deriving commutativity from `x^n(x) = x` (Jacobson's condition) was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b1d214eb3d0f"
     },
     {
       "kind": "definition",
@@ -1965,7 +2071,8 @@
         "match_kind": "exact"
       },
       "note": "`BooleanRing` is the class of rings where every element is idempotent.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f737be7bd02c"
     },
     {
       "kind": "definition",
@@ -1981,7 +2088,8 @@
         "match_kind": null
       },
       "note": "No general graded-commutative ring class with the sign rule was found; `GradedRing` exists but graded-commutativity appears only ad hoc.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "10dc496d27bc"
     },
     {
       "kind": "definition",
@@ -1997,7 +2105,8 @@
         "match_kind": null
       },
       "note": "No cdga or differential graded algebra definition was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "02a6b366b534"
     },
     {
       "kind": "example",
@@ -2013,7 +2122,8 @@
         "match_kind": null
       },
       "note": "No de Rham complex of differential forms structured as a cdga was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c8e1b236dfd5"
     },
     {
       "kind": "proposition",
@@ -2029,7 +2139,8 @@
         "match_kind": null
       },
       "note": "Neither cdga nor graded-commutative ring is formalized, so this proposition is absent.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e5113e74b528"
     },
     {
       "kind": "definition",
@@ -2045,7 +2156,8 @@
         "match_kind": null
       },
       "note": "No `Superalgebra` definition exists; the term appears only as a comment in `CliffordAlgebra.Grading`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "74d5f72d83e9"
     },
     {
       "kind": "definition",
@@ -2061,7 +2173,8 @@
         "match_kind": null
       },
       "note": "No almost commutative ring definition was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3dd294aff7a2"
     },
     {
       "kind": "definition",
@@ -2077,7 +2190,8 @@
         "match_kind": "invocation"
       },
       "note": "`SimplicialObject C` is defined so `SimplicialObject CommRingCat` is expressible, but no dedicated 'simplicial commutative ring' definition exists.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "64a9e2e3d03f"
     }
   ]
 }

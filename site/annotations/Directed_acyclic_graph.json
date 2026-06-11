@@ -19,7 +19,8 @@
         "match_kind": null
       },
       "note": "Directed graphs are formalized as `Digraph` (and `Quiver`), but Mathlib has no acyclicity/no-directed-cycles predicate for them, so the DAG notion itself is absent.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6e979a381a47"
     },
     {
       "kind": "theorem",
@@ -35,7 +36,8 @@
         "match_kind": null
       },
       "note": "Neither DAGs nor topological orderings exist in Mathlib, so this equivalence is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7cdba560879e"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "special_case"
       },
       "note": "`Quiver.Path` is an inductive type of finite composable-arrow sequences (a finite directed walk, vertices may repeat), but only finite walks are covered.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "182590635995"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "special_case"
       },
       "note": "`SimpleGraph.Walk.IsPath` is the distinct-vertices predicate but only for undirected graphs; no directed-path-with-distinct-vertices predicate exists.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4599d1d552ec"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "special_case"
       },
       "note": "`SimpleGraph.Walk.IsCycle` formalizes cycles for undirected graphs only; there is no directed-cycle notion.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5039d32d39e6"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": "special_case"
       },
       "note": "`SimpleGraph.IsAcyclic` (no cyclic walks) is the acyclicity predicate but only for undirected graphs, not directed ones.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ab6c42dca562"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": "generalization"
       },
       "note": "`Relation.ReflTransGen` is the reflexive-transitive closure (reachability) of any relation giving a preorder, but the DAG-specific antisymmetry making it a partial order is not proven.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a0625ebd662e"
     },
     {
       "kind": "proposition",
@@ -131,7 +138,8 @@
         "match_kind": null
       },
       "note": "No formalization of DAGs or this non-injectivity-of-reachability observation exists.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "043b5855ccc9"
     },
     {
       "kind": "definition",
@@ -147,7 +155,8 @@
         "match_kind": "generalization"
       },
       "note": "`Relation.TransGen` is the transitive closure of an arbitrary relation, capturing the construction, but not the graph-theoretic 'maximum edges' characterization.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ca67652ef570"
     },
     {
       "kind": "proposition",
@@ -163,7 +172,8 @@
         "match_kind": null
       },
       "note": "There is no DAG type nor a theorem representing finite posets as DAGs.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d72508be4d22"
     },
     {
       "kind": "definition",
@@ -179,7 +189,8 @@
         "match_kind": "special_case"
       },
       "note": "The covering relation `CovBy` (⋖) is the transitive reduction for a (finite) partial order, but a general transitive-reduction operation on directed graphs is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "23073eba5655"
     },
     {
       "kind": "definition",
@@ -195,7 +206,8 @@
         "match_kind": "exact"
       },
       "note": "`SimpleGraph.hasse` is the Hasse diagram of an order as the graph of its covering relation (the combinatorial object, not the geometric drawing).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0788c65e89e3"
     },
     {
       "kind": "definition",
@@ -211,7 +223,8 @@
         "match_kind": null
       },
       "note": "No notion of topological ordering of a directed graph is present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dcdb732b40cb"
     },
     {
       "kind": "proposition",
@@ -227,7 +240,8 @@
         "match_kind": null
       },
       "note": "Topological orderings of directed graphs are not formalized, so this implication is absent.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "37106aa483ce"
     },
     {
       "kind": "proposition",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "The order-theoretic analogue (Szpilrajn) `extend_partialOrder`, that every partial order extends to a linear order, exists, but the graph statement about DAGs is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fc7946d40f08"
     },
     {
       "kind": "theorem",
@@ -259,7 +274,8 @@
         "match_kind": null
       },
       "note": "Neither topological orderings nor this Hamiltonian-path uniqueness criterion are formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "69bfab19df3e"
     },
     {
       "kind": "proposition",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "`LinearExtension` formalizes linear extensions of a partial order, but the equivalence with topological orderings of a DAG is not stated (topological orderings being absent).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ab59397214c6"
     },
     {
       "kind": "proposition",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "No enumeration of labeled DAGs or its recurrence is formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d4b12e8bb370"
     },
     {
       "kind": "theorem",
@@ -307,7 +325,8 @@
         "match_kind": null
       },
       "note": "This adjacency-matrix eigenvalue characterization of DAGs is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "337223bcb1d2"
     },
     {
       "kind": "definition",
@@ -323,7 +342,8 @@
         "match_kind": null
       },
       "note": "The multitree (diamond-free poset / strongly unambiguous DAG) notion is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0a0cc38ab507"
     },
     {
       "kind": "definition",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "Polytrees (orientations of undirected trees) are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "16bbc0ebd80b"
     },
     {
       "kind": "definition",
@@ -355,7 +376,8 @@
         "match_kind": "exact"
       },
       "note": "`Quiver.Arborescence` is exactly a directed rooted tree: a root with a unique directed path to every vertex.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "80e53087d3ba"
     },
     {
       "kind": "proposition",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "No topological sorting algorithm or its complexity is formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7df364ae9292"
     },
     {
       "kind": "proposition",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "DAG recognition and its linear-time complexity are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "28729c9991e9"
     },
     {
       "kind": "definition",
@@ -403,7 +427,8 @@
         "match_kind": null
       },
       "note": "Mathlib's `Digraph.Orientation` only forgets orientation (digraph→simple graph); constructing an acyclic orientation from a total order is not formalized (and is listed as a TODO).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3b88ae41d7a9"
     },
     {
       "kind": "theorem",
@@ -419,7 +444,8 @@
         "match_kind": null
       },
       "note": "Neither acyclic orientations nor the chromatic polynomial exist in Mathlib, so Stanley's theorem is absent.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c18b853a7ab6"
     },
     {
       "kind": "proposition",
@@ -435,7 +461,8 @@
         "match_kind": null
       },
       "note": "Feedback vertex/arc sets are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2df48ae1db84"
     },
     {
       "kind": "definition",
@@ -451,7 +478,8 @@
         "match_kind": null
       },
       "note": "Strongly connected components and the condensation construction are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ea129aa7adab"
     },
     {
       "kind": "proposition",
@@ -467,7 +495,8 @@
         "match_kind": null
       },
       "note": "Algorithmic time bounds for transitive closure are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2b359a4fe3de"
     },
     {
       "kind": "proposition",
@@ -483,7 +512,8 @@
         "match_kind": null
       },
       "note": "Algorithmic time bounds for transitive reduction are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3f17c29a875d"
     },
     {
       "kind": "definition",
@@ -499,7 +529,8 @@
         "match_kind": null
       },
       "note": "The closure problem (max-weight closed set) is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9df25a7aec33"
     },
     {
       "kind": "proposition",
@@ -515,7 +546,8 @@
         "match_kind": null
       },
       "note": "Linear-time shortest/longest path algorithms on DAGs are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c464235642d6"
     },
     {
       "kind": "definition",
@@ -531,7 +563,8 @@
         "match_kind": null
       },
       "note": "Dependency graphs (an application notion) are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b81e4f471dec"
     },
     {
       "kind": "definition",
@@ -547,7 +580,8 @@
         "match_kind": null
       },
       "note": "Circular dependencies are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "20019f3eb35a"
     },
     {
       "kind": "example",
@@ -563,7 +597,8 @@
         "match_kind": null
       },
       "note": "PERT critical-path analysis is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "eb4cae0fe7b8"
     },
     {
       "kind": "example",
@@ -579,7 +614,8 @@
         "match_kind": null
       },
       "note": "Processing-network applications of DAGs are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dd95b641f005"
     },
     {
       "kind": "proposition",
@@ -595,7 +631,8 @@
         "match_kind": null
       },
       "note": "This software-engineering principle is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c2112472be85"
     },
     {
       "kind": "example",
@@ -611,7 +648,8 @@
         "match_kind": null
       },
       "note": "Feedforward neural networks are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "46c7cb42abdb"
     },
     {
       "kind": "example",
@@ -627,7 +665,8 @@
         "match_kind": null
       },
       "note": "Bayesian networks are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "686cb4465b53"
     },
     {
       "kind": "definition",
@@ -643,7 +682,8 @@
         "match_kind": null
       },
       "note": "The moralization/moral graph construction is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9fbb89c8a191"
     },
     {
       "kind": "definition",
@@ -659,7 +699,8 @@
         "match_kind": null
       },
       "note": "Influence diagrams are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d1aeb9b5d4ff"
     },
     {
       "kind": "proposition",
@@ -675,7 +716,8 @@
         "match_kind": null
       },
       "note": "Causal-structure semantics of DAGs are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2ed2ee1e56a1"
     },
     {
       "kind": "example",
@@ -691,7 +733,8 @@
         "match_kind": null
       },
       "note": "Genealogical DAGs are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0628b982dae7"
     },
     {
       "kind": "example",
@@ -707,7 +750,8 @@
         "match_kind": null
       },
       "note": "Version-control history DAGs are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "03494ef603a1"
     },
     {
       "kind": "example",
@@ -723,7 +767,8 @@
         "match_kind": null
       },
       "note": "History DAGs for incremental geometric algorithms are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "291474b2d882"
     },
     {
       "kind": "definition",
@@ -739,7 +784,8 @@
         "match_kind": null
       },
       "note": "Citation graphs are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d9e0f5b711a4"
     },
     {
       "kind": "proposition",
@@ -755,7 +801,8 @@
         "match_kind": null
       },
       "note": "The Price-model longest-path scaling result is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8d10c4bc8c1c"
     },
     {
       "kind": "example",
@@ -771,7 +818,8 @@
         "match_kind": null
       },
       "note": "Using DAGs to compactly represent sequence collections is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e66ec67df865"
     },
     {
       "kind": "definition",
@@ -787,7 +835,8 @@
         "match_kind": null
       },
       "note": "The DAWG data structure is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "970d7b9e62e3"
     },
     {
       "kind": "definition",
@@ -803,7 +852,8 @@
         "match_kind": null
       },
       "note": "The trie data structure is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bac30909e349"
     },
     {
       "kind": "example",
@@ -819,7 +869,8 @@
         "match_kind": null
       },
       "note": "This DAG view of binary search trees is not formalized (Mathlib has ordered-set trees in `Data.Ordmap` but not this framing).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f91a116142d4"
     },
     {
       "kind": "definition",
@@ -835,7 +886,8 @@
         "match_kind": null
       },
       "note": "Binary decision diagrams are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "551dca086e42"
     }
   ]
 }

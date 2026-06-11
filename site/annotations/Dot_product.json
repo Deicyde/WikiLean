@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.dotProduct v w := ∑ i, v i * w i` is exactly the algebraic coordinate definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dc295b54b347"
     },
     {
       "kind": "example",
@@ -35,7 +36,8 @@
         "match_kind": "special_case"
       },
       "note": "The 3D case isn't a standalone declaration but follows by `vec3_dotProduct`/`Matrix.dotProduct` on `Fin 3 → R`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "012aab46d255"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "invocation"
       },
       "note": "Mathlib expresses this via `Matrix.mul_apply`/`mulVec`/`vecMul` which unfold to `dotProduct`, but there is no dedicated row-times-column identity for dot product.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "92d7761ab6f4"
     },
     {
       "kind": "example",
@@ -67,7 +70,8 @@
         "match_kind": null
       },
       "note": "A worked numerical row-by-column example is not present as a declaration.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a33c134c73c4"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "`cos_angle_mul_norm_mul_norm` gives `Real.cos (angle x y) * (‖x‖ * ‖y‖) = ⟪x, y⟫`, the geometric definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "452e86a5c7b1"
     },
     {
       "kind": "proposition",
@@ -99,7 +104,8 @@
         "match_kind": "special_case"
       },
       "note": "The perpendicular case is captured by `inner_eq_zero_iff`/`orthogonal`; the codirectional/antidirectional cases are not stated as such but are direct consequences.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "91835e3c9c57"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib has `orthogonalProjection` (the vector projection) but no named scalar projection `‖a‖ cos θ`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8347d9e506d3"
     },
     {
       "kind": "proposition",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "`cos_angle_mul_norm_mul_norm` is the inner product = ‖x‖‖y‖cos θ identity.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b483292d6216"
     },
     {
       "kind": "proposition",
@@ -147,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "`add_dotProduct`, `dotProduct_add`, `smul_dotProduct`, `dotProduct_smul` (and corresponding inner-product lemmas) give bilinearity.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c8c94f0ada2f"
     },
     {
       "kind": "proposition",
@@ -163,7 +172,8 @@
         "match_kind": "exact"
       },
       "note": "`InnerProductSpace` axiomatizes a positive-definite (sesqui)bilinear form; the real version specializes to bilinear and symmetric.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b0c55301d841"
     },
     {
       "kind": "proposition",
@@ -179,7 +189,8 @@
         "match_kind": "exact"
       },
       "note": "`EuclideanSpace.basisFun` is an `OrthonormalBasis` and `EuclideanSpace.inner_single_left` evaluates the Kronecker-delta inner product.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3d3e1f92fc60"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": "generalization"
       },
       "note": "Component expansion via orthonormal basis is captured by `OrthonormalBasis.sum_repr`/`inner_single_left`, not as a Wikipedia-style scalar component identity.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5021c3673b44"
     },
     {
       "kind": "theorem",
@@ -211,7 +223,8 @@
         "match_kind": "exact"
       },
       "note": "`EuclideanSpace.inner_eq_star_dotProduct` identifies the abstract inner product on `EuclideanSpace 𝕜 ι` with the coordinate `dotProduct`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0110e33192a1"
     },
     {
       "kind": "proposition",
@@ -227,7 +240,8 @@
         "match_kind": "exact"
       },
       "note": "`smul_dotProduct` and `dotProduct_smul` give `(c • v) ⬝ᵥ w = c • (v ⬝ᵥ w)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6175746c1f03"
     },
     {
       "kind": "proposition",
@@ -243,7 +257,8 @@
         "match_kind": "exact"
       },
       "note": "`inner_eq_zero_iff`/`Submodule.orthogonal` characterize orthogonality of vectors via vanishing inner product.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5b6a82b58730"
     },
     {
       "kind": "proposition",
@@ -259,7 +274,8 @@
         "match_kind": "invocation"
       },
       "note": "`exists_ne_zero_dotProduct_eq_zero` shows nonzero vectors with zero dot product exist, witnessing the failure of cancellation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "10210add0410"
     },
     {
       "kind": "proposition",
@@ -275,7 +291,8 @@
         "match_kind": "exact"
       },
       "note": "`HasDerivAt.inner` (and `deriv_inner_apply`) provide the Leibniz rule for inner products of differentiable maps.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "eb69fdb14d5f"
     },
     {
       "kind": "theorem",
@@ -291,7 +308,8 @@
         "match_kind": "exact"
       },
       "note": "This theorem in `Geometry.Euclidean.Triangle` is the vector-form law of cosines via the inner product.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e26eba0668d1"
     },
     {
       "kind": "definition",
@@ -307,7 +325,8 @@
         "match_kind": "exact"
       },
       "note": "`triple_product_eq_det` states `u ⬝ᵥ v ⨯₃ w = det ![u, v, w]`, defining and identifying the scalar triple product.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5e3f292b80eb"
     },
     {
       "kind": "definition",
@@ -323,7 +342,8 @@
         "match_kind": "generalization"
       },
       "note": "`cross_cross` gives the Lie-bracket form of the vector triple product, but the BAC-CAB identity `u × (v × w) = (u·w) v − (u·v) w` is not stated explicitly.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f5964847063c"
     },
     {
       "kind": "definition",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "The physics-motivated narrative description has no formal counterpart in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7128a2a4f4d0"
     },
     {
       "kind": "example",
@@ -355,7 +376,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no formalization of mechanical work as `F · d`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0f3d0eea7688"
     },
     {
       "kind": "example",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no formalization of physical power `F · v`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "09e922ad3e3e"
     },
     {
       "kind": "definition",
@@ -387,7 +410,8 @@
         "match_kind": "exact"
       },
       "note": "The complex Hermitian dot product is the inner product on `EuclideanSpace ℂ ι`, identified with `y ⬝ᵥ star x`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b5e2049d93e8"
     },
     {
       "kind": "proposition",
@@ -403,7 +427,8 @@
         "match_kind": "exact"
       },
       "note": "Sesquilinearity is built into the `InnerProductSpace` axioms (`smul_left`, `conj_inner_symm`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b0fb254be26e"
     },
     {
       "kind": "definition",
@@ -419,7 +444,8 @@
         "match_kind": null
       },
       "note": "Mathlib's `InnerProductGeometry.angle` is only defined for real inner product spaces; a complex-vector angle has no named declaration.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2c8fd4e8f76b"
     },
     {
       "kind": "definition",
@@ -435,7 +461,8 @@
         "match_kind": "exact"
       },
       "note": "`norm_sq_eq_re_inner` is part of the `InnerProductSpace` definition: `‖x‖^2 = re ⟪x, x⟫`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c4bc419d0417"
     },
     {
       "kind": "definition",
@@ -451,7 +478,8 @@
         "match_kind": "exact"
       },
       "note": "`InnerProductSpace 𝕜 E` is the abstract inner product space generalising the dot product.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "94913db2d449"
     },
     {
       "kind": "proposition",
@@ -467,7 +495,8 @@
         "match_kind": "exact"
       },
       "note": "`InnerProductSpace` extends `NormedSpace`; the link `‖x‖^2 = re ⟪x, x⟫` is part of the axioms.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "daa4fdba5340"
     },
     {
       "kind": "definition",
@@ -483,7 +512,8 @@
         "match_kind": "exact"
       },
       "note": "`MeasureTheory.L2.innerProductSpace` puts the L2 inner product on `Lp E 2 μ`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "29b8b66e5cd5"
     },
     {
       "kind": "example",
@@ -499,7 +529,8 @@
         "match_kind": "generalization"
       },
       "note": "The example `⟨f, g⟩ = ∫_a^b f g` is not a separate declaration but is a special case of the L2 inner product on `[a,b]`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3459d1c7795d"
     },
     {
       "kind": "definition",
@@ -515,7 +546,8 @@
         "match_kind": "generalization"
       },
       "note": "The complex L2 inner product `∫ conj(f) g` is the `Lp ℂ 2 μ` instance; not stated as a continuous-function example.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "36163da19be0"
     },
     {
       "kind": "definition",
@@ -531,7 +563,8 @@
         "match_kind": "generalization"
       },
       "note": "Function-space weighted inner products can be obtained via `MeasureTheory.L2` with `μ.withDensity w`; the finite-dimensional weighted form is `Matrix.toInnerProductSpace`, but no dedicated weighted-function-space decl exists.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2bbb0df48ae8"
     },
     {
       "kind": "definition",
@@ -547,7 +580,8 @@
         "match_kind": "invocation"
       },
       "note": "The Frobenius norm/inner product structure exists via `Matrix.frobeniusSeminormedAddCommGroup` (PiLp 2 on entries), but Mathlib lacks a directly named `frobeniusInner` declaration.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bdccc4c5097a"
     },
     {
       "kind": "definition",
@@ -563,7 +597,8 @@
         "match_kind": "exact"
       },
       "note": "`TensorProduct.instInnerProductSpace` puts an inner product on `E ⊗[𝕜] F` extending the inner products on the factors.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ae99548a268f"
     }
   ]
 }
