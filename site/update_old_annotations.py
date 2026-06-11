@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Re-run "old" articles through the current v3 annotation pipeline.
 
+DEPRECATED: superseded by moderate.py review (D1-direct). Kept for one-off
+schema migrations.
+
 Two earlier generations are weaker than the current schema-v3 pipeline (see the
 quality comparison): the `annotations_v2/` set (schema_version 1 — ~4x sparser,
 no kind/label/match_kind/provenance) and articles that were rendered but whose
