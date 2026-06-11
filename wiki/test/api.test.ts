@@ -77,6 +77,13 @@ const BOT_ANNOTATION = {
 // reading /api/article/:slug.json (same values, fresh object identity).
 const echo = <T>(x: T): T => JSON.parse(JSON.stringify(x)) as T;
 
+// C1: the save path now heals a 12-hex `id` onto every stored annotation, so
+// fixtures posted without ids come back with one extra field. stripIds lets
+// the pre-id fixtures above still be compared by content; the id contract
+// itself is covered in ids.test.ts.
+const ID_RE = /^[0-9a-f]{12}$/;
+const stripIds = (arr: Array<Record<string, unknown>>) => arr.map(({ id: _id, ...rest }) => rest);
+
 // No test may hit the network: the only fetch sites are wikipedia.ts (defeated
 // by the WP_HTML pre-seed) and better-auth (never reached in dev auth mode).
 const realFetch = globalThis.fetch;
@@ -250,7 +257,7 @@ describe("POST /api/article/:slug (save)", () => {
     expect(revisionCount(db)).toBe(1);
   });
 
-  it("happy path: bumps version, stores annotations verbatim, logs a revision", async () => {
+  it("happy path: bumps version, stores annotations (+healed ids), logs a revision", async () => {
     const { db, env } = setup();
     const res = await save(env, { annotations: HUMAN_EDIT, comment: "human pass", base_version: 1 }, { user: "u-human" });
     expect(res.status).toBe(200);
@@ -258,13 +265,17 @@ describe("POST /api/article/:slug (save)", () => {
 
     const row = articleRow(db);
     expect(row.version).toBe(2);
-    expect(row.annotations).toBe(JSON.stringify(HUMAN_EDIT)); // verbatim
+    // C1 conscious update: posted without ids → stored = posted + healed ids,
+    // otherwise verbatim.
+    const storedArr = JSON.parse(row.annotations) as Array<Record<string, unknown>>;
+    expect(stripIds(storedArr)).toEqual(HUMAN_EDIT);
+    for (const a of storedArr) expect(a.id).toMatch(ID_RE);
     expect(row.revid).toBe(REVID);
 
     expect(revisionCount(db)).toBe(2);
     const rev = latestRevision(db);
     expect(rev.user_id).toBe("u-human");
-    expect(rev.annotations).toBe(JSON.stringify(HUMAN_EDIT));
+    expect(rev.annotations).toBe(row.annotations); // snapshot = stored row
     expect(rev.comment).toBe("human pass");
     expect(rev.kind).toBe("edit");
     expect(rev.meta).toBeNull();
@@ -305,10 +316,14 @@ describe("POST /api/article/:slug (save)", () => {
 
     const second = await save(env, { annotations: SEED_ANNOTATIONS, base_version: 1 }, { user: "u-human" });
     expect(second.status).toBe(409);
-    const body = (await second.json()) as { error: string; version: number; annotations: unknown };
+    const body = (await second.json()) as {
+      error: string;
+      version: number;
+      annotations: Array<Record<string, unknown>>;
+    };
     expect(body.error).toBe("stale");
     expect(body.version).toBe(2);
-    expect(body.annotations).toEqual(HUMAN_EDIT);
+    expect(stripIds(body.annotations)).toEqual(HUMAN_EDIT); // C1: stored carries healed ids
     expect(articleRow(db).version).toBe(2);
     expect(revisionCount(db)).toBe(2);
   });
@@ -442,9 +457,13 @@ describe("POST /api/article/:slug (pipeline bearer writes)", () => {
   it("dropping a stored human annotation → 422 naming it, D1 unchanged", async () => {
     const { db, env } = setup();
     expect((await save(env, { annotations: HUMAN_EDIT, base_version: 1 }, { user: "u-human" })).status).toBe(200);
+    // C1 conscious update: a pipeline echoes what it READ — the stored rows,
+    // healed ids included — so the fixture echoes D1, not the pre-id constant.
+    const before = articleRow(db);
+    const storedArr = JSON.parse(before.annotations) as Array<Record<string, unknown>>;
 
     // The bot omits the human-added theorem annotation.
-    const res = await botSave(env, { annotations: [echo(HUMAN_EDIT[0])], base_version: 2 });
+    const res = await botSave(env, { annotations: [echo(storedArr[0])], base_version: 2 });
     expect(res.status).toBe(422);
     expect(await res.json()).toEqual({
       ok: false,
@@ -453,7 +472,7 @@ describe("POST /api/article/:slug (pipeline bearer writes)", () => {
     });
     const row = articleRow(db);
     expect(row.version).toBe(2);
-    expect(row.annotations).toBe(JSON.stringify(HUMAN_EDIT));
+    expect(row.annotations).toBe(before.annotations);
     expect(revisionCount(db)).toBe(2);
     expect(moderationRow(db)).toBeUndefined();
   });
@@ -461,21 +480,23 @@ describe("POST /api/article/:slug (pipeline bearer writes)", () => {
   it("altering a stored human annotation → 422 (deep-equality required)", async () => {
     const { db, env } = setup();
     expect((await save(env, { annotations: HUMAN_EDIT, base_version: 1 }, { user: "u-human" })).status).toBe(200);
+    const before = articleRow(db).annotations;
 
-    const tampered = echo(HUMAN_EDIT) as Array<Record<string, unknown>>;
+    const tampered = JSON.parse(before) as Array<Record<string, unknown>>; // echo of stored, ids included (C1)
     tampered[0].note = "the bot reworded this human note";
     const res = await botSave(env, { annotations: tampered, base_version: 2 });
     expect(res.status).toBe(422);
     expect(((await res.json()) as { missing: string[] }).missing).toEqual(["Abelian group"]);
-    expect(articleRow(db).annotations).toBe(JSON.stringify(HUMAN_EDIT));
+    expect(articleRow(db).annotations).toBe(before);
   });
 
   it("happy path: echoes humans verbatim → 200; kind=pipeline revision with meta + parent_id; moderation_state upserted", async () => {
     const { db, env } = setup();
     expect((await save(env, { annotations: HUMAN_EDIT, base_version: 1 }, { user: "u-human" })).status).toBe(200);
     const humanRevId = latestRevision(db).id;
+    const storedHuman = JSON.parse(articleRow(db).annotations) as Array<Record<string, unknown>>; // C1: ids included
 
-    const payload = [...echo(HUMAN_EDIT), BOT_ANNOTATION];
+    const payload = [...echo(storedHuman), BOT_ANNOTATION];
     const meta = { run_id: "run-1", model: "test-model", tokens: 1234 };
     const res = await botSave(env, { annotations: payload, base_version: 2, comment: "moderation pass", meta });
     expect(res.status).toBe(200);
@@ -483,8 +504,13 @@ describe("POST /api/article/:slug (pipeline bearer writes)", () => {
 
     const row = articleRow(db);
     expect(row.version).toBe(3);
-    // Stored verbatim — bot provenance passes through, humans byte-identical.
-    expect(row.annotations).toBe(JSON.stringify(payload));
+    // Bot provenance passes through; humans byte-identical (echoed ids pass
+    // through untouched); the new bot annotation gets a healed id (C1).
+    const arr = JSON.parse(row.annotations) as Array<Record<string, unknown>>;
+    expect(arr.slice(0, 2)).toEqual(storedHuman);
+    const { id: botId, ...botRest } = arr[2];
+    expect(botRest).toEqual(BOT_ANNOTATION);
+    expect(botId).toMatch(ID_RE);
     expect(row.revid).toBe(REVID); // no revid posted → pin unchanged
 
     const rev = latestRevision(db);
@@ -601,10 +627,10 @@ describe("GET /api/article/:slug.json (pipeline read path)", () => {
     expect((await save(env, { annotations: HUMAN_EDIT, base_version: 1 }, { user: "u-human" })).status).toBe(200);
     const body = (await (await get(env, `/api/article/${SLUG}.json`)).json()) as {
       version: number;
-      annotations: unknown;
+      annotations: Array<Record<string, unknown>>;
     };
     expect(body.version).toBe(2);
-    expect(body.annotations).toEqual(HUMAN_EDIT);
+    expect(stripIds(body.annotations)).toEqual(HUMAN_EDIT); // C1: stored carries healed ids
   });
 
   it("unknown slug → 404", async () => {
@@ -725,9 +751,9 @@ describe("edit-safety invariant", () => {
     const res = await save(env, { annotations: HUMAN_EDIT, comment: "human edit", base_version: 1 }, { user: "u-human" });
     expect(res.status).toBe(200);
 
-    // Stored verbatim in D1, human provenance intact.
-    const stored = JSON.parse(articleRow(db).annotations) as Array<{ provenance?: string; note?: string }>;
-    expect(stored).toEqual(HUMAN_EDIT);
+    // Stored verbatim in D1 (modulo healed ids, C1), human provenance intact.
+    const stored = JSON.parse(articleRow(db).annotations) as Array<Record<string, unknown>>;
+    expect(stripIds(stored)).toEqual(HUMAN_EDIT);
     expect(stored.some((a) => a.provenance === "human")).toBe(true);
 
     // Direct read: the rendered page wraps the annotation as human-curated and
@@ -760,16 +786,18 @@ describe("edit-safety invariant", () => {
     });
     expect(pushed.status).toBe(200);
 
-    // The human annotations are intact — deep-equal, provenance human.
+    // The human annotations are intact — deep-equal (modulo healed ids, C1),
+    // provenance human.
     const stored = JSON.parse(articleRow(db).annotations) as Array<Record<string, unknown>>;
-    expect(stored.slice(0, 2)).toEqual(HUMAN_EDIT);
+    expect(stripIds(stored.slice(0, 2))).toEqual(HUMAN_EDIT);
     expect(stored.filter((a) => a.provenance === "human").length).toBe(2);
 
     // A second bot pass that omits a human annotation is rejected and D1 is
-    // untouched.
+    // untouched. (C1: the pass echoes stored rows — ids included — and drops
+    // stored[1], the human theorem annotation.)
     const before = articleRow(db);
     const dropping = await botSave(env, {
-      annotations: [echo(HUMAN_EDIT[0]), BOT_ANNOTATION],
+      annotations: [echo(stored[0]), echo(stored[2])],
       base_version: before.version,
     });
     expect(dropping.status).toBe(422);

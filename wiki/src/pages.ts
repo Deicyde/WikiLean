@@ -45,7 +45,7 @@ export function injectAuthAndEditor(
       `<link rel="stylesheet" href="/assets/review.css?v=3">\n` +
       // Bump ?v= when these assets change so browsers refetch (the URL is the
       // cache key; without this, returning users see the stale editor / CSS).
-      `<script src="/assets/editor.js?v=6"></script>\n`;
+      `<script src="/assets/editor.js?v=7"></script>\n`;
   } else {
     inject =
       `<a id="wl-signin" href="/login?returnTo=${ret}" ` +
