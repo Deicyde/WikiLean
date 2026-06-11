@@ -148,11 +148,11 @@ into `wiki/public/assets/`. Edit sources, then run build-public, never edit
   (`npm run pull`); 709 rows pulled: 47 sidecars created, 8 real content updates
   (the 7 user-edited slugs' human edits rescued + Tangent_bundle stale-sidecar fix),
   manifest at site/annotations/.d1_pull_manifest.json. Human edits now in git.
-- [ ] **Stable annotation IDs** (12-hex): one-shot D1+disk backfill, Worker lazy-heal
-  on save, pipeline stamps new annotations, editor preserves via spread fix, agent
-  echo-validation post-pass (unknown id → NEW; dropped id → _preserve_human
-  re-insert). **Prerequisite for:** annotation_events, tombstones, flags-by-id,
-  patrol diffs, v4 migration.
+- [x] **Stable annotation IDs** — DONE 2026-06-11, applied to production: 31,394 ids
+  across 706 articles (CAS-guarded SQL, idempotent re-run verified, zero drift).
+  Worker lazy-heal ADOPTS stored ids on sig-match (identity continuity), mints
+  fresh only for new; malformed/duplicate → 400. Editor stamps on add. Runner
+  echo-validates (unknown/missing id → inherit-by-sig else fresh).
 - [x] **Worker API read/write path** — DONE 2026-06-10 (deployed 613da078). GET
   /api/article/:slug.json (public); bearer branch in getUser vs PIPELINE_TOKEN
   secret (backed by users row 'pipeline', role 'bot'; kill switch = delete row or
@@ -174,10 +174,12 @@ into `wiki/public/assets/`. Edit sources, then run build-public, never edit
   priority: flag_count DESC, wp_drifted DESC, human-edited-since-review,
   last_reviewed_at ASC NULLS FIRST; per-row reason string. Bot saves upsert
   last_reviewed_at/version + conditional wp_drifted reset.
-- [ ] **Unified runner `site/moderate.py`** (new|review|wp-update; --auth; --mode;
-  budget/abort semantics inherited from batch_annotate.run; WIKILEAN_MATHLIB env
-  replaces the hardcoded path; mathlib_sha + model + prompt_sha recorded per run).
-  find_old_articles() replaced by the D1-backed selector. seed-delta/refresh retire.
+- [x] **Unified runner `site/moderate.py`** — DONE (new|review|wp-update|all;
+  --auth subscription|api-key via guarded key-pop; WIKILEAN_MATHLIB env; ID3 meta
+  with ladder + id-discipline stats; 409/422/429 handling; D1-backed selection via
+  /api/work). update_old_annotations.py deprecated; seed-delta/refresh retired to
+  legacy. KNOWN GAP: `new` mode has no D1 create path — POST 404s on unknown slugs
+  (Wave D: bot-only article-create endpoint or seed-delta handoff).
 - [x] **Wikipedia drift detection** — DONE (cron 17 6 * * * deployed; first tick
   pending). wiki/src/drift.ts: prop=info batches of 50, ≤8 batches/run with KV
   cursor (drift:cursor in RENDER_CACHE), full sweep every ~2 days at 709 articles.
@@ -185,11 +187,16 @@ into `wiki/public/assets/`. Edit sources, then run build-public, never edit
   'deleted'; redirect → 'moved' (NB: redirects=0 param deliberately OMITTED —
   MediaWiki treats presence as true). Never bumps version. Staleness banner
   injected per-request when latest_revid > revid, with ?diff=cur&oldid= link.
-- [ ] **Stage-0 re-pin** in moderate.py wp-update: fetch new-revid HTML (render.py
-  gains target_revid param + revid-keyed cache), dry-run wrap; if matched==total,
-  apply with new revid via bot POST. Stages 1-2 (TextQuoteSelector fuzzy ≥0.95 /
-  AI semantic judge) wait for anchor-rot telemetry to prove need. Hazard on record:
-  'if'→'iff' edits keep high text similarity but invalidate the formalization.
+- [x] **Stage-0 re-pin** — DONE (site/update_from_upstream.py; render.py gained
+  target_revid + revid-keyed cache, legacy path byte-identical). FIRST PRODUCTION
+  RUN 2026-06-11: 8/10 drifted articles re-pinned cleanly (incl. 102/102 anchors on
+  Algebraic_K-theory); 2 held back with failing anchors recorded to
+  .wp_update_report.jsonl. Stages 1-2 still gated on telemetry volume. Hazard on
+  record: 'if'→'iff' edits keep high text similarity but invalidate formalization.
+- **DRIFT REALITY CHECK (cron tick 1, 2026-06-11):** 145 of the first 400 articles
+  (36%) had drifted from their pinned revisions. Upstream churn is much higher than
+  assumed — wp-update is a first-class workload, not an edge case. Stage-0 clears
+  ~80% of drift for zero tokens (first-run sample).
 - [ ] **Anchor-rot telemetry:** structured render log {slug, version, matched, total};
   articles.anchored_count written only from live-pinned renders.
 - [ ] **Staleness banner** (per-request injection, post-cache) with one-click
@@ -296,6 +303,15 @@ into `wiki/public/assets/`. Edit sources, then run build-public, never edit
   Smoke-tested live: :slug.json shape, /api/work 403/jobs, bot-save 400 contract.
   Note: numeric-slug articles (0, 1, 100…) checked — genuine number articles, not
   junk. Next: Wave C (ID backfill, moderate.py, wp-update stage-0, discovery).
+- 2026-06-11 — **P1 Wave C shipped — THE LOOP IS CLOSED.** Stable IDs applied to
+  production (31,394 annotations, 706 articles, idempotent-verified); Worker
+  lazy-heal deployed (d547d917, 74/74 tests); moderate.py runner live (dry-run
+  verified: ids_echoed 35/35, fresh 0); drift cron tick 1 found 145/400 drifted
+  (36% — far above assumptions); FIRST PRODUCTION STAGE-0 RUN re-pinned 8/10
+  drifted articles for zero AI tokens, 2 recorded for stage-1. First real AI
+  review pass (2 articles) launched. Remaining P1: article-create endpoint for
+  `new` mode (POST 404s on unknown slugs — C2 friction), dynamic homepage/sitemap,
+  GET-path revid write removal, WP_HTML delete-on-re-pin. Then P2 instrumentation.
 - 2026-06-10 — **VERSION-CONTROL RISK SURFACED:** `wiki/`, `site/`, `docs/`,
   `CONTRIBUTING.md` are untracked in git — the whole live backend has never been
   committed. P0 (and everything before it) exists only in the working tree + the live
