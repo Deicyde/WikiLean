@@ -52,7 +52,7 @@
         "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "exact"
       },
-      "note": "Encoded as the `AddCommSemigroup.add_comm` field/lemma.",
+      "note": "Encoded as the `AddCommSemigroup.add_comm` field (class declared at Defs.lean:251).",
       "provenance": "ai",
       "id": "55fee75937b2"
     },
@@ -69,7 +69,7 @@
         "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "exact"
       },
-      "note": "Encoded as the `AddSemigroup.add_assoc` field/lemma.",
+      "note": "Encoded as the `AddSemigroup.add_assoc` field (class declared at Defs.lean:182).",
       "provenance": "ai",
       "id": "e06c18d27e4c"
     },
@@ -103,7 +103,7 @@
         "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "exact"
       },
-      "note": "`AddZeroClass.add_zero` is the identity axiom for additive monoids.",
+      "note": "`AddZeroClass.add_zero` (class at Defs.lean:384) is the identity axiom for additive monoids.",
       "provenance": "ai",
       "id": "64b21c3870dc"
     },
@@ -289,7 +289,7 @@
         "module": "Mathlib.SetTheory.Cardinal.Defs",
         "match_kind": "exact"
       },
-      "note": "`Cardinal.add_def` states `#α + #β = #(α ⊕ β)`, formalizing disjoint-union cardinality.",
+      "note": "`Cardinal.add_def : #α + #β = #(α ⊕ β)` (Defs.lean:249) formalizes disjoint-union cardinality.",
       "provenance": "ai",
       "id": "206526f2d2b8"
     },
@@ -421,7 +421,7 @@
         "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "exact"
       },
-      "note": "`nsmul_succ : nsmul (n+1) x = nsmul n x + x` formalizes iterated addition of 1/successor.",
+      "note": "`nsmul_succ : nsmul (n+1) x = nsmul n x + x` (Defs.lean:648) formalizes iterated addition of 1/successor.",
       "provenance": "ai",
       "id": "3a275b15180d"
     },
@@ -737,7 +737,7 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Prod.add_def",
+        "decl": "Prod.instAdd",
         "module": "Mathlib.Algebra.Group.Prod",
         "match_kind": "generalization"
       },
@@ -791,11 +791,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "div_add_div_same",
+        "decl": "add_div",
         "module": "Mathlib.Algebra.Field.Basic",
         "match_kind": "exact"
       },
-      "note": "`div_add_div_same : a/c + b/c = (a+b)/c` in any division ring.",
+      "note": "`add_div : (a + b)/c = a/c + b/c` (Field/Basic.lean:36) gives the equal-denominator sum; `div_add_div_same` exists only on ENNReal.",
       "provenance": "ai",
       "anchors": [
         {
@@ -862,11 +862,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "CauSeq.add",
+        "decl": "Real.add",
         "module": "Mathlib.Data.Real.Basic",
         "match_kind": "exact"
       },
-      "note": "ℝ is the quotient of `CauSeq ℚ abs` with pointwise addition `CauSeq.add`.",
+      "note": "`Real.add` (irreducible_def at Basic.lean:79) implements pointwise CauSeq addition on ℝ.",
       "provenance": "ai",
       "anchors": [
         {
@@ -893,7 +893,7 @@
         "module": "Mathlib.Data.Complex.Basic",
         "match_kind": "exact"
       },
-      "note": "`Complex.add_re`/`Complex.add_im` express componentwise addition on ℂ.",
+      "note": "`Complex.add_re`/`Complex.add_im` (Basic.lean:169,173) express componentwise addition on ℂ.",
       "provenance": "ai",
       "id": "c43ba5babb2a"
     },
@@ -927,7 +927,7 @@
         "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "exact"
       },
-      "note": "`AddCommGroup` is Mathlib's class for abelian groups written additively.",
+      "note": "`AddCommGroup` (Defs.lean:1275) is Mathlib's class for abelian groups written additively.",
       "provenance": "ai",
       "id": "4e577d2e86ad"
     },
@@ -1029,10 +1029,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Real.Angle",
-        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Circle",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Angle",
         "match_kind": "exact"
       },
-      "note": "`Real.Angle` is ℝ/(2π ℤ) with its additive group structure.",
+      "note": "`Real.Angle` (Angle.lean:31) is ℝ/(2π ℤ) with its additive group structure.",
       "provenance": "ai",
       "id": "391baeb85826"
     },
@@ -1049,7 +1049,7 @@
         "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "exact"
       },
-      "note": "`AddCommSemigroup` captures arbitrary associative+commutative addition operations.",
+      "note": "`AddCommSemigroup` (Defs.lean:251) captures arbitrary associative+commutative addition operations.",
       "provenance": "ai",
       "id": "5f4a64791765"
     },
@@ -1066,7 +1066,7 @@
         "module": "Mathlib.LinearAlgebra.Finsupp.LinearCombination",
         "match_kind": "exact"
       },
-      "note": "`Finsupp.linearCombination` constructs general linear combinations as a linear map.",
+      "note": "`Finsupp.linearCombination` (LinearCombination.lean:54) constructs general linear combinations as a linear map.",
       "provenance": "ai",
       "id": "72a5f140af75"
     },
@@ -1096,11 +1096,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Ordinal",
-        "module": "Mathlib.SetTheory.Ordinal.Basic",
+        "decl": "Ordinal.one_add_omega0",
+        "module": "Mathlib.SetTheory.Ordinal.Arithmetic",
         "match_kind": "generalization"
       },
-      "note": "`Ordinal` is only an `AddMonoid`/`OrderedAddCommMonoid`-style structure without an `add_comm` instance; the explicit statement `1 + ω = ω ≠ ω + 1` exists implicitly via `Ordinal.one_add_omega0`/`omega0_add_one` but I did not locate a `not_add_comm` lemma.",
+      "note": "`Ordinal.one_add_omega0 : 1 + ω = ω` (Arithmetic.lean:1084) gives an explicit witness of non-commutativity, but no named `¬ add_comm` lemma exists.",
       "provenance": "ai",
       "id": "f4c0410d562b"
     },
@@ -1113,11 +1113,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Cardinal.instCommSemiring",
-        "module": "Mathlib.SetTheory.Cardinal.Basic",
+        "decl": "Cardinal.commSemiring",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
         "match_kind": "exact"
       },
-      "note": "`Cardinal` is a `CommSemiring`, so `add_comm` holds for cardinal sums.",
+      "note": "`Cardinal.commSemiring : CommSemiring Cardinal` (Order.lean:218) yields `add_comm` for cardinal sums.",
       "provenance": "ai",
       "id": "3d54ed29280b"
     },
@@ -1134,7 +1134,7 @@
         "module": "Mathlib.CategoryTheory.Limits.Shapes.BinaryProducts",
         "match_kind": "exact"
       },
-      "note": "Binary coproducts `X ⨿ Y` are defined in `CategoryTheory.Limits`.",
+      "note": "Binary coproducts `X ⨿ Y` are defined in `CategoryTheory.Limits` (BinaryProducts.lean has `coprod.desc`, `coprod.map`, etc.).",
       "provenance": "ai",
       "id": "f715a6ecc146"
     },
@@ -1151,7 +1151,7 @@
         "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "exact"
       },
-      "note": "`SubNegMonoid.sub_eq_add_neg : a - b = a + -b`.",
+      "note": "`SubNegMonoid.sub_eq_add_neg : a - b = a + -b` (Defs.lean:1006).",
       "provenance": "ai",
       "id": "561ca32f59ac"
     },
@@ -1185,7 +1185,7 @@
         "module": "Mathlib.Analysis.SpecialFunctions.Exp",
         "match_kind": "exact"
       },
-      "note": "`Real.exp_add` and `Complex.exp_add` give `exp (x+y) = exp x * exp y`.",
+      "note": "`Real.exp_add` and `Complex.exp_add` give `exp (x+y) = exp x * exp y` (used pervasively, e.g. SpecialFunctions/Exp.lean:42).",
       "provenance": "ai",
       "anchors": [
         {
@@ -1212,7 +1212,7 @@
         "module": "Mathlib.Algebra.Ring.Defs",
         "match_kind": "exact"
       },
-      "note": "`Distrib`/`Ring` build distributivity (`left_distrib`, `right_distrib`) into the ring axioms.",
+      "note": "`Distrib` (Ring/Defs.lean:64) builds `left_distrib`/`right_distrib` into the ring axioms.",
       "provenance": "ai",
       "id": "46eab2c4e3d7"
     },
@@ -1229,7 +1229,7 @@
         "module": "Mathlib.Algebra.Field.Basic",
         "match_kind": "exact"
       },
-      "note": "`add_div : (a + b) / c = a/c + b/c` in any field.",
+      "note": "`add_div : (a + b) / c = a/c + b/c` in any division ring (Field/Basic.lean:36).",
       "provenance": "ai",
       "id": "e3bbb2ac478a"
     },
@@ -1280,7 +1280,7 @@
         "module": "Mathlib.SetTheory.Cardinal.Arithmetic",
         "match_kind": "exact"
       },
-      "note": "`Cardinal.add_eq_max : ℵ₀ ≤ a → a + b = max a b`.",
+      "note": "`Cardinal.add_eq_max : ℵ₀ ≤ a → a + b = max a b` (Arithmetic.lean:233).",
       "provenance": "ai",
       "id": "4fec564209ab"
     },
@@ -1293,11 +1293,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "add_max",
+        "decl": "max_add_add_left",
         "module": "Mathlib.Algebra.Order.Group.MinMax",
         "match_kind": "exact"
       },
-      "note": "`add_max`/`max_add_add_right` etc. provide distributivity of addition over `max` in ordered groups.",
+      "note": "`max_add_add_left` / `max_add_add_right` give `a + max b c = max (a+b) (a+c)` in ordered (cancel) add monoids.",
       "provenance": "ai",
       "anchors": [
         {
@@ -1324,7 +1324,7 @@
         "module": "Mathlib.Algebra.Tropical.Basic",
         "match_kind": "exact"
       },
-      "note": "`Tropical α` defines the tropical semiring with `min`/`max` as addition and `+` as multiplication.",
+      "note": "`Tropical α` (Basic.lean:58) defines the tropical semiring with `min` as addition and `+` as multiplication.",
       "provenance": "ai",
       "anchors": [
         {
@@ -1376,13 +1376,13 @@
         "section": "In probability theory",
         "snippet": "Convolution is used to add two independent random variables defined by distribution functions ."
       },
-      "status": "formalized",
+      "status": "partial",
       "mathlib": {
         "decl": "ProbabilityTheory.IndepFun",
         "module": "Mathlib.Probability.Independence.Basic",
-        "match_kind": "exact"
+        "match_kind": "generalization"
       },
-      "note": "Mathlib's `Measure.mconv` together with `IndepFun` shows the law of `X + Y` is the convolution of their laws.",
+      "note": "`IndepFun` (Independence/Basic.lean:144) defines independence; the law of `X+Y` as convolution of laws is encoded via `Measure.conv` / pushforward but not as a single named lemma here.",
       "provenance": "ai",
       "id": "26fa627b4879"
     }
