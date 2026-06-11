@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "The Mathlib definition `Martingale f ℱ μ := StronglyAdapted ℱ f ∧ ∀ i ≤ j, μ[f j | ℱ i] =ᵐ[μ] f i` directly captures the informal idea that the conditional expectation of the next value equals the present value.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e1d80f7ceaa7"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib's `Martingale` is defined for any `Preorder ι`, specializing to the discrete-time case when `ι = ℕ`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6b8660f1625c"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": null
       },
       "note": "Mathlib defines martingales relative to a filtration rather than another process directly; the notion is recoverable by combining `Martingale` with `Filtration.natural` of the reference process, but is not packaged as a single decl.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e8382c57c88b"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": null
       },
       "note": "Same as the discrete case: `Martingale` over a continuous index `ι` together with `Filtration.natural` of the conditioning process expresses this, but it is not a dedicated decl.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5bb3a8bd300b"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "`Martingale` is defined with values in any `E` that is a `NormedAddCommGroup`/`NormedSpace ℝ E`/`CompleteSpace`, i.e. Banach-space valued, on any `Preorder ι`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bd357090ea5b"
     },
     {
       "kind": "example",
@@ -99,7 +104,8 @@
         "match_kind": null
       },
       "note": "No declaration constructing the unbiased random walk and proving it is a martingale was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9514a13528e7"
     },
     {
       "kind": "example",
@@ -115,7 +121,8 @@
         "match_kind": null
       },
       "note": "No Mathlib decl formalizes the gambler-fortune fair-game example as a martingale.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "29288bc7413e"
     },
     {
       "kind": "example",
@@ -131,7 +138,8 @@
         "match_kind": null
       },
       "note": "The martingale `X_n^2 − n` for a fair-coin walk is not formalized as a named decl.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b0d0ed7c5782"
     },
     {
       "kind": "example",
@@ -147,7 +155,8 @@
         "match_kind": null
       },
       "note": "No Mathlib declaration was found for de Moivre's martingale.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3b08bbae73e4"
     },
     {
       "kind": "example",
@@ -163,7 +172,8 @@
         "match_kind": null
       },
       "note": "Pólya's urn process is not formalized in `Mathlib/Probability`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "38b28acc0690"
     },
     {
       "kind": "example",
@@ -179,7 +189,8 @@
         "match_kind": null
       },
       "note": "No Mathlib decl establishes the sequence of likelihood ratios as a martingale.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "83a8bb0767a3"
     },
     {
       "kind": "example",
@@ -195,7 +206,8 @@
         "match_kind": "exact"
       },
       "note": "`martingale_condExp` proves that `fun i => μ[f | ℱ i]` is a martingale, which is precisely the Doob martingale construction.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f8c0a9524d52"
     },
     {
       "kind": "example",
@@ -211,7 +223,8 @@
         "match_kind": null
       },
       "note": "This ecological application is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e9578d3aae55"
     },
     {
       "kind": "example",
@@ -227,7 +240,8 @@
         "match_kind": null
       },
       "note": "Wright–Fisher / genetic-drift allele-frequency martingale is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cca367a013e2"
     },
     {
       "kind": "example",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "No Poisson-process construction or compensated-Poisson martingale was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6600615e3c32"
     },
     {
       "kind": "example",
@@ -259,7 +274,8 @@
         "match_kind": null
       },
       "note": "Brownian motion and its exponential martingale are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "878644e31c7e"
     },
     {
       "kind": "example",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "Wald's martingale (the moment-generating-function product martingale) is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5def4a086458"
     },
     {
       "kind": "example",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "Mathematical-finance asset-pricing martingale is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dec179ebf66c"
     },
     {
       "kind": "definition",
@@ -307,7 +325,8 @@
         "match_kind": "generalization"
       },
       "note": "`Martingale` is parameterized by an arbitrary Banach space `E`, so the multi-dimensional case `E = ℝ^d` is a specialization.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "29c3b884c077"
     },
     {
       "kind": "proposition",
@@ -323,7 +342,8 @@
         "match_kind": null
       },
       "note": "Brownian motion is not yet formalized in Mathlib, so the harmonic-function martingale statement is unavailable.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c8eb98c9c61e"
     },
     {
       "kind": "definition",
@@ -339,7 +359,8 @@
         "match_kind": "generalization"
       },
       "note": "`Submartingale f ℱ μ` is defined for any `Preorder ι`, specializing to `ι = ℕ` for the discrete-time case.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d408e9ff0809"
     },
     {
       "kind": "definition",
@@ -355,7 +376,8 @@
         "match_kind": "generalization"
       },
       "note": "Same `Submartingale` decl handles continuous time when `ι` is e.g. `ℝ≥0` or `ℝ`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7eb59e8454f5"
     },
     {
       "kind": "definition",
@@ -371,7 +393,8 @@
         "match_kind": "generalization"
       },
       "note": "`Supermartingale f ℱ μ` is defined for any `Preorder ι`; the discrete case is `ι = ℕ`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "87df769aae7b"
     },
     {
       "kind": "definition",
@@ -387,7 +410,8 @@
         "match_kind": "generalization"
       },
       "note": "`Supermartingale` is index-agnostic and covers continuous time.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "96b7dd3f31b3"
     },
     {
       "kind": "proposition",
@@ -403,7 +427,8 @@
         "match_kind": "exact"
       },
       "note": "`martingale_iff` states `Martingale f ℱ μ ↔ Supermartingale f ℱ μ ∧ Submartingale f ℱ μ`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4b33b0e91c41"
     },
     {
       "kind": "example",
@@ -419,7 +444,8 @@
         "match_kind": null
       },
       "note": "Not formalized as a named example in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9491d597f7a3"
     },
     {
       "kind": "example",
@@ -435,7 +461,8 @@
         "match_kind": null
       },
       "note": "Not formalized as a named example in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2c9053c4807d"
     },
     {
       "kind": "example",
@@ -451,7 +478,8 @@
         "match_kind": null
       },
       "note": "Not formalized as a named example in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "040afcdbbc5d"
     },
     {
       "kind": "proposition",
@@ -467,7 +495,8 @@
         "match_kind": null
       },
       "note": "No `ConvexOn`-of-martingale-is-submartingale decl was located in `Mathlib/Probability`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bae1d4532f63"
     },
     {
       "kind": "definition",
@@ -483,7 +512,8 @@
         "match_kind": "exact"
       },
       "note": "`IsStoppingTime f τ` is defined as the condition that `{ω | τ ω ≤ i}` is `f i`-measurable for every `i`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4b92372bc62a"
     },
     {
       "kind": "proposition",
@@ -499,7 +529,8 @@
         "match_kind": null
       },
       "note": "Only `Submartingale.stoppedProcess` is provided; the martingale (and supermartingale) versions are not stated as their own decls, though they follow via `martingale_iff` and negation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3cd2f09bcdcb"
     },
     {
       "kind": "theorem",
@@ -515,7 +546,8 @@
         "match_kind": "exact"
       },
       "note": "This iff-form of Doob's optional stopping theorem characterizes submartingales via monotonicity of expected stopped values over bounded stopping times.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "74f21d9431b4"
     },
     {
       "kind": "definition",
@@ -531,7 +563,8 @@
         "match_kind": null
       },
       "note": "The Stroock–Varadhan martingale problem formulation is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5410a12b6550"
     },
     {
       "kind": "definition",
@@ -547,7 +580,8 @@
         "match_kind": null
       },
       "note": "Diffusion martingale problem `M(a,b)` is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c8b27ed2d833"
     },
     {
       "kind": "proposition",
@@ -563,7 +597,8 @@
         "match_kind": null
       },
       "note": "SDEs and the martingale-problem/SDE correspondence are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "55084ee8624c"
     },
     {
       "kind": "theorem",
@@ -579,7 +614,8 @@
         "match_kind": null
       },
       "note": "Mathematical-finance results including the fundamental theorem of asset pricing are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "507b07242ca3"
     },
     {
       "kind": "proposition",
@@ -595,7 +631,8 @@
         "match_kind": null
       },
       "note": "Risk-neutral valuation under an equivalent martingale measure is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a4af6a2c8a1b"
     }
   ]
 }

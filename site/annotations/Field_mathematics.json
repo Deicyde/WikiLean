@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib's `Field` class formalizes a set with addition, subtraction, multiplication, and division satisfying the field axioms.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5abd926df97f"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "exact"
       },
       "note": "Same `Field` class captures the informal description.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6fa4572df04c"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "`class Field (K : Type u) extends CommRing K, DivisionRing K` matches the classic axiomatic definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "11f642a0b855"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "`IsField` characterizes a (semi)ring as a field via nontriviality and existence of multiplicative inverses, with `IsField.toField` producing the corresponding `Field`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b27adfc978e6"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "generalization"
       },
       "note": "Equivalent axiomatizations are not all spelled out; `IsField` and `Field` cover the standard variants but other alternative formulations are not separately formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e175cf0a70ea"
     },
     {
       "kind": "example",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib provides a `Field` instance on `ℚ`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d4cf8d136ce1"
     },
     {
       "kind": "example",
@@ -115,7 +121,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib provides a `Field` instance on `ℝ`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fc43a417944d"
     },
     {
       "kind": "example",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib provides a `Field` instance on `ℂ`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "69c15670794d"
     },
     {
       "kind": "example",
@@ -147,7 +155,8 @@
         "match_kind": null
       },
       "note": "No `ConstructibleNumber`/constructible numbers field is defined in Mathlib (the `Constructible` occurrences in Mathlib refer to topology, not straightedge-and-compass).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5004e0b35c8c"
     },
     {
       "kind": "example",
@@ -163,7 +172,8 @@
         "match_kind": "generalization"
       },
       "note": "`GaloisField p n` constructs the finite field of order p^n; `GaloisField 2 2` is F₄.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2a84461f37e4"
     },
     {
       "kind": "proposition",
@@ -179,7 +189,8 @@
         "match_kind": "exact"
       },
       "note": "`instance Field.isDomain : IsDomain K` gives the integral domain instance for any field.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "aac8a4ea119d"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": "invocation"
       },
       "note": "`Field` extends `CommRing`, which extends `AddCommGroup`, so the additive abelian group structure is automatic.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c17d65253804"
     },
     {
       "kind": "proposition",
@@ -211,7 +223,8 @@
         "match_kind": "invocation"
       },
       "note": "Via `DivisionRing → GroupWithZero` (and commutativity from `Field`), nonzero elements form a commutative group; `Units K` packages this group.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "21a2a9258ae8"
     },
     {
       "kind": "theorem",
@@ -227,7 +240,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib's `isCyclic_of_subgroup_isDomain` proves the stronger statement over any integral domain.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "57578a56c143"
     },
     {
       "kind": "definition",
@@ -243,7 +257,8 @@
         "match_kind": "exact"
       },
       "note": "`CharP R p` and `ringChar R` formalize the characteristic of any (semi)ring, including fields.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "173f48ec318c"
     },
     {
       "kind": "proposition",
@@ -259,7 +274,8 @@
         "match_kind": "exact"
       },
       "note": "`CharP.char_is_prime_or_zero` (for integral domains, hence fields) shows that the characteristic is either 0 or prime.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2f0358aa0f03"
     },
     {
       "kind": "theorem",
@@ -275,7 +291,8 @@
         "match_kind": "exact"
       },
       "note": "`frobenius : R →+* R` is defined as a ring homomorphism in characteristic p.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2a659b6df073"
     },
     {
       "kind": "definition",
@@ -291,7 +308,8 @@
         "match_kind": "exact"
       },
       "note": "`structure Subfield (K : Type u) [DivisionRing K] extends Subring K` exactly matches.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "270d1dcdc60f"
     },
     {
       "kind": "definition",
@@ -307,7 +325,8 @@
         "match_kind": "generalization"
       },
       "note": "Field homomorphisms in Mathlib are just `RingHom` between fields; there is no separate `FieldHom` class.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0930bf6d0a74"
     },
     {
       "kind": "theorem",
@@ -323,7 +342,8 @@
         "match_kind": "generalization"
       },
       "note": "Combined with `DivisionRing.isSimpleRing`, `RingHom.injective` proves any ring homomorphism from a field (a simple ring) to a nontrivial ring is injective.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ed635856cc43"
     },
     {
       "kind": "definition",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "No dedicated `PrimeField` predicate appears in Mathlib (only individual prime fields like `ℚ`, `ZMod p`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c28a5995c33d"
     },
     {
       "kind": "theorem",
@@ -355,7 +376,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib has the underlying canonical maps `Int.castRingHom`/`ZMod.castHom` and characteristic theory, but no packaged statement \"every field contains a prime subfield\" as a single decl.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8da31978f8e5"
     },
     {
       "kind": "definition",
@@ -371,7 +393,8 @@
         "match_kind": "exact"
       },
       "note": "Finite fields are formalized as `[Field K] [Fintype K]` with the `FiniteField` namespace collecting results.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c354883ffd5a"
     },
     {
       "kind": "theorem",
@@ -387,7 +410,8 @@
         "match_kind": "exact"
       },
       "note": "`FiniteField.card'` states that any finite field has cardinality `p^n` for some prime `p`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9d4c6fd6c294"
     },
     {
       "kind": "theorem",
@@ -403,7 +427,8 @@
         "match_kind": "exact"
       },
       "note": "`GaloisField p n` is defined as `SplittingField (X^(p^n) - X : (ZMod p)[X])`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2468073b3fda"
     },
     {
       "kind": "theorem",
@@ -419,7 +444,8 @@
         "match_kind": "exact"
       },
       "note": "Any finite field of cardinality `p^n` is `AlgEquiv` to `GaloisField p n` over `ZMod p`, giving uniqueness up to isomorphism.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8b3f873b001d"
     },
     {
       "kind": "definition",
@@ -435,7 +461,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib's `CommRing` class is the standard formalization.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cedc7dfcb03e"
     },
     {
       "kind": "proposition",
@@ -451,7 +478,8 @@
         "match_kind": "exact"
       },
       "note": "`IsField R` (with `IsField.toField`) records exactly this characterization.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "49573c581437"
     },
     {
       "kind": "definition",
@@ -467,7 +495,8 @@
         "match_kind": "exact"
       },
       "note": "`FractionRing R` and the `IsFractionRing R K` predicate formalize the field of fractions of an integral domain.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "99d0ca199ca9"
     },
     {
       "kind": "proposition",
@@ -483,7 +512,8 @@
         "match_kind": "exact"
       },
       "note": "`IsFractionRing.toField` (and the `Field` instance on `FractionRing R` for an integral domain `R`) formalizes this.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "da260817b7af"
     },
     {
       "kind": "definition",
@@ -499,7 +529,8 @@
         "match_kind": "exact"
       },
       "note": "`IsLocalRing.ResidueField R` is defined as the quotient `R / maximalIdeal R`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ccef935f064e"
     },
     {
       "kind": "proposition",
@@ -515,7 +546,8 @@
         "match_kind": "generalization"
       },
       "note": "Stated for principal ideal rings; `E[X]` is a PID so the polynomial-ring case is an immediate specialization.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1c821e832800"
     },
     {
       "kind": "definition",
@@ -531,7 +563,8 @@
         "match_kind": "exact"
       },
       "note": "`IntermediateField.adjoin F S` (with notation `F⟮x⟯`) is the smallest intermediate field containing `S`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "08813eed5a43"
     },
     {
       "kind": "definition",
@@ -547,7 +580,8 @@
         "match_kind": "exact"
       },
       "note": "The compositum is realized as the `⊔` (sup) of intermediate fields (and similarly via `Subfield.closure`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e34b818151de"
     },
     {
       "kind": "definition",
@@ -563,7 +597,8 @@
         "match_kind": "generalization"
       },
       "note": "Field extensions are encoded as `[Field E] [Field F] [Algebra E F]`; there is no dedicated `FieldExtension` class.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d42c9584fd4b"
     },
     {
       "kind": "definition",
@@ -579,7 +614,8 @@
         "match_kind": "exact"
       },
       "note": "The degree `[F : E]` is `Module.finrank E F`; infinite-rank case is `Module.rank`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "701720d8c162"
     },
     {
       "kind": "theorem",
@@ -595,7 +631,8 @@
         "match_kind": "exact"
       },
       "note": "`Module.finrank_mul_finrank : finrank F K * finrank K A = finrank F A` is the tower law.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ea3f95e50ecb"
     },
     {
       "kind": "definition",
@@ -611,7 +648,8 @@
         "match_kind": "exact"
       },
       "note": "`IsAlgebraic R x` says `x` is a root of a nonzero polynomial with coefficients in `R`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1f8c202f7260"
     },
     {
       "kind": "definition",
@@ -627,7 +665,8 @@
         "match_kind": "exact"
       },
       "note": "`Algebra.IsAlgebraic R A` asserts every element of `A` is algebraic over `R`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0888e4efd057"
     },
     {
       "kind": "theorem",
@@ -643,7 +682,8 @@
         "match_kind": "exact"
       },
       "note": "`Algebra.IsAlgebraic.of_finite` derives `IsAlgebraic` from a finite-dimensional extension.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7d771ecf0a99"
     },
     {
       "kind": "theorem",
@@ -659,7 +699,8 @@
         "match_kind": "exact"
       },
       "note": "Combined with `Algebra.IsAlgebraic.of_finite`, `IntermediateField.adjoin.finiteDimensional` gives `F⟮x⟯/F` is algebraic iff `x` is algebraic over `F`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1125d843629d"
     },
     {
       "kind": "definition",
@@ -675,7 +716,8 @@
         "match_kind": "exact"
       },
       "note": "`Transcendental R x := ¬ IsAlgebraic R x` is defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4a33a3acd7b8"
     },
     {
       "kind": "definition",
@@ -691,7 +733,8 @@
         "match_kind": "exact"
       },
       "note": "`IsTranscendenceBasis` is defined as a maximal algebraically independent family.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b7e21ee16047"
     },
     {
       "kind": "theorem",
@@ -707,7 +750,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib proves the existence of a transcendence basis in `AlgebraicIndependent/TranscendenceBasis`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ac70eda664f1"
     },
     {
       "kind": "definition",
@@ -723,7 +767,8 @@
         "match_kind": "exact"
       },
       "note": "`IsAlgClosed K` asserts every nonconstant polynomial over `K` splits.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3bfb67892e1c"
     },
     {
       "kind": "theorem",
@@ -739,7 +784,8 @@
         "match_kind": "exact"
       },
       "note": "`Complex.exists_root` proves every nonconstant complex polynomial has a root, and `Complex.isAlgClosed` packages this as `IsAlgClosed ℂ`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "99c24b3f7b83"
     },
     {
       "kind": "definition",
@@ -755,7 +801,8 @@
         "match_kind": "exact"
       },
       "note": "`IsAlgClosure R K` says `K` is algebraic over `R` and algebraically closed; `AlgebraicClosure k` is a concrete construction.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4e7e9b057920"
     },
     {
       "kind": "theorem",
@@ -771,7 +818,8 @@
         "match_kind": null
       },
       "note": "No general Artin–Schreier theorem on the degree of [F̄ : F] = 2 forcing F to be real closed appears in Mathlib (only the special case `Real.nonempty_algEquiv_or` for ℝ).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7a46961b860c"
     },
     {
       "kind": "theorem",
@@ -787,7 +835,8 @@
         "match_kind": "exact"
       },
       "note": "Existence is `AlgebraicClosure k` (with `Field` and `IsAlgClosure` instances); uniqueness up to isomorphism is `IsAlgClosure.equivOfAlgebraic`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a61fb9cd9700"
     },
     {
       "kind": "definition",
@@ -803,7 +852,8 @@
         "match_kind": "exact"
       },
       "note": "Ordered fields are encoded as `[Field K] [LinearOrder K] [IsStrictOrderedRing K]` (replacing the former `LinearOrderedField`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "186a6566d86e"
     },
     {
       "kind": "theorem",
@@ -819,7 +869,8 @@
         "match_kind": "generalization"
       },
       "note": "`IsFormallyReal` is defined and the forward implication `[LinearOrder + IsStrictOrderedRing] → IsFormallyReal` is given, but the converse (orderability of formally real fields) is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "118dd6d7846a"
     },
     {
       "kind": "definition",
@@ -835,7 +886,8 @@
         "match_kind": "exact"
       },
       "note": "`Archimedean` typeclass captures the Archimedean property for ordered structures.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3d6534534dd9"
     },
     {
       "kind": "definition",
@@ -851,7 +903,8 @@
         "match_kind": "exact"
       },
       "note": "`structure ConditionallyCompleteLinearOrderedField` is exactly a Dedekind-complete linearly ordered field.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f90e7761fec9"
     },
     {
       "kind": "theorem",
@@ -867,7 +920,8 @@
         "match_kind": "exact"
       },
       "note": "Scoped instance derives `Archimedean` from `ConditionallyCompleteLinearOrderedField`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "be41f67b0b39"
     },
     {
       "kind": "theorem",
@@ -883,7 +937,8 @@
         "match_kind": "exact"
       },
       "note": "`inducedOrderRingIso`/`uniqueOrderRingIso` give a canonical (unique) order-ring isomorphism between any two conditionally complete linearly ordered fields.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dd08577029d5"
     },
     {
       "kind": "definition",
@@ -899,7 +954,8 @@
         "match_kind": "exact"
       },
       "note": "Topological fields are formalized via `IsTopologicalDivisionRing` (and `IsTopologicalRing` plus continuous inversion).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "07345597fb03"
     },
     {
       "kind": "definition",
@@ -915,7 +971,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib formalizes nonarchimedean local fields via `IsNonarchimedeanLocalField` but does not have a single unified `LocalField` class including ℝ and ℂ.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "88809aa9beeb"
     },
     {
       "kind": "theorem",
@@ -931,7 +988,8 @@
         "match_kind": null
       },
       "note": "No Ax–Kochen theorem appears in Mathlib (grep for `AxKochen` finds nothing).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3db788950797"
     },
     {
       "kind": "definition",
@@ -947,7 +1005,8 @@
         "match_kind": "exact"
       },
       "note": "`Mathlib/FieldTheory/Differential/Basic.lean` formalizes fields equipped with a derivation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "30e9830b8abf"
     },
     {
       "kind": "definition",
@@ -963,7 +1022,8 @@
         "match_kind": "exact"
       },
       "note": "`IsGalois F E` is defined as `Algebra.IsSeparable F E ∧ Normal F E`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "51bbc022e602"
     },
     {
       "kind": "theorem",
@@ -979,7 +1039,8 @@
         "match_kind": "exact"
       },
       "note": "`Field.exists_primitive_element` proves a finite separable extension has a primitive element.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1640846c6f97"
     },
     {
       "kind": "definition",
@@ -995,7 +1056,8 @@
         "match_kind": "exact"
       },
       "note": "`Gal(F/E)` is realized as `F ≃ₐ[E] F` (notation `Gal(F/K)` is used throughout `FieldTheory/Galois`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "393122c75c3e"
     },
     {
       "kind": "theorem",
@@ -1011,7 +1073,8 @@
         "match_kind": "exact"
       },
       "note": "`IsGalois.intermediateFieldEquivSubgroup` gives the explicit order isomorphism between intermediate fields and subgroups.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "477bc532410a"
     },
     {
       "kind": "theorem",
@@ -1027,7 +1090,8 @@
         "match_kind": "exact"
       },
       "note": "`Mathlib/FieldTheory/AbelRuffini.lean` formalizes the Abel–Ruffini theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4722f4eb193b"
     },
     {
       "kind": "theorem",
@@ -1043,7 +1107,8 @@
         "match_kind": null
       },
       "note": "The characterization of Galois extensions via `F ⊗_E F ≃ F^n` is not present in Mathlib (no matching tensor-product/Galois equivalence theorem found).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8b291f0d17b3"
     },
     {
       "kind": "theorem",
@@ -1059,7 +1124,8 @@
         "match_kind": "exact"
       },
       "note": "`IsAlgClosed.equivOfTranscendenceBasis` produces an isomorphism from matching characteristic and transcendence degree.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5018c563f5fd"
     },
     {
       "kind": "definition",
@@ -1075,7 +1141,8 @@
         "match_kind": "generalization"
       },
       "note": "Elementary equivalence is defined for general first-order structures and applied to fields in `Mathlib/ModelTheory/Algebra/Field`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6ef2099d7d00"
     },
     {
       "kind": "theorem",
@@ -1091,7 +1158,8 @@
         "match_kind": "generalization"
       },
       "note": "Completeness of the theory ACF₀ is in Mathlib (`Mathlib/ModelTheory/Algebra/Field/IsAlgClosed.lean`); the explicit Lefschetz statement comparing ℂ to other ACF₀ models is not isolated as a named theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4a8532794688"
     },
     {
       "kind": "theorem",
@@ -1107,7 +1175,8 @@
         "match_kind": "exact"
       },
       "note": "Łoś's theorem is formalized in `Mathlib/ModelTheory/Ultraproducts.lean`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "45d18f19acbb"
     },
     {
       "kind": "definition",
@@ -1123,7 +1192,8 @@
         "match_kind": "exact"
       },
       "note": "`Field.absoluteGaloisGroup K := AlgebraicClosure K ≃ₐ[K] AlgebraicClosure K`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "083972d870c6"
     },
     {
       "kind": "theorem",
@@ -1139,7 +1209,8 @@
         "match_kind": null
       },
       "note": "No identification of `Gal(F_q)` with `Ẑ` (profinite integers / Prüfer group) appears in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7a3f5896fb2f"
     },
     {
       "kind": "definition",
@@ -1155,7 +1226,8 @@
         "match_kind": null
       },
       "note": "Milnor K-theory of a field is not defined in Mathlib (no `MilnorK`/`KMilnor` decl exists).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1bbe1bff287a"
     },
     {
       "kind": "theorem",
@@ -1171,7 +1243,8 @@
         "match_kind": null
       },
       "note": "The norm residue/Bloch–Kato theorem is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cea97fe08012"
     },
     {
       "kind": "theorem",
@@ -1187,7 +1260,8 @@
         "match_kind": null
       },
       "note": "Matsumoto's theorem on K₂ is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cb5a68b6555c"
     },
     {
       "kind": "proposition",
@@ -1203,7 +1277,8 @@
         "match_kind": "invocation"
       },
       "note": "Solvability and uniqueness of `a*x = b` for `a ≠ 0` follows from `GroupWithZero`/field lemmas like `eq_div_iff`, `div_mul_cancel₀`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "17443ecb8754"
     },
     {
       "kind": "definition",
@@ -1219,7 +1294,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib has `RatFunc K` (the field of rational functions in one variable); the general geometric notion is covered by `Scheme.functionField`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8a2499393a61"
     },
     {
       "kind": "definition",
@@ -1235,7 +1311,8 @@
         "match_kind": "exact"
       },
       "note": "`Scheme.functionField` defines the function field of an irreducible scheme; classical varieties are subsumed.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6fe052711713"
     },
     {
       "kind": "definition",
@@ -1251,7 +1328,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib has `NumberField K` and `FunctionField F K` separately; there is no single `GlobalField` class encompassing both.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f88bed853420"
     },
     {
       "kind": "definition",
@@ -1267,7 +1345,8 @@
         "match_kind": "exact"
       },
       "note": "`CyclotomicField n K` is defined as the splitting field of `cyclotomic n K`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9f9a99623353"
     },
     {
       "kind": "theorem",
@@ -1283,7 +1362,8 @@
         "match_kind": "exact"
       },
       "note": "`Rat.AbsoluteValue.equiv_real_or_padic` classifies absolute values on ℚ as equivalent to the real or a p-adic one.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e5a24c7e830f"
     },
     {
       "kind": "theorem",
@@ -1299,7 +1379,8 @@
         "match_kind": null
       },
       "note": "No Hasse–Minkowski theorem appears in Mathlib (grep finds no matches).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ab23d23abf3d"
     },
     {
       "kind": "theorem",
@@ -1315,7 +1396,8 @@
         "match_kind": null
       },
       "note": "Kronecker–Weber is not in Mathlib (no `KroneckerWeber` decl).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "857e4bd4c4a7"
     },
     {
       "kind": "definition",
@@ -1331,7 +1413,8 @@
         "match_kind": null
       },
       "note": "The conjectural F₁ is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2792e2b39490"
     },
     {
       "kind": "definition",
@@ -1347,7 +1430,8 @@
         "match_kind": "exact"
       },
       "note": "`class DivisionRing` is a ring with multiplicative inverses for nonzero elements.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ce5b31357597"
     },
     {
       "kind": "theorem",
@@ -1363,7 +1447,8 @@
         "match_kind": null
       },
       "note": "Frobenius's classification of finite-dimensional ℝ-division algebras as ℝ, ℂ, ℍ is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "844e8a297372"
     },
     {
       "kind": "theorem",
@@ -1379,7 +1464,8 @@
         "match_kind": "exact"
       },
       "note": "`Mathlib/RingTheory/LittleWedderburn.lean` proves every finite division ring is a field.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8b10258b0163"
     }
   ]
 }

@@ -19,7 +19,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib has no named 'system of linear equations' object; a system is encoded as the matrix-vector equation A *ᵥ x = b via Matrix.mulVec.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6389883d8627"
     },
     {
       "kind": "example",
@@ -35,7 +36,8 @@
         "match_kind": null
       },
       "note": "This is a specific illustrative example with no dedicated Mathlib declaration.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "85e226b9156f"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "generalization"
       },
       "note": "A solution is simply a vector x with A *ᵥ x = b; Mathlib expresses this directly but has no standalone 'solution' definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c74058a1fe6b"
     },
     {
       "kind": "example",
@@ -67,7 +70,8 @@
         "match_kind": null
       },
       "note": "A trivial worked example with no corresponding Mathlib declaration.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "53b26579f9d9"
     },
     {
       "kind": "example",
@@ -83,7 +87,8 @@
         "match_kind": null
       },
       "note": "A worked numerical example with no corresponding Mathlib declaration.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "84699ceeb6ed"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": "generalization"
       },
       "note": "The general m×n system is captured by the matrix-vector product A *ᵥ x over arbitrary index types m, n.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9b52da71799e"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": "exact"
       },
       "note": "Matrix.mulVec_eq_sum states A *ᵥ v is the sum of the columns weighted by the entries of v, exactly the linear-combination-of-columns view.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9231bd82666a"
     },
     {
       "kind": "definition",
@@ -141,7 +148,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle A\\mathbf {x} =\\mathbf {b} }"
         }
-      ]
+      ],
+      "id": "6ce0c9baa052"
     },
     {
       "kind": "definition",
@@ -157,7 +165,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib has no standalone 'solution set' notion, but for homogeneous systems it is LinearMap.ker of Matrix.mulVecLin and for general systems a coset thereof.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b6a4f3e01a96"
     },
     {
       "kind": "proposition",
@@ -173,7 +182,8 @@
         "match_kind": null
       },
       "note": "No single Mathlib theorem states a linear system has zero, one, or infinitely many solutions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "38f3657aa0bc"
     },
     {
       "kind": "proposition",
@@ -189,7 +199,8 @@
         "match_kind": null
       },
       "note": "The geometric interpretation of a two-variable equation as a line is not formalized as a statement in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d626dbfead04"
     },
     {
       "kind": "proposition",
@@ -205,7 +216,8 @@
         "match_kind": null
       },
       "note": "The geometric interpretation of a three-variable equation as a plane is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2fb2476d39c6"
     },
     {
       "kind": "proposition",
@@ -221,7 +233,8 @@
         "match_kind": null
       },
       "note": "The statement that a single linear equation cuts out a hyperplane is not formalized as such, though Mathlib has a separate notion of hyperplanes.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dd42d51b2372"
     },
     {
       "kind": "proposition",
@@ -237,7 +250,8 @@
         "match_kind": null
       },
       "note": "This 'general behavior' heuristic (which can fail for inconsistent systems) has no matching Mathlib theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ae1e8d1df110"
     },
     {
       "kind": "proposition",
@@ -253,7 +267,8 @@
         "match_kind": "special_case"
       },
       "note": "The precise version—A square and a unit (full rank) gives a unique solution—is Matrix.mulVec_injective_iff_isUnit together with mulVec_surjective_iff_isUnit.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6e3334ceb849"
     },
     {
       "kind": "proposition",
@@ -269,7 +284,8 @@
         "match_kind": null
       },
       "note": "This 'general behavior' heuristic (which can fail for consistent overdetermined systems) has no matching Mathlib theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c5bca4cca25e"
     },
     {
       "kind": "proposition",
@@ -285,7 +301,8 @@
         "match_kind": "generalization"
       },
       "note": "The exact statement is rank–nullity (finrank_range_add_finrank_ker), giving dim of solution space = n − rank, which equals n − m only when the rows are independent.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4abb4312ba26"
     },
     {
       "kind": "definition",
@@ -301,7 +318,8 @@
         "match_kind": "special_case"
       },
       "note": "Independence of equations corresponds to linear independence of the coefficient rows, formalized via LinearIndependent and (for square A) linearIndependent_rows_iff_isUnit.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "21e781c779ec"
     },
     {
       "kind": "example",
@@ -317,7 +335,8 @@
         "match_kind": null
       },
       "note": "A specific example of dependent equations with no dedicated Mathlib declaration.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "08d8055a5cfd"
     },
     {
       "kind": "example",
@@ -333,7 +352,8 @@
         "match_kind": null
       },
       "note": "A specific example of dependent equations with no dedicated Mathlib declaration.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e214c329bfcf"
     },
     {
       "kind": "definition",
@@ -349,7 +369,8 @@
         "match_kind": "generalization"
       },
       "note": "Consistency (existence of a solution) is membership of b in the range of the linear map, i.e. LinearMap.mem_range, but 'consistent system' is not a named definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e7f122601dee"
     },
     {
       "kind": "example",
@@ -365,7 +386,8 @@
         "match_kind": null
       },
       "note": "A specific worked example of an inconsistent pair with no dedicated Mathlib declaration.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4b7b789c821a"
     },
     {
       "kind": "example",
@@ -381,7 +403,8 @@
         "match_kind": null
       },
       "note": "A specific worked example with no dedicated Mathlib declaration.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "53c9573244f2"
     },
     {
       "kind": "proposition",
@@ -397,7 +420,8 @@
         "match_kind": "generalization"
       },
       "note": "Related infrastructure links dependence of rows/columns (det = 0) to a nontrivial kernel via exists_mulVec_eq_zero_iff, but the inconsistency-vs-dependence statement itself is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cc943ae29671"
     },
     {
       "kind": "theorem",
@@ -413,7 +437,8 @@
         "match_kind": null
       },
       "note": "Mathlib has Matrix.rank but no Rouché–Capelli theorem relating consistency to the rank of the augmented matrix.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "75560f3157fa"
     },
     {
       "kind": "definition",
@@ -429,7 +454,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no notion of equivalence of linear systems.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a46bed19b142"
     },
     {
       "kind": "proposition",
@@ -445,7 +471,8 @@
         "match_kind": null
       },
       "note": "Without a formalized notion of system equivalence, this characterization is not stated in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e1cacf37547c"
     },
     {
       "kind": "definition",
@@ -461,7 +488,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no notion of free variables in a solved system.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9685d67905d0"
     },
     {
       "kind": "proposition",
@@ -477,7 +505,8 @@
         "match_kind": null
       },
       "note": "The 'degrees of freedom' counting via free variables is not formalized, though it corresponds to the finrank of the kernel.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8c5da4a675f9"
     },
     {
       "kind": "definition",
@@ -493,7 +522,8 @@
         "match_kind": null
       },
       "note": "The variable-elimination solving algorithm is not formalized as a Mathlib definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e191b3281210"
     },
     {
       "kind": "definition",
@@ -509,7 +539,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib formalizes reduction of a matrix to diagonal form by transvections, the algebraic core of Gaussian elimination, but not the augmented-matrix solving procedure.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4073aac4af78"
     },
     {
       "kind": "definition",
@@ -525,7 +556,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib formalizes transvections (the row-addition operation) via TransvectionStruct, but not a unified 'three elementary row operations' concept.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "31fe8820f8bb"
     },
     {
       "kind": "proposition",
@@ -541,7 +573,8 @@
         "match_kind": "generalization"
       },
       "note": "Reversibility of transvections is formalized (inv_mul gives an explicit inverse), but the resulting preservation of a system's solution set is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c19f74133eac"
     },
     {
       "kind": "theorem",
@@ -557,7 +590,8 @@
         "match_kind": "exact"
       },
       "note": "Cramer's rule is Matrix.mulVec_cramer (A *ᵥ cramer A b = det A • b) together with Matrix.cramer_apply expressing each component as a determinant quotient.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "df00545b422f"
     },
     {
       "kind": "proposition",
@@ -573,7 +607,8 @@
         "match_kind": "exact"
       },
       "note": "For invertible (full-rank square) A, the unique solution x = A⁻¹ b is Matrix.inv_mulVec_eq_vec, with uniqueness from mulVec_injective_of_invertible.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4db02537b36c"
     },
     {
       "kind": "proposition",
@@ -589,7 +624,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not have the Moore–Penrose pseudoinverse.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d83a7b1d4122"
     },
     {
       "kind": "proposition",
@@ -605,7 +641,8 @@
         "match_kind": null
       },
       "note": "The criterion A A⁺ b = b is stated via the Moore–Penrose inverse, which is absent from Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "508eba8a5929"
     },
     {
       "kind": "definition",
@@ -621,7 +658,8 @@
         "match_kind": null
       },
       "note": "Iterative linear solvers are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b064619974b9"
     },
     {
       "kind": "example",
@@ -637,7 +675,8 @@
         "match_kind": null
       },
       "note": "The Jacobi iterative method is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d604f3f27c7d"
     },
     {
       "kind": "definition",
@@ -653,7 +692,8 @@
         "match_kind": "generalization"
       },
       "note": "A homogeneous system A *ᵥ x = 0 is represented directly, its solution set being LinearMap.ker of Matrix.mulVecLin, but 'homogeneous system' is not a named definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2758633db46f"
     },
     {
       "kind": "proposition",
@@ -669,7 +709,8 @@
         "match_kind": "exact"
       },
       "note": "Matrix.mulVec_zero states A *ᵥ 0 = 0, i.e. the zero vector always solves a homogeneous system.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "868ce3ae604e"
     },
     {
       "kind": "proposition",
@@ -685,7 +726,8 @@
         "match_kind": "invocation"
       },
       "note": "Matrix.mulVec_add (A *ᵥ (u+v) = A *ᵥ u + A *ᵥ v) immediately gives that the sum of two homogeneous solutions is a solution; the solution set is the submodule LinearMap.ker.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fb9f6db0deaa"
     },
     {
       "kind": "proposition",
@@ -701,7 +743,8 @@
         "match_kind": "exact"
       },
       "note": "The null space is LinearMap.ker of Matrix.mulVecLin, whose membership (LinearMap.mem_ker with mulVecLin_apply) is exactly A *ᵥ v = 0.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "165c257d794e"
     },
     {
       "kind": "proposition",
@@ -717,7 +760,8 @@
         "match_kind": "generalization"
       },
       "note": "LinearMap.sub_mem_ker_iff (x − p ∈ ker f ↔ f x = f p) shows every solution is a particular solution p plus a kernel element.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1fa4ed7b1a88"
     },
     {
       "kind": "proposition",
@@ -733,7 +777,8 @@
         "match_kind": "generalization"
       },
       "note": "The algebraic content (solutions of Ax=b form a coset of ker) is sub_mem_ker_iff, but the geometric 'translation' interpretation is not stated as such.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e907195105c6"
     },
     {
       "kind": "proposition",
@@ -749,7 +794,8 @@
         "match_kind": "exact"
       },
       "note": "LinearMap.mem_range states b ∈ range f ↔ ∃ x, f x = b, exactly that a solution exists iff b is in the image (with Matrix.range_mulVecLin giving the span of columns).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "01f9bff8430b"
     }
   ]
 }

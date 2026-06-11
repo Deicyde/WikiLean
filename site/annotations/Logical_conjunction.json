@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "The `And` connective is defined in Lean core and used throughout Mathlib (e.g. Mathlib.Logic.Basic).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8eb204f42a05"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "generalization"
       },
       "note": "Iterated conjunction over a finite set is captured by `Finset.inf` over `Prop`/`Bool` or via `∀ x ∈ s, p x`, but no single lemma matches verbatim.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e20e1d22ba65"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": null
       },
       "note": "This is informal terminology with no Mathlib declaration.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "346255ccdce1"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "The infix `∧` notation for `And` is defined in Lean core and pervasively used in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8417d9b59c15"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "generalization"
       },
       "note": "Iterated conjunction is expressed via `∀ x ∈ s, p x` or `Finset.inf`/`List.all`, not by a dedicated `⋀`-style operator.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ffe0560b49df"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "Classical two-valued conjunction is realized as Lean's `And` (and `Bool.and` at the boolean level).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fbe089f5a102"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": "exact"
       },
       "note": "Lemmas `and_true` and `true_and` (core Lean, used throughout Mathlib) express that `True` is the identity of `∧`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3ef041561e2b"
     },
     {
       "kind": "definition",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "All four truth-table rows are encoded by `and_true`, `true_and`, `and_false`, `false_and` (core), and on `Bool` by `Bool.and_eq_true`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "de31848c408e"
     },
     {
       "kind": "definition",
@@ -147,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "`and_iff_not_or_not : a ∧ b ↔ ¬(¬a ∨ ¬b)` in Mathlib.Logic.Basic (line 420) gives the De Morgan definition via ¬ and ∨.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "95f89573d356"
     },
     {
       "kind": "proposition",
@@ -163,7 +172,8 @@
         "match_kind": "exact"
       },
       "note": "`And.intro : a → b → a ∧ b` is the conjunction introduction rule, defined in Lean core and used throughout Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c6450bc9f5a9"
     },
     {
       "kind": "example",
@@ -179,7 +189,8 @@
         "match_kind": null
       },
       "note": "Informal pedagogical example with no formal counterpart.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5df070eb45df"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": "exact"
       },
       "note": "`And.left` and `And.right` (Lean core) provide the two elimination rules; widely invoked in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a046c44c56a2"
     },
     {
       "kind": "definition",
@@ -211,7 +223,8 @@
         "match_kind": "exact"
       },
       "note": "`not_and_or : ¬(a ∧ b) ↔ ¬a ∨ ¬b` in Mathlib.Logic.Basic (line 415) encodes that falsifying ∧ amounts to falsifying one conjunct.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ec34be8d8eed"
     },
     {
       "kind": "proposition",
@@ -227,7 +240,8 @@
         "match_kind": "generalization"
       },
       "note": "`not_and_not_right : ¬(a ∧ ¬b) ↔ a → b` (Mathlib.Logic.Basic line 408) gives the closely related equivalence.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f4bfa680f167"
     },
     {
       "kind": "proposition",
@@ -243,7 +257,8 @@
         "match_kind": "exact"
       },
       "note": "`and_comm`, `and_assoc`, `and_self`, `and_true`, `true_and` (Lean core, used everywhere in Mathlib) cover the standard algebraic properties of ∧.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "786c061745fd"
     },
     {
       "kind": "proposition",
@@ -259,7 +274,8 @@
         "match_kind": null
       },
       "note": "No Mathlib lemma directly identifies `∧` with multiplication on {0,1}; one could express it via `Bool.toNat` but no such lemma exists verbatim.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dd1e85c42198"
     },
     {
       "kind": "example",
@@ -275,7 +291,8 @@
         "match_kind": "exact"
       },
       "note": "Bitwise AND on naturals is `Nat.land` (Lean core; with Mathlib lemmas in Mathlib.Data.Nat.Bitwise).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d0206c9ec5b7"
     },
     {
       "kind": "example",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "Application-level usage of bitwise AND for masking is not stated as a Mathlib lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "66c6f5eee73d"
     },
     {
       "kind": "example",
@@ -307,7 +325,8 @@
         "match_kind": null
       },
       "note": "Networking-domain application with no Mathlib counterpart.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "02000a1bbc2c"
     },
     {
       "kind": "proposition",
@@ -323,7 +342,8 @@
         "match_kind": "generalization"
       },
       "note": "Lean realizes the correspondence via `And` (in `Prop`) and `Prod` / `PProd` (in `Type`), but no Mathlib theorem states the Curry–Howard equivalence formally.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3ec68404cd6f"
     },
     {
       "kind": "definition",
@@ -339,7 +359,8 @@
         "match_kind": "exact"
       },
       "note": "`Set.mem_inter_iff : x ∈ s ∩ t ↔ x ∈ s ∧ x ∈ t` defines set-intersection membership via ∧.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "82d42a73e0bc"
     }
   ]
 }

@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "`Function.Periodic f c := ∀ x, f (x + c) = f x` directly captures the informal notion of a function repeating its values at regular intervals.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b764057a60ee"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "exact"
       },
       "note": "The constant `c` in `Function.Periodic f c` is exactly the period.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e78afaf76179"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no named `Aperiodic` predicate; one would simply write `¬ ∃ c ≠ 0, Function.Periodic f c`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bcfedb946f12"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "The Mathlib definition `Function.Periodic f c := ∀ x, f (x + c) = f x` matches the formal Wikipedia definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e5a597fead1b"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "The parameter `c` of `Function.Periodic f c` is the period; nonzeroness is supplied at usage sites rather than baked into the definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b7f69501857b"
     },
     {
       "kind": "proposition",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "`Function.Periodic.int_mul` (and `Periodic.zsmul`, `Periodic.nsmul`) prove that integer multiples of a period are themselves periods.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4c08c33a519d"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": null
       },
       "note": "Mathlib has `Function.minimalPeriod` for periodic points of iterated maps, but no `Function.Periodic`-style notion of least positive real period for general periodic functions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "708ec00b9703"
     },
     {
       "kind": "proposition",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "The equation `f (x + c) = f x` in `Function.Periodic` is precisely the algebraic statement of translational symmetry of the graph by `c`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4e3376bb7541"
     },
     {
       "kind": "example",
@@ -147,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "`Int.fract_periodic` proves `Function.Periodic Int.fract 1`, exactly the sawtooth fractional-part example.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d9c46d1fd475"
     },
     {
       "kind": "example",
@@ -163,7 +172,8 @@
         "match_kind": "exact"
       },
       "note": "`sin_periodic` and `cos_periodic` prove `Function.Periodic sin (2 * π)` and `Function.Periodic cos (2 * π)`; minimality of this period is not stated as such.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "732784e47d90"
     },
     {
       "kind": "example",
@@ -179,7 +189,8 @@
         "match_kind": null
       },
       "note": "A grep for `Dirichlet`/`Periodic` finds no Mathlib formalization of the indicator-of-rationals Dirichlet function or its periodicity.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d6607778c376"
     },
     {
       "kind": "example",
@@ -195,7 +206,8 @@
         "match_kind": "exact"
       },
       "note": "`Complex.exp_periodic` states `Function.Periodic exp (2 * π * I)`, exactly the purely-imaginary period claim.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ec73036e29ca"
     },
     {
       "kind": "example",
@@ -211,7 +223,8 @@
         "match_kind": "special_case"
       },
       "note": "The Weierstrass `℘` function is constructed in Mathlib for a `PeriodPair`, with `PeriodPair.weierstrassP_add_coe` establishing its double periodicity; no general `DoublyPeriodic` predicate is defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "678c2542d084"
     },
     {
       "kind": "proposition",
@@ -227,7 +240,8 @@
         "match_kind": "exact"
       },
       "note": "`Function.Periodic.not_injective` shows that a nonzero-period periodic function is not injective, i.e. takes values more than once.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4b5367b659f6"
     },
     {
       "kind": "proposition",
@@ -243,7 +257,8 @@
         "match_kind": "exact"
       },
       "note": "`Function.Periodic.intervalIntegral_add_eq` proves that the integral over any interval of length one period is the same.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "06c177396b0f"
     },
     {
       "kind": "proposition",
@@ -259,7 +274,8 @@
         "match_kind": "exact"
       },
       "note": "`Function.Periodic.const_mul` and `Function.Periodic.mul_const` (in `Mathlib.Algebra.Field.Periodic`) give the scaled period for `x ↦ f (a*x)` over a division semiring.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6f11a4a36e89"
     },
     {
       "kind": "proposition",
@@ -275,7 +291,8 @@
         "match_kind": "exact"
       },
       "note": "Closure under addition/multiplication/division/scalar-multiplication with the same period is provided by `Periodic.add`, `Periodic.mul`, `Periodic.div`, `Periodic.smul`, etc.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bc9812ac6020"
     },
     {
       "kind": "definition",
@@ -291,7 +308,8 @@
         "match_kind": "exact"
       },
       "note": "`Function.Antiperiodic f c := ∀ x, f (x + c) = -f x` matches the Wikipedia definition exactly.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "207fc3158045"
     },
     {
       "kind": "proposition",
@@ -307,7 +325,8 @@
         "match_kind": "exact"
       },
       "note": "`Function.Antiperiodic.periodic` shows any `c`-antiperiodic function is `2 • c`-periodic.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e07c83fae751"
     },
     {
       "kind": "definition",
@@ -323,7 +342,8 @@
         "match_kind": null
       },
       "note": "A grep for `Bloch` in `Mathlib/` returns no matches; no `Bloch`/quasi-periodic predicate is defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "52c20962d0f5"
     },
     {
       "kind": "definition",
@@ -339,7 +359,8 @@
         "match_kind": "exact"
       },
       "note": "`Function.Periodic.lift` lifts a `c`-periodic function to a function on the quotient `α ⧸ AddSubgroup.zmultiples c`, exactly the quotient-space-domain construction.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e4b3980af7a6"
     },
     {
       "kind": "proposition",
@@ -355,7 +376,8 @@
         "match_kind": null
       },
       "note": "Mathlib provides closure properties such as `Periodic.add_period` but no LCM/LCD-based algorithm for computing a common period from a set of frequency ratios.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "259eb2b1f13f"
     },
     {
       "kind": "example",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no music-theoretic formalization of the Western major scale or its period.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "00774e56fb41"
     },
     {
       "kind": "example",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no music-theoretic formalization of major triads or their period.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ff592f0b1a99"
     },
     {
       "kind": "example",
@@ -403,7 +427,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no music-theoretic formalization of minor triads or their period.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1ddcf988a737"
     }
   ]
 }

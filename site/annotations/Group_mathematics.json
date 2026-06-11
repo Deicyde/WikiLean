@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "The `Group` typeclass in Mathlib captures exactly the informal notion of a set with a binary operation satisfying the group axioms.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "47f79580c97e"
     },
     {
       "kind": "example",
@@ -45,7 +46,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\mathbb {Z} =\\{\\ldots ,-4,-3,-2,-1,0,1,2,3,4,\\ldots \\}}"
         }
-      ]
+      ],
+      "id": "5ae3bce6d4bb"
     },
     {
       "kind": "definition",
@@ -61,7 +63,8 @@
         "match_kind": "exact"
       },
       "note": "`class Group (G : Type u) extends DivInvMonoid G` is the direct formalization at `Mathlib/Algebra/Group/Defs.lean:1192`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "238f9ad5f3b9"
     },
     {
       "kind": "definition",
@@ -77,7 +80,8 @@
         "match_kind": "exact"
       },
       "note": "The identity is carried by the `One` typeclass with axioms `one_mul`/`mul_one` from `MulOneClass`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c6e6929b286e"
     },
     {
       "kind": "definition",
@@ -93,7 +97,8 @@
         "match_kind": "exact"
       },
       "note": "Inverses are encoded by the `Inv` typeclass together with `inv_mul_cancel` in the `Group` class.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "117524b776ef"
     },
     {
       "kind": "definition",
@@ -109,7 +114,8 @@
         "match_kind": "exact"
       },
       "note": "`class CommGroup extends Group, CommMonoid` at `Mathlib/Algebra/Group/Defs.lean:1275` (additive variant `AddCommGroup`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9018b154f420"
     },
     {
       "kind": "definition",
@@ -125,7 +131,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib has parallel `Group`/`AddGroup` hierarchies linked via the `to_additive` attribute and `Additive`/`Multiplicative` type tags.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "15ed95267c71"
     },
     {
       "kind": "example",
@@ -141,7 +148,8 @@
         "match_kind": "generalization"
       },
       "note": "`DihedralGroup n` formalizes the dihedral group of order 2n; setting `n = 4` yields D4.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a5e708c1bf2f"
     },
     {
       "kind": "proposition",
@@ -157,7 +165,8 @@
         "match_kind": null
       },
       "note": "Mathlib bakes the identity into the `One` typeclass so a separate uniqueness lemma is not stated, though the underlying calculation appears as `left_inv_eq_right_inv`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8271265aa4d3"
     },
     {
       "kind": "proposition",
@@ -173,7 +182,8 @@
         "match_kind": "exact"
       },
       "note": "`left_inv_eq_right_inv` (and `inv_eq_of_mul_eq_one_right`) show any left/right inverse equals the canonical inverse.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bb7f20d1f8cf"
     },
     {
       "kind": "proposition",
@@ -189,7 +199,8 @@
         "match_kind": "exact"
       },
       "note": "`mul_right_injective a` gives injectivity of left translation; combined with `mul_inv_cancel_left` this yields the unique solution `x = a⁻¹b`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bac63cf879e5"
     },
     {
       "kind": "proposition",
@@ -205,7 +216,8 @@
         "match_kind": "exact"
       },
       "note": "`mul_left_injective a` provides injectivity of right translation, dual to the left case.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bfa877125559"
     },
     {
       "kind": "proposition",
@@ -221,7 +233,8 @@
         "match_kind": "exact"
       },
       "note": "`Group.ofLeftAxioms` builds a `Group` from associativity, left identity, and left inverses; `Group.ofRightAxioms` is the mirror version.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e595adc0d45f"
     },
     {
       "kind": "example",
@@ -237,7 +250,8 @@
         "match_kind": null
       },
       "note": "No counterexample showing left-identity + right-inverse fails to give a group is recorded in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "25de3cd96b16"
     },
     {
       "kind": "definition",
@@ -253,7 +267,8 @@
         "match_kind": "exact"
       },
       "note": "`MonoidHom M N` (notation `M →* N`) is Mathlib's bundled multiplicative homomorphism, used for group homomorphisms.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "396aceadd348"
     },
     {
       "kind": "definition",
@@ -269,7 +284,8 @@
         "match_kind": "exact"
       },
       "note": "`MulEquiv` (notation `≃*`) bundles a multiplicative bijection with its inverse, i.e. a group isomorphism.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "888ef010423d"
     },
     {
       "kind": "definition",
@@ -285,7 +301,8 @@
         "match_kind": "exact"
       },
       "note": "`structure Subgroup (G : Type*) [Group G] extends Submonoid G` at `Mathlib/Algebra/Group/Subgroup/Defs.lean:295`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "04e81c4f24a4"
     },
     {
       "kind": "proposition",
@@ -301,7 +318,8 @@
         "match_kind": null
       },
       "note": "The closure conditions are bundled into the `Subgroup` structure; no separate `subgroup_test` lemma in the one-step form `a*b⁻¹ ∈ H` was located.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a9a1c286ef6b"
     },
     {
       "kind": "definition",
@@ -317,7 +335,8 @@
         "match_kind": "exact"
       },
       "note": "`Subgroup.closure k` is the minimal subgroup containing the set `k`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2fade3134483"
     },
     {
       "kind": "definition",
@@ -333,7 +352,8 @@
         "match_kind": "exact"
       },
       "note": "`Subgroup.Normal` is defined at line 605, and cosets are formalized via `QuotientGroup.leftRel` in `Mathlib.GroupTheory.Coset.Basic`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dde8c01bbe13"
     },
     {
       "kind": "proposition",
@@ -349,7 +369,8 @@
         "match_kind": "exact"
       },
       "note": "`QuotientGroup.leftRel H` is the setoid whose equivalence classes are the left cosets of H, yielding the partition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b4e40811e9bc"
     },
     {
       "kind": "definition",
@@ -375,7 +396,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle G/N=\\{gN\\mid g\\in G\\}}"
         }
-      ]
+      ],
+      "id": "3784300d51a5"
     },
     {
       "kind": "theorem",
@@ -391,7 +413,8 @@
         "match_kind": "exact"
       },
       "note": "`quotientKerEquivOfSurjective` gives `G ⧸ ker φ ≃* H` for surjective `φ`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7765944e908a"
     },
     {
       "kind": "definition",
@@ -407,7 +430,8 @@
         "match_kind": "exact"
       },
       "note": "`PresentedGroup rels` is `FreeGroup α` modulo the normal closure of `rels`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b077544abf84"
     },
     {
       "kind": "proposition",
@@ -423,7 +447,8 @@
         "match_kind": null
       },
       "note": "Mathlib has `FreeGroup.lift` and the surjection `FreeGroup G →* G`, from which the quotient statement follows, but no named lemma packaging the universal-quotient fact was located.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7884bd42394a"
     },
     {
       "kind": "example",
@@ -439,7 +464,8 @@
         "match_kind": null
       },
       "note": "`FundamentalGroup` is defined but the specific computation π₁(ℝ²∖{0}) ≃ ℤ was not found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2f08f0e40777"
     },
     {
       "kind": "example",
@@ -455,7 +481,8 @@
         "match_kind": null
       },
       "note": "No explicit statement that `(ℤ, ·)` fails to be a group exists; Mathlib simply omits a `Group ℤ` instance under multiplication.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "409a2c87a293"
     },
     {
       "kind": "example",
@@ -471,7 +498,8 @@
         "match_kind": "invocation"
       },
       "note": "`ℚ` is a `Field`, so `ℚˣ` is a `CommGroup` under multiplication via the standard `Units` construction.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6a1d968abc84"
     },
     {
       "kind": "definition",
@@ -487,7 +515,8 @@
         "match_kind": "exact"
       },
       "note": "`ZMod n` is the additive group ℤ/nℤ, with `quotientZMultiplesNatEquivZMod` showing `ℤ ⧸ ⟨n⟩ ≃+ ZMod n`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3c8746444a82"
     },
     {
       "kind": "definition",
@@ -513,7 +542,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle a\\cdot b\\equiv 1{\\pmod {p}},}"
         }
-      ]
+      ],
+      "id": "c447fb1806d9"
     },
     {
       "kind": "definition",
@@ -543,7 +573,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\dots ,(-a)+(-a),-a,0,a,a+a,\\dots .}"
         }
-      ]
+      ],
+      "id": "1d967083eed1"
     },
     {
       "kind": "example",
@@ -559,7 +590,8 @@
         "match_kind": "exact"
       },
       "note": "`rootsOfUnity n M` is the subgroup of `Mˣ` of n-th roots of unity; `rootsOfUnity.isCyclic` proves cyclicity over an integral domain.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "103264566d1e"
     },
     {
       "kind": "proposition",
@@ -575,7 +607,8 @@
         "match_kind": "exact"
       },
       "note": "`intCyclicMulEquiv : Multiplicative ℤ ≃* G` (and additive variant `intCyclicAddEquiv`) realize the isomorphism for any infinite cyclic group.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0befe35c6471"
     },
     {
       "kind": "definition",
@@ -591,7 +624,8 @@
         "match_kind": "exact"
       },
       "note": "`class MulAction (α β) [Monoid α]` formalizes group/monoid actions; specialized to a group it is the standard notion.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fe168c28c5be"
     },
     {
       "kind": "definition",
@@ -607,7 +641,8 @@
         "match_kind": "exact"
       },
       "note": "Both `LinearMap.GeneralLinearGroup` and `Matrix.GeneralLinearGroup` are defined; the matrix version is `GLₙ(R)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e62e42f7a7f2"
     },
     {
       "kind": "definition",
@@ -623,7 +658,8 @@
         "match_kind": "exact"
       },
       "note": "`abbrev Representation k G V := G →* (V →ₗ[k] V)` formalizes linear representations.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b92b53e44f7f"
     },
     {
       "kind": "example",
@@ -649,7 +685,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle x={\\frac {-b\\pm {\\sqrt {b^{2}-4ac}}}{2a}}.}"
         }
-      ]
+      ],
+      "id": "73d712656d9e"
     },
     {
       "kind": "definition",
@@ -665,7 +702,8 @@
         "match_kind": "invocation"
       },
       "note": "Finite groups are `[Group G] [Finite G]`; the order is `Nat.card G` (or `Fintype.card G`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3cd9dc749a2f"
     },
     {
       "kind": "example",
@@ -681,7 +719,8 @@
         "match_kind": "exact"
       },
       "note": "`Equiv.Perm α` is the symmetric group; for `α = Fin n` it is the symmetric group on n letters.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "52d4d025192f"
     },
     {
       "kind": "theorem",
@@ -697,7 +736,8 @@
         "match_kind": null
       },
       "note": "`MulAction.toPermHom G G : G →* Equiv.Perm G` gives the Cayley embedding, but I did not find a named lemma asserting injectivity as 'Cayley's theorem'.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5167e2a5f751"
     },
     {
       "kind": "definition",
@@ -723,7 +763,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\underbrace {a\\cdots a} _{n{\\text{ factors}}},}"
         }
-      ]
+      ],
+      "id": "d7075726d1d3"
     },
     {
       "kind": "theorem",
@@ -739,7 +780,8 @@
         "match_kind": "exact"
       },
       "note": "`card_subgroup_dvd_card` states |H| divides |G| for a subgroup H of a finite group G.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e71719ffaea1"
     },
     {
       "kind": "theorem",
@@ -755,7 +797,8 @@
         "match_kind": "exact"
       },
       "note": "Decomposes any finite abelian group as a direct sum of cyclic `ZMod (p^k)` groups.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "978885dea8b5"
     },
     {
       "kind": "proposition",
@@ -771,7 +814,8 @@
         "match_kind": "exact"
       },
       "note": "`isCyclic_of_prime_card` proves `IsCyclic G` whenever `Nat.card G` is prime.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3d7ae2fc1e20"
     },
     {
       "kind": "definition",
@@ -787,7 +831,8 @@
         "match_kind": "exact"
       },
       "note": "`class IsSimpleGroup : Prop extends Nontrivial G` at `Mathlib/GroupTheory/Subgroup/Simple.lean:38`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a3a7f3e45d23"
     },
     {
       "kind": "theorem",
@@ -803,7 +848,8 @@
         "match_kind": null
       },
       "note": "The classification of finite simple groups is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7a4a489c8526"
     },
     {
       "kind": "definition",
@@ -819,7 +865,8 @@
         "match_kind": "generalization"
       },
       "note": "`Group.ofLeftAxioms`/`Group.ofRightAxioms` build a `Group` from minimal equational axioms on `Mul`, `Inv`, `One`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c5689e25c227"
     },
     {
       "kind": "definition",
@@ -835,7 +882,8 @@
         "match_kind": "exact"
       },
       "note": "`class IsTopologicalGroup G` requires continuity of multiplication and inversion.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "237f4cc1d9c1"
     },
     {
       "kind": "definition",
@@ -851,7 +899,8 @@
         "match_kind": "exact"
       },
       "note": "`class LieGroup` formalizes a group with smooth multiplication and inversion on a manifold.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4dc81d9b7292"
     },
     {
       "kind": "example",
@@ -877,7 +926,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\det(A)\\neq 0,}"
         }
-      ]
+      ],
+      "id": "22ac1fcdd5cc"
     },
     {
       "kind": "definition",
@@ -893,7 +943,8 @@
         "match_kind": "exact"
       },
       "note": "`class Monoid extends Semigroup, MulOneClass` at `Mathlib/Algebra/Group/Defs.lean:652`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7ff9b735fd7a"
     },
     {
       "kind": "definition",
@@ -909,7 +960,8 @@
         "match_kind": "exact"
       },
       "note": "`class Groupoid (obj : Type u) extends Category obj` with `inv` on every morphism.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "305cb3abfa2d"
     },
     {
       "kind": "definition",
@@ -925,7 +977,8 @@
         "match_kind": null
       },
       "note": "No n-ary (polyadic) group structure was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a0e7f91c951d"
     }
   ]
 }

@@ -19,7 +19,8 @@
         "match_kind": "invocation"
       },
       "note": "Mathlib defines `TopologicalSpace` via open sets; the neighbourhood-axiom construction is available as `TopologicalSpace.mkOfNhds` with companion lemma `nhds_mkOfNhds`, not as the primary definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "81c07a3a4a25"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "invocation"
       },
       "note": "The equivalence `IsOpen s ↔ ∀ x ∈ s, s ∈ 𝓝 x` is the lemma `isOpen_iff_mem_nhds`; Mathlib does not take this as the primitive definition of `IsOpen`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0f5b79b92558"
     },
     {
       "kind": "example",
@@ -51,7 +53,8 @@
         "match_kind": "invocation"
       },
       "note": "The standard topology on `ℝ` is provided as a `TopologicalSpace` instance via its metric/uniform structure; the neighbourhood-system description is not the primary form.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2320de620fc2"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "`class TopologicalSpace` is defined exactly via a collection of open sets with the three axioms (univ open, binary intersection, arbitrary union).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "43bdf9c6a3ef"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "`IsClosed s` is defined as `IsOpen sᶜ`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3282054fda8e"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "`IsClopen s := IsClosed s ∧ IsOpen s`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e563ea8e3924"
     },
     {
       "kind": "example",
@@ -115,7 +121,8 @@
         "match_kind": "exact"
       },
       "note": "`IndiscreteTopology` (equivalently the top element `⊤` of the lattice of topologies) records that the topology has only `∅` and `univ` as open sets.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "860be4f1794f"
     },
     {
       "kind": "example",
@@ -131,7 +138,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no specific entry for this ad-hoc three-point example topology.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "15518c0a30a6"
     },
     {
       "kind": "example",
@@ -147,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "`DiscreteTopology α` records `‹TopologicalSpace α› = ⊥`, the topology in which every set is open.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "15a560cb6720"
     },
     {
       "kind": "example",
@@ -163,7 +172,8 @@
         "match_kind": null
       },
       "note": "No lemma in Mathlib explicitly states that this particular family fails to be a topology.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cf59cee1b945"
     },
     {
       "kind": "definition",
@@ -179,7 +189,8 @@
         "match_kind": "exact"
       },
       "note": "`TopologicalSpace.ofClosed` builds a `TopologicalSpace` from a family of closed sets satisfying the dual axioms.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d6c4733a6b0e"
     },
     {
       "kind": "definition",
@@ -195,7 +206,8 @@
         "match_kind": null
       },
       "note": "Mathlib has `ClosureOperator` and `closure` but no constructor that builds a `TopologicalSpace` from a Kuratowski closure operator.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7ce64a7569b3"
     },
     {
       "kind": "definition",
@@ -211,7 +223,8 @@
         "match_kind": null
       },
       "note": "Mathlib develops convergence via filters rather than nets; there is no constructor producing a topology from a net-convergence relation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3311dffde418"
     },
     {
       "kind": "definition",
@@ -227,7 +240,8 @@
         "match_kind": "exact"
       },
       "note": "The `PartialOrder (TopologicalSpace α)` instance defines `t ≤ s` to mean every `s`-open set is `t`-open, i.e. `t` is finer than `s`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "59ba6d3c31e2"
     },
     {
       "kind": "proposition",
@@ -243,7 +257,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib provides `instance : CompleteLattice (TopologicalSpace α)` with `⊥` discrete and `⊤` indiscrete.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0e9a0f525388"
     },
     {
       "kind": "definition",
@@ -259,7 +274,8 @@
         "match_kind": "exact"
       },
       "note": "`Continuous f` is defined by `∀ s, IsOpen s → IsOpen (f ⁻¹' s)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "354dca08e038"
     },
     {
       "kind": "proposition",
@@ -275,7 +291,8 @@
         "match_kind": "exact"
       },
       "note": "This is literally the field defining `Continuous` in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bdecea0f36b8"
     },
     {
       "kind": "definition",
@@ -291,7 +308,8 @@
         "match_kind": "exact"
       },
       "note": "`Homeomorph X Y` (notation `X ≃ₜ Y`) bundles an `Equiv` with continuous forward and inverse maps.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "045caa4adbd5"
     },
     {
       "kind": "definition",
@@ -307,7 +325,8 @@
         "match_kind": "exact"
       },
       "note": "`TopCat` is the bundled category of topological spaces with continuous maps.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "17ac16dfcbf5"
     },
     {
       "kind": "example",
@@ -323,7 +342,8 @@
         "match_kind": "exact"
       },
       "note": "Same as the earlier entry: `DiscreteTopology` records that every set is open.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6b67f77bbfd6"
     },
     {
       "kind": "example",
@@ -339,7 +359,8 @@
         "match_kind": "exact"
       },
       "note": "Same as the earlier entry: the indiscrete topology corresponds to `⊤` in the lattice.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "00db86029e26"
     },
     {
       "kind": "example",
@@ -355,7 +376,8 @@
         "match_kind": "exact"
       },
       "note": "`FinTopCat` is the category of finite topological spaces, requiring `Fintype` plus `TopologicalSpace`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b80a5257c4fa"
     },
     {
       "kind": "example",
@@ -371,7 +393,8 @@
         "match_kind": "exact"
       },
       "note": "`CofiniteTopology X` is a type synonym for `X` equipped with the topology whose open sets are `∅` and sets with finite complement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f92775d17bf6"
     },
     {
       "kind": "example",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "Mathlib has `Filter.cocompact`/`Filter.cofinite` but no `CocountableTopology` type synonym defining this topology.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2b8f9b0e921f"
     },
     {
       "kind": "example",
@@ -403,7 +427,8 @@
         "match_kind": null
       },
       "note": "No formalization of the Sorgenfrey/lower-limit topology on `ℝ` was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "69948036a204"
     },
     {
       "kind": "example",
@@ -419,7 +444,8 @@
         "match_kind": "exact"
       },
       "note": "`Ordinal` is endowed with the preorder/order topology via `instance : TopologicalSpace Ordinal := Preorder.topology Ordinal`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "aafc46441ae4"
     },
     {
       "kind": "example",
@@ -435,7 +461,8 @@
         "match_kind": "invocation"
       },
       "note": "Mathlib manifolds (`ChartedSpace`, `IsManifold`) presuppose an ambient `TopologicalSpace` rather than constructing one from a chart atlas; simplicial complexes carry topologies in `AlgebraicTopology` but not as a single uniform construction.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d3f36d62075f"
     },
     {
       "kind": "example",
@@ -451,7 +478,8 @@
         "match_kind": "exact"
       },
       "note": "`instance sierpinskiSpace : TopologicalSpace Prop` realises the Sierpiński topology on `Prop`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6347913a9d1e"
     },
     {
       "kind": "definition",
@@ -467,7 +495,8 @@
         "match_kind": "exact"
       },
       "note": "`instTopologicalSpaceSubtype` equips `Subtype p` with the topology induced by `Subtype.val`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6123c25d59c3"
     },
     {
       "kind": "definition",
@@ -483,7 +512,8 @@
         "match_kind": "exact"
       },
       "note": "`instTopologicalSpaceProd` defines the product topology on `X × Y` as the infimum of the topologies pulled back along the projections.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e66e1ccb624e"
     },
     {
       "kind": "definition",
@@ -499,7 +529,8 @@
         "match_kind": "exact"
       },
       "note": "`instTopologicalSpaceQuotient` equips `Quotient s` with the coinduced topology, the largest topology making the quotient map continuous.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4f5f3ecbbcbb"
     },
     {
       "kind": "definition",
@@ -515,7 +546,8 @@
         "match_kind": "exact"
       },
       "note": "Every `PseudoMetricSpace`/`MetricSpace` carries a canonical `UniformSpace` and hence a `TopologicalSpace` instance whose open sets are unions of open balls.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "30250e9c01a0"
     },
     {
       "kind": "example",
@@ -531,7 +563,8 @@
         "match_kind": "exact"
       },
       "note": "`ℝ` carries the standard topology coming from its metric instance.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3b8fdc3c6abe"
     },
     {
       "kind": "definition",
@@ -547,7 +580,8 @@
         "match_kind": "exact"
       },
       "note": "`TopologicalSpace.IsTopologicalBasis s` asserts that `s` is a basis for the topology.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f792e4b4680a"
     },
     {
       "kind": "example",
@@ -563,7 +597,8 @@
         "match_kind": "invocation"
       },
       "note": "Euclidean spaces (`EuclideanSpace`, `ℂ`) inherit a topology from their metric/normed structure, with open balls forming a basis.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d7a71612f663"
     },
     {
       "kind": "definition",
@@ -579,7 +614,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib has `IsTopologicalGroup`, `IsTopologicalAddGroup`, `IsTopologicalRing`, `IsTopologicalDivisionRing`, and topological vector/module structures via `ContinuousSMul`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e6292291e857"
     },
     {
       "kind": "definition",
@@ -595,7 +631,8 @@
         "match_kind": "exact"
       },
       "note": "`PrimeSpectrum.zariskiTopology` defines the Zariski topology on `PrimeSpectrum R`, whose closed sets are zero loci.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5875ed187116"
     },
     {
       "kind": "definition",
@@ -611,7 +648,8 @@
         "match_kind": "exact"
       },
       "note": "`class SpectralSpace` axiomatizes the property; the equivalence with being the prime spectrum of a ring is partially captured via `PrimeSpectrum.instSpectralSpace`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8ab7f9a7e827"
     },
     {
       "kind": "definition",
@@ -627,7 +665,8 @@
         "match_kind": "exact"
       },
       "note": "`specializationPreorder X` defines the specialization preorder via `x ⤳ y ↔ 𝓝 x ≤ 𝓝 y`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "afaf26361d76"
     },
     {
       "kind": "proposition",
@@ -643,7 +682,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib equips `Filter α` with a canonical topology generated by `Set.Iic (𝓟 s)`; this is the topology on the space of filters.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a43e0796b2d1"
     },
     {
       "kind": "definition",
@@ -659,7 +699,8 @@
         "match_kind": null
       },
       "note": "Culler–Vogtmann outer space is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d64c8bc66c6c"
     },
     {
       "kind": "definition",
@@ -675,7 +716,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no explicit definition of \"topological property\" as a homeomorphism-invariant predicate on spaces.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "93a7be91a0b3"
     }
   ]
 }

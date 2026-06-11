@@ -29,7 +29,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle f(x)={\\frac {1}{\\sqrt {2\\pi \\sigma ^{2}}}}\\exp {\\left(-{\\frac {(x-\\mu )^{2}}{2\\sigma ^{2}}}\\right)}\\,.}"
         }
-      ]
+      ],
+      "id": "20774e57c3c1"
     },
     {
       "kind": "theorem",
@@ -45,7 +46,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib has the 1D CLT for i.i.d. variables converging in distribution to a Gaussian.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "180072830861"
     },
     {
       "kind": "proposition",
@@ -61,7 +63,8 @@
         "match_kind": "special_case"
       },
       "note": "Sum of independent Gaussians and scalar multiplication are formalized; a single n-ary linear-combination statement is not present but follows by combining `gaussianReal_const_mul` and the independence-sum lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cf6d5f477a93"
     },
     {
       "kind": "definition",
@@ -87,7 +90,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\varphi (z)={\\frac {e^{-z^{2}/2}}{\\sqrt {2\\pi }}}\\,.}"
         }
-      ]
+      ],
+      "id": "1209f7fb0984"
     },
     {
       "kind": "example",
@@ -103,7 +107,8 @@
         "match_kind": null
       },
       "note": "Gauss's historical variance-1/2 convention is not separately formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ae9775e5c3ec"
     },
     {
       "kind": "example",
@@ -119,7 +124,8 @@
         "match_kind": null
       },
       "note": "Stigler's alternative standardization is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b9270240d650"
     },
     {
       "kind": "proposition",
@@ -135,7 +141,8 @@
         "match_kind": "exact"
       },
       "note": "Combined with `gaussianReal_const_add`, this gives that `σ·X + μ` is `gaussianReal μ σ²` when `X ~ gaussianReal 0 1`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2e560b76e9ad"
     },
     {
       "kind": "proposition",
@@ -151,7 +158,8 @@
         "match_kind": "invocation"
       },
       "note": "Combining `gaussianReal_sub_const` with `gaussianReal_div_const` gives `(X-μ)/σ ~ gaussianReal 0 1`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f7df6a5a5d98"
     },
     {
       "kind": "definition",
@@ -167,7 +175,8 @@
         "match_kind": null
       },
       "note": "Mathlib uses `gaussianReal μ v` rather than the customary `N(μ, σ²)` notation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "90296993e5b3"
     },
     {
       "kind": "definition",
@@ -193,7 +202,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle f(x)={\\sqrt {\\frac {\\tau }{2\\pi }}}e^{-\\tau (x-\\mu )^{2}/2}.}"
         }
-      ]
+      ],
+      "id": "dee38998bc1f"
     },
     {
       "kind": "definition",
@@ -219,7 +229,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle f(x)={\\frac {\\tau '}{\\sqrt {2\\pi }}}e^{-(\\tau ')^{2}(x-\\mu )^{2}/2}.}"
         }
-      ]
+      ],
+      "id": "2e7d5f6593ee"
     },
     {
       "kind": "proposition",
@@ -235,7 +246,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no formal `ExponentialFamily` class.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4a5c80cf5e8c"
     },
     {
       "kind": "definition",
@@ -261,7 +273,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\Phi (x)={\\frac {1}{\\sqrt {2\\pi }}}\\int _{-\\infty }^{x}e^{-t^{2}/2}\\,dt\\,.}"
         }
-      ]
+      ],
+      "id": "6dec3e90f695"
     },
     {
       "kind": "definition",
@@ -287,7 +300,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\operatorname {erf} (x)={\\frac {1}{\\sqrt {\\pi }}}\\int _{-x}^{x}e^{-t^{2}}\\,dt={\\frac {2}{\\sqrt {\\pi }}}\\int _{0}^{x}e^{-t^{2}}\\,dt\\,.}"
         }
-      ]
+      ],
+      "id": "021da2ebe2ee"
     },
     {
       "kind": "proposition",
@@ -313,7 +327,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\Phi (x)={\\frac {1}{2}}\\left[1+\\operatorname {erf} \\left({\\frac {x}{\\sqrt {2}}}\\right)\\right].}"
         }
-      ]
+      ],
+      "id": "36e4357c7547"
     },
     {
       "kind": "definition",
@@ -339,7 +354,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle F(x)=\\Phi {\\left({\\frac {x-\\mu }{\\sigma }}\\right)}={\\frac {1}{2}}\\left[1+\\operatorname {erf} \\left({\\frac {x-\\mu }{\\sigma {\\sqrt {2}}}}\\right)\\right].}"
         }
-      ]
+      ],
+      "id": "f94353e85339"
     },
     {
       "kind": "proposition",
@@ -365,7 +381,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\operatorname {P} (a&lt;x\\leq b)={\\frac {1}{2}}\\left[\\operatorname {erf} \\left({\\frac {b-\\mu }{\\sigma {\\sqrt {2}}}}\\right)-\\operatorname {erf} \\left({\\frac {a-\\mu }{\\sigma {\\sqrt {2}}}}\\right)\\right]}"
         }
-      ]
+      ],
+      "id": "8dfebded381a"
     },
     {
       "kind": "definition",
@@ -381,7 +398,8 @@
         "match_kind": null
       },
       "note": "The tail-probability Q-function is not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dc985af4ffed"
     },
     {
       "kind": "proposition",
@@ -407,7 +425,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\int \\Phi (x)\\,dx=x\\Phi (x)+\\varphi (x)+C.}"
         }
-      ]
+      ],
+      "id": "4978d8a3317f"
     },
     {
       "kind": "proposition",
@@ -433,7 +452,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\Phi (x)={\\frac {1}{2}}+{\\frac {1}{\\sqrt {2\\pi }}}e^{-x^{2}/2}\\sum _{n=0}^{\\infty }{\\frac {1}{(2n+1)!!}}x^{2n+1}\\,.}"
         }
-      ]
+      ],
+      "id": "687d2cdef260"
     },
     {
       "kind": "proposition",
@@ -449,7 +469,8 @@
         "match_kind": null
       },
       "note": "The explicit Taylor expansion of the Gaussian pdf is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1303e3a5648c"
     },
     {
       "kind": "proposition",
@@ -465,7 +486,8 @@
         "match_kind": null
       },
       "note": "No Taylor expansion of Φ is formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7502e2834e98"
     },
     {
       "kind": "proposition",
@@ -495,7 +517,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\begin{aligned}\\Phi ^{(0)}(x_{0})&amp;={\\frac {1}{\\sqrt {2\\pi }}}\\int _{-\\infty }^{x_{0}}e^{-t^{2}/2}\\,dt\\\\\\Phi ^{(1)}(x_{0})&amp;={\\frac {1}{\\sqrt {2\\pi }}}e^{-x_{0}^{2}/2}\\\\\\Phi ^{(n)}(x_{0})&amp;=-\\left(x_{0}\\Phi ^{(n-1)}(x_{0})+(n-2)\\Phi ^{(n-2)}(x_{0})\\right),&amp;n\\geq 2\\,.\\end{aligned}}}"
         }
-      ]
+      ],
+      "id": "23147b045e53"
     },
     {
       "kind": "proposition",
@@ -511,7 +534,8 @@
         "match_kind": null
       },
       "note": "The empirical 68-95-99.7 rule is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8071571d7450"
     },
     {
       "kind": "definition",
@@ -541,7 +565,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle F^{-1}(p)=\\mu +\\sigma \\Phi ^{-1}(p)=\\mu +\\sigma {\\sqrt {2}}\\operatorname {erf} ^{-1}(2p-1),\\quad p\\in (0,1).}"
         }
-      ]
+      ],
+      "id": "955c5e4f7d71"
     },
     {
       "kind": "proposition",
@@ -567,7 +592,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle x_{n}=x_{n-1}-{\\frac {\\Phi (x_{n-1})-q}{\\varphi (x_{n-1})}}\\,.}"
         }
-      ]
+      ],
+      "id": "a1cc565c8b06"
     },
     {
       "kind": "theorem",
@@ -583,7 +609,8 @@
         "match_kind": null
       },
       "note": "Differential entropy and its maximum-entropy characterization are not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ca2be0e783c7"
     },
     {
       "kind": "theorem",
@@ -599,7 +626,8 @@
         "match_kind": null
       },
       "note": "Geary's theorem on independence of sample mean and variance is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c6890e6ac168"
     },
     {
       "kind": "proposition",
@@ -615,7 +643,8 @@
         "match_kind": "generalization"
       },
       "note": "The Gaussian pdf and its basic properties (positivity, integrability) are formalized but symmetry/derivative properties are not stated as named lemmas.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0d83ddce2174"
     },
     {
       "kind": "proposition",
@@ -631,7 +660,8 @@
         "match_kind": "special_case"
       },
       "note": "Properties at μ=0, v=1 are specializations of the general `gaussianPDFReal` facts.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6f14e0e7745e"
     },
     {
       "kind": "definition",
@@ -647,7 +677,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib has generic `moment` and `centralMoment`, but no specific definitions of plain/absolute moments for the normal.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ecbe94bcfb0f"
     },
     {
       "kind": "proposition",
@@ -673,7 +704,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\operatorname {E} \\left[(X-\\mu )^{p}\\right]={\\begin{cases}0&amp;{\\text{if }}p{\\text{ is odd,}}\\\\\\sigma ^{p}(p-1)!!&amp;{\\text{if }}p{\\text{ is even.}}\\end{cases}}}"
         }
-      ]
+      ],
+      "id": "ab37b9999642"
     },
     {
       "kind": "proposition",
@@ -689,7 +721,8 @@
         "match_kind": null
       },
       "note": "Closed-form expressions for absolute moments are not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a3ab74b28647"
     },
     {
       "kind": "proposition",
@@ -715,7 +748,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\operatorname {E} \\left[X\\mid a&lt;X&lt;b\\right]=\\mu -\\sigma ^{2}{\\frac {f(b)-f(a)}{F(b)-F(a)}}\\,,}"
         }
-      ]
+      ],
+      "id": "2dd06fbc1252"
     },
     {
       "kind": "proposition",
@@ -731,7 +765,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib computes the Fourier integral of a Gaussian.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "af2059f6bb7d"
     },
     {
       "kind": "definition",
@@ -757,7 +792,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\varphi _{X}(t)={\\hat {f}}(-t)\\,.}"
         }
-      ]
+      ],
+      "id": "a8ae6eb63104"
     },
     {
       "kind": "proposition",
@@ -773,7 +809,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib proves `mgf X p t = exp(μt + v t²/2)` for Gaussian `X`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "87c33139eb44"
     },
     {
       "kind": "definition",
@@ -799,7 +836,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle g(t)=\\ln M(t)=\\mu t+{\\tfrac {1}{2}}\\sigma ^{2}t^{2}\\,.}"
         }
-      ]
+      ],
+      "id": "5b94777b6a1d"
     },
     {
       "kind": "definition",
@@ -815,7 +853,8 @@
         "match_kind": null
       },
       "note": "Stein's method is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f9448f64e851"
     },
     {
       "kind": "proposition",
@@ -841,7 +880,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle F(x)={\\begin{cases}0&amp;{\\text{if }}x&lt;\\mu \\\\1&amp;{\\text{if }}x\\geq \\mu .\\end{cases}}}"
         }
-      ]
+      ],
+      "id": "414d89be61a8"
     },
     {
       "kind": "theorem",
@@ -871,7 +911,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle L=-\\int _{-\\infty }^{\\infty }f(x)\\ln f(x)\\,dx-\\lambda _{0}\\left(1-\\int _{-\\infty }^{\\infty }f(x)\\,dx\\right)-\\lambda _{1}\\left(\\mu -\\int _{-\\infty }^{\\infty }f(x)x\\,dx\\right)-\\lambda _{2}\\left(\\sigma ^{2}-\\int _{-\\infty }^{\\infty }f(x)(x-\\mu )^{2}\\,dx\\right)\\,.}"
         }
-      ]
+      ],
+      "id": "531703f9b1ca"
     },
     {
       "kind": "theorem",
@@ -887,7 +928,8 @@
         "match_kind": null
       },
       "note": "Marcinkiewicz's theorem on characteristic functions is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8b378c2d0edc"
     },
     {
       "kind": "proposition",
@@ -903,7 +945,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib proves zero covariance implies independence for jointly Gaussian random variables.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "13422bb21e20"
     },
     {
       "kind": "proposition",
@@ -933,7 +976,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle H^{2}(X_{1},X_{2})=1-{\\sqrt {\\frac {2\\sigma _{1}\\sigma _{2}}{\\sigma _{1}^{2}+\\sigma _{2}^{2}}}}\\exp \\left(-{\\frac {1}{4}}{\\frac {(\\mu _{1}-\\mu _{2})^{2}}{\\sigma _{1}^{2}+\\sigma _{2}^{2}}}\\right)}"
         }
-      ]
+      ],
+      "id": "37d02de1e96d"
     },
     {
       "kind": "proposition",
@@ -959,7 +1003,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\mathcal {I}}(\\mu ,\\sigma ^{2})={\\begin{pmatrix}{\\frac {1}{\\sigma ^{2}}}&amp;0\\\\0&amp;{\\frac {1}{2\\sigma ^{4}}}\\end{pmatrix}}}"
         }
-      ]
+      ],
+      "id": "2c2557361bc4"
     },
     {
       "kind": "proposition",
@@ -985,7 +1030,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\mu \\mid x_{1},\\ldots ,x_{n}\\sim {\\mathcal {N}}\\left({\\frac {{\\frac {\\sigma ^{2}}{n}}\\mu _{0}+\\sigma _{0}^{2}{\\bar {x}}}{{\\frac {\\sigma ^{2}}{n}}+\\sigma _{0}^{2}}},\\left({\\frac {n}{\\sigma ^{2}}}+{\\frac {1}{\\sigma _{0}^{2}}}\\right)^{-1}\\right)}"
         }
-      ]
+      ],
+      "id": "5906b7add1ec"
     },
     {
       "kind": "theorem",
@@ -1011,7 +1057,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle Z={\\sqrt {n}}{\\biggl (}{\\frac {1}{n}}\\sum _{i=1}^{n}X_{i}{\\biggr )}}"
         }
-      ]
+      ],
+      "id": "45e60730d645"
     },
     {
       "kind": "theorem",
@@ -1027,7 +1074,8 @@
         "match_kind": null
       },
       "note": "No Berry-Esseen bound is in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1d064dac00eb"
     },
     {
       "kind": "proposition",
@@ -1043,7 +1091,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib proves a linear map of a `gaussianReal` is again `gaussianReal`, with a multivariate analogue in `IsGaussian.isGaussian_map`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "75f6b4ccbf26"
     },
     {
       "kind": "proposition",
@@ -1059,7 +1108,8 @@
         "match_kind": null
       },
       "note": "The log-normal distribution is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a8ecdf3f6f41"
     },
     {
       "kind": "proposition",
@@ -1075,7 +1125,8 @@
         "match_kind": null
       },
       "note": "The logit-normal distribution is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "48f5b1a6694c"
     },
     {
       "kind": "proposition",
@@ -1091,7 +1142,8 @@
         "match_kind": null
       },
       "note": "Folded/half-normal distributions are not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9dd60c5646e1"
     },
     {
       "kind": "proposition",
@@ -1107,7 +1159,8 @@
         "match_kind": null
       },
       "note": "The chi distribution is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "34114e98d110"
     },
     {
       "kind": "proposition",
@@ -1123,7 +1176,8 @@
         "match_kind": null
       },
       "note": "Chi-squared/noncentral chi-squared distributions are not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "04e3ddd08aba"
     },
     {
       "kind": "definition",
@@ -1139,7 +1193,8 @@
         "match_kind": null
       },
       "note": "Truncated normal is not defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "43ea778286f7"
     },
     {
       "kind": "proposition",
@@ -1155,7 +1210,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib proves the sum of two independent Gaussians is Gaussian with summed parameters.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "18b30d96748c"
     },
     {
       "kind": "proposition",
@@ -1171,7 +1227,8 @@
         "match_kind": null
       },
       "note": "Not stated in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "06f42c85093a"
     },
     {
       "kind": "proposition",
@@ -1197,7 +1254,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle X_{3}={\\frac {aX_{1}+bX_{2}-(a+b)\\mu }{\\sqrt {a^{2}+b^{2}}}}+\\mu }"
         }
-      ]
+      ],
+      "id": "ae4bed9155e0"
     },
     {
       "kind": "proposition",
@@ -1213,7 +1271,8 @@
         "match_kind": "generalization"
       },
       "note": "The Cauchy measure exists in Mathlib but no theorem identifies the ratio of two standard normals with it.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2450ce1b5ee0"
     },
     {
       "kind": "proposition",
@@ -1229,7 +1288,8 @@
         "match_kind": null
       },
       "note": "The Rayleigh distribution is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ce3619690d7d"
     },
     {
       "kind": "proposition",
@@ -1245,7 +1305,8 @@
         "match_kind": "generalization"
       },
       "note": "Independent Gaussian RVs are jointly Gaussian and `isGaussian_map` preserves Gaussian under linear maps; the n-ary linear-combination statement is derivable but not a named lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "093712a0d995"
     },
     {
       "kind": "proposition",
@@ -1271,7 +1332,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle X_{1}^{2}+\\cdots +X_{n}^{2}\\sim \\chi _{n}^{2}.}"
         }
-      ]
+      ],
+      "id": "a1d987b30b02"
     },
     {
       "kind": "proposition",
@@ -1297,7 +1359,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle t={\\frac {{\\overline {X}}-\\mu }{S/{\\sqrt {n}}}}={\\frac {{\\frac {1}{n}}(X_{1}+\\cdots +X_{n})-\\mu }{\\sqrt {{\\frac {1}{n(n-1)}}\\left[(X_{1}-{\\overline {X}})^{2}+\\cdots +(X_{n}-{\\overline {X}})^{2}\\right]}}}\\sim t_{n-1}.}"
         }
-      ]
+      ],
+      "id": "4bae1bb0bc77"
     },
     {
       "kind": "proposition",
@@ -1323,7 +1386,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle F={\\frac {\\left(X_{1}^{2}+X_{2}^{2}+\\cdots +X_{n}^{2}\\right)/n}{\\left(Y_{1}^{2}+Y_{2}^{2}+\\cdots +Y_{m}^{2}\\right)/m}}\\sim F_{n,m}.}"
         }
-      ]
+      ],
+      "id": "2e4f2a28635a"
     },
     {
       "kind": "proposition",
@@ -1339,7 +1403,8 @@
         "match_kind": null
       },
       "note": "Generalized chi-square is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b0bdb5ee0700"
     },
     {
       "kind": "definition",
@@ -1355,7 +1420,8 @@
         "match_kind": null
       },
       "note": "Not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1ccef187cacd"
     },
     {
       "kind": "proposition",
@@ -1371,7 +1437,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no general definition of infinitely divisible distributions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9c235ba9e770"
     },
     {
       "kind": "theorem",
@@ -1387,7 +1454,8 @@
         "match_kind": null
       },
       "note": "Cramér's decomposition theorem is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "57fadd9c19e2"
     },
     {
       "kind": "theorem",
@@ -1403,7 +1471,8 @@
         "match_kind": null
       },
       "note": "Kac-Bernstein is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1c71d29051c4"
     },
     {
       "kind": "theorem",
@@ -1419,7 +1488,8 @@
         "match_kind": null
       },
       "note": "Generalizations of Kac-Bernstein are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9316eb2cb6ef"
     },
     {
       "kind": "definition",
@@ -1435,7 +1505,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib defines `multivariateGaussian μ S` over `EuclideanSpace ℝ ι`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6cc559beb971"
     },
     {
       "kind": "definition",
@@ -1451,7 +1522,8 @@
         "match_kind": null
       },
       "note": "Not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7a6d6e7affb0"
     },
     {
       "kind": "definition",
@@ -1467,7 +1539,8 @@
         "match_kind": null
       },
       "note": "Complex Gaussians are not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0f097e74d115"
     },
     {
       "kind": "definition",
@@ -1483,7 +1556,8 @@
         "match_kind": null
       },
       "note": "Matrix normal is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d29c6284f760"
     },
     {
       "kind": "definition",
@@ -1499,7 +1573,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib defines `IsGaussianProcess` via finite-dimensional Gaussian laws.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ad0f86491f79"
     },
     {
       "kind": "definition",
@@ -1515,7 +1590,8 @@
         "match_kind": null
       },
       "note": "Not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e2b9d8b55ee6"
     },
     {
       "kind": "definition",
@@ -1531,7 +1607,8 @@
         "match_kind": null
       },
       "note": "Not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b20171d7a6d8"
     },
     {
       "kind": "definition",
@@ -1547,7 +1624,8 @@
         "match_kind": null
       },
       "note": "Not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4a2727785feb"
     },
     {
       "kind": "definition",
@@ -1573,7 +1651,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle f_{X}(x)={\\begin{cases}N(\\mu ,\\sigma _{1}^{2}),&amp;{\\text{ if }}x\\leq \\mu \\\\N(\\mu ,\\sigma _{2}^{2}),&amp;{\\text{ if }}x\\geq \\mu \\end{cases}}}"
         }
-      ]
+      ],
+      "id": "e41414feceae"
     },
     {
       "kind": "proposition",
@@ -1603,7 +1682,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\hat {\\mu }}={\\overline {x}}\\equiv {\\frac {1}{n}}\\sum _{i=1}^{n}x_{i},\\qquad {\\hat {\\sigma }}^{2}={\\frac {1}{n}}\\sum _{i=1}^{n}(x_{i}-{\\overline {x}})^{2}.}"
         }
-      ]
+      ],
+      "id": "cb79cc5c9232"
     },
     {
       "kind": "definition",
@@ -1629,7 +1709,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\hat {\\mu }}\\sim {\\mathcal {N}}(\\mu ,\\sigma ^{2}/n).}"
         }
-      ]
+      ],
+      "id": "f14574784b8d"
     },
     {
       "kind": "theorem",
@@ -1655,7 +1736,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\hat {\\mu }}\\sim {\\mathcal {N}}(\\mu ,\\sigma ^{2}/n).}"
         }
-      ]
+      ],
+      "id": "4f25a1406b9c"
     },
     {
       "kind": "definition",
@@ -1685,7 +1767,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle s^{2}\\sim {\\frac {\\sigma ^{2}}{n-1}}\\cdot \\chi _{n-1}^{2},\\qquad {\\hat {\\sigma }}^{2}\\sim {\\frac {\\sigma ^{2}}{n}}\\cdot \\chi _{n-1}^{2}.}"
         }
-      ]
+      ],
+      "id": "63a893ae97b8"
     },
     {
       "kind": "theorem",
@@ -1719,7 +1802,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\sigma ^{2}\\in \\left[{\\frac {n-1}{\\chi _{n-1,1-\\alpha /2}^{2}}}s^{2},\\,{\\frac {n-1}{\\chi _{n-1,\\alpha /2}^{2}}}s^{2}\\right]}"
         }
-      ]
+      ],
+      "id": "a3a3472445c1"
     },
     {
       "kind": "proposition",
@@ -1753,7 +1837,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\sigma ^{2}\\in \\left[{\\frac {n-1}{\\chi _{n-1,1-\\alpha /2}^{2}}}s^{2},\\,{\\frac {n-1}{\\chi _{n-1,\\alpha /2}^{2}}}s^{2}\\right]}"
         }
-      ]
+      ],
+      "id": "e5d71c2e6a80"
     },
     {
       "kind": "definition",
@@ -1769,7 +1854,8 @@
         "match_kind": null
       },
       "note": "Statistical normality tests are not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5b6b5be0d9b6"
     },
     {
       "kind": "definition",
@@ -1785,7 +1871,8 @@
         "match_kind": null
       },
       "note": "Q-Q plots are graphical tools, not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2b3c1d26056f"
     },
     {
       "kind": "definition",
@@ -1801,7 +1888,8 @@
         "match_kind": null
       },
       "note": "P-P plots are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7c6e2009d566"
     },
     {
       "kind": "proposition",
@@ -1817,7 +1905,8 @@
         "match_kind": null
       },
       "note": "Algebraic completing-the-square identity in this form not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a64d2d99458a"
     },
     {
       "kind": "proposition",
@@ -1833,7 +1922,8 @@
         "match_kind": null
       },
       "note": "Bayesian update formulas not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2b6151f71514"
     },
     {
       "kind": "proposition",
@@ -1859,7 +1949,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle p(\\sigma ^{2}\\mid \\nu _{0},\\sigma _{0}^{2})={\\frac {(\\sigma _{0}^{2}{\\frac {\\nu _{0}}{2}})^{\\nu _{0}/2}}{\\Gamma \\left({\\frac {\\nu _{0}}{2}}\\right)}}~{\\frac {\\exp \\left[{\\frac {-\\nu _{0}\\sigma _{0}^{2}}{2\\sigma ^{2}}}\\right]}{(\\sigma ^{2})^{1+{\\frac {\\nu _{0}}{2}}}}}\\propto {\\frac {\\exp \\left[{\\frac {-\\nu _{0}\\sigma _{0}^{2}}{2\\sigma ^{2}}}\\right]}{(\\sigma ^{2})^{1+{\\frac {\\nu _{0}}{2}}}}}}"
         }
-      ]
+      ],
+      "id": "2fdeeee38527"
     },
     {
       "kind": "proposition",
@@ -1875,7 +1966,8 @@
         "match_kind": null
       },
       "note": "Normal-inverse-gamma conjugate prior is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b5cac19776b1"
     },
     {
       "kind": "example",
@@ -1891,7 +1983,8 @@
         "match_kind": null
       },
       "note": "Physical example, not a mathematical statement to formalize.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2cb711f5659d"
     },
     {
       "kind": "example",
@@ -1907,7 +2000,8 @@
         "match_kind": null
       },
       "note": "QHO ground state not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "56f15cfb77e6"
     },
     {
       "kind": "example",
@@ -1923,7 +2017,8 @@
         "match_kind": null
       },
       "note": "Diffusion/Brownian motion is not formalized as Gaussian-marginalled in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cff889cd46f3"
     },
     {
       "kind": "example",
@@ -1939,7 +2034,8 @@
         "match_kind": null
       },
       "note": "Modeling example, not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5a9fdf28caf0"
     },
     {
       "kind": "example",
@@ -1955,7 +2051,8 @@
         "match_kind": null
       },
       "note": "Black-Scholes is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "258aab0bba10"
     },
     {
       "kind": "example",
@@ -1971,7 +2068,8 @@
         "match_kind": null
       },
       "note": "Modeling assumption, not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9b7fc3155ea6"
     },
     {
       "kind": "example",
@@ -1987,7 +2085,8 @@
         "match_kind": null
       },
       "note": "Real-world example, not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3947ac64d4d8"
     },
     {
       "kind": "example",
@@ -2003,7 +2102,8 @@
         "match_kind": null
       },
       "note": "Real-world example, not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1a365b7bbe10"
     },
     {
       "kind": "proposition",
@@ -2019,7 +2119,8 @@
         "match_kind": null
       },
       "note": "The probability integral transform is not stated in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ee83b2f293ea"
     },
     {
       "kind": "example",
@@ -2035,7 +2136,8 @@
         "match_kind": null
       },
       "note": "Sampling algorithm, not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "72aa18f5cf70"
     },
     {
       "kind": "example",
@@ -2061,7 +2163,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle X={\\sqrt {-2\\ln U}}\\,\\cos(2\\pi V),\\qquad Y={\\sqrt {-2\\ln U}}\\,\\sin(2\\pi V).}"
         }
-      ]
+      ],
+      "id": "b74241bf5ca7"
     },
     {
       "kind": "example",
@@ -2087,7 +2190,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle X=U{\\sqrt {\\frac {-2\\ln S}{S}}},\\qquad Y=V{\\sqrt {\\frac {-2\\ln S}{S}}}}"
         }
-      ]
+      ],
+      "id": "3c388bc88f87"
     },
     {
       "kind": "example",
@@ -2103,7 +2207,8 @@
         "match_kind": null
       },
       "note": "Sampling algorithm, not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7ccdc5541710"
     },
     {
       "kind": "example",
@@ -2119,7 +2224,8 @@
         "match_kind": null
       },
       "note": "Sampling algorithm, not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "12a1c61b2ee1"
     },
     {
       "kind": "example",
@@ -2145,7 +2251,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\Phi (x)=1-\\varphi (x)\\left(b_{1}t+b_{2}t^{2}+b_{3}t^{3}+b_{4}t^{4}+b_{5}t^{5}\\right)+\\varepsilon (x),\\qquad t={\\frac {1}{1+b_{0}x}},}"
         }
-      ]
+      ],
+      "id": "851abb093c4d"
     },
     {
       "kind": "example",
@@ -2161,7 +2268,8 @@
         "match_kind": null
       },
       "note": "Not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ad977dfddd46"
     },
     {
       "kind": "example",
@@ -2187,7 +2295,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\Phi (x)={\\frac {1}{2}}+\\varphi (x)\\left(x+{\\frac {x^{3}}{3}}+{\\frac {x^{5}}{3\\cdot 5}}+{\\frac {x^{7}}{3\\cdot 5\\cdot 7}}+{\\frac {x^{9}}{3\\cdot 5\\cdot 7\\cdot 9}}+\\cdots \\right)}"
         }
-      ]
+      ],
+      "id": "3fdd36803276"
     },
     {
       "kind": "example",
@@ -2213,7 +2322,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle z=\\Phi ^{-1}(p)=5.5556\\left[1-\\left({\\frac {1-p}{p}}\\right)^{0.1186}\\right],\\qquad p\\geq 1/2}"
         }
-      ]
+      ],
+      "id": "fc20abc5beeb"
     },
     {
       "kind": "theorem",
@@ -2229,7 +2339,8 @@
         "match_kind": null
       },
       "note": "De Moivre's asymptotic is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d334ded97dfc"
     },
     {
       "kind": "theorem",
@@ -2255,7 +2366,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\varphi {\\mathit {\\Delta }}={\\frac {h}{\\surd \\pi }}\\,e^{-\\mathrm {hh} \\Delta \\Delta },}"
         }
-      ]
+      ],
+      "id": "ea0970373945"
     },
     {
       "kind": "theorem",
@@ -2271,7 +2383,8 @@
         "match_kind": "generalization"
       },
       "note": "The modern 1D CLT in Mathlib subsumes Laplace's original statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "16b9dae3f673"
     }
   ]
 }

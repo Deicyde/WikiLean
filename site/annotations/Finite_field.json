@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "A finite field is encoded in Mathlib as a type with `[Field K] [Finite K]` (or `[Fintype K]`); the namespace `FiniteField` in `Mathlib/FieldTheory/Finite/Basic.lean` collects results under this assumption.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5a7c62e5da1a"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "exact"
       },
       "note": "The order is just the cardinality `Fintype.card K` / `Nat.card K`; throughout `FiniteField` it is the abbreviation `q`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5f4b62d0e2b4"
     },
     {
       "kind": "proposition",
@@ -51,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "Existence is given by `GaloisField p n` with `GaloisField.card`, and uniqueness up to isomorphism by `FiniteField.algEquivOfCardEq` / `FiniteField.ringEquivOfCardEq`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1451f3a3c8b4"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "Same notion as in the lead: `Fintype.card K` (notation `q`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f7195db03113"
     },
     {
       "kind": "theorem",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "`FiniteField.card` (and `FiniteField.card'`, `FiniteField.isPrimePow_card`) states that any finite field has cardinality a prime power.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cfefc57ce4a6"
     },
     {
       "kind": "proposition",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "Any two finite fields of equal cardinality are ring-isomorphic via `FiniteField.ringEquivOfCardEq` (and algebra-isomorphic via `FiniteField.algEquivOfCardEq`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "494efb277eff"
     },
     {
       "kind": "proposition",
@@ -115,7 +121,8 @@
         "match_kind": "exact"
       },
       "note": "`FiniteField.pow_card` shows `a ^ q = a` for all `a : K`; `FiniteField.roots_X_pow_card_sub_X` packages this as a roots-multiset equality.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "33b1d4efbdf5"
     },
     {
       "kind": "proposition",
@@ -131,7 +138,8 @@
         "match_kind": "generalization"
       },
       "note": "The general result `IsCyclic Rˣ` for finite integral domains (`isCyclic_of_subgroup_isDomain` and the `instance [Finite Rˣ] : IsCyclic Rˣ`) covers finite fields.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0eebcc5f46b2"
     },
     {
       "kind": "definition",
@@ -147,7 +155,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib expresses primitive elements through `IsCyclic.exists_generator` on `Kˣ`; there is no dedicated `primitiveElement` name for finite fields.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1e9b71ac638a"
     },
     {
       "kind": "example",
@@ -163,7 +172,8 @@
         "match_kind": "exact"
       },
       "note": "`ZMod p` is a field when `p` is prime (via `ZMod.instField`), giving the prime fields.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "14d9e4cecbf5"
     },
     {
       "kind": "definition",
@@ -179,7 +189,8 @@
         "match_kind": "generalization"
       },
       "note": "The characteristic is the general `CharP K p` typeclass; for finite fields it is the prime `p` from `FiniteField.card`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3bf9093171b6"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": "exact"
       },
       "note": "`add_pow_char` (and `add_pow_expChar_pow`) gives `(x + y)^p = x^p + y^p` in characteristic `p`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "157ee12b9b2e"
     },
     {
       "kind": "theorem",
@@ -221,7 +233,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle X^{p}-X=\\prod _{a\\in \\mathrm {GF} (p)}(X-a)}"
         }
-      ]
+      ],
+      "id": "b6611cb7337b"
     },
     {
       "kind": "proposition",
@@ -237,7 +250,8 @@
         "match_kind": "exact"
       },
       "note": "`PerfectField.ofFinite` makes every finite field perfect (hence every algebraic extension separable), and `Field.exists_primitive_element` then yields simplicity for finite separable extensions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e334f9eefbb0"
     },
     {
       "kind": "theorem",
@@ -253,7 +267,8 @@
         "match_kind": "exact"
       },
       "note": "Chevalley–Warning is formalized as `char_dvd_card_solutions_of_sum_lt`, but the abstract notion of a quasi-algebraically closed (C₁) field is not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "28a1a508753a"
     },
     {
       "kind": "proposition",
@@ -279,7 +294,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle P=X^{q}-X}"
         }
-      ]
+      ],
+      "id": "06568ecb5093"
     },
     {
       "kind": "proposition",
@@ -295,7 +311,8 @@
         "match_kind": "exact"
       },
       "note": "`GaloisField.algEquivGaloisField` (and `FiniteField.algEquivOfCardEq`) realize this via the universal property of `IsSplittingField.algEquiv`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d81bf196db30"
     },
     {
       "kind": "theorem",
@@ -325,7 +342,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle X^{q}-X=\\prod _{a\\in F}(X-a).}"
         }
-      ]
+      ],
+      "id": "9e5b144d897a"
     },
     {
       "kind": "proposition",
@@ -341,7 +359,8 @@
         "match_kind": "generalization"
       },
       "note": "`FiniteField.nonempty_algHom_iff_finrank_dvd` gives the divisibility criterion for embedding finite-field extensions, but the direct `GF(p^m) ↪ GF(p^n) ↔ m ∣ n` statement is not isolated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ebb686bdc0fe"
     },
     {
       "kind": "proposition",
@@ -367,7 +386,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\mathrm {GF} (q)=\\mathrm {GF} (p)[X]/(P)}"
         }
-      ]
+      ],
+      "id": "ed434a4522ec"
     },
     {
       "kind": "example",
@@ -383,7 +403,8 @@
         "match_kind": "special_case"
       },
       "note": "Available abstractly as `GaloisField 2 2`, but no explicit small construction or addition/multiplication table is stated in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "40a99dbb5620"
     },
     {
       "kind": "example",
@@ -409,7 +430,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\varphi :x\\mapsto x^{2}}"
         }
-      ]
+      ],
+      "id": "db5ab40ef482"
     },
     {
       "kind": "proposition",
@@ -425,7 +447,8 @@
         "match_kind": null
       },
       "note": "No direct statement that `X^2 - r` is irreducible over `ZMod p` when `r` is a quadratic non-residue was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a8a8c3d3f71c"
     },
     {
       "kind": "example",
@@ -455,7 +478,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\begin{aligned}-(a+b\\alpha )&amp;=-a+(-b)\\alpha \\\\(a+b\\alpha )+(c+d\\alpha )&amp;=(a+c)+(b+d)\\alpha \\\\(a+b\\alpha )(c+d\\alpha )&amp;=(ac+rbd)+(ad+bc)\\alpha \\\\(a+b\\alpha )^{-1}&amp;=a(a^{2}-rb^{2})^{-1}+(-b)(a^{2}-rb^{2})^{-1}\\alpha \\end{aligned}}}"
         }
-      ]
+      ],
+      "id": "3007b791e594"
     },
     {
       "kind": "example",
@@ -471,7 +495,8 @@
         "match_kind": null
       },
       "note": "Specific minimal-polynomial constructions of `GF(8)` and `GF(27)` are not present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c373a0916052"
     },
     {
       "kind": "example",
@@ -487,7 +512,8 @@
         "match_kind": null
       },
       "note": "An explicit construction of `GF(16)` via `X^4 + X + 1` is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1c8b9c00df53"
     },
     {
       "kind": "example",
@@ -503,7 +529,8 @@
         "match_kind": null
       },
       "note": "No statement enumerating the eight primitive elements of `GF(16)` was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "11fe2ca09a34"
     },
     {
       "kind": "theorem",
@@ -519,7 +546,8 @@
         "match_kind": "generalization"
       },
       "note": "Same as the earlier entry: `IsCyclic Kˣ` holds for any finite integral domain via `isCyclic_of_subgroup_isDomain`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dc536d0f27ec"
     },
     {
       "kind": "definition",
@@ -535,7 +563,8 @@
         "match_kind": "generalization"
       },
       "note": "Generators of the cyclic group `Kˣ` provide primitive elements via `IsCyclic.exists_generator`; no dedicated finite-field definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7126616fa3c2"
     },
     {
       "kind": "proposition",
@@ -551,7 +580,8 @@
         "match_kind": "generalization"
       },
       "note": "`IsCyclic.card_orderOf_eq_totient` gives the count of elements of given order in a cyclic group as Euler's totient, applied to `Kˣ` of order `q-1`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "06e8023a58f7"
     },
     {
       "kind": "definition",
@@ -567,7 +597,8 @@
         "match_kind": null
       },
       "note": "No notion of discrete logarithm in `Kˣ` of a finite field was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b83b85c124a6"
     },
     {
       "kind": "definition",
@@ -593,7 +624,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle a^{m}+a^{n}=a^{n}\\left(a^{m-n}+1\\right)}"
         }
-      ]
+      ],
+      "id": "2007398cdf36"
     },
     {
       "kind": "proposition",
@@ -609,7 +641,8 @@
         "match_kind": "exact"
       },
       "note": "`FiniteField.pow_card_sub_one_eq_one` shows every nonzero `a : K` satisfies `a^(q-1) = 1`, i.e. is a `(q-1)`-th root of unity.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7c4f489e0973"
     },
     {
       "kind": "definition",
@@ -625,7 +658,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib's general `IsPrimitiveRoot ζ n` captures this concept in any monoid.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "20419c65a5f2"
     },
     {
       "kind": "proposition",
@@ -641,7 +675,8 @@
         "match_kind": "generalization"
       },
       "note": "Follows from cyclicity of `Kˣ` and `IsCyclic.card_orderOf_eq_totient` plus `Fintype.card_units = q - 1`, but no dedicated `IsPrimitiveRoot.exists ↔ n ∣ q-1` for finite fields is isolated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7df0e8b00ca9"
     },
     {
       "kind": "proposition",
@@ -657,7 +692,8 @@
         "match_kind": "generalization"
       },
       "note": "Follows from `a^p = a` (`ZMod.pow_card`/`FiniteField.pow_card`), but no isolated statement that there are no primitive `p`-th roots of unity in characteristic `p` was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "817f436cac78"
     },
     {
       "kind": "proposition",
@@ -673,7 +709,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib defines cyclotomic polynomials and proves `prod_cyclotomic_eq_X_pow_sub_one`, but the explicit characteristic-`p` factorization statement is not isolated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "939ed7da530b"
     },
     {
       "kind": "example",
@@ -689,7 +726,8 @@
         "match_kind": null
       },
       "note": "No specific worked example about `GF(64)` was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0132a9a8b9c6"
     },
     {
       "kind": "definition",
@@ -715,7 +753,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\varphi :x\\mapsto x^{p}}"
         }
-      ]
+      ],
+      "id": "7101e2d8422d"
     },
     {
       "kind": "proposition",
@@ -745,7 +784,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle X^{p^{k}}-X}"
         }
-      ]
+      ],
+      "id": "72bc87bc95f0"
     },
     {
       "kind": "theorem",
@@ -771,7 +811,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\mathrm {Id} =\\varphi ^{0},\\varphi ,\\varphi ^{2},\\ldots ,\\varphi ^{n-1}.}"
         }
-      ]
+      ],
+      "id": "b0f393b69844"
     },
     {
       "kind": "proposition",
@@ -787,7 +828,8 @@
         "match_kind": "exact"
       },
       "note": "`PerfectRing.ofFiniteOfIsReduced` (and the field-level `PerfectField.ofFinite`) deduce perfection from surjective Frobenius.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bfae5a2b6515"
     },
     {
       "kind": "definition",
@@ -803,7 +845,8 @@
         "match_kind": "generalization"
       },
       "note": "The general `Irreducible` predicate applies to `Polynomial K`; no finite-field-specific definition is needed.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ad58cbc3b19b"
     },
     {
       "kind": "proposition",
@@ -819,7 +862,8 @@
         "match_kind": "generalization"
       },
       "note": "Polynomial rings over UFDs are UFDs by the global instance in `Mathlib/RingTheory/Polynomial/UniqueFactorization.lean`, which applies to fields.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a58ca5c10f80"
     },
     {
       "kind": "proposition",
@@ -845,7 +889,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle X^{q}-X}"
         }
-      ]
+      ],
+      "id": "df93be0f0648"
     },
     {
       "kind": "theorem",
@@ -861,7 +906,8 @@
         "match_kind": null
       },
       "note": "No statement that `X^(q^n) - X` factors as the product of all monic irreducibles over `GF(q)` of degree dividing `n` was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bb49e79d4583"
     },
     {
       "kind": "theorem",
@@ -887,7 +933,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle N(q,n)={\\frac {1}{n}}\\sum _{d\\mid n}\\mu (d)q^{n/d},}"
         }
-      ]
+      ],
+      "id": "c6dc9ccf00d0"
     },
     {
       "kind": "proposition",
@@ -913,7 +960,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle N(q,n)\\geq {\\frac {1}{n}}{\\biggl (}q^{n}-\\sum _{\\ell \\mid n,\\ \\ell {\\text{ prime}}}q^{n/\\ell }{\\biggr )};}"
         }
-      ]
+      ],
+      "id": "999681673588"
     },
     {
       "kind": "proposition",
@@ -939,7 +987,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle f(T)=1+\\prod _{\\alpha \\in F}(T-\\alpha ),}"
         }
-      ]
+      ],
+      "id": "cc8288fcd9f7"
     },
     {
       "kind": "proposition",
@@ -955,7 +1004,8 @@
         "match_kind": "generalization"
       },
       "note": "`AlgebraicClosure (ZMod p)` exists generically; structural details specific to finite-field closures are not separately stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "626f83cccb7c"
     },
     {
       "kind": "proposition",
@@ -971,7 +1021,8 @@
         "match_kind": null
       },
       "note": "No statement isolating, inside `AlgebraicClosure (ZMod p)`, the unique subfield of degree `n` was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2cf49cf17f40"
     },
     {
       "kind": "proposition",
@@ -997,7 +1048,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\overline {\\mathbb {F} }}_{p}=\\bigcup _{n\\geq 1}\\mathbb {F} _{p^{n}}.}"
         }
-      ]
+      ],
+      "id": "79333a9b7df9"
     },
     {
       "kind": "theorem",
@@ -1013,7 +1065,8 @@
         "match_kind": "exact"
       },
       "note": "`littleWedderburn` provides a `Field` instance for any finite division ring.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f9e27fbb3dbd"
     },
     {
       "kind": "theorem",
@@ -1029,7 +1082,8 @@
         "match_kind": null
       },
       "note": "Artin–Zorn is explicitly listed as future work in the header of `Mathlib/RingTheory/LittleWedderburn.lean` and is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8a6c69e3ac10"
     }
   ]
 }

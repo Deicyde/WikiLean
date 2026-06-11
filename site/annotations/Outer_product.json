@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.vecMulVec w v i j = w i * v j` is exactly the entrywise outer product of two vectors as a matrix.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9557d4de6770"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib has the abstract tensor product `⊗ₜ` but no concrete entrywise outer product of multidimensional arrays.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ca1360a84c55"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.vecMulVec` directly defines the outer product `u ⊗ v` of two vectors as a matrix.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "28552bb7031f"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.vecMulVec_eq` proves `vecMulVec w v = replicateCol ι w * replicateRow ι v`, identifying the outer product with the column-row matrix product.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a4b186e1973e"
     },
     {
       "kind": "example",
@@ -83,7 +87,8 @@
         "match_kind": null
       },
       "note": "A specific numerical instance of an outer product is not a standalone lemma in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "08c15752220c"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.conjTranspose_vecMulVec` computes `(vecMulVec w v)ᴴ`, capturing the conjugate-transpose form of the outer product.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "156569b99e67"
     },
     {
       "kind": "proposition",
@@ -115,7 +121,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.trace_vecMulVec` proves `trace (vecMulVec a b) = a ⬝ᵥ b`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d5fe92348b89"
     },
     {
       "kind": "proposition",
@@ -131,7 +138,8 @@
         "match_kind": null
       },
       "note": "No standalone statement asserting `vecMulVec u v ≠ vecMulVec v u` in general was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "353b7cf060bd"
     },
     {
       "kind": "proposition",
@@ -147,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "`vecMulVec u v *ᵥ w = (v ⬝ᵥ w) • u` (and the dual `vecMul_vecMulVec`) express precisely that an outer-product matrix times a vector collapses to a scalar inner product times the other vector.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b2f0f9f12846"
     },
     {
       "kind": "definition",
@@ -163,7 +172,8 @@
         "match_kind": "generalization"
       },
       "note": "The abstract `⊗ₜ` exists but Mathlib has no entrywise outer product of multi-index arrays as described in the article.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "28657a953e6b"
     },
     {
       "kind": "example",
@@ -179,7 +189,8 @@
         "match_kind": null
       },
       "note": "A specific numerical tensor-outer-product example is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7be29d20cbbe"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib defines both `Matrix.vec` and `Matrix.kroneckerMap` but has no lemma equating `vec(vecMulVec u v)` with a Kronecker product of `u` and `v`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "30aaf79b79c9"
     },
     {
       "kind": "proposition",
@@ -211,7 +223,8 @@
         "match_kind": "special_case"
       },
       "note": "The block version `fromCols_mul_fromRows` expresses AB as a sum of block outer products, but the column-by-row decomposition `A * B = ∑ i, vecMulVec (Aᵀ i) (B i)` is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "762145161ce6"
     },
     {
       "kind": "proposition",
@@ -227,7 +240,8 @@
         "match_kind": null
       },
       "note": "Mathlib defines `LinearMap.singularValues` but the SVD decomposition as a sum of rank-one outer products is not proved.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0d0c6e85d868"
     },
     {
       "kind": "proposition",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "Truncated SVD and its spectral-norm error bound are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "35bb714fe346"
     },
     {
       "kind": "proposition",
@@ -259,7 +274,8 @@
         "match_kind": "exact"
       },
       "note": "Bilinearity is packaged as `vecMulVecBilin`, with `add_vecMulVec`, `vecMulVec_add`, `smul_vecMulVec`, `transpose_vecMulVec` covering the listed algebraic identities.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8d9855935104"
     },
     {
       "kind": "proposition",
@@ -275,7 +291,8 @@
         "match_kind": "generalization"
       },
       "note": "Associativity holds abstractly via `TensorProduct.assoc`, but there is no concrete statement for the entrywise tensor outer product.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "846437c3fea1"
     },
     {
       "kind": "proposition",
@@ -291,7 +308,8 @@
         "match_kind": "exact"
       },
       "note": "`rank_vecMulVec_le` proves `(vecMulVec w v).rank ≤ 1`, matching the rank-≤-1 statement (rank-1 when both vectors are nonzero).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c263e1942e5e"
     },
     {
       "kind": "definition",
@@ -307,7 +325,8 @@
         "match_kind": "exact"
       },
       "note": "The abstract outer product `u ⊗ v ∈ V ⊗ W` is exactly `TensorProduct.tmul` (notation `⊗ₜ`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "84b32917b35f"
     },
     {
       "kind": "definition",
@@ -323,7 +342,8 @@
         "match_kind": "exact"
       },
       "note": "`InnerProductSpace.rankOne 𝕜 x y` is `z ↦ ⟪y, z⟫ • x`, the rank-one operator the article describes.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4e9d5de5959b"
     },
     {
       "kind": "definition",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "Programming-language treatment of outer products is out of scope for Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "630dc1b1a131"
     },
     {
       "kind": "example",
@@ -355,7 +376,8 @@
         "match_kind": null
       },
       "note": "The spinor-specific outer-product example is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "22df801268c8"
     },
     {
       "kind": "proposition",
@@ -371,7 +393,8 @@
         "match_kind": "generalization"
       },
       "note": "`Matrix.det_vecMulVec` shows `(vecMulVec u v).det = 0` whenever the index type has at least two elements, which specializes to the 2×2 spinor case.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "119097a1491d"
     },
     {
       "kind": "definition",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "An outer product specialized to Boolean/logical vectors is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "873fa0c67657"
     }
   ]
 }

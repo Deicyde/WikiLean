@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "`gammaMeasure a r` defines the gamma distribution on ℝ as `volume.withDensity (gammaPDF a r)` with shape `a` and rate `r`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7cefe707b091"
     },
     {
       "kind": "proposition",
@@ -35,7 +36,8 @@
         "match_kind": "special_case"
       },
       "note": "Only the exponential special case is formalized: `expMeasure r := gammaMeasure 1 r`; Erlang and chi-squared distributions are not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8930b61cd4f6"
     },
     {
       "kind": "proposition",
@@ -51,7 +53,8 @@
         "match_kind": null
       },
       "note": "No max-entropy characterization of the gamma distribution is in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1e18568b7e79"
     },
     {
       "kind": "proposition",
@@ -67,7 +70,8 @@
         "match_kind": null
       },
       "note": "The Erlang distribution and its representation as a sum of independent exponentials are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b9ff340de01e"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "`gammaMeasure a r` is the shape-rate parameterization (parameter `r` is rate).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "47416809fdc0"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "`gammaPDFReal a r x = r^a / Gamma a * x^(a-1) * exp (-(r*x))` for `0 ≤ x` matches the shape-rate PDF.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a84845cd374a"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": "generalization"
       },
       "note": "The gamma CDF is expressed as an integral of the PDF, but Mathlib has no regularized lower incomplete gamma function to equate it to.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b39daa95d836"
     },
     {
       "kind": "proposition",
@@ -131,7 +138,8 @@
         "match_kind": null
       },
       "note": "The Erlang CDF series expansion is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "77f30e6b6a4f"
     },
     {
       "kind": "definition",
@@ -147,7 +155,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib parameterizes the gamma by shape and rate; the shape-scale form (θ = 1/r) is not separately defined but follows by substitution.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d4bee1538551"
     },
     {
       "kind": "definition",
@@ -163,7 +172,8 @@
         "match_kind": "generalization"
       },
       "note": "Only the shape-rate form `gammaPDFReal` is defined; shape-scale would require substituting `r = 1/θ`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "257192525389"
     },
     {
       "kind": "definition",
@@ -179,7 +189,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib has the CDF as an integral but no regularized incomplete gamma function and no explicit shape-scale form.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "684c33c457ef"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": null
       },
       "note": "Erlang-form CDF is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "023890d72158"
     },
     {
       "kind": "proposition",
@@ -229,7 +241,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\sigma /\\mu =\\alpha ^{-0.5}=1/{\\sqrt {\\alpha }}}"
         }
-      ]
+      ],
+      "id": "acd13eb744ad"
     },
     {
       "kind": "proposition",
@@ -263,7 +276,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\sigma /\\mu =\\alpha ^{-0.5}=1/{\\sqrt {\\alpha }}}"
         }
-      ]
+      ],
+      "id": "6bbdebc41dbb"
     },
     {
       "kind": "proposition",
@@ -297,7 +311,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\sigma /\\mu =\\alpha ^{-0.5}=1/{\\sqrt {\\alpha }}}"
         }
-      ]
+      ],
+      "id": "5bb9b648af7c"
     },
     {
       "kind": "proposition",
@@ -313,7 +328,8 @@
         "match_kind": null
       },
       "note": "Skewness of the gamma distribution is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "528028730c07"
     },
     {
       "kind": "proposition",
@@ -329,7 +345,8 @@
         "match_kind": null
       },
       "note": "Higher raw moments of the gamma distribution are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "502f75a7d6c7"
     },
     {
       "kind": "proposition",
@@ -345,7 +362,8 @@
         "match_kind": null
       },
       "note": "Cumulants of the gamma distribution are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6f29055fe9f2"
     },
     {
       "kind": "definition",
@@ -371,7 +389,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\frac {1}{\\Gamma (\\alpha )\\theta ^{\\alpha }}}\\int _{0}^{\\nu }x^{\\alpha -1}e^{-x/\\theta }dx={\\frac {1}{2}}.}"
         }
-      ]
+      ],
+      "id": "e63ebc5306ad"
     },
     {
       "kind": "theorem",
@@ -397,7 +416,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\alpha -{\\tfrac {1}{3}}&lt;\\nu (\\alpha )&lt;\\alpha ,}"
         }
-      ]
+      ],
+      "id": "dbed59be3221"
     },
     {
       "kind": "theorem",
@@ -423,7 +443,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\begin{aligned}\\nu (\\alpha )=\\alpha &amp;-{\\frac {1}{3}}+{\\frac {8}{405}}\\alpha ^{-1}+{\\frac {184}{25\\,515}}\\alpha ^{-2}+{\\frac {2248}{3\\,444\\,525}}\\alpha ^{-3}\\\\[1ex]&amp;-{\\frac {19\\,006\\,408}{15\\,345\\,358\\,875}}\\alpha ^{-4}-{\\mathcal {O}}{\\left(\\alpha ^{-5}\\right)}+\\cdots \\end{aligned}}}"
         }
-      ]
+      ],
+      "id": "12ad3f5b4a88"
     },
     {
       "kind": "theorem",
@@ -439,7 +460,8 @@
         "match_kind": null
       },
       "note": "Berg–Pedersen results on the gamma median are not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dbe0cfd66355"
     },
     {
       "kind": "theorem",
@@ -465,7 +487,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\nu (\\alpha )\\leq \\alpha -1+\\log 2~~}"
         }
-      ]
+      ],
+      "id": "5272950fdd0d"
     },
     {
       "kind": "proposition",
@@ -491,7 +514,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\nu (\\alpha )=\\alpha \\left(1-{\\frac {1}{9\\alpha }}\\right)^{3}}"
         }
-      ]
+      ],
+      "id": "3648e0e392a6"
     },
     {
       "kind": "theorem",
@@ -507,7 +531,8 @@
         "match_kind": null
       },
       "note": "Lyon's closed-form median bounds are not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "10b13187655d"
     },
     {
       "kind": "proposition",
@@ -541,7 +566,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\nu (\\alpha )\\geq \\log 2+(\\alpha -1)\\left[\\gamma -2\\operatorname {Ei} (-\\log 2)-\\log \\log 2\\right]}"
         }
-      ]
+      ],
+      "id": "2e627a60f3fc"
     },
     {
       "kind": "proposition",
@@ -583,7 +609,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle b_{0}={\\frac {e^{-\\gamma }-\\log 2+{\\frac {1}{3}}}{1-{\\frac {e^{-\\gamma }\\pi ^{2}}{12}}}}\\approx 0.374654}"
         }
-      ]
+      ],
+      "id": "4d4be8c44abf"
     },
     {
       "kind": "proposition",
@@ -599,7 +626,8 @@
         "match_kind": null
       },
       "note": "The convolution/summation property `Gamma(α₁,θ) + Gamma(α₂,θ) = Gamma(α₁+α₂,θ)` is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "894b663ca62f"
     },
     {
       "kind": "proposition",
@@ -615,7 +643,8 @@
         "match_kind": null
       },
       "note": "Infinite divisibility of the gamma distribution is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c07950b76448"
     },
     {
       "kind": "proposition",
@@ -631,7 +660,8 @@
         "match_kind": null
       },
       "note": "Scaling behavior of gamma random variables is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c88c57454b0e"
     },
     {
       "kind": "proposition",
@@ -647,7 +677,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no exponential family framework or such characterization for gamma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "00bb0a8efda4"
     },
     {
       "kind": "proposition",
@@ -663,7 +694,8 @@
         "match_kind": null
       },
       "note": "Natural exponential family form of gamma is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6b40a6cd219b"
     },
     {
       "kind": "proposition",
@@ -679,7 +711,8 @@
         "match_kind": null
       },
       "note": "Mathlib has the digamma function but `E[log X]` for gamma is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cc3a30ac64a6"
     },
     {
       "kind": "proposition",
@@ -695,7 +728,8 @@
         "match_kind": null
       },
       "note": "Variance of `log X` via trigamma is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0b85a601fe40"
     },
     {
       "kind": "proposition",
@@ -711,7 +745,8 @@
         "match_kind": null
       },
       "note": "Entropy of the gamma distribution is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "315e8c9dcf37"
     },
     {
       "kind": "proposition",
@@ -727,7 +762,8 @@
         "match_kind": null
       },
       "note": "Shape-scale entropy formula is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9d6d87dbffcb"
     },
     {
       "kind": "proposition",
@@ -743,7 +779,8 @@
         "match_kind": null
       },
       "note": "Mathlib has general KL divergence but the explicit closed form between two gamma distributions is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2c26b6d782be"
     },
     {
       "kind": "proposition",
@@ -759,7 +796,8 @@
         "match_kind": null
       },
       "note": "Scale-form KL divergence between two gammas is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "604b4efb56d3"
     },
     {
       "kind": "proposition",
@@ -775,7 +813,8 @@
         "match_kind": null
       },
       "note": "Mathlib defines mgf generally but not the closed form `(1 - θt)^{-α}` for the gamma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8c5cc1b16f4e"
     },
     {
       "kind": "proposition",
@@ -791,7 +830,8 @@
         "match_kind": null
       },
       "note": "The sum-of-iid-exponentials-is-gamma theorem is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "efeb2b52e7ff"
     },
     {
       "kind": "proposition",
@@ -807,7 +847,8 @@
         "match_kind": "exact"
       },
       "note": "`expMeasure r := gammaMeasure 1 r` definitionally identifies `Gamma(1, r)` with the exponential distribution.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c14b00444061"
     },
     {
       "kind": "proposition",
@@ -823,7 +864,8 @@
         "match_kind": null
       },
       "note": "The chi-squared distribution is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2f25feda23fe"
     },
     {
       "kind": "proposition",
@@ -839,7 +881,8 @@
         "match_kind": null
       },
       "note": "Schulz-Zimm distribution is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c5cdb09f8ab2"
     },
     {
       "kind": "proposition",
@@ -855,7 +898,8 @@
         "match_kind": null
       },
       "note": "Erlang distribution and Poisson-process waiting times are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "edd61a660253"
     },
     {
       "kind": "proposition",
@@ -871,7 +915,8 @@
         "match_kind": null
       },
       "note": "Maxwell–Boltzmann distribution is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2f5a2220bab9"
     },
     {
       "kind": "proposition",
@@ -887,7 +932,8 @@
         "match_kind": null
       },
       "note": "Log-gamma distribution is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "efe86dcec442"
     },
     {
       "kind": "proposition",
@@ -903,7 +949,8 @@
         "match_kind": null
       },
       "note": "Exp-gamma distribution is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b7da7e8d5f58"
     },
     {
       "kind": "proposition",
@@ -919,7 +966,8 @@
         "match_kind": null
       },
       "note": "Generalized gamma distribution is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a13689ddb596"
     },
     {
       "kind": "proposition",
@@ -935,7 +983,8 @@
         "match_kind": null
       },
       "note": "Power transforms to generalized gamma are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4fafae3d93a6"
     },
     {
       "kind": "proposition",
@@ -951,7 +1000,8 @@
         "match_kind": null
       },
       "note": "Inverse-gamma distribution is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5cf24f1128d8"
     },
     {
       "kind": "proposition",
@@ -967,7 +1017,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib has the beta PDF but not the theorem that X/(X+Y) is beta when X, Y are independent gammas.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4de23662addf"
     },
     {
       "kind": "proposition",
@@ -983,7 +1034,8 @@
         "match_kind": null
       },
       "note": "Convergence in distribution statements for gamma family are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "92a59e5bb581"
     },
     {
       "kind": "proposition",
@@ -999,7 +1051,8 @@
         "match_kind": null
       },
       "note": "Dirichlet distribution is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0fe47eea4e1d"
     },
     {
       "kind": "proposition",
@@ -1015,7 +1068,8 @@
         "match_kind": null
       },
       "note": "Normal limit for large α is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "de47e8044cf8"
     },
     {
       "kind": "proposition",
@@ -1031,7 +1085,8 @@
         "match_kind": null
       },
       "note": "Conjugate prior framework and the gamma-normal-precision result are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a36b27e9e753"
     },
     {
       "kind": "proposition",
@@ -1047,7 +1102,8 @@
         "match_kind": null
       },
       "note": "Matrix gamma and Wishart distributions are not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a2f3545f8d01"
     },
     {
       "kind": "proposition",
@@ -1063,7 +1119,8 @@
         "match_kind": null
       },
       "note": "Generalized gamma distribution is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4819c6904d99"
     },
     {
       "kind": "proposition",
@@ -1079,7 +1136,8 @@
         "match_kind": null
       },
       "note": "Negative binomial distribution is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e494be007ca7"
     },
     {
       "kind": "proposition",
@@ -1095,7 +1153,8 @@
         "match_kind": null
       },
       "note": "Tweedie exponential dispersion family is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6ab79503d99d"
     },
     {
       "kind": "proposition",
@@ -1111,7 +1170,8 @@
         "match_kind": null
       },
       "note": "Modified half-normal family is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5893d98b031e"
     },
     {
       "kind": "proposition",
@@ -1127,7 +1187,8 @@
         "match_kind": null
       },
       "note": "Beta prime distribution is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4983f047d15c"
     },
     {
       "kind": "proposition",
@@ -1143,7 +1204,8 @@
         "match_kind": null
       },
       "note": "Compound gamma distribution is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a8516d4ab999"
     },
     {
       "kind": "proposition",
@@ -1159,7 +1221,8 @@
         "match_kind": null
       },
       "note": "K-distribution is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ed309a625742"
     },
     {
       "kind": "definition",
@@ -1175,7 +1238,8 @@
         "match_kind": null
       },
       "note": "Likelihood function for gamma samples is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ab5dfc282e51"
     },
     {
       "kind": "definition",
@@ -1191,7 +1255,8 @@
         "match_kind": null
       },
       "note": "Log-likelihood for gamma samples is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "60b26485ef88"
     },
     {
       "kind": "proposition",
@@ -1207,7 +1272,8 @@
         "match_kind": null
       },
       "note": "MLE for θ is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e8c46d1e4e48"
     },
     {
       "kind": "proposition",
@@ -1223,7 +1289,8 @@
         "match_kind": null
       },
       "note": "MLE score equation for α is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d93d3bd250b2"
     },
     {
       "kind": "proposition",
@@ -1239,7 +1306,8 @@
         "match_kind": null
       },
       "note": "Initial-value approximation for α is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "733cc08ad7e6"
     },
     {
       "kind": "proposition",
@@ -1255,7 +1323,8 @@
         "match_kind": null
       },
       "note": "Newton–Raphson update for α-MLE is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4a40f625cb58"
     },
     {
       "kind": "proposition",
@@ -1281,7 +1350,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\begin{aligned}{\\hat {\\alpha }}{\\hat {\\theta }}&amp;={\\bar {x}}&amp;&amp;{\\text{and}}&amp;\\psi ({\\hat {\\alpha }})+\\ln {\\hat {\\theta }}&amp;={\\overline {\\ln x}}.\\end{aligned}}}"
         }
-      ]
+      ],
+      "id": "f21b5e3d8e71"
     },
     {
       "kind": "proposition",
@@ -1307,7 +1377,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\Pr({\\text{underflow}})=1-(1-F(\\varepsilon ;\\alpha ,\\theta ))^{N}}"
         }
-      ]
+      ],
+      "id": "fb970a7eb869"
     },
     {
       "kind": "proposition",
@@ -1323,7 +1394,8 @@
         "match_kind": null
       },
       "note": "Closed-form estimator for α is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c9265a85ead5"
     },
     {
       "kind": "proposition",
@@ -1339,7 +1411,8 @@
         "match_kind": null
       },
       "note": "Closed-form estimator for θ is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "05228fb395c4"
     },
     {
       "kind": "proposition",
@@ -1355,7 +1428,8 @@
         "match_kind": null
       },
       "note": "Bias-corrected scale estimator is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5b3c79c58c8b"
     },
     {
       "kind": "proposition",
@@ -1371,7 +1445,8 @@
         "match_kind": null
       },
       "note": "Bias correction for shape estimator is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "da94e5ad3156"
     },
     {
       "kind": "proposition",
@@ -1387,7 +1462,8 @@
         "match_kind": null
       },
       "note": "Bayesian posterior for θ is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a35ec7907d6d"
     },
     {
       "kind": "proposition",
@@ -1403,7 +1479,8 @@
         "match_kind": null
       },
       "note": "Posterior mean ± SD is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3dfb8a771d94"
     },
     {
       "kind": "proposition",
@@ -1419,7 +1496,8 @@
         "match_kind": null
       },
       "note": "Conjugate-prior relationships are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "eeb78aefaf89"
     },
     {
       "kind": "proposition",
@@ -1435,7 +1513,8 @@
         "match_kind": null
       },
       "note": "Conjugate prior of the gamma is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "04743a4a8958"
     },
     {
       "kind": "example",
@@ -1451,7 +1530,8 @@
         "match_kind": null
       },
       "note": "Waiting-time application discussion is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "07c197fd42bb"
     },
     {
       "kind": "example",
@@ -1467,7 +1547,8 @@
         "match_kind": null
       },
       "note": "Application example, not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "918a9b180731"
     },
     {
       "kind": "example",
@@ -1483,7 +1564,8 @@
         "match_kind": null
       },
       "note": "Application example, not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bc92b8a784fe"
     },
     {
       "kind": "example",
@@ -1499,7 +1581,8 @@
         "match_kind": null
       },
       "note": "Negative binomial as Poisson-gamma mixture is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "292c8ef1f032"
     },
     {
       "kind": "example",
@@ -1515,7 +1598,8 @@
         "match_kind": null
       },
       "note": "Application example, not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e8b5a5fd632e"
     },
     {
       "kind": "example",
@@ -1531,7 +1615,8 @@
         "match_kind": null
       },
       "note": "Application example, not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "22febd9ffd14"
     },
     {
       "kind": "example",
@@ -1547,7 +1632,8 @@
         "match_kind": null
       },
       "note": "Application example, not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5a07ca82c30e"
     },
     {
       "kind": "example",
@@ -1563,7 +1649,8 @@
         "match_kind": null
       },
       "note": "Application example, not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9a8f5089cc72"
     },
     {
       "kind": "proposition",
@@ -1579,7 +1666,8 @@
         "match_kind": null
       },
       "note": "Inverse-transform sampling for the exponential is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bf61a0c3600c"
     },
     {
       "kind": "proposition",
@@ -1595,7 +1683,8 @@
         "match_kind": null
       },
       "note": "Ahrens–Dieter acceptance–rejection algorithm is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c7e73b30bb86"
     },
     {
       "kind": "proposition",
@@ -1611,7 +1700,8 @@
         "match_kind": null
       },
       "note": "Marsaglia transformation–rejection method is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "033e2646b549"
     }
   ]
 }

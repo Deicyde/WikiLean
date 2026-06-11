@@ -19,7 +19,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib's `Category` typeclass already makes hom-classes types (locally small); `LocallySmall.{w}` is the relative w-small generalization with `hom_small : ∀ X Y, Small.{w} (X ⟶ Y)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7a2fcbc9729e"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "invocation"
       },
       "note": "`coyoneda.obj (op A) : C ⥤ Type` is exactly the covariant hom functor Hom(A,–).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b9b10b9685a4"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "invocation"
       },
       "note": "`yoneda.obj B : Cᵒᵖ ⥤ Type` is exactly the contravariant hom functor Hom(–,B).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "453dc56c3268"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "invocation"
       },
       "note": "The functor of points of an object A is the representable presheaf `yoneda.obj A = Hom(–,A)`, though Mathlib has no dedicated 'functor of points' name.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "de852b0548c1"
     },
     {
       "kind": "proposition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "The compatible naturality of Hom(A,–) and Hom(–,B) is precisely the functoriality witnessed by the single bifunctor `Functor.hom : Cᵒᵖ × C ⥤ Type`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1c7b9b5082cb"
     },
     {
       "kind": "proposition",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "`Functor.hom : Cᵒᵖ × C ⥤ Type v` is the hom bifunctor, contravariant in the first and covariant in the second argument.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c8c1db2ab2d1"
     },
     {
       "kind": "theorem",
@@ -115,7 +121,8 @@
         "match_kind": "exact"
       },
       "note": "`yonedaEquiv : (yoneda.obj X ⟶ F) ≃ F.obj (op X)` is the Yoneda lemma, with its naturality packaged as `yonedaLemma`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "94df1ec3aa4f"
     },
     {
       "kind": "definition",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "`internalHom : Cᵒᵖ ⥤ C ⥤ C` (built from `ihom`) is the internal hom bifunctor of a monoidal closed category.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d96ac2176dc5"
     },
     {
       "kind": "definition",
@@ -147,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "`MonoidalClosed C` is the closed (monoidal) category structure the article refers to as a closed category.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b687f5290414"
     },
     {
       "kind": "proposition",
@@ -163,7 +172,8 @@
         "match_kind": "exact"
       },
       "note": "`ihom.adjunction A : tensorLeft A ⊣ ihom A` together with `MonoidalClosed.curry`/`uncurry` formalizes currying as the internal hom adjunction.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e1e02452cb78"
     },
     {
       "kind": "definition",
@@ -179,7 +189,8 @@
         "match_kind": "invocation"
       },
       "note": "The internal hom object is `(ihom A).obj X`, with notation `A ⟶[C] X`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3d3c627003e5"
     },
     {
       "kind": "definition",
@@ -195,7 +206,8 @@
         "match_kind": "invocation"
       },
       "note": "In the cartesian closed case the exponential object is `(ihom A).obj B` with `CartesianClosed` notations `A ⟹ B` and `B ^^ A`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5cf32df1b07d"
     },
     {
       "kind": "definition",
@@ -211,7 +223,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not formalize the internal language / type theory of a (closed) category.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4d2f1414425b"
     },
     {
       "kind": "definition",
@@ -227,7 +240,8 @@
         "match_kind": "invocation"
       },
       "note": "Mathlib represents (co)presheaves on a general category as the literal types `Cᵒᵖ ⥤ Type`/`C ⥤ Type` (e.g. the codomain of `yoneda`) without a dedicated `Presheaf C` abbreviation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4c2f7180204a"
     },
     {
       "kind": "definition",
@@ -243,7 +257,8 @@
         "match_kind": "exact"
       },
       "note": "`Functor.IsRepresentable` (with `Functor.RepresentableBy`) defines a functor isomorphic to a hom functor.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f0b83d766afd"
     },
     {
       "kind": "proposition",
@@ -259,7 +274,8 @@
         "match_kind": "exact"
       },
       "note": "`Profunctor.id C` is defined to be the Yoneda/hom bifunctor, exactly the identity profunctor on C.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0273cc4362b4"
     },
     {
       "kind": "proposition",
@@ -275,7 +291,8 @@
         "match_kind": "invocation"
       },
       "note": "`ihom A` is a right adjoint (`(ihom A).IsRightAdjoint` via `ihom.adjunction`), so it preserves limits by `Adjunction.rightAdjoint_preservesLimits`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f98b0c81ead5"
     },
     {
       "kind": "definition",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "The reader/environment monad (`ReaderT`/`ReaderM`) lives in Lean core, and the categorical statement that Hom(A,–) carries a monad structure is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b0bc8301f1d4"
     },
     {
       "kind": "proposition",
@@ -307,7 +325,8 @@
         "match_kind": "generalization"
       },
       "note": "`coyoneda.obj (op P)` always preserves limits (`coyoneda_preservesLimits`, i.e. left-exactness), and `projective_iff_preservesEpimorphisms_coyoneda_obj` gives `Projective P ↔ Hom(P,–) preserves epis` for general categories.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3d51618a6665"
     },
     {
       "kind": "proposition",
@@ -323,7 +342,8 @@
         "match_kind": "exact"
       },
       "note": "`TensorProduct.lift.equiv : (M →ₗ N →ₗ P) ≃ₗ (M ⊗ N →ₗ P)` is the tensor–hom adjunction, also packaged categorically via `MonoidalClosed (ModuleCat R)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "21f9bff1d879"
     }
   ]
 }

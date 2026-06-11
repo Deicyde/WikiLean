@@ -19,7 +19,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib defines only the standard logistic (sigmoid) `(1 + exp(-x))⁻¹`; the general three-parameter L/k/x₀ logistic is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d97538191d23"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": null
       },
       "note": "No parametrized logistic is defined in Mathlib, so no `L` (carrying capacity) parameter is present.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e6e44ac6bbb4"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": null
       },
       "note": "Mathlib's `Real.sigmoid` has no `k` parameter for the growth rate.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3905c45055ad"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": null
       },
       "note": "Mathlib's `Real.sigmoid` has no `x₀` midpoint parameter.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0452ea6a7e2a"
     },
     {
       "kind": "proposition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "Limits at ±∞ are proved by `Real.tendsto_sigmoid_atTop` (→ 1) and `Real.tendsto_sigmoid_atBot` (→ 0), with the function defined on all of ℝ.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "61545b4dc825"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "`Real.sigmoid x := (1 + exp (-x))⁻¹` is exactly the standard logistic function.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9715c9e0af56"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": "exact"
       },
       "note": "Same `Real.sigmoid` definition serves as the standard logistic.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fde69ce4628c"
     },
     {
       "kind": "proposition",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "`Real.sigmoid_neg`: `sigmoid (-x) = 1 - sigmoid x` is the Wikipedia symmetry property.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7d5d11cf0ad7"
     },
     {
       "kind": "proposition",
@@ -147,7 +155,8 @@
         "match_kind": "invocation"
       },
       "note": "Oddness of `sigmoid(x) - 1/2` is not stated as such, but follows immediately from `Real.sigmoid_neg`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2dd162c64240"
     },
     {
       "kind": "proposition",
@@ -163,7 +172,8 @@
         "match_kind": "invocation"
       },
       "note": "The geometric rotational-symmetry statement is not formalized, though `Real.sigmoid_neg` encodes its algebraic content.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8db5a3532362"
     },
     {
       "kind": "proposition",
@@ -179,7 +189,8 @@
         "match_kind": null
       },
       "note": "The logit function is not defined in Mathlib and no inverse-of-sigmoid statement appears.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "debdc6e83f4c"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": null
       },
       "note": "The identity `sigmoid x = 1/2 + 1/2 · tanh(x/2)` is not proved in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5d14792b0a48"
     },
     {
       "kind": "proposition",
@@ -211,7 +223,8 @@
         "match_kind": null
       },
       "note": "No tanh-based form of the sigmoid derivative is in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "61c5539332bd"
     },
     {
       "kind": "proposition",
@@ -227,7 +240,8 @@
         "match_kind": null
       },
       "note": "Mathlib has `tanh` but does not formalize the hyperbolic-angle interpretation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d36d1c63e827"
     },
     {
       "kind": "proposition",
@@ -243,7 +257,8 @@
         "match_kind": "invocation"
       },
       "note": "`cosh² - sinh² = 1` is proved, which is the algebraic content of the unit-hyperbola parametrization, but no explicit hyperbola parametrization API exists.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "276749d8a60c"
     },
     {
       "kind": "proposition",
@@ -259,7 +274,8 @@
         "match_kind": "exact"
       },
       "note": "`Real.hasDerivAt_sigmoid` gives `deriv sigmoid x = sigmoid x · (1 - sigmoid x)`, matching the Wikipedia formula.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6c3b4496c272"
     },
     {
       "kind": "proposition",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "The logistic distribution is not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "40487649e55b"
     },
     {
       "kind": "proposition",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "No antiderivative of the sigmoid (softplus identity) is proved in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c223d0ff4e84"
     },
     {
       "kind": "definition",
@@ -307,7 +325,8 @@
         "match_kind": null
       },
       "note": "A grep for `softplus` in Mathlib returns no hits.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e2e6d3fe927b"
     },
     {
       "kind": "proposition",
@@ -323,7 +342,8 @@
         "match_kind": "exact"
       },
       "note": "`analyticAt_sigmoid` (and `analyticOnNhd_sigmoid` on `Set.univ`) prove sigmoid is real-analytic everywhere.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c212b42f922a"
     },
     {
       "kind": "proposition",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "No closed-form n-th derivative of sigmoid is provided in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cb5aac883e57"
     },
     {
       "kind": "proposition",
@@ -355,7 +376,8 @@
         "match_kind": null
       },
       "note": "No explicit Taylor series for sigmoid is formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4cf936fefb7e"
     },
     {
       "kind": "definition",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "The logistic ODE and its characterization of sigmoid is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8261086bdc8e"
     },
     {
       "kind": "proposition",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "Phase-line analysis of the logistic ODE is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a4dde6aa31d5"
     },
     {
       "kind": "proposition",
@@ -403,7 +427,8 @@
         "match_kind": null
       },
       "note": "The Bernoulli ODE is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "84304cd8b0f0"
     },
     {
       "kind": "proposition",
@@ -419,7 +444,8 @@
         "match_kind": null
       },
       "note": "No exponential-vs-saturation growth statement for the logistic ODE solution is in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a11847d393d7"
     },
     {
       "kind": "proposition",
@@ -435,7 +461,8 @@
         "match_kind": null
       },
       "note": "No generalized logistic ODE is formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4188734f636f"
     },
     {
       "kind": "definition",
@@ -451,7 +478,8 @@
         "match_kind": "invocation"
       },
       "note": "`unitInterval.sigmoid` and `Real.sigmoid_pos`/`sigmoid_lt_one` show the output lies in (0,1), but no Bernoulli-probability semantics is attached.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4a922308c79f"
     },
     {
       "kind": "proposition",
@@ -467,7 +495,8 @@
         "match_kind": null
       },
       "note": "Log-odds / logit is not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4c804befecd1"
     },
     {
       "kind": "definition",
@@ -483,7 +512,8 @@
         "match_kind": null
       },
       "note": "Grep for `softmax` returns no matches in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cd45679520d2"
     },
     {
       "kind": "proposition",
@@ -499,7 +529,8 @@
         "match_kind": null
       },
       "note": "Without a softmax definition, the invariance property is also absent.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "265f6df0b9a4"
     },
     {
       "kind": "example",
@@ -515,7 +546,8 @@
         "match_kind": null
       },
       "note": "No generalized growth-model logistic variants are formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a66b9b089b66"
     },
     {
       "kind": "definition",
@@ -531,7 +563,8 @@
         "match_kind": null
       },
       "note": "Grep for `Verhulst` in Mathlib returns nothing.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5b4be668a6d4"
     },
     {
       "kind": "proposition",
@@ -547,7 +580,8 @@
         "match_kind": null
       },
       "note": "Solution to the Verhulst ODE is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9f0b172ec943"
     },
     {
       "kind": "proposition",
@@ -563,7 +597,8 @@
         "match_kind": null
       },
       "note": "No asymptotic-to-carrying-capacity statement is in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d885f6c7b416"
     },
     {
       "kind": "example",
@@ -579,7 +614,8 @@
         "match_kind": null
       },
       "note": "Dimensionless logistic ODE rescaling is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f85173c813eb"
     },
     {
       "kind": "proposition",
@@ -595,7 +631,8 @@
         "match_kind": null
       },
       "note": "No antiderivative for the ecological-form logistic appears in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "22aee76357e1"
     },
     {
       "kind": "definition",
@@ -611,7 +648,8 @@
         "match_kind": null
       },
       "note": "Time-varying carrying capacity ODE is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2ccad4114995"
     },
     {
       "kind": "proposition",
@@ -627,7 +665,8 @@
         "match_kind": null
       },
       "note": "Periodicity of solutions under periodic K(t) is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c7b82f01b6cf"
     },
     {
       "kind": "example",
@@ -643,7 +682,8 @@
         "match_kind": null
       },
       "note": "Delay differential equations are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f92139e32cae"
     },
     {
       "kind": "example",
@@ -659,7 +699,8 @@
         "match_kind": null
       },
       "note": "Grep for `logistic` reveals no logistic regression formalization.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b04f2e45c306"
     },
     {
       "kind": "example",
@@ -675,7 +716,8 @@
         "match_kind": null
       },
       "note": "No Rasch model in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "81415060e106"
     },
     {
       "kind": "example",
@@ -691,7 +733,8 @@
         "match_kind": null
       },
       "note": "Neural-network activation functions as such are not formalized; `Real.sigmoid` exists but its use as an activation is not.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "aaf5035b19f7"
     },
     {
       "kind": "example",
@@ -707,7 +750,8 @@
         "match_kind": null
       },
       "note": "Tumor growth modeling is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a1516c9a73dd"
     },
     {
       "kind": "example",
@@ -723,7 +767,8 @@
         "match_kind": null
       },
       "note": "Log-kill chemotherapy model is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cb7f23a0b777"
     },
     {
       "kind": "proposition",
@@ -739,7 +784,8 @@
         "match_kind": null
       },
       "note": "No eradication-criterion theorem for the chemotherapy model is in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "81f5a232447c"
     },
     {
       "kind": "example",
@@ -755,7 +801,8 @@
         "match_kind": null
       },
       "note": "Grep shows no Richards growth curve in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2b8fc6fa1d5e"
     },
     {
       "kind": "proposition",
@@ -771,7 +818,8 @@
         "match_kind": null
       },
       "note": "No Gompertz curve or Richards-reduction theorem in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a53e9cfb2ef8"
     },
     {
       "kind": "example",
@@ -787,7 +835,8 @@
         "match_kind": null
       },
       "note": "Autocatalytic reaction kinetics is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3c208bbd8de2"
     },
     {
       "kind": "example",
@@ -803,7 +852,8 @@
         "match_kind": null
       },
       "note": "Grep for `Fermi` / `FermiDirac` shows no Mathlib formalization.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3cfef4c39fd0"
     },
     {
       "kind": "example",
@@ -819,7 +869,8 @@
         "match_kind": null
       },
       "note": "Mirage modeling is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c77fa17a85c2"
     },
     {
       "kind": "example",
@@ -835,7 +886,8 @@
         "match_kind": null
       },
       "note": "Linguistic language-change models are not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "853887ff447f"
     },
     {
       "kind": "example",
@@ -851,7 +903,8 @@
         "match_kind": null
       },
       "note": "Agricultural crop-response models are not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d676bbb8c4d6"
     },
     {
       "kind": "example",
@@ -867,7 +920,8 @@
         "match_kind": null
       },
       "note": "Diffusion-of-innovations modeling is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e65f071bff1f"
     },
     {
       "kind": "example",
@@ -883,7 +937,8 @@
         "match_kind": null
       },
       "note": "Inflection-point estimation for logistic regression is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4852d9b73029"
     },
     {
       "kind": "example",
@@ -899,7 +954,8 @@
         "match_kind": null
       },
       "note": "Sequential analysis / boundary-crossing probability with logistic is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "75350b9adf84"
     }
   ]
 }

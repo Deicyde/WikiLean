@@ -19,7 +19,8 @@
         "match_kind": "generalization"
       },
       "note": "The informal LLN is captured by `strong_law_ae` (Banach-valued) and `strong_law_ae_real` (real-valued), which show `n⁻¹·∑ Xᵢ` converges to `𝔼[X₀]`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d9fe81006a96"
     },
     {
       "kind": "example",
@@ -35,7 +36,8 @@
         "match_kind": null
       },
       "note": "No dedicated dice-roll instance in Mathlib; while a uniform PMF on `Fin 6` could be built from existing infrastructure, no named example formalizes this scenario.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b6950a913223"
     },
     {
       "kind": "example",
@@ -51,7 +53,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib has Bernoulli distributions (e.g. `Mathlib.Probability.Distributions.SetBernoulli`) and the strong law subsumes this corollary, but the Bernoulli-specific empirical-probability statement is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3cb064c458d3"
     },
     {
       "kind": "example",
@@ -67,7 +70,8 @@
         "match_kind": null
       },
       "note": "No specific fair-coin example is formalized; generic Bernoulli distribution infrastructure exists but a named coin-toss instance does not.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "130f8b6e4de3"
     },
     {
       "kind": "example",
@@ -83,7 +87,8 @@
         "match_kind": null
       },
       "note": "This consequence of CLT/random-walk behavior for fair coin flips is not stated in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "aa4e07a72e3c"
     },
     {
       "kind": "example",
@@ -99,7 +104,8 @@
         "match_kind": null
       },
       "note": "The only Mathlib mention of Monte Carlo is in a bibliography comment in `Mathlib.Probability.Kernel.Irreducible`; no formal algorithm/theorem is provided.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "463adb1b0a94"
     },
     {
       "kind": "example",
@@ -115,7 +121,8 @@
         "match_kind": null
       },
       "note": "Mathlib defines the Cauchy distribution in `Mathlib.Probability.Distributions.Cauchy` but does not formalize failure of LLN for heavy-tailed distributions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6ecc30ad3260"
     },
     {
       "kind": "proposition",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "`strong_law_ae` states that the sample average `n⁻¹ • ∑ i ∈ range n, X i` converges to `μ[X 0]`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2551b6c6bee5"
     },
     {
       "kind": "theorem",
@@ -147,7 +155,8 @@
         "match_kind": "generalization"
       },
       "note": "No standalone `weak_law` exists in Mathlib; the weak law follows from `strong_law_ae` (via `tendstoInMeasure_of_tendsto_ae`, as used inside `strong_law_Lp`) but is not stated as a named theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d395e9243c06"
     },
     {
       "kind": "theorem",
@@ -163,7 +172,8 @@
         "match_kind": "invocation"
       },
       "note": "Mathlib has Chebyshev's inequality (`meas_ge_le_variance_div_sq`) which is the standard tool for this version of the weak law, but the bounded-variance weak law itself is not packaged as a named theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1f6352267b01"
     },
     {
       "kind": "theorem",
@@ -179,7 +189,8 @@
         "match_kind": "exact"
       },
       "note": "`strong_law_ae` (and its real specialization `strong_law_ae_real`) formalizes a.s. convergence of the sample mean to `𝔼[X 0]`, in fact Etemadi's version requiring only pairwise independence.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fdb76b3e346b"
     },
     {
       "kind": "theorem",
@@ -195,7 +206,8 @@
         "match_kind": null
       },
       "note": "Mathlib's `strong_law_ae` requires `IdentDistrib (X i) (X 0)`; the non-iid Kolmogorov criterion `∑ Var(Xₖ)/bₖ² < ∞` is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9b9eabcce116"
     },
     {
       "kind": "example",
@@ -211,7 +223,8 @@
         "match_kind": null
       },
       "note": "Although `Mathlib.Probability.Distributions.Exponential` defines the distribution, this counterexample illustrating absence of Lebesgue expectation is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2281af7cbcf9"
     },
     {
       "kind": "example",
@@ -227,7 +240,8 @@
         "match_kind": null
       },
       "note": "`Mathlib.Probability.Distributions.Geometric` defines the distribution, but this specific counterexample about non-existent expectation is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5fd4d39b7da6"
     },
     {
       "kind": "example",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "This counterexample to Kolmogorov's non-iid criterion is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e74055597cd1"
     },
     {
       "kind": "theorem",
@@ -259,7 +274,8 @@
         "match_kind": null
       },
       "note": "No uniform LLN (convergence uniform in a parameter, used for empirical-process/statistical-learning theory) is present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2985f372efa0"
     },
     {
       "kind": "theorem",
@@ -275,7 +291,8 @@
         "match_kind": "generalization"
       },
       "note": "Borel's LLN (indicator-variable special case) is not stated as such but is a direct consequence of `strong_law_ae_real` applied to indicators; no named Borel-LLN theorem exists.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e55a2dff2e42"
     },
     {
       "kind": "example",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "No histogram/density-estimation construction tied to LLN is formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d7981878c2ad"
     },
     {
       "kind": "example",
@@ -307,7 +325,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no formalization of Monte Carlo integration; only a bibliographic reference appears in `Mathlib.Probability.Kernel.Irreducible`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e0c7ed09d1da"
     }
   ]
 }

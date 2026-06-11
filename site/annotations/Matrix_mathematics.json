@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib defines `Matrix m n α := m → n → α`, matching the rectangular-array notion with arbitrary entry type.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "54f4ca67ae22"
     },
     {
       "kind": "example",
@@ -45,7 +46,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\begin{bmatrix}1&amp;9&amp;-13\\\\20&amp;5&amp;-6\\end{bmatrix}}}"
         }
-      ]
+      ],
+      "id": "f194fd16019c"
     },
     {
       "kind": "definition",
@@ -61,7 +63,8 @@
         "match_kind": "special_case"
       },
       "note": "Square matrices are written as `Matrix n n α` (same index type for rows and columns); there is no separate `SquareMatrix` definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a16c309ee753"
     },
     {
       "kind": "proposition",
@@ -77,7 +80,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib proves `IsUnit A ↔ IsUnit A.det` over a commutative ring; over a field this reduces to det ≠ 0.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0ee8254f9279"
     },
     {
       "kind": "definition",
@@ -103,7 +107,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\mathbf {A} ={\\begin{bmatrix}-1.3&amp;0.6\\\\20.4&amp;5.5\\\\9.7&amp;-6.2\\end{bmatrix}}.}"
         }
-      ]
+      ],
+      "id": "b1898e6579d6"
     },
     {
       "kind": "definition",
@@ -129,7 +134,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\mathbf {A} ={\\begin{bmatrix}-1.3&amp;0.6\\\\20.4&amp;5.5\\\\9.7&amp;-6.2\\end{bmatrix}}.}"
         }
-      ]
+      ],
+      "id": "c3cb62f0d311"
     },
     {
       "kind": "definition",
@@ -145,7 +151,8 @@
         "match_kind": "invocation"
       },
       "note": "Matrices are indexed by row/column types and `Matrix.row`/`Matrix.col` extract row/column functions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "38871bb2f26f"
     },
     {
       "kind": "definition",
@@ -161,7 +168,8 @@
         "match_kind": "invocation"
       },
       "note": "Size is encoded by the index types `m` and `n`; no explicit `size` function is defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a6de1942e258"
     },
     {
       "kind": "definition",
@@ -177,7 +185,8 @@
         "match_kind": "special_case"
       },
       "note": "Expressed as `Matrix (Fin m) (Fin n) α`; no separate `mxnMatrix` abbreviation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "036cf8fe82bf"
     },
     {
       "kind": "definition",
@@ -193,7 +202,8 @@
         "match_kind": "invocation"
       },
       "note": "Row/column vectors are typically written as `Matrix Unit n α` or via `Matrix.row`/`Matrix.col`; no separate named type.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5d184a6deba0"
     },
     {
       "kind": "definition",
@@ -209,7 +219,8 @@
         "match_kind": "special_case"
       },
       "note": "Square matrices are written `Matrix n n α`; no dedicated wrapper type.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5d29907d84ee"
     },
     {
       "kind": "definition",
@@ -225,7 +236,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib's `Matrix m n α` allows arbitrary (including infinite) index types, but many operations (mul, det) require `Fintype`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0a51cecb02d5"
     },
     {
       "kind": "definition",
@@ -241,7 +253,8 @@
         "match_kind": "special_case"
       },
       "note": "Empty matrices are `Matrix m n α` with `IsEmpty m` or `IsEmpty n`; no dedicated alias.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e63517352e14"
     },
     {
       "kind": "definition",
@@ -257,7 +270,8 @@
         "match_kind": "exact"
       },
       "note": "Entrywise `Add`, `Sub`, `Neg` instances on `Matrix m n α` are defined inheriting from the pi type.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d380f4327656"
     },
     {
       "kind": "proposition",
@@ -273,7 +287,8 @@
         "match_kind": "exact"
       },
       "note": "The `AddCommMonoid (Matrix m n α)` instance gives commutativity of matrix addition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "642ec7e4865d"
     },
     {
       "kind": "definition",
@@ -299,7 +314,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle (c{\\mathbf {A}})_{i,j}=c\\cdot {\\mathbf {A}}_{i,j}}"
         }
-      ]
+      ],
+      "id": "f0ebcb652f05"
     },
     {
       "kind": "definition",
@@ -329,7 +345,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\begin{bmatrix}1&amp;2&amp;3\\\\0&amp;-6&amp;7\\end{bmatrix}}^{\\mathrm {T} }={\\begin{bmatrix}1&amp;0\\\\2&amp;-6\\\\3&amp;7\\end{bmatrix}}}"
         }
-      ]
+      ],
+      "id": "9cbc6dc2c56b"
     },
     {
       "kind": "proposition",
@@ -345,7 +362,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.transpose_add`, `transpose_smul`, `transpose_mul` are all in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e91ad0076b40"
     },
     {
       "kind": "definition",
@@ -375,7 +393,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\begin{aligned}{\\begin{bmatrix}{\\underline {2}}&amp;{\\underline {3}}&amp;{\\underline {4}}\\\\1&amp;0&amp;0\\\\\\end{bmatrix}}{\\begin{bmatrix}0&amp;{\\underline {1000}}\\\\1&amp;{\\underline {100}}\\\\0&amp;{\\underline {10}}\\\\\\end{bmatrix}}&amp;={\\begin{bmatrix}3&amp;{\\underline {2340}}\\\\0&amp;1000\\\\\\end{bmatrix}}.\\end{aligned}}}"
         }
-      ]
+      ],
+      "id": "2a51ee03de50"
     },
     {
       "kind": "proposition",
@@ -401,7 +420,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\mathbf {AB}}\\neq {\\mathbf {BA}}.}"
         }
-      ]
+      ],
+      "id": "9006505832d9"
     },
     {
       "kind": "proposition",
@@ -431,7 +451,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\begin{bmatrix}0&amp;1\\\\0&amp;0\\\\\\end{bmatrix}}{\\begin{bmatrix}1&amp;2\\\\3&amp;4\\\\\\end{bmatrix}}={\\begin{bmatrix}3&amp;4\\\\0&amp;0\\\\\\end{bmatrix}}.}"
         }
-      ]
+      ],
+      "id": "b60c2569994a"
     },
     {
       "kind": "definition",
@@ -447,7 +468,8 @@
         "match_kind": "invocation"
       },
       "note": "Mathlib has `Matrix.updateRow`, `Matrix.transvection`, and row swapping but no single unified \"elementary row operation\" classifier.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b85a2227d8dd"
     },
     {
       "kind": "definition",
@@ -473,7 +495,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\mathbf {A} ={\\begin{bmatrix}1&amp;\\color {red}{2}&amp;3&amp;4\\\\5&amp;\\color {red}{6}&amp;7&amp;8\\\\\\color {red}{9}&amp;\\color {red}{10}&amp;\\color {red}{11}&amp;\\color {red}{12}\\end{bmatrix}}\\rightarrow {\\begin{bmatrix}1&amp;3&amp;4\\\\5&amp;7&amp;8\\end{bmatrix}}.}"
         }
-      ]
+      ],
+      "id": "e0c353ef7fe1"
     },
     {
       "kind": "definition",
@@ -489,7 +512,8 @@
         "match_kind": "special_case"
       },
       "note": "Expressible as `M.submatrix f f` but there is no `principalSubmatrix` definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f4a7fd82659d"
     },
     {
       "kind": "definition",
@@ -519,7 +543,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\begin{aligned}a_{1,1}x_{1}+a_{1,2}x_{2}+&amp;\\cdots +a_{1,n}x_{n}=b_{1}\\\\&amp;\\ \\ \\vdots \\\\a_{m,1}x_{1}+a_{m,2}x_{2}+&amp;\\cdots +a_{m,n}x_{n}=b_{m}\\end{aligned}}}"
         }
-      ]
+      ],
+      "id": "02586494e340"
     },
     {
       "kind": "proposition",
@@ -545,7 +570,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\mathbf {x} =\\mathbf {A} ^{-1}\\mathbf {b} }"
         }
-      ]
+      ],
+      "id": "8fe88448251a"
     },
     {
       "kind": "definition",
@@ -561,7 +587,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.toLin'` is the linear-equivalence `Matrix m n R ≃ₗ[R] (n → R) →ₗ[R] (m → R)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e49aa91140be"
     },
     {
       "kind": "example",
@@ -587,7 +614,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\mathbf {A} ={\\begin{bmatrix}a&amp;c\\\\b&amp;d\\end{bmatrix}}}"
         }
-      ]
+      ],
+      "id": "8bba182ae8ed"
     },
     {
       "kind": "proposition",
@@ -613,7 +641,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle (g\\circ f)({\\mathbf {x}})=g(f({\\mathbf {x}}))=g({\\mathbf {Ax}})={\\mathbf {B}}({\\mathbf {Ax}})=({\\mathbf {BA}}){\\mathbf {x}}.}"
         }
-      ]
+      ],
+      "id": "849ce0a05335"
     },
     {
       "kind": "definition",
@@ -629,7 +658,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.rank` is defined and `rank_eq_finrank_span_cols`/`rank_eq_finrank_span_row` equate it with row/column rank.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ec94475a778a"
     },
     {
       "kind": "theorem",
@@ -645,7 +675,8 @@
         "match_kind": "exact"
       },
       "note": "Rank-nullity is `LinearMap.finrank_range_add_finrank_ker`, used in `Matrix/Rank.lean` for matrices via `toLin`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "193f4d7b2479"
     },
     {
       "kind": "definition",
@@ -661,7 +692,8 @@
         "match_kind": "invocation"
       },
       "note": "Square matrices are `Matrix n n α`; main diagonal is `Matrix.diag`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "172ffd5985c2"
     },
     {
       "kind": "proposition",
@@ -677,7 +709,8 @@
         "match_kind": "exact"
       },
       "note": "`instance instRing : Ring (Matrix n n α)` for `Fintype n` and `Ring α`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "151de3550ee5"
     },
     {
       "kind": "definition",
@@ -693,7 +726,8 @@
         "match_kind": "generalization"
       },
       "note": "`Matrix.BlockTriangular` (and `Matrix.IsDiag` for diagonal) generalize triangular matrices; no specific `IsUpperTriangular` predicate.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f004ab528ddc"
     },
     {
       "kind": "definition",
@@ -723,7 +757,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\mathbf {AI}}_{n}={\\mathbf {I}}_{m}{\\mathbf {A}}={\\mathbf {A}}}"
         }
-      ]
+      ],
+      "id": "99cdec511e42"
     },
     {
       "kind": "definition",
@@ -739,7 +774,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib has `Matrix.diagonalRingHom`/`scalar` (sending `r` to `r • 1` as a ring hom) but no `IsScalarMatrix` predicate.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e19839c4bd62"
     },
     {
       "kind": "definition",
@@ -755,7 +791,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.IsSymm A := Aᵀ = A` is defined; no separate `IsSkewSymm` predicate, though `-A = Aᵀ` is expressible.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c3db72c83a16"
     },
     {
       "kind": "definition",
@@ -771,7 +808,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.IsHermitian A := Aᴴ = A` is the standard Mathlib definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d1edae74be97"
     },
     {
       "kind": "theorem",
@@ -787,7 +825,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.IsHermitian.spectral_theorem` together with `eigenvectorBasis` gives the spectral decomposition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a181f9085b9f"
     },
     {
       "kind": "definition",
@@ -813,7 +852,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\mathbf {AB}}={\\mathbf {BA}}={\\mathbf {I}}_{n},}"
         }
-      ]
+      ],
+      "id": "e5657cf57756"
     },
     {
       "kind": "proposition",
@@ -839,7 +879,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\mathbf {AB}}={\\mathbf {BA}}={\\mathbf {I}}_{n},}"
         }
-      ]
+      ],
+      "id": "05cbf5e15269"
     },
     {
       "kind": "definition",
@@ -865,7 +906,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle f({\\mathbf {x}})={\\mathbf {x}}^{\\rm {T}}{\\mathbf {Ax}}}"
         }
-      ]
+      ],
+      "id": "449d06e6ec56"
     },
     {
       "kind": "proposition",
@@ -881,7 +923,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.IsHermitian.posDef_iff_eigenvalues_pos` is exactly this iff.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dcdb57d908af"
     },
     {
       "kind": "definition",
@@ -907,7 +950,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle B_{\\mathbf {A}}({\\mathbf {x}},{\\mathbf {y}})={\\mathbf {x}}^{\\rm {T}}{\\mathbf {Ay}}.}"
         }
-      ]
+      ],
+      "id": "9ff2c8d10889"
     },
     {
       "kind": "definition",
@@ -937,7 +981,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\mathbf {A} ^{\\mathrm {T} }\\mathbf {A} =\\mathbf {A} \\mathbf {A} ^{\\mathrm {T} }=\\mathbf {I} _{n},}"
         }
-      ]
+      ],
+      "id": "5662ef824bda"
     },
     {
       "kind": "proposition",
@@ -953,7 +998,8 @@
         "match_kind": "invocation"
       },
       "note": "Orthogonal group is a `Group`, so each element is invertible; no dedicated lemma `IsOrthogonal.invertible`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9903a005b417"
     },
     {
       "kind": "definition",
@@ -969,7 +1015,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.specialOrthogonalGroup`, characterized as orthogonal matrices with `det = 1`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b9f942c0e016"
     },
     {
       "kind": "definition",
@@ -1003,7 +1050,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\operatorname {tr} ({\\mathbf {A}})=\\operatorname {tr} ({\\mathbf {A}}^{\\rm {T}}).}"
         }
-      ]
+      ],
+      "id": "a6412475bf40"
     },
     {
       "kind": "proposition",
@@ -1037,7 +1085,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\operatorname {tr} ({\\mathbf {A}})=\\operatorname {tr} ({\\mathbf {A}}^{\\rm {T}}).}"
         }
-      ]
+      ],
+      "id": "27667fec90ae"
     },
     {
       "kind": "proposition",
@@ -1071,7 +1120,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\operatorname {tr} ({\\mathbf {A}})=\\operatorname {tr} ({\\mathbf {A}}^{\\rm {T}}).}"
         }
-      ]
+      ],
+      "id": "70c0ba68f369"
     },
     {
       "kind": "definition",
@@ -1087,7 +1137,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.det` is defined via `detRowAlternating` as the alternating sum over permutations.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "45296e23b194"
     },
     {
       "kind": "proposition",
@@ -1103,7 +1154,8 @@
         "match_kind": "generalization"
       },
       "note": "`isUnit_iff_isUnit_det` over a `CommRing`; for fields `IsUnit ↔ ≠ 0`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "78ddf4d16ba9"
     },
     {
       "kind": "proposition",
@@ -1129,7 +1181,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\det {\\begin{bmatrix}a&amp;b\\\\c&amp;d\\end{bmatrix}}=ad-bc.}"
         }
-      ]
+      ],
+      "id": "d6095dd925ec"
     },
     {
       "kind": "proposition",
@@ -1159,7 +1212,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle |{\\mathbf {AB}}|=|{\\mathbf {A}}|\\cdot |{\\mathbf {B}}|.}"
         }
-      ]
+      ],
+      "id": "54ea5be02b8b"
     },
     {
       "kind": "proposition",
@@ -1189,7 +1243,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle |{\\mathbf {AB}}|=|{\\mathbf {A}}|\\cdot |{\\mathbf {B}}|.}"
         }
-      ]
+      ],
+      "id": "71f3054f1f9a"
     },
     {
       "kind": "theorem",
@@ -1219,7 +1274,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle |{\\mathbf {AB}}|=|{\\mathbf {A}}|\\cdot |{\\mathbf {B}}|.}"
         }
-      ]
+      ],
+      "id": "ff8ff5395d88"
     },
     {
       "kind": "definition",
@@ -1245,7 +1301,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\mathbf {A} \\mathbf {v} =\\lambda \\mathbf {v} }"
         }
-      ]
+      ],
+      "id": "6bbe2ef36fba"
     },
     {
       "kind": "definition",
@@ -1271,7 +1328,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\mathbf {A} \\mathbf {v} =\\lambda \\mathbf {v} }"
         }
-      ]
+      ],
+      "id": "33dd341a2ac9"
     },
     {
       "kind": "theorem",
@@ -1297,7 +1355,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\mathbf {A} \\mathbf {v} =\\lambda \\mathbf {v} }"
         }
-      ]
+      ],
+      "id": "92a98da8a136"
     },
     {
       "kind": "proposition",
@@ -1313,7 +1372,8 @@
         "match_kind": null
       },
       "note": "The Strassen matrix-multiplication algorithm and its complexity are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fdb766c2ed50"
     },
     {
       "kind": "definition",
@@ -1329,7 +1389,8 @@
         "match_kind": null
       },
       "note": "No notion of sparse matrices is in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8a5401d592a4"
     },
     {
       "kind": "definition",
@@ -1345,7 +1406,8 @@
         "match_kind": null
       },
       "note": "LU decomposition is not in Mathlib (though `Analysis/Matrix/LDL.lean` covers a related LDL decomposition for positive-definite matrices).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "455c86eb4c38"
     },
     {
       "kind": "definition",
@@ -1361,7 +1423,8 @@
         "match_kind": null
       },
       "note": "SVD is not formalized for matrices in Mathlib (only related notions like singular values for compact operators).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8b03425ff04d"
     },
     {
       "kind": "definition",
@@ -1387,7 +1450,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\mathbf {A}}^{n}=({\\mathbf {VDV}}^{-1})^{n}={\\mathbf {VDV}}^{-1}{\\mathbf {VDV}}^{-1}\\ldots {\\mathbf {VDV}}^{-1}={\\mathbf {VD}}^{n}{\\mathbf {V}}^{-1}}"
         }
-      ]
+      ],
+      "id": "4794f8f80ac4"
     },
     {
       "kind": "definition",
@@ -1413,7 +1477,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\mathbf {A}}^{n}=({\\mathbf {VDV}}^{-1})^{n}={\\mathbf {VDV}}^{-1}{\\mathbf {VDV}}^{-1}\\ldots {\\mathbf {VDV}}^{-1}={\\mathbf {VD}}^{n}{\\mathbf {V}}^{-1}}"
         }
-      ]
+      ],
+      "id": "b73fbd8648b2"
     },
     {
       "kind": "definition",
@@ -1429,7 +1494,8 @@
         "match_kind": "exact"
       },
       "note": "`Ring (Matrix n n α)` instance; isomorphism to endomorphisms is `LinearMap.toMatrixAlgEquiv`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "334d8d045c04"
     },
     {
       "kind": "proposition",
@@ -1445,7 +1511,8 @@
         "match_kind": "exact"
       },
       "note": "Exactly `Matrix.isUnit_iff_isUnit_det`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "336221f79ecc"
     },
     {
       "kind": "definition",
@@ -1461,7 +1528,8 @@
         "match_kind": null
       },
       "note": "Supermatrices and superrings are not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f48cfda26076"
     },
     {
       "kind": "definition",
@@ -1477,7 +1545,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.fromBlocks` assembles a block matrix from four submatrices, with `toBlocks₁₁`/etc. extracting blocks.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6144e6679a29"
     },
     {
       "kind": "proposition",
@@ -1503,7 +1572,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle f(\\mathbf {v} _{j})=\\sum _{i=1}^{m}a_{i,j}\\mathbf {w} _{i}\\qquad {\\mbox{for}}\\ j=1,\\ldots ,n.}"
         }
-      ]
+      ],
+      "id": "0079e9700ddb"
     },
     {
       "kind": "proposition",
@@ -1519,7 +1589,8 @@
         "match_kind": null
       },
       "note": "Mathlib has `LinearMap.toMatrix` but no categorical equivalence between a \"matrix category\" and finite-dimensional vector spaces.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "67224b209f43"
     },
     {
       "kind": "definition",
@@ -1535,7 +1606,8 @@
         "match_kind": "invocation"
       },
       "note": "Matrix groups are subgroups of `Matrix.GeneralLinearGroup`; no abstract `MatrixGroup` class.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e559cb27cf01"
     },
     {
       "kind": "definition",
@@ -1551,7 +1623,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.GeneralLinearGroup n R := (Matrix n n R)ˣ`, with notation `GL n R`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1000765b3492"
     },
     {
       "kind": "definition",
@@ -1577,7 +1650,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\mathbf {M}}^{\\rm {T}}{\\mathbf {M}}={\\mathbf {I}},}"
         }
-      ]
+      ],
+      "id": "e039a2493c19"
     },
     {
       "kind": "definition",
@@ -1603,7 +1677,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\mathbf {M}}^{\\rm {T}}{\\mathbf {M}}={\\mathbf {I}},}"
         }
-      ]
+      ],
+      "id": "e1dc27c9630e"
     },
     {
       "kind": "definition",
@@ -1629,7 +1704,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\mathbf {M}}^{\\rm {T}}{\\mathbf {M}}={\\mathbf {I}},}"
         }
-      ]
+      ],
+      "id": "98a770ede9ea"
     },
     {
       "kind": "theorem",
@@ -1645,7 +1721,8 @@
         "match_kind": null
       },
       "note": "Cayley's theorem (finite group → permutation group) is in Mathlib, but the explicit composition with the permutation-matrix embedding into `GL n R` is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f92403960228"
     },
     {
       "kind": "definition",
@@ -1661,7 +1738,8 @@
         "match_kind": "generalization"
       },
       "note": "`Matrix m n α` allows arbitrary index types so infinite matrices exist, but most operations require `Fintype`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4c782a1d7fc9"
     },
     {
       "kind": "definition",
@@ -1677,7 +1755,8 @@
         "match_kind": null
       },
       "note": "No `FinitaryMatrix` notion in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cc3e34102ba1"
     },
     {
       "kind": "definition",
@@ -1693,7 +1772,8 @@
         "match_kind": "special_case"
       },
       "note": "Empty matrices are `Matrix m n α` with `IsEmpty m ∨ IsEmpty n`; no separate `EmptyMatrix` definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ee736fb029ac"
     },
     {
       "kind": "example",
@@ -1709,7 +1789,8 @@
         "match_kind": "special_case"
       },
       "note": "Follows directly from `Matrix.mul_apply` with `Fintype.sum_empty`, but no dedicated lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9766e0af1e3f"
     },
     {
       "kind": "definition",
@@ -1725,7 +1806,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.det_isEmpty`: when the index type is empty, `det A = 1`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f279e26b71e0"
     },
     {
       "kind": "definition",
@@ -1741,7 +1823,8 @@
         "match_kind": "exact"
       },
       "note": "`Semiring` is a standard Mathlib type class.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c7df5dff30fa"
     },
     {
       "kind": "proposition",
@@ -1757,7 +1840,8 @@
         "match_kind": "exact"
       },
       "note": "`AddCommMonoid (Matrix m n α)` follows from `AddCommMonoid α`, which a semiring provides.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7d85eb834e62"
     },
     {
       "kind": "proposition",
@@ -1773,7 +1857,8 @@
         "match_kind": "exact"
       },
       "note": "`instance semiring : Semiring (Matrix n n α)` for `Fintype n`, `DecidableEq n`, and `Semiring α`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5dc39acdda19"
     },
     {
       "kind": "definition",
@@ -1789,7 +1874,8 @@
         "match_kind": null
       },
       "note": "Positive/negative determinant pair for semiring matrices is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7aec9ed398d2"
     },
     {
       "kind": "definition",
@@ -1805,7 +1891,8 @@
         "match_kind": null
       },
       "note": "No bicategory-of-matrices construction in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4143aba9da78"
     },
     {
       "kind": "definition",
@@ -1821,7 +1908,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.rowStochastic` (and `colStochastic`, `doublyStochastic`) capture stochastic matrices.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ac352da5d1ff"
     },
     {
       "kind": "definition",
@@ -1837,7 +1925,8 @@
         "match_kind": null
       },
       "note": "Random matrices as such are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ddd97db70601"
     },
     {
       "kind": "definition",
@@ -1853,7 +1942,8 @@
         "match_kind": "exact"
       },
       "note": "`SimpleGraph.adjMatrix G α` is the adjacency matrix valued in `α`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "706df048cf27"
     },
     {
       "kind": "definition",
@@ -1869,7 +1959,8 @@
         "match_kind": null
       },
       "note": "Logical (Boolean) matrices are not a named concept in Mathlib (just `Matrix m n Bool`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "94f2a333fc6a"
     },
     {
       "kind": "definition",
@@ -1885,7 +1976,8 @@
         "match_kind": null
       },
       "note": "Distance matrix of a graph is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "07dc4b287108"
     },
     {
       "kind": "definition",
@@ -1911,7 +2003,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle H(f)=\\left[{\\frac {\\partial ^{2}f}{\\partial x_{i}\\,\\partial x_{j}}}\\right].}"
         }
-      ]
+      ],
+      "id": "774808437fae"
     },
     {
       "kind": "proposition",
@@ -1927,7 +2020,8 @@
         "match_kind": null
       },
       "note": "Second-derivative test for local minima via positive-definite Hessian is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1146b410b6dc"
     },
     {
       "kind": "definition",
@@ -1953,7 +2047,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle J(f)=\\left[{\\frac {\\partial f_{i}}{\\partial x_{j}}}\\right]_{1\\leq i\\leq m,1\\leq j\\leq n}.}"
         }
-      ]
+      ],
+      "id": "45d8995ab073"
     },
     {
       "kind": "theorem",
@@ -1979,7 +2074,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle J(f)=\\left[{\\frac {\\partial f_{i}}{\\partial x_{j}}}\\right]_{1\\leq i\\leq m,1\\leq j\\leq n}.}"
         }
-      ]
+      ],
+      "id": "7fa76fd65455"
     }
   ]
 }

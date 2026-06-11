@@ -19,7 +19,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no single universal 'homomorphism' definition but realizes the concept per-structure via bundled hom types and `*HomClass`/`FunLike` predicates like MonoidHomClass.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3c936620db9b"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no general universal-algebra signature framework expressing preservation of an arbitrary n-ary operation; preservation is stated per-operation (e.g. map_mul).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b21e0c43310b"
     },
     {
       "kind": "proposition",
@@ -51,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "`map_one` (and dually `map_zero`) state that any OneHomClass/ZeroHomClass map preserves the nullary identity/constant element.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c7f33acdc00b"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "`MulHom` (M →ₙ* N) is a map with `map_mul'` preserving the multiplication on `Mul`/semigroup types.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a2fe870ac0f0"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "`MonoidHom` (M →* N) preserves both multiplication and the identity element between monoids.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3df013f16df2"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib has no separate GroupHom; group homomorphisms are `MonoidHom` instantiated at group types (inverses are preserved automatically).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "10b9e3b17ab5"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": "exact"
       },
       "note": "`RingHom` (α →+* β) bundles a monoid hom and an add-monoid hom, preserving multiplication, addition, and 1.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8923367b10bc"
     },
     {
       "kind": "definition",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "`NonUnitalRingHom` preserves addition and multiplication but not necessarily the unit, exactly the rng-homomorphism notion.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f4f15104ab5d"
     },
     {
       "kind": "definition",
@@ -147,7 +155,8 @@
         "match_kind": "generalization"
       },
       "note": "`LinearMap` formalizes (semilinear) maps preserving addition and scalar multiplication, covering vector-space homomorphisms as a special case.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7cb98b21bb3b"
     },
     {
       "kind": "definition",
@@ -163,7 +172,8 @@
         "match_kind": "exact"
       },
       "note": "`LinearMap` is defined precisely as a module homomorphism preserving addition and the module's scalar action.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5d72a85eeea2"
     },
     {
       "kind": "definition",
@@ -179,7 +189,8 @@
         "match_kind": "exact"
       },
       "note": "`AlgHom` (A →ₐ[R] B) is a ring hom commuting with the R-algebra scalar structure.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5d515b3c8343"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": null
       },
       "note": "This is a meta-level remark about the definition rather than a formal statement provable in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dab648523b03"
     },
     {
       "kind": "example",
@@ -211,7 +223,8 @@
         "match_kind": null
       },
       "note": "`Real.expMonoidHom : Multiplicative ℝ →* ℝ` captures exp turning addition into multiplication, but the codomain is not restricted to the positive-reals group.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c01b9e123f35"
     },
     {
       "kind": "example",
@@ -227,7 +240,8 @@
         "match_kind": "generalization"
       },
       "note": "`Matrix.scalar n : α →+* Matrix n n α` sends a ring element to the corresponding scalar matrix, generalizing the 2×2 example.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7ab62bc655a7"
     },
     {
       "kind": "example",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "`AbsoluteValue` bundles a `MulHom` (`map_mul'`) so the modulus' multiplicativity is captured, though not packaged as a group hom into the positive reals.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "15b04fdc7ad8"
     },
     {
       "kind": "example",
@@ -259,7 +274,8 @@
         "match_kind": null
       },
       "note": "This negative example (modulus fails to preserve addition) is not formalized as a stated lemma in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "824fa727c832"
     },
     {
       "kind": "example",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "The illustrative concept is just a `MonoidHom`; the specific diagram example itself is not a Mathlib declaration.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "447a6f5d31a9"
     },
     {
       "kind": "example",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no general theory of composition algebras and their multiplicative norm form.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7934d9b32f8d"
     },
     {
       "kind": "definition",
@@ -307,7 +325,8 @@
         "match_kind": "exact"
       },
       "note": "`MulEquiv` (and `RingEquiv`, etc.) bundles a bijection that is also a homomorphism, i.e. an algebraic isomorphism.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "185300e3a473"
     },
     {
       "kind": "definition",
@@ -323,7 +342,8 @@
         "match_kind": "exact"
       },
       "note": "`CategoryTheory.Iso` is a morphism with a two-sided inverse morphism, the categorical isomorphism definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d27873f5d355"
     },
     {
       "kind": "proposition",
@@ -339,7 +359,8 @@
         "match_kind": "exact"
       },
       "note": "`EquivLike.bijective` shows any equivalence-like map (including `MulEquiv`/`RingEquiv`) is bijective.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "82e05d0f52a7"
     },
     {
       "kind": "proposition",
@@ -355,7 +376,8 @@
         "match_kind": "exact"
       },
       "note": "`MulEquiv.ofBijective` (and `RingEquiv.ofBijective`) upgrades a bijective homomorphism to an isomorphism.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0d2d482f1ad8"
     },
     {
       "kind": "definition",
@@ -371,7 +393,8 @@
         "match_kind": "exact"
       },
       "note": "`Homeomorph` is a bijection continuous in both directions, exactly a homeomorphism.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1a42a7be36fd"
     },
     {
       "kind": "definition",
@@ -387,7 +410,8 @@
         "match_kind": "exact"
       },
       "note": "`Monoid.End M := M →* M` (and `CategoryTheory.End`) defines endomorphisms as self-maps that are homomorphisms.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "aac77afb9151"
     },
     {
       "kind": "proposition",
@@ -403,7 +427,8 @@
         "match_kind": "exact"
       },
       "note": "`Monoid.End.instMonoid` provides the monoid structure on endomorphisms with composition as multiplication and identity as unit.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "94850edb8e71"
     },
     {
       "kind": "proposition",
@@ -419,7 +444,8 @@
         "match_kind": "exact"
       },
       "note": "`Module.End.instRing` gives the ring of module endomorphisms (composition as multiplication, pointwise addition).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "29454ae62a52"
     },
     {
       "kind": "definition",
@@ -435,7 +461,8 @@
         "match_kind": "exact"
       },
       "note": "`MulAut M` (and `RingAut`, `AddAut`) is the type of self-isomorphisms, i.e. automorphisms.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6bf46c993b39"
     },
     {
       "kind": "proposition",
@@ -451,7 +478,8 @@
         "match_kind": "exact"
       },
       "note": "`MulAut M` carries a `Group` instance (instance Group (MulAut M) in End.lean), the automorphism group under composition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5256a95080bb"
     },
     {
       "kind": "example",
@@ -467,7 +495,8 @@
         "match_kind": "special_case"
       },
       "note": "`LinearMap.GeneralLinearGroup R M := (Module.End R M)ˣ` is exactly the automorphism group of a module, equiv to `M ≃ₗ[R] M`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d1289385895d"
     },
     {
       "kind": "definition",
@@ -483,7 +512,8 @@
         "match_kind": "special_case"
       },
       "note": "Injectivity is `Function.Injective`, and `mono_iff_injective` identifies injective maps with categorical monos in concrete categories.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "07e127482593"
     },
     {
       "kind": "definition",
@@ -499,7 +529,8 @@
         "match_kind": "exact"
       },
       "note": "`CategoryTheory.Mono` is defined exactly as the left-cancellation property (f∘g = f∘h ⟹ g = h).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e508bdf1790b"
     },
     {
       "kind": "proposition",
@@ -515,7 +546,8 @@
         "match_kind": null
       },
       "note": "Mono ↔ injective is proven for concrete categories under hypotheses (and in `Types`), but not as one universal statement over all algebraic structures.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7b99beb55e49"
     },
     {
       "kind": "definition",
@@ -531,7 +563,8 @@
         "match_kind": "exact"
       },
       "note": "`SplitMono`/`IsSplitMono` is a morphism admitting a retraction (left inverse).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f0657c564fe8"
     },
     {
       "kind": "proposition",
@@ -547,7 +580,8 @@
         "match_kind": "exact"
       },
       "note": "`IsSplitMono.mono` (dual of `IsSplitEpi.epi`) is the instance that every split mono is a mono.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8849269e0f02"
     },
     {
       "kind": "proposition",
@@ -563,7 +597,8 @@
         "match_kind": "generalization"
       },
       "note": "`ConcreteCategory.mono_of_injective` shows an injective morphism is a (left-cancelable) mono in any concrete category.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "81349c0e8aa4"
     },
     {
       "kind": "definition",
@@ -579,7 +614,8 @@
         "match_kind": null
       },
       "note": "Mathlib has specific free objects (FreeMonoid, FreeGroup,…) and free-forgetful adjunctions, but no single general 'free object' definition over an arbitrary variety.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "687262dba587"
     },
     {
       "kind": "proposition",
@@ -595,7 +631,8 @@
         "match_kind": null
       },
       "note": "Mathlib proves mono ⟹ injective for concrete categories under a pullback-preservation hypothesis rather than the free-object-on-one-generator condition stated here.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "398623b4fd96"
     },
     {
       "kind": "theorem",
@@ -611,7 +648,8 @@
         "match_kind": null
       },
       "note": "There is no general universal-algebra 'variety' framework in Mathlib, so the general free-object existence theorem is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4975eb29c681"
     },
     {
       "kind": "definition",
@@ -627,7 +665,8 @@
         "match_kind": "special_case"
       },
       "note": "Surjectivity is `Function.Surjective`, and `epi_iff_surjective` identifies surjective maps with categorical epis in (concrete) categories.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8e668781bfb6"
     },
     {
       "kind": "definition",
@@ -643,7 +682,8 @@
         "match_kind": "exact"
       },
       "note": "`CategoryTheory.Epi` is defined exactly as right cancellation (g∘f = h∘f ⟹ g = h).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "59c78839c73a"
     },
     {
       "kind": "proposition",
@@ -659,7 +699,8 @@
         "match_kind": "generalization"
       },
       "note": "`epi_iff_surjective` (Types) and concrete-category analogues give surjective ⟹ epi; the failing converse is witnessed elsewhere (e.g. ring localizations).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "959c58042f09"
     },
     {
       "kind": "example",
@@ -675,7 +716,8 @@
         "match_kind": null
       },
       "note": "The ring case is witnessed by `IsLocalization.epi` (a non-surjective ring epi); the semigroup case is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "56d674686234"
     },
     {
       "kind": "example",
@@ -691,7 +733,8 @@
         "match_kind": null
       },
       "note": "ℚ is the localization of ℤ, so `IsLocalization.epi` makes ℤ→ℚ a ring epimorphism, but this specific instance is not stated as a named example.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a4f104ad7302"
     },
     {
       "kind": "example",
@@ -707,7 +750,8 @@
         "match_kind": "exact"
       },
       "note": "`IsLocalization.epi` proves the localization map is an epimorphism in CommRingCat.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "654e26863ad2"
     },
     {
       "kind": "definition",
@@ -723,7 +767,8 @@
         "match_kind": "exact"
       },
       "note": "`SplitEpi`/`IsSplitEpi` is a morphism admitting a section (right inverse).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e49cfdbecc42"
     },
     {
       "kind": "proposition",
@@ -739,7 +784,8 @@
         "match_kind": "exact"
       },
       "note": "`SplitEpi.epi` (and instance `IsSplitEpi.epi`) shows every split epi is an epi.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "90c6d794c60a"
     },
     {
       "kind": "proposition",
@@ -755,7 +801,8 @@
         "match_kind": null
       },
       "note": "The substantive claim (epi ⟺ surjective) is proven per-category (`epi_iff_surjective` for Types, ModuleCat, etc.) but the overall implication table is not a single Mathlib statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fba37267b610"
     },
     {
       "kind": "definition",
@@ -771,7 +818,8 @@
         "match_kind": "exact"
       },
       "note": "`Con.ker f` is the kernel pair {(x,y) : f x = f y} of a homomorphism, the kernel-as-equivalence notion described here.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "36fa20be73ce"
     },
     {
       "kind": "proposition",
@@ -787,7 +835,8 @@
         "match_kind": "exact"
       },
       "note": "`Con.ker f` returns a `Con` (congruence relation), so the kernel of a monoid hom is formalized as a congruence (also `RingCon.ker`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8be15e90ce74"
     },
     {
       "kind": "theorem",
@@ -803,7 +852,8 @@
         "match_kind": "exact"
       },
       "note": "`Con.quotientKerEquivRange` (and `QuotientGroup.quotientKerEquivRange`) gives the first isomorphism theorem: domain/ker ≅ image.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a41735e80d29"
     },
     {
       "kind": "proposition",
@@ -819,7 +869,8 @@
         "match_kind": "exact"
       },
       "note": "`con_ker_eq_conKer` shows the congruence kernel of a group hom equals the one determined by its subgroup kernel (the identity's equivalence class).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "baacac25c8c4"
     },
     {
       "kind": "definition",
@@ -835,7 +886,8 @@
         "match_kind": "exact"
       },
       "note": "`FirstOrder.Language.Hom` (M →[L] N) is a map of L-structures preserving functions and relations, exactly a homomorphism of relational structures.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "70d104f39b85"
     },
     {
       "kind": "definition",
@@ -851,7 +903,8 @@
         "match_kind": "exact"
       },
       "note": "`SimpleGraph.Hom` (G →g H) is an adjacency-preserving vertex map, the graph homomorphism.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "73280c47931d"
     },
     {
       "kind": "definition",
@@ -867,7 +920,8 @@
         "match_kind": null
       },
       "note": "Strings over an alphabet are `FreeMonoid` and `FreeMonoid.lift` realizes alphabet maps as monoid homs Σ* → M, but the formal-language 'homomorphism on Σ' is not named as such.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7e802b71c12a"
     },
     {
       "kind": "definition",
@@ -883,7 +937,8 @@
         "match_kind": null
       },
       "note": "The formal-language notion of an ε-free (non-erasing) homomorphism is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "58705e121cf6"
     },
     {
       "kind": "definition",
@@ -899,7 +954,8 @@
         "match_kind": null
       },
       "note": "The k-uniform (constant-length-image) string homomorphism notion is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "61ecfb7d7c48"
     },
     {
       "kind": "definition",
@@ -915,7 +971,8 @@
         "match_kind": null
       },
       "note": "The formal-language 'coding'/'projection' homomorphisms are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0863bd195aa6"
     },
     {
       "kind": "proposition",
@@ -931,7 +988,8 @@
         "match_kind": null
       },
       "note": "`FreeMonoid.lift` is the natural equivalence (α → M) ≃ (FreeMonoid α →* M), embodying that string homomorphisms are exactly monoid homomorphisms, though not stated in language-theoretic terms.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "01ddbe7933d8"
     }
   ]
 }

@@ -29,7 +29,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\left|f(x)\\right|\\leq M\\ g(x)\\qquad ~{\\mathsf {\\ for\\ all\\ }}~\\quad x\\in D.}"
         }
-      ]
+      ],
+      "id": "061d0ac94128"
     },
     {
       "kind": "definition",
@@ -45,7 +46,8 @@
         "match_kind": "exact"
       },
       "note": "States f =O[l] g iff ‖f/g‖ is bounded under l, the bounded-ratio characterization.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b9cc47560b74"
     },
     {
       "kind": "definition",
@@ -61,7 +63,8 @@
         "match_kind": null
       },
       "note": "`IsBigOWith c l f g` exposes the implied constant c explicitly, but Mathlib has no named terminology for it.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ea025fb2d934"
     },
     {
       "kind": "definition",
@@ -87,7 +90,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle f(x)=O{\\bigl (}g(x){\\bigr )}\\qquad ~{\\mathsf {as}}\\quad x\\to \\infty }"
         }
-      ]
+      ],
+      "id": "42edbbddd9dc"
     },
     {
       "kind": "definition",
@@ -113,7 +117,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\ f(x)=h(x)+O{\\bigl (}g(x){\\bigr )}\\ }"
         }
-      ]
+      ],
+      "id": "8c0ad1d0f466"
     },
     {
       "kind": "definition",
@@ -139,7 +144,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\ f\\ll g\\iff f=O{\\bigl (}g{\\bigr )}.}"
         }
-      ]
+      ],
+      "id": "8fdcb0ad9f80"
     },
     {
       "kind": "definition",
@@ -155,7 +161,8 @@
         "match_kind": null
       },
       "note": "Mathlib formalizes big O as a Prop-valued relation `IsBigO`, not as a set O(g) of functions with set-membership/equality conventions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9fd4ace32083"
     },
     {
       "kind": "proposition",
@@ -171,7 +178,8 @@
         "match_kind": null
       },
       "note": "Individual rules exist as separate lemmas (`IsBigO.add`, `IsBigO.const_mul_left`, `IsBigO.mul`), but there is no single bundled 'simplification rules' statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c406496b8628"
     },
     {
       "kind": "example",
@@ -205,7 +213,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle |6x^{4}-2x^{3}+5|\\leq 13x^{4}.}"
         }
-      ]
+      ],
+      "id": "9102253fb02a"
     },
     {
       "kind": "example",
@@ -231,7 +240,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle T(n)=O(n^{2})}"
         }
-      ]
+      ],
+      "id": "fab59e7c21d0"
     },
     {
       "kind": "example",
@@ -257,7 +267,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\begin{aligned}e^{x}&amp;=1+x+{\\frac {\\;x^{2}\\ }{2!}}+{\\frac {\\;x^{3}\\ }{3!}}+{\\frac {\\;x^{4}\\ }{4!}}+\\dotsb &amp;&amp;{\\text{ for all finite }}x\\\\[4pt]&amp;=1+x+{\\frac {\\;x^{2}\\ }{2}}+O(|x|^{3})&amp;&amp;{\\text{ for all }}|x|\\leq 1\\\\[4pt]&amp;=1+x+O(x^{2})&amp;&amp;{\\text{ for all }}|x|\\leq 1.\\end{aligned}}}"
         }
-      ]
+      ],
+      "id": "4e9c9d5ad0b1"
     },
     {
       "kind": "example",
@@ -287,7 +298,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle (x+1)^{8}=1+8x+O(x^{2})\\quad {\\text{ for }}|x|\\leq 1.}"
         }
-      ]
+      ],
+      "id": "35cf51921271"
     },
     {
       "kind": "proposition",
@@ -303,7 +315,8 @@
         "match_kind": "exact"
       },
       "note": "A function bounded under l is O(1), via `isBigO_one_iff`/`IsBoundedUnder.isBigO_one`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ed1dba47cd7f"
     },
     {
       "kind": "example",
@@ -329,7 +342,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle |(1+x)^{b}-1|\\leq M_{b}\\cdot x.}"
         }
-      ]
+      ],
+      "id": "53d20ce04069"
     },
     {
       "kind": "example",
@@ -355,7 +369,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle e^{x}=1+x+O_{r}(x^{2})\\quad {\\text{ for all }}|x|\\leq r,r{\\text{ being any real number.}}}"
         }
-      ]
+      ],
+      "id": "28a223d35ebd"
     },
     {
       "kind": "example",
@@ -371,7 +386,8 @@
         "match_kind": null
       },
       "note": "A prose example about multivariate big O combining finite and infinite domains; not a formal statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f12d9a60b6a8"
     },
     {
       "kind": "proposition",
@@ -387,7 +403,8 @@
         "match_kind": "exact"
       },
       "note": "`IsBigO.add` gives f₁ =O[l] g and f₂ =O[l] g imply f₁+f₂ =O[l] g.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "506ce3a81610"
     },
     {
       "kind": "proposition",
@@ -403,7 +420,8 @@
         "match_kind": "exact"
       },
       "note": "`IsBigO.const_mul_left` (with `isBigO_const_mul_left_iff`) shows scaling by a constant preserves big O.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "98e0cebf0521"
     },
     {
       "kind": "proposition",
@@ -419,7 +437,8 @@
         "match_kind": "exact"
       },
       "note": "`IsBigO.trans` states f =O[l] g and g =O[l] k imply f =O[l] k.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "34e8d0754a34"
     },
     {
       "kind": "proposition",
@@ -435,7 +454,8 @@
         "match_kind": null
       },
       "note": "Big O of a sum follows from `IsBigO.add`, but the statement that the fastest-growing summand determines the order is not a single Mathlib lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c42aa0d065d3"
     },
     {
       "kind": "proposition",
@@ -461,7 +481,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle n^{a}=O(n^{b})}"
         }
-      ]
+      ],
+      "id": "91fab5f89acf"
     },
     {
       "kind": "proposition",
@@ -487,7 +508,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle (\\log n)^{a}=O_{a,b}(n^{b}),}"
         }
-      ]
+      ],
+      "id": "5a1bf0feab70"
     },
     {
       "kind": "proposition",
@@ -513,7 +535,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle n^{a}=O_{a,b}(e^{bn}),}"
         }
-      ]
+      ],
+      "id": "ba02a53fbf11"
     },
     {
       "kind": "definition",
@@ -529,7 +552,8 @@
         "match_kind": null
       },
       "note": "Mathlib defines `SuperpolynomialDecay` (decaying faster than any polynomial), the dual of the superpolynomial-growth/subexponential terminology, which is not itself named.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4c1ec06ff9ff"
     },
     {
       "kind": "proposition",
@@ -545,7 +569,8 @@
         "match_kind": null
       },
       "note": "log(xʳ) = r·log x (`Real.log_rpow`/`Real.log_pow`) implies log(xᵏ) = Θ(log x), but the asymptotic restatement is not a dedicated lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f05f664df5bf"
     },
     {
       "kind": "proposition",
@@ -561,7 +586,8 @@
         "match_kind": null
       },
       "note": "`Real.logb b x = log x / log b` shows logs of different bases differ by a constant factor, but their Θ-equivalence is not stated as an asymptotics lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "97996ba0d41a"
     },
     {
       "kind": "proposition",
@@ -577,7 +603,8 @@
         "match_kind": "exact"
       },
       "note": "For 0 ≤ r₁ < r₂, r₁ⁿ =o[atTop] r₂ⁿ, so exponentials with different bases are of different order.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fb9a7c486a45"
     },
     {
       "kind": "example",
@@ -603,7 +630,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\begin{aligned}(n+1)^{2}&amp;=n^{2}+O(n),\\\\(n+O(n^{1/2}))\\cdot (n+O(\\log n))^{2}&amp;=n^{3}+O(n^{5/2}),\\\\n^{O(1)}&amp;=O(e^{n}).\\end{aligned}}}"
         }
-      ]
+      ],
+      "id": "9f770de049d4"
     },
     {
       "kind": "definition",
@@ -629,7 +657,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle f(x)\\ll g(x)\\Longleftrightarrow g(x)\\gg f(x).}"
         }
-      ]
+      ],
+      "id": "b5fd1e8cc049"
     },
     {
       "kind": "definition",
@@ -645,7 +674,8 @@
         "match_kind": "exact"
       },
       "note": "Knuth's Ω (lower bound, same as Vinogradov ≫) is g = O(f), i.e. `IsBigO` with arguments swapped; distinct from the Hardy–Littlewood Ω which is absent.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0710b7e6c594"
     },
     {
       "kind": "definition",
@@ -675,7 +705,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle 2n^{2}-10n=\\Theta (n^{2})}"
         }
-      ]
+      ],
+      "id": "df089724e1e0"
     },
     {
       "kind": "example",
@@ -705,7 +736,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle 2n^{2}-10n=\\Theta (n^{2})}"
         }
-      ]
+      ],
+      "id": "ba2c49568177"
     },
     {
       "kind": "definition",
@@ -739,7 +771,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle f(n)=e^{\\Theta (n)}\\quad {\\text{ for all }}n\\geq 1,}"
         }
-      ]
+      ],
+      "id": "adb70262e550"
     },
     {
       "kind": "example",
@@ -765,7 +798,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle f(x)=g(x)+O(1)\\Longleftrightarrow e^{f(x)}\\asymp e^{g(x)},}"
         }
-      ]
+      ],
+      "id": "6c0f51ccfda8"
     },
     {
       "kind": "example",
@@ -781,7 +815,8 @@
         "match_kind": "exact"
       },
       "note": "`IsTheta.isBigO` shows f =Θ[l] g implies f =O[l] g, i.e. weakening Θ to O.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fae1fcd1efc2"
     },
     {
       "kind": "definition",
@@ -807,7 +842,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\lim _{x\\to \\infty }{\\frac {f(x)}{g(x)}}=0.}"
         }
-      ]
+      ],
+      "id": "b01c2e542a09"
     },
     {
       "kind": "proposition",
@@ -823,7 +859,8 @@
         "match_kind": "exact"
       },
       "note": "`IsLittleO.isBigO` states f =o[l] g implies f =O[l] g.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8323d596df15"
     },
     {
       "kind": "proposition",
@@ -839,7 +876,8 @@
         "match_kind": "exact"
       },
       "note": "Little-o respects sums and products via `IsLittleO.add`, `IsLittleO.mul`, etc.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c1a695b7279d"
     },
     {
       "kind": "proposition",
@@ -855,7 +893,8 @@
         "match_kind": "exact"
       },
       "note": "`IsLittleO.trans` gives f =o[l] g and g =o[l] k imply f =o[l] k.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ea14c89518f8"
     },
     {
       "kind": "definition",
@@ -881,7 +920,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\lim _{x\\to x_{0}}{\\frac {f(x)}{g(x)}}=0.}"
         }
-      ]
+      ],
+      "id": "3832b0b7361c"
     },
     {
       "kind": "example",
@@ -897,7 +937,8 @@
         "match_kind": null
       },
       "note": "A remark about using little-o for limit computations with Taylor series; an application rather than a formal statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fe296248e1ae"
     },
     {
       "kind": "definition",
@@ -927,7 +968,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\lim _{x\\to \\infty }{\\frac {f(x)}{g(x)}}=1.}"
         }
-      ]
+      ],
+      "id": "78872608be76"
     },
     {
       "kind": "proposition",
@@ -957,7 +999,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\lim _{x\\to \\infty }{\\frac {f(x)}{g(x)}}=1.}"
         }
-      ]
+      ],
+      "id": "b5653e028e75"
     },
     {
       "kind": "theorem",
@@ -987,7 +1030,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\pi (x)\\sim {\\frac {x}{\\log x}}\\quad {\\text{ as }}x\\to \\infty ,}"
         }
-      ]
+      ],
+      "id": "cf4debf10cee"
     },
     {
       "kind": "theorem",
@@ -1017,7 +1061,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\pi (x)\\sim {\\frac {x}{\\log x}}\\quad {\\text{ as }}x\\to \\infty ,}"
         }
-      ]
+      ],
+      "id": "977d1a09a5cd"
     },
     {
       "kind": "example",
@@ -1043,7 +1088,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\sin x\\sim x\\quad {\\text{ as }}x\\to 0.}"
         }
-      ]
+      ],
+      "id": "6e064bb48c08"
     },
     {
       "kind": "example",
@@ -1077,7 +1123,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\sum _{n=1}^{\\infty }{\\frac {1}{n^{s}}}\\sim {\\frac {1}{s-1}}\\quad (s\\to 1^{+}).}"
         }
-      ]
+      ],
+      "id": "3319e12af46e"
     },
     {
       "kind": "definition",
@@ -1107,7 +1154,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\lim _{x\\to \\infty }{\\frac {f(x)}{g(x)}}=\\infty .}"
         }
-      ]
+      ],
+      "id": "3edf1e52de85"
     },
     {
       "kind": "definition",
@@ -1123,7 +1171,8 @@
         "match_kind": null
       },
       "note": "The negation-of-little-o lower bound Ω (limsup |f/g| > 0) is not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0a822c16f326"
     },
     {
       "kind": "definition",
@@ -1139,7 +1188,8 @@
         "match_kind": null
       },
       "note": "The one-sided Hardy–Littlewood Ω₊ and Ω₋ notions are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e87a311a33ff"
     },
     {
       "kind": "example",
@@ -1155,7 +1205,8 @@
         "match_kind": null
       },
       "note": "Examples involving the Hardy–Littlewood Ω notation, which is not present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "15b633f110cb"
     },
     {
       "kind": "example",
@@ -1171,7 +1222,8 @@
         "match_kind": null
       },
       "note": "A usage remark about informally writing O where Θ is meant; not a formal statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "42be3937c2ce"
     },
     {
       "kind": "definition",
@@ -1187,7 +1239,8 @@
         "match_kind": null
       },
       "note": "Soft-O (Õ, hiding polylogarithmic factors) is not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "223dbbd07c84"
     },
     {
       "kind": "definition",
@@ -1203,7 +1256,8 @@
         "match_kind": null
       },
       "note": "The L-notation Lₙ[α,c] for sub-exponential complexity is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3498b7e8bce3"
     },
     {
       "kind": "definition",
@@ -1219,7 +1273,8 @@
         "match_kind": "generalization"
       },
       "note": "`IsBigO` already allows codomains with any norm (normed/seminormed spaces), so this generalization is the default setting.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "21422008ac6e"
     },
     {
       "kind": "definition",
@@ -1235,7 +1290,8 @@
         "match_kind": "exact"
       },
       "note": "`IsEquivalent` is the equivalence relation u − v =o[l] v, more restrictive than Θ, exactly as described.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2bad3a19d92b"
     }
   ]
 }

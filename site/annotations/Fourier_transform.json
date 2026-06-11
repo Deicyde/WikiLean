@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "`Real.fourierIntegral` (specialization of `VectorFourier.fourierIntegral` with the standard additive character `𝐞`) defines the Fourier integral exactly as in the article.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4471d8abf2f8"
     },
     {
       "kind": "theorem",
@@ -35,7 +36,8 @@
         "match_kind": "exact"
       },
       "note": "`MeasureTheory.Integrable.fourierInv_fourier_eq` and `Continuous.fourierInv_fourier_eq` give the Fourier inversion formula on finite-dimensional real inner product spaces.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9924f548f253"
     },
     {
       "kind": "example",
@@ -65,7 +67,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\delta (x)\\ {\\stackrel {\\mathcal {F}}{\\longleftrightarrow }}\\ 1.}"
         }
-      ]
+      ],
+      "id": "c35b2c3a228b"
     },
     {
       "kind": "definition",
@@ -81,7 +84,8 @@
         "match_kind": null
       },
       "note": "Mathlib's Fourier transform uses the ordinary-frequency (2π) convention via `fourierChar`; no separate angular-frequency variant `𝓕(f)(ω) = ∫ f(x) e^{-iωx} dx` is defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ac5f342614b6"
     },
     {
       "kind": "definition",
@@ -107,7 +111,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\|f\\|_{1}=\\int _{\\mathbb {R} }|f(x)|\\,dx&lt;\\infty .}"
         }
-      ]
+      ],
+      "id": "99debabd1c88"
     },
     {
       "kind": "definition",
@@ -123,7 +128,8 @@
         "match_kind": "exact"
       },
       "note": "`MeasureTheory.Lp E p μ` (and `MeasureTheory.MemLp`) define the L^p spaces of measurable functions with finite p-seminorm.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6cc48b00b91d"
     },
     {
       "kind": "proposition",
@@ -139,7 +145,8 @@
         "match_kind": "invocation"
       },
       "note": "The ingredients exist — linearity (`fourier_add`/`fourier_smul`), L¹-norm bound (`norm_fourierIntegral_le_integral_norm`), and convolution-to-multiplication (`Real.fourier_mul_convolution_eq`) — but Mathlib does not package the L¹ Fourier transform as a Banach-algebra homomorphism.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c103eb5edb40"
     },
     {
       "kind": "proposition",
@@ -155,7 +162,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no named lemma `𝓕(f)(-ξ) = conj(𝓕(f)(ξ))` for real-valued `f` (Hermitian symmetry); grep finds no such conjugation/negation symmetry result for the Fourier integral.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c911d40d6e79"
     },
     {
       "kind": "proposition",
@@ -181,7 +189,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\widehat {f}}(\\xi )=\\sum _{n=-\\infty }^{\\infty }c_{n}\\cdot \\delta \\left(\\xi -{\\tfrac {n}{P}}\\right),}"
         }
-      ]
+      ],
+      "id": "ccd3b1589a2f"
     },
     {
       "kind": "proposition",
@@ -207,7 +216,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle f_{P}(x)\\triangleq \\sum _{n=-\\infty }^{\\infty }f(x+nP)={\\frac {1}{P}}\\sum _{k=-\\infty }^{\\infty }{\\widehat {f}}\\left({\\tfrac {k}{P}}\\right)e^{i2\\pi {\\frac {k}{P}}x},\\quad \\forall k\\in \\mathbb {Z} .}"
         }
-      ]
+      ],
+      "id": "67e92293c3d4"
     },
     {
       "kind": "proposition",
@@ -237,7 +247,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle f(-x)\\ \\ {\\stackrel {\\mathcal {F}}{\\Longleftrightarrow }}\\ \\ {\\widehat {f}}(-\\xi )}"
         }
-      ]
+      ],
+      "id": "1470ff6ff665"
     },
     {
       "kind": "proposition",
@@ -253,7 +264,8 @@
         "match_kind": null
       },
       "note": "No lemmas in Mathlib decompose the Fourier transform along the even/odd × real/imaginary parts.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "39504e9f055b"
     },
     {
       "kind": "proposition",
@@ -279,7 +291,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\widehat {f}}(-\\xi )={\\bigl (}{\\widehat {f}}(\\xi ){\\bigr )}^{*}.}"
         }
-      ]
+      ],
+      "id": "5ce92dbf0bce"
     },
     {
       "kind": "proposition",
@@ -295,7 +308,8 @@
         "match_kind": null
       },
       "note": "Although the statement is immediate from `fourierIntegral_def` (since `𝐞(0)=1`), there is no dedicated `fourierIntegral_zero_eq_integral` lemma in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "73766a0664ed"
     },
     {
       "kind": "proposition",
@@ -321,7 +335,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\left\\|{\\widehat {f}}\\right\\|_{\\infty }\\leq \\left\\|f\\right\\|_{1}}"
         }
-      ]
+      ],
+      "id": "6b0008d92fd8"
     },
     {
       "kind": "theorem",
@@ -347,7 +362,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\widehat {f}}(\\xi )\\to 0{\\text{ as }}|\\xi |\\to \\infty .}"
         }
-      ]
+      ],
+      "id": "35cb599dea39"
     },
     {
       "kind": "proposition",
@@ -373,7 +389,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle f(x)=\\int _{-\\infty }^{\\infty }{\\widehat {f}}(\\xi )e^{i2\\pi x\\xi }\\,d\\xi }"
         }
-      ]
+      ],
+      "id": "d47e84d1b039"
     },
     {
       "kind": "theorem",
@@ -399,7 +416,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\langle f,g\\rangle _{L^{2}}=\\int _{-\\infty }^{\\infty }f(x){\\overline {g(x)}}\\,dx=\\int _{-\\infty }^{\\infty }{\\widehat {f}}(\\xi ){\\overline {{\\widehat {g}}(\\xi )}}\\,d\\xi ,}"
         }
-      ]
+      ],
+      "id": "4bd2a36ad6ba"
     },
     {
       "kind": "theorem",
@@ -425,7 +443,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\|f\\|_{L^{2}}^{2}=\\int _{-\\infty }^{\\infty }\\left|f(x)\\right|^{2}\\,dx=\\int _{-\\infty }^{\\infty }\\left|{\\widehat {f}}(\\xi )\\right|^{2}\\,d\\xi .}"
         }
-      ]
+      ],
+      "id": "d45e7a58e9ea"
     },
     {
       "kind": "theorem",
@@ -441,7 +460,8 @@
         "match_kind": "exact"
       },
       "note": "`Real.fourier_mul_convolution_eq` (and the bilinear variant `fourier_bilin_convolution_eq`) prove `𝓕 (f ⋆ g) = 𝓕 f · 𝓕 g`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f580299fb312"
     },
     {
       "kind": "theorem",
@@ -471,7 +491,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\widehat {h}}(\\xi )={\\overline {{\\widehat {f}}(\\xi )}}\\,{\\widehat {g}}(\\xi ).}"
         }
-      ]
+      ],
+      "id": "944fc5a529db"
     },
     {
       "kind": "theorem",
@@ -501,7 +522,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\widehat {f^{(n)}}}(\\xi )={\\mathcal {F}}\\left\\{{\\frac {d^{n}}{dx^{n}}}f(x)\\right\\}=(i2\\pi \\xi )^{n}{\\widehat {f}}(\\xi ).}"
         }
-      ]
+      ],
+      "id": "94ca1b65e6e6"
     },
     {
       "kind": "definition",
@@ -517,7 +539,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib proves that the Gaussian is fixed by the Fourier transform (`fourier_gaussian_pi`, `fourier_gaussian_innerProductSpace`) but does not develop a general theory of FT eigenfunctions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "01fa2b067499"
     },
     {
       "kind": "theorem",
@@ -533,7 +556,8 @@
         "match_kind": null
       },
       "note": "Hermite polynomials exist in `Mathlib/RingTheory/Polynomial/Hermite`, but the Hermite functions as a complete orthonormal eigenbasis of the Fourier transform on L² are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5c3ab15b812e"
     },
     {
       "kind": "theorem",
@@ -559,7 +583,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\begin{aligned}{\\mathcal {F}}^{0}&amp;=\\mathrm {id} ,\\\\{\\mathcal {F}}^{1}&amp;={\\mathcal {F}},\\\\{\\mathcal {F}}^{2}&amp;={\\mathcal {P}},\\\\{\\mathcal {F}}^{3}&amp;={\\mathcal {F}}^{-1}={\\mathcal {P}}\\circ {\\mathcal {F}}={\\mathcal {F}}\\circ {\\mathcal {P}},\\\\{\\mathcal {F}}^{4}&amp;=\\mathrm {id} \\end{aligned}}}"
         }
-      ]
+      ],
+      "id": "c5518cfe2839"
     },
     {
       "kind": "theorem",
@@ -585,7 +610,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\rho \\circ j=W\\rho W^{*}.}"
         }
-      ]
+      ],
+      "id": "1bf4c1e969ff"
     },
     {
       "kind": "theorem",
@@ -611,7 +637,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\left\\vert \\xi ^{n}{\\widehat {f}}(\\xi )\\right\\vert \\leq C_{n}e^{2\\pi a\\vert \\tau \\vert }}"
         }
-      ]
+      ],
+      "id": "a1b997905c4e"
     },
     {
       "kind": "proposition",
@@ -627,7 +654,8 @@
         "match_kind": null
       },
       "note": "The Laplace transform is not defined in Mathlib (no `Laplace.?[Tt]ransform` matches), so a relation to it cannot be stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ab4e357f848b"
     },
     {
       "kind": "theorem",
@@ -653,7 +681,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle f(t)=\\int _{-\\infty }^{\\infty }{\\widehat {f}}(\\sigma +i\\tau )e^{i2\\pi (\\sigma +i\\tau )t}\\,d\\sigma ,}"
         }
-      ]
+      ],
+      "id": "71523894c260"
     },
     {
       "kind": "theorem",
@@ -679,7 +708,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle f(t)={\\frac {1}{i2\\pi }}\\int _{b-i\\infty }^{b+i\\infty }F(s)e^{st}\\,ds}"
         }
-      ]
+      ],
+      "id": "f6bae1c67f4a"
     },
     {
       "kind": "definition",
@@ -705,7 +735,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\widehat {f}}({\\boldsymbol {\\xi }})={\\mathcal {F}}(f)({\\boldsymbol {\\xi }})=\\int _{\\mathbb {R} ^{n}}f(\\mathbf {x} )e^{-i2\\pi {\\boldsymbol {\\xi }}\\cdot \\mathbf {x} }\\,d\\mathbf {x} }"
         }
-      ]
+      ],
+      "id": "b4481759ba44"
     },
     {
       "kind": "theorem",
@@ -731,7 +762,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle D_{0}(f)D_{0}({\\widehat {f}})\\geq {\\frac {1}{16\\pi ^{2}}}.}"
         }
-      ]
+      ],
+      "id": "a370fdde3dbb"
     },
     {
       "kind": "theorem",
@@ -761,7 +793,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle H(p)=-\\int _{-\\infty }^{\\infty }p(x)\\log {\\bigl (}p(x){\\bigr )}\\,dx}"
         }
-      ]
+      ],
+      "id": "314178965231"
     },
     {
       "kind": "definition",
@@ -791,7 +824,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle b(\\lambda )=2\\int _{-\\infty }^{\\infty }f(t)\\sin(2\\pi \\lambda t)\\,dt.}"
         }
-      ]
+      ],
+      "id": "4df5170df257"
     },
     {
       "kind": "proposition",
@@ -807,7 +841,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no Bochner-style Fourier-transform-of-radial-functions / spherical-harmonics decomposition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "656b839425b3"
     },
     {
       "kind": "proposition",
@@ -823,7 +858,8 @@
         "match_kind": null
       },
       "note": "Grep for `Hankel` finds no Mathlib files; no Bessel-kernel/Hankel transform is defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a9a4407d0326"
     },
     {
       "kind": "theorem",
@@ -839,7 +875,8 @@
         "match_kind": null
       },
       "note": "No Tomas–Stein or general Fourier restriction theorem appears in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "797f10454b51"
     },
     {
       "kind": "theorem",
@@ -855,7 +892,8 @@
         "match_kind": null
       },
       "note": "No Fefferman ball-multiplier result is in Mathlib (`Fefferman` only appears in a tactic file).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fc6f835c686a"
     },
     {
       "kind": "definition",
@@ -885,7 +923,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\sup _{\\xi \\in \\mathbb {R} ^{n}}\\left\\vert {\\widehat {f}}(\\xi )\\right\\vert \\leq \\int _{\\mathbb {R} ^{n}}\\vert f(x)\\vert \\,dx,}"
         }
-      ]
+      ],
+      "id": "11f4616457cf"
     },
     {
       "kind": "theorem",
@@ -915,7 +954,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\begin{aligned}\\int _{\\mathbb {R} ^{n}}{\\overline {{\\mathcal {F}}f(x)}}{\\mathcal {F}}g(x)\\,dx&amp;=\\int _{\\mathbb {R} ^{n}}{\\mathcal {F}}^{-1}{\\overline {f(x)}}{\\mathcal {F}}g(x)\\,dx\\\\&amp;=\\int _{\\mathbb {R} ^{n}}{\\mathcal {F}}{\\mathcal {F}}^{-1}{\\overline {f(x)}}g(x)\\,dx=\\int _{\\mathbb {R} ^{n}}{\\overline {f(x)}}g(x)\\,dx\\end{aligned}}}"
         }
-      ]
+      ],
+      "id": "a6ba7126e8b7"
     },
     {
       "kind": "theorem",
@@ -931,7 +971,8 @@
         "match_kind": null
       },
       "note": "Grep for `Hausdorff.?Young` returns no Mathlib matches.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "221e99d6b460"
     },
     {
       "kind": "definition",
@@ -957,7 +998,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\mathcal {F}}:C_{c}^{\\infty }(\\mathbb {R} ^{n})\\rightarrow {\\mathcal {S}}(\\mathbb {R} ^{n})\\setminus C_{c}^{\\infty }(\\mathbb {R} ^{n}).}"
         }
-      ]
+      ],
+      "id": "be8236da751c"
     },
     {
       "kind": "definition",
@@ -991,7 +1033,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\widehat {\\mu }}(\\xi )={\\widehat {f}}(\\xi ),}"
         }
-      ]
+      ],
+      "id": "015f3a436134"
     },
     {
       "kind": "theorem",
@@ -1007,7 +1050,8 @@
         "match_kind": null
       },
       "note": "Mathlib's `Bochner` references are all to Bochner integration, not to Bochner's theorem characterizing positive-definite Fourier–Stieltjes transforms.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "553f2494f6e2"
     },
     {
       "kind": "definition",
@@ -1033,7 +1077,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\widehat {f}}(\\xi )=\\int _{G}{\\overline {\\xi (x)}}f(x)\\,d\\mu \\quad {\\text{for any }}\\xi \\in {\\widehat {G}}.}"
         }
-      ]
+      ],
+      "id": "a686ba9a3c22"
     },
     {
       "kind": "proposition",
@@ -1049,7 +1094,8 @@
         "match_kind": null
       },
       "note": "`GelfandDuality` exists in Mathlib but no result identifies the Fourier transform with the Gelfand transform of `L¹(G)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "917c86d5f3db"
     },
     {
       "kind": "definition",
@@ -1065,7 +1111,8 @@
         "match_kind": null
       },
       "note": "No operator-valued / non-abelian Fourier transform via irreducible unitary representations is formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "55354247b6aa"
     },
     {
       "kind": "theorem",
@@ -1095,7 +1142,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\|f\\|_{2}^{2}=\\sum _{\\sigma \\in \\Sigma }d_{\\sigma }\\|{\\widehat {f}}(\\sigma )\\|_{\\mathrm {HS} }^{2},}"
         }
-      ]
+      ],
+      "id": "6fec0c98e945"
     },
     {
       "kind": "example",
@@ -1111,7 +1159,8 @@
         "match_kind": null
       },
       "note": "This is an informal worked illustration with no stated theorem to formalize.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8d46c0192289"
     },
     {
       "kind": "example",
@@ -1141,7 +1190,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\frac {\\partial ^{2}y(x,t)}{\\partial ^{2}x}}={\\frac {\\partial ^{2}y(x,t)}{\\partial ^{2}t}}.}"
         }
-      ]
+      ],
+      "id": "92ad827b8851"
     }
   ]
 }

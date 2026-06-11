@@ -19,7 +19,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib has an executable simplex-algorithm implementation, but only as a meta tactic oracle used by linarith for certificate search, not as a general LP solver with a mathematical specification.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "893ad7c0071d"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": null
       },
       "note": "No mathematical definition of a linear program (canonical form: maximize cᵀx s.t. Ax ≤ b, x ≥ 0) is found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9b02a5f43bbc"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "generalization"
       },
       "note": "The general convex-geometric notion of extreme points exists (`Set.extremePoints`, `IsExtreme`), but no LP-specific algebraic notion of basic feasible solution is formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2df4666cf439"
     },
     {
       "kind": "proposition",
@@ -67,7 +70,8 @@
         "match_kind": "generalization"
       },
       "note": "The Krein–Milman theorem is in Mathlib, but the LP/Bauer maximum-principle statement that a linear objective on a polytope attains its maximum at an extreme point is not stated as such.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "989bd35d9f9b"
     },
     {
       "kind": "proposition",
@@ -83,7 +87,8 @@
         "match_kind": null
       },
       "note": "No formalization of polytope edges or of the local improvement lemma for the simplex method is found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "892667289c27"
     },
     {
       "kind": "proposition",
@@ -99,7 +104,8 @@
         "match_kind": null
       },
       "note": "The linarith oracle's `runSimplexAlgorithm` is asserted to terminate by Bland's rule in a docstring, but no termination theorem is proved.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "22316b77dd83"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": "special_case"
       },
       "note": "Only an `infeasible` exception constructor in the tactic monad exists; there is no mathematical definition of infeasibility of an LP.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1a62d961ee4b"
     },
     {
       "kind": "definition",
@@ -131,7 +138,8 @@
         "match_kind": null
       },
       "note": "Two-phase simplex method is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "116c0702ff4e"
     },
     {
       "kind": "definition",
@@ -147,7 +155,8 @@
         "match_kind": null
       },
       "note": "Slack variables for LP are not formalized; no occurrence of the term in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cf59da7e49ee"
     },
     {
       "kind": "definition",
@@ -163,7 +172,8 @@
         "match_kind": null
       },
       "note": "Surplus variables for LP are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "43c0c23e143b"
     },
     {
       "kind": "definition",
@@ -179,7 +189,8 @@
         "match_kind": null
       },
       "note": "No LP standardization procedure is formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4a0b64ff7a38"
     },
     {
       "kind": "definition",
@@ -195,7 +206,8 @@
         "match_kind": "special_case"
       },
       "note": "The `Tableau` structure stores basic/free indices and the coefficient matrix, but no formal predicate for `canonical form` is defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "004913610160"
     },
     {
       "kind": "definition",
@@ -211,7 +223,8 @@
         "match_kind": "special_case"
       },
       "note": "The `Tableau` structure carries `basic` and `free` index arrays, mirroring the partition into basic and nonbasic variables at the implementation level.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6f5112ed6c3a"
     },
     {
       "kind": "proposition",
@@ -227,7 +240,8 @@
         "match_kind": null
       },
       "note": "The statement that any BFS can be expanded to a canonical-form tableau via a nonsingular submatrix is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6b3bb0cca434"
     },
     {
       "kind": "definition",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "Pricing out and reduced/relative cost coefficients are not named or formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b3f959ebf4b1"
     },
     {
       "kind": "definition",
@@ -259,7 +274,8 @@
         "match_kind": "special_case"
       },
       "note": "`doPivotOperation` implements a pivot on the linarith oracle's `Tableau`, swapping one basic and one free index and updating the matrix, but lacks a mathematical specification.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "98dead4c986a"
     },
     {
       "kind": "definition",
@@ -275,7 +291,8 @@
         "match_kind": "special_case"
       },
       "note": "`chooseEnteringVar` and `chooseExitingVar` (combined in `choosePivots`) play the roles of entering/leaving variable selection in the tactic, without abstract definitions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cf59bf1be7ca"
     },
     {
       "kind": "definition",
@@ -291,7 +308,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib's `chooseEnteringVar` selects an entering variable, but using Bland's smallest-index rule rather than the Dantzig negative-cost rule described in the article.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fdf27d5bed4d"
     },
     {
       "kind": "proposition",
@@ -307,7 +325,8 @@
         "match_kind": null
       },
       "note": "The optimality criterion for tableau form is not proven as a theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f569bd0de577"
     },
     {
       "kind": "proposition",
@@ -323,7 +342,8 @@
         "match_kind": null
       },
       "note": "The unboundedness detection criterion is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "937a9c5c0ed3"
     },
     {
       "kind": "definition",
@@ -339,7 +359,8 @@
         "match_kind": "special_case"
       },
       "note": "`chooseExitingVar` computes the minimum ratio inside the linarith tactic, but the minimum ratio test is not defined abstractly.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2aea27cd2f2a"
     },
     {
       "kind": "example",
@@ -355,7 +376,8 @@
         "match_kind": null
       },
       "note": "No worked LP example of this form appears in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fe2b45a0b540"
     },
     {
       "kind": "definition",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "Artificial variables and the Phase I auxiliary LP are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4e49a4e1e328"
     },
     {
       "kind": "proposition",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "The Phase I termination/feasibility theorem is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "71ca5ca3d94a"
     },
     {
       "kind": "example",
@@ -403,7 +427,8 @@
         "match_kind": null
       },
       "note": "No two-phase worked example appears in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4c3c3c2eab55"
     },
     {
       "kind": "definition",
@@ -419,7 +444,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib's `runSimplexAlgorithm` operates on the explicit `Tableau` matrix, matching the tableau-based standard implementation, though only for linarith certificate search.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f65b4167918a"
     },
     {
       "kind": "definition",
@@ -435,7 +461,8 @@
         "match_kind": null
       },
       "note": "The revised simplex method (basis-inverse representation) is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0ccdf8e14fec"
     },
     {
       "kind": "definition",
@@ -451,7 +478,8 @@
         "match_kind": null
       },
       "note": "Degeneracy of a BFS is not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e94ffea3548d"
     },
     {
       "kind": "definition",
@@ -467,7 +495,8 @@
         "match_kind": null
       },
       "note": "Notions of stalling and cycling for the simplex method are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dc9aea8020cd"
     },
     {
       "kind": "proposition",
@@ -483,7 +512,8 @@
         "match_kind": null
       },
       "note": "Bland's rule is implemented in the linarith oracle (in `choosePivots`), but its no-cycling/termination guarantee is not proved as a theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5f21bd974082"
     },
     {
       "kind": "theorem",
@@ -499,7 +529,8 @@
         "match_kind": null
       },
       "note": "Klee–Minty's exponential lower bound is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f9852083acc3"
     },
     {
       "kind": "theorem",
@@ -515,7 +546,8 @@
         "match_kind": null
       },
       "note": "Complexity-theoretic results about simplex variants are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "96acc0f45efd"
     },
     {
       "kind": "theorem",
@@ -531,7 +563,8 @@
         "match_kind": null
       },
       "note": "PSPACE-completeness of simplex pivot output is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "36ff09e04cfa"
     },
     {
       "kind": "theorem",
@@ -547,7 +580,8 @@
         "match_kind": null
       },
       "note": "Average-case polynomial complexity of simplex is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5229f393059e"
     },
     {
       "kind": "theorem",
@@ -563,7 +597,8 @@
         "match_kind": null
       },
       "note": "Spielman–Teng smoothed analysis is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "00a4f7573ef4"
     },
     {
       "kind": "definition",
@@ -579,7 +614,8 @@
         "match_kind": null
       },
       "note": "Linear-fractional programming is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8bd0b1b32468"
     }
   ]
 }

@@ -19,7 +19,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib has Markov kernels and Ionescu-Tulcea trajectory measures (`ProbabilityTheory.trajMeasure`) that yield Markov processes by iteration, but no single bundled `MarkovProcess`/`MarkovChain` definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5c36b14d57ac"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "generalization"
       },
       "note": "Discrete-time iteration of a Markov kernel is constructed via `traj`/`trajMeasure` in Ionescu-Tulcea, but there is no top-level `DTMC` structure.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1ef4f816817f"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": null
       },
       "note": "No CTMC, infinitesimal generator, or continuous-time Markov semigroup is defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0af584291d72"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": null
       },
       "note": "No `MarkovProperty` predicate on a stochastic process exists in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8ef5a2f537b2"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": null
       },
       "note": "No explicit `MarkovChain` definition distinguishing discrete state/index from general Markov processes appears in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0e1bf07df3e3"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "Transition probabilities are exactly Markov kernels, formalized as `IsMarkovKernel κ` (every `κ x` is a probability measure).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0c09be40e7ed"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": "invocation"
       },
       "note": "The discrete-time Markov property is implicit in the Ionescu-Tulcea construction (`condDistrib_trajMeasure` recovers the next-step kernel), but is not stated as a standalone `MarkovProperty` predicate.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9005f80fc045"
     },
     {
       "kind": "example",
@@ -131,7 +138,8 @@
         "match_kind": null
       },
       "note": "This pedagogical example is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2cf59450f3ab"
     },
     {
       "kind": "example",
@@ -147,7 +155,8 @@
         "match_kind": null
       },
       "note": "This worked example is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bac4a4bfc7f1"
     },
     {
       "kind": "definition",
@@ -163,7 +172,8 @@
         "match_kind": "generalization"
       },
       "note": "The law of the DTMC sequence is obtainable via `trajMeasure`, but no dedicated `DTMC` structure is defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fbd823d7be75"
     },
     {
       "kind": "definition",
@@ -179,7 +189,8 @@
         "match_kind": null
       },
       "note": "There is no Markov-chain-specific notion of `stateSpace`; Mathlib kernels take an arbitrary `MeasurableSpace`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b0b10f0dec3e"
     },
     {
       "kind": "definition",
@@ -205,7 +216,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\Pr(X_{n+1}=x\\mid X_{n}=y)=\\Pr(X_{n}=x\\mid X_{n-1}=y)}"
         }
-      ]
+      ],
+      "id": "bbabb48990b1"
     },
     {
       "kind": "definition",
@@ -231,7 +243,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\Pr(X_{0}=x_{0},X_{1}=x_{1},\\ldots ,X_{k}=x_{k})=\\Pr(X_{n}=x_{0},X_{n+1}=x_{1},\\ldots ,X_{n+k}=x_{k})}"
         }
-      ]
+      ],
+      "id": "3299a203adf1"
     },
     {
       "kind": "proposition",
@@ -257,7 +270,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\Pr(X_{0}=x_{0},X_{1}=x_{1},\\ldots ,X_{k}=x_{k})=\\Pr(X_{n}=x_{0},X_{n+1}=x_{1},\\ldots ,X_{n+k}=x_{k})}"
         }
-      ]
+      ],
+      "id": "41b9553f8f1d"
     },
     {
       "kind": "proposition",
@@ -283,7 +297,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\Pr(X_{0}=x_{0},X_{1}=x_{1},\\ldots ,X_{k}=x_{k})=\\Pr(X_{n}=x_{0},X_{n+1}=x_{1},\\ldots ,X_{n+k}=x_{k})}"
         }
-      ]
+      ],
+      "id": "72d41497ba27"
     },
     {
       "kind": "definition",
@@ -309,7 +324,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\begin{aligned}{}&amp;\\Pr(X_{n}=x_{n}\\mid X_{n-1}=x_{n-1},X_{n-2}=x_{n-2},\\dots ,X_{1}=x_{1})\\\\=&amp;\\Pr(X_{n}=x_{n}\\mid X_{n-1}=x_{n-1},X_{n-2}=x_{n-2},\\dots ,X_{n-m}=x_{n-m}){\\text{ for }}n&gt;m\\end{aligned}}}"
         }
-      ]
+      ],
+      "id": "84aee3c5d61b"
     },
     {
       "kind": "definition",
@@ -325,7 +341,8 @@
         "match_kind": "generalization"
       },
       "note": "Row-stochastic matrices (i.e. transition matrices on a finite state space) are defined as `Matrix.rowStochastic`, but Mathlib lacks an explicit `transitionMatrix` of a Markov chain.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d2b70bed12c0"
     },
     {
       "kind": "proposition",
@@ -341,7 +358,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.mem_rowStochastic_iff_sum` states a matrix is row stochastic iff it has nonneg entries and each row sums to 1.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6002290fbf66"
     },
     {
       "kind": "definition",
@@ -357,7 +375,8 @@
         "match_kind": "generalization"
       },
       "note": "Invariant measure of a kernel (`Kernel.Invariant κ μ ↔ μ.bind κ = μ`) captures stationary distributions in the kernel setting, but there is no matrix-vector left-eigenvector version.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "124e49ce82a1"
     },
     {
       "kind": "proposition",
@@ -373,7 +392,8 @@
         "match_kind": null
       },
       "note": "No statement equating a stationary distribution with a normalized left eigenvector of a stochastic matrix is in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "601dfbde9240"
     },
     {
       "kind": "proposition",
@@ -389,7 +409,8 @@
         "match_kind": "invocation"
       },
       "note": "Matrix powers `A^k` are standard in Mathlib (and used in the irreducibility file to characterize `k`-step reachability), but no Markov-chain-specific `k`-step transition law is stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a907e97e7a10"
     },
     {
       "kind": "theorem",
@@ -405,7 +426,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not contain a Perron-Frobenius / unique stationary distribution theorem for finite irreducible aperiodic stochastic matrices.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "741e74038478"
     },
     {
       "kind": "proposition",
@@ -421,7 +443,8 @@
         "match_kind": null
       },
       "note": "No such persistence-of-diagonal-one lemma for stochastic matrices is in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fb43ec11bdea"
     },
     {
       "kind": "proposition",
@@ -437,7 +460,8 @@
         "match_kind": null
       },
       "note": "No convergence-rate / spectral-gap theorem for Markov chains exists in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9af5ed4b7e57"
     },
     {
       "kind": "definition",
@@ -453,7 +477,8 @@
         "match_kind": null
       },
       "note": "CTMCs are not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "67f9ecebb2e7"
     },
     {
       "kind": "definition",
@@ -479,7 +504,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\Pr(X(t+h)=j\\mid X(t)=i)=\\delta _{ij}+q_{ij}h+o(h),}"
         }
-      ]
+      ],
+      "id": "e6eacbf25c60"
     },
     {
       "kind": "definition",
@@ -495,7 +521,8 @@
         "match_kind": null
       },
       "note": "No jump-chain or exponential-holding-time construction for CTMCs is defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2125c5c19e95"
     },
     {
       "kind": "definition",
@@ -511,7 +538,8 @@
         "match_kind": null
       },
       "note": "The finite-dimensional CTMC transition-probability characterization is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5f8819c4459d"
     },
     {
       "kind": "definition",
@@ -527,7 +555,8 @@
         "match_kind": null
       },
       "note": "Locally interacting / interacting particle systems are not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f4ce1c7486be"
     },
     {
       "kind": "proposition",
@@ -543,7 +572,8 @@
         "match_kind": null
       },
       "note": "Harris chains and Harris recurrence are not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bebe64fd4191"
     },
     {
       "kind": "definition",
@@ -559,7 +589,8 @@
         "match_kind": null
       },
       "note": "Continuous-time Markov processes on general state spaces are not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "216c3f057725"
     },
     {
       "kind": "definition",
@@ -575,7 +606,8 @@
         "match_kind": null
       },
       "note": "No weak Markov property / time-homogeneity predicate for processes is in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c52b91fd8b5e"
     },
     {
       "kind": "definition",
@@ -591,7 +623,8 @@
         "match_kind": null
       },
       "note": "Markov transition semigroups for continuous-time processes are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9a709b156ba1"
     },
     {
       "kind": "definition",
@@ -607,7 +640,8 @@
         "match_kind": "generalization"
       },
       "note": "Kernel irreducibility is defined as `IsIrreducible φ κ`, and matrix irreducibility via `Matrix.IsIrreducible`; the article's two-state \"communicate\" relation is not separately defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bfbbd9253a0c"
     },
     {
       "kind": "definition",
@@ -623,7 +657,8 @@
         "match_kind": null
       },
       "note": "Period of a state is not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d15e043e5629"
     },
     {
       "kind": "definition",
@@ -639,7 +674,8 @@
         "match_kind": null
       },
       "note": "Periodicity/aperiodicity of states is not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a786c84e4555"
     },
     {
       "kind": "definition",
@@ -655,7 +691,8 @@
         "match_kind": null
       },
       "note": "Transience and recurrence of states are not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f085f7d642d2"
     },
     {
       "kind": "definition",
@@ -671,7 +708,8 @@
         "match_kind": "generalization"
       },
       "note": "Hitting times of stochastic processes are defined (`hittingBtwn`, `hittingAfter`), but the Markov-chain mean return time is not specifically formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b80430c7848a"
     },
     {
       "kind": "definition",
@@ -687,7 +725,8 @@
         "match_kind": null
       },
       "note": "Positive and null recurrence are not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1eaa8be44744"
     },
     {
       "kind": "proposition",
@@ -703,7 +742,8 @@
         "match_kind": null
       },
       "note": "Class properties of Markov chain states are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "45475c58e401"
     },
     {
       "kind": "definition",
@@ -719,7 +759,8 @@
         "match_kind": null
       },
       "note": "Absorbing states are not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8cc071ed6d59"
     },
     {
       "kind": "proposition",
@@ -735,7 +776,8 @@
         "match_kind": null
       },
       "note": "No theorem relating irreducibility and a common period is in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dd440e69c194"
     },
     {
       "kind": "theorem",
@@ -751,7 +793,8 @@
         "match_kind": null
       },
       "note": "The finite-irreducible ⇒ positive recurrent / unique stationary distribution theorem is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "849565abb6b3"
     },
     {
       "kind": "definition",
@@ -767,7 +810,8 @@
         "match_kind": null
       },
       "note": "Per-state ergodicity in the Markov-chain sense is not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6d86076c3f27"
     },
     {
       "kind": "definition",
@@ -783,7 +827,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib has the general dynamical-system notion `Ergodic f μ`, but not a tailored \"ergodic Markov chain\" definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "010dd0d1a2bc"
     },
     {
       "kind": "proposition",
@@ -799,7 +844,8 @@
         "match_kind": null
       },
       "note": "No theorem deriving ergodicity from finiteness, irreducibility and aperiodicity is in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "34df6269e77e"
     },
     {
       "kind": "proposition",
@@ -815,7 +861,8 @@
         "match_kind": null
       },
       "note": "This observation is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0c217920b1f1"
     },
     {
       "kind": "definition",
@@ -831,7 +878,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.IsPrimitive A` requires `A` nonnegative and some power `A^k` having all entries strictly positive.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8f76a843958b"
     },
     {
       "kind": "definition",
@@ -847,7 +895,8 @@
         "match_kind": null
       },
       "note": "The smallest `k` such that `A^k > 0` (index of primitivity) is not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3773dcf77d28"
     },
     {
       "kind": "proposition",
@@ -863,7 +912,8 @@
         "match_kind": null
       },
       "note": "The Wielandt-style bound on the exponent of a primitive matrix is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7b7deb4295b0"
     },
     {
       "kind": "proposition",
@@ -879,7 +929,8 @@
         "match_kind": null
       },
       "note": "No primitivity-exponent refinement using diagonal entries is in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0d7503c85fff"
     },
     {
       "kind": "proposition",
@@ -895,7 +946,8 @@
         "match_kind": null
       },
       "note": "No exponent bound for symmetric primitive matrices is in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "586c5418c847"
     },
     {
       "kind": "theorem",
@@ -911,7 +963,8 @@
         "match_kind": null
       },
       "note": "The Dulmage-Mendelsohn theorem is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d2012c4c3876"
     },
     {
       "kind": "definition",
@@ -927,7 +980,8 @@
         "match_kind": "generalization"
       },
       "note": "Measure-preserving dynamical systems are defined (`MeasurePreserving`), but the specific construction from a stationary Markov chain (shift on path space) is not.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8ed89bd86f92"
     },
     {
       "kind": "definition",
@@ -943,7 +997,8 @@
         "match_kind": "exact"
       },
       "note": "`Ergodic f μ` bundles `MeasurePreserving` with `PreErgodic`, exactly the article's definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9a8cbf54d659"
     },
     {
       "kind": "proposition",
@@ -959,7 +1014,8 @@
         "match_kind": null
       },
       "note": "The equivalence between Markov-chain irreducibility and ergodicity of the shift system is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "399cc2d3ba81"
     },
     {
       "kind": "definition",
@@ -975,7 +1031,8 @@
         "match_kind": null
       },
       "note": "Markovian representations of non-Markov processes are not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "84476637ee80"
     },
     {
       "kind": "example",
@@ -991,7 +1048,8 @@
         "match_kind": null
       },
       "note": "AR(p) processes and their Markov representations are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "37d968550b3d"
     },
     {
       "kind": "definition",
@@ -1007,7 +1065,8 @@
         "match_kind": "exact"
       },
       "note": "`MeasureTheory.hittingBtwn` (and `hittingAfter`) define the first time an adapted process enters a set.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c841f95b5caa"
     },
     {
       "kind": "definition",
@@ -1023,7 +1082,8 @@
         "match_kind": null
       },
       "note": "The vector of expected hitting times and the linear system characterizing it is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d3d52463ed88"
     },
     {
       "kind": "proposition",
@@ -1039,7 +1099,8 @@
         "match_kind": null
       },
       "note": "Time-reversed Markov chains are not constructed in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f488d7c28e3e"
     },
     {
       "kind": "proposition",
@@ -1055,7 +1116,8 @@
         "match_kind": null
       },
       "note": "Kelly's lemma for CTMC reversibility is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9a8653d4a60a"
     },
     {
       "kind": "definition",
@@ -1071,7 +1133,8 @@
         "match_kind": "exact"
       },
       "note": "`Kernel.IsReversible κ π` is detailed-balance: `∫_A κ x B dπ = ∫_B κ x A dπ`, equivalent to reversibility.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "64f1d70dba36"
     },
     {
       "kind": "theorem",
@@ -1087,7 +1150,8 @@
         "match_kind": null
       },
       "note": "Kolmogorov's reversibility (cycle) criterion is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b38f30ddf1fa"
     },
     {
       "kind": "definition",
@@ -1103,7 +1167,8 @@
         "match_kind": null
       },
       "note": "The embedded jump chain of a CTMC is not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7bb0d1ff399e"
     },
     {
       "kind": "definition",
@@ -1119,7 +1184,8 @@
         "match_kind": null
       },
       "note": "The δ-skeleton sampling of a CTMC is not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a3eafc5cfda6"
     },
     {
       "kind": "definition",
@@ -1135,7 +1201,8 @@
         "match_kind": null
       },
       "note": "Bernoulli schemes as dynamical systems are not defined in Mathlib (Mathlib has Bernoulli random variables but not the Bernoulli shift system).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "18ff2e33ad42"
     },
     {
       "kind": "theorem",
@@ -1151,7 +1218,8 @@
         "match_kind": null
       },
       "note": "Ornstein's isomorphism theorem is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "919fdb572361"
     },
     {
       "kind": "definition",
@@ -1167,7 +1235,8 @@
         "match_kind": "generalization"
       },
       "note": "Subshifts and forbidden-pattern subshifts are defined (`Subshift`, `MulSubshift.ofForbidden`), but the specific adjacency-matrix-defined topological Markov chain construction is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f06f63e75e45"
     },
     {
       "kind": "example",
@@ -1183,7 +1252,8 @@
         "match_kind": null
       },
       "note": "M/M/1 queue is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b8d6374f8d5f"
     },
     {
       "kind": "example",
@@ -1199,7 +1269,8 @@
         "match_kind": null
       },
       "note": "PageRank is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b288953de43f"
     },
     {
       "kind": "example",
@@ -1215,7 +1286,8 @@
         "match_kind": null
       },
       "note": "The drunkard's walk / simple random walk on integers is not defined as a named Markov chain in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f367b35abaa4"
     },
     {
       "kind": "example",
@@ -1231,7 +1303,8 @@
         "match_kind": null
       },
       "note": "No statement that an i.i.d. sequence is a (degenerate) Markov chain is in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6c6cb7635ca3"
     },
     {
       "kind": "example",
@@ -1247,7 +1320,8 @@
         "match_kind": null
       },
       "note": "This computing example is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "924aa848f328"
     },
     {
       "kind": "example",
@@ -1263,7 +1337,8 @@
         "match_kind": null
       },
       "note": "Neither generic random walks on the integers nor the gambler's ruin problem are formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "eaedad0ce82c"
     }
   ]
 }

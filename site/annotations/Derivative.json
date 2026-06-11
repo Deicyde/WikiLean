@@ -19,7 +19,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib's `fderiv` is the general (Fréchet) derivative on normed spaces; `deriv` specializes to scalar input.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c90e07912c66"
     },
     {
       "kind": "definition",
@@ -49,7 +50,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\left|L-{\\frac {f(a+h)-f(a)}{h}}\\right|&lt;\\varepsilon ,}"
         }
-      ]
+      ],
+      "id": "a07e7b9a45d5"
     },
     {
       "kind": "definition",
@@ -65,7 +67,8 @@
         "match_kind": "exact"
       },
       "note": "`deriv f x` is defined via `fderiv`, but `HasDerivAt` is equivalent to the classical difference-quotient limit.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0ac67e5c7a3c"
     },
     {
       "kind": "definition",
@@ -81,7 +84,8 @@
         "match_kind": "exact"
       },
       "note": "`deriv f : 𝕜 → F` is exactly the derivative function viewed as a function of the point.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e75a29e40733"
     },
     {
       "kind": "example",
@@ -107,7 +111,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\frac {f(a+h)-f(a)}{h}}={\\frac {(a+h)^{2}-a^{2}}{h}}={\\frac {a^{2}+2ah+h^{2}-a^{2}}{h}}=2a+h.}"
         }
-      ]
+      ],
+      "id": "5c77c845d6a0"
     },
     {
       "kind": "proposition",
@@ -123,7 +128,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no geometric `tangentLine` concept identifying `deriv` with the slope of a tangent line (only the analytic `HasDerivAt`/`slope` machinery).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b0749f78dd30"
     },
     {
       "kind": "definition",
@@ -153,7 +159,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\begin{aligned}f'(x)&amp;=\\operatorname {st} \\left({\\frac {x^{2}+2x\\cdot dx+(dx)^{2}-x^{2}}{dx}}\\right)\\\\&amp;=\\operatorname {st} \\left({\\frac {2x\\cdot dx+(dx)^{2}}{dx}}\\right)\\\\&amp;=\\operatorname {st} \\left({\\frac {2x\\cdot dx}{dx}}+{\\frac {(dx)^{2}}{dx}}\\right)\\\\&amp;=\\operatorname {st} \\left(2x+dx\\right)\\\\&amp;=2x.\\end{aligned}}}"
         }
-      ]
+      ],
+      "id": "f1e635e62332"
     },
     {
       "kind": "example",
@@ -183,7 +190,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\begin{aligned}f'(x)&amp;=\\operatorname {st} \\left({\\frac {x^{2}+2x\\cdot dx+(dx)^{2}-x^{2}}{dx}}\\right)\\\\&amp;=\\operatorname {st} \\left({\\frac {2x\\cdot dx+(dx)^{2}}{dx}}\\right)\\\\&amp;=\\operatorname {st} \\left({\\frac {2x\\cdot dx}{dx}}+{\\frac {(dx)^{2}}{dx}}\\right)\\\\&amp;=\\operatorname {st} \\left(2x+dx\\right)\\\\&amp;=2x.\\end{aligned}}}"
         }
-      ]
+      ],
+      "id": "7b019b66875c"
     },
     {
       "kind": "theorem",
@@ -199,7 +207,8 @@
         "match_kind": "exact"
       },
       "note": "`DifferentiableAt.continuousAt` states that any function differentiable at `x` is continuous at `x`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "02ce63d5e7ef"
     },
     {
       "kind": "example",
@@ -215,7 +224,8 @@
         "match_kind": null
       },
       "note": "No dedicated lemma showing the Heaviside/step function is non-differentiable; one would derive it from the discontinuity, but no named result exists.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "52e38d62f924"
     },
     {
       "kind": "example",
@@ -231,7 +241,8 @@
         "match_kind": "exact"
       },
       "note": "`not_differentiableAt_abs_zero` states `¬ DifferentiableAt ℝ abs 0`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c0f6bf955926"
     },
     {
       "kind": "example",
@@ -247,7 +258,8 @@
         "match_kind": null
       },
       "note": "No named example of a vertical-tangent non-differentiability (e.g. cube root) is recorded in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f9d02611ebd0"
     },
     {
       "kind": "theorem",
@@ -263,7 +275,8 @@
         "match_kind": null
       },
       "note": "The Weierstrass nowhere-differentiable function is not constructed in Mathlib (only the Weierstrass approximation theorem appears).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6992353787e2"
     },
     {
       "kind": "theorem",
@@ -279,7 +292,8 @@
         "match_kind": null
       },
       "note": "Banach's meagerness result on differentiable functions in `C[0,1]` is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "56b3aab4b743"
     },
     {
       "kind": "definition",
@@ -295,7 +309,8 @@
         "match_kind": null
       },
       "note": "Mathlib uses `deriv`/`fderiv` notation, not Leibniz `dy/dx`; no `dy/dx` notation is set up.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "447965f8b497"
     },
     {
       "kind": "definition",
@@ -311,7 +326,8 @@
         "match_kind": "generalization"
       },
       "note": "The chain rule itself is `fderiv_comp` / `HasDerivAt.comp`; only the Leibniz notational form is unformalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1b29adda724f"
     },
     {
       "kind": "definition",
@@ -327,7 +343,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not introduce `f'` notation for derivatives — it writes `deriv f` instead.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d7ea29422622"
     },
     {
       "kind": "definition",
@@ -343,7 +360,8 @@
         "match_kind": null
       },
       "note": "No dot notation for time derivatives is defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f0a521356db0"
     },
     {
       "kind": "definition",
@@ -359,7 +377,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not provide Euler's `D` operator notation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "16f4dceea344"
     },
     {
       "kind": "proposition",
@@ -375,7 +394,8 @@
         "match_kind": "exact"
       },
       "note": "`deriv_pow_field` gives `deriv (· ^ n) x = n * x^(n-1)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fec2bc3d8c6b"
     },
     {
       "kind": "proposition",
@@ -391,7 +411,8 @@
         "match_kind": "exact"
       },
       "note": "`Real.deriv_exp` and `Real.deriv_log` give the derivatives of exp and log; general-base versions are in the SpecialFunctions library.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2b58ca8649eb"
     },
     {
       "kind": "proposition",
@@ -407,7 +428,8 @@
         "match_kind": "exact"
       },
       "note": "`Real.deriv_sin = cos` and `Real.deriv_cos = -sin` (and tan via quotient) are established.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bcc1934a9def"
     },
     {
       "kind": "proposition",
@@ -423,7 +445,8 @@
         "match_kind": "exact"
       },
       "note": "`Real.deriv_arcsin` and `Real.deriv_arctan` give the standard inverse-trig derivative formulas.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "578994fec751"
     },
     {
       "kind": "proposition",
@@ -439,7 +462,8 @@
         "match_kind": "exact"
       },
       "note": "`fderiv_const c` proves the derivative of a constant function is zero.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "22cbd7db838e"
     },
     {
       "kind": "proposition",
@@ -455,7 +479,8 @@
         "match_kind": "exact"
       },
       "note": "`fderiv_add` states `fderiv (f + g) = fderiv f + fderiv g` under differentiability hypotheses.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6490f5eba55f"
     },
     {
       "kind": "proposition",
@@ -471,7 +496,8 @@
         "match_kind": "exact"
       },
       "note": "`deriv_mul` / `fderiv_mul` give the Leibniz product rule.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8b6581cfdc3d"
     },
     {
       "kind": "proposition",
@@ -487,7 +513,8 @@
         "match_kind": "exact"
       },
       "note": "`deriv_div` proves the quotient rule when the denominator is nonzero.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6ee5f5a2557b"
     },
     {
       "kind": "proposition",
@@ -503,7 +530,8 @@
         "match_kind": "exact"
       },
       "note": "`fderiv_comp` (and `HasDerivAt.comp`) is the chain rule for composition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "321695d952f5"
     },
     {
       "kind": "example",
@@ -529,7 +557,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\begin{aligned}f'(x)&amp;=4x^{(4-1)}+{\\frac {d\\left(x^{2}\\right)}{dx}}\\cos \\left(x^{2}\\right)-{\\frac {d\\left(\\ln {x}\\right)}{dx}}e^{x}-\\ln(x){\\frac {d\\left(e^{x}\\right)}{dx}}+0\\\\&amp;=4x^{3}+2x\\cos \\left(x^{2}\\right)-{\\frac {1}{x}}e^{x}-\\ln(x)e^{x}.\\end{aligned}}}"
         }
-      ]
+      ],
+      "id": "1578d6f57854"
     },
     {
       "kind": "definition",
@@ -545,7 +574,8 @@
         "match_kind": "invocation"
       },
       "note": "`HasDerivAt F f x` expresses that `F` is an antiderivative of `f` at `x`, but no dedicated `Antiderivative` notion is defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bbe1a3ce3b43"
     },
     {
       "kind": "theorem",
@@ -561,7 +591,8 @@
         "match_kind": "exact"
       },
       "note": "`integral_eq_sub_of_hasDerivAt` is the FTC: `∫ x in a..b, f' x = f b - f a`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b5abea833a53"
     },
     {
       "kind": "definition",
@@ -577,7 +608,8 @@
         "match_kind": "exact"
       },
       "note": "`iteratedDeriv n f` and `iteratedFDeriv` formalize n-fold differentiation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "eed8c5ee5553"
     },
     {
       "kind": "definition",
@@ -593,7 +625,8 @@
         "match_kind": "exact"
       },
       "note": "`ContDiff 𝕜 n f` is the C^k class (with n : ℕ∞ω).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "37e4af84fa7b"
     },
     {
       "kind": "definition",
@@ -609,7 +642,8 @@
         "match_kind": "special_case"
       },
       "note": "Smoothness is `ContDiff 𝕜 ∞ f` (or `ContDiff 𝕜 ω f` for real-analytic).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b6d5de79db87"
     },
     {
       "kind": "proposition",
@@ -625,7 +659,8 @@
         "match_kind": "generalization"
       },
       "note": "`CPolynomialOn.contDiffOn` shows continuously polynomial functions are `C^∞`; a more elementary `Polynomial`-level statement is also available via `Polynomial.contDiff` lemmas.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c18000d58835"
     },
     {
       "kind": "example",
@@ -641,7 +676,8 @@
         "match_kind": null
       },
       "note": "Kinematic interpretation (position/velocity/acceleration/jerk) is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dc0baac7990d"
     },
     {
       "kind": "definition",
@@ -667,7 +703,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\mathbf {y} '(t)=\\lim _{h\\to 0}{\\frac {\\mathbf {y} (t+h)-\\mathbf {y} (t)}{h}},}"
         }
-      ]
+      ],
+      "id": "dd0ab952d45b"
     },
     {
       "kind": "definition",
@@ -683,7 +720,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib has no dedicated `partialDeriv`; partials are obtained as `lineDeriv 𝕜 f x eᵢ` along basis vectors or via `fderiv` composed with coordinate inclusions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c2a3353428af"
     },
     {
       "kind": "definition",
@@ -713,7 +751,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\frac {\\partial f}{\\partial x_{i}}}(a_{1},\\ldots ,a_{n})=\\lim _{h\\to 0}{\\frac {f(a_{1},\\ldots ,a_{i}+h,\\ldots ,a_{n})-f(a_{1},\\ldots ,a_{i},\\ldots ,a_{n})}{h}}.}"
         }
-      ]
+      ],
+      "id": "570fd3d5363f"
     },
     {
       "kind": "definition",
@@ -739,7 +778,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\nabla f(a_{1},\\ldots ,a_{n})=\\left({\\frac {\\partial f}{\\partial x_{1}}}(a_{1},\\ldots ,a_{n}),\\ldots ,{\\frac {\\partial f}{\\partial x_{n}}}(a_{1},\\ldots ,a_{n})\\right),}"
         }
-      ]
+      ],
+      "id": "9c5ae2fa0680"
     },
     {
       "kind": "definition",
@@ -765,7 +805,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle D_{\\mathbf {v} }{f}(\\mathbf {x} )=\\lim _{h\\rightarrow 0}{\\frac {f(\\mathbf {x} +h\\mathbf {v} )-f(\\mathbf {x} )}{h}}.}"
         }
-      ]
+      ],
+      "id": "2eaf5b2528b5"
     },
     {
       "kind": "proposition",
@@ -791,7 +832,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle D_{\\mathbf {v} }{f}(\\mathbf {x} )=\\sum _{j=1}^{n}v_{j}{\\frac {\\partial f}{\\partial x_{j}}}.}"
         }
-      ]
+      ],
+      "id": "efea385b76f1"
     },
     {
       "kind": "definition",
@@ -821,7 +863,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\lim _{\\mathbf {h} \\to 0}{\\frac {\\lVert f(\\mathbf {a} +\\mathbf {h} )-(f(\\mathbf {a} )+f'(\\mathbf {a} )\\mathbf {h} )\\rVert }{\\lVert \\mathbf {h} \\rVert }}=0.}"
         }
-      ]
+      ],
+      "id": "fd9f44a66ee0"
     },
     {
       "kind": "definition",
@@ -851,7 +894,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle \\lim _{\\mathbf {h} \\to 0}{\\frac {\\lVert f(\\mathbf {a} +\\mathbf {h} )-(f(\\mathbf {a} )+f'(\\mathbf {a} )\\mathbf {h} )\\rVert }{\\lVert \\mathbf {h} \\rVert }}=0.}"
         }
-      ]
+      ],
+      "id": "e599ec3c1aea"
     },
     {
       "kind": "proposition",
@@ -877,7 +921,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle f'(\\mathbf {a} )=\\operatorname {Jac} _{\\mathbf {a} }=\\left({\\frac {\\partial f_{i}}{\\partial x_{j}}}\\right)_{ij}.}"
         }
-      ]
+      ],
+      "id": "cd08df7d3437"
     },
     {
       "kind": "definition",
@@ -903,7 +948,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle f'(\\mathbf {a} )=\\operatorname {Jac} _{\\mathbf {a} }=\\left({\\frac {\\partial f_{i}}{\\partial x_{j}}}\\right)_{ij}.}"
         }
-      ]
+      ],
+      "id": "4fa7267f7eee"
     },
     {
       "kind": "definition",
@@ -919,7 +965,8 @@
         "match_kind": "special_case"
       },
       "note": "`deriv` and `fderiv` are parametric in the scalar field; taking `𝕜 = ℂ` yields the complex (holomorphic) derivative.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6456091889bb"
     },
     {
       "kind": "theorem",
@@ -935,7 +982,8 @@
         "match_kind": "exact"
       },
       "note": "This theorem characterizes complex differentiability as real differentiability plus the CR-type condition `fderiv ℝ f s x I = I • fderiv ℝ f s x 1`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "eb235e51c044"
     },
     {
       "kind": "definition",
@@ -951,7 +999,8 @@
         "match_kind": "exact"
       },
       "note": "`mfderiv I I' f x` is the differential of a map between smooth manifolds between tangent spaces.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5a63cf51e8f4"
     },
     {
       "kind": "definition",
@@ -967,7 +1016,8 @@
         "match_kind": "exact"
       },
       "note": "`fderiv` is the Fréchet derivative; `lineDeriv` plays the role of the Gateaux/directional derivative.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "196a90095156"
     },
     {
       "kind": "definition",
@@ -983,7 +1033,8 @@
         "match_kind": null
       },
       "note": "Sobolev/weak derivatives of distributions are not formalized in Mathlib (only tempered distributions and related infrastructure exist).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "db330d388f8e"
     },
     {
       "kind": "definition",
@@ -999,7 +1050,8 @@
         "match_kind": null
       },
       "note": "The number-theoretic arithmetic derivative on `ℕ` defined via prime factorization is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "061e7390584d"
     },
     {
       "kind": "definition",
@@ -1015,7 +1067,8 @@
         "match_kind": "exact"
       },
       "note": "`Derivation R A M` is the algebraic notion of an `R`-linear map satisfying the Leibniz rule.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "422ae58d24cc"
     }
   ]
 }

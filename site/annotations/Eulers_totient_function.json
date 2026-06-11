@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib defines `Nat.totient n` as the cardinality of naturals less than `n` coprime to `n`, with notation `φ`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1b627caa1ac5"
     },
     {
       "kind": "example",
@@ -35,7 +36,8 @@
         "match_kind": null
       },
       "note": "The set of totatives is realized as `{a ∈ range n | n.Coprime a}` but the concrete example of the totatives of 9 is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8f21aee730b9"
     },
     {
       "kind": "proposition",
@@ -51,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat.totient_mul` proves `φ(m*n) = φ m * φ n` whenever `m.Coprime n`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c7e9a1f0a3d5"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": null
       },
       "note": "No definition of `n - φ(n)` as a named cototient function appears in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1744ba72c81e"
     },
     {
       "kind": "theorem",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat.totient_eq_prod_factorization` expresses `φ n` as a product over prime factors `p^(k-1)(p-1)`, equivalent to the stated formula.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "956f8470185f"
     },
     {
       "kind": "theorem",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat.totient_eq_mul_prod_factors` states `(φ n : ℚ) = n * ∏ p ∈ n.primeFactors, (1 - p⁻¹)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f40a4e5b4485"
     },
     {
       "kind": "proposition",
@@ -115,7 +121,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat.totient_mul` gives `φ(m n) = φ m * φ n` for coprime `m`, `n`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cfab85cf88cb"
     },
     {
       "kind": "proposition",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat.totient_prime_pow` proves `φ(p^n) = p^(n-1)(p-1)` for prime `p` and `0 < n`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e9951869e022"
     },
     {
       "kind": "example",
@@ -147,7 +155,8 @@
         "match_kind": null
       },
       "note": "The general product formula is available so `φ 20 = 8` is decidable, but the concrete numerical example is not stated as a lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "94b9f491ce17"
     },
     {
       "kind": "theorem",
@@ -163,7 +172,8 @@
         "match_kind": null
       },
       "note": "No representation of the totient as a discrete Fourier transform of `gcd` was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2deac2afdc91"
     },
     {
       "kind": "theorem",
@@ -179,7 +189,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat.sum_totient` proves `∑ d ∈ n.divisors, φ d = n`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "404254f8c7d6"
     },
     {
       "kind": "theorem",
@@ -195,7 +206,8 @@
         "match_kind": null
       },
       "note": "Möbius inversion is available in general (`sum_eq_iff_sum_mul_moebius_eq`), but the specific consequence `φ(n) = ∑ d∣n μ(d) n/d` is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "49c8233e3103"
     },
     {
       "kind": "definition",
@@ -211,7 +223,8 @@
         "match_kind": "exact"
       },
       "note": "`ArithmeticFunction.moebius` (notation `μ`) is the standard Möbius function defined via squarefreeness and the parity of the number of prime factors.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "292c91cce01a"
     },
     {
       "kind": "proposition",
@@ -227,7 +240,8 @@
         "match_kind": "special_case"
       },
       "note": "The upper bound `φ n < n` (for `1 < n`) is `Nat.totient_lt`, but the article's lower bound `φ(n) ≥ √n` is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b4f9b5e3d8b2"
     },
     {
       "kind": "theorem",
@@ -243,7 +257,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat.ModEq.pow_totient` proves `x^(φ n) ≡ 1 [MOD n]` when `Nat.Coprime x n`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "779cdcca2026"
     },
     {
       "kind": "proposition",
@@ -259,7 +274,8 @@
         "match_kind": "special_case"
       },
       "note": "`Nat.totient_even` proves `φ n` is even for `2 < n`; finer divisibility properties (e.g. `2^k | φ n`) are not isolated as lemmas.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "275a2c24dd4d"
     },
     {
       "kind": "proposition",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "No statement that `n ∣ φ(a^n - 1)` (or its sharper variant) was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "589e39fa0f2d"
     },
     {
       "kind": "theorem",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "Menon's identity does not appear in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ee045a080fb9"
     },
     {
       "kind": "theorem",
@@ -307,7 +325,8 @@
         "match_kind": null
       },
       "note": "The asymptotic density result for `d ∣ φ(n)` is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f7e289093c2c"
     },
     {
       "kind": "proposition",
@@ -323,7 +342,8 @@
         "match_kind": null
       },
       "note": "The L-series identity `∑ φ(n)/n^s = ζ(s-1)/ζ(s)` is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "705ea8fec4ad"
     },
     {
       "kind": "proposition",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "No Lambert series representation of the totient appears in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ae7eb29a44bf"
     },
     {
       "kind": "theorem",
@@ -355,7 +376,8 @@
         "match_kind": null
       },
       "note": "No asymptotic `limsup` bound for `φ(n)/n^{1-δ}` is in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "63fa1c4f68fe"
     },
     {
       "kind": "proposition",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "The combined `φ(n)·σ(n)` inequality is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1cb37e4cdf9a"
     },
     {
       "kind": "theorem",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "The Mertens-type `liminf` for `φ(n) log log n / n` is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "676537bec582"
     },
     {
       "kind": "theorem",
@@ -403,7 +427,8 @@
         "match_kind": null
       },
       "note": "Nicolas's inequality for the totient is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dab20dfaca63"
     },
     {
       "kind": "theorem",
@@ -419,7 +444,8 @@
         "match_kind": null
       },
       "note": "Walfisz's asymptotic for `∑ φ(k)` is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b5b7f4b9a789"
     },
     {
       "kind": "theorem",
@@ -435,7 +461,8 @@
         "match_kind": null
       },
       "note": "Liu's improved error term is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "db6c56f9a6ae"
     },
     {
       "kind": "theorem",
@@ -451,7 +478,8 @@
         "match_kind": null
       },
       "note": "The `6/π²` density result for coprime pairs is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3ccbaa828c0e"
     },
     {
       "kind": "theorem",
@@ -467,7 +495,8 @@
         "match_kind": null
       },
       "note": "Somayajulu's `liminf`/`limsup` for `φ(n+1)/φ(n)` is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "264ac90bf471"
     },
     {
       "kind": "theorem",
@@ -483,7 +512,8 @@
         "match_kind": null
       },
       "note": "The Schinzel–Sierpiński density strengthening is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f6732a09af5b"
     },
     {
       "kind": "definition",
@@ -499,7 +529,8 @@
         "match_kind": null
       },
       "note": "The image/non-image set of the totient is not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f7adb7c9ff53"
     },
     {
       "kind": "proposition",
@@ -515,7 +546,8 @@
         "match_kind": null
       },
       "note": "Erdős's asymptotic for the count of totient numbers is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "527001ac1034"
     },
     {
       "kind": "proposition",
@@ -531,7 +563,8 @@
         "match_kind": null
       },
       "note": "No counting-with-multiplicity asymptotic for totient values is formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "69be80828212"
     },
     {
       "kind": "proposition",
@@ -547,7 +580,8 @@
         "match_kind": null
       },
       "note": "Multiplicity lower bounds for totient values are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9036417b0d57"
     },
     {
       "kind": "theorem",
@@ -563,7 +597,8 @@
         "match_kind": null
       },
       "note": "Ford's theorem on totient multiplicities is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b704f65058ab"
     },
     {
       "kind": "definition",
@@ -579,7 +614,8 @@
         "match_kind": null
       },
       "note": "No definition of perfect totient numbers appears in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "98607a64a9cd"
     },
     {
       "kind": "theorem",
@@ -595,7 +631,8 @@
         "match_kind": null
       },
       "note": "Gauss's constructibility criterion via the totient is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4b4f24a3cdeb"
     },
     {
       "kind": "proposition",
@@ -611,7 +648,8 @@
         "match_kind": null
       },
       "note": "The Gauss–Wantzel theorem on regular-polygon constructibility is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ef8a7aadeda8"
     },
     {
       "kind": "example",
@@ -627,7 +665,8 @@
         "match_kind": null
       },
       "note": "RSA is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9e9449768911"
     },
     {
       "kind": "proposition",
@@ -643,7 +682,8 @@
         "match_kind": null
       },
       "note": "Lehmer's totient conjecture is not stated in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4f5211c4fac1"
     },
     {
       "kind": "proposition",
@@ -659,7 +699,8 @@
         "match_kind": null
       },
       "note": "Lehmer's lower bounds for hypothetical counterexamples are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "67e872ea55ae"
     },
     {
       "kind": "proposition",
@@ -675,7 +716,8 @@
         "match_kind": null
       },
       "note": "Carmichael's totient conjecture is not stated (Mathlib's `ArithmeticFunction.carmichael` is the unrelated reduced-totient function).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0a36052b8bf3"
     },
     {
       "kind": "theorem",
@@ -691,7 +733,8 @@
         "match_kind": null
       },
       "note": "Mathlib defines `RiemannHypothesis` but does not state its equivalence with a totient inequality.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3523c5506ec1"
     }
   ]
 }

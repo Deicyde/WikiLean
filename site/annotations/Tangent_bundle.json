@@ -18,7 +18,8 @@
         "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
         "match_kind": "exact"
       },
-      "note": "`TangentBundle I M` is defined as `Bundle.TotalSpace E (TangentSpace I : M → Type _)`, i.e. the sigma-type / disjoint union of the tangent spaces `TangentSpace I x` (each a type synonym for the model space `E`)."
+      "note": "`TangentBundle I M` is defined as `Bundle.TotalSpace E (TangentSpace I : M → Type _)`, i.e. the sigma-type / disjoint union of the tangent spaces `TangentSpace I x` (each a type synonym for the model space `E`).",
+      "id": "5e0576598898"
     },
     {
       "kind": "definition",
@@ -34,7 +35,8 @@
         "module": "Mathlib.Topology.FiberBundle.Basic",
         "match_kind": "exact"
       },
-      "note": "Elements of `TangentBundle I M` are `Bundle.TotalSpace` points `⟨x, v⟩` with `x : M` and `v : TangentSpace I x`, accessed via `.proj`/`.1` (base point) and `.2` (tangent vector)."
+      "note": "Elements of `TangentBundle I M` are `Bundle.TotalSpace` points `⟨x, v⟩` with `x : M` and `v : TangentSpace I x`, accessed via `.proj`/`.1` (base point) and `.2` (tangent vector).",
+      "id": "5a6ffab80fa4"
     },
     {
       "kind": "definition",
@@ -50,7 +52,8 @@
         "module": "Mathlib.Topology.FiberBundle.Basic",
         "match_kind": "exact"
       },
-      "note": "The bundle projection `π E (TangentSpace I)` / `TotalSpace.proj` maps `⟨x, v⟩ ↦ x`; its continuity/smoothness is `FiberBundle.continuous_proj` and `contMDiff_proj` (Mathlib.Geometry.Manifold.VectorBundle.Basic)."
+      "note": "The bundle projection `π E (TangentSpace I)` / `TotalSpace.proj` maps `⟨x, v⟩ ↦ x`; its continuity/smoothness is `FiberBundle.continuous_proj` and `contMDiff_proj` (Mathlib.Geometry.Manifold.VectorBundle.Basic).",
+      "id": "fc9f5926d4a5"
     },
     {
       "kind": "definition",
@@ -66,7 +69,8 @@
         "module": "Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection",
         "match_kind": "generalization"
       },
-      "note": "A vector field is a (smooth) section of the tangent bundle: `ContMDiffSection I E n (TangentSpace I)`, or unbundled `Π x : M, TangentSpace I x`. The cotangent bundle exists only implicitly as `Π x : M, TangentSpace I x →L[𝕜] 𝕜` (see `extDerivFun`); there is no named `CotangentBundle`/dual-bundle declaration."
+      "note": "A vector field is a (smooth) section of the tangent bundle: `ContMDiffSection I E n (TangentSpace I)`, or unbundled `Π x : M, TangentSpace I x`. The cotangent bundle exists only implicitly as `Π x : M, TangentSpace I x →L[𝕜] 𝕜` (see `extDerivFun`); there is no named `CotangentBundle`/dual-bundle declaration.",
+      "id": "1139e83385e1"
     },
     {
       "kind": "definition",
@@ -82,7 +86,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has no `Parallelizable` predicate and no theorem relating it to triviality of the tangent bundle. The closest infrastructure is local frames (`IsLocalFrameOn`, Mathlib.Geometry.Manifold.VectorBundle.LocalFrame) and the trivial bundle `Bundle.Trivial`, but no global-frame / parallelizability notion."
+      "note": "Mathlib has no `Parallelizable` predicate and no theorem relating it to triviality of the tangent bundle. The closest infrastructure is local frames (`IsLocalFrameOn`, Mathlib.Geometry.Manifold.VectorBundle.LocalFrame) and the trivial bundle `Bundle.Trivial`, but no global-frame / parallelizability notion.",
+      "id": "532f2afc7d5c"
     },
     {
       "kind": "definition",
@@ -98,7 +103,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No notion of framed manifold or stable triviality of a bundle in Mathlib. `Mathlib.Geometry.Manifold.Bordism` exists but does not define framings or stably-trivial tangent bundles."
+      "note": "No notion of framed manifold or stable triviality of a bundle in Mathlib. `Mathlib.Geometry.Manifold.Bordism` exists but does not define framings or stably-trivial tangent bundles.",
+      "id": "9cf5feeae2c0"
     },
     {
       "kind": "example",
@@ -114,7 +120,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Not formalized. Mathlib defines spheres as manifolds (`Mathlib.Geometry.Manifold.Instances.Sphere`) but neither parallelizability of S^1/S^3/S^7 nor framings of S^n are present; the underlying parallelizability/framing notions do not exist."
+      "note": "Not formalized. Mathlib defines spheres as manifolds (`Mathlib.Geometry.Manifold.Instances.Sphere`) but neither parallelizability of S^1/S^3/S^7 nor framings of S^n are present; the underlying parallelizability/framing notions do not exist.",
+      "id": "f310d927dde6"
     },
     {
       "kind": "proposition",
@@ -130,7 +137,8 @@
         "module": "Mathlib.Geometry.Manifold.ContMDiffMFDeriv",
         "match_kind": "exact"
       },
-      "note": "`tangentMap I I' f : TangentBundle I M → TangentBundle I' M'` is the bundled derivative; `ContMDiff.contMDiff_tangentMap` shows that if `f` is `C^n` then `tangentMap f` is `C^m` for `m + 1 ≤ n` (and `ContMDiff.continuous_tangentMap` for continuity)."
+      "note": "`tangentMap I I' f : TangentBundle I M → TangentBundle I' M'` is the bundled derivative; `ContMDiff.contMDiff_tangentMap` shows that if `f` is `C^n` then `tangentMap f` is `C^m` for `m + 1 ≤ n` (and `ContMDiff.continuous_tangentMap` for continuity).",
+      "id": "db85d8c5d16a"
     },
     {
       "kind": "proposition",
@@ -146,7 +154,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The tangent bundle is charted on `ModelProd H E` (so locally `H × E`, dimension `2 dim M` in the finite-dimensional case), but there is no `finrank`/dimension theorem stating `dim (TangentBundle I M) = 2 * dim M`."
+      "note": "The tangent bundle is charted on `ModelProd H E` (so locally `H × E`, dimension `2 dim M` in the finite-dimensional case), but there is no `finrank`/dimension theorem stating `dim (TangentBundle I M) = 2 * dim M`.",
+      "id": "6d191b55950a"
     },
     {
       "kind": "proposition",
@@ -162,7 +171,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Not formalized. The tangent bundle is locally trivial over chart domains (`trivializationAt`), but there is no result that over a contractible open set it is diffeomorphic to a product (which would require triviality of bundles over contractible bases)."
+      "note": "Not formalized. The tangent bundle is locally trivial over chart domains (`trivializationAt`), but there is no result that over a contractible open set it is diffeomorphic to a product (which would require triviality of bundles over contractible bases).",
+      "id": "3e20b35ec877"
     },
     {
       "kind": "definition",
@@ -178,7 +188,8 @@
         "module": "Mathlib.Topology.FiberBundle.Constructions",
         "match_kind": "generalization"
       },
-      "note": "`Bundle.Trivial B F` is the trivial bundle (with `Bundle.Trivial.fiberBundle`/`vectorBundle` instances), but Mathlib has no predicate asserting that a *given* bundle (e.g. a particular `TangentBundle I M`) is isomorphic to a trivial one, so 'the tangent bundle is trivial' is not directly expressible."
+      "note": "`Bundle.Trivial B F` is the trivial bundle (with `Bundle.Trivial.fiberBundle`/`vectorBundle` instances), but Mathlib has no predicate asserting that a *given* bundle (e.g. a particular `TangentBundle I M`) is isomorphic to a trivial one, so 'the tangent bundle is trivial' is not directly expressible.",
+      "id": "ba7328f81b5c"
     },
     {
       "kind": "definition",
@@ -194,7 +205,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No `Parallelizable` definition in Mathlib (duplicate of the lead annotation on parallelizability)."
+      "note": "No `Parallelizable` definition in Mathlib (duplicate of the lead annotation on parallelizability).",
+      "id": "1aac008d2df7"
     },
     {
       "kind": "example",
@@ -210,7 +222,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has `instance : LieGroup (𝓡 1) ω Circle` (Mathlib.Geometry.Manifold.Instances.Sphere), and a general fact that Lie groups have trivial tangent bundles would follow from the Lie-algebra trivialization, but neither the trivialization of `TM` for a Lie group nor triviality of the circle's tangent bundle is stated."
+      "note": "Mathlib has `instance : LieGroup (𝓡 1) ω Circle` (Mathlib.Geometry.Manifold.Instances.Sphere), and a general fact that Lie groups have trivial tangent bundles would follow from the Lie-algebra trivialization, but neither the trivialization of `TM` for a Lie group nor triviality of the circle's tangent bundle is stated.",
+      "id": "981d478c654d"
     },
     {
       "kind": "definition",
@@ -226,7 +239,8 @@
         "module": "Mathlib.Geometry.Manifold.VectorBundle.Tangent",
         "match_kind": "exact"
       },
-      "note": "`tangentBundleCore I M : VectorBundleCore 𝕜 M E (atlas H M)` builds the topology and (for `C^{n+1}` `M`) the `C^n` vector-bundle/manifold structure on `TangentBundle I M` via the chart-indexed coordinate changes (Jacobians `fderivWithin` of `extend`-coordinate changes); the topology instance and `TangentBundle.chartAt` come from this."
+      "note": "`tangentBundleCore I M : VectorBundleCore 𝕜 M E (atlas H M)` builds the topology and (for `C^{n+1}` `M`) the `C^n` vector-bundle/manifold structure on `TangentBundle I M` via the chart-indexed coordinate changes (Jacobians `fderivWithin` of `extend`-coordinate changes); the topology instance and `TangentBundle.chartAt` come from this.",
+      "id": "7fffcf8ff523"
     },
     {
       "kind": "definition",
@@ -242,7 +256,8 @@
         "module": "Mathlib.Geometry.Manifold.VectorBundle.Tangent",
         "match_kind": "exact"
       },
-      "note": "`TangentSpace.vectorBundle` gives `VectorBundle 𝕜 E (TangentSpace I)`, with fiber the model space `E` and transition functions the Jacobian derivatives of coordinate changes (`tangentBundleCore.coordChange = fderivWithin ...`), matching the rank-n (= dim E) vector bundle with Jacobian transitions."
+      "note": "`TangentSpace.vectorBundle` gives `VectorBundle 𝕜 E (TangentSpace I)`, with fiber the model space `E` and transition functions the Jacobian derivatives of coordinate changes (`tangentBundleCore.coordChange = fderivWithin ...`), matching the rank-n (= dim E) vector bundle with Jacobian transitions.",
+      "id": "ace966443663"
     },
     {
       "kind": "example",
@@ -258,7 +273,8 @@
         "module": "Mathlib.Geometry.Manifold.VectorBundle.Tangent",
         "match_kind": "special_case"
       },
-      "note": "For the model space `H` (e.g. `E = R^n` with `I = 𝓘(𝕜, E)`), `tangentBundleModelSpaceHomeomorph : TangentBundle I H ≃ₜ ModelProd H E` exhibits the tangent bundle as homeomorphic to the product, and the trivialization is the identity (`trivializationAt_model_space_apply`). This is the model-space triviality rather than a general 'TM of R^n is trivial' statement."
+      "note": "For the model space `H` (e.g. `E = R^n` with `I = 𝓘(𝕜, E)`), `tangentBundleModelSpaceHomeomorph : TangentBundle I H ≃ₜ ModelProd H E` exhibits the tangent bundle as homeomorphic to the product, and the trivialization is the identity (`trivializationAt_model_space_apply`). This is the model-space triviality rather than a general 'TM of R^n is trivial' statement.",
+      "id": "df568ac8715f"
     },
     {
       "kind": "example",
@@ -274,7 +290,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Not formalized; same gap as the earlier circle annotation. Mathlib has the circle as a manifold/Lie group but no statement that its tangent bundle is trivial (a cylinder)."
+      "note": "Not formalized; same gap as the earlier circle annotation. Mathlib has the circle as a manifold/Lie group but no statement that its tangent bundle is trivial (a cylinder).",
+      "id": "114ca6406a02"
     },
     {
       "kind": "example",
@@ -290,7 +307,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Informal expository remark with no mathematical content to formalize."
+      "note": "Informal expository remark with no mathematical content to formalize.",
+      "id": "6d13639c4914"
     },
     {
       "kind": "example",
@@ -306,7 +324,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Not formalized: there is no hairy ball theorem in Mathlib and no statement that the tangent bundle of S^2 (or S^{2n}) is nontrivial / admits no nonvanishing vector field."
+      "note": "Not formalized: there is no hairy ball theorem in Mathlib and no statement that the tangent bundle of S^2 (or S^{2n}) is nontrivial / admits no nonvanishing vector field.",
+      "id": "39d7a60c7a54"
     },
     {
       "kind": "definition",
@@ -322,7 +341,8 @@
         "module": "Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection",
         "match_kind": "exact"
       },
-      "note": "A smooth vector field is `Cₛ^n⟮I; E, TangentSpace I⟯` = `ContMDiffSection I E n (TangentSpace I)`, a `C^n` section assigning `x ↦ v x ∈ TangentSpace I x`; unbundled vector fields appear as `Π x, TangentSpace I x` throughout `Mathlib.Geometry.Manifold.VectorField`."
+      "note": "A smooth vector field is `Cₛ^n⟮I; E, TangentSpace I⟯` = `ContMDiffSection I E n (TangentSpace I)`, a `C^n` section assigning `x ↦ v x ∈ TangentSpace I x`; unbundled vector fields appear as `Π x, TangentSpace I x` throughout `Mathlib.Geometry.Manifold.VectorField`.",
+      "id": "7b84665a8f9e"
     },
     {
       "kind": "definition",
@@ -338,7 +358,8 @@
         "module": "Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection",
         "match_kind": "exact"
       },
-      "note": "`ContMDiffSection` is exactly a section `s : Π x, V x` (with `s.toFun` satisfying `proj ∘ s = id`) that is `C^n`; applied to `V = TangentSpace I` it is a vector field. Continuity of the projection makes the section condition `π ∘ s = id`."
+      "note": "`ContMDiffSection` is exactly a section `s : Π x, V x` (with `s.toFun` satisfying `proj ∘ s = id`) that is `C^n`; applied to `V = TangentSpace I` it is a vector field. Continuity of the projection makes the section condition `π ∘ s = id`.",
+      "id": "71a6144de432"
     },
     {
       "kind": "definition",
@@ -354,7 +375,8 @@
         "module": "Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection",
         "match_kind": "special_case"
       },
-      "note": "`ContMDiffSection.instModule` gives the module structure of sections over the scalar field `𝕜` (with scalar multiplication by `C^n` functions `ψ • s` also defined). The module structure over the full algebra `C^∞(M, 𝕜)` of smooth functions is not registered as an instance, so only the field-module structure is formalized."
+      "note": "`ContMDiffSection.instModule` gives the module structure of sections over the scalar field `𝕜` (with scalar multiplication by `C^n` functions `ψ • s` also defined). The module structure over the full algebra `C^∞(M, 𝕜)` of smooth functions is not registered as an instance, so only the field-module structure is formalized.",
+      "id": "a5a3312838bd"
     },
     {
       "kind": "definition",
@@ -370,7 +392,8 @@
         "module": "Mathlib.Geometry.Manifold.VectorField.LieBracket",
         "match_kind": "generalization"
       },
-      "note": "Local/within-a-set vector field notions appear (e.g. `mlieBracketWithin` for vector fields on a set), and local frames (`IsLocalFrameOn`) exist, but there is no `StructureSheaf`/sheaf-of-vector-fields object assembling local sections into a sheaf."
+      "note": "Local/within-a-set vector field notions appear (e.g. `mlieBracketWithin` for vector fields on a set), and local frames (`IsLocalFrameOn`) exist, but there is no `StructureSheaf`/sheaf-of-vector-fields object assembling local sections into a sheaf.",
+      "id": "080673d2821b"
     },
     {
       "kind": "definition",
@@ -386,7 +409,8 @@
         "module": "Mathlib.Geometry.Manifold.MFDeriv.NormedSpace",
         "match_kind": "special_case"
       },
-      "note": "A 1-form is represented as a section `Π x, TangentSpace I x →L[𝕜] 𝕜` of the (implicit) cotangent bundle; `extDerivFun g` produces the exterior derivative of a scalar function as such a section. There is no named `CotangentBundle` nor a general space of differential 1-forms / differential forms."
+      "note": "A 1-form is represented as a section `Π x, TangentSpace I x →L[𝕜] 𝕜` of the (implicit) cotangent bundle; `extDerivFun g` produces the exterior derivative of a scalar function as such a section. There is no named `CotangentBundle` nor a general space of differential 1-forms / differential forms.",
+      "id": "97e67f8f556c"
     },
     {
       "kind": "definition",
@@ -402,7 +426,8 @@
         "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
         "match_kind": "generalization"
       },
-      "note": "Since `TangentBundle I M` is itself a `C^n` manifold (via `IsManifold (IB.prod 𝓘(𝕜,F)) n (TotalSpace ...)` and model `I.tangent`), the double tangent bundle `TangentBundle I.tangent (TangentBundle I M)` is expressible, but there is no dedicated `SecondOrderTangentBundle` definition."
+      "note": "Since `TangentBundle I M` is itself a `C^n` manifold (via `IsManifold (IB.prod 𝓘(𝕜,F)) n (TotalSpace ...)` and model `I.tangent`), the double tangent bundle `TangentBundle I.tangent (TangentBundle I M)` is expressible, but there is no dedicated `SecondOrderTangentBundle` definition.",
+      "id": "f86d68c20709"
     },
     {
       "kind": "definition",
@@ -418,7 +443,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No recursive/iterated k-th order tangent bundle definition in Mathlib; while iterating `TangentBundle` is in principle possible (each is again a manifold), the general indexed construction is not formalized."
+      "note": "No recursive/iterated k-th order tangent bundle definition in Mathlib; while iterating `TangentBundle` is in principle possible (each is again a manifold), the general indexed construction is not formalized.",
+      "id": "9075109e27cd"
     },
     {
       "kind": "proposition",
@@ -434,7 +460,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Not formalized as such. Higher-order derivatives of maps between manifolds are handled via iterated `mfderiv`/`mfderivWithin` and `ContMDiff`, not via maps between higher-order tangent bundles."
+      "note": "Not formalized as such. Higher-order derivatives of maps between manifolds are handled via iterated `mfderiv`/`mfderivWithin` and `ContMDiff`, not via maps between higher-order tangent bundles.",
+      "id": "9a2ee9fe5902"
     },
     {
       "kind": "definition",
@@ -450,7 +477,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No jet bundle definition in Mathlib; '1-jet' is mentioned only informally in docstrings (Mathlib.Geometry.Manifold.ContMDiffMFDeriv, .VectorBundle.CovariantDerivative.Basic), with no `JetBundle`/`Jet` object."
+      "note": "No jet bundle definition in Mathlib; '1-jet' is mentioned only informally in docstrings (Mathlib.Geometry.Manifold.ContMDiffMFDeriv, .VectorBundle.CovariantDerivative.Basic), with no `JetBundle`/`Jet` object.",
+      "id": "76592f2669d4"
     },
     {
       "kind": "definition",
@@ -466,7 +494,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No canonical / Liouville / Euler vector field on the tangent bundle is defined. The only 'canonical' mention near tangent spaces refers to `NormedSpace.fromTangentSpace`, an unrelated identification."
+      "note": "No canonical / Liouville / Euler vector field on the tangent bundle is defined. The only 'canonical' mention near tangent spaces refers to `NormedSpace.fromTangentSpace`, an unrelated identification.",
+      "id": "582b0b4b3ee8"
     },
     {
       "kind": "proposition",
@@ -482,7 +511,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Not formalized. The double tangent bundle is expressible (TM is a manifold) but there is no result describing its local product structure (curved horizontal factor times flat vertical factor)."
+      "note": "Not formalized. The double tangent bundle is expressible (TM is a manifold) but there is no result describing its local product structure (curved horizontal factor times flat vertical factor).",
+      "id": "332f7bbb3b02"
     },
     {
       "kind": "definition",
@@ -498,7 +528,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Not formalized; depends on the canonical vector field, which is not defined in Mathlib."
+      "note": "Not formalized; depends on the canonical vector field, which is not defined in Mathlib.",
+      "id": "42bbda071b5c"
     },
     {
       "kind": "proposition",
@@ -514,7 +545,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Not formalized; the canonical vector field and its derivative-of-scaling description are absent from Mathlib."
+      "note": "Not formalized; the canonical vector field and its derivative-of-scaling description are absent from Mathlib.",
+      "id": "b461875070fc"
     },
     {
       "kind": "proposition",
@@ -530,7 +562,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Not formalized; no axiomatic characterization of the tangent bundle (via the canonical vector field or otherwise) exists in Mathlib."
+      "note": "Not formalized; no axiomatic characterization of the tangent bundle (via the canonical vector field or otherwise) exists in Mathlib.",
+      "id": "c137bd9285da"
     },
     {
       "kind": "definition",
@@ -546,7 +579,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No tangent-lift-of-a-curve construction. Mathlib has integral curves of vector fields (`Mathlib.Geometry.Manifold.IntegralCurve`) but not the lift of a curve into the double tangent bundle."
+      "note": "No tangent-lift-of-a-curve construction. Mathlib has integral curves of vector fields (`Mathlib.Geometry.Manifold.IntegralCurve`) but not the lift of a curve into the double tangent bundle.",
+      "id": "138902a6d5d5"
     },
     {
       "kind": "definition",
@@ -562,7 +596,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No vertical lift (of a function or vector field) defined in Mathlib."
+      "note": "No vertical lift (of a function or vector field) defined in Mathlib.",
+      "id": "50fe2b07c440"
     },
     {
       "kind": "definition",
@@ -578,7 +613,8 @@
         "match_kind": "exact"
       },
       "note": "Smoke2 human annotation — should survive verbatim.",
-      "provenance": "ai-agent1"
+      "provenance": "ai-agent1",
+      "id": "94b07c1c5c05"
     },
     {
       "kind": "proposition",
@@ -594,7 +630,8 @@
         "match_kind": "generalization"
       },
       "note": "Smoke2 ai-moderated annotation — provenance should NOT be downgraded by Agent 2.",
-      "provenance": "ai-agent1"
+      "provenance": "ai-agent1",
+      "id": "c07713c8096d"
     },
     {
       "kind": "definition",
@@ -610,7 +647,8 @@
         "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
         "match_kind": "exact"
       },
-      "note": "`TangentSpace I x` is the fiber of the tangent bundle at `x : M`, defined as a type synonym for the model space `E` carrying the normed-space structure pulled back via the chart at `x`."
+      "note": "`TangentSpace I x` is the fiber of the tangent bundle at `x : M`, defined as a type synonym for the model space `E` carrying the normed-space structure pulled back via the chart at `x`.",
+      "id": "16c581e013a8"
     },
     {
       "kind": "definition",
@@ -626,7 +664,8 @@
         "module": "Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection",
         "match_kind": "exact"
       },
-      "note": "Pointwise addition of `C^n` sections (including vector fields) is the `Add` instance on `ContMDiffSection`, with `(s + t) x = s x + t x` in the fiber `TangentSpace I x`."
+      "note": "Pointwise addition of `C^n` sections (including vector fields) is the `Add` instance on `ContMDiffSection`, with `(s + t) x = s x + t x` in the fiber `TangentSpace I x`.",
+      "id": "48877e951d44"
     },
     {
       "kind": "definition",
@@ -642,7 +681,8 @@
         "module": "Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection",
         "match_kind": "generalization"
       },
-      "note": "Multiplication of a section by a smooth scalar function is available via the `SMul` action of `C^n` functions on `ContMDiffSection`, giving another `C^n` section/vector field; the full `C^∞(M,𝕜)`-module instance is not registered."
+      "note": "Multiplication of a section by a smooth scalar function is available via the `SMul` action of `C^n` functions on `ContMDiffSection`, giving another `C^n` section/vector field; the full `C^∞(M,𝕜)`-module instance is not registered.",
+      "id": "39acf9e3a67d"
     }
   ]
 }

@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib's `Distribution Ω F n` (notation `𝓓'(Ω, F)`) is the space of continuous linear functionals on test functions, the standard definition of distributions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "004d5ff3f7cf"
     },
     {
       "kind": "proposition",
@@ -35,7 +36,8 @@
         "match_kind": null
       },
       "note": "Mathlib defines `TemperedDistribution` and `Distribution` separately but has no embedding of 𝓢' into 𝓓'.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d5390435fa1e"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "generalization"
       },
       "note": "`TestFunction Ω F` (notation `𝓓(Ω, F)`) generalizes D(ℝ) to smooth compactly supported maps on any open set.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4fdd2ff1b765"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "generalization"
       },
       "note": "`Distribution` is an abbrev for continuous linear maps `𝓓(Ω, ℝ) →L_c[ℝ] F`, generalizing the linear map D(ℝ)→ℝ.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f70720fe029b"
     },
     {
       "kind": "example",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "`Distribution.delta x` is defined with `delta_apply : delta x f = f x`, exactly the Dirac delta evaluation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7e6631812d7e"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": null
       },
       "note": "Integration of test functions against a locally integrable function is realized as a continuous linear map, but it is not packaged as the canonical embedding of locally integrable functions into 𝓓'.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9002b211a2f7"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": null
       },
       "note": "Integrating test functions against a measure is available, and `Measure.toTemperedDistribution` exists for tempered distributions, but no general measure→𝓓' map is defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "31e27f4ce3f9"
     },
     {
       "kind": "example",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "`toTemperedDistribution_dirac_eq_delta : (dirac x).toTemperedDistribution = delta x` states exactly that the point-mass measure is the delta distribution.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "751968dc0ce4"
     },
     {
       "kind": "theorem",
@@ -147,7 +155,8 @@
         "match_kind": null
       },
       "note": "No formalization of Schwartz's impossibility theorem on multiplication of distributions exists in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "91353a329070"
     },
     {
       "kind": "definition",
@@ -163,7 +172,8 @@
         "match_kind": "generalization"
       },
       "note": "`lineDerivCLM_apply : lineDerivCLM v T f = -T (lineDerivCLM v f)` is the distributional derivative defined by transposing differentiation, generalizing the 1-D derivative.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "73a5935c0731"
     },
     {
       "kind": "example",
@@ -179,7 +189,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no Heaviside step function nor the statement that its distributional derivative is δ.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f2f7298fb253"
     },
     {
       "kind": "example",
@@ -195,7 +206,8 @@
         "match_kind": null
       },
       "note": "Both `Distribution.delta` and `lineDerivCLM` exist so δ′ is expressible as `lineDerivCLM v (delta x)`, but no dedicated lemma computes the derivative of the delta.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "85d3137c76d5"
     },
     {
       "kind": "definition",
@@ -211,7 +223,8 @@
         "match_kind": "exact"
       },
       "note": "`TestFunction Ω F` is the space of smooth compactly supported maps with support in the open set Ω, i.e. D(U).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "87a82f419ff8"
     },
     {
       "kind": "definition",
@@ -227,7 +240,8 @@
         "match_kind": "exact"
       },
       "note": "`HasCompactSupport f` (closure of the support is compact) is the standard Mathlib notion of compact support.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9e2cb526dd74"
     },
     {
       "kind": "definition",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "The LF topology on `TestFunction` is defined, so convergence is the topological convergence, but the explicit sequential characterization (common compact support plus uniform convergence of all derivatives) is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0d86ea58f7aa"
     },
     {
       "kind": "proposition",
@@ -259,7 +274,8 @@
         "match_kind": null
       },
       "note": "The locally convex TVS structure on `TestFunction` is established, but completeness and the Heine–Borel (Montel) property are not proved.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bd67fbf43f32"
     },
     {
       "kind": "definition",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "`TestFunction.topologicalSpace` is built as the finest locally convex topology coarser than the inductive-limit (`originalTop`) topology, instantiating this construction for test functions, but there is no general abstract LF/final-topology API.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b7849437d71c"
     },
     {
       "kind": "definition",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no general notion of LF space (countable strict inductive limit of Fréchet spaces).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "206b7b1e36cd"
     },
     {
       "kind": "proposition",
@@ -307,7 +325,8 @@
         "match_kind": null
       },
       "note": "No completeness instance or theorem for the test function space topology exists in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "24720cf61f5c"
     },
     {
       "kind": "proposition",
@@ -323,7 +342,8 @@
         "match_kind": null
       },
       "note": "The non-metrizability of the test function space topology is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e127c616912a"
     },
     {
       "kind": "definition",
@@ -339,7 +359,8 @@
         "match_kind": "exact"
       },
       "note": "`𝓓'(Ω, ℝ) = Distribution Ω ℝ ⊤` is exactly the space of continuous linear functionals on D(U).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7c4a19903a56"
     },
     {
       "kind": "proposition",
@@ -355,7 +376,8 @@
         "match_kind": null
       },
       "note": "The universal property characterizes continuity by restriction to each compact K, but the explicit seminorm bound |T φ| ≤ C·sup‖∂^α φ‖ criterion is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "466f8120886f"
     },
     {
       "kind": "definition",
@@ -371,7 +393,8 @@
         "match_kind": "exact"
       },
       "note": "`Distribution Ω ℝ ⊤` is the continuous dual of test functions, matching D′(U).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "109f768937f2"
     },
     {
       "kind": "definition",
@@ -387,7 +410,8 @@
         "match_kind": "invocation"
       },
       "note": "The pairing ⟨T, φ⟩ is the `FunLike` application `T φ` of the continuous linear functional `T : 𝓓'(Ω, ℝ)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "72f8ffeff52d"
     },
     {
       "kind": "definition",
@@ -403,7 +427,8 @@
         "match_kind": null
       },
       "note": "𝓓'(Ω, F) carries the compact-convergence topology, which agrees with weak-* on sequences (noted in the file), but there is no explicit weak-* convergence definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f09153550006"
     },
     {
       "kind": "example",
@@ -419,7 +444,8 @@
         "match_kind": null
       },
       "note": "No theorem stating that a concrete sequence of functions converges to δ in the distributional sense is present.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ffd2630aa1c3"
     },
     {
       "kind": "definition",
@@ -435,7 +461,8 @@
         "match_kind": "exact"
       },
       "note": "`MeasureTheory.LocallyIntegrable` (and `LocallyIntegrableOn`) is integrability on a neighborhood of each point / every compact set.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "61ab23e962c4"
     },
     {
       "kind": "theorem",
@@ -451,7 +478,8 @@
         "match_kind": "exact"
       },
       "note": "`ae_eq_of_integral_contDiff_smul_eq` proves that two locally integrable functions giving equal integrals against all test functions are equal a.e. (the nontrivial direction).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "91dc59e2a3b9"
     },
     {
       "kind": "theorem",
@@ -467,7 +495,8 @@
         "match_kind": null
       },
       "note": "The Riesz–Markov–Kakutani theorem represents positive linear functionals on C_c(X) by measures, but the positive-distribution version is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "55f158fa714d"
     },
     {
       "kind": "proposition",
@@ -483,7 +512,8 @@
         "match_kind": null
       },
       "note": "Density of test functions inside the space of distributions is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "571b063f6002"
     },
     {
       "kind": "proposition",
@@ -499,7 +529,8 @@
         "match_kind": null
       },
       "note": "Extension of an operator on test functions to distributions is realized concretely via precomposition (`precompCompactConvergenceCLM`), but there is no general 'extension by continuity/transpose' theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "19b5b4eb1fce"
     },
     {
       "kind": "definition",
@@ -515,7 +546,8 @@
         "match_kind": null
       },
       "note": "Precomposing a distribution with an operator on test functions (`precompCompactConvergenceCLM`) implements the transpose, but no distribution-specific 'transpose' API is provided.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6ec5da776704"
     },
     {
       "kind": "definition",
@@ -531,7 +563,8 @@
         "match_kind": "generalization"
       },
       "note": "`Distribution.lineDerivCLM v` is the directional derivative of a distribution; the partial ∂/∂x_k is the line derivative along the k-th basis vector.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "60ec44dd3594"
     },
     {
       "kind": "definition",
@@ -547,7 +580,8 @@
         "match_kind": "generalization"
       },
       "note": "`iteratedLineDerivOp` (notation `∂^{m}`) gives iterated line derivatives and applies to distributions via the `LineDeriv` instance, covering multi-index derivatives.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a5024571912e"
     },
     {
       "kind": "proposition",
@@ -563,7 +597,8 @@
         "match_kind": "invocation"
       },
       "note": "`lineDerivCLM` is a bundled `→L[ℝ]` continuous linear map, so distributional differentiation is continuous by construction.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ef19e588b4e1"
     },
     {
       "kind": "definition",
@@ -579,7 +614,8 @@
         "match_kind": null
       },
       "note": "Multiplication by a temperate-growth function is defined for tempered distributions, but multiplication of a general smooth function with a distribution on 𝓓'(U) is not.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "672071d5f8b0"
     },
     {
       "kind": "proposition",
@@ -595,7 +631,8 @@
         "match_kind": null
       },
       "note": "The module structure of distributions over the ring of smooth functions is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e0436c2538a0"
     },
     {
       "kind": "example",
@@ -611,7 +648,8 @@
         "match_kind": null
       },
       "note": "Multiplication (`smulLeftCLM`) and `delta` both exist (with `smulLeftCLM_const`), but the specific identity mδ = m(0)δ is not a named lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "111815bb45df"
     },
     {
       "kind": "definition",
@@ -627,7 +665,8 @@
         "match_kind": null
       },
       "note": "There is no general notion of a linear differential operator acting on distributions, only specific operations (derivative, multiplication).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7aa30a21b454"
     },
     {
       "kind": "definition",
@@ -643,7 +682,8 @@
         "match_kind": null
       },
       "note": "The order of a differential operator is not formalized in this context.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9484d944526f"
     },
     {
       "kind": "definition",
@@ -659,7 +699,8 @@
         "match_kind": null
       },
       "note": "Pullback (composition) of a distribution along a submersion is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "80eeab32f22c"
     },
     {
       "kind": "proposition",
@@ -675,7 +716,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no `Submersion` definition characterized by surjective Jacobian (only passing mentions in the immersion file).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "755403649aac"
     },
     {
       "kind": "proposition",
@@ -691,7 +733,8 @@
         "match_kind": null
       },
       "note": "Pullback of distributions under a diffeomorphism is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d8ca0f8208fc"
     },
     {
       "kind": "proposition",
@@ -707,7 +750,8 @@
         "match_kind": null
       },
       "note": "The sheaf structure of distributions is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "75a2a0b609b8"
     },
     {
       "kind": "definition",
@@ -723,7 +767,8 @@
         "match_kind": null
       },
       "note": "No restriction map of distributions to a smaller open set is defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "64f902380476"
     },
     {
       "kind": "proposition",
@@ -739,7 +784,8 @@
         "match_kind": null
       },
       "note": "Since the restriction map is not formalized, properties of its (non)injectivity/surjectivity are absent.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3094c6e26662"
     },
     {
       "kind": "definition",
@@ -755,7 +801,8 @@
         "match_kind": "exact"
       },
       "note": "`IsVanishingOn f s` states f kills every test function with support contained in s, the standard notion of vanishing on a set.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7aa85340b970"
     },
     {
       "kind": "definition",
@@ -771,7 +818,8 @@
         "match_kind": "exact"
       },
       "note": "`dsupport f` is the intersection of closed sets on whose complement f vanishes, i.e. the distributional support.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d89d12753b79"
     },
     {
       "kind": "definition",
@@ -787,7 +835,8 @@
         "match_kind": null
       },
       "note": "`dsupport` is defined so compact support is expressible as `IsCompact (dsupport T)`, but there is no dedicated compactly-supported-distribution definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "58e41547e067"
     },
     {
       "kind": "proposition",
@@ -803,7 +852,8 @@
         "match_kind": null
       },
       "note": "The extension of compactly supported distributions to functionals on C∞(U) (the dual ℰ′) is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3b07514af01f"
     },
     {
       "kind": "definition",
@@ -819,7 +869,8 @@
         "match_kind": "exact"
       },
       "note": "`TemperedDistribution E F` (notation `𝓢'(E, F)`) is the space of tempered distributions, though its identification as a subspace of 𝓓' is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "db093bae6431"
     },
     {
       "kind": "definition",
@@ -835,7 +886,8 @@
         "match_kind": "exact"
       },
       "note": "`SchwartzMap E F` is the space of smooth functions all of whose derivatives decay faster than any power of ‖x‖.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c4c8175b79b4"
     },
     {
       "kind": "definition",
@@ -851,7 +903,8 @@
         "match_kind": "exact"
       },
       "note": "`SchwartzMap.seminorm` gives the family of seminorms ‖x‖^k‖iteratedFDeriv n f‖, equivalent to the x^α∂^β characterization.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "82d95be8c9b3"
     },
     {
       "kind": "proposition",
@@ -867,7 +920,8 @@
         "match_kind": null
       },
       "note": "Schwartz space is shown to be a first-countable locally convex TVS (hence metrizable), but completeness is not established as an instance/theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1c1b5df24c44"
     },
     {
       "kind": "proposition",
@@ -883,7 +937,8 @@
         "match_kind": "exact"
       },
       "note": "`fourierTransformCLM : 𝓢(V, E) →L[𝕜] 𝓢(V, E)` shows the Fourier transform maps Schwartz space to itself continuously.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ae0edd2957f3"
     },
     {
       "kind": "definition",
@@ -899,7 +954,8 @@
         "match_kind": "exact"
       },
       "note": "`TemperedDistribution E F` is defined as `𝓢(E, ℂ) →Lₚₜ[ℂ] F`, the (pointwise-topology) continuous dual of Schwartz space.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b7491dfd746b"
     },
     {
       "kind": "proposition",
@@ -915,7 +971,8 @@
         "match_kind": "exact"
       },
       "note": "`derivCLM : 𝓢'(ℝ, F) →L[ℂ] 𝓢'(ℝ, F)` (and the `LineDeriv` instance) maps tempered distributions to tempered distributions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fe14355ece61"
     },
     {
       "kind": "proposition",
@@ -931,7 +988,8 @@
         "match_kind": "special_case"
       },
       "note": "`HasTemperateGrowth.toTemperedDistribution` (and `Lp.toTemperedDistribution`) realize slow-growing/Lp functions as tempered distributions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "44bd9ef3e244"
     },
     {
       "kind": "definition",
@@ -947,7 +1005,8 @@
         "match_kind": "exact"
       },
       "note": "The `FourierTransform` instance defines 𝓕 on 𝓢' by `fourier_apply : 𝓕 f g = f (𝓕 g)`, the transpose definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b36356b07c24"
     },
     {
       "kind": "theorem",
@@ -963,7 +1022,8 @@
         "match_kind": "invocation"
       },
       "note": "The `FourierPair`/`FourierInvPair` instances for 𝓢' make `fourierCLE ℂ 𝓢'(E,F)` a continuous linear equivalence, i.e. a continuous linear bijection of tempered distributions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "70314395c271"
     },
     {
       "kind": "example",
@@ -979,7 +1039,8 @@
         "match_kind": null
       },
       "note": "`fourier_delta_zero` proves 𝓕 δ = volume (i.e. 𝓕 δ = 1); the converse 𝓕 1 = δ is not stated directly (it follows by inversion).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "88a8e16380ef"
     },
     {
       "kind": "definition",
@@ -995,7 +1056,8 @@
         "match_kind": null
       },
       "note": "Convolution of functions `f ⋆[L, μ] g` is defined, but convolution as an operator on test-function/distribution spaces is not.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1234242ee74e"
     },
     {
       "kind": "definition",
@@ -1011,7 +1073,8 @@
         "match_kind": null
       },
       "note": "Convolution of a function with a distribution is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "233173019f0a"
     },
     {
       "kind": "definition",
@@ -1027,7 +1090,8 @@
         "match_kind": null
       },
       "note": "The translation-operator definition of convolution with a distribution is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e6b175291bfd"
     },
     {
       "kind": "proposition",
@@ -1043,7 +1107,8 @@
         "match_kind": null
       },
       "note": "Smoothness of convolution of a compactly supported smooth function with a (locally integrable) function is proved, but the distributional version is not.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e6113e4fbd7a"
     },
     {
       "kind": "theorem",
@@ -1059,7 +1124,8 @@
         "match_kind": null
       },
       "note": "The Titchmarsh convolution theorem is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9bb2d66a35c0"
     },
     {
       "kind": "definition",
@@ -1075,7 +1141,8 @@
         "match_kind": null
       },
       "note": "Convolution of two distributions is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "09a596e33816"
     },
     {
       "kind": "definition",
@@ -1091,7 +1158,8 @@
         "match_kind": null
       },
       "note": "No explicit characterization of distribution convolution exists in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "022081e3e8ea"
     },
     {
       "kind": "theorem",
@@ -1107,7 +1175,8 @@
         "match_kind": null
       },
       "note": "The local structure theorem (distributions are local derivatives of continuous functions) is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "eb6645603ce4"
     },
     {
       "kind": "theorem",
@@ -1123,7 +1192,8 @@
         "match_kind": null
       },
       "note": "The structure theorem for tempered distributions (as derivatives of bounded continuous functions) is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a3070b6f7be1"
     },
     {
       "kind": "theorem",
@@ -1139,7 +1209,8 @@
         "match_kind": null
       },
       "note": "This structure result on compact sets is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3e9d1e018b4a"
     },
     {
       "kind": "theorem",
@@ -1155,7 +1226,8 @@
         "match_kind": null
       },
       "note": "The theorem characterizing distributions supported at a point as finite combinations of derivatives of δ is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0e52ae264d13"
     },
     {
       "kind": "theorem",
@@ -1171,7 +1243,8 @@
         "match_kind": null
       },
       "note": "The general local structure theorem for distributions is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c8ede163d7af"
     },
     {
       "kind": "theorem",
@@ -1187,7 +1260,8 @@
         "match_kind": null
       },
       "note": "The impossibility of an associative product of distributions is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "519ec2680b71"
     },
     {
       "kind": "example",
@@ -1203,7 +1277,8 @@
         "match_kind": null
       },
       "note": "Neither the principal-value distribution p.v. 1/x nor the non-associativity example is in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f0d39ce9fafa"
     }
   ]
 }

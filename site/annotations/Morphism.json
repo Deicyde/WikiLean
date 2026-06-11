@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "`class Category` bundles objects with hom-types (via `CategoryStruct`/`Quiver`) along with id, composition, and the three axioms.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8a5c1d7f6da1"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "exact"
       },
       "note": "Source and target are encoded as the two indices of `Quiver.Hom : V → V → Type v`, written `X ⟶ Y`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c3780db8fb7c"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "`CategoryStruct.comp` provides the (typed) composition `(X ⟶ Y) → (Y ⟶ Z) → (X ⟶ Z)`, notated `f ≫ g`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d2cb8141f939"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "`CategoryStruct.id` gives `𝟙 X` and `Category.id_comp`/`comp_id` are the left/right identity axioms.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b0d9a4f1c3fa"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "`Category.assoc` states `(f ≫ g) ≫ h = f ≫ g ≫ h` as a field of the `Category` class.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5313ebbd5c6e"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "`ConcreteCategory` carries `id_apply` and `comp_apply` lemmas stating identity acts as `id` on the underlying set and composition acts as function composition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "01a6298ca2eb"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": "exact"
       },
       "note": "`Quiver.Hom X Y` (`X ⟶ Y`) is the type of morphisms between two objects, the hom-set.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2886854d3c45"
     },
     {
       "kind": "definition",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "`class LocallySmall` directly captures the property that each hom-type is equivalent to one in the given universe.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b1be82a11668"
     },
     {
       "kind": "definition",
@@ -147,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "`class Mono` requires the right-cancellation property `g ≫ f = h ≫ f → g = h`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2c08c8536f11"
     },
     {
       "kind": "definition",
@@ -163,7 +172,8 @@
         "match_kind": "exact"
       },
       "note": "`structure SplitMono` bundles a retraction with `f ≫ retraction f = 𝟙 X`; the propositional version is `IsSplitMono`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5865efdbdf38"
     },
     {
       "kind": "proposition",
@@ -179,7 +189,8 @@
         "match_kind": "exact"
       },
       "note": "`SplitMono.mono` (and the instance `IsSplitMono.mono`) derive `Mono f` from a splitting on the left.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bccf6b99b45b"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib proves `mono_iff_injective` separately in many concrete categories (e.g. `ModuleCat`, `Grp`) but has no single statement covering all concrete categories where mono = injective.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "da16006bcafc"
     },
     {
       "kind": "definition",
@@ -211,7 +223,8 @@
         "match_kind": "exact"
       },
       "note": "`class Epi` requires the left-cancellation property `f ≫ g = f ≫ h → g = h`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "949f6fd84cfb"
     },
     {
       "kind": "definition",
@@ -227,7 +240,8 @@
         "match_kind": "exact"
       },
       "note": "`structure SplitEpi` bundles a section with `section_ ≫ f = 𝟙 Y`; the propositional version is `IsSplitEpi`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "927ff17526d9"
     },
     {
       "kind": "proposition",
@@ -243,7 +257,8 @@
         "match_kind": "exact"
       },
       "note": "`SplitEpi.epi` and the instance `IsSplitEpi.epi` produce `Epi f` from any splitting on the right.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "032ee6e7cba0"
     },
     {
       "kind": "proposition",
@@ -259,7 +274,8 @@
         "match_kind": "exact"
       },
       "note": "`SplitMono.splitEpi` / `SplitEpi.splitMono` exhibit each splitting's partner as the dual splitting on the retraction/section.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d37ed2b4a3c6"
     },
     {
       "kind": "proposition",
@@ -275,7 +291,8 @@
         "match_kind": "special_case"
       },
       "note": "`Function.surjective_iff_hasRightInverse` gives one direction using `Classical.choice`, but the equivalence with the axiom of choice itself is not formalized as a metatheorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "728c251f3cdf"
     },
     {
       "kind": "definition",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "No `Bimorphism` definition was found in Mathlib (only `Mono` and `Epi` separately).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bf3223dbb741"
     },
     {
       "kind": "example",
@@ -307,7 +325,8 @@
         "match_kind": "generalization"
       },
       "note": "`ModuleCat.mono_iff_injective` and `ModuleCat.epi_iff_surjective` cover vector spaces as the special case where the base ring is a field.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f44c5818a1dd"
     },
     {
       "kind": "example",
@@ -323,7 +342,8 @@
         "match_kind": "invocation"
       },
       "note": "`CommRingCat.epi_iff_epi` characterizes epis in `CommRingCat` (not by surjectivity), but the specific example ℤ → ℚ as a non-surjective epi is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f30e04185b7a"
     },
     {
       "kind": "definition",
@@ -339,7 +359,8 @@
         "match_kind": "exact"
       },
       "note": "`structure Iso` bundles a two-sided inverse and `class IsIso` is the propositional version.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0635bacdd34c"
     },
     {
       "kind": "proposition",
@@ -355,7 +376,8 @@
         "match_kind": "exact"
       },
       "note": "`inv_eq_of_hom_inv_id` (and `inv_eq_of_inv_hom_id`) show any morphism splitting `f` on either side equals `inv f`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1f30ec4dd59d"
     },
     {
       "kind": "proposition",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "Without a `Bimorphism` notion in Mathlib, the statement that bimorphisms need not be isomorphisms is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "06051b837d2d"
     },
     {
       "kind": "proposition",
@@ -387,7 +410,8 @@
         "match_kind": "exact"
       },
       "note": "`isIso_of_epi_of_isSplitMono` (dual: `isIso_of_mono_of_isSplitEpi`) gives `IsIso f` from `Epi f` together with `IsSplitMono f`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6707492ed47c"
     },
     {
       "kind": "definition",
@@ -403,7 +427,8 @@
         "match_kind": "exact"
       },
       "note": "`class Balanced` asserts that every morphism that is both mono and epi is an isomorphism.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b53bbbdf9aa5"
     },
     {
       "kind": "definition",
@@ -419,7 +444,8 @@
         "match_kind": "exact"
       },
       "note": "`End X := X ⟶ X` defines endomorphisms and is given a monoid structure.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e69be6c8a5f5"
     },
     {
       "kind": "definition",
@@ -435,7 +461,8 @@
         "match_kind": null
       },
       "note": "Mathlib has the related Karoubi envelope and `Idempotents` infrastructure but no specific `SplitEndomorphism` definition matching the article.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c8fac74a0902"
     },
     {
       "kind": "definition",
@@ -451,7 +478,8 @@
         "match_kind": "exact"
       },
       "note": "`Aut X := X ≅ X` defines automorphisms as self-isomorphisms.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a9daa3fd8e86"
     },
     {
       "kind": "proposition",
@@ -467,7 +495,8 @@
         "match_kind": "exact"
       },
       "note": "The `instance : Group (Aut X)` makes the automorphisms of any object a group.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0b7b2dcea019"
     },
     {
       "kind": "example",
@@ -483,7 +512,8 @@
         "match_kind": "invocation"
       },
       "note": "Mathlib supplies bundled categories like `Grp`, `Ring`, `CommRingCat`, `ModuleCat` whose morphisms are the corresponding structure-preserving homomorphisms.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6fbf4f1fa58c"
     },
     {
       "kind": "example",
@@ -499,7 +529,8 @@
         "match_kind": "exact"
       },
       "note": "`TopCat` is the category of topological spaces and `isoOfHomeo`/`homeoOfIso` identify its isomorphisms with homeomorphisms.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "81f0576a1b7d"
     },
     {
       "kind": "example",
@@ -515,7 +546,8 @@
         "match_kind": "invocation"
       },
       "note": "`Diffeomorph` is defined, but Mathlib has no bundled category of smooth manifolds whose morphisms are smooth maps and isomorphisms are diffeomorphisms.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5a5c081ad656"
     },
     {
       "kind": "example",
@@ -531,7 +563,8 @@
         "match_kind": "exact"
       },
       "note": "`Cat` is the (large) category of small categories with functors as morphisms via `Cat.category`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a3ef2bd34214"
     },
     {
       "kind": "example",
@@ -547,7 +580,8 @@
         "match_kind": "exact"
       },
       "note": "`Functor.category` instantiates `C ⥤ D` as a category whose morphisms are `NatTrans` (natural transformations).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7e5bcaa5380b"
     }
   ]
 }

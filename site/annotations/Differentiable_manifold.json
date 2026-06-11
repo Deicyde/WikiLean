@@ -19,7 +19,8 @@
         "match_kind": "generalization"
       },
       "note": "Charts are formalized as members of `atlas H M` of `OpenPartialHomeomorph M H` in `ChartedSpace`, generalized to any model space H rather than just Euclidean.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c9ca6fd11ad4"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "generalization"
       },
       "note": "The notion of a differentiable atlas is captured by `HasGroupoid M (contDiffGroupoid n I)`, where transition maps lie in the C^n groupoid.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c1ee94b16da9"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "generalization"
       },
       "note": "Compatibility is membership in `G.maximalAtlas M`, defined as charts whose transitions with every atlas member lie in the structure groupoid G.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "43d82121be26"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "generalization"
       },
       "note": "`StructureGroupoid.maximalAtlas G M` collects all charts compatible with the atlas under groupoid G; for `G = contDiffGroupoid n I` this is the maximal C^n atlas.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "962fd5480da0"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": null
       },
       "note": "Mathlib's `IsManifold I ∞ M` is the smooth-structure typeclass and `Mathlib.Geometry.Manifold.Complex` exists, but there is no named `SmoothStructure`/`ComplexStructure` term separate from the existing atlas.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "914ce0a5ad8f"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": null
       },
       "note": "Mathlib bypasses equivalence classes by always working with `maximalAtlas`; the equivalence relation between two atlases is not separately named.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1c7ba0a4ea5b"
     },
     {
       "kind": "proposition",
@@ -115,7 +121,8 @@
         "match_kind": null
       },
       "note": "No theorem establishing that the dimension of the model space is locally constant or well-defined on connected components of a charted space was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f403c4b59055"
     },
     {
       "kind": "definition",
@@ -131,7 +138,8 @@
         "match_kind": "generalization"
       },
       "note": "`IsManifold I n M` formalizes a C^n manifold via `HasGroupoid M (contDiffGroupoid n I)`; Hausdorff/second-countable are not built in but added as separate typeclasses when needed.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5e4e253ab9d2"
     },
     {
       "kind": "definition",
@@ -147,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "`contDiffGroupoid_zero_eq` proves `contDiffGroupoid 0 I = continuousGroupoid H`, identifying the C^0 manifold structure with a topological-manifold structure (a `ChartedSpace`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "63710f5338f9"
     },
     {
       "kind": "example",
@@ -163,7 +172,8 @@
         "match_kind": null
       },
       "note": "`ChartedSpaceCore` provides a construction of a charted space from local data (open pieces and transition maps), which is the formal version of this patching construction.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9fe0d0b9fb10"
     },
     {
       "kind": "definition",
@@ -189,7 +199,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle f\\circ \\phi ^{-1}\\colon \\phi (U)\\subset {\\mathbf {R} }^{n}\\to {\\mathbf {R} }}"
         }
-      ]
+      ],
+      "id": "9d284fde6ab2"
     },
     {
       "kind": "definition",
@@ -205,7 +216,8 @@
         "match_kind": null
       },
       "note": "Mathlib defines `mfderiv` (the differential) directly and uses it to differentiate along curves via composition, rather than defining the directional derivative through curves as primary.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1500fceb4cee"
     },
     {
       "kind": "proposition",
@@ -221,7 +233,8 @@
         "match_kind": null
       },
       "note": "The chain rule for `mfderiv` implicitly gives this, but the specific statement that `(f∘γ)'(0)` depends only on `mfderiv γ 0 1` is not stated as a named lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "aaf782d1d112"
     },
     {
       "kind": "definition",
@@ -237,7 +250,8 @@
         "match_kind": "generalization"
       },
       "note": "`TangentSpace I x` is defined as a type synonym for the model space E rather than as equivalence classes of curves, but it serves as the tangent space at x.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ce6a059afbcf"
     },
     {
       "kind": "definition",
@@ -267,7 +281,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle df(p)\\colon T_{p}M\\to {\\mathbf {R} }.}"
         }
-      ]
+      ],
+      "id": "91b74ef8d437"
     },
     {
       "kind": "definition",
@@ -297,7 +312,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle D{\\Big |}_{\\phi _{\\alpha }(p)}(f\\circ \\phi _{\\alpha }^{-1})(v_{\\alpha }),}"
         }
-      ]
+      ],
+      "id": "3a77d3f9cdf0"
     },
     {
       "kind": "definition",
@@ -313,7 +329,8 @@
         "match_kind": "exact"
       },
       "note": "`SmoothPartitionOfUnity ι I M s` together with `IsSubordinate` formalizes smooth partitions of unity subordinate to a family of sets.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e39b56657388"
     },
     {
       "kind": "theorem",
@@ -329,7 +346,8 @@
         "match_kind": "exact"
       },
       "note": "`SmoothPartitionOfUnity.exists_isSubordinate` produces a smooth partition of unity subordinate to any open cover (for sigma-compact T2 manifolds).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "50fad79931d4"
     },
     {
       "kind": "definition",
@@ -345,7 +363,8 @@
         "match_kind": "exact"
       },
       "note": "`ContMDiff I I' n f` defines C^n maps between manifolds via composition with charts.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a1d9ead48c5c"
     },
     {
       "kind": "definition",
@@ -361,7 +380,8 @@
         "match_kind": "exact"
       },
       "note": "`TangentBundle I M` is defined as a `Bundle.TotalSpace` and given a vector-bundle (and manifold) structure via `VectorBundleCore` indexed by the charts of M.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "62ce43c6f287"
     },
     {
       "kind": "definition",
@@ -377,7 +397,8 @@
         "match_kind": null
       },
       "note": "No `CotangentSpace`/`CotangentBundle` declaration was found in `Mathlib/Geometry/Manifold`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2b809d15fcc8"
     },
     {
       "kind": "definition",
@@ -393,7 +414,8 @@
         "match_kind": null
       },
       "note": "Exact differentials/1-forms are not formalized on manifolds in Mathlib (no cotangent bundle or differential-form machinery present).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a8db4423068d"
     },
     {
       "kind": "definition",
@@ -409,7 +431,8 @@
         "match_kind": null
       },
       "note": "There is no `TensorBundle` over a manifold in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "53c437ffd483"
     },
     {
       "kind": "definition",
@@ -425,7 +448,8 @@
         "match_kind": null
       },
       "note": "No frame bundle of a tangent bundle / principal GL_n-bundle is defined for manifolds in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f7cb24cc0554"
     },
     {
       "kind": "definition",
@@ -441,7 +465,8 @@
         "match_kind": null
       },
       "note": "Higher-order tangent bundles and jet bundles are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "28cc286a9de5"
     },
     {
       "kind": "definition",
@@ -457,7 +482,8 @@
         "match_kind": null
       },
       "note": "k-th order frame bundles are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0854f51e19b8"
     },
     {
       "kind": "definition",
@@ -483,7 +509,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle df(p)\\colon T_{p}M\\to T_{f(p)}N.}"
         }
-      ]
+      ],
+      "id": "ede83566eca9"
     },
     {
       "kind": "definition",
@@ -499,7 +526,8 @@
         "match_kind": null
       },
       "note": "`IsImmersion`/`IsImmersionAt` are formalized in `Manifold.Immersion`; submersions and smooth embeddings (beyond `Mathlib.Geometry.Manifold.SmoothEmbedding`) are not fully present as named definitions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7603ef0c14b7"
     },
     {
       "kind": "theorem",
@@ -525,7 +553,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle (y_{1}\\circ f,\\dotsc ,y_{n}\\circ f,x_{1},\\dotsc ,x_{m-n})}"
         }
-      ]
+      ],
+      "id": "c211cee329e0"
     },
     {
       "kind": "definition",
@@ -541,7 +570,8 @@
         "match_kind": null
       },
       "note": "The Lie bracket of vector fields (`mlieBracket`) is formalized; the general Lie derivative on tensor fields is not, since tensor fields themselves are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1ebb2113fa9e"
     },
     {
       "kind": "definition",
@@ -557,7 +587,8 @@
         "match_kind": null
       },
       "note": "Differential forms on manifolds are not formalized in Mathlib (only the algebraic exterior/alternating algebra exists in linear algebra).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "61281e93d60b"
     },
     {
       "kind": "definition",
@@ -573,7 +604,8 @@
         "match_kind": null
       },
       "note": "No exterior derivative `d` on manifold-valued differential forms is formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2acffbbebc84"
     },
     {
       "kind": "proposition",
@@ -589,7 +621,8 @@
         "match_kind": null
       },
       "note": "Without an exterior derivative on differential forms, `d ∘ d = 0` is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0c0ff14da3f4"
     },
     {
       "kind": "definition",
@@ -605,7 +638,8 @@
         "match_kind": null
       },
       "note": "De Rham cohomology and closed/exact differential forms are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6b64d9ae0b50"
     },
     {
       "kind": "definition",
@@ -621,7 +655,8 @@
         "match_kind": null
       },
       "note": "`Diffeomorph` is defined and would underlie this equivalence relation, but the equivalence relation on smooth structures themselves is not given a name in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fbb07970bce0"
     },
     {
       "kind": "theorem",
@@ -637,7 +672,8 @@
         "match_kind": null
       },
       "note": "The theorem that every topological manifold of dimension ≤ 3 admits a unique smooth structure is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0f066ffd9519"
     },
     {
       "kind": "theorem",
@@ -653,7 +689,8 @@
         "match_kind": null
       },
       "note": "Kervaire's example and the general existence of topological manifolds without smooth structure are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "873088b82a45"
     },
     {
       "kind": "theorem",
@@ -669,7 +706,8 @@
         "match_kind": "exact"
       },
       "note": "The existence of an exotic 7-sphere is stated as a `proof_wanted` in `Mathlib.Geometry.Manifold.PoincareConjecture`; the proof is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b2396e62a856"
     },
     {
       "kind": "theorem",
@@ -685,7 +723,8 @@
         "match_kind": null
       },
       "note": "The classification of connected smooth 1-manifolds (diffeomorphic to ℝ or S^1) is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "120c9047b3b9"
     },
     {
       "kind": "theorem",
@@ -701,7 +740,8 @@
         "match_kind": null
       },
       "note": "The classification of closed surfaces is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "24be0ef92054"
     },
     {
       "kind": "theorem",
@@ -717,7 +757,8 @@
         "match_kind": null
       },
       "note": "Thurston's geometrization conjecture is not stated or formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c6440e1bc044"
     },
     {
       "kind": "theorem",
@@ -733,7 +774,8 @@
         "match_kind": null
       },
       "note": "Undecidability of the homeomorphism problem for 4-manifolds is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3252ea9abf0f"
     },
     {
       "kind": "theorem",
@@ -749,7 +791,8 @@
         "match_kind": null
       },
       "note": "Freedman's classification of simply connected topological 4-manifolds is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6ef18da3265d"
     },
     {
       "kind": "theorem",
@@ -765,7 +808,8 @@
         "match_kind": null
       },
       "note": "Barden's classification of simply connected 5-manifolds is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d9913c4dd6f7"
     },
     {
       "kind": "definition",
@@ -781,7 +825,8 @@
         "match_kind": "exact"
       },
       "note": "`IsRiemannianManifold I M` is the Prop-valued typeclass for a Riemannian metric on a smooth manifold, alongside `ContMDiffRiemannianMetric` for the metric data.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e4266b4a2aab"
     },
     {
       "kind": "definition",
@@ -797,7 +842,8 @@
         "match_kind": null
       },
       "note": "Only positive-definite Riemannian metrics are formalized; pseudo-Riemannian/Lorentzian metrics with indefinite signature are not.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "87f8075d1fa6"
     },
     {
       "kind": "definition",
@@ -813,7 +859,8 @@
         "match_kind": null
       },
       "note": "Finsler manifolds are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "54a63bad267a"
     },
     {
       "kind": "definition",
@@ -829,7 +876,8 @@
         "match_kind": null
       },
       "note": "Symplectic manifolds are not formalized in Mathlib (requires differential forms, which are absent on manifolds).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "546b36b66b82"
     },
     {
       "kind": "proposition",
@@ -845,7 +893,8 @@
         "match_kind": null
       },
       "note": "Without symplectic manifolds, this proposition is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "50bed18419ed"
     },
     {
       "kind": "definition",
@@ -861,7 +910,8 @@
         "match_kind": "exact"
       },
       "note": "`LieGroup I n G` is defined as a group with a manifold structure such that multiplication and inversion are C^n.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d9f05e16a38d"
     },
     {
       "kind": "proposition",
@@ -877,7 +927,8 @@
         "match_kind": null
       },
       "note": "Parallelizability is not defined in Mathlib, and no theorem stating Lie groups are parallelizable was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "89d0a58744bd"
     },
     {
       "kind": "definition",
@@ -893,7 +944,8 @@
         "match_kind": "exact"
       },
       "note": "`StructureGroupoid H` formalizes the notion of pseudogroup (called a structure groupoid in Mathlib) on a topological space H.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0bb482d044b1"
     },
     {
       "kind": "definition",
@@ -909,7 +961,8 @@
         "match_kind": "exact"
       },
       "note": "`HasGroupoid M G` says the charts of M have transition maps in the structure groupoid G, exactly the notion of pseudogroup-compatible atlas.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d78f313c0e7e"
     },
     {
       "kind": "example",
@@ -925,7 +978,8 @@
         "match_kind": "exact"
       },
       "note": "`IsManifold I n M` extends `HasGroupoid M (contDiffGroupoid n I)`, presenting a C^n manifold as a charted space compatible with the C^n pseudogroup.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cee1ad04d5d8"
     },
     {
       "kind": "definition",
@@ -941,7 +995,8 @@
         "match_kind": null
       },
       "note": "The smooth structure sheaf is built in `Sheaf.Smooth` and `ChartedSpace.locallyRingedSpace`, but Mathlib does not define a manifold by abstractly specifying a structure sheaf with local-model condition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9c83dcabf0c5"
     },
     {
       "kind": "definition",
@@ -957,7 +1012,8 @@
         "match_kind": null
       },
       "note": "Mathlib produces the locally ringed space from a smooth manifold (`ChartedSpace.locallyRingedSpace`) but does not adopt the locally-ringed-space definition as the primary definition of a manifold.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6be4d2b1aecf"
     },
     {
       "kind": "definition",
@@ -973,7 +1029,8 @@
         "match_kind": null
       },
       "note": "The cotangent space `m_p/m_p^2` of a smooth manifold's structure sheaf is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d0b59b40a722"
     },
     {
       "kind": "definition",
@@ -989,7 +1046,8 @@
         "match_kind": "exact"
       },
       "note": "`C^n⟮I, M; 𝓘(ℝ), ℝ⟯` (i.e. `ContMDiffMap` to ℝ) carries a commutative ring/algebra structure (see `Mathlib.Geometry.Manifold.Algebra.SmoothFunctions`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d7b79b8fded8"
     },
     {
       "kind": "theorem",
@@ -1005,7 +1063,8 @@
         "match_kind": null
       },
       "note": "Neither the Banach–Stone theorem nor reconstruction of a manifold from its algebra of smooth functions is formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e8b07fd391f2"
     },
     {
       "kind": "proposition",
@@ -1021,7 +1080,8 @@
         "match_kind": null
       },
       "note": "The correspondence between points of M and ℝ-algebra homomorphisms `C^∞(M) → ℝ` is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ef7516c42dae"
     },
     {
       "kind": "definition",
@@ -1037,7 +1097,8 @@
         "match_kind": null
       },
       "note": "`Mathlib.Geometry.Manifold.DerivationBundle` constructs pointwise derivations of the smooth function algebra and relates them to the tangent space, but the identification of the tangent bundle with global derivations is not stated as a theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e6aa75ab2da9"
     }
   ]
 }

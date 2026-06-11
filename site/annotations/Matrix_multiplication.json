@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "The heterogeneous matrix multiplication instance `HMul (Matrix l m α) (Matrix m n α) (Matrix l n α)` is defined directly in `Mathlib/Data/Matrix/Mul.lean`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0785066f48df"
     },
     {
       "kind": "definition",
@@ -53,7 +54,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle c_{ij}=a_{i1}b_{1j}+a_{i2}b_{2j}+\\cdots +a_{in}b_{nj}=\\sum _{k=1}^{n}a_{ik}b_{kj},}"
         }
-      ]
+      ],
+      "id": "e46badcd7607"
     },
     {
       "kind": "proposition",
@@ -69,7 +71,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.mul_apply` states `(M * N) i k = ∑ j, M i j * N j k`, exactly the row-times-column dot product.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "43d1fd4d2ce3"
     },
     {
       "kind": "proposition",
@@ -85,7 +88,8 @@
         "match_kind": "invocation"
       },
       "note": "The dimension-matching condition is enforced at the type level via the `HMul (Matrix l m α) (Matrix m n α)` instance rather than stated as a proposition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2c992ed54de9"
     },
     {
       "kind": "definition",
@@ -101,7 +105,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.mulVec` (notation `M *ᵥ v`) is defined as the row-wise dot product of `M` against `v`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a39e1c3e8024"
     },
     {
       "kind": "definition",
@@ -117,7 +122,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.vecMul` (notation `v ᵥ* M`) is defined as the column-wise dot product of `v` against `M`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a81c4032ddd4"
     },
     {
       "kind": "definition",
@@ -133,7 +139,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.dotProduct v w = ∑ i, v i * w i` is defined and `Matrix.mul_apply` ties it back to the 1×1 matrix entry of the product.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "507113eb177c"
     },
     {
       "kind": "definition",
@@ -149,7 +156,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.vecMulVec w v i j = w i * v j` is exactly the outer product.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8f3a07740b8b"
     },
     {
       "kind": "example",
@@ -175,7 +183,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\overset {4\\times 2{\\text{ matrix}}}{\\begin{bmatrix}a_{11}&amp;a_{12}\\\\\\cdot &amp;\\cdot \\\\a_{31}&amp;a_{32}\\\\\\cdot &amp;\\cdot \\\\\\end{bmatrix}}}{\\overset {2\\times 3{\\text{ matrix}}}{\\begin{bmatrix}\\cdot &amp;b_{12}&amp;b_{13}\\\\\\cdot &amp;b_{22}&amp;b_{23}\\\\\\end{bmatrix}}}={\\overset {4\\times 3{\\text{ matrix}}}{\\begin{bmatrix}\\cdot &amp;c_{12}&amp;\\cdot \\\\\\cdot &amp;\\cdot &amp;\\cdot \\\\\\cdot &amp;\\cdot &amp;c_{33}\\\\\\cdot &amp;\\cdot &amp;\\cdot \\\\\\end{bmatrix}}}}"
         }
-      ]
+      ],
+      "id": "853e2767484f"
     },
     {
       "kind": "proposition",
@@ -191,7 +200,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.toLin_mul` and `Matrix.toLin'_mul` show that `toLin (A * B) = toLin A ∘ₗ toLin B`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "25d1140810a9"
     },
     {
       "kind": "example",
@@ -217,7 +227,8 @@
           "type": "math_alttext",
           "value": "{\\displaystyle {\\begin{bmatrix}\\cos \\beta &amp;-\\sin \\beta \\\\\\sin \\beta &amp;\\cos \\beta \\end{bmatrix}}{\\begin{bmatrix}\\cos \\alpha &amp;-\\sin \\alpha \\\\\\sin \\alpha &amp;\\cos \\alpha \\end{bmatrix}}={\\begin{bmatrix}\\cos \\beta \\cos \\alpha -\\sin \\beta \\sin \\alpha &amp;-\\cos \\beta \\sin \\alpha -\\sin \\beta \\cos \\alpha \\\\\\sin \\beta \\cos \\alpha +\\cos \\beta \\sin \\alpha &amp;-\\sin \\beta \\sin \\alpha +\\cos \\beta \\cos \\alpha \\end{bmatrix}}={\\begin{bmatrix}\\cos(\\alpha +\\beta )&amp;-\\sin(\\alpha +\\beta )\\\\\\sin(\\alpha +\\beta )&amp;\\cos(\\alpha +\\beta )\\end{bmatrix}},}"
         }
-      ]
+      ],
+      "id": "5a2c59423ab1"
     },
     {
       "kind": "example",
@@ -233,7 +244,8 @@
         "match_kind": null
       },
       "note": "An applied numerical example without a corresponding Mathlib statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3b3d39299a8d"
     },
     {
       "kind": "proposition",
@@ -249,7 +261,8 @@
         "match_kind": "invocation"
       },
       "note": "`Matrix.mulVec` encodes `Ax`, so a linear system becomes `A *ᵥ x = b`, but there is no explicit equivalence theorem between sum-of-equations form and matrix-equation form.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "add86f1efc46"
     },
     {
       "kind": "proposition",
@@ -265,7 +278,8 @@
         "match_kind": "invocation"
       },
       "note": "`Matrix.dotProduct` plus `Matrix.mul_apply` yield this identification, but no single lemma states the dot product equals the unique entry of `xᵀ y`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "02210aed9a54"
     },
     {
       "kind": "proposition",
@@ -281,7 +295,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.toBilin` gives a linear equivalence between matrices and bilinear forms on a finite-dim space, with `Matrix.toBilin_apply` expressing the form as `xᵀ M y`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a354334c66a5"
     },
     {
       "kind": "proposition",
@@ -297,7 +312,8 @@
         "match_kind": "exact"
       },
       "note": "`LinearMap.toMatrix₂` and `Matrix.toLinearMap₂` give the matrix representation of sesquilinear forms in `Mathlib/LinearAlgebra/Matrix/SesquilinearForm.lean`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a6b9c9e3d23b"
     },
     {
       "kind": "proposition",
@@ -313,7 +329,8 @@
         "match_kind": "invocation"
       },
       "note": "Mathlib's `Matrix.instRing` deliberately does not provide commutativity for `n ≥ 2`, but there is no explicit `¬ Commute A B` example as a named lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5ec999c91d9a"
     },
     {
       "kind": "proposition",
@@ -329,7 +346,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.center_eq_scalar_image` (and `Matrix.subalgebraCenter_eq_scalarAlgHom_map`) state that the center of the matrix ring is exactly the scalar matrices.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9a75d9374b4a"
     },
     {
       "kind": "proposition",
@@ -345,7 +363,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.commute_diagonal` proves `Commute (diagonal d₁) (diagonal d₂)` over a commutative semiring, with `Matrix.diagonal_mul_diagonal` giving the explicit product.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3b1de6f81a29"
     },
     {
       "kind": "proposition",
@@ -361,7 +380,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.mul_add` and `Matrix.add_mul` provide left- and right-distributivity of matrix multiplication.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "979225bc913d"
     },
     {
       "kind": "proposition",
@@ -377,7 +397,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.smul_mul` and `Matrix.mul_smul` express `(a • M) * N = a • (M * N) = M * (a • N)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "170779f516c2"
     },
     {
       "kind": "proposition",
@@ -393,7 +414,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.transpose_mul` proves `(M * N)ᵀ = Nᵀ * Mᵀ`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "26e3f8740169"
     },
     {
       "kind": "proposition",
@@ -409,7 +431,8 @@
         "match_kind": "generalization"
       },
       "note": "`Matrix.map_mul` states `(L * M).map f = L.map f * M.map f` for any (non-unital) ring hom, so applying it to `starRingEnd ℂ` gives the entry-wise conjugate-of-a-product identity.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ab9aa15c1163"
     },
     {
       "kind": "proposition",
@@ -425,7 +448,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.conjTranspose_mul` proves `(M * N)ᴴ = Nᴴ * Mᴴ`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "51ec6b3c868a"
     },
     {
       "kind": "theorem",
@@ -441,7 +465,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.mul_assoc` proves `L * M * N = L * (M * N)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5bedf07d5a01"
     },
     {
       "kind": "example",
@@ -457,7 +482,8 @@
         "match_kind": null
       },
       "note": "An arithmetic remark about flop counts with no corresponding Mathlib statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "906c7fac2f2a"
     },
     {
       "kind": "definition",
@@ -473,7 +499,8 @@
         "match_kind": "invocation"
       },
       "note": "Mathlib uses unit conjugation `P⁻¹ * A * P` directly (e.g. in `Matrix.charpoly_units_conj`, `Matrix.trace_units_conj`) but does not introduce a named `Matrix.Similar` relation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3e9089d1231b"
     },
     {
       "kind": "proposition",
@@ -489,7 +516,8 @@
         "match_kind": "invocation"
       },
       "note": "Follows from `Matrix.mul_assoc` together with `Matrix.nonsing_inv_mul`, but is not stated as a single dedicated lemma.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "21d308e33069"
     },
     {
       "kind": "proposition",
@@ -505,7 +533,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.instRing` (and `Matrix.semiring`, `Matrix.nonAssocSemiring`) make `Matrix n n α` a ring whenever `α` is.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6f18afbc5250"
     },
     {
       "kind": "definition",
@@ -521,7 +550,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.isUnit_iff_isUnit_det` and `Matrix.Invertible` capture the invertible/singular distinction via `IsUnit`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "15c9833199bc"
     },
     {
       "kind": "proposition",
@@ -537,7 +567,8 @@
         "match_kind": "invocation"
       },
       "note": "Provable by combining `Matrix.isUnit_iff_isUnit_det` with `Matrix.det_mul` and `IsUnit.mul_iff`, but no dedicated `Matrix.isUnit_mul_iff` lemma was located.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "61f7c48db56f"
     },
     {
       "kind": "theorem",
@@ -553,7 +584,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.det_mul` proves `det (M * N) = det M * det N`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e60b1a90348f"
     },
     {
       "kind": "proposition",
@@ -569,7 +601,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.trace_mul_comm` gives equal traces and `Matrix.charpoly_mul_comm` gives equal characteristic polynomials (and hence equal eigenvalue multiplicities).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "af5626d20007"
     },
     {
       "kind": "definition",
@@ -585,7 +618,8 @@
         "match_kind": "invocation"
       },
       "note": "Since `Matrix n n α` is a `Monoid`/`Semiring`, the generic `Monoid.npow` and `pow_succ` give natural-number powers of square matrices.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "83c7a6c42b5d"
     },
     {
       "kind": "proposition",
@@ -601,7 +635,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.diagonal_pow` states `(diagonal v) ^ k = diagonal (v ^ k)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2cdd50b7263b"
     },
     {
       "kind": "proposition",
@@ -617,7 +652,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.instRing` provides the ring structure on `Matrix n n α` for `α` a ring.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9f685af76c7c"
     },
     {
       "kind": "proposition",
@@ -633,7 +669,8 @@
         "match_kind": "exact"
       },
       "note": "`Matrix.isUnit_iff_isUnit_det` proves `IsUnit A ↔ IsUnit A.det` over a commutative ring.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4e76e339bf03"
     },
     {
       "kind": "definition",
@@ -649,7 +686,8 @@
         "match_kind": "invocation"
       },
       "note": "`Matrix.GeneralLinearGroup` (notation `GL n R`) is defined as the units of the matrix ring; the general notion of a matrix group as an arbitrary subgroup of `GL` is not given its own definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "10c9fc2a80bc"
     },
     {
       "kind": "definition",
@@ -665,7 +703,8 @@
         "match_kind": "generalization"
       },
       "note": "`CategoryTheory.Mat_ C` is the additive envelope where morphisms are matrices of morphisms in a preadditive category; the file's docstring notes that a more convenient `Mat R` over a ring is future work.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ea87765b91fd"
     },
     {
       "kind": "proposition",
@@ -681,7 +720,8 @@
         "match_kind": null
       },
       "note": "A complexity claim about the naive O(n³) algorithm with no corresponding declaration in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9285fbb85d43"
     },
     {
       "kind": "theorem",
@@ -697,7 +737,8 @@
         "match_kind": null
       },
       "note": "Strassen's algorithm is only mentioned in a comment in `Mathlib/Computability/AkraBazzi/AkraBazzi.lean`; it is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8c5ff2cb7caf"
     }
   ]
 }

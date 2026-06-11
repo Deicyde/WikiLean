@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "`ZMod.dft` defines the DFT on functions `ZMod N → E` as a bundled ℂ-linear equivalence.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9ff913d61382"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "exact"
       },
       "note": "Since `ZMod.dft` is a `LinearEquiv`, its inverse is `LinearEquiv.symm ZMod.dft` (notation `𝓕⁻`) with formula in `ZMod.invDFT_apply`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b551ef2cf60f"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "`ZMod.dft_apply` gives `𝓕 Φ k = ∑ j, stdAddChar (-(j*k)) • Φ j`, matching the standard DFT formula.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a3d48c8d6e6e"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "`ZMod.invDFT_apply` gives `𝓕⁻ Ψ k = N⁻¹ • ∑ j, stdAddChar (j*k) • Ψ j`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "66705fbc78f7"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": null
       },
       "note": "No version of the DFT with an explicit sampling-interval normalization was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3379f8aaac22"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": null
       },
       "note": "No sampling-interval-scaled inverse DFT is present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "89d1a9592ca0"
     },
     {
       "kind": "example",
@@ -115,7 +121,8 @@
         "match_kind": null
       },
       "note": "No concrete worked DFT example sequence is computed in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b7105cce6da3"
     },
     {
       "kind": "proposition",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "`ZMod.dft` is bundled as a `LinearEquiv ℂ`, so additivity and ℂ-homogeneity hold by construction (and `ZMod.dft_const_smul` records homogeneity over commuting scalars).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "072871b3b8ce"
     },
     {
       "kind": "proposition",
@@ -147,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "`ZMod.dft_comp_neg` states `𝓕 (fun j ↦ Φ (-j)) = fun k ↦ 𝓕 Φ (-k)`, the time/frequency reversal identity.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "491b2118b926"
     },
     {
       "kind": "proposition",
@@ -163,7 +172,8 @@
         "match_kind": null
       },
       "note": "No lemma relating `𝓕 (conj ∘ Φ)` to `conj ∘ 𝓕 Φ ∘ neg` was found for `ZMod.dft`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ff02793d5cd5"
     },
     {
       "kind": "proposition",
@@ -179,7 +189,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib has orthogonality of additive characters on finite abelian groups (`AddChar.wInner_cWeight_eq_boole`), which specializes to the DFT basis, but no direct lemma stated for `ZMod.dft`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e10276d405e9"
     },
     {
       "kind": "theorem",
@@ -195,7 +206,8 @@
         "match_kind": null
       },
       "note": "No Parseval-style equality for `ZMod.dft` was found; Mathlib's Parseval theorems are for `AddCircle`/continuous Fourier, not the finite DFT.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3e305ca14061"
     },
     {
       "kind": "theorem",
@@ -211,7 +223,8 @@
         "match_kind": null
       },
       "note": "No Plancherel/L² isometry statement is recorded for `ZMod.dft`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a34d70b203c1"
     },
     {
       "kind": "proposition",
@@ -227,7 +240,8 @@
         "match_kind": "generalization"
       },
       "note": "`ZMod.dft` outputs are functions on `ZMod N`, so N-periodicity holds by typing; no separately stated lemma exists.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "323199f74a55"
     },
     {
       "kind": "theorem",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "No additive shift theorem `𝓕 (Φ(· - k₀))` is recorded; `ZMod.dft_comp_unitMul` handles multiplicative shifts only.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "50ef85a88335"
     },
     {
       "kind": "theorem",
@@ -259,7 +274,8 @@
         "match_kind": null
       },
       "note": "No convolution theorem for `ZMod.dft` (circular convolution ↔ pointwise product) was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c1b94bb4fd82"
     },
     {
       "kind": "theorem",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "No cross-correlation/DFT identity for ZMod was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1ab11f7c8543"
     },
     {
       "kind": "theorem",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "Uniqueness/characterization theorem for the DFT was not found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ff30806dba0b"
     },
     {
       "kind": "proposition",
@@ -307,7 +325,8 @@
         "match_kind": null
       },
       "note": "No dual convolution theorem for `ZMod.dft` is present.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bf9392f882a9"
     },
     {
       "kind": "proposition",
@@ -323,7 +342,8 @@
         "match_kind": null
       },
       "note": "No DFT-based trigonometric interpolation result was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1f72c476eb64"
     },
     {
       "kind": "definition",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "Mathlib has `Matrix.vandermonde` and `Matrix.circulant`, but no explicit DFT-matrix definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c4065eec94c3"
     },
     {
       "kind": "definition",
@@ -355,7 +376,8 @@
         "match_kind": null
       },
       "note": "No unitary/normalized version of `ZMod.dft` (with the `1/√N` factor making it a `LinearIsometryEquiv`) was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f468aa021f8d"
     },
     {
       "kind": "proposition",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "No orthonormality statement for a unitary DFT exists in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5fcd9384b51c"
     },
     {
       "kind": "proposition",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "`Matrix.circulant` is defined but no connection to a DFT diagonalization is established.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1242d1b9dfaf"
     },
     {
       "kind": "proposition",
@@ -403,7 +427,8 @@
         "match_kind": "exact"
       },
       "note": "`ZMod.invDFT_apply'` states `𝓕⁻ Ψ k = N⁻¹ • 𝓕 Ψ (-k)`, expressing the inverse DFT via the forward DFT and negation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7dd723aa3974"
     },
     {
       "kind": "proposition",
@@ -419,7 +444,8 @@
         "match_kind": null
       },
       "note": "No conjugate-then-forward-then-conjugate identity for `ZMod.dft` is present.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f23d3718d0b0"
     },
     {
       "kind": "proposition",
@@ -435,7 +461,8 @@
         "match_kind": null
       },
       "note": "No real/imaginary swap formulation of the inverse DFT is in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "440de58bf448"
     },
     {
       "kind": "proposition",
@@ -451,7 +478,8 @@
         "match_kind": "generalization"
       },
       "note": "`ZMod.dft_dft` gives `𝓕² Φ = N • Φ ∘ neg`, from which `𝓕⁴ = N²·Id` follows; the eigenvalue statement itself is not separately formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "543989d9930e"
     },
     {
       "kind": "proposition",
@@ -467,7 +495,8 @@
         "match_kind": "generalization"
       },
       "note": "`ZMod.dft_dft` records `𝓕² = N • (·∘neg)`, which underlies the polynomial relation; no statement on the unitary DFT matrix polynomial exists.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fb94d70d374b"
     },
     {
       "kind": "proposition",
@@ -483,7 +512,8 @@
         "match_kind": null
       },
       "note": "Projection-based DFT eigenvector construction is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e5844fdaced7"
     },
     {
       "kind": "proposition",
@@ -499,7 +529,8 @@
         "match_kind": null
       },
       "note": "No periodized-Gaussian eigenvector of the DFT is recorded in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4a408ad87ed0"
     },
     {
       "kind": "proposition",
@@ -515,7 +546,8 @@
         "match_kind": null
       },
       "note": "Closed-form DFT eigenvectors for `N=4K+1` are not present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "be1dd8c1cf55"
     },
     {
       "kind": "proposition",
@@ -531,7 +563,8 @@
         "match_kind": null
       },
       "note": "Closed-form DFT eigenvectors for `N=4K` are not present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a6bb6abaf3be"
     },
     {
       "kind": "proposition",
@@ -547,7 +580,8 @@
         "match_kind": null
       },
       "note": "Closed-form DFT eigenvectors for `N=4K-1` are not present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f9cfbff05faa"
     },
     {
       "kind": "theorem",
@@ -563,7 +597,8 @@
         "match_kind": null
       },
       "note": "Searching turned up no Heisenberg-style position/momentum variance inequality in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4e5f94fde482"
     },
     {
       "kind": "theorem",
@@ -579,7 +614,8 @@
         "match_kind": null
       },
       "note": "No entropy-based uncertainty principle was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bae4841e2520"
     },
     {
       "kind": "theorem",
@@ -595,7 +631,8 @@
         "match_kind": null
       },
       "note": "No sparsity-based (Donoho–Stark) uncertainty principle is in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "80be418fb983"
     },
     {
       "kind": "proposition",
@@ -611,7 +648,8 @@
         "match_kind": null
       },
       "note": "`ZMod.dft_even_iff` is about even functions, not the conjugate-symmetry property of DFTs of real inputs; the latter is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2072bf284482"
     },
     {
       "kind": "proposition",
@@ -627,7 +665,8 @@
         "match_kind": null
       },
       "note": "`ZMod.dft_odd_iff` concerns odd functions, not the conjugate-antisymmetry of DFTs of imaginary inputs; the latter is not in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8aeeac54e369"
     },
     {
       "kind": "definition",
@@ -643,7 +682,8 @@
         "match_kind": null
       },
       "note": "No shifted/non-linear-phase generalized DFT was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "65dfb8d6e161"
     },
     {
       "kind": "definition",
@@ -659,7 +699,8 @@
         "match_kind": null
       },
       "note": "No centered DFT variant is defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ed9f00176569"
     },
     {
       "kind": "proposition",
@@ -675,7 +716,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no z-transform, so no DFT-as-z-transform specialization exists.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2034b7c14829"
     },
     {
       "kind": "definition",
@@ -691,7 +733,8 @@
         "match_kind": null
       },
       "note": "No multidimensional DFT on a product `∏ ZMod Nᵢ` is defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e6f6bbd24fc2"
     },
     {
       "kind": "definition",
@@ -707,7 +750,8 @@
         "match_kind": null
       },
       "note": "No inverse multidimensional DFT is present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "de759919aade"
     },
     {
       "kind": "proposition",
@@ -723,7 +767,8 @@
         "match_kind": null
       },
       "note": "No row-column decomposition of a multidimensional DFT is in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "216a2b843593"
     },
     {
       "kind": "proposition",
@@ -739,7 +784,8 @@
         "match_kind": null
       },
       "note": "No conjugate-symmetry statement for multidimensional DFTs of real inputs is present.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a833814d7a6d"
     },
     {
       "kind": "example",
@@ -755,7 +801,8 @@
         "match_kind": null
       },
       "note": "No formalization of FFT-based polynomial multiplication was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dc12247c26ae"
     },
     {
       "kind": "proposition",
@@ -771,7 +818,8 @@
         "match_kind": "generalization"
       },
       "note": "`ZMod.dft_eq_fourier` identifies the DFT with the abstract Fourier integral against `toCircle`, exposing the cyclic-character viewpoint, but no explicit representation-theoretic statement is recorded.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "09915830289b"
     }
   ]
 }

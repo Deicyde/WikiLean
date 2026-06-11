@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "The structure `Diffeomorph` (notation `≃ₘ^n`) bundles a bijection (via `Equiv`) with smoothness of both the map and its inverse, directly formalizing the definition of diffeomorphism.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7d6c266e211e"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "exact"
       },
       "note": "The `Diffeomorph` structure is parametrized by a smoothness level `n : ℕ∞ω`, so `M ≃ₘ^n⟮I, I'⟯ M'` is exactly a C^n-diffeomorphism.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bf7b7f7a0500"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "Two manifolds are diffeomorphic iff there exists a term of type `Diffeomorph I J M N n`. The notation `≃ₘ⟮I, J⟯` is used in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "515f62dd5800"
     },
     {
       "kind": "proposition",
@@ -67,7 +70,8 @@
         "match_kind": "generalization"
       },
       "note": "`Diffeomorph.toHomeomorph` converts any C^n-diffeomorphism to a homeomorphism; setting n=0 gives the C^0 case. The coercion works for all smoothness levels.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "050cc81a55c4"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib defines `ContMDiffOn` for smooth maps restricted to subsets of manifolds, but the Wikipedia article's notion of smoothness on arbitrary subsets (via local extensions) is not directly formalized as a standalone definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0f39b8568acc"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": "generalization"
       },
       "note": "`PartialDiffeomorph` formalizes diffeomorphisms between open subsets of manifolds, which is related but not identical to the Wikipedia notion of diffeomorphisms between arbitrary subsets.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cf02ebd890c2"
     },
     {
       "kind": "proposition",
@@ -115,7 +121,8 @@
         "match_kind": null
       },
       "note": "The Hadamard-Caccioppoli global inverse function theorem (a local diffeomorphism from R^n to R^n that is proper is a diffeomorphism) is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b57072d44b46"
     },
     {
       "kind": "example",
@@ -131,7 +138,8 @@
         "match_kind": null
       },
       "note": "This specific counterexample (z ↦ z² on C\\{0} is a local diffeomorphism but not a diffeomorphism) is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "48c86ab82c42"
     },
     {
       "kind": "proposition",
@@ -147,7 +155,8 @@
         "match_kind": "special_case"
       },
       "note": "The inverse function theorem is formalized: if the derivative is a linear equivalence at a point, the function is locally invertible. However, the specific 'iff' statement involving the Jacobian determinant is not stated in that form.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1ba54825b42d"
     },
     {
       "kind": "proposition",
@@ -163,7 +172,8 @@
         "match_kind": "invocation"
       },
       "note": "Mathlib shows the differential of a diffeomorphism is a continuous linear equivalence between tangent spaces (implying equal dimension), but the explicit statement that diffeomorphic manifolds have the same dimension is not stated as a standalone theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6d5de2cde681"
     },
     {
       "kind": "definition",
@@ -179,7 +189,8 @@
         "match_kind": "exact"
       },
       "note": "`IsLocalDiffeomorph I J n f` states that every point has a neighborhood on which `f` restricts to a diffeomorphism, exactly matching the Wikipedia definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b6976d590c0c"
     },
     {
       "kind": "definition",
@@ -195,7 +206,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not have a definition of submersion (surjective differential) for maps between manifolds. The concept exists in `Immersion.lean` docstrings as future work but has not been implemented.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e5952a18fdc1"
     },
     {
       "kind": "definition",
@@ -211,7 +223,8 @@
         "match_kind": "exact"
       },
       "note": "`IsImmersion I J n f` formalizes the notion of an immersion (injective differential at every point) between smooth manifolds.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "39e095a6486f"
     },
     {
       "kind": "example",
@@ -227,7 +240,8 @@
         "match_kind": null
       },
       "note": "This specific counterexample (x ↦ x³ on R is a differentiable bijection whose inverse is not differentiable at 0) is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9838c8de9469"
     },
     {
       "kind": "proposition",
@@ -243,7 +257,8 @@
         "match_kind": "exact"
       },
       "note": "`Diffeomorph.toHomeomorph` provides the coercion from any diffeomorphism to a homeomorphism, directly formalizing this statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cb0cd850cf6a"
     },
     {
       "kind": "example",
@@ -259,7 +274,8 @@
         "match_kind": null
       },
       "note": "This specific computational example about a map R² → R² with Jacobian vanishing on the coordinate axes is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d71d37c250cf"
     },
     {
       "kind": "proposition",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "This criterion (checking linear independence of the linear parts of component functions) is a restatement of the inverse function theorem for specific coordinate expressions, not separately formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9e241f659b38"
     },
     {
       "kind": "example",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "This specific counterexample (a smooth map R² → R² with vanishing Jacobian everywhere whose image is the unit circle) is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dc14f0dcbfe3"
     },
     {
       "kind": "definition",
@@ -307,7 +325,8 @@
         "match_kind": null
       },
       "note": "The notion of surface deformation as used in applied mathematics / continuum mechanics is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f94a89c8f9bd"
     },
     {
       "kind": "proposition",
@@ -323,7 +342,8 @@
         "match_kind": "invocation"
       },
       "note": "Mathlib defines `ConformalAt` and `Conformal` for maps between normed spaces, but the specific claim that certain surface diffeomorphisms are conformal is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b8f15d6728f3"
     },
     {
       "kind": "definition",
@@ -339,7 +359,8 @@
         "match_kind": "invocation"
       },
       "note": "Mathlib defines composition (`trans`), identity (`refl`), and inverse (`symm`) for diffeomorphisms, giving the group operations, but `Diffeomorph I I M M n` is not bundled as a `Group` instance.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0269b1fd876c"
     },
     {
       "kind": "proposition",
@@ -355,7 +376,8 @@
         "match_kind": null
       },
       "note": "This topological property of the diffeomorphism group (not locally compact) is not formalized; Mathlib does not study the topology of function spaces of diffeomorphisms.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b290193a926f"
     },
     {
       "kind": "proposition",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "The weak (compact-open) and strong (Whitney) topologies on spaces of smooth maps, and their agreement for compact manifolds, are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7e903bfd892e"
     },
     {
       "kind": "proposition",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "Metrizability of the compact-open topology on smooth map spaces is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "edd3a0e381f2"
     },
     {
       "kind": "proposition",
@@ -403,7 +427,8 @@
         "match_kind": null
       },
       "note": "Properties of the strong (Whitney) topology on smooth map spaces are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7f59fa56363c"
     },
     {
       "kind": "proposition",
@@ -419,7 +444,8 @@
         "match_kind": null
       },
       "note": "The local chart structure of the diffeomorphism group (via the exponential map to vector fields) is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1ec246d12717"
     },
     {
       "kind": "proposition",
@@ -435,7 +461,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not formalize Banach manifolds or the infinite-dimensional manifold structure on diffeomorphism groups.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "14908bf321af"
     },
     {
       "kind": "proposition",
@@ -451,7 +478,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not formalize Frechet manifolds or Frechet Lie groups. The `LieGroup` class exists but is for finite-dimensional smooth manifolds.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0db6b7362a4a"
     },
     {
       "kind": "definition",
@@ -467,7 +495,8 @@
         "match_kind": "invocation"
       },
       "note": "Mathlib defines the Lie bracket of vector fields on manifolds (`mlieBracket`), which is the Lie algebra operation of Diff(M), but does not identify it as the Lie algebra of the diffeomorphism group.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b24d85901ab0"
     },
     {
       "kind": "example",
@@ -483,7 +512,8 @@
         "match_kind": null
       },
       "note": "The embedding of a Lie group G into Diff(G) via left multiplication is not formalized as such in Mathlib, though the smoothness of left multiplication is established for Lie groups.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e2ca8c44c09e"
     },
     {
       "kind": "proposition",
@@ -499,7 +529,8 @@
         "match_kind": null
       },
       "note": "The homotopy type of Diff(R^n) and the deformation retraction to GL(n,R) are deep results in differential topology not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "79f3130fb808"
     },
     {
       "kind": "proposition",
@@ -515,7 +546,8 @@
         "match_kind": null
       },
       "note": "This identification requires viewing finite sets as 0-dimensional manifolds, which is outside Mathlib's current manifold framework. The symmetric group itself is `Equiv.Perm` in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dcd0db08f358"
     },
     {
       "kind": "proposition",
@@ -531,7 +563,8 @@
         "match_kind": null
       },
       "note": "Transitivity of the diffeomorphism group action on a connected manifold is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3b7aa82bc198"
     },
     {
       "kind": "proposition",
@@ -547,7 +580,8 @@
         "match_kind": null
       },
       "note": "Multiple transitivity of the diffeomorphism group action on configuration spaces is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "eec3fb3c29b0"
     },
     {
       "kind": "proposition",
@@ -563,7 +597,8 @@
         "match_kind": null
       },
       "note": "The Rado-Kneser-Choquet theorem on harmonic extensions is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3a4f0e6c5295"
     },
     {
       "kind": "proposition",
@@ -579,7 +614,8 @@
         "match_kind": null
       },
       "note": "Path-connectedness of Diff+(S^1) is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3acc11d5da4d"
     },
     {
       "kind": "proposition",
@@ -595,7 +631,8 @@
         "match_kind": null
       },
       "note": "The homotopy type of Diff(S^1) is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "01a06730bedf"
     },
     {
       "kind": "definition",
@@ -611,7 +648,8 @@
         "match_kind": null
       },
       "note": "The group of twisted spheres (Γ_n) is not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9225ab338875"
     },
     {
       "kind": "definition",
@@ -627,7 +665,8 @@
         "match_kind": null
       },
       "note": "The mapping class group (π₀ of the diffeomorphism group) is not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5757b5b0baff"
     },
     {
       "kind": "proposition",
@@ -643,7 +682,8 @@
         "match_kind": null
       },
       "note": "Dehn twists and finite presentation of the mapping class group are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cd27102ad4c3"
     },
     {
       "kind": "proposition",
@@ -659,7 +699,8 @@
         "match_kind": null
       },
       "note": "The Dehn-Nielsen-Baer theorem is not formalized. Mathlib has `FundamentalGroup` but not outer automorphism groups or this isomorphism.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d84f9e328f57"
     },
     {
       "kind": "proposition",
@@ -675,7 +716,8 @@
         "match_kind": null
       },
       "note": "The Nielsen-Thurston classification of surface diffeomorphisms is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ce2ca230c0b1"
     },
     {
       "kind": "proposition",
@@ -691,7 +733,8 @@
         "match_kind": null
       },
       "note": "Thurston's simplicity theorem for the identity component of Diff(M) is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "146ee2a443fe"
     },
     {
       "kind": "proposition",
@@ -707,7 +750,8 @@
         "match_kind": null
       },
       "note": "Smale's theorem on the homotopy type of Diff(S^2) is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a73e0e30d847"
     },
     {
       "kind": "proposition",
@@ -723,7 +767,8 @@
         "match_kind": null
       },
       "note": "The homotopy type of Diff(T^2) is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0f74a596d052"
     },
     {
       "kind": "proposition",
@@ -739,7 +784,8 @@
         "match_kind": null
       },
       "note": "Earle-Eells theorem on contractibility of components of Diff for higher-genus surfaces is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "afc247777056"
     },
     {
       "kind": "proposition",
@@ -755,7 +801,8 @@
         "match_kind": null
       },
       "note": "This result about the homotopy type of Diff(S^n) for n >= 6 is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "23850372f91c"
     },
     {
       "kind": "proposition",
@@ -771,7 +818,8 @@
         "match_kind": "exact"
       },
       "note": "`Diffeomorph.toHomeomorph` gives the forward implication. The converse failing is witnessed by `exists_homeomorph_isEmpty_diffeomorph_sphere_seven` (a proof_wanted in PoincareConjecture.lean).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fa17897f5549"
     },
     {
       "kind": "proposition",
@@ -787,7 +835,8 @@
         "match_kind": null
       },
       "note": "The theorem that homeomorphic smooth manifolds in dimensions <= 3 are diffeomorphic (Moise for dim 3) is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8c14324bf895"
     },
     {
       "kind": "example",
@@ -803,7 +852,8 @@
         "match_kind": "exact"
       },
       "note": "The existence of an exotic 7-sphere is stated as a `proof_wanted` in Mathlib: a manifold homeomorphic to S^7 but with no diffeomorphism to S^7. The proof is not yet provided.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c9b3987c483d"
     },
     {
       "kind": "proposition",
@@ -819,7 +869,8 @@
         "match_kind": null
       },
       "note": "The classification of exotic 7-spheres (28 oriented diffeomorphism classes) is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9b2cefb0e795"
     },
     {
       "kind": "proposition",
@@ -835,7 +886,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib states the existence of a small exotic R^4 as a `proof_wanted`, but not the uncountability of exotic smooth structures. The full result is far from formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4729e82d6965"
     }
   ]
 }

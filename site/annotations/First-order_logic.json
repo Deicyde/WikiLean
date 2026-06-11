@@ -19,7 +19,8 @@
         "match_kind": null
       },
       "note": "Mathlib formalizes first-order logic via FirstOrder.Language together with Structure, Term, BoundedFormula, and Realize.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "54127aa47a79"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "exact"
       },
       "note": "A theory is defined as a set of sentences (Set L.Sentence).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "548edf045d53"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": null
       },
       "note": "Mathlib's ModelTheory only formalizes first-order quantification over elements; higher-order logic and the distinction are absent.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d0587a299a73"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": null
       },
       "note": "Predicates correspond to interpreted relation symbols via Structure.RelMap (relation → Prop), but \"predicate\" is not a standalone definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b07b4ebcb9dc"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "An interpretation is a FirstOrder.Language.Structure assigning meanings (funMap, RelMap) to all symbols.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2856ee45db0a"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "Terms and formulas are the inductive types FirstOrder.Language.Term and FirstOrder.Language.BoundedFormula.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e90e0f7ff8a8"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": null
       },
       "note": "A Language carries only non-logical symbols (Functions/Relations); logical symbols are built into BoundedFormula's constructors, but the explicit division is not a named concept.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "40a38f3849d2"
     },
     {
       "kind": "proposition",
@@ -131,7 +138,8 @@
         "match_kind": "invocation"
       },
       "note": "Mathlib derives ∃, ⊓, ⊔, ⊤ from ⊥, imp, and all (e.g. BoundedFormula.ex := φ.not.all.not), but expressive completeness is not proved as a theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "efde7466f50c"
     },
     {
       "kind": "definition",
@@ -147,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "A signature is a FirstOrder.Language, given by Functions and Relations indexed by arity.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e9fc9f84e744"
     },
     {
       "kind": "definition",
@@ -163,7 +172,8 @@
         "match_kind": "exact"
       },
       "note": "Relation symbols of valence n are the type Language.Relations n.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a13a1dca5212"
     },
     {
       "kind": "definition",
@@ -179,7 +189,8 @@
         "match_kind": "exact"
       },
       "note": "Function symbols of arity n are the type Language.Functions n.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c33fcedb6430"
     },
     {
       "kind": "definition",
@@ -195,7 +206,8 @@
         "match_kind": "exact"
       },
       "note": "Constants are defined as Language.Constants := L.Functions 0, the arity-0 function symbols.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "28818b2d1f6e"
     },
     {
       "kind": "definition",
@@ -211,7 +223,8 @@
         "match_kind": "exact"
       },
       "note": "The formation rules are the inductive definitions of Term and BoundedFormula.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e62c25b4eefd"
     },
     {
       "kind": "definition",
@@ -227,7 +240,8 @@
         "match_kind": "exact"
       },
       "note": "Term is inductively defined with var and func constructors exactly matching the formation rules.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3fc4bec0a04b"
     },
     {
       "kind": "definition",
@@ -243,7 +257,8 @@
         "match_kind": "exact"
       },
       "note": "Well-formed formulas are the inductive BoundedFormula (and Formula := BoundedFormula α 0).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "486b788ef2ca"
     },
     {
       "kind": "definition",
@@ -259,7 +274,8 @@
         "match_kind": "exact"
       },
       "note": "IsAtomic characterizes formulas that are equalities or relations applied to terms.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e9cfe03b9eaf"
     },
     {
       "kind": "proposition",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "Formulas are an inductive datatype, so unique readability holds automatically via constructor injectivity, but it is not stated as a theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ea7cdb43c419"
     },
     {
       "kind": "definition",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "Operator precedence is a parsing/notation convention, not a formalizable mathematical statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c2bc845d1f47"
     },
     {
       "kind": "definition",
@@ -307,7 +325,8 @@
         "match_kind": null
       },
       "note": "BoundedFormula structurally separates free variables (indexed by α, computed by freeVarFinset) from bound variables (de Bruijn indices in Fin n).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "22c2f4efbd22"
     },
     {
       "kind": "definition",
@@ -323,7 +342,8 @@
         "match_kind": "exact"
       },
       "note": "Sentence := Formula Empty, a formula with no free variables.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8ef23ad25cd8"
     },
     {
       "kind": "example",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "Mathlib has the order language (single ≤ relation) and a separate ring language, but not the combined ordered-abelian-group signature (0, −, +, ≤).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bc5da5676233"
     },
     {
       "kind": "definition",
@@ -355,7 +376,8 @@
         "match_kind": "exact"
       },
       "note": "A Structure assigns denotations to non-logical symbols via funMap and RelMap.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b356fd82a265"
     },
     {
       "kind": "definition",
@@ -371,7 +393,8 @@
         "match_kind": "exact"
       },
       "note": "FirstOrder.Language.Structure is the class of first-order structures on a carrier type.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "53616826c07b"
     },
     {
       "kind": "definition",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "The domain is just the carrier type M (taken Nonempty in models), not a named definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "03b2b8f53d40"
     },
     {
       "kind": "definition",
@@ -403,7 +427,8 @@
         "match_kind": "exact"
       },
       "note": "Structure.funMap and Structure.RelMap interpret function and relation symbols respectively.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0a288eec7dc5"
     },
     {
       "kind": "definition",
@@ -419,7 +444,8 @@
         "match_kind": null
       },
       "note": "Variable assignments are represented as functions α → M (and Fin n → M) passed to Term.realize and BoundedFormula.Realize, not a named structure.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e88716235d5a"
     },
     {
       "kind": "definition",
@@ -435,7 +461,8 @@
         "match_kind": "exact"
       },
       "note": "BoundedFormula.Realize is the inductive Tarskian truth definition over the formula constructors.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d644b83c0e65"
     },
     {
       "kind": "definition",
@@ -451,7 +478,8 @@
         "match_kind": null
       },
       "note": "Mathlib defines truth only via the Tarski recursion (Realize); the alternative satisfaction-relation approach is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "71c735415357"
     },
     {
       "kind": "proposition",
@@ -467,7 +495,8 @@
         "match_kind": null
       },
       "note": "Only one truth definition (Realize) exists in Mathlib, so this equivalence between two definitions is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b391d908223d"
     },
     {
       "kind": "definition",
@@ -483,7 +512,8 @@
         "match_kind": "generalization"
       },
       "note": "Theory.IsSatisfiable means a theory has a nonempty model; sentence satisfiability is the singleton case.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d47db9ace88e"
     },
     {
       "kind": "definition",
@@ -499,7 +529,8 @@
         "match_kind": null
       },
       "note": "Open formulas are evaluated by Formula.Realize with a variable assignment, but a dedicated satisfiability notion for free-variable formulas is not separately defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "720a9b9f7dd1"
     },
     {
       "kind": "definition",
@@ -515,7 +546,8 @@
         "match_kind": "special_case"
       },
       "note": "Validity is the empty-theory case (∅ ⊨ᵇ φ) of Theory.ModelsBoundedFormula, true in all interpretations.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ec8bcc26a125"
     },
     {
       "kind": "definition",
@@ -531,7 +563,8 @@
         "match_kind": "exact"
       },
       "note": "T ⊨ᵇ φ (ModelsBoundedFormula) means φ holds in every model of T, i.e. semantic logical consequence.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4890fb94e0d1"
     },
     {
       "kind": "proposition",
@@ -547,7 +580,8 @@
         "match_kind": null
       },
       "note": "Relation algebra and this expressive-power equivalence are not present in Mathlib's model theory.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c5e0719c8424"
     },
     {
       "kind": "definition",
@@ -563,7 +597,8 @@
         "match_kind": "exact"
       },
       "note": "A theory is Set L.Sentence, a set of sentences (axioms) over a signature.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "16debb48f9d8"
     },
     {
       "kind": "definition",
@@ -579,7 +614,8 @@
         "match_kind": "exact"
       },
       "note": "Theory.Model (M ⊨ T) defines a model satisfying every sentence; the notion of \"elementary class\" itself is not separately named.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0a303f393bcb"
     },
     {
       "kind": "proposition",
@@ -595,7 +631,8 @@
         "match_kind": null
       },
       "note": "exists_model_card_eq yields models of other cardinalities for theories with an infinite model, but \"nonstandard model\" is not a named concept.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7b4667918521"
     },
     {
       "kind": "definition",
@@ -611,7 +648,8 @@
         "match_kind": null
       },
       "note": "Mathlib has the semantic IsComplete and IsSatisfiable (consistency), but not the deductive-system-relative (syntactic) notions described.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "eb75d0d7f2f0"
     },
     {
       "kind": "theorem",
@@ -627,7 +665,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no deductive system or arithmetic-encoding machinery, so Gödel's incompleteness theorem is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "eb6708778662"
     },
     {
       "kind": "proposition",
@@ -643,7 +682,8 @@
         "match_kind": null
       },
       "note": "Mathlib's models/satisfiability assume Nonempty carriers, reflecting the nonempty-domain requirement, but rules of inference themselves are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ae34288162cd"
     },
     {
       "kind": "definition",
@@ -659,7 +699,8 @@
         "match_kind": null
       },
       "note": "Mathlib's model theory is purely semantic; no syntactic deductive system is formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8b7d26edce2a"
     },
     {
       "kind": "definition",
@@ -675,7 +716,8 @@
         "match_kind": null
       },
       "note": "No deductive system exists in Mathlib, so soundness/completeness of derivability are not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ffaf9e3942df"
     },
     {
       "kind": "proposition",
@@ -691,7 +733,8 @@
         "match_kind": null
       },
       "note": "No decidability/computability analysis of first-order consequence is present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8423a4bca2ff"
     },
     {
       "kind": "definition",
@@ -707,7 +750,8 @@
         "match_kind": null
       },
       "note": "Inference rules belong to a deductive system, which Mathlib does not formalize.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2ff45f02b8ae"
     },
     {
       "kind": "proposition",
@@ -723,7 +767,8 @@
         "match_kind": null
       },
       "note": "Substitution of terms for variables is formalized (BoundedFormula.subst), but not packaged as a derivation/inference rule.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1c5bafe4a148"
     },
     {
       "kind": "definition",
@@ -739,7 +784,8 @@
         "match_kind": null
       },
       "note": "No Hilbert-style proof calculus is formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f0a7acd27f39"
     },
     {
       "kind": "definition",
@@ -755,7 +801,8 @@
         "match_kind": null
       },
       "note": "Natural deduction for first-order logic is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9d4060ade0f2"
     },
     {
       "kind": "definition",
@@ -771,7 +818,8 @@
         "match_kind": null
       },
       "note": "Sequents and sequent calculus are not formalized in Mathlib's model theory.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f808605cb37f"
     },
     {
       "kind": "definition",
@@ -787,7 +835,8 @@
         "match_kind": null
       },
       "note": "The tableaux proof method is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bcd9930dee60"
     },
     {
       "kind": "proposition",
@@ -803,7 +852,8 @@
         "match_kind": null
       },
       "note": "Resolution and unification are not formalized in Mathlib's model theory.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3b80ade23914"
     },
     {
       "kind": "proposition",
@@ -819,7 +869,8 @@
         "match_kind": null
       },
       "note": "Semantic equivalence of formulas (φ ⇔[T] ψ) and many realize-equivalence lemmas are formalized, giving these identities semantically rather than via provability.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6f284f4e8e47"
     },
     {
       "kind": "definition",
@@ -835,7 +886,8 @@
         "match_kind": "exact"
       },
       "note": "Equality is a primitive logical symbol (BoundedFormula.equal / Term.bdEqual) interpreted as genuine equality in Realize.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f0008dc702ca"
     },
     {
       "kind": "definition",
@@ -851,7 +903,8 @@
         "match_kind": null
       },
       "note": "Since equality is realized as honest =, x = x holds automatically (Eq.refl) and is not stated as a separate first-order equality axiom.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "160dc7f03a6d"
     },
     {
       "kind": "definition",
@@ -867,7 +920,8 @@
         "match_kind": null
       },
       "note": "Function symbols are interpreted by genuine functions (funMap), so congruence under equality holds automatically (congrArg) rather than as a stated axiom.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "468f30cc9702"
     },
     {
       "kind": "definition",
@@ -883,7 +937,8 @@
         "match_kind": null
       },
       "note": "Because equality is genuine =, substitution of equals in formulas holds via congruence of Realize rather than as a first-order equality axiom.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ca453621c3d0"
     },
     {
       "kind": "proposition",
@@ -899,7 +954,8 @@
         "match_kind": null
       },
       "note": "Equality is genuine =, so symmetry/transitivity hold via Eq.symm/Eq.trans rather than being derived from first-order equality axioms.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "86477e25915f"
     },
     {
       "kind": "definition",
@@ -915,7 +971,8 @@
         "match_kind": null
       },
       "note": "Mathlib's BoundedFormula always includes the equality constructor; an equality-free variant is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d960d7bc06ab"
     },
     {
       "kind": "definition",
@@ -931,7 +988,8 @@
         "match_kind": null
       },
       "note": "Equality is always interpreted as genuine equality in Mathlib, so the normal/non-normal model distinction is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "be259869ceac"
     },
     {
       "kind": "definition",
@@ -947,7 +1005,8 @@
         "match_kind": null
       },
       "note": "Defining a congruence relation that behaves like equality within a theory is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ce0ccb90e1e5"
     },
     {
       "kind": "example",
@@ -963,7 +1022,8 @@
         "match_kind": null
       },
       "note": "Ad hoc internal definitions of equality are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f0d2c39e9338"
     },
     {
       "kind": "theorem",
@@ -979,7 +1039,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no deductive system, so the completeness theorem relating provability to semantic validity is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0258afc7ee5b"
     },
     {
       "kind": "proposition",
@@ -995,7 +1056,8 @@
         "match_kind": null
       },
       "note": "Semidecidability of first-order consequence is a computability result not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "456691e2366b"
     },
     {
       "kind": "theorem",
@@ -1011,7 +1073,8 @@
         "match_kind": null
       },
       "note": "Church–Turing undecidability of first-order validity is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "39d361655128"
     },
     {
       "kind": "proposition",
@@ -1027,7 +1090,8 @@
         "match_kind": null
       },
       "note": "Decidability of fragments of first-order logic is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e3671c6180e7"
     },
     {
       "kind": "example",
@@ -1043,7 +1107,8 @@
         "match_kind": null
       },
       "note": "The two-variable counting fragment C2 and its decidability are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dd55a8670ed5"
     },
     {
       "kind": "example",
@@ -1059,7 +1124,8 @@
         "match_kind": null
       },
       "note": "The monadic (Löwenheim) fragment and its decidability are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b7073a3bb0b8"
     },
     {
       "kind": "example",
@@ -1075,7 +1141,8 @@
         "match_kind": null
       },
       "note": "The Löb–Gurevich fragment is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e8c5f466340a"
     },
     {
       "kind": "example",
@@ -1091,7 +1158,8 @@
         "match_kind": null
       },
       "note": "The Rabin fragment is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "48a4e3334d20"
     },
     {
       "kind": "example",
@@ -1107,7 +1175,8 @@
         "match_kind": null
       },
       "note": "Although prenex normal form (IsPrenex) is formalized, the BSR fragment and its decidability are not.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dbdf3426734c"
     },
     {
       "kind": "theorem",
@@ -1123,7 +1192,8 @@
         "match_kind": "exact"
       },
       "note": "The Downward Löwenheim–Skolem theorem is formalized (with the upward direction as exists_elementaryEmbedding_card_eq in Satisfiability).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4484897db56b"
     },
     {
       "kind": "proposition",
@@ -1139,7 +1209,8 @@
         "match_kind": null
       },
       "note": "exists_model_card_eq gives models of every sufficiently large cardinality, implying no infinite structure is categorically axiomatizable, though not stated in that form.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cafea59c1beb"
     },
     {
       "kind": "theorem",
@@ -1155,7 +1226,8 @@
         "match_kind": "exact"
       },
       "note": "This is exactly the compactness theorem: a theory is satisfiable iff finitely satisfiable.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0e0504d3ff29"
     },
     {
       "kind": "proposition",
@@ -1171,7 +1243,8 @@
         "match_kind": null
       },
       "note": "Mathlib formalizes the theory of simple graphs but not the non-axiomatizability of the class of finite graphs.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "23e0d228d1bb"
     },
     {
       "kind": "proposition",
@@ -1187,7 +1260,8 @@
         "match_kind": null
       },
       "note": "Non-axiomatizability of connectedness in first-order logic is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1d046822aa42"
     },
     {
       "kind": "theorem",
@@ -1203,7 +1277,8 @@
         "match_kind": null
       },
       "note": "Lindström's characterization theorem is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d8811bfda74f"
     },
     {
       "kind": "proposition",
@@ -1219,7 +1294,8 @@
         "match_kind": "generalization"
       },
       "note": "exists_model_card_eq shows a theory with an infinite model has a model of every sufficiently large cardinality.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "070cf8cddea0"
     },
     {
       "kind": "proposition",
@@ -1235,7 +1311,8 @@
         "match_kind": null
       },
       "note": "Claims about formalizing natural-language quantifiers are informal and not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b3153dbf002c"
     },
     {
       "kind": "proposition",
@@ -1251,7 +1328,8 @@
         "match_kind": null
       },
       "note": "BoundedFormula uses a minimal set of primitives (falsum, imp, all, equal, rel) and derives the others, realizing this reduction in its construction.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a1dffe30f230"
     },
     {
       "kind": "proposition",
@@ -1267,7 +1345,8 @@
         "match_kind": null
       },
       "note": "Relational and algebraic languages (IsRelational) exist, but the function-to-relation elimination reduction is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7553f8cccf39"
     },
     {
       "kind": "proposition",
@@ -1283,7 +1362,8 @@
         "match_kind": null
       },
       "note": "Reducing arities via a pairing function is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0ac63fe4f9ea"
     },
     {
       "kind": "definition",
@@ -1299,7 +1379,8 @@
         "match_kind": null
       },
       "note": "Mathlib's first-order logic is single-sorted; many-sorted logic is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "decf4503e94f"
     },
     {
       "kind": "proposition",
@@ -1315,7 +1396,8 @@
         "match_kind": null
       },
       "note": "The reduction of many-sorted to single-sorted logic is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4773e97f0012"
     },
     {
       "kind": "definition",
@@ -1331,7 +1413,8 @@
         "match_kind": "exact"
       },
       "note": "ExistsUnique (∃!) is defined as ∃ x, p x ∧ ∀ y, p y → y = x at the ambient logic level, matching uniqueness quantification (not a BoundedFormula constructor).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d8dba0391f7e"
     },
     {
       "kind": "definition",
@@ -1347,7 +1430,8 @@
         "match_kind": null
       },
       "note": "Generalized quantifiers (e.g. \"there exist infinitely many\") are not added to Mathlib's BoundedFormula.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a988070d5436"
     },
     {
       "kind": "definition",
@@ -1363,7 +1447,8 @@
         "match_kind": null
       },
       "note": "Mathlib's formulas are finite; infinitary logic is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f22f04a39737"
     },
     {
       "kind": "definition",
@@ -1379,7 +1464,8 @@
         "match_kind": null
       },
       "note": "The L_αβ infinitary logics are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "27a01a968b3b"
     },
     {
       "kind": "definition",
@@ -1395,7 +1481,8 @@
         "match_kind": null
       },
       "note": "Mathlib's model theory uses classical semantics; intuitionistic first-order logic is not formalized as an object.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "eb227c765b7c"
     },
     {
       "kind": "definition",
@@ -1411,7 +1498,8 @@
         "match_kind": null
       },
       "note": "First-order modal logic and possible-worlds semantics are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8c0ed57379c7"
     },
     {
       "kind": "definition",
@@ -1427,7 +1515,8 @@
         "match_kind": null
       },
       "note": "First-order fuzzy logics are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "32606126afcf"
     },
     {
       "kind": "definition",
@@ -1443,7 +1532,8 @@
         "match_kind": null
       },
       "note": "Fixpoint logic is not formalized in Mathlib's model theory.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0e8d472129c8"
     },
     {
       "kind": "definition",
@@ -1459,7 +1549,8 @@
         "match_kind": null
       },
       "note": "Mathlib's Language supports only first-order quantification over elements; second-order logic is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5698c463aecf"
     },
     {
       "kind": "proposition",
@@ -1475,7 +1566,8 @@
         "match_kind": null
       },
       "note": "Decidability properties of second-order consequence are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "46294de6cfae"
     },
     {
       "kind": "proposition",
@@ -1491,7 +1583,8 @@
         "match_kind": null
       },
       "note": "Failure of Löwenheim–Skolem and compactness in higher-order logic is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "341f822f16fb"
     },
     {
       "kind": "definition",
@@ -1507,7 +1600,8 @@
         "match_kind": null
       },
       "note": "Automated theorem proving is a description of software, not a mathematical statement formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "63c26472bf65"
     },
     {
       "kind": "proposition",
@@ -1523,7 +1617,8 @@
         "match_kind": null
       },
       "note": "Complexity results on model checking finite structures against first-order formulas are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1e1acf09388f"
     }
   ]
 }

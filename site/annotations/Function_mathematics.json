@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "Functions are the built-in type `α → β` in Lean's type theory; there is no Mathlib `def` because the notion is primitive.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5cc9794bf3d1"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "exact"
       },
       "note": "`Function.graph f = {(a, b) | f a = b}` matches the graph definition, and `graph_injective` shows the representation is unique.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "152466608f49"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "Lean's primitive arrow type `α → β` provides domain `α` and codomain `β` directly.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3dc1ce387a2f"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "`Set.range f` is the set of images of all elements of the domain.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dcfac4e461b5"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "`PFun α β` (notation `α →. β`) is the type of partial functions defined as `α → Part β`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4c62415ea10c"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": null
       },
       "note": "Lean's type system always requires both a domain and codomain, so this informal usage is not separately formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "117a0e7734df"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": "exact"
       },
       "note": "`Rel α β := α → β → Prop` formalizes a binary relation between `α` and `β`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e5470a8b1c57"
     },
     {
       "kind": "definition",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "`SetRel.exists_graph_eq_iff` characterizes which relations come from functions (`∀ a, ∃! b, a ~[R] b`), giving the set-theoretic functional-relation criterion.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d8e47801610a"
     },
     {
       "kind": "definition",
@@ -147,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "The condition `∀ a, ∃! b, a ~[R] b` in `SetRel.exists_graph_eq_iff` captures the functional-relation predicate.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a151f1499bb9"
     },
     {
       "kind": "definition",
@@ -163,7 +172,8 @@
         "match_kind": "exact"
       },
       "note": "`PFun α β` is exactly a partial function from `α` to `β`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3377bfb38636"
     },
     {
       "kind": "definition",
@@ -179,7 +189,8 @@
         "match_kind": "exact"
       },
       "note": "`PFun.Dom` gives the domain of definition of a partial function.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "11c9d82b58e2"
     },
     {
       "kind": "definition",
@@ -195,7 +206,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib uses plain `ℝ → ℝ` for total real functions; a partial real function would be `PFun ℝ ℝ`, but there is no named alias.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f85c08d24273"
     },
     {
       "kind": "definition",
@@ -211,7 +223,8 @@
         "match_kind": null
       },
       "note": "Mathlib uses `ℂ → ℂ` (or restrictions to opens) without a named partial-function alias.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cc17682d0bb5"
     },
     {
       "kind": "definition",
@@ -227,7 +240,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat.Partrec : (ℕ →. ℕ) → Prop` is the inductive definition of partial recursive (general recursive) functions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e4f5bde0fd03"
     },
     {
       "kind": "theorem",
@@ -243,7 +257,8 @@
         "match_kind": "exact"
       },
       "note": "`halting_problem` proves `¬ComputablePred fun c => (eval c n).Dom`, the undecidability of the halting predicate.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "21d5cc3509bd"
     },
     {
       "kind": "definition",
@@ -259,7 +274,8 @@
         "match_kind": "exact"
       },
       "note": "Multivariate functions are simply curried/uncurried Lean functions; `Function.uncurry`/`Function.curry` (in core/Mathlib) provide the conversion.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6382ca7404f9"
     },
     {
       "kind": "definition",
@@ -275,7 +291,8 @@
         "match_kind": "exact"
       },
       "note": "Functions of n variables are expressed in Lean as `(Fin n → α) → β` or as iterated arrows; not a separate Mathlib `def`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "307d6183d112"
     },
     {
       "kind": "example",
@@ -291,7 +308,8 @@
         "match_kind": "exact"
       },
       "note": "Integer multiplication is realized as a binary function via the `Mul ℤ` instance.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "98914ee1e68a"
     },
     {
       "kind": "definition",
@@ -307,7 +325,8 @@
         "match_kind": "exact"
       },
       "note": "`Set.prod` provides binary Cartesian product of sets; `Set.pi` provides the n-ary version.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bfd8c5ca88c1"
     },
     {
       "kind": "definition",
@@ -323,7 +342,8 @@
         "match_kind": null
       },
       "note": "Functional notation is a metamathematical convention, not a Mathlib definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d3f9a3a2fba1"
     },
     {
       "kind": "definition",
@@ -339,7 +359,8 @@
         "match_kind": "exact"
       },
       "note": "Lean's `fun x => ...` (lambda) syntax realizes arrow/anonymous-function notation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dac99090cac5"
     },
     {
       "kind": "definition",
@@ -355,7 +376,8 @@
         "match_kind": "exact"
       },
       "note": "Sequences in Lean/Mathlib are simply functions `ℕ → α`; no named `def` because the type itself suffices.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2eb6fcbe541d"
     },
     {
       "kind": "definition",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "Placeholder notation is a notational convention with no Mathlib definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "11e8dc6313c7"
     },
     {
       "kind": "example",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "Specific illustrative example; not a named declaration in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7b3044ee207b"
     },
     {
       "kind": "definition",
@@ -403,7 +427,8 @@
         "match_kind": null
       },
       "note": "Terminological remark; no separate Mathlib declaration.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3ac3e6568076"
     },
     {
       "kind": "example",
@@ -419,7 +444,8 @@
         "match_kind": "generalization"
       },
       "note": "`Function.update` plus pattern-matching on finite domains realize functions specified by listing values.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "37c684784aa0"
     },
     {
       "kind": "definition",
@@ -435,7 +461,8 @@
         "match_kind": null
       },
       "note": "Mathlib has `Polynomial` and `QuadraticForm` but no general `def QuadraticFunction` for ax²+bx+c on a single variable.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "41855fac1b66"
     },
     {
       "kind": "definition",
@@ -451,7 +478,8 @@
         "match_kind": "exact"
       },
       "note": "`Polynomial R` represents polynomials and `Polynomial.eval` gives the associated polynomial function.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8fd5045f5a78"
     },
     {
       "kind": "definition",
@@ -467,7 +495,8 @@
         "match_kind": "exact"
       },
       "note": "`RatFunc K` is Mathlib's formalization of the field of rational functions over `K`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a5e780b05daf"
     },
     {
       "kind": "definition",
@@ -483,7 +512,8 @@
         "match_kind": null
       },
       "note": "No general `def AlgebraicFunction` in Mathlib; only related notions like `IsAlgebraic` for elements of an extension.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "947d088f7617"
     },
     {
       "kind": "definition",
@@ -499,7 +529,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no formal definition of the class of elementary functions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3e72ed996d26"
     },
     {
       "kind": "definition",
@@ -515,7 +546,8 @@
         "match_kind": "exact"
       },
       "note": "`Function.Bijective f := Injective f ∧ Surjective f`, with `Equiv.ofBijective` building the inverse function.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "10fb6ab624a1"
     },
     {
       "kind": "definition",
@@ -531,7 +563,8 @@
         "match_kind": "special_case"
       },
       "note": "`HasStrictFDerivAt.implicitFunction` realizes implicit functions in the analytic setting; there is no general Mathlib `def` for implicit functions from arbitrary relations.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "af2196a7fe0f"
     },
     {
       "kind": "example",
@@ -547,7 +580,8 @@
         "match_kind": null
       },
       "note": "Specific illustrative example; not a named Mathlib declaration.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4443d6bcaa51"
     },
     {
       "kind": "example",
@@ -563,7 +597,8 @@
         "match_kind": null
       },
       "note": "The Bring radical is not defined in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5bac1ae69799"
     },
     {
       "kind": "theorem",
@@ -579,7 +614,8 @@
         "match_kind": "exact"
       },
       "note": "`HasStrictFDerivAt.implicitFunction` and its `prodFun_implicitFunction` equation provide the implicit function theorem in Banach spaces.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c725fd684d05"
     },
     {
       "kind": "definition",
@@ -595,7 +631,8 @@
         "match_kind": "generalization"
       },
       "note": "Antiderivatives are not packaged as a named operator, but `intervalIntegral` and `FTC` lemmas realize the antiderivative construction.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "38fde9aadf2e"
     },
     {
       "kind": "example",
@@ -611,7 +648,8 @@
         "match_kind": "special_case"
       },
       "note": "`Real.exp` is defined via its power series (not as ODE solution), but its derivative property `Real.hasDerivAt_exp` is proved.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1ff8034f78de"
     },
     {
       "kind": "definition",
@@ -627,7 +665,8 @@
         "match_kind": "exact"
       },
       "note": "`HasFPowerSeriesAt f p x` and `HasFPowerSeriesOnBall` express that `f` is given by a power series on a neighborhood.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f0d39e689bc6"
     },
     {
       "kind": "definition",
@@ -643,7 +682,8 @@
         "match_kind": "exact"
       },
       "note": "Lean's built-in `Nat.rec`/`Nat.recOn` and `def` by pattern matching directly support recurrence-defined functions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1dcb9ea4027a"
     },
     {
       "kind": "example",
@@ -659,7 +699,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat.factorial` is defined by primitive recursion: `0! = 1`, `(n+1)! = (n+1) * n!`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "22a44bdbdea3"
     },
     {
       "kind": "definition",
@@ -675,7 +716,8 @@
         "match_kind": "exact"
       },
       "note": "`Function.graph f := {(a, b) | f a = b}` is exactly the formal set-of-pairs definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "73bc2ec039f0"
     },
     {
       "kind": "example",
@@ -691,7 +733,8 @@
         "match_kind": null
       },
       "note": "Specific illustrative example; no Mathlib declaration for the parabola/Fermat-spiral pictures.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9f0540adad07"
     },
     {
       "kind": "example",
@@ -707,7 +750,8 @@
         "match_kind": null
       },
       "note": "Tabular representation is a presentational device, not a Mathlib definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8b6977dc0ffc"
     },
     {
       "kind": "example",
@@ -723,7 +767,8 @@
         "match_kind": null
       },
       "note": "Bar charts are graphical, not a Mathlib formalization target.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "bb5090d9660f"
     },
     {
       "kind": "definition",
@@ -739,7 +784,8 @@
         "match_kind": "exact"
       },
       "note": "`isEmptyElim` produces a unique function out of any empty type; `isEmpty_fun` characterizes when `α → β` is empty.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a33480fa3b47"
     },
     {
       "kind": "definition",
@@ -755,7 +801,8 @@
         "match_kind": "exact"
       },
       "note": "`Set.rangeFactorization f : α → range f` is the canonical surjection onto the image; `coe_comp_rangeFactorization` shows it factors `f`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fb347c417b2a"
     },
     {
       "kind": "definition",
@@ -771,7 +818,8 @@
         "match_kind": "exact"
       },
       "note": "`Set.inclusion (h : s ⊆ t) : s → t := fun x ↦ ⟨x, h x.prop⟩` is exactly the inclusion map.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6c459bd3ccb9"
     },
     {
       "kind": "definition",
@@ -787,7 +835,8 @@
         "match_kind": "exact"
       },
       "note": "`id : α → α` is the Lean core identity function used throughout Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "55338538398a"
     },
     {
       "kind": "definition",
@@ -803,7 +852,8 @@
         "match_kind": "exact"
       },
       "note": "`Function.comp` (notation `∘`) is Lean's primitive composition `(f ∘ g) x = f (g x)`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "48b7c41a4f6a"
     },
     {
       "kind": "proposition",
@@ -819,7 +869,8 @@
         "match_kind": null
       },
       "note": "Non-commutativity is not stated as a theorem in Mathlib; only specific counterexamples appear.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "44979050fbe8"
     },
     {
       "kind": "proposition",
@@ -835,7 +886,8 @@
         "match_kind": "exact"
       },
       "note": "`Function.comp_assoc` proves `(f ∘ g) ∘ h = f ∘ g ∘ h`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "81b09bb758f1"
     },
     {
       "kind": "proposition",
@@ -851,7 +903,8 @@
         "match_kind": "exact"
       },
       "note": "`Function.id_comp` and `Function.comp_id` express that `id` is a two-sided identity for composition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7f525dcf955d"
     },
     {
       "kind": "definition",
@@ -867,7 +920,8 @@
         "match_kind": "exact"
       },
       "note": "`Set.image f s = {f a | a ∈ s}`, with notation `f '' s`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f6cef2faac07"
     },
     {
       "kind": "definition",
@@ -883,7 +937,8 @@
         "match_kind": "generalization"
       },
       "note": "The preimage of a single element is `f ⁻¹' {y}`, a special case of `Set.preimage`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4d60b77ab1dd"
     },
     {
       "kind": "definition",
@@ -899,7 +954,8 @@
         "match_kind": "exact"
       },
       "note": "`Set.preimage f s = {x | f x ∈ s}`, notation `f ⁻¹' s`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3b1e0da1e7d2"
     },
     {
       "kind": "definition",
@@ -915,7 +971,8 @@
         "match_kind": "exact"
       },
       "note": "The fiber of `y` under `f` is `f ⁻¹' {y}`; `Function.fiber` in Mathlib.Logic.Function.FiberPartition packages this for partitioning.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "46e51dd712df"
     },
     {
       "kind": "definition",
@@ -931,7 +988,8 @@
         "match_kind": "exact"
       },
       "note": "`Function.Injective f := ∀ ⦃a b⦄, f a = f b → a = b` is in Lean core and used throughout Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "433553702c70"
     },
     {
       "kind": "proposition",
@@ -947,7 +1005,8 @@
         "match_kind": "exact"
       },
       "note": "`Function.injective_iff_hasLeftInverse` proves `Injective f ↔ HasLeftInverse f`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fc5005e13503"
     },
     {
       "kind": "definition",
@@ -963,7 +1022,8 @@
         "match_kind": "exact"
       },
       "note": "`Function.Surjective f := ∀ b, ∃ a, f a = b` is in Lean core.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "27d4703b6487"
     },
     {
       "kind": "proposition",
@@ -979,7 +1039,8 @@
         "match_kind": "exact"
       },
       "note": "`Function.surjective_iff_hasRightInverse` proves `Surjective f ↔ HasRightInverse f`, using classical choice via `surjInv`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "748566b8eb84"
     },
     {
       "kind": "definition",
@@ -995,7 +1056,8 @@
         "match_kind": "exact"
       },
       "note": "`Function.Bijective f := Injective f ∧ Surjective f`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "70af2dcceac9"
     },
     {
       "kind": "proposition",
@@ -1011,7 +1073,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib proves bijective is equivalent to having a two-sided inverse (`leftInverse_surjInv`/`rightInverse_surjInv`), and `Equiv.ofBijective` packages the inverse.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "44255e872fc5"
     },
     {
       "kind": "theorem",
@@ -1027,7 +1090,8 @@
         "match_kind": "special_case"
       },
       "note": "`Set.rangeFactorization` and `coe_comp_rangeFactorization` give the surjection-injection factorization through the image, but the full quotient/image/inclusion three-factor decomposition is not packaged as a single theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "930ea2a5483c"
     },
     {
       "kind": "definition",
@@ -1043,7 +1107,8 @@
         "match_kind": "exact"
       },
       "note": "`Set.restrict s f : ↥s → _` restricts `f` to a subset `s`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "53dd25e7aa87"
     },
     {
       "kind": "definition",
@@ -1059,7 +1124,8 @@
         "match_kind": "exact"
       },
       "note": "`Function.extend f g g₀` extends `g` along an injection `f` (with default `g₀`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dc48f9e59413"
     },
     {
       "kind": "definition",
@@ -1075,7 +1141,8 @@
         "match_kind": null
       },
       "note": "No `def Homography` for the real-line Möbius transformation in Mathlib; only projective-geometry homographies in different contexts.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2e1f0dc59b61"
     },
     {
       "kind": "definition",
@@ -1091,7 +1158,8 @@
         "match_kind": "exact"
       },
       "note": "A real function is just `ℝ → ℝ` (or `s → ℝ` for `s : Set ℝ`); no separate Mathlib alias.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "382e39de73b8"
     },
     {
       "kind": "definition",
@@ -1107,7 +1175,8 @@
         "match_kind": "exact"
       },
       "note": "`Pi.instAdd`/`Pi.instMul`/etc. equip function spaces with pointwise algebraic operations.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1be3a1c2437f"
     },
     {
       "kind": "definition",
@@ -1123,7 +1192,8 @@
         "match_kind": "exact"
       },
       "note": "`Polynomial ℝ` and `RatFunc ℝ` provide polynomial and rational real functions via `eval`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5432a3a06674"
     },
     {
       "kind": "definition",
@@ -1139,7 +1209,8 @@
         "match_kind": "exact"
       },
       "note": "`Real.log` is defined in Mathlib (via `Complex.log`), with antiderivative property `Real.deriv_log` available.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "80528a4892c8"
     },
     {
       "kind": "definition",
@@ -1155,7 +1226,8 @@
         "match_kind": "exact"
       },
       "note": "`Monotone`, `StrictMono`, `MonotoneOn`, `StrictMonoOn` formalize various notions of monotonicity.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "485a3bd097e9"
     },
     {
       "kind": "proposition",
@@ -1171,7 +1243,8 @@
         "match_kind": "exact"
       },
       "note": "`StrictMonoOn.orderIso` builds an order isomorphism between a set and its image for a strictly monotone function on that set.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8b32795c3313"
     },
     {
       "kind": "definition",
@@ -1187,7 +1260,8 @@
         "match_kind": "exact"
       },
       "note": "Vector-valued functions are functions into a vector space (e.g. `α → E` with `Module 𝕜 E`); not a named alias.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "eb8e152a6fb9"
     },
     {
       "kind": "definition",
@@ -1203,7 +1277,8 @@
         "match_kind": "generalization"
       },
       "note": "Smooth vector fields on manifolds are realized as smooth sections of the tangent bundle; Mathlib also has `Analysis/Calculus/VectorField.lean` for the Euclidean setting.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "982753f31c75"
     },
     {
       "kind": "definition",
@@ -1219,7 +1294,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib has many specific function spaces (`ContinuousMap`, `Lp`, `BoundedContinuousFunction`, `Schwartz`, …) but no overarching `def FunctionSpace`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b5e4b569b431"
     },
     {
       "kind": "example",
@@ -1235,7 +1311,8 @@
         "match_kind": null
       },
       "note": "Mathlib's `Real.sqrt`/`Complex.sqrt` are principal-branch single-valued; the multi-valued square root is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d5d3b010feea"
     },
     {
       "kind": "definition",
@@ -1251,7 +1328,8 @@
         "match_kind": null
       },
       "note": "Multi-valued functions, branch cuts, principal values, and monodromy are not formalized as a general framework in Mathlib (only specific monodromy notions appear in homotopy lifting).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b4c07a6553bf"
     },
     {
       "kind": "theorem",
@@ -1267,7 +1345,8 @@
         "match_kind": null
       },
       "note": "Lean/Mathlib is founded on type theory (CIC), not NBG; the replacement axiom is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "adc197b4c94b"
     },
     {
       "kind": "definition",
@@ -1283,7 +1362,8 @@
         "match_kind": "exact"
       },
       "note": "`Nat.Partrec` inductively defines partial recursive functions via zero, successor, projection, pairing, composition, primitive recursion, and `rfind`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a3da8e2e35d7"
     },
     {
       "kind": "theorem",
@@ -1299,7 +1379,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib formalizes equivalences between partial-recursive functions and Turing machine models in `Computability/TuringMachine/ToPartrec`, but a comprehensive Church-Turing equivalence covering all standard models is not packaged.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1a6110c6ac64"
     },
     {
       "kind": "definition",
@@ -1315,7 +1396,8 @@
         "match_kind": null
       },
       "note": "The untyped lambda calculus is not formalized as a standalone theory in Mathlib (though Lean itself is based on a typed λ-calculus).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4d7cfad9b231"
     }
   ]
 }

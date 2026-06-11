@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "Mathlib's `SimpleGraph V` is a structure with a symmetric irreflexive adjacency relation, matching the undirected simple-graph definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a29444e5a2b7"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "exact"
       },
       "note": "`SimpleGraph.emptyGraph V := ⊥` is the graph with no edges (note Mathlib's empty graph has empty edge set rather than empty vertex set).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "76058148f576"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no dedicated `order` of a graph but expresses it as `Fintype.card V` on the vertex type.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2867ed837b33"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "invocation"
       },
       "note": "There is no `size` decl but the cardinality `#G.edgeFinset` plays this role via `SimpleGraph.edgeFinset_card`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3f1ae42d7af6"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "`SimpleGraph.degree v := #(G.neighborFinset v)` counts edges incident to `v`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "95fdbabd03ba"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": "invocation"
       },
       "note": "Edges live in `Sym2 V`, so endpoints are recovered by membership in the unordered pair rather than via a dedicated `endpoints` definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9041b2eedcaa"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": null
       },
       "note": "No `IsolatedVertex` predicate found; one would have to spell out `G.degree v = 0` or `G.neighborSet v = ∅`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0c1ab5647bcc"
     },
     {
       "kind": "definition",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "`SimpleGraph.Adj : V → V → Prop` is the adjacency relation defining when two vertices are joined by an edge.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "01acac61bb22"
     },
     {
       "kind": "definition",
@@ -147,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "`Graph α β` formalizes multigraphs with vertex set in `α` and edge set in `β`, allowing parallel edges and loops.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "157c234e45b4"
     },
     {
       "kind": "definition",
@@ -163,7 +172,8 @@
         "match_kind": "exact"
       },
       "note": "`Graph` permits loops via `Graph.IsLoopAt e x := G.IsLink e x x`; `Digraph` also permits self-loops.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a46492fea32c"
     },
     {
       "kind": "proposition",
@@ -179,7 +189,8 @@
         "match_kind": "exact"
       },
       "note": "`SimpleGraph.maxDegree_lt_card_verts` states the maximum degree is less than the number of vertices.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "83120010ecd4"
     },
     {
       "kind": "definition",
@@ -195,7 +206,8 @@
         "match_kind": "exact"
       },
       "note": "`SimpleGraph.Adj` is the symmetric adjacency relation and `SimpleGraph.adjMatrix` is the corresponding symmetric 0/1 matrix.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3011279ef175"
     },
     {
       "kind": "definition",
@@ -211,7 +223,8 @@
         "match_kind": "exact"
       },
       "note": "`Digraph V` wraps an arbitrary binary relation `Adj : V → V → Prop`, modelling directed graphs (with self-loops allowed).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "dd9128e3b274"
     },
     {
       "kind": "definition",
@@ -227,7 +240,8 @@
         "match_kind": "exact"
       },
       "note": "`Digraph V` (a relation on `V`) gives exactly the pair (vertex set, ordered-pair edge set) of a directed simple graph.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "77aec44fe413"
     },
     {
       "kind": "definition",
@@ -243,7 +257,8 @@
         "match_kind": "invocation"
       },
       "note": "In `Quiver V`, an edge `f : X ⟶ Y` has tail `X` and head `Y` recoverable as the type indices, but there is no separately named `tail`/`head` accessor.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "63052eafedfa"
     },
     {
       "kind": "definition",
@@ -259,7 +274,8 @@
         "match_kind": "exact"
       },
       "note": "`Quiver.reverse` (under `HasReverse`) gives the inverted arrow `b ⟶ a` of `a ⟶ b`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "17092cc0692b"
     },
     {
       "kind": "definition",
@@ -275,7 +291,8 @@
         "match_kind": "invocation"
       },
       "note": "`Quiver` permits multiple edges (`X ⟶ Y` is a `Sort`, not a `Prop`), but there is no named `MultipleEdge` predicate.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b2df148f1420"
     },
     {
       "kind": "definition",
@@ -291,7 +308,8 @@
         "match_kind": "exact"
       },
       "note": "`Quiver V` provides, for each pair `(a,b)`, a type of arrows `a ⟶ b`, exactly modelling a directed multigraph.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "deff95583ca2"
     },
     {
       "kind": "definition",
@@ -307,7 +325,8 @@
         "match_kind": "exact"
       },
       "note": "`Graph.IsLoopAt e x := G.IsLink e x x` captures an edge joining a vertex to itself; `Digraph` also permits self-loops via its general adjacency relation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "62dc9d3f04dc"
     },
     {
       "kind": "definition",
@@ -323,7 +342,8 @@
         "match_kind": "exact"
       },
       "note": "`Digraph` IS a binary relation `Adj : V → V → Prop` on the vertex set, which is the adjacency relation of a directed simple graph permitting loops.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c181ace7c356"
     },
     {
       "kind": "definition",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "No `MixedGraph` structure found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a6771df872d4"
     },
     {
       "kind": "definition",
@@ -355,7 +376,8 @@
         "match_kind": null
       },
       "note": "No dedicated `WeightedGraph` type; edge-weighting would be encoded as a function on `edgeSet` ad hoc.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "899c78b83cc7"
     },
     {
       "kind": "definition",
@@ -371,7 +393,8 @@
         "match_kind": "invocation"
       },
       "note": "`Mathlib.Combinatorics.Digraph.Orientation` discusses orientation-forgetting maps, but does not define a standalone `OrientedGraph` predicate.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1e8597525f63"
     },
     {
       "kind": "definition",
@@ -387,7 +410,8 @@
         "match_kind": "exact"
       },
       "note": "`SimpleGraph.IsRegularOfDegree d` asserts every vertex has degree `d`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d08c26ac3dd7"
     },
     {
       "kind": "definition",
@@ -403,7 +427,8 @@
         "match_kind": "exact"
       },
       "note": "`SimpleGraph.completeGraph V := ⊤` is the simple graph in which every distinct pair is adjacent.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1b587df128b5"
     },
     {
       "kind": "definition",
@@ -419,7 +444,8 @@
         "match_kind": "invocation"
       },
       "note": "Finiteness is expressed via typeclasses `[Fintype V]` / `[Fintype G.edgeSet]` rather than a `FiniteGraph` definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "eac2d92d7690"
     },
     {
       "kind": "definition",
@@ -435,7 +461,8 @@
         "match_kind": "exact"
       },
       "note": "`SimpleGraph.Reachable u v` expresses the existence of a walk between `u` and `v`, i.e. that the pair is connected.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e0f887269bbf"
     },
     {
       "kind": "definition",
@@ -451,7 +478,8 @@
         "match_kind": "exact"
       },
       "note": "`SimpleGraph.Connected` is `Preconnected ∧ Nonempty V`, requiring every two vertices to be reachable.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "064fe729269c"
     },
     {
       "kind": "definition",
@@ -467,7 +495,8 @@
         "match_kind": null
       },
       "note": "No `Digraph.Reachable`/`StronglyConnected`/`WeaklyConnected` predicate for ordered pairs in directed graphs found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3d5212aa3858"
     },
     {
       "kind": "definition",
@@ -483,7 +512,8 @@
         "match_kind": null
       },
       "note": "No `StronglyConnected` predicate on `Digraph` found in Mathlib (the term appears only for matrices/categories).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b99d03a557c4"
     },
     {
       "kind": "definition",
@@ -499,7 +529,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib defines `SimpleGraph.IsEdgeConnected k` (k-edge-connectivity) but no analogous `IsVertexConnected` predicate.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1599d971b8bd"
     },
     {
       "kind": "definition",
@@ -515,7 +546,8 @@
         "match_kind": "exact"
       },
       "note": "`SimpleGraph.IsBipartite` (an abbreviation for `Colorable 2`) and `IsBipartiteWith s t` capture bipartite graphs.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9d3949924e96"
     },
     {
       "kind": "definition",
@@ -531,7 +563,8 @@
         "match_kind": "exact"
       },
       "note": "`SimpleGraph.completeBipartiteGraph V W` on `V ⊕ W` adjoins every cross-side pair.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2bb958673635"
     },
     {
       "kind": "definition",
@@ -547,7 +580,8 @@
         "match_kind": "exact"
       },
       "note": "`SimpleGraph.pathGraph n` is the path graph on `Fin n` with adjacency `u+1=v ∨ v+1=u`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "263a9d66a5a8"
     },
     {
       "kind": "proposition",
@@ -563,7 +597,8 @@
         "match_kind": null
       },
       "note": "No `iff`-style characterization of `pathGraph` by its degree sequence is present in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "20f63301235d"
     },
     {
       "kind": "definition",
@@ -579,7 +614,8 @@
         "match_kind": null
       },
       "note": "No `Planar` predicate or planar-graph theory exists in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9b81193faf8f"
     },
     {
       "kind": "definition",
@@ -595,7 +631,8 @@
         "match_kind": "exact"
       },
       "note": "`SimpleGraph.cycleGraph n` is defined on `Fin n` as the circulant graph with connection set `{1}`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "056d627426f9"
     },
     {
       "kind": "proposition",
@@ -611,7 +648,8 @@
         "match_kind": null
       },
       "note": "No theorem in Mathlib characterizing cycle graphs as connected 2-regular graphs was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "751bfc96daa3"
     },
     {
       "kind": "definition",
@@ -627,7 +665,8 @@
         "match_kind": "exact"
       },
       "note": "`SimpleGraph.IsTree` requires the graph to be connected and acyclic, with `IsTree.existsUnique_path` giving the unique-path characterization.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "852cb326fdb9"
     },
     {
       "kind": "definition",
@@ -643,7 +682,8 @@
         "match_kind": "exact"
       },
       "note": "`SimpleGraph.IsAcyclic` is Mathlib's name for a forest (no cyclic walks); `isAcyclic_iff_path_unique` proves the at-most-one-path characterization.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "87eaa30b625f"
     },
     {
       "kind": "definition",
@@ -659,7 +699,8 @@
         "match_kind": null
       },
       "note": "No `Polytree` (DAG whose underlying graph is a tree) decl found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3f640e071eea"
     },
     {
       "kind": "definition",
@@ -675,7 +716,8 @@
         "match_kind": null
       },
       "note": "No `Polyforest` decl was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "202636d7abb8"
     },
     {
       "kind": "definition",
@@ -691,7 +733,8 @@
         "match_kind": "exact"
       },
       "note": "Adjacency of vertices is `SimpleGraph.Adj`; 'consecutive' along a walk is captured implicitly by `Walk.cons`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ec7c2ebeb1a5"
     },
     {
       "kind": "definition",
@@ -707,7 +750,8 @@
         "match_kind": "invocation"
       },
       "note": "`emptyGraph` covers the edgeless case for any vertex type, but Mathlib has no dedicated name for the trivial (single-vertex) graph.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "3abd1c121480"
     },
     {
       "kind": "definition",
@@ -723,7 +767,8 @@
         "match_kind": null
       },
       "note": "Labels/isomorphism classes are not given a dedicated definition; labeling is implicit in the vertex type.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "649bb1b2b0c5"
     },
     {
       "kind": "proposition",
@@ -739,7 +784,8 @@
         "match_kind": "invocation"
       },
       "note": "`Quiv` is defined as a category and has a forget/free adjunction with `Cat`, but Mathlib does not identify it with the comma category `Set ↓ D × D`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "395f915f15ee"
     },
     {
       "kind": "example",
@@ -755,7 +801,8 @@
         "match_kind": "exact"
       },
       "note": "`Digraph V` is literally a wrapper around a binary relation `Adj : V → V → Prop`, embodying this correspondence.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "06b4d2223c91"
     },
     {
       "kind": "example",
@@ -771,7 +818,8 @@
         "match_kind": null
       },
       "note": "This is an informal application example with no corresponding Mathlib formalization.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "34d60cc3d7c5"
     },
     {
       "kind": "example",
@@ -787,7 +835,8 @@
         "match_kind": "exact"
       },
       "note": "`SimpleGraph.mulCayley` formalizes Cayley graphs and `Quiver.SchreierGraph` (Mathlib.Combinatorics.Quiver.Schreier) formalizes Schreier coset graphs.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6a065ee1f844"
     },
     {
       "kind": "example",
@@ -803,7 +852,8 @@
         "match_kind": "exact"
       },
       "note": "`CategoryTheory.Quiv.forget : Cat ⥤ Quiv` is the forgetful functor sending each small category to its underlying quiver (directed multigraph).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d4a14afae13b"
     },
     {
       "kind": "definition",
@@ -819,7 +869,8 @@
         "match_kind": null
       },
       "note": "No `Hypergraph` type appears in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "89c2f13a539d"
     },
     {
       "kind": "proposition",
@@ -835,7 +886,8 @@
         "match_kind": null
       },
       "note": "Mathlib has `SimplicialComplex` but no canonical map turning a `SimpleGraph` into one.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "eb72d5aca9c7"
     },
     {
       "kind": "proposition",
@@ -851,7 +903,8 @@
         "match_kind": null
       },
       "note": "Mathlib has `Matroid` but no `graphicMatroid`/`cycleMatroid` construction from a graph was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2d6e6b12c622"
     }
   ]
 }

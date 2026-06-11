@@ -19,7 +19,8 @@
         "match_kind": "exact"
       },
       "note": "`Cardinal.continuum` (notation `𝔠`) is defined as `2 ^ ℵ₀`, the cardinality of the continuum.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "90e8f068f4c0"
     },
     {
       "kind": "proposition",
@@ -35,7 +36,8 @@
         "match_kind": "exact"
       },
       "note": "`Cardinal.mk_set_nat : #(Set ℕ) = 𝔠` states the power set of ℕ has cardinality continuum.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7b4ac09ec687"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": "exact"
       },
       "note": "`Cardinal.eq : #α = #β ↔ Nonempty (α ≃ β)` expresses that equal cardinality is equivalent to existence of a bijection.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ae0def8a69c2"
     },
     {
       "kind": "proposition",
@@ -67,7 +70,8 @@
         "match_kind": "exact"
       },
       "note": "`Cardinal.mk_Ioo_real {a b : ℝ} (h : a < b) : #(Ioo a b) = 𝔠` gives the open interval the same cardinality as ℝ (= 𝔠).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5c0b9fea6bcf"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": null
       },
       "note": "The continuum hypothesis is not stated in Mathlib (it is independent of its type theory); only `aleph0_lt_continuum` and `aleph_one_le_continuum` bracket 𝔠.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5ff61e46347c"
     },
     {
       "kind": "theorem",
@@ -99,7 +104,8 @@
         "match_kind": "exact"
       },
       "note": "`Cardinal.not_countable_real` (and the `Uncountable ℝ` instance) prove the reals are uncountable.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9f953be19af8"
     },
     {
       "kind": "theorem",
@@ -115,7 +121,8 @@
         "match_kind": "exact"
       },
       "note": "`Cardinal.cantor (a : Cardinal) : a < 2 ^ a` is exactly Cantor's theorem that a set is smaller than its power set.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c640cf32424a"
     },
     {
       "kind": "theorem",
@@ -131,7 +138,8 @@
         "match_kind": "exact"
       },
       "note": "`Function.Embedding.schroeder_bernstein` produces a bijection from injections in both directions (with `Function.Embedding.antisymm` giving the equiv).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2db5a7a0bbf9"
     },
     {
       "kind": "proposition",
@@ -147,7 +155,8 @@
         "match_kind": "exact"
       },
       "note": "`Cardinal.mk_real : #ℝ = 𝔠` is proved using cardinal arithmetic (with `two_power_aleph0 : 2 ^ ℵ₀ = 𝔠`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8ebb1062643b"
     },
     {
       "kind": "proposition",
@@ -163,7 +172,8 @@
         "match_kind": "exact"
       },
       "note": "Identities like `continuum_power_aleph0 : 𝔠 ^ ℵ₀ = 𝔠`, `continuum_mul_self`, `aleph0_mul_continuum`, and `nat_power_aleph0` are all proven in Continuum.lean.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "90b332f1c95f"
     },
     {
       "kind": "proposition",
@@ -179,7 +189,8 @@
         "match_kind": null
       },
       "note": "`Real.digits`/`Real.ofDigits_digits` give a base-`b` digit expansion recovering any real in [0,1), but not a general 'every real has an infinite decimal expansion' statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d159f710efc0"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": null
       },
       "note": "Digit sequences in Mathlib (`Real.ofDigits`) are indexed by ℕ and ℕ is countable, but this informal step is not itself a Mathlib statement.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f6608e95fac4"
     },
     {
       "kind": "proposition",
@@ -211,7 +223,8 @@
         "match_kind": null
       },
       "note": "The cardinal identity used (`aleph0_mul_continuum : ℵ₀ * 𝔠 = 𝔠`) is formalized, but the integer-part/decimal-fraction decomposition argument is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9797a3fcbf82"
     },
     {
       "kind": "proposition",
@@ -227,7 +240,8 @@
         "match_kind": null
       },
       "note": "Mathlib proves the analogous lower bound 𝔠 ≤ #ℝ via `cantorFunction_injective`, an injection {0,1}^ℕ → ℝ using base-1/3 expansions (used inside `mk_real`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "57fa93437983"
     },
     {
       "kind": "definition",
@@ -243,7 +257,8 @@
         "match_kind": "exact"
       },
       "note": "`Cardinal.beth` is defined with `beth_zero : ℶ_ 0 = ℵ₀`, `beth_succ : ℶ_ (succ o) = 2 ^ ℶ_ o`, and `beth_limit`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "0f87cf3304d9"
     },
     {
       "kind": "definition",
@@ -259,7 +274,8 @@
         "match_kind": null
       },
       "note": "`beth_one : ℶ_ 1 = 𝔠` and `beth_succ` give `ℶ_ 2 = 2 ^ 𝔠`, equal to `#(Set ℝ)` via `mk_powerset`, but no single decl states beth-two = cardinality of 𝒫(ℝ).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "eb23938b2d59"
     },
     {
       "kind": "definition",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "CH (𝔠 = ℵ₁) is not formalized; Mathlib only has the inequality `aleph_one_le_continuum : ℵ₁ ≤ 𝔠`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d3ea5aa09288"
     },
     {
       "kind": "theorem",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "Mathlib does not formalize forcing/independence results, so the independence of CH from ZFC is absent.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "520b0eeae265"
     },
     {
       "kind": "theorem",
@@ -307,7 +325,8 @@
         "match_kind": "exact"
       },
       "note": "König's theorem `Cardinal.sum_lt_prod` is formalized, and its cofinality consequence `Cardinal.lt_cof_ord_power` gives ℵ₀ < cf(𝔠).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "64a4b3b2887e"
     },
     {
       "kind": "example",
@@ -323,7 +342,8 @@
         "match_kind": "exact"
       },
       "note": "Many such sets are formalized (`mk_real`, `mk_complex`, the interval lemmas `mk_Ioo_real`, etc.), all equal to 𝔠.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9fdd644562a0"
     },
     {
       "kind": "proposition",
@@ -339,7 +359,8 @@
         "match_kind": "generalization"
       },
       "note": "`Algebraic.cardinalMk_of_countable_of_charZero : #{x : A // IsAlgebraic R x} = ℵ₀` (with `Algebraic.countable`) gives the real algebraic numbers (R=ℚ, A=ℝ) as countably infinite.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fa1b72435aac"
     },
     {
       "kind": "proposition",
@@ -355,7 +376,8 @@
         "match_kind": null
       },
       "note": "Algebraic numbers are countable and ℝ is uncountable, so transcendentals have cardinality 𝔠, but this conclusion is not stated as a Mathlib declaration.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ae74c76cd487"
     },
     {
       "kind": "proposition",
@@ -371,7 +393,8 @@
         "match_kind": "special_case"
       },
       "note": "`mk_complex : #ℂ = 𝔠` formalizes the n=2 case (#ℝ² = 𝔠); a general `#(Fin n → ℝ) = 𝔠` for Euclidean space is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a73669f5053a"
     },
     {
       "kind": "example",
@@ -387,7 +410,8 @@
         "match_kind": "generalization"
       },
       "note": "`Cardinal.cantor` gives 𝔠 < 2 ^ 𝔠, establishing that sets of cardinality greater than 𝔠 (e.g. 𝒫(ℝ)) exist.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "42ade38706c1"
     },
     {
       "kind": "proposition",
@@ -403,7 +427,8 @@
         "match_kind": "special_case"
       },
       "note": "`mk_powerset : #(𝒫 s) = 2 ^ #s` yields #(𝒫 ℝ) = 2 ^ 𝔠 (= beth-two), but the identification with beth-two and the full collection of such sets is not stated.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "cc0408bd1e94"
     }
   ]
 }

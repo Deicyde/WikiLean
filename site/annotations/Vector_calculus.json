@@ -19,7 +19,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no dedicated 'scalar field' definition; scalar fields appear only as plain functions `E → ℝ` (e.g. as inputs to `gradient`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9de80ba4f0d0"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": null
       },
       "note": "Vector fields are represented as functions `V : E → E` (the `VectorField` namespace) or sections `Π x, TangentSpace I x`, but there is no single dedicated definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f6cb02a6998a"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": null
       },
       "note": "No formalization of pseudovector/pseudoscalar fields or the orientation-reversal sign behavior that defines them.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "17609c884a6f"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": null
       },
       "note": "The core vector-algebra operations are formalized: cross product (`crossProduct`/`⨯₃`) and dot product (`Matrix.dotProduct`/`⬝ᵥ`).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8bb0416167fd"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "exact"
       },
       "note": "The scalar triple product (`triple_product_eq_det`) and vector triple product (`cross_cross_eq_smul_sub_smul`) are both formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "67ddd7d5d47a"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": null
       },
       "note": "The gradient is defined as a named operator, but divergence and curl are not defined as standalone operators (only a divergence theorem exists).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "a06b4a3d5fcc"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": "special_case"
       },
       "note": "The scalar Laplacian `Δ` (`laplacianWithin`/`Laplacian.laplacian`) is formalized, but the vector Laplacian is not separately defined.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c01a2b09fc17"
     },
     {
       "kind": "definition",
@@ -131,7 +138,8 @@
         "match_kind": "generalization"
       },
       "note": "The total derivative `fderiv` generalizes the Jacobian matrix and the Jacobian determinant appears in `MeasureTheory.Function.Jacobian`, but there is no dedicated Jacobian-matrix-of-partials definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d4c64aa6a645"
     },
     {
       "kind": "theorem",
@@ -147,7 +155,8 @@
         "match_kind": null
       },
       "note": "The fundamental theorem of calculus and the divergence theorem are formalized, but the gradient theorem and Kelvin–Stokes theorem are not.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ef62cf675912"
     },
     {
       "kind": "theorem",
@@ -163,7 +172,8 @@
         "match_kind": "exact"
       },
       "note": "The planar divergence theorem on rectangles is exactly the divergence form of Green's theorem.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "32c13c687a29"
     },
     {
       "kind": "proposition",
@@ -179,7 +189,8 @@
         "match_kind": "generalization"
       },
       "note": "`HasFDerivAt` encodes precisely f(x)=f(a)+f'(a)(x−a)+o(‖x−a‖), the first-order linear approximation, for general normed spaces.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "e1b920d23a5a"
     },
     {
       "kind": "proposition",
@@ -195,7 +206,8 @@
         "match_kind": null
       },
       "note": "The affine approximation defining the tangent plane is given by `fderiv`/`HasFDerivAt`, but there is no named 'tangent plane to a graph' object.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8bd43564feb4"
     },
     {
       "kind": "definition",
@@ -211,7 +223,8 @@
         "match_kind": null
       },
       "note": "There is no `IsCritical` definition; critical points are expressed inline as the hypothesis `fderiv ℝ f a = 0`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "da4e4d81d3eb"
     },
     {
       "kind": "proposition",
@@ -227,7 +240,8 @@
         "match_kind": null
       },
       "note": "`IsLocalMax`/`IsLocalMin` exist, but there is no saddle-point classification or second-derivative (Hessian) test for critical points.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4c88357423c7"
     },
     {
       "kind": "theorem",
@@ -243,7 +257,8 @@
         "match_kind": "exact"
       },
       "note": "`IsLocalExtr.fderiv_eq_zero` (with `IsLocalMin`/`IsLocalMax` variants) states that local extrema have vanishing derivative.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "5fbc48f1444e"
     },
     {
       "kind": "definition",
@@ -259,7 +274,8 @@
         "match_kind": "special_case"
       },
       "note": "Euclidean 3-space is `EuclideanSpace ℝ (Fin 3)`, carrying the inner product/distance structure (with `Orientation` available).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "52db026299f2"
     },
     {
       "kind": "proposition",
@@ -275,7 +291,8 @@
         "match_kind": null
       },
       "note": "This meta-statement about which geometric structure each operator requires is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "596f542abcbe"
     },
     {
       "kind": "proposition",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "No formalization of vector calculus operators transported to general 3-dimensional inner-product spaces with orientation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d779b28a599d"
     },
     {
       "kind": "proposition",
@@ -307,7 +325,8 @@
         "match_kind": null
       },
       "note": "Riemannian-manifold infrastructure exists, but grad/div/curl are not defined on oriented Riemannian 3-manifolds.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "79fa64eb33ae"
     },
     {
       "kind": "proposition",
@@ -323,7 +342,8 @@
         "match_kind": null
       },
       "note": "`gradient` is already defined for general inner-product spaces and the divergence theorem holds in ℝⁿ, but divergence is not packaged as a general named operator.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "62e1fa76bff2"
     },
     {
       "kind": "definition",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "The graded exterior algebra (k-vectors) is formalized, but the uniform identification of vector-calculus fields with k-vector fields is not.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "87cba016451a"
     },
     {
       "kind": "proposition",
@@ -355,7 +376,8 @@
         "match_kind": "special_case"
       },
       "note": "Only the 3-dimensional cross product is formalized; the 7-dimensional cross product and the result that bilinear cross products exist only in dimensions 3 and 7 are not.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c47efdacc3f2"
     },
     {
       "kind": "definition",
@@ -371,7 +393,8 @@
         "match_kind": null
       },
       "note": "Geometric (Clifford) algebra and exterior algebra are formalized, but they are not developed as a generalization of vector calculus via k-vector fields.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "fe651e80b3a7"
     },
     {
       "kind": "proposition",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "The exterior derivative `extDeriv` of differential forms is defined, but the general Stokes' theorem is not formalized (only the divergence theorem on boxes).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "16f48907d21d"
     },
     {
       "kind": "definition",
@@ -403,7 +427,8 @@
         "match_kind": "generalization"
       },
       "note": "The tangent bundle `TangentBundle I M` is defined and vector fields are taken as sections `Π x, TangentSpace I x`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "acea24741173"
     },
     {
       "kind": "definition",
@@ -419,7 +444,8 @@
         "match_kind": null
       },
       "note": "Covector fields appear pointwise as `Π x, TangentSpace I x →L[𝕜] 𝕜` (e.g. `extDerivFun`), but there is no dedicated cotangent bundle type.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "aeec56366a3d"
     }
   ]
 }

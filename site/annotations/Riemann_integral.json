@@ -19,7 +19,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib only has partitions of n-dimensional boxes (`BoxIntegral.Prepartition` with predicate `IsPartition`), which specialises to interval partitions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "96af106945f9"
     },
     {
       "kind": "definition",
@@ -35,7 +36,8 @@
         "match_kind": "generalization"
       },
       "note": "Sub-boxes of a (pre)partition are exposed via `π.boxes : Finset (Box ι)`; no dedicated 1d sub-interval definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "4b0a92e3f0f5"
     },
     {
       "kind": "definition",
@@ -51,7 +53,8 @@
         "match_kind": null
       },
       "note": "Mathlib's BoxIntegral uses `IsSubordinate` w.r.t. a gauge function and `distortion`; there is no mesh/longest-subinterval definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "07f870ea8e61"
     },
     {
       "kind": "definition",
@@ -67,7 +70,8 @@
         "match_kind": "generalization"
       },
       "note": "`BoxIntegral.TaggedPrepartition` plus `IsPartition` generalises tagged interval partitions to n dimensions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "50c29af9ce4b"
     },
     {
       "kind": "definition",
@@ -83,7 +87,8 @@
         "match_kind": "generalization"
       },
       "note": "Refinement is encoded via `infPrepartition` and the partial order on `Prepartition I`, not as a named `Refinement` definition.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f4828ffcd524"
     },
     {
       "kind": "definition",
@@ -99,7 +104,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib bypasses the directed-set picture and works with the filter `IntegrationParams.toFilter` of subordinate tagged partitions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f3c2bd1073dc"
     },
     {
       "kind": "definition",
@@ -115,7 +121,8 @@
         "match_kind": "generalization"
       },
       "note": "`BoxIntegral.integralSum f vol π` is the Riemann sum (with a general box-additive `vol`) generalising the 1d Riemann sum.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d041648242d7"
     },
     {
       "kind": "definition",
@@ -131,7 +138,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no lower/upper Darboux sum definition (the file `Mathlib/Analysis/Calculus/Darboux.lean` is about Darboux's theorem on derivatives).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b5a1c06cee96"
     },
     {
       "kind": "proposition",
@@ -147,7 +155,8 @@
         "match_kind": null
       },
       "note": "Without Darboux sums in Mathlib, this equality statement is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "f626d5f4dc7d"
     },
     {
       "kind": "proposition",
@@ -163,7 +172,8 @@
         "match_kind": null
       },
       "note": "No Darboux integral is defined in Mathlib, so its equivalence with the Riemann integral is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "31cdc2d42f5e"
     },
     {
       "kind": "definition",
@@ -179,7 +189,8 @@
         "match_kind": "generalization"
       },
       "note": "`BoxIntegral.hasIntegral_iff` provides the ε–δ characterisation of `HasIntegral` for the box (generalised Riemann) integral.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "ffb3a5936faa"
     },
     {
       "kind": "definition",
@@ -195,7 +206,8 @@
         "match_kind": "generalization"
       },
       "note": "`BoxIntegral.HasIntegral` is defined as a `Filter.Tendsto` over (sub)tagged partitions with parameter `IntegrationParams.Riemann`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "114f38127450"
     },
     {
       "kind": "proposition",
@@ -211,7 +223,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib defines `HasIntegral` filter-theoretically and proves the ε–δ form equivalent via `hasIntegral_iff`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7ac703340057"
     },
     {
       "kind": "example",
@@ -227,7 +240,8 @@
         "match_kind": "generalization"
       },
       "note": "`intervalIntegral.integral_const` gives ∫ x in a..b, c = (b-a)•c, covering the example via the Lebesgue interval integral rather than a Riemann calculation.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "18a9f40113a2"
     },
     {
       "kind": "example",
@@ -243,7 +257,8 @@
         "match_kind": null
       },
       "note": "No statement that the Dirichlet (rationals) indicator fails to be Riemann/box-integrable was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "10cbc3f7202a"
     },
     {
       "kind": "example",
@@ -259,7 +274,8 @@
         "match_kind": null
       },
       "note": "The Smith–Volterra–Cantor set and the (non)integrability of its indicator are not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "32a70ebd55b6"
     },
     {
       "kind": "proposition",
@@ -275,7 +291,8 @@
         "match_kind": "generalization"
       },
       "note": "`BoxIntegral.HasIntegral.add` and `BoxIntegral.HasIntegral.smul` establish linearity of the box (Riemann) integral; analogous results exist for `intervalIntegral.integral_add`/`integral_smul`.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "b7edce8f7d12"
     },
     {
       "kind": "proposition",
@@ -291,7 +308,8 @@
         "match_kind": null
       },
       "note": "Mathlib has component lemmas for linearity but no bundled `LinearMap` packaging the Riemann/box integral as a linear functional on integrable functions.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "48d81e1f5a5b"
     },
     {
       "kind": "theorem",
@@ -307,7 +325,8 @@
         "match_kind": null
       },
       "note": "Searches for `integrable_iff_continuous_ae` / Lebesgue–Vitali in `Mathlib` find nothing; the characterisation is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "df339944d493"
     },
     {
       "kind": "proposition",
@@ -323,7 +342,8 @@
         "match_kind": null
       },
       "note": "No statement bounding the discontinuity set by countability to conclude Riemann integrability was found.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "770712c0f86e"
     },
     {
       "kind": "proposition",
@@ -339,7 +359,8 @@
         "match_kind": null
       },
       "note": "Mathlib has no integrability criterion phrased in terms of one-sided limits existing everywhere.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1043ac2c50af"
     },
     {
       "kind": "proposition",
@@ -355,7 +376,8 @@
         "match_kind": null
       },
       "note": "Jordan measurability of sets is not defined in Mathlib (the existing `Jordan` file concerns the Jordan decomposition of vector measures).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8ac841a3aae0"
     },
     {
       "kind": "proposition",
@@ -371,7 +393,8 @@
         "match_kind": "generalization"
       },
       "note": "`Monotone.intervalIntegrable` (and `MonotoneOn.intervalIntegrable`) proves integrability of monotone functions on a compact interval, but only for the Bochner/Lebesgue interval integral.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "42b8063d02dd"
     },
     {
       "kind": "proposition",
@@ -387,7 +410,8 @@
         "match_kind": null
       },
       "note": "No direct theorem linking `BoxIntegral.Integrable` to `MeasureTheory.IntegrableOn` (Lebesgue) was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "7951bf48527a"
     },
     {
       "kind": "proposition",
@@ -403,7 +427,8 @@
         "match_kind": "special_case"
       },
       "note": "Mathlib proves convergence of `intervalIntegral` under uniform convergence of continuous functions, but not the preservation of Riemann integrability per se.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "8d3cfcc786bf"
     },
     {
       "kind": "definition",
@@ -419,7 +444,8 @@
         "match_kind": "generalization"
       },
       "note": "`BoxIntegral.HasIntegral` already takes values in an arbitrary normed space `F`, so vector-valued Riemann integration is subsumed directly (not component-wise).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "2e80d674ca1a"
     },
     {
       "kind": "definition",
@@ -435,7 +461,8 @@
         "match_kind": "generalization"
       },
       "note": "Mathlib formalises improper integrals as limits of `intervalIntegral` over expanding intervals (e.g. `intervalIntegral_tendsto_integral_Ioi/Iic`), in the Lebesgue setting.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "9556462a354d"
     },
     {
       "kind": "example",
@@ -451,7 +478,8 @@
         "match_kind": null
       },
       "note": "No example computing/discussing the improper integral of `Real.sign` was found in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "86a79eff7a4f"
     },
     {
       "kind": "example",
@@ -467,7 +495,8 @@
         "match_kind": null
       },
       "note": "This counterexample about uniform convergence on unbounded intervals is not formalized.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "6e37cdbcfc55"
     },
     {
       "kind": "theorem",
@@ -483,7 +512,8 @@
         "match_kind": null
       },
       "note": "The Lebesgue criterion (bounded + discontinuities of measure zero) for Riemann integrability is not formalized in Mathlib.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "1ac2e0c02b8a"
     }
   ]
 }
