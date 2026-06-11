@@ -66,28 +66,48 @@ def mathlib_docs_url(module: str | None, decl: str | None) -> str | None:
     return f"{MATHLIB_DOCS}/{rel}#{decl}" if decl else f"{MATHLIB_DOCS}/{rel}"
 
 
-def fetch_article_html(slug: str, wikipedia_title: str) -> str:
+def fetch_article_html(slug: str, wikipedia_title: str,
+                       target_revid: int | None = None) -> str:
     """Return the rendered article HTML, fetching once and caching to disk.
 
     Captures the parsed revision's `revid` atomically with the HTML and writes
     a cache/<slug>.meta.json sidecar, so annotations can be pinned to the exact
-    Wikipedia revision they were made against (immutable ?oldid permalink)."""
+    Wikipedia revision they were made against (immutable ?oldid permalink).
+
+    With `target_revid`, fetches THAT exact revision via action=parse&oldid=
+    instead of the page's current one. Revid-pinned fetches use a parallel
+    cache convention — cache/<slug>.<revid>.html + cache/<slug>.<revid>.meta.json
+    (sidecar shape identical, "pinned_via": "oldid") — and NEVER touch the
+    legacy un-suffixed files, which remain the pinned-original cache that the
+    golden parity test and existing callers read."""
     from datetime import datetime, timezone
 
     CACHE.mkdir(exist_ok=True)
-    cache_path = CACHE / f"{slug}.html"
+    suffix = f".{target_revid}" if target_revid is not None else ""
+    cache_path = CACHE / f"{slug}{suffix}.html"
     if cache_path.exists():
         return cache_path.read_text(encoding="utf-8")
 
     # prop=text|revid → HTML and the revision id in one call (kept consistent).
-    qs = urllib.parse.urlencode({
-        "action": "parse",
-        "page": wikipedia_title,
-        "prop": "text|revid",
-        "format": "json",
-        "formatversion": "2",
-        "redirects": "1",
-    })
+    if target_revid is None:
+        qs = urllib.parse.urlencode({
+            "action": "parse",
+            "page": wikipedia_title,
+            "prop": "text|revid",
+            "format": "json",
+            "formatversion": "2",
+            "redirects": "1",
+        })
+    else:
+        # oldid= addresses a single immutable revision; `page`/`redirects`
+        # don't apply.
+        qs = urllib.parse.urlencode({
+            "action": "parse",
+            "oldid": str(target_revid),
+            "prop": "text|revid",
+            "format": "json",
+            "formatversion": "2",
+        })
     req = urllib.request.Request(f"{WIKI_API}?{qs}", headers={"User-Agent": UA})
     with urllib.request.urlopen(req, timeout=30) as resp:
         data = json.load(resp)
@@ -102,9 +122,9 @@ def fetch_article_html(slug: str, wikipedia_title: str) -> str:
             "wikipedia_title": wikipedia_title,
             "revid": revid,
             "fetched_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-            "pinned_via": "fetch",
+            "pinned_via": "fetch" if target_revid is None else "oldid",
         }
-        (CACHE / f"{slug}.meta.json").write_text(
+        (CACHE / f"{slug}{suffix}.meta.json").write_text(
             json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
     return text
 
