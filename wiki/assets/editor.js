@@ -461,6 +461,12 @@
 
     if (editingIndex == null) {
       built.anchor = { section: panel.dataset.newSection, snippet: panel.dataset.newSnippet };
+      // Stable annotation id (C1): stamp brand-new annotations client-side so
+      // the id is known before the round-trip. 12 lowercase hex chars, same
+      // contract as the server's lazy-heal (which backstops any client that
+      // doesn't send one). Edits never touch ids — the {...prev, ...built}
+      // spread below preserves them.
+      built.id = newAnnotationId();
       unsavedNew.add(built);
       annos.push(built);
     } else {
@@ -525,5 +531,17 @@
 
   function escapeHtml(s) {
     return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  // 12-char lowercase-hex annotation id (6 crypto-random bytes), collision-
+  // checked against the ids already on this article.
+  function newAnnotationId() {
+    for (;;) {
+      const bytes = new Uint8Array(6);
+      crypto.getRandomValues(bytes);
+      let id = "";
+      for (let i = 0; i < bytes.length; i++) id += bytes[i].toString(16).padStart(2, "0");
+      if (!annos.some((a) => a && a.id === id)) return id;
+    }
   }
 })();

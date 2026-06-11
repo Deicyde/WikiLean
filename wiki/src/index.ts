@@ -18,6 +18,7 @@ import {
   MAX_META_BYTES,
   MAX_TEXT_LEN,
   findLostHuman,
+  findMatch,
   stampProvenance,
   type AnnRecord,
 } from "./validation.js";
@@ -91,6 +92,59 @@ function annCount(json: string): number {
 
 const STATUS_SET = new Set<string>(ANNOTATION_STATUSES);
 
+// ---- stable annotation ids (C1) -------------------------------------------
+// ID1 contract: 12 lowercase hex chars = 6 crypto-random bytes (twins:
+// scripts/backfill-ids.ts randomHexId, Python secrets.token_hex(6)). Ids are
+// immutable once assigned; posted ids are validated below and the save path
+// lazily heals any annotation still lacking one, so every save converges the
+// article on full id coverage.
+const ANNOTATION_ID_RE = /^[0-9a-f]{12}$/;
+
+function freshAnnotationId(): string {
+  const bytes = new Uint8Array(6);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+// Lazy id-heal, applied AFTER findLostHuman/stampProvenance (which match a
+// posted-without-id annotation to its stored twin by anchor signature) and
+// BEFORE persisting. For each final annotation lacking an id:
+//   1. If findMatch pairs it with a stored annotation that carries a valid id
+//      (and no other posted annotation already claimed that id), ADOPT the
+//      stored id — minting a fresh one here would break identity continuity
+//      for an annotation that merely round-tripped through a client that
+//      dropped the field.
+//   2. Only truly-new annotations (no stored twin, or a twin without an id)
+//      get a fresh id, collision-checked against every id in the article
+//      (posted + stored, so a concurrently-dropped id can't be reissued).
+// Annotations that already carry an id pass through untouched — posted ids
+// were format- and uniqueness-validated in validateAnnotations.
+function healAnnotationIds(stored: AnnRecord[], finals: AnnRecord[]): AnnRecord[] {
+  const taken = new Set<string>();
+  for (const a of finals) {
+    if (typeof a.id === "string") taken.add(a.id);
+  }
+  const storedIds = new Set<string>();
+  for (const s of stored) {
+    if (typeof s.id === "string") storedIds.add(s.id);
+  }
+  return finals.map((a) => {
+    if (typeof a.id === "string" && ANNOTATION_ID_RE.test(a.id)) return a;
+    const match = findMatch(a, stored);
+    let id: string | undefined =
+      match && typeof match.id === "string" && ANNOTATION_ID_RE.test(match.id) && !taken.has(match.id)
+        ? match.id
+        : undefined;
+    if (id === undefined) {
+      do {
+        id = freshAnnotationId();
+      } while (taken.has(id) || storedIds.has(id));
+    }
+    taken.add(id);
+    return { ...a, id };
+  });
+}
+
 // Server-side annotation validation (P0). Returns null if valid, else an
 // error response to send. `annJson` is the pre-serialized array so callers
 // don't double-stringify for the payload-size check.
@@ -103,6 +157,7 @@ function validateAnnotations(
   if (annJson.length > MAX_ANNOTATIONS_BYTES || annotations.length > MAX_ANNOTATIONS) {
     return c.json({ ok: false, error: "payload too large" }, 413);
   }
+  const seenIds = new Set<string>();
   for (const a of annotations) {
     if (typeof a !== "object" || a === null || Array.isArray(a)) {
       return c.json({ ok: false, error: "annotation must be an object" }, 400);
@@ -110,6 +165,17 @@ function validateAnnotations(
     const ann = a as Record<string, unknown>;
     if (ann.status !== undefined && (typeof ann.status !== "string" || !STATUS_SET.has(ann.status))) {
       return c.json({ ok: false, error: "invalid status" }, 400);
+    }
+    // C1: ids are optional (absent → lazily healed on save) but when present
+    // must be canonical 12-hex strings and unique within the posted array.
+    if (ann.id !== undefined) {
+      if (typeof ann.id !== "string" || !ANNOTATION_ID_RE.test(ann.id)) {
+        return c.json({ ok: false, error: "invalid annotation id" }, 400);
+      }
+      if (seenIds.has(ann.id)) {
+        return c.json({ ok: false, error: "duplicate annotation id" }, 400);
+      }
+      seenIds.add(ann.id);
     }
     // Length-cap free-text fields (flat + nested mathlib.*).
     const mathlib = (typeof ann.mathlib === "object" && ann.mathlib !== null ? ann.mathlib : {}) as Record<
@@ -328,6 +394,11 @@ app.post("/api/article/:slug", async (c) => {
     // provenance. Clients can't launder provenance in either direction.
     finalAnnotations = stampProvenance(stored, postedAnnotations);
   }
+  // C1 lazy-heal (both branches): adopt the stored twin's id for annotations
+  // posted without one, mint fresh ids for truly-new annotations. Runs after
+  // the helpers above (they match posted-without-id to stored-by-signature)
+  // and before persisting, so every save converges on full id coverage.
+  finalAnnotations = healAnnotationIds(stored, finalAnnotations);
   const annJson = JSON.stringify(finalAnnotations);
   const annotations = finalAnnotations as unknown as Annotation[];
 
