@@ -15,7 +15,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "Zero",
-        "module": null,
+        "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": null
       },
       "note": "Mathlib has the `Zero` typeclass providing a distinguished `0`, but the informal 'empty quantity' semantics is not itself a theorem.",
@@ -100,7 +100,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Nat.zero_le",
-        "module": null,
+        "module": "Mathlib.Data.Nat.Defs",
         "match_kind": "special_case"
       },
       "note": "`Nat.zero_le : 0 ≤ n` establishes `0` as the least element of ℕ (also reflected by ℕ's `OrderBot`).",
@@ -154,7 +154,7 @@
         "module": "Mathlib.Algebra.Group.Even",
         "match_kind": "exact"
       },
-      "note": "`Even.zero : Even (0 : α)` states that zero is even.",
+      "note": "`Even.zero : Even (0 : α)` (auto-generated from `IsSquare.one` via `@[to_additive]`) states that zero is even.",
       "provenance": "ai",
       "id": "d33caeab2551"
     },
@@ -338,10 +338,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Cardinal.mk_eq_zero",
-        "module": "Mathlib.SetTheory.Cardinal.Basic",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
         "match_kind": "exact"
       },
-      "note": "`Cardinal.mk_eq_zero` gives `#(empty) = 0` (also `Set.ncard_empty`, `Finset.card_empty`).",
+      "note": "`Cardinal.mk_eq_zero : [IsEmpty α] → #α = 0` (also `Set.ncard_empty`, `Finset.card_empty`).",
       "provenance": "ai",
       "id": "cc781cca71e9"
     },
@@ -375,7 +375,7 @@
         "module": "Mathlib.SetTheory.Ordinal.Basic",
         "match_kind": "exact"
       },
-      "note": "Ordinals carry `OrderBot` with `bot_eq_zero`, so `0` is the least ordinal.",
+      "note": "`Ordinal.bot_eq_zero : (⊥ : Ordinal) = 0` shows `0` is the least ordinal.",
       "provenance": "ai",
       "id": "b763f4f7eec5"
     },
@@ -406,7 +406,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Zero",
-        "module": null,
+        "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "exact"
       },
       "note": "The `Zero` typeclass denotes the distinguished zero element of an algebraic structure.",
@@ -599,6 +599,70 @@
       "note": "`neg_zero : -0 = 0` shows `+0` and `-0` are the same element, with no distinct signed zero.",
       "provenance": "ai",
       "id": "711f064e79cd"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero divided by nonzero",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "0 / x ⁠ = 0, for nonzero x"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "zero_div",
+        "module": "Mathlib.Algebra.GroupWithZero.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`zero_div : 0 / a = 0` in any `GroupWithZero` (in fact for any `a`, by Mathlib's convention).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero to a positive power",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "For all positive real x , 0 x = 0"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "zero_pow",
+        "module": "Mathlib.Algebra.GroupPower.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`zero_pow : n ≠ 0 → (0 : M) ^ n = 0` in a `MonoidWithZero`; the textbook's positive-exponent case is a special case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zero morphism",
+      "anchor": {
+        "section": "Other uses in mathematics",
+        "snippet": "the related concept of zero morphisms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Limits.HasZeroMorphisms",
+        "module": "Mathlib.CategoryTheory.Limits.Shapes.ZeroMorphisms",
+        "match_kind": "exact"
+      },
+      "note": "`HasZeroMorphisms` provides a distinguished zero morphism `0 : X ⟶ Y` in each hom-set, generalizing the zero function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero is an integer multiple of any integer",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "is also an integer multiple of any other integer"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dvd_zero",
+        "module": "Mathlib.Algebra.Divisibility.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`dvd_zero : ∀ a, a ∣ 0` states every element divides zero, so 0 is a multiple of any integer/rational/real.",
+      "provenance": "ai"
     }
   ]
 }
