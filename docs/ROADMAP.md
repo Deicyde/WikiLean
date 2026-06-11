@@ -312,6 +312,15 @@ into `wiki/public/assets/`. Edit sources, then run build-public, never edit
   review pass (2 articles) launched. Remaining P1: article-create endpoint for
   `new` mode (POST 404s on unknown slugs — C2 friction), dynamic homepage/sitemap,
   GET-path revid write removal, WP_HTML delete-on-re-pin. Then P2 instrumentation.
+- 2026-06-11 — **FIRST REAL AI REVIEW RUN VERIFIED (run 9abcf468).** 2 articles
+  (the queue correctly surfaced stage-0's two needs-work articles first), 0 errors,
+  ~$2.96 equiv / 707s. D1 round-trip confirmed: revisions kind='pipeline' with
+  parseable comments + full meta (ladder, tokens, id discipline — Addition echoed
+  69/69 ids through both agent passes; article '0' got 4 fresh ids for coverage
+  extensions, 35→39 annotations, anchors now 39/39); moderation_state stamped so
+  both sort to the back of the review queue. The three-script lifecycle from the
+  project goal is now: generate=moderate.py new (needs create endpoint), review=
+  WORKING, update=WORKING (stage-0).
 - 2026-06-10 — **VERSION-CONTROL RISK SURFACED:** `wiki/`, `site/`, `docs/`,
   `CONTRIBUTING.md` are untracked in git — the whole live backend has never been
   committed. P0 (and everything before it) exists only in the working tree + the live
