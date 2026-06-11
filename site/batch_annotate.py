@@ -30,7 +30,11 @@ from pathlib import Path
 
 # Pop the API key BEFORE importing the SDK so the spawned `claude` subprocess
 # uses the Max-subscription login rather than billing an API account.
-_popped_key = os.environ.pop("ANTHROPIC_API_KEY", None)
+# moderate.py --auth api-key sets WIKILEAN_KEEP_API_KEY=1 (before importing this
+# module) to leave the key in place so the SDK bills the API account instead.
+_popped_key = None
+if os.environ.get("WIKILEAN_KEEP_API_KEY") != "1":
+    _popped_key = os.environ.pop("ANTHROPIC_API_KEY", None)
 
 import requests
 from claude_agent_sdk import (
@@ -49,7 +53,8 @@ OUT = HERE / "out"
 CATALOG_DATA = HERE.parent / "catalog" / "data"
 RUN_LOG = CACHE / ".batch_run.log"
 
-MATHLIB = Path("/Users/jack/Desktop/LEAN/mathlib4")
+MATHLIB = Path(os.environ.get("WIKILEAN_MATHLIB", "/Users/jack/Desktop/LEAN/mathlib4"))
+MODEL = "claude-opus-4-7"  # pinned agent model; recorded in run meta by moderate.py
 WIKI_API = "https://en.wikipedia.org/w/api.php"
 WIKI_UA = "WikiLean/0.1 (https://github.com/Deicyde/WikiLean; jack.mccarthy.1@stonybrook.edu)"
 PY = sys.executable if "venv" not in sys.executable else "python3"
@@ -207,7 +212,7 @@ async def run_agent(system: str, user: str, cwd: Path,
                     tools: list[str], max_turns: int) -> tuple[dict | None, dict]:
     """Run one agent via the SDK. Returns (parsed_json_or_None, meta)."""
     options = ClaudeAgentOptions(
-        model="claude-opus-4-7",
+        model=MODEL,
         system_prompt=system,
         allowed_tools=tools,
         cwd=str(cwd),
@@ -262,6 +267,10 @@ Produce the full, improved annotation set:
 3. ADD annotations for mathematical statements not yet covered (improve
    coverage); mark new ones provenance "ai".
 4. Copy each `snippet`/anchor value CHARACTER-FOR-CHARACTER; never include `[MATH]`.
+5. An annotation with status "rejected" is a human veto (tombstone) — never
+   delete it, never change it, and never re-annotate that statement.
+6. Echo each annotation's `id` verbatim when present; never invent ids (new
+   annotations are assigned ids downstream — leave them without one).
 
 OUTPUT — ONLY one JSON object, carrying each annotation's provenance:
 {"annotations": [{"kind":"…","label":"…","anchor":{…},"status":"…",
@@ -276,28 +285,36 @@ def _anchor_sig(a: dict) -> str:
                        anc.get("value"), anc.get("from")], sort_keys=True)
 
 
-def _preserve_human(existing: list[dict], produced: list[dict]) -> list[dict]:
+def _preserve_human(existing: list[dict], produced: list[dict],
+                    ) -> tuple[list[dict], dict]:
     """Deterministic guarantee that human contributions survive a moderation
     pass: any human annotation the agent altered is restored to its original
     form, and any it dropped is re-inserted. The agent's smart work stands for
-    everything else."""
+    everything else. Returns (annotations, ladder stats) — `restored` counts
+    only annotations the agent actually altered; `reinserted` counts drops."""
+    stats = {"restored": 0, "reinserted": 0}
     human = [a for a in existing if a.get("provenance") == "human"]
     if not human:
-        return produced
+        return produced, stats
     by_sig = {_anchor_sig(a): i for i, a in enumerate(produced)}
     out = list(produced)
     for h in human:
         sig = _anchor_sig(h)
         if sig in by_sig:
-            out[by_sig[sig]] = {**h, "provenance": "human"}   # restore original
+            restored = {**h, "provenance": "human"}           # restore original
+            if out[by_sig[sig]] != restored:
+                stats["restored"] += 1
+            out[by_sig[sig]] = restored
         else:
             out.append({**h, "provenance": "human",
                         "moderation_note": "re-inserted by moderator (agent omitted it)"})
-    return out
+            stats["reinserted"] += 1
+    return out, stats
 
 
 async def annotate_one(article: dict, sem: asyncio.Semaphore, seed_decls: dict,
-                       moderate: bool = False) -> dict:
+                       moderate: bool = False,
+                       existing_override: list[dict] | None = None) -> dict:
     title = article["title"]
     slug = make_slug(title)
     rec = {"title": title, "slug": slug}
@@ -317,14 +334,19 @@ async def annotate_one(article: dict, sem: asyncio.Semaphore, seed_decls: dict,
 
             # Moderation mode: load the current annotations so the agents are
             # context-aware and human edits are preserved (not clobbered).
+            # moderate.py passes existing_override sourced from the live D1 API
+            # (GET /api/article/:slug.json) — D1 is canonical; skip the disk read.
             existing: list[dict] = []
             if moderate:
-                ap = ANNOT / f"{slug}.json"
-                if ap.exists():
-                    try:
-                        existing = json.loads(ap.read_text()).get("annotations", [])
-                    except (json.JSONDecodeError, OSError):
-                        existing = []
+                if existing_override is not None:
+                    existing = existing_override
+                else:
+                    ap = ANNOT / f"{slug}.json"
+                    if ap.exists():
+                        try:
+                            existing = json.loads(ap.read_text()).get("annotations", [])
+                        except (json.JSONDecodeError, OSError):
+                            existing = []
             do_moderate = moderate and bool(existing)
             rec["mode"] = "moderate" if do_moderate else "regen"
 
@@ -351,8 +373,11 @@ async def annotate_one(article: dict, sem: asyncio.Semaphore, seed_decls: dict,
                 rec["error"] = "agent1_no_json"
                 return rec
             annotations = a1["annotations"]
+            ladder = {"restored": 0, "reinserted": 0, "downgrades_blocked": 0}
             if do_moderate:
-                annotations = _preserve_human(existing, annotations)
+                annotations, ph1 = _preserve_human(existing, annotations)
+                ladder["restored"] += ph1["restored"]
+                ladder["reinserted"] += ph1["reinserted"]
             envelope = {
                 "slug": slug, "wikipedia_title": title, "display_title": title,
                 "schema_version": 3, "annotations": [
@@ -388,7 +413,9 @@ async def annotate_one(article: dict, sem: asyncio.Semaphore, seed_decls: dict,
             if do_moderate:
                 # Restore human annotations' decls/status after Agent 2 too, so
                 # the matcher can't override a human-verified mapping.
-                a2_annos = _preserve_human(existing, a2_annos)
+                a2_annos, ph2 = _preserve_human(existing, a2_annos)
+                ladder["restored"] += ph2["restored"]
+                ladder["reinserted"] += ph2["reinserted"]
                 # Deterministic provenance carry-through. Agent 2 must not be
                 # able to DOWNGRADE Agent 1's review marks: if the pre-Agent-2
                 # state had "ai-moderated" or "human" for this anchor, that
@@ -404,6 +431,8 @@ async def annotate_one(article: dict, sem: asyncio.Semaphore, seed_decls: dict,
                     inherited = pre_a2_prov.get(_anchor_sig(a))
                     echoed = a.get("provenance")
                     winner = max((inherited, echoed), key=lambda p: PRIORITY.get(p, 0))
+                    if PRIORITY.get(echoed, 0) < PRIORITY.get(inherited, 0):
+                        ladder["downgrades_blocked"] += 1
                     out_annos.append({**a, "provenance": winner or "ai"})
             else:
                 out_annos = [{**a, "provenance": "ai"} for a in a2_annos]
@@ -423,6 +452,7 @@ async def annotate_one(article: dict, sem: asyncio.Semaphore, seed_decls: dict,
             mm = re.search(r"(\d+)/(\d+) matched", render_out)
             rec["matched"] = mm.group(0) if mm else None
             rec["n_annotations"] = len(final["annotations"])
+            rec["ladder"] = ladder
             rec["cost_usd_equiv"] = round(
                 (a1_meta.get("cost_usd_equiv") or 0) + (a2_meta.get("cost_usd_equiv") or 0), 3)
             rec["tokens"] = (a1_meta.get("tokens") or 0) + (a2_meta.get("tokens") or 0)
