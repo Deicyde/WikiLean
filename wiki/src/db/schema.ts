@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer, index } from "drizzle-orm/sqlite-core";
+import { sqliteTable, text, integer, real, index } from "drizzle-orm/sqlite-core";
 
 // Page-revision model (Wikipedia-style): `articles` holds the current state;
 // every save appends a full snapshot to `revisions` (audit log + revert source).
@@ -39,6 +39,10 @@ export const revisions = sqliteTable(
     kind: text("kind").notNull().default("edit"), // edit | revert | seed | pipeline | contribution
     meta: text("meta"), // JSON: run_id, model, tokens, cost, mathlib_sha, auth_mode, approved_by, ...
     parentId: integer("parent_id"), // revision this edit was based on (no FK — SQLite ALTER can't add one)
+    // Patrol mark (P2a): set once by POST /api/revision/:id/patrol
+    // (patroller/admin) on kind='edit' revisions. NULL = awaiting patrol.
+    patrolledBy: text("patrolled_by"),
+    patrolledAt: integer("patrolled_at"), // ms
     createdAt: integer("created_at").notNull(),
   },
   (t) => [index("idx_revisions_slug").on(t.slug, t.createdAt)],
@@ -111,6 +115,27 @@ export const flags = sqliteTable(
   (t) => [index("idx_flags_slug_status").on(t.slug, t.status)],
 );
 
+// Pipeline-run registry (P2a; RUNS-API contract): one row per moderation-
+// pipeline invocation, reported by POST /api/runs (bot bearer only). run_id is
+// the runner's 8-hex id — the same value the runner stamps into
+// revisions.meta, which is how the research export joins revisions to runs.
+// Inserts are idempotent on run_id (duplicate report → {ok, duplicate}).
+// kind is CHECK-constrained in migration 0006 to review|wp-update|new|all.
+export const pipelineRuns = sqliteTable("pipeline_runs", {
+  runId: text("run_id").primaryKey(),
+  kind: text("kind").notNull(), // review | wp-update | new | all
+  model: text("model"),
+  promptSha: text("prompt_sha"),
+  startedAt: integer("started_at").notNull(), // ms, runner-reported
+  finishedAt: integer("finished_at").notNull(), // ms, runner-reported
+  articlesProcessed: integer("articles_processed").notNull().default(0),
+  errors: integer("errors").notNull().default(0),
+  tokens: integer("tokens").notNull().default(0),
+  costUsdEquiv: real("cost_usd_equiv"), // null = unknown (subscription-auth runs)
+  notes: text("notes"),
+  createdAt: integer("created_at").notNull(), // ms, server receipt time
+});
+
 // better-auth core tables. Property names must match better-auth's field names;
 // date fields use timestamp mode and emailVerified uses boolean mode, as
 // better-auth's SQLite adapter expects. `role` is a better-auth additionalField.
@@ -168,6 +193,7 @@ export const verifications = sqliteTable("verifications", {
 export type ArticleRow = typeof articles.$inferSelect;
 export type RevisionRow = typeof revisions.$inferSelect;
 export type ModerationStateRow = typeof moderationState.$inferSelect;
+export type PipelineRunRow = typeof pipelineRuns.$inferSelect;
 export type AnnotationEventInsert = typeof annotationEvents.$inferInsert;
 export type FlagRow = typeof flags.$inferSelect;
 export type UserRow = typeof users.$inferSelect;

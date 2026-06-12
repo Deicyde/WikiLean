@@ -58,7 +58,7 @@ export function injectAuthAndEditor(
       // cache key; without this, returning users see the stale editor / CSS).
       // v=9: hidden-annotation recovery, busy buttons, 409 draft preservation,
       // panel a11y, palette (W3 fixes #2/#6d/#8/#9/#11c/#11f).
-      `<script src="/assets/editor.js?v=9"></script>\n`;
+      `<script src="/assets/editor.js?v=10"></script>\n`;
   } else {
     inject =
       `<a id="wl-signin" href="/login?returnTo=${ret}" ` +
@@ -137,6 +137,19 @@ button.revert:hover{border-color:#1a4b8c;color:#1a4b8c}
 .wl-diff-card table{border:none;border-radius:0}
 .wl-diff-card td{font-size:.85rem;word-break:break-word;white-space:pre-wrap}
 .wl-diff-card td.wl-diff-field{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.8rem;white-space:nowrap}
+.wl-kind{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.72rem;font-weight:600;white-space:nowrap;background:#ece6d8;color:#5f594e}
+.wl-kind-edit{background:rgba(26,75,140,.10);color:#1a4b8c}
+.wl-kind-revert{background:rgba(179,55,47,.10);color:#9c2f28}
+.wl-kind-pipeline{background:rgba(47,125,79,.12);color:#2f7d4f}
+.wl-kind-contribution{background:rgba(176,128,32,.14);color:#7d5a10}
+.wl-unpatrolled{color:#b08020;font-size:.65rem;vertical-align:1px;margin-right:6px;cursor:default}
+.wl-patrolled{color:#2f7d4f;font-size:.8rem;white-space:nowrap;cursor:default}
+.wl-filterbar{color:#6e675a;font-size:.85rem;margin:0 0 14px}
+.wl-filterbar a.active{font-weight:700;text-decoration:underline}
+.wl-rq{display:inline-block;padding:1px 7px;border-radius:9px;font-size:.7rem;font-weight:600;white-space:nowrap;background:rgba(26,75,140,.08);color:#1a4b8c;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.wl-stat-num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.wl-stats-foot{color:#6e675a;font-size:.82rem;margin:22px 0 0;line-height:1.6}
+h2.wl-stats-h{font-family:Charter,'Bitstream Charter','Iowan Old Style',Georgia,'Times New Roman',serif;font-size:1.15rem;margin:28px 0 10px}
 `;
 
 function shell(title: string, bodyInner: string, extraScript = ""): string {
@@ -150,7 +163,7 @@ function shell(title: string, bodyInner: string, extraScript = ""): string {
 <style>${SHELL_CSS}</style>
 </head>
 <body>
-<header class="wl-header"><a class="wl-brand" href="/">WikiLean</a><span><a class="wl-navlink" href="/recent-changes">Recent changes</a> · <a class="wl-navlink" href="/flags">Flags</a> · <a class="wl-navlink" href="/about">About</a></span></header>
+<header class="wl-header"><a class="wl-brand" href="/">WikiLean</a><span><a class="wl-navlink" href="/recent-changes">Recent changes</a> · <a class="wl-navlink" href="/flags">Flags</a> · <a class="wl-navlink" href="/stats">Stats</a> · <a class="wl-navlink" href="/about">About</a></span></header>
 <div class="wrap">
 ${bodyInner}
 </div>
@@ -225,14 +238,51 @@ export interface RecentRow {
   userId: string | null;
   comment: string | null;
   createdAt: number;
+  kind: string; // edit | revert | seed | pipeline | contribution
+  patrolledBy: string | null;
+  patrolledAt: number | null;
+  patrollerName: string | null;
 }
 
-export function recentChangesPage(rows: RecentRow[]): string {
+// The revisions.kind vocabulary (0004), as filter values for ?kind=.
+export const RECENT_KINDS = ["edit", "revert", "seed", "pipeline", "contribution"] as const;
+
+// One patrol cell. Only human edits (kind='edit') participate: unpatrolled
+// rows get a subtle amber marker (everyone) + a mark-patrolled button
+// (patroller/admin only — same UI#3 rule as revert buttons: never render an
+// affordance that always 403s); patrolled rows show who/when in the title
+// attribute (hover).
+function patrolCell(r: RecentRow, canPatrol: boolean): string {
+  if (r.kind !== "edit") return "";
+  if (r.patrolledBy === null) {
+    return (
+      `<span class="wl-unpatrolled" title="awaiting patrol">●</span>` +
+      (canPatrol ? `<button class="revert wl-patrol" data-rev="${r.id}">mark patrolled</button>` : "")
+    );
+  }
+  const who = htmlEscape(r.patrollerName ?? r.patrolledBy, true);
+  const when = r.patrolledAt !== null ? htmlEscape(fmtDate(r.patrolledAt), true) : "";
+  return `<span class="wl-patrolled" title="patrolled by ${who}${when ? " · " + when : ""}">✓ patrolled</span>`;
+}
+
+export function recentChangesPage(
+  rows: RecentRow[],
+  opts: { kind: string | null; canPatrol: boolean },
+): string {
+  // Filter chrome: all + one link per revisions.kind value.
+  const filterLinks = [
+    `<a href="/recent-changes"${opts.kind === null ? ' class="active"' : ""}>all</a>`,
+    ...RECENT_KINDS.map(
+      (k) => `<a href="/recent-changes?kind=${k}"${opts.kind === k ? ' class="active"' : ""}>${k}</a>`,
+    ),
+  ].join(" · ");
+
   const body =
     `<h1>Recent changes</h1>` +
     `<p class="lead">Latest annotation edits across all articles. Patrol here — open an article's history to revert.</p>` +
+    `<p class="wl-filterbar">Show: ${filterLinks}</p>` +
     `<div style="overflow-x:auto">` +
-    `<table><thead><tr><th>When</th><th>Article</th><th>Editor</th><th>Comment</th><th></th></tr></thead><tbody>` +
+    `<table><thead><tr><th>When</th><th>Article</th><th>Editor</th><th>Kind</th><th>Comment</th><th>Patrol</th><th></th></tr></thead><tbody>` +
     rows
       .map((r) => {
         const who = r.userId ? htmlEscape(r.userName ?? r.userId, false) : '<span class="muted">system</span>';
@@ -240,13 +290,33 @@ export function recentChangesPage(rows: RecentRow[]): string {
           `<tr><td>${fmtDate(r.createdAt)}</td>` +
           `<td><a href="/${encodeURIComponent(r.slug)}">${htmlEscape(r.displayTitle, false)}</a></td>` +
           `<td>${who}</td>` +
+          `<td><span class="wl-kind wl-kind-${htmlEscape(r.kind, true)}">${htmlEscape(r.kind, false)}</span></td>` +
           `<td>${r.comment ? htmlEscape(r.comment, false) : '<span class="muted">—</span>'}</td>` +
+          `<td>${patrolCell(r, opts.canPatrol)}</td>` +
           `<td><a href="/${encodeURIComponent(r.slug)}/history">history</a></td></tr>`
         );
       })
       .join("") +
     `</tbody></table></div>`;
-  return shell("Recent changes", body);
+
+  const script = opts.canPatrol
+    ? `<script>
+document.querySelectorAll("button.wl-patrol").forEach(function(b){ // (canPatrol-only markup)
+  b.addEventListener("click", function(){
+    b.disabled=true; b.textContent="…";
+    fetch("/api/revision/"+b.dataset.rev+"/patrol",{method:"POST"})
+      .then(function(r){return r.json()})
+      .then(function(res){
+        if(res.ok){ var cell=b.parentElement; cell.innerHTML='<span class="wl-patrolled">✓ patrolled</span>'; }
+        else { alert("patrol failed: "+(res.error||"")); b.disabled=false; b.textContent="mark patrolled"; }
+      })
+      .catch(function(e){alert("patrol failed: "+e); b.disabled=false; b.textContent="mark patrolled";});
+  });
+});
+</script>`
+    : "";
+
+  return shell("Recent changes", body, script);
 }
 
 // ---- /flags — the anonymous-report patrol queue (D-C4/D-C6) ----------------
@@ -399,4 +469,181 @@ export function diffPage(
       : cards);
 
   return shell(`Diff: ${displayTitle}`, body);
+}
+
+// ---- /stats — live experiment instrumentation (P2a) -------------------------
+// Every number on this page is a cheap SQL aggregate (count columns, GROUP
+// BYs) — the annotation blobs are never parsed at request time. Each row names
+// the research question it feeds (RQ1–RQ8, docs/research-plan.md): RQ1
+// human-correction rates by field, RQ2 endorse-vs-modify ratio, RQ3 AI
+// dissent/ladder blocks, RQ4 time-to-correction survival, RQ5 annotation
+// survival across AI passes, RQ6 inter-generation AI agreement (deferred),
+// RQ7 confidence calibration (deferred), RQ8 cost per accepted annotation.
+// RQ3 reads from the runner's sidecars (decisions.jsonl), not D1, and RQ6/RQ7
+// are deferred — all three are deliberately absent here. Median
+// time-to-first-human-touch is omitted: it needs a per-annotation
+// first-pipeline-event × first-human-event self-join over annotation_events,
+// which is not a cheap single SQL pass on D1.
+
+export interface StatsEventCell {
+  eventType: string;
+  actorType: string;
+  allTime: number;
+  last30d: number;
+}
+
+export interface StatsData {
+  articles: {
+    total: number;
+    neverReviewed: number;
+    fresh: number; // reviewed within the last 30d
+    stale: number; // reviewed, but >30d ago
+    drifted: number; // moderation_state.wp_drifted = 1
+    parked: number; // state in (moved, deleted, needs_human)
+  };
+  // From the per-article count columns (D-C5) — by status, tombstones
+  // excluded. Provenance totals would need a blob parse; the human-provenance
+  // signal is read from endorse/modify events instead (RQ2).
+  annotations: { formalized: number; partial: number; notFormalized: number; pendingCounts: number };
+  events: StatsEventCell[]; // event_type × actor_type, all-time + last 30d
+  flags: { open: number; fixed: number; dismissed: number };
+  revisions: Array<{ kind: string; count: number }>;
+  patrol: { unpatrolledEdits: number; patrolledEdits: number };
+  runs: Array<{
+    kind: string;
+    runs: number;
+    articles: number;
+    errors: number;
+    tokens: number;
+    cost: number | null;
+  }>;
+}
+
+function statNum(n: number): string {
+  return `<td class="wl-stat-num">${n.toLocaleString("en-US")}</td>`;
+}
+
+function rqCell(labels: string): string {
+  return `<td>${labels
+    .split(" ")
+    .map((l) => `<span class="wl-rq">${htmlEscape(l, false)}</span>`)
+    .join(" ")}</td>`;
+}
+
+function statRow(metric: string, n: number, rq: string): string {
+  return `<tr><td>${htmlEscape(metric, false)}</td>${statNum(n)}${rqCell(rq)}</tr>`;
+}
+
+function statTable(head: string, rows: string): string {
+  return `<div style="overflow-x:auto"><table><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+export function statsPage(d: StatsData): string {
+  const metricHead = `<th>Metric</th><th>Count</th><th>Feeds</th>`;
+
+  const reviewRows =
+    statRow("Articles", d.articles.total, "RQ8") +
+    statRow("Never reviewed by the pipeline", d.articles.neverReviewed, "RQ5") +
+    statRow("Review fresh (≤30d)", d.articles.fresh, "RQ5") +
+    statRow("Review stale (>30d)", d.articles.stale, "RQ5") +
+    statRow("Drifted from pinned Wikipedia revision", d.articles.drifted, "RQ8") +
+    statRow("Parked (moved / deleted / needs human)", d.articles.parked, "RQ4");
+
+  const annRows =
+    statRow("Formalized", d.annotations.formalized, "RQ8") +
+    statRow("Partial", d.annotations.partial, "RQ8") +
+    statRow("Not formalized", d.annotations.notFormalized, "RQ8") +
+    statRow("Articles awaiting count backfill", d.annotations.pendingCounts, "RQ8");
+
+  const evTotal = { allTime: 0, last30d: 0 };
+  const endorse = { allTime: 0, last30d: 0 };
+  const reject = { allTime: 0, last30d: 0 };
+  const modifyHuman = { allTime: 0, last30d: 0 };
+  for (const e of d.events) {
+    evTotal.allTime += e.allTime;
+    evTotal.last30d += e.last30d;
+    if (e.eventType === "endorse") {
+      endorse.allTime += e.allTime;
+      endorse.last30d += e.last30d;
+    }
+    if (e.eventType === "reject") {
+      reject.allTime += e.allTime;
+      reject.last30d += e.last30d;
+    }
+    if (e.eventType === "modify" && e.actorType === "human") {
+      modifyHuman.allTime += e.allTime;
+      modifyHuman.last30d += e.last30d;
+    }
+  }
+  const eventRows =
+    d.events
+      .map(
+        (e) =>
+          `<tr><td><code>${htmlEscape(e.eventType, false)}</code></td>` +
+          `<td><code>${htmlEscape(e.actorType, false)}</code></td>` +
+          `${statNum(e.last30d)}${statNum(e.allTime)}${rqCell("RQ1 RQ5")}</tr>`,
+      )
+      .join("") +
+    `<tr><td colspan="2"><b>All events</b></td>${statNum(evTotal.last30d)}${statNum(evTotal.allTime)}${rqCell("RQ1")}</tr>`;
+
+  const signalRows =
+    `<tr><td>Endorsements (human agrees with AI)</td>${statNum(endorse.last30d)}${statNum(endorse.allTime)}${rqCell("RQ2")}</tr>` +
+    `<tr><td>Human modifications</td>${statNum(modifyHuman.last30d)}${statNum(modifyHuman.allTime)}${rqCell("RQ1 RQ2")}</tr>` +
+    `<tr><td>Rejections (human veto / tombstone)</td>${statNum(reject.last30d)}${statNum(reject.allTime)}${rqCell("RQ1 RQ4")}</tr>`;
+
+  const flagRows =
+    statRow("Open flags", d.flags.open, "RQ4") +
+    statRow("Resolved: fixed", d.flags.fixed, "RQ4") +
+    statRow("Resolved: dismissed", d.flags.dismissed, "RQ4");
+
+  const revisionRows =
+    d.revisions.map((r) => statRow(`Revisions: ${r.kind}`, r.count, "RQ5")).join("") +
+    statRow("Human edits awaiting patrol", d.patrol.unpatrolledEdits, "RQ4") +
+    statRow("Human edits patrolled", d.patrol.patrolledEdits, "RQ4");
+
+  const runTotal = d.runs.reduce(
+    (acc, r) => ({
+      runs: acc.runs + r.runs,
+      articles: acc.articles + r.articles,
+      errors: acc.errors + r.errors,
+      tokens: acc.tokens + r.tokens,
+      cost: r.cost === null ? acc.cost : (acc.cost ?? 0) + r.cost,
+    }),
+    { runs: 0, articles: 0, errors: 0, tokens: 0, cost: null as number | null },
+  );
+  const fmtCost = (c: number | null): string =>
+    `<td class="wl-stat-num">${c === null ? '<span class="muted">—</span>' : "$" + c.toFixed(2)}</td>`;
+  const runRow = (label: string, r: { runs: number; articles: number; errors: number; tokens: number; cost: number | null }) =>
+    `<tr><td>${htmlEscape(label, false)}</td>${statNum(r.runs)}${statNum(r.articles)}${statNum(r.errors)}${statNum(r.tokens)}${fmtCost(r.cost)}${rqCell("RQ8")}</tr>`;
+  const runsRows =
+    d.runs.map((r) => runRow(r.kind, r)).join("") + runRow("all runs", runTotal);
+
+  const body =
+    `<h1>Stats</h1>` +
+    `<p class="lead">Live instrumentation for the human+AI moderation experiment. Cached for up to 5 minutes; ` +
+    `each row names the research question (RQ1–RQ8) it feeds.</p>` +
+    `<h2 class="wl-stats-h">Articles by review state</h2>` +
+    statTable(metricHead, reviewRows) +
+    `<h2 class="wl-stats-h">Annotations by status</h2>` +
+    statTable(metricHead, annRows) +
+    `<p class="muted" style="font-size:.82rem">By-provenance totals are deliberately not computed here (they would ` +
+    `require parsing every annotation blob per request); the human-provenance signal is read from the events below.</p>` +
+    `<h2 class="wl-stats-h">Annotation events (event type × actor)</h2>` +
+    statTable(`<th>Event</th><th>Actor</th><th>Last 30d</th><th>All time</th><th>Feeds</th>`, eventRows) +
+    `<h2 class="wl-stats-h">Human signals</h2>` +
+    statTable(`<th>Signal</th><th>Last 30d</th><th>All time</th><th>Feeds</th>`, signalRows) +
+    `<h2 class="wl-stats-h">Reader flags</h2>` +
+    statTable(metricHead, flagRows) +
+    `<h2 class="wl-stats-h">Revisions &amp; patrol</h2>` +
+    statTable(metricHead, revisionRows) +
+    `<h2 class="wl-stats-h">Pipeline runs</h2>` +
+    statTable(`<th>Kind</th><th>Runs</th><th>Articles</th><th>Errors</th><th>Tokens</th><th>Cost</th><th>Feeds</th>`, runsRows) +
+    `<p class="wl-stats-foot"><b>Reading a zero:</b> every instrument on this page has shipped, so a 0 in any row ` +
+    `means that instrumentation is broken, not that nothing happened — investigate before celebrating. ` +
+    `Median time-to-first-human-touch is omitted: it needs a per-annotation pipeline-event × human-event self-join ` +
+    `that is not a cheap single SQL pass on D1. RQ3 (AI dissent / ladder blocks) is measured in the runner&#x27;s ` +
+    `decision sidecars, not in this database; RQ6 (inter-generation agreement) and RQ7 (confidence calibration) ` +
+    `are deferred pending their sample/field (docs/research-plan.md).</p>`;
+
+  return shell("Stats", body);
 }

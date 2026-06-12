@@ -220,14 +220,47 @@ export interface RevisionRowLite {
   kind: string;
   meta: string | null;
   parent_id: number | null;
+  patrolled_by: string | null;
+  patrolled_at: number | null;
 }
 
 export function latestRevision(db: DatabaseSync, slug = SLUG): RevisionRowLite {
   return db
     .prepare(
-      "SELECT id, user_id, annotations, comment, kind, meta, parent_id FROM revisions WHERE slug = ? ORDER BY id DESC LIMIT 1",
+      "SELECT id, user_id, annotations, comment, kind, meta, parent_id, patrolled_by, patrolled_at FROM revisions WHERE slug = ? ORDER BY id DESC LIMIT 1",
     )
     .get(slug) as unknown as RevisionRowLite;
+}
+
+export function revisionById(db: DatabaseSync, id: number): RevisionRowLite | undefined {
+  return db
+    .prepare(
+      "SELECT id, user_id, annotations, comment, kind, meta, parent_id, patrolled_by, patrolled_at FROM revisions WHERE id = ?",
+    )
+    .get(id) as RevisionRowLite | undefined;
+}
+
+// Insert a bare revision row with an explicit kind (patrol/filter fixtures).
+// Returns the new revision id.
+export function insertRevision(
+  db: DatabaseSync,
+  slug: string,
+  opts: { userId?: string | null; kind?: string; comment?: string | null; meta?: string | null; createdAt?: number } = {},
+): number {
+  const r = db
+    .prepare(
+      "INSERT INTO revisions (slug, user_id, annotations, comment, kind, meta, created_at) VALUES (?,?,?,?,?,?,?)",
+    )
+    .run(
+      slug,
+      opts.userId ?? null,
+      "[]",
+      opts.comment ?? null,
+      opts.kind ?? "edit",
+      opts.meta ?? null,
+      opts.createdAt ?? Date.now(),
+    );
+  return Number(r.lastInsertRowid);
 }
 
 export interface ModerationRowLite {
@@ -350,4 +383,27 @@ export function flagRows(db: DatabaseSync, slug = SLUG): FlagRowLite[] {
       "SELECT id, slug, annotation_id, reason, comment, user_id, ip_hash, status, resolved_by, resolved_at, created_at FROM flags WHERE slug = ? ORDER BY id",
     )
     .all(slug) as unknown as FlagRowLite[];
+}
+
+export interface PipelineRunRowLite {
+  run_id: string;
+  kind: string;
+  model: string | null;
+  prompt_sha: string | null;
+  started_at: number;
+  finished_at: number;
+  articles_processed: number;
+  errors: number;
+  tokens: number;
+  cost_usd_equiv: number | null;
+  notes: string | null;
+  created_at: number;
+}
+
+export function pipelineRunRows(db: DatabaseSync): PipelineRunRowLite[] {
+  return db
+    .prepare(
+      "SELECT run_id, kind, model, prompt_sha, started_at, finished_at, articles_processed, errors, tokens, cost_usd_equiv, notes, created_at FROM pipeline_runs ORDER BY run_id",
+    )
+    .all() as unknown as PipelineRunRowLite[];
 }
