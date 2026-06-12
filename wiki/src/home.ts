@@ -104,7 +104,9 @@ function dirRow(r: HomeRow): string {
     }
   }
   return (
-    `<a class="row" href="/${esc(r.slug)}" ` +
+    // Slugs are URL-encoded for the href (then HTML-escaped, like every sink) —
+    // raw "?"/"#"/"%" in a slug would otherwise break the link (W3 fix #10).
+    `<a class="row" href="/${esc(encodeURIComponent(r.slug))}" ` +
     `data-title="${esc(r.displayTitle.toLowerCase())}" data-cov="${cov.toFixed(4)}" ` +
     `data-f="${f}" data-n="${n}" data-untagged="${untagged ? 1 : 0}">` +
     `<span class="row-title">${t}</span>${bar}${meta}</a>`
@@ -113,7 +115,8 @@ function dirRow(r: HomeRow): string {
 
 function recentItem(r: HomeRow): string {
   return (
-    `<a class="recent-item" href="/${esc(r.slug)}">` +
+    // URL-encoded + HTML-escaped, same as dirRow (W3 fix #10).
+    `<a class="recent-item" href="/${esc(encodeURIComponent(r.slug))}">` +
     `<span class="recent-title">${esc(r.displayTitle)}</span>` +
     `<span class="recent-when">${fmtRel(r.updatedAt)}</span></a>`
   );
@@ -389,7 +392,9 @@ export function sitemapXml(rows: SitemapRow[]): string {
     .sort((a, b) => (a.slug < b.slug ? -1 : a.slug > b.slug ? 1 : 0))
     .map(
       (r) =>
-        `  <url><loc>${SITE_ORIGIN}/${esc(r.slug)}</loc>` +
+        // <loc> must be a valid URL: percent-encode the slug, then XML-escape
+        // (W3 fix #10).
+        `  <url><loc>${SITE_ORIGIN}/${esc(encodeURIComponent(r.slug))}</loc>` +
         `<lastmod>${new Date(r.updatedAt).toISOString().slice(0, 10)}</lastmod>` +
         `<priority>0.6</priority></url>`,
     );

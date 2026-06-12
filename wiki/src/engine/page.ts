@@ -105,6 +105,8 @@ export function renderArticlePage(input: PageInput): string {
     if (annotations[i].status === "rejected") continue;
     if (matched[i] && annotations[i].anchor?.type === "math_alttext") nDisplayAnnotated += 1;
   }
+  // Rendered as a header badge only when non-zero — "0 unannotated math" is
+  // noise on fully-covered (or math-free) articles (W3 fix #12).
   const nUntouched = Math.max(0, nDisplayTotal - nDisplayAnnotated);
 
   const desc =
@@ -113,6 +115,9 @@ export function renderArticlePage(input: PageInput): string {
       : `${displayTitle} from Wikipedia, annotated with links into Mathlib4 / Lean.`;
 
   const title = htmlEscape(displayTitle, false);
+  // Attribute positions (og:title content="...") need quotes escaped too;
+  // <title>/text positions keep the quote-unescaped form (W3 fix #7).
+  const titleAttr = htmlEscape(displayTitle, true);
   const descEsc = htmlEscape(desc, true);
   const canonical = `${BASE_URL}/${encodeURIComponent(slug)}`;
   const wpLink = encodeURIComponent(wikipediaTitle.replaceAll(" ", "_"));
@@ -128,11 +133,11 @@ export function renderArticlePage(input: PageInput): string {
 <link rel="canonical" href="${canonical}">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="WikiLean">
-<meta property="og:title" content="${title}">
+<meta property="og:title" content="${titleAttr}">
 <meta property="og:description" content="${descEsc}">
 <meta property="og:url" content="${canonical}">
 <meta name="twitter:card" content="summary">
-<link rel="stylesheet" href="/assets/style.css?v=6">
+<link rel="stylesheet" href="/assets/style.css?v=7">
 <style>
 .wl-attribution { max-width: 1000px; margin: 24px auto 40px; padding: 12px 16px 0; border-top: 1px solid #d8d0bd; color: #5f594e; font-size: 12px; line-height: 1.5; }
 .wl-attribution p { margin: 4px 0; }
@@ -157,13 +162,13 @@ export function renderArticlePage(input: PageInput): string {
       <span class="wl-badge wl-formalized">${counts.formalized} formalized</span>
       <span class="wl-badge wl-partial">${counts.partial} partial</span>
       <span class="wl-badge wl-not_formalized">${counts.not_formalized} not formalized</span>
-      <span class="wl-badge wl-untouched">${nUntouched} unannotated math</span>
+      ${nUntouched > 0 ? `<span class="wl-badge wl-untouched">${nUntouched} unannotated math</span>` : ""}
     </span>
-    <span class="wl-toggles">
-      <button data-mode="all" class="active">All</button>
-      <button data-mode="formalized">Formalized only</button>
-      <button data-mode="not_formalized">Not-formalized only</button>
-      <button data-mode="dim">Dim unannotated</button>
+    <span class="wl-toggles" role="group" aria-label="Filter annotations by status">
+      <button data-mode="all" class="active" aria-pressed="true">All</button>
+      <button data-mode="formalized" aria-pressed="false">Formalized only</button>
+      <button data-mode="not_formalized" aria-pressed="false">Not-formalized only</button>
+      <button data-mode="dim" aria-pressed="false">Dim unannotated</button>
     </span>
   </div>
 </header>
@@ -178,7 +183,7 @@ ${body}
 <script>
 window.__WL_ANNOTATIONS__ = ${data};
 </script>
-<script src="/assets/script.js?v=6"></script>
+<script src="/assets/script.js?v=7"></script>
 </body>
 </html>
 `;
