@@ -52,14 +52,18 @@ export function injectAuthAndEditor(
       // the server can 409 if the article was edited since this page loaded.
       `window.__WL_VERSION__=${safeJson(opts.version ?? 0)};` +
       `window.__WL_FULL_ANNOS__=${safeJson({ annotations: opts.annotations })};</script>\n` +
-      `<link rel="stylesheet" href="/assets/review.css?v=3">\n` +
+      // v=4: warm-palette editor chrome + sticky bar offsets (W3 fixes #5/#6d).
+      `<link rel="stylesheet" href="/assets/review.css?v=4">\n` +
       // Bump ?v= when these assets change so browsers refetch (the URL is the
       // cache key; without this, returning users see the stale editor / CSS).
-      `<script src="/assets/editor.js?v=8"></script>\n`;
+      // v=9: hidden-annotation recovery, busy buttons, 409 draft preservation,
+      // panel a11y, palette (W3 fixes #2/#6d/#8/#9/#11c/#11f).
+      `<script src="/assets/editor.js?v=9"></script>\n`;
   } else {
     inject =
       `<a id="wl-signin" href="/login?returnTo=${ret}" ` +
-      `style="position:fixed;right:14px;bottom:14px;z-index:5000;background:#0969da;color:#fff;` +
+      // Accent token #1a4b8c (was GitHub-blue #0969da) — W3 fix #6a.
+      `style="position:fixed;right:14px;bottom:14px;z-index:5000;background:#1a4b8c;color:#fff;` +
       `text-decoration:none;padding:8px 14px;border-radius:8px;font:13px -apple-system,sans-serif;` +
       `box-shadow:0 2px 10px rgba(0,0,0,.2)">✎ Sign in to edit</a>\n`;
   }
@@ -67,12 +71,14 @@ export function injectAuthAndEditor(
   // Slim drift banner above the article chrome. `revid` is guaranteed numeric
   // by the guard, so the interpolated href can't break out of the attribute.
   if (typeof opts.latestRevid === "number" && typeof opts.revid === "number" && opts.latestRevid > opts.revid) {
+    // Warm amber tint derived from the palette's #b08020, ink #7d5a10,
+    // accent link #1a4b8c (was GitHub yellow) — W3 fix #6b.
     const banner =
-      `<div id="wl-stale-banner" style="background:#fff8c5;border-bottom:1px solid #d4a72c;color:#4d2d00;` +
+      `<div id="wl-stale-banner" style="background:rgba(176,128,32,.12);border-bottom:1px solid rgba(176,128,32,.4);color:#7d5a10;` +
       `padding:8px 16px;text-align:center;font:13px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">` +
       `Annotations are pinned to an earlier Wikipedia revision — the article has changed upstream. ` +
       `<a href="https://en.wikipedia.org/w/index.php?diff=cur&amp;oldid=${opts.revid}" target="_blank" rel="noopener" ` +
-      `style="color:#0969da">See what changed ↗</a></div>\n`;
+      `style="color:#1a4b8c">See what changed ↗</a></div>\n`;
     const m = page.match(/<body[^>]*>/);
     if (m && m.index !== undefined) {
       const end = m.index + m[0].length;

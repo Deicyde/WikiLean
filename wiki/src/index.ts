@@ -1,6 +1,7 @@
 import { Hono, type Context } from "hono";
 import { drizzle } from "drizzle-orm/d1";
-import { eq, and, desc, sql, inArray, isNull } from "drizzle-orm";
+import { eq, and, desc, sql, inArray, isNull, type SQL } from "drizzle-orm";
+import type { BatchItem } from "drizzle-orm/batch";
 import {
   articles,
   revisions,
@@ -29,6 +30,7 @@ import {
   MAX_FLAG_COMMENT_LEN,
   MAX_META_BYTES,
   MAX_TEXT_LEN,
+  deepEqual,
   diffAnnotations,
   findLostHuman,
   findMatch,
@@ -72,8 +74,9 @@ async function renderArticleBase(env: Env, row: ArticleRow): Promise<string> {
   // and drop out of header badge counts / anonymous client data. v9: cached
   // pages embed /assets/script.js?v=5 (the ⚑ flag micro-form) — evict so all
   // readers refetch the new script. v10: warm-palette redesign — page template
-  // links style.css?v=6 + retuned .wl-attribution.
-  const cacheKey = `render:v10:${slug}:${row.version}`;
+  // links style.css?v=6 + retuned .wl-attribution. v11: page-template changes
+  // shipping in the same review wave (frontend agent) — evict in lockstep.
+  const cacheKey = `render:v11:${slug}:${row.version}`;
   const cached = await env.RENDER_CACHE.get(cacheKey);
   if (cached) return cached;
 
@@ -102,10 +105,15 @@ async function renderArticleBase(env: Env, row: ArticleRow): Promise<string> {
   return page;
 }
 
+// Annotation count for the history page. Excludes tombstones
+// (status='rejected') so the per-revision counts agree with the page-header
+// badges, which already skip them (UI#12).
 function annCount(json: string): number {
   try {
     const a = JSON.parse(json);
-    return Array.isArray(a) ? a.length : 0;
+    if (!Array.isArray(a)) return 0;
+    return a.filter((x) => !(typeof x === "object" && x !== null && (x as AnnRecord).status === "rejected"))
+      .length;
   } catch {
     return 0;
   }
@@ -262,6 +270,23 @@ async function sha256Hex(s: string): Promise<string> {
   return Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, "0")).join("");
 }
 
+// F9: each write path bundles its post-CAS writes (revision insert + events
+// + moderation_state bookkeeping) into ONE db.batch() so a mid-write crash
+// can't leave a revision without its events (or vice versa). D1 executes a
+// batch sequentially in one transaction; the test shim (d1shim) executes it
+// sequentially on one connection. The events' revision_id can't be bound
+// before the batch runs, so event rows reference the batch's own revision
+// insert via a per-slug MAX(id) subquery — valid because the revision insert
+// precedes the event inserts in the same sequential batch.
+function newRevisionId(slug: string): SQL<number> {
+  return sql<number>`(SELECT MAX(${revisions.id}) FROM ${revisions} WHERE ${revisions.slug} = ${slug})`;
+}
+
+// AnnotationEventInsert with the batch-time revision_id expression allowed.
+type EventRowInsert = Omit<AnnotationEventInsert, "revisionId"> & {
+  revisionId: number | SQL<number>;
+};
+
 // Map by-id diff results (validation.ts diffAnnotations) to annotation_events
 // rows. `eventTypeOverride` collapses every change kind to 'revert_restore'
 // for the revert path ("one event per annotation that CHANGED vs the
@@ -270,14 +295,14 @@ async function sha256Hex(s: string): Promise<string> {
 function eventRowsFromChanges(
   changes: AnnotationChange[],
   opts: {
-    revisionId: number;
+    revisionId: number | SQL<number>;
     slug: string;
     actorType: "human" | "pipeline";
     userId: string;
     now: number;
     eventTypeOverride?: "revert_restore";
   },
-): AnnotationEventInsert[] {
+): EventRowInsert[] {
   return changes.map((ch) => ({
     revisionId: opts.revisionId,
     slug: opts.slug,
@@ -290,16 +315,20 @@ function eventRowsFromChanges(
   }));
 }
 
-// Chunked multi-row inserts: 9 bind params per row, so 10 rows stays well
-// under D1's 100-parameter statement cap (d1shim has no batch(), and D1's
-// batch() is just sequential statements anyway).
+// Chunked multi-row inserts: ~10 bind params per row, so 10 rows stays well
+// under D1's 100-parameter statement cap. Returned as statements so the
+// caller can fold them into its write batch (F9).
 const EVENT_INSERT_CHUNK = 10;
 
-async function emitAnnotationEvents(db: DrizzleDB, rows: AnnotationEventInsert[]): Promise<void> {
+function eventInsertStatements(db: DrizzleDB, rows: EventRowInsert[]): BatchItem<"sqlite">[] {
+  const stmts: BatchItem<"sqlite">[] = [];
   for (let i = 0; i < rows.length; i += EVENT_INSERT_CHUNK) {
-    await db.insert(annotationEvents).values(rows.slice(i, i + EVENT_INSERT_CHUNK));
+    stmts.push(db.insert(annotationEvents).values(rows.slice(i, i + EVENT_INSERT_CHUNK)));
   }
+  return stmts;
 }
+
+type WriteBatch = [BatchItem<"sqlite">, ...BatchItem<"sqlite">[]];
 
 // ---- dynamic homepage + sitemap (D-C7) ----
 // Both are D1-driven (new articles appear without a redeploy) and KV-cached
@@ -378,6 +407,8 @@ app.get("/recent-changes", async (c) => {
 // Any logged-in user may view (the queue is a contribution surface, not a
 // secret), but resolve buttons render only for patroller/admin; the resolve
 // endpoint enforces the same gate server-side.
+// NB: the bot bearer also gets 200 here — intentional: a harmless read
+// (getUser treats the bearer as logged-in), and resolving stays role-gated.
 app.get("/flags", async (c) => {
   const user = await getUser(c);
   if (!user) return c.redirect("/login?returnTo=%2Fflags");
@@ -439,7 +470,9 @@ app.get("/:slug/history", async (c) => {
       createdAt: r.createdAt,
       count: annCount(r.annotations),
     })),
-    user !== null,
+    // UI#3: revert is patroller/admin-only server-side (requireRole on the
+    // endpoint) — don't render revert buttons that always 403 for plain users.
+    user !== null && (user.role === "patroller" || user.role === "admin"),
   );
   return c.html(html);
 });
@@ -484,7 +517,11 @@ app.get("/:slug/diff/:fromId/:toId", async (c) => {
 });
 
 // ---- machine-readable article JSON (the pipeline read path; public) ----
-// Same data anonymous readers already get in-page. The {.+\.json} suffix
+// F15: tombstones (status='rejected') are replaced with null placeholders for
+// everyone EXCEPT the bearer-authenticated pipeline — mirroring the rendered
+// page (engine/page.ts buildClientData), so vetoed content can't be read back
+// out through the API. The bearer bot gets the full array because the runner
+// must echo tombstones verbatim or its next save 422s. The {.+\.json} suffix
 // pattern wins over the catch-all /:slug routes by registration order, so a
 // slug literally named "x.json" can't shadow this route (it'd be served at
 // /api/article/x.json.json).
@@ -493,6 +530,9 @@ app.get("/api/article/:slug{.+\\.json}", async (c) => {
   const db = drizzle(c.env.DB);
   const row = (await db.select().from(articles).where(eq(articles.slug, slug)).limit(1))[0];
   if (!row) return c.json({ ok: false, error: "unknown slug" }, 404);
+  const user = await getUser(c);
+  const annotations = JSON.parse(row.annotations) as unknown[];
+  const full = user?.role === "bot";
   return c.json({
     slug: row.slug,
     wikipedia_title: row.wikipediaTitle,
@@ -501,7 +541,11 @@ app.get("/api/article/:slug{.+\\.json}", async (c) => {
     revid: row.revid,
     latest_revid: row.latestRevid,
     schema_version: row.schemaVersion,
-    annotations: JSON.parse(row.annotations),
+    annotations: full
+      ? annotations
+      : annotations.map((a) =>
+          typeof a === "object" && a !== null && (a as AnnRecord).status === "rejected" ? null : a,
+        ),
   });
 });
 
@@ -553,13 +597,13 @@ app.put("/api/article/:slug", async (c) => {
   ) {
     return c.json({ ok: false, error: "bad wikidata_qid" }, 400);
   }
-  let revid: number | null = null;
-  if (posted.revid !== undefined) {
-    if (typeof posted.revid !== "number" || !Number.isInteger(posted.revid) || posted.revid <= 0) {
-      return c.json({ ok: false, error: "bad revid" }, 400);
-    }
-    revid = posted.revid;
+  // F16: pipeline creates must pin the Wikipedia revision they annotated
+  // against. All 709 production rows carry a non-null revid — this codifies
+  // that reality (a null pin would also break drift detection for the row).
+  if (typeof posted.revid !== "number" || !Number.isInteger(posted.revid) || posted.revid <= 0) {
+    return c.json({ ok: false, error: "revid required for pipeline creates" }, 400);
   }
+  const revid: number = posted.revid;
   let metaJson: string | null = null;
   if (posted.meta !== undefined) {
     if (typeof posted.meta !== "object" || posted.meta === null || Array.isArray(posted.meta)) {
@@ -586,48 +630,52 @@ app.put("/api/article/:slug", async (c) => {
   const now = Date.now();
   const comment = typeof posted.comment === "string" ? posted.comment.slice(0, 500) : null;
 
-  await db.insert(articles).values({
-    slug,
-    wikipediaTitle: posted.wikipedia_title,
-    displayTitle: (posted.display_title as string | undefined) ?? posted.wikipedia_title,
-    wikidataQid: (posted.wikidata_qid as string | undefined) ?? null,
-    revid,
-    annotations: annJson,
-    schemaVersion: 3,
-    version: 1,
-    ...statusCounts(finalAnnotations),
-    createdAt: now,
-    updatedAt: now,
-  });
-  const revIns = await db.insert(revisions).values({
-    slug,
-    userId: user.id,
-    annotations: annJson,
-    comment: comment ?? "create",
-    kind: "pipeline",
-    meta: metaJson,
-    parentId: null,
-    createdAt: now,
-  });
-  const revisionId = revIns.meta.last_row_id;
-  await db
-    .insert(moderationState)
-    .values({ slug, lastReviewedAt: now, lastReviewedVersion: 1, updatedAt: now })
-    .onConflictDoUpdate({
-      target: moderationState.slug,
-      set: { lastReviewedAt: now, lastReviewedVersion: 1, updatedAt: now },
-    });
-  // D-C3: create emits one 'add' per annotation.
-  await emitAnnotationEvents(
-    db,
-    eventRowsFromChanges(diffAnnotations([], finalAnnotations), {
-      revisionId,
+  // F9: the whole create (article row + revision + moderation_state + 'add'
+  // events, D-C3) lands in one atomic batch — a PK conflict on a racing
+  // duplicate create aborts everything.
+  const createBatch: WriteBatch = [
+    db.insert(articles).values({
       slug,
-      actorType: "pipeline",
-      userId: user.id,
-      now,
+      wikipediaTitle: posted.wikipedia_title,
+      displayTitle: (posted.display_title as string | undefined) ?? posted.wikipedia_title,
+      wikidataQid: (posted.wikidata_qid as string | undefined) ?? null,
+      revid,
+      annotations: annJson,
+      schemaVersion: 3,
+      version: 1,
+      ...statusCounts(finalAnnotations),
+      createdAt: now,
+      updatedAt: now,
     }),
-  );
+    db.insert(revisions).values({
+      slug,
+      userId: user.id,
+      annotations: annJson,
+      comment: comment ?? "create",
+      kind: "pipeline",
+      meta: metaJson,
+      parentId: null,
+      createdAt: now,
+    }),
+    db
+      .insert(moderationState)
+      .values({ slug, lastReviewedAt: now, lastReviewedVersion: 1, updatedAt: now })
+      .onConflictDoUpdate({
+        target: moderationState.slug,
+        set: { lastReviewedAt: now, lastReviewedVersion: 1, updatedAt: now },
+      }),
+    ...eventInsertStatements(
+      db,
+      eventRowsFromChanges(diffAnnotations([], finalAnnotations), {
+        revisionId: newRevisionId(slug),
+        slug,
+        actorType: "pipeline",
+        userId: user.id,
+        now,
+      }),
+    ),
+  ];
+  await db.batch(createBatch);
   console.log(
     JSON.stringify({
       event: "create",
@@ -718,29 +766,33 @@ app.post("/api/article/:slug", async (c) => {
     const prior = (
       await db.select({ id: revisions.id }).from(revisions).where(eq(revisions.slug, slug)).orderBy(desc(revisions.id)).limit(1)
     )[0];
-    const revIns = await db.insert(revisions).values({
-      slug,
-      userId: user.id,
-      annotations: annJson,
-      comment: `endorse:${annotationId}`,
-      kind: "edit",
-      parentId: prior?.id ?? null,
-      createdAt: now,
-    });
-    await emitAnnotationEvents(db, [
-      {
-        revisionId: revIns.meta.last_row_id,
+    // F9: revision + endorse event land atomically.
+    const endorseBatch: WriteBatch = [
+      db.insert(revisions).values({
         slug,
-        annotationId,
-        eventType: "endorse",
-        actorType: "human",
         userId: user.id,
-        fieldChanges: serializeFieldChanges([
-          { field: "provenance", from: priorProvenance, to: "human" },
-        ]),
+        annotations: annJson,
+        comment: `endorse:${annotationId}`,
+        kind: "edit",
+        parentId: prior?.id ?? null,
         createdAt: now,
-      },
-    ]);
+      }),
+      ...eventInsertStatements(db, [
+        {
+          revisionId: newRevisionId(slug),
+          slug,
+          annotationId,
+          eventType: "endorse",
+          actorType: "human",
+          userId: user.id,
+          fieldChanges: serializeFieldChanges([
+            { field: "provenance", from: priorProvenance, to: "human" },
+          ]),
+          createdAt: now,
+        },
+      ]),
+    ];
+    await db.batch(endorseBatch);
     console.log(
       JSON.stringify({
         event: "endorse",
@@ -820,6 +872,38 @@ app.post("/api/article/:slug", async (c) => {
   // the helpers above (they match posted-without-id to stored-by-signature)
   // and before persisting, so every save converges on full id coverage.
   finalAnnotations = healAnnotationIds(stored, finalAnnotations);
+
+  // TESTAGENT#2: short-circuit no-op saves. If post-heal annotations are
+  // deep-equal to what's stored and the save doesn't move the revid pin,
+  // write NOTHING — no article UPDATE, no revision, no events (version-
+  // bumping no-ops were churning the render cache and the revision log).
+  // EXCEPTION: a bot no-op still stamps moderation_state (last_reviewed_at/
+  // version), otherwise a reviewed-but-unchanged article never leaves the
+  // review queue (and the F2 recency-aware flagged tier never releases it).
+  // Session no-op saves skip the stamp.
+  if (deepEqual(stored, finalAnnotations) && (postedRevid === null || postedRevid === row.revid)) {
+    if (isBot) {
+      const now = Date.now();
+      await db
+        .insert(moderationState)
+        .values({ slug, lastReviewedAt: now, lastReviewedVersion: row.version, updatedAt: now })
+        .onConflictDoUpdate({
+          target: moderationState.slug,
+          set: { lastReviewedAt: now, lastReviewedVersion: row.version, updatedAt: now },
+        });
+    }
+    console.log(
+      JSON.stringify({
+        event: "save-noop",
+        slug,
+        user_id: user.id,
+        kind: isBot ? "pipeline" : "edit",
+        version: row.version,
+      }),
+    );
+    return c.json({ ok: true, noop: true, version: row.version });
+  }
+
   const annJson = JSON.stringify(finalAnnotations);
   const annotations = finalAnnotations as unknown as Annotation[];
 
@@ -868,52 +952,59 @@ app.post("/api/article/:slug", async (c) => {
   const prior = (
     await db.select({ id: revisions.id }).from(revisions).where(eq(revisions.slug, slug)).orderBy(desc(revisions.id)).limit(1)
   )[0];
-  const revIns = await db.insert(revisions).values({
-    slug,
-    userId: user.id,
-    annotations: annJson,
-    comment: comment || null,
-    kind: isBot ? "pipeline" : "edit",
-    meta: metaJson,
-    parentId: prior?.id ?? null,
-    createdAt: now,
-  });
-  // D-C3: per-annotation change log, diffed by id against the pre-save state.
-  // actor_type comes from the auth seam, never from client-claimed provenance.
-  await emitAnnotationEvents(
-    db,
-    eventRowsFromChanges(diffAnnotations(stored, finalAnnotations), {
-      revisionId: revIns.meta.last_row_id,
+  // F9: revision + events + moderation bookkeeping land in one atomic batch.
+  // The article UPDATE above stays separate — its CAS result gates all this.
+  const saveBatch: WriteBatch = [
+    db.insert(revisions).values({
       slug,
-      actorType: isBot ? "pipeline" : "human",
       userId: user.id,
-      now,
+      annotations: annJson,
+      comment: comment || null,
+      kind: isBot ? "pipeline" : "edit",
+      meta: metaJson,
+      parentId: prior?.id ?? null,
+      createdAt: now,
     }),
-  );
+    // D-C3: per-annotation change log, diffed by id against the pre-save state.
+    // actor_type comes from the auth seam, never from client-claimed provenance.
+    ...eventInsertStatements(
+      db,
+      eventRowsFromChanges(diffAnnotations(stored, finalAnnotations), {
+        revisionId: newRevisionId(slug),
+        slug,
+        actorType: isBot ? "pipeline" : "human",
+        userId: user.id,
+        now,
+      }),
+    ),
+  ];
   if (isBot) {
     // Bookkeep the review in moderation_state (feeds /api/work priority).
     // wp_drifted resets only when this write re-pinned revid to latest_revid
     // (or no upstream revid is known); otherwise an existing drift flag stands.
     const stillDrifted = row.latestRevid !== null && (newRevid === null || newRevid < row.latestRevid);
-    await db
-      .insert(moderationState)
-      .values({
-        slug,
-        lastReviewedAt: now,
-        lastReviewedVersion: newVersion,
-        wpDrifted: stillDrifted,
-        updatedAt: now,
-      })
-      .onConflictDoUpdate({
-        target: moderationState.slug,
-        set: {
+    saveBatch.push(
+      db
+        .insert(moderationState)
+        .values({
+          slug,
           lastReviewedAt: now,
           lastReviewedVersion: newVersion,
+          wpDrifted: stillDrifted,
           updatedAt: now,
-          ...(stillDrifted ? {} : { wpDrifted: false }),
-        },
-      });
+        })
+        .onConflictDoUpdate({
+          target: moderationState.slug,
+          set: {
+            lastReviewedAt: now,
+            lastReviewedVersion: newVersion,
+            updatedAt: now,
+            ...(stillDrifted ? {} : { wpDrifted: false }),
+          },
+        }),
+    );
   }
+  await db.batch(saveBatch);
   console.log(
     JSON.stringify({
       event: "save",
@@ -964,7 +1055,10 @@ app.post("/api/article/:slug/revert/:revid", async (c) => {
 
   const now = Date.now();
   const newVersion = row.version + 1;
-  await db
+  // F5: same CAS contract as the save path — guard the UPDATE on the version
+  // we read; a concurrent write between the read and this UPDATE leaves
+  // 0 rows changed → 409 stale with the current state.
+  const updated = await db
     .update(articles)
     .set({
       annotations: rev.annotations,
@@ -972,34 +1066,49 @@ app.post("/api/article/:slug/revert/:revid", async (c) => {
       updatedAt: now,
       ...statusCounts(revAnnotations as AnnRecord[]),
     })
-    .where(eq(articles.slug, slug));
+    .where(and(eq(articles.slug, slug), eq(articles.version, row.version)));
+  if (updated.meta.changes === 0) {
+    const fresh = (await db.select().from(articles).where(eq(articles.slug, slug)).limit(1))[0];
+    return c.json(
+      {
+        error: "stale",
+        version: fresh ? fresh.version : row.version,
+        annotations: fresh ? JSON.parse(fresh.annotations) : [],
+      },
+      409,
+    );
+  }
   const prior = (
     await db.select({ id: revisions.id }).from(revisions).where(eq(revisions.slug, slug)).orderBy(desc(revisions.id)).limit(1)
   )[0];
-  const revIns = await db.insert(revisions).values({
-    slug,
-    userId: user.id,
-    annotations: rev.annotations,
-    comment: `revert to #${revid}`,
-    kind: "revert",
-    parentId: prior?.id ?? null,
-    createdAt: now,
-  });
-  // D-C3: one 'revert_restore' per annotation that CHANGED vs the pre-revert
-  // state (whatever the underlying change kind), field detail riding along.
-  // Snapshot entries without ids (pre-backfill history) are skipped by the
-  // differ — they can't key an event row.
-  await emitAnnotationEvents(
-    db,
-    eventRowsFromChanges(diffAnnotations(JSON.parse(row.annotations) as AnnRecord[], revAnnotations as AnnRecord[]), {
-      revisionId: revIns.meta.last_row_id,
+  // F9: revision + revert_restore events land atomically.
+  const revertBatch: WriteBatch = [
+    db.insert(revisions).values({
       slug,
-      actorType: "human",
       userId: user.id,
-      now,
-      eventTypeOverride: "revert_restore",
+      annotations: rev.annotations,
+      comment: `revert to #${revid}`,
+      kind: "revert",
+      parentId: prior?.id ?? null,
+      createdAt: now,
     }),
-  );
+    // D-C3: one 'revert_restore' per annotation that CHANGED vs the pre-revert
+    // state (whatever the underlying change kind), field detail riding along.
+    // Snapshot entries without ids (pre-backfill history) are skipped by the
+    // differ — they can't key an event row.
+    ...eventInsertStatements(
+      db,
+      eventRowsFromChanges(diffAnnotations(JSON.parse(row.annotations) as AnnRecord[], revAnnotations as AnnRecord[]), {
+        revisionId: newRevisionId(slug),
+        slug,
+        actorType: "human",
+        userId: user.id,
+        now,
+        eventTypeOverride: "revert_restore",
+      }),
+    ),
+  ];
+  await db.batch(revertBatch);
   console.log(
     JSON.stringify({
       event: "revert",
@@ -1194,6 +1303,18 @@ app.get("/api/flags", async (c) => {
 // human-edited-since-review > oldest-reviewed (NULL last_reviewed_at = never
 // reviewed sorts first within that tier). mode=wp-update narrows to articles
 // whose pinned revid trails upstream.
+//
+// F2: the flagged tier is RECENCY-AWARE — an article counts as flagged only
+// while it has an open flag created AFTER its last review, so a bot review
+// releases it from the tier even though the flag row stays open for human
+// patrol (no flagged-livelock). moderation_state.flag_count keeps counting
+// ALL open flags as the patrol-pressure metric; only the queue tier uses the
+// recency predicate.
+//
+// F4/F11: articles parked by the update flow (state 'moved'/'deleted'/
+// 'needs_human') are excluded from BOTH modes — they need a human (or the
+// drift cron observing the page back to normal) before re-entering, and
+// re-probing 'needs_human' rows would wedge stage-0 on the same articles.
 app.get("/api/work", async (c) => {
   const user = await requireRole(c, ["bot"]);
   if (!user) return c.json({ ok: false, error: "forbidden" }, 403);
@@ -1206,10 +1327,16 @@ app.get("/api/work", async (c) => {
 
   const db = drizzle(c.env.DB);
   const humanEdited = sql<number>`CASE WHEN ${moderationState.lastReviewedVersion} IS NOT NULL AND ${articles.version} > ${moderationState.lastReviewedVersion} THEN 1 ELSE 0 END`;
+  // F2: open flags newer than the last review (never reviewed → every open
+  // flag counts). COUNT (not EXISTS) so heavier-flagged articles still sort
+  // first within the tier.
+  const recentOpenFlags = sql<number>`(SELECT COUNT(*) FROM ${flags} WHERE ${flags.slug} = ${articles.slug} AND ${flags.status} = 'open' AND ${flags.createdAt} > COALESCE(${moderationState.lastReviewedAt}, 0))`;
+  // F4/F11: LEFT JOIN → no moderation row reads as state NULL (not parked).
+  const notParked = sql`(${moderationState.state} IS NULL OR ${moderationState.state} NOT IN ('moved','deleted','needs_human'))`;
   const where =
     mode === "wp-update"
-      ? sql`(COALESCE(${moderationState.wpDrifted}, 0) = 1 OR (${articles.latestRevid} IS NOT NULL AND ${articles.latestRevid} > ${articles.revid}))`
-      : undefined;
+      ? sql`${notParked} AND (COALESCE(${moderationState.wpDrifted}, 0) = 1 OR (${articles.latestRevid} IS NOT NULL AND ${articles.latestRevid} > ${articles.revid}))`
+      : notParked;
   const rows = await db
     .select({
       slug: articles.slug,
@@ -1218,16 +1345,21 @@ app.get("/api/work", async (c) => {
       latestRevid: articles.latestRevid,
       lastReviewedAt: moderationState.lastReviewedAt,
       lastReviewedVersion: moderationState.lastReviewedVersion,
-      flagCount: moderationState.flagCount,
+      recentOpenFlags: recentOpenFlags.as("recent_open_flags"),
       wpDrifted: moderationState.wpDrifted,
     })
     .from(articles)
     .leftJoin(moderationState, eq(moderationState.slug, articles.slug))
     .where(where)
     .orderBy(
-      sql`COALESCE(${moderationState.flagCount}, 0) DESC`,
+      sql`${recentOpenFlags} DESC`,
       sql`COALESCE(${moderationState.wpDrifted}, 0) DESC`,
       sql`${humanEdited} DESC`,
+      // NULLS FIRST is deliberate (F13) and diverges from the roadmap's
+      // original 'oldest-reviewed > new' wording: every article already has
+      // one pipeline annotation pass, so first-moderation coverage of
+      // never-reviewed articles beats re-reviewing old ones. (Roadmap text
+      // update is on the lead.)
       sql`${moderationState.lastReviewedAt} ASC NULLS FIRST`,
     )
     .limit(limit);
@@ -1237,7 +1369,7 @@ app.get("/api/work", async (c) => {
   // revid counts as drift even without the wp_drifted flag).
   const jobs = rows.map((r) => {
     let reason: string;
-    if ((r.flagCount ?? 0) > 0) reason = "flagged";
+    if ((r.recentOpenFlags ?? 0) > 0) reason = "flagged";
     else if (
       r.wpDrifted ||
       (mode === "wp-update" && r.latestRevid !== null && r.revid !== null && r.latestRevid > r.revid)

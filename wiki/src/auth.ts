@@ -126,11 +126,12 @@ function loginPageHtml(returnTo: string, providers: string[]): string {
     .join("");
   return `<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1"><title>WikiLean · Sign in</title>
-<style>body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#fafbfc;color:#1f2328;display:grid;place-items:center;min-height:100vh;margin:0}
-.box{background:#fff;border:1px solid #d0d7de;border-radius:12px;padding:32px;max-width:340px;text-align:center}
-h1{font-size:1.2rem;margin:0 0 6px}p{color:#57606a;font-size:.9rem;margin:0 0 18px}
-.prov{display:block;width:100%;margin:8px 0;padding:11px;border:1px solid #d0d7de;border-radius:8px;background:#0969da;color:#fff;font:inherit;font-weight:600;cursor:pointer}
-.prov:hover{filter:brightness(.95)}a{color:#0969da}</style></head>
+<style>body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f7f4ee;color:#1f1d1a;display:grid;place-items:center;min-height:100vh;margin:0}
+.box{background:#fffdf9;border:1px solid #d8d0bd;border-radius:12px;padding:32px;max-width:340px;text-align:center}
+h1{font-size:1.2rem;margin:0 0 6px}p{color:#5f594e;font-size:.9rem;margin:0 0 18px}
+.prov{display:block;width:100%;margin:8px 0;padding:11px;border:1px solid #1a4b8c;border-radius:8px;background:#1a4b8c;color:#fff;font:inherit;font-weight:600;cursor:pointer}
+.prov:hover{background:#163e74;border-color:#163e74}a{color:#1a4b8c}
+:focus-visible{outline:2px solid #1a4b8c;outline-offset:2px}</style></head>
 <body><div class="box"><h1>Sign in to edit WikiLean</h1>
 <p>Editing annotations requires an account. Reading is open to everyone.</p>
 ${buttons || "<p>No login providers are configured.</p>"}
@@ -188,8 +189,10 @@ export function registerAuthRoutes(app: Hono<{ Bindings: Env }>): void {
   app.get("/logout", (c) => {
     const ret = c.req.query("returnTo") || "/";
     if (c.env.AUTH_MODE === "oauth") {
+      // Styled to the warm palette so the flash page matches the site (W3 fix #6c).
       return c.html(
         `<!doctype html><meta charset="utf-8"><title>Signing out…</title>` +
+          `<style>body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f7f4ee;color:#5f594e;display:grid;place-items:center;min-height:100vh;margin:0}</style>` +
           `<script>fetch("/api/auth/sign-out",{method:"POST"}).then(function(){location.href=${JSON.stringify(ret)}}).catch(function(){location.href=${JSON.stringify(ret)}});</script>` +
           `Signing out…`,
       );

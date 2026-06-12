@@ -45,13 +45,24 @@ function annId(a: AnnRecord): string | number | undefined {
 }
 
 // Stable signature of an annotation's anchor, for matching across passes.
-// Mirrors site/batch_annotate.py _anchor_sig: a JSON array of [type, section,
-// snippet, value, from] with absent fields as null (annotations lacking an
-// anchor get the all-null signature). sort_keys is moot — entries are scalars.
+// LOCKSTEP with site/batch_annotate.py _anchor_sig — the two implementations
+// must agree exactly. A JSON array of [type, section, snippet, value, from]
+// with absent fields as null; the five fields come from (TESTAGENT#1):
+//   1. the singular `anchor` when it is a plain object (even an empty one —
+//      it does NOT fall through to anchors[]);
+//   2. else anchors[0] when `anchors` is a non-empty array whose first
+//      element is a plain object (v3 multi-anchor annotations);
+//   3. else the all-null signature.
+// Non-object `anchor` values (string/number/array) must never crash — they
+// fall through to the anchors[]-then-all-null path.
+// sort_keys is moot — entries are scalars.
 export function anchorSig(a: AnnRecord): string {
-  const anc = (typeof a.anchor === "object" && a.anchor !== null && !Array.isArray(a.anchor)
-    ? a.anchor
-    : {}) as AnnRecord;
+  let anc: AnnRecord = {};
+  if (isPlainObject(a.anchor)) {
+    anc = a.anchor;
+  } else if (Array.isArray(a.anchors) && a.anchors.length > 0 && isPlainObject(a.anchors[0])) {
+    anc = a.anchors[0];
+  }
   return JSON.stringify([
     anc.type ?? null,
     anc.section ?? null,
@@ -220,11 +231,13 @@ export function serializeFieldChanges(fields: AnnotationFieldChange[]): string |
 
 // Provenance stamping for SESSION (human) saves: new or changed annotations
 // get provenance='human' forced server-side; unchanged annotations keep their
-// STORED provenance. "Changed" is judged with provenance excluded, so a bare
-// provenance flip cannot launder 'ai' work into 'human' (or vice versa).
+// STORED provenance. "Changed" is judged with provenance AND id excluded
+// (F8): id identity is findMatch's job, so a client that merely drops the id
+// field cannot launder an unchanged 'ai' annotation into 'human' (and a bare
+// provenance flip cannot launder in either direction).
 // Bot writes never come through here — their provenance passes verbatim.
 export function stampProvenance(stored: AnnRecord[], posted: AnnRecord[]): AnnRecord[] {
-  const strip = ({ provenance: _p, ...rest }: AnnRecord): AnnRecord => rest;
+  const strip = ({ provenance: _p, id: _id, ...rest }: AnnRecord): AnnRecord => rest;
   return posted.map((p) => {
     const match = findMatch(p, stored);
     if (match && deepEqual(strip(p), strip(match))) {

@@ -7,6 +7,8 @@
 //   unchanged                → articles.last_upstream_check only
 //   page missing             → moderation_state.state='deleted'
 //   page is now a redirect   → moderation_state.state='moved'
+//   back to a normal page    → a previous 'moved'/'deleted' state clears to
+//       NULL (F4); 'needs_human' is never cleared by the cron
 //
 // CACHE INVARIANT: this module writes latest_revid / last_upstream_check and
 // moderation_state ONLY — it must NEVER touch articles.version (or revid /
@@ -16,7 +18,7 @@
 // must not bust the render cache.
 
 import { drizzle } from "drizzle-orm/d1";
-import { eq, inArray } from "drizzle-orm";
+import { and, eq, inArray, sql } from "drizzle-orm";
 import type { BatchItem } from "drizzle-orm/batch";
 import { articles, moderationState } from "./db/schema.js";
 import { UA } from "./wikipedia.js";
@@ -194,6 +196,12 @@ export async function scheduled(
   const pinnedBySlug = new Map(rows.map((r) => [r.slug, r.revid] as const));
   const stmts: BatchItem<"sqlite">[] = [];
   const unchangedSlugs: string[] = [];
+  // F4: slugs that answered as a NORMAL page this sweep (drifted handled in
+  // its own upsert below). A previously 'moved'/'deleted' article that is
+  // back to normal re-enters the work flow — its parked state clears to NULL.
+  // 'needs_human' is NEVER cleared here: that's stage-0's anchor-regression
+  // marker, released only by a future human/patrol path.
+  const backToNormalSlugs: string[] = [];
   let drifted = 0;
   let moved = 0;
   let deleted = 0;
@@ -211,7 +219,13 @@ export async function scheduled(
           .values({ slug: r.slug, wpDrifted: true, updatedAt: now })
           .onConflictDoUpdate({
             target: moderationState.slug,
-            set: { wpDrifted: true, updatedAt: now },
+            set: {
+              wpDrifted: true,
+              updatedAt: now,
+              // F4: a drifted page is a live page — clear a stale
+              // 'moved'/'deleted' parking (never 'needs_human').
+              state: sql`CASE WHEN ${moderationState.state} IN ('moved','deleted') THEN NULL ELSE ${moderationState.state} END`,
+            },
           }),
       );
     } else if (r.outcome === "missing" || r.outcome === "moved") {
@@ -234,8 +248,10 @@ export async function scheduled(
           .set({ latestRevid: r.lastrevid, lastUpstreamCheck: now })
           .where(eq(articles.slug, r.slug)),
       );
+      backToNormalSlugs.push(r.slug);
     } else {
       unchangedSlugs.push(r.slug);
+      backToNormalSlugs.push(r.slug);
     }
   }
   // Unchanged rows share one timestamp → group into IN-list updates (D1 caps
@@ -246,6 +262,22 @@ export async function scheduled(
         .update(articles)
         .set({ lastUpstreamCheck: now })
         .where(inArray(articles.slug, unchangedSlugs.slice(i, i + TITLES_PER_BATCH))),
+    );
+  }
+  // F4: un-park previously moved/deleted articles that answer normally again
+  // (grouped like the timestamp updates). 'needs_human' is deliberately NOT
+  // in the IN-list — see the comment above.
+  for (let i = 0; i < backToNormalSlugs.length; i += TITLES_PER_BATCH) {
+    stmts.push(
+      db
+        .update(moderationState)
+        .set({ state: null, updatedAt: now })
+        .where(
+          and(
+            inArray(moderationState.slug, backToNormalSlugs.slice(i, i + TITLES_PER_BATCH)),
+            inArray(moderationState.state, ["moved", "deleted"]),
+          ),
+        ),
     );
   }
   // db.batch sends each chunk as ONE request to D1, keeping the cron far
