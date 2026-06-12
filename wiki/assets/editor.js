@@ -95,9 +95,10 @@
     <small class="wlr-help">Short display name shown at the top of the tooltip.</small>
     <input id="wlr-f-label" placeholder="e.g. Abelianization of a group">
     <label for="wlr-f-decl">Mathlib decl</label>
-    <small class="wlr-help">Type 2+ chars for autocomplete (~4,600 known decls). Picking a suggestion auto-fills the module.</small>
+    <small class="wlr-help">Type 2+ chars for autocomplete (full Mathlib index; decls already used on WikiLean rank first). Picking a suggestion auto-fills the module.</small>
     <input id="wlr-f-decl" placeholder="e.g. Ideal.IsPrime" list="wlr-decl-options" autocomplete="off">
     <datalist id="wlr-decl-options"></datalist>
+    <div id="wlr-decl-check" aria-live="polite" style="font-size:12px;min-height:15px;margin:2px 0 4px"></div>
     <label for="wlr-f-module">Mathlib module</label>
     <small class="wlr-help">Dotted path, auto-filled from the decl autocomplete.</small>
     <input id="wlr-f-module" placeholder="e.g. Mathlib.RingTheory.Ideal.Prime">
@@ -171,7 +172,7 @@
       '<span style="color:#7d5a10">partial</span> for a related/weaker form, ' +
       '<span style="color:#9c2f28">not_formalized</span> otherwise.</li>' +
       "<li><b>Mathlib decl</b> — declaration name, e.g. <code>Ideal.IsPrime</code>. " +
-      "Type 2+ chars to autocomplete from ~4,600 known decls; picking one fills the module field.</li>" +
+      "Type 2+ chars to autocomplete from the full Mathlib index; picking one fills the module field.</li>" +
       "<li><b>match_kind</b> — how the decl relates: <code>exact</code> · <code>generalization</code> · " +
       "<code>special_case</code> · <code>invocation</code>.</li>" +
       "</ul>" +
@@ -195,10 +196,16 @@
   }
 
   // ---- Mathlib decl autocomplete --------------------------------------------
-  // The index (~315 KB JSON: 4,600 decls extracted from existing formalized
-  // annotations) is fetched once on demand and cached in memory. The decl
-  // input is wired to a native <datalist>; picking a suggestion auto-fills the
-  // module field if it's empty.
+  // Two tiers feed the decl <datalist>:
+  //   1. Curated boost tier (/assets/mathlib-index.json, ~4,600 decls already
+  //      used in WikiLean annotations) — fetched once, ranked first.
+  //   2. Full Mathlib index (/assets/decl-index/, ~411k decls from doc-gen4's
+  //      declaration-data) — prefix-sharded; the manifest maps a typed prefix
+  //      to shard files, fetched on demand and cached in memory per page. It
+  //      also powers the on-blur existence check (subtle ✓ / "not found"
+  //      hint — purely informational, saving is NEVER blocked).
+  // Every full-index failure (manifest 404, shard fetch error) degrades
+  // silently to curated-only behavior.
   let mathlibIndex = null;
   let mathlibIndexLoading = null;
   function ensureMathlibIndex() {
@@ -216,39 +223,203 @@
       });
     return mathlibIndexLoading;
   }
-  // Prefetch eagerly so the first keystroke is instant.
-  ensureMathlibIndex();
 
+  // Full-index manifest: undefined = not requested yet, null = unavailable
+  // (degrade silently), object = loaded. Shard promises resolve to the
+  // [decl, module] array or null on any failure (cached either way — no
+  // retry storms while someone types).
+  let declManifest;
+  let declManifestLoading = null;
+  const declShards = {};
+  function ensureDeclManifest() {
+    if (declManifest !== undefined) return Promise.resolve(declManifest);
+    if (declManifestLoading) return declManifestLoading;
+    declManifestLoading = fetch("/assets/decl-index/manifest.json")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((m) => {
+        declManifest = m && m.shards && m.scheme ? m : null;
+        return declManifest;
+      })
+      .catch(() => {
+        declManifest = null;
+        return null;
+      });
+    return declManifestLoading;
+  }
+  // Shard-key normalization — must mirror scripts/build-decl-index.ts exactly:
+  // lowercase [a-z0-9], everything else "_", pad short names with "_".
+  function declShardKey(name, len) {
+    let k = "";
+    for (let i = 0; i < len; i++) {
+      if (i < name.length) {
+        const l = name[i].toLowerCase();
+        k += /[a-z0-9]/.test(l) ? l : "_";
+      } else {
+        k += "_";
+      }
+    }
+    return k;
+  }
+  // The unique shard holding a full decl name (leaf keys are prefix-free):
+  // the longest manifest key that prefixes the padded normalized name.
+  function declShardFor(m, name) {
+    const maxLen = (m.scheme && m.scheme.max_len) || 2;
+    for (let len = Math.min(maxLen, Math.max(name.length, 2)); len >= 2; len--) {
+      const k = declShardKey(name, len);
+      if (m.shards[k] !== undefined) return k;
+    }
+    // Names shorter than every key under them pad upward, so retry padded
+    // lengths too (e.g. name "Na" when the leaf is "na_").
+    for (let len = Math.max(name.length, 2) + 1; len <= maxLen; len++) {
+      const k = declShardKey(name, len);
+      if (m.shards[k] !== undefined) return k;
+    }
+    return null;
+  }
+  // Shards worth consulting for a typed prefix: either the one leaf that
+  // contains the whole range, or — when the prefix sits above a split — its
+  // children, capped at 4 fetches (past that the full-index tier sits out
+  // for this keystroke; another character narrows it).
+  function declShardsForQuery(m, q) {
+    const qn = declShardKey(q, Math.max(q.length, 2));
+    const children = [];
+    for (const k in m.shards) {
+      if (qn.startsWith(k)) return [k];
+      if (k.startsWith(qn)) {
+        children.push(k);
+        if (children.length > 4) return [];
+      }
+    }
+    return children;
+  }
+  function fetchDeclShard(key) {
+    if (!(key in declShards)) {
+      declShards[key] = fetch("/assets/decl-index/" + key + ".json")
+        .then((r) => (r.ok ? r.json() : null))
+        .then((a) => (Array.isArray(a) ? a : null))
+        .catch(() => null);
+    }
+    return declShards[key];
+  }
+  // Full-index candidates for a query: prefix matches first, then contains
+  // matches within the fetched shards. {starts:[], contains:[]} on any failure.
+  async function fullIndexMatches(rawQuery) {
+    const none = { starts: [], contains: [] };
+    const m = await ensureDeclManifest();
+    if (!m) return none;
+    const keys = declShardsForQuery(m, rawQuery);
+    if (!keys.length) return none;
+    const shards = await Promise.all(keys.map(fetchDeclShard));
+    const q = rawQuery.toLowerCase();
+    const starts = [];
+    const contains = [];
+    for (const arr of shards) {
+      if (!arr) continue;
+      for (const row of arr) {
+        const dl = row[0].toLowerCase();
+        if (dl.startsWith(q)) starts.push(row);
+        else if (dl.includes(q)) contains.push(row);
+      }
+    }
+    // Shards arrive per-child; re-sort so suggestions are stable.
+    starts.sort((a, b) => (a[0] < b[0] ? -1 : 1));
+    contains.sort((a, b) => (a[0] < b[0] ? -1 : 1));
+    return { starts, contains };
+  }
+  // Exact full-index lookup: [decl, module] on a hit, null = definitively
+  // absent, undefined = couldn't check (index unavailable — stay silent).
+  async function lookupDecl(name) {
+    const m = await ensureDeclManifest();
+    if (!m) return undefined;
+    const key = declShardFor(m, name);
+    if (key === null) return null;
+    const arr = await fetchDeclShard(key);
+    if (!arr) return undefined;
+    for (const row of arr) if (row[0] === name) return row;
+    return null;
+  }
+  // Prefetch both tiers' entry points so the first keystroke is instant.
+  ensureMathlibIndex();
+  ensureDeclManifest();
+
+  function setDeclCheck(msg, ok) {
+    const el = $("wlr-decl-check");
+    el.textContent = msg;
+    el.style.color = ok ? "#2f7d4f" : "#7d5a10";
+  }
+
+  let declQuerySeq = 0;
   $("wlr-f-decl").addEventListener("input", async () => {
-    const q = $("wlr-f-decl").value.trim().toLowerCase();
+    setDeclCheck("", true); // typing invalidates the last on-blur verdict
+    const raw = $("wlr-f-decl").value.trim();
+    const q = raw.toLowerCase();
     const list = $("wlr-decl-options");
     if (q.length < 2) {
       list.innerHTML = "";
       return;
     }
-    const idx = await ensureMathlibIndex();
-    const starts = [];
-    const contains = [];
-    for (let i = 0; i < idx.length; i++) {
-      const dl = idx[i][0].toLowerCase();
-      if (dl.startsWith(q)) starts.push(idx[i]);
-      else if (dl.includes(q)) contains.push(idx[i]);
-      if (starts.length >= 30) break;
+    const seq = ++declQuerySeq;
+    const results = await Promise.all([ensureMathlibIndex(), fullIndexMatches(raw)]);
+    if (seq !== declQuerySeq) return; // superseded by a newer keystroke
+    const curated = results[0];
+    const full = results[1];
+    const cStarts = [];
+    const cContains = [];
+    for (let i = 0; i < curated.length; i++) {
+      const dl = curated[i][0].toLowerCase();
+      if (dl.startsWith(q)) cStarts.push(curated[i]);
+      else if (dl.includes(q)) cContains.push(curated[i]);
     }
-    const matches = starts.concat(contains).slice(0, 30);
-    list.innerHTML = matches
+    // Merge: curated tier first ("previously used in WikiLean"), then
+    // full-index prefix matches, then contains matches; dedupe; cap 30.
+    const seen = new Set();
+    const out = [];
+    const take = (rows) => {
+      for (const row of rows) {
+        if (out.length >= 30) return;
+        if (seen.has(row[0])) continue;
+        seen.add(row[0]);
+        out.push(row);
+      }
+    };
+    take(cStarts);
+    take(cContains);
+    take(full.starts);
+    take(full.contains);
+    list.innerHTML = out
       .map(([d, m]) => '<option value="' + escapeHtml(d) + '">' + escapeHtml(m) + "</option>")
       .join("");
   });
   // When a suggestion is picked from the datalist, fill the module field if
-  // the user hasn't typed one already.
-  $("wlr-f-decl").addEventListener("change", () => {
+  // the user hasn't typed one already — curated tier first, then full index.
+  $("wlr-f-decl").addEventListener("change", async () => {
     const v = $("wlr-f-decl").value.trim();
-    if (!v || !mathlibIndex) return;
+    if (!v) return;
     const moduleInput = $("wlr-f-module");
     if (moduleInput.value.trim()) return;
-    const match = mathlibIndex.find((row) => row[0] === v);
-    if (match) moduleInput.value = match[1];
+    let match = (mathlibIndex || []).find((row) => row[0] === v) || null;
+    if (!match) match = (await lookupDecl(v)) || null;
+    if (match && !moduleInput.value.trim()) moduleInput.value = match[1];
+  });
+  // On-blur existence check against the full index. Informational only:
+  // a miss NEVER blocks saving (partial/informal references are legitimate),
+  // and an unavailable index says nothing at all.
+  $("wlr-f-decl").addEventListener("blur", async () => {
+    const v = $("wlr-f-decl").value.trim();
+    if (!v) {
+      setDeclCheck("", true);
+      return;
+    }
+    const hit = await lookupDecl(v);
+    if ($("wlr-f-decl").value.trim() !== v) return; // field changed meanwhile
+    if (hit === undefined) return; // index unavailable — silent
+    if (hit) {
+      setDeclCheck("✓ found in Mathlib", true);
+      const moduleInput = $("wlr-f-module");
+      if (!moduleInput.value.trim()) moduleInput.value = hit[1];
+    } else {
+      setDeclCheck("not found in Mathlib — check spelling (informal or partial references are still fine to save)", false);
+    }
   });
 
   // ---- multi-annotation picker (when several annotations share one wrap) ----
@@ -467,6 +638,7 @@
     $("wlr-f-module").value = m.module || a.module || "";
     $("wlr-f-match").value = m.match_kind || a.match_kind || "";
     $("wlr-f-note").value = a.note || "";
+    setDeclCheck("", true);
     $("wlr-del").style.display = "";
     // Show the one-click endorsement only when there's something to flip.
     $("wlr-mark-reviewed").style.display = a.provenance !== "human" ? "" : "none";
@@ -494,6 +666,7 @@
     $("wlr-f-status").value = "not_formalized";
     ["kind", "label", "decl", "module", "match"].forEach((f) => ($("wlr-f-" + f).value = ""));
     $("wlr-f-note").value = "";
+    setDeclCheck("", true);
     $("wlr-del").style.display = "none";
     // New annotations become human-curated on save, so nothing to mark separately.
     $("wlr-mark-reviewed").style.display = "none";
