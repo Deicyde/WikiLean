@@ -1,8 +1,11 @@
-/* WikiLean review-mode editor overlay */
+/* WikiLean review-mode editor overlay — warm academic-minimalist palette
+   (paper #f7f4ee / surface #fffdf9 / ink #1f1d1a / muted #5f594e / accent
+   #1a4b8c / hairlines #e6e0d2,#d8d0bd / status #2f7d4f,#b08020,#b3372f with
+   text inks #266844,#7d5a10,#9c2f28), matching style.css (fix #6d). */
 
 #wlr-bar {
   position: fixed; top: 0; left: 0; right: 0; height: 36px;
-  background: #0969da; color: #fff; z-index: 5000;
+  background: #1a4b8c; color: #fff; z-index: 5000;
   display: flex; align-items: center; gap: 12px; padding: 0 14px;
   font: 13px -apple-system, sans-serif;
 }
@@ -12,16 +15,27 @@
   background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.4);
   border-radius: 4px; padding: 3px 10px; cursor: pointer; font: inherit;
 }
-#wlr-bar button.armed { background: #fff; color: #0969da; }
+#wlr-bar button.armed { background: #fff; color: #1a4b8c; }
 body { margin-top: 36px !important; }
+
+/* Accent focus rings on all editor chrome (fix #6d). */
+#wlr-bar :focus-visible,
+#wlr-panel :focus-visible,
+#wlr-fab:focus-visible,
+#wlr-intro :focus-visible { outline: 2px solid #1a4b8c; outline-offset: 1px; }
+#wlr-bar :focus-visible { outline-color: #fff; } /* accent-on-accent is invisible */
+
+/* The article header is sticky (style.css, top:0) and slid under the fixed
+   36px edit bar — offset it on desktop, where the bar height is fixed (fix #5). */
+.wl-header { top: 36px; }
 
 /* clicking a highlight shows it's interactive */
 .anno { cursor: pointer !important; }
-.anno.wlr-selected { outline: 2px solid #0969da; outline-offset: 1px; }
+.anno.wlr-selected { outline: 2px solid #1a4b8c; outline-offset: 1px; }
 
 #wlr-panel {
   position: fixed; top: 48px; right: 16px; width: 340px; z-index: 5001;
-  background: #fff; border: 1px solid #d0d7de; border-radius: 8px;
+  background: #fffdf9; border: 1px solid #d8d0bd; border-radius: 8px;
   box-shadow: 0 8px 28px rgba(0,0,0,0.18); padding: 14px; display: none;
   font: 13px -apple-system, sans-serif; max-height: 84vh; overflow: auto;
 }
@@ -29,38 +43,40 @@ body { margin-top: 36px !important; }
 #wlr-panel h3 { margin: 0 0 8px; font-size: 14px; padding-right: 24px; }
 #wlr-close {
   position: absolute; top: 8px; right: 8px; width: 26px; height: 26px;
-  border: none; background: transparent; color: #57606a; font-size: 20px;
+  border: none; background: transparent; color: #5f594e; font-size: 20px;
   line-height: 1; cursor: pointer; border-radius: 6px; padding: 0;
 }
-#wlr-close:hover { background: #f0f1f3; color: #1f2328; }
-#wlr-panel label { display: block; margin: 8px 0 2px; font-weight: 600; color: #444; }
+#wlr-close:hover { background: #f7f4ee; color: #1f1d1a; }
+#wlr-panel label { display: block; margin: 8px 0 2px; font-weight: 600; color: #1f1d1a; }
 #wlr-panel input, #wlr-panel select, #wlr-panel textarea {
   width: 100%; box-sizing: border-box; padding: 5px 7px; font: inherit;
-  border: 1px solid #ccc; border-radius: 4px;
+  border: 1px solid #d8d0bd; border-radius: 4px; background: #fff; color: #1f1d1a;
 }
 #wlr-panel textarea { min-height: 64px; resize: vertical; }
 #wlr-panel .wlr-quote {
-  background: #f6f8fa; border-left: 3px solid #0969da; padding: 6px 8px;
-  margin: 4px 0 8px; font-size: 12px; color: #444; max-height: 80px; overflow: auto;
+  background: #f7f4ee; border-left: 3px solid #1a4b8c; padding: 6px 8px;
+  margin: 4px 0 8px; font-size: 12px; color: #5f594e; max-height: 80px; overflow: auto;
 }
 #wlr-panel .wlr-actions { display: flex; gap: 8px; margin-top: 12px; }
-#wlr-panel .wlr-actions button { flex: 1; padding: 7px; border-radius: 5px; cursor: pointer; font: inherit; border: 1px solid #ccc; }
-#wlr-save { background: #1f883d; color: #fff; border-color: #1f883d !important; font-weight: 600; }
-#wlr-del  { background: #fff; color: #cf222e; border-color: #cf222e !important; }
-#wlr-mark-reviewed { background: #fff; color: #0969da; border-color: #0969da !important; font-size: 12px; }
-#wlr-status-msg { margin-top: 8px; font-size: 12px; color: #57606a; min-height: 16px; }
+#wlr-panel .wlr-actions button { flex: 1; padding: 7px; border-radius: 5px; cursor: pointer; font: inherit; border: 1px solid #d8d0bd; }
+#wlr-panel .wlr-actions button:disabled { opacity: 0.55; cursor: default; }
+#wlr-save { background: #266844; color: #fff; border-color: #266844 !important; font-weight: 600; }
+#wlr-del  { background: #fffdf9; color: #9c2f28; border-color: #9c2f28 !important; }
+#wlr-mark-reviewed { background: #fffdf9; color: #1a4b8c; border-color: #1a4b8c !important; font-size: 12px; }
+#wlr-status-msg { margin-top: 8px; font-size: 12px; color: #5f594e; min-height: 16px; }
+#wlr-status-msg a { color: #1a4b8c; }
 
 /* Unobtrusive data-collection / attribution notice in the panel footer. */
 #wlr-panel .wlr-notice {
-  margin: 8px 0 0; padding-top: 8px; border-top: 1px solid #eaeef2;
-  font-size: 11px; line-height: 1.4; color: #8c959f;
+  margin: 8px 0 0; padding-top: 8px; border-top: 1px solid #e6e0d2;
+  font-size: 11px; line-height: 1.4; color: #5f594e;
 }
 
 /* Per-field help line shown under each label. Short, conventions + examples. */
 #wlr-panel .wlr-help {
   display: block;
   font-size: 11px;
-  color: #57606a;
+  color: #5f594e;
   margin: -2px 0 4px;
   line-height: 1.4;
   font-weight: 400;
@@ -69,40 +85,52 @@ body { margin-top: 36px !important; }
 /* First-edit onboarding card. Shown once per browser (localStorage flag). */
 #wlr-intro {
   position: fixed; inset: 0; z-index: 7000;
-  background: rgba(20,25,35,0.65);
+  background: rgba(31,29,26,0.65);
   display: flex; align-items: center; justify-content: center;
   padding: 16px;
   font: 14px -apple-system, sans-serif;
 }
 #wlr-intro .card {
-  background: #fff; border-radius: 12px; padding: 22px 26px;
+  background: #fffdf9; border-radius: 12px; padding: 22px 26px;
   max-width: 480px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); line-height: 1.5;
 }
 #wlr-intro h2 { margin: 0 0 12px; font-size: 18px; }
 #wlr-intro p { margin: 0 0 10px; }
 #wlr-intro ul { padding-left: 1.2em; margin: 8px 0 12px; }
 #wlr-intro li { margin: 6px 0; }
-#wlr-intro code { background: #f6f8fa; padding: 1px 5px; border-radius: 3px; font-size: 0.92em; }
+#wlr-intro code { background: #f7f4ee; padding: 1px 5px; border-radius: 3px; font-size: 0.92em; }
 #wlr-intro .footer {
-  color: #57606a; font-size: 13px; margin-top: 12px;
-  padding-top: 12px; border-top: 1px solid #eaeef2;
+  color: #5f594e; font-size: 13px; margin-top: 12px;
+  padding-top: 12px; border-top: 1px solid #e6e0d2;
 }
 #wlr-intro .actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
 #wlr-intro button {
-  background: #0969da; color: #fff; border: none; border-radius: 6px;
+  background: #1a4b8c; color: #fff; border: none; border-radius: 6px;
   padding: 8px 18px; font: inherit; cursor: pointer; font-weight: 500;
 }
-#wlr-intro button:hover { background: #054ea6; }
+#wlr-intro button:hover { background: #163e74; }
 
 /* ---- Mobile: turn the side panel into a bottom sheet and let the top bar
    wrap so the editor is usable on a phone. */
 @media (max-width: 640px) {
+  /* Sticky (not fixed) bar: editor.js prepends #wlr-bar as <body>'s first
+     child, so in-flow sticky positioning lets the bar's wrapped auto height
+     push the page down naturally — no hardcoded body margin to drift out of
+     sync with however many rows the bar wraps to (fix #5; chosen over
+     measure-and-offset, which needs JS + resize listeners to stay correct). */
   #wlr-bar {
+    position: sticky; top: 0;
     flex-wrap: wrap; height: auto; padding: 6px 12px; gap: 8px;
   }
+  body { margin-top: 0 !important; }
+  /* Stacking a second variable-height sticky bar under the first would need
+     measured offsets; in mobile edit mode the article header just scrolls. */
+  .wl-header { position: static; }
   #wlr-panel {
     left: 0; right: 0; bottom: 0; top: auto; width: auto;
     max-height: 70vh; border-radius: 12px 12px 0 0;
   }
+  /* iOS zooms the whole page when a focused input's font-size is < 16px (fix #11e). */
+  #wlr-panel input, #wlr-panel select, #wlr-panel textarea { font-size: 16px; }
   #wlr-close { top: 10px; right: 10px; width: 32px; height: 32px; font-size: 22px; }
 }
