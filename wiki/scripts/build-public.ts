@@ -25,7 +25,11 @@ for (const f of fromWiki) {
   if (existsSync(src)) copyFileSync(src, resolve(pubAssets, f));
 }
 
-const shellFiles = ["index.html", "concepts.html", "about.html", "404.html", "sitemap.xml", "robots.txt", "wikilean.ttl"];
+// index.html + sitemap.xml are served dynamically from D1 as of Wave D
+// (src/home.ts via GET / and GET /sitemap.xml) — copying them here would let
+// the asset layer shadow the Worker routes; the lead deletes the stale
+// copies already in wiki/public/.
+const shellFiles = ["concepts.html", "about.html", "404.html", "robots.txt", "wikilean.ttl"];
 for (const f of shellFiles) {
   const src = resolve(site, "out", f);
   if (existsSync(src)) copyFileSync(src, resolve(pub, f));
