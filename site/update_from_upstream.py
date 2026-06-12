@@ -28,8 +28,10 @@ Usage:
     python update_from_upstream.py --slug X --force-revid 123456789 --dry-run
 
 Auth: bearer token from $WIKILEAN_API_TOKEN, falling back to the
-PIPELINE_TOKEN line in wiki/.dev.vars. (--slug + --dry-run needs no token:
-the article read path is public.)
+PIPELINE_TOKEN line in wiki/.dev.vars. The token now rides EVERY article GET
+too (F15): the Worker filters tombstones from anonymous responses, and this
+script must echo them back verbatim — so even --slug + --dry-run needs the
+token.
 
 Report file (one JSON line per needs-work slug, append-only):
     {"ts", "run_id", "slug", "old_revid", "new_revid", "matched", "total",
@@ -115,9 +117,15 @@ def get_work(s: requests.Session, base: str, token: str, limit: int) -> list[dic
     return r.json().get("jobs", [])
 
 
-def get_article(s: requests.Session, base: str, slug: str) -> dict | None:
+def get_article(s: requests.Session, base: str, slug: str,
+                token: str | None = None) -> dict | None:
+    # F15: the bearer header rides every runner GET — the Worker filters
+    # tombstones (status='rejected') from anonymous responses, and a stage-0
+    # echo that misses a tombstone would 422 (or worse, silently drop a veto).
+    headers = {"Authorization": f"Bearer {token}"} if token else {}
     r = s.get(
         f"{base}/api/article/{urllib.parse.quote(slug, safe='')}.json",
+        headers=headers,
         timeout=30,
     )
     if r.status_code == 404:
@@ -184,7 +192,7 @@ def process_slug(s: requests.Session, base: str, slug: str, args,
     rec: dict = {"slug": slug, "outcome": "?", "matched": None, "total": None,
                  "old_revid": None, "new_revid": None}
 
-    art = get_article(s, base, slug)
+    art = get_article(s, base, slug, token_getter())
     if art is None:
         rec["outcome"] = "unknown-slug"
         return rec
@@ -320,7 +328,8 @@ def main() -> int:
     print(f"run_id={run_id}  mode=wp-update stage=0  api={base}"
           f"{'  [DRY RUN]' if args.dry_run else ''}")
 
-    # Token is loaded lazily: --slug + --dry-run works with zero credentials.
+    # Token is loaded lazily, but every path needs it now: article GETs are
+    # bearer-authenticated (F15) so the runner keeps seeing tombstones.
     _token: list[str] = []
 
     def token_getter() -> str:

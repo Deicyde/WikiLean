@@ -106,9 +106,10 @@ For EACH statement:
 
 OUTPUT — your final reply must be ONLY one JSON object, no prose. Echo back
 every input annotation in the SAME ORDER, preserving kind/label/anchor AND
-`provenance` exactly (if an input annotation has provenance "human" or
-"ai-moderated", echo that string back unchanged — do NOT downgrade it to "ai"),
-adding status/mathlib/note:
+`id` AND `provenance` exactly (echo an input annotation's `id` string back
+unchanged and never invent one; if an input annotation has provenance "human"
+or "ai-moderated", echo that string back unchanged — do NOT downgrade it to
+"ai"), adding status/mathlib/note:
 {"annotations": [
   {"kind": "...", "label": "...", "anchor": {...},
    "status": "formalized"|"partial"|"not_formalized",
@@ -167,15 +168,29 @@ def parse_json_object(text: str) -> dict | None:
     return None
 
 
-def fetch_html(slug: str, title: str) -> bool:
-    """Fetch + cache the article HTML. Returns True on success."""
-    path = CACHE / f"{slug}.html"
+def fetch_html(slug: str, title: str, target_revid: int | None = None) -> bool:
+    """Fetch + cache the article HTML. Returns True on success.
+
+    With `target_revid` (fix F1), fetches THAT exact revision via
+    action=parse&oldid= into the revid-suffixed cache —
+    cache/<slug>.<revid>.html + .meta.json, render.py's pinned-cache
+    convention — and NEVER trusts the un-suffixed legacy cache, which can be
+    any age while D1 pins a specific revision."""
+    suffix = f".{target_revid}" if target_revid is not None else ""
+    path = CACHE / f"{slug}{suffix}.html"
     if path.exists() and path.stat().st_size > 0:
         return True
-    params = {
-        "action": "parse", "page": title, "prop": "text|revid",
-        "format": "json", "formatversion": "2", "redirects": "1",
-    }
+    if target_revid is None:
+        params = {
+            "action": "parse", "page": title, "prop": "text|revid",
+            "format": "json", "formatversion": "2", "redirects": "1",
+        }
+    else:
+        # oldid= addresses a single immutable revision; page/redirects don't apply.
+        params = {
+            "action": "parse", "oldid": str(target_revid), "prop": "text|revid",
+            "format": "json", "formatversion": "2",
+        }
     try:
         r = requests.get(WIKI_API, params=params,
                          headers={"User-Agent": WIKI_UA}, timeout=60)
@@ -190,9 +205,9 @@ def fetch_html(slug: str, title: str) -> bool:
             meta = {
                 "slug": slug, "wikipedia_title": title, "revid": revid,
                 "fetched_at": _dt.datetime.now(_dt.timezone.utc).isoformat(timespec="seconds"),
-                "pinned_via": "fetch",
+                "pinned_via": "fetch" if target_revid is None else "oldid",
             }
-            (CACHE / f"{slug}.meta.json").write_text(
+            (CACHE / f"{slug}{suffix}.meta.json").write_text(
                 json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
         return True
     except Exception:
@@ -279,8 +294,20 @@ OUTPUT — ONLY one JSON object, carrying each annotation's provenance:
 
 
 def _anchor_sig(a: dict) -> str:
-    """Stable signature of an annotation's anchor, for matching across passes."""
-    anc = a.get("anchor") or {}
+    """Stable signature of an annotation's anchor, for matching across passes.
+
+    LOCKSTEP CONTRACT (F12 — identical in moderate._anchor_sig and
+    wiki/src/validation.ts anchorSig): a plain-dict `anchor` is used as before;
+    a non-dict `anchor` (string/list/number — must not crash) falls through to
+    `anchors[0]` when `anchors` is a non-empty list whose first element is a
+    plain dict; otherwise the all-null signature."""
+    anc = a.get("anchor")
+    if not isinstance(anc, dict):
+        anchors = a.get("anchors")
+        if isinstance(anchors, list) and anchors and isinstance(anchors[0], dict):
+            anc = anchors[0]
+        else:
+            anc = {}
     return json.dumps([anc.get("type"), anc.get("section"), anc.get("snippet"),
                        anc.get("value"), anc.get("from")], sort_keys=True)
 
@@ -291,20 +318,37 @@ def _preserve_human(existing: list[dict], produced: list[dict],
     pass: any human annotation the agent altered is restored to its original
     form, and any it dropped is re-inserted. The agent's smart work stands for
     everything else. Returns (annotations, ladder stats) — `restored` counts
-    only annotations the agent actually altered; `reinserted` counts drops."""
-    stats = {"restored": 0, "reinserted": 0}
+    only annotations the agent actually altered; `reinserted` counts drops.
+
+    Matching is by id FIRST when both sides carry string ids, anchor-sig
+    fallback (fix F7: an agent that re-anchors a human annotation gets its
+    altered copy REPLACED in place, not duplicated by an append). Any
+    `moderation_flag` string the agent attached to its copy is harvested into
+    stats['flags'] as [id, flag] pairs before the restore strips it (fix F14:
+    the agent's dissent survives even though its edit doesn't)."""
+    stats: dict = {"restored": 0, "reinserted": 0, "flags": []}
     human = [a for a in existing if a.get("provenance") == "human"]
     if not human:
         return produced, stats
+    by_id = {a["id"]: i for i, a in enumerate(produced)
+             if isinstance(a.get("id"), str) and a["id"]}
     by_sig = {_anchor_sig(a): i for i, a in enumerate(produced)}
     out = list(produced)
+    consumed: set[int] = set()
     for h in human:
-        sig = _anchor_sig(h)
-        if sig in by_sig:
+        hid = h.get("id")
+        idx = by_id.get(hid) if isinstance(hid, str) and hid else None
+        if idx is None or idx in consumed:
+            idx = by_sig.get(_anchor_sig(h))
+        if idx is not None and idx not in consumed:
+            consumed.add(idx)
+            flag = out[idx].get("moderation_flag")            # F14: harvest dissent
+            if isinstance(flag, str) and flag:
+                stats["flags"].append([hid if isinstance(hid, str) else None, flag])
             restored = {**h, "provenance": "human"}           # restore original
-            if out[by_sig[sig]] != restored:
+            if out[idx] != restored:
                 stats["restored"] += 1
-            out[by_sig[sig]] = restored
+            out[idx] = restored
         else:
             out.append({**h, "provenance": "human",
                         "moderation_note": "re-inserted by moderator (agent omitted it)"})
@@ -314,23 +358,30 @@ def _preserve_human(existing: list[dict], produced: list[dict],
 
 async def annotate_one(article: dict, sem: asyncio.Semaphore, seed_decls: dict,
                        moderate: bool = False,
-                       existing_override: list[dict] | None = None) -> dict:
+                       existing_override: list[dict] | None = None,
+                       target_revid: int | None = None) -> dict:
     title = article["title"]
     slug = make_slug(title)
     rec = {"title": title, "slug": slug}
+    if target_revid is not None:
+        rec["target_revid"] = target_revid
+    # F1: with a pinned target_revid every per-slug artifact (HTML, sections)
+    # comes from the revid-suffixed cache; the legacy un-suffixed cache is
+    # never consulted, so the agents review exactly the revision D1 pins.
+    cache_slug = f"{slug}.{target_revid}" if target_revid is not None else slug
     t0 = time.time()
     async with sem:
         try:
-            # 1. fetch
-            if not fetch_html(slug, title):
+            # 1. fetch (at the pinned revid when given — F1)
+            if not fetch_html(slug, title, target_revid=target_revid):
                 rec["error"] = "fetch_failed"
                 return rec
-            # 2. extract
-            rc, _ = run_script("extract_sections.py", slug)
+            # 2. extract — runs on the revid-pinned HTML when given (F1)
+            rc, _ = run_script("extract_sections.py", cache_slug)
             if rc != 0:
                 rec["error"] = "extract_failed"
                 return rec
-            sections = json.loads((CACHE / f"{slug}.sections.json").read_text())
+            sections = json.loads((CACHE / f"{cache_slug}.sections.json").read_text())
 
             # Moderation mode: load the current annotations so the agents are
             # context-aware and human edits are preserved (not clobbered).
@@ -373,11 +424,15 @@ async def annotate_one(article: dict, sem: asyncio.Semaphore, seed_decls: dict,
                 rec["error"] = "agent1_no_json"
                 return rec
             annotations = a1["annotations"]
-            ladder = {"restored": 0, "reinserted": 0, "downgrades_blocked": 0}
+            ladder = {"restored": 0, "reinserted": 0, "downgrades_blocked": 0,
+                      "moderation_flags": []}
             if do_moderate:
                 annotations, ph1 = _preserve_human(existing, annotations)
                 ladder["restored"] += ph1["restored"]
                 ladder["reinserted"] += ph1["reinserted"]
+                # F14: agent dissent on human annotations survives in the ladder.
+                ladder["moderation_flags"] += [f for f in ph1["flags"]
+                                               if f not in ladder["moderation_flags"]]
             envelope = {
                 "slug": slug, "wikipedia_title": title, "display_title": title,
                 "schema_version": 3, "annotations": [
@@ -416,6 +471,8 @@ async def annotate_one(article: dict, sem: asyncio.Semaphore, seed_decls: dict,
                 a2_annos, ph2 = _preserve_human(existing, a2_annos)
                 ladder["restored"] += ph2["restored"]
                 ladder["reinserted"] += ph2["reinserted"]
+                ladder["moderation_flags"] += [f for f in ph2["flags"]
+                                               if f not in ladder["moderation_flags"]]
                 # Deterministic provenance carry-through. Agent 2 must not be
                 # able to DOWNGRADE Agent 1's review marks: if the pre-Agent-2
                 # state had "ai-moderated" or "human" for this anchor, that
@@ -444,13 +501,26 @@ async def annotate_one(article: dict, sem: asyncio.Semaphore, seed_decls: dict,
             (ANNOT / f"{slug}.json").write_text(
                 json.dumps(final, ensure_ascii=False, indent=2), encoding="utf-8")
 
-            # 6. render
-            rc, render_out = run_script("render.py", slug)
-            if rc != 0 or not (OUT / f"{slug}.html").exists():
-                rec["error"] = "render_failed"
-                return rec
-            mm = re.search(r"(\d+)/(\d+) matched", render_out)
-            rec["matched"] = mm.group(0) if mm else None
+            # 6. render. render.py's CLI reads the LEGACY un-suffixed cache,
+            # so with a pinned target_revid the anchor match runs in-process
+            # against the revid-suffixed HTML instead (F1) — matched stats
+            # must describe the revision the agents actually reviewed.
+            if target_revid is None:
+                rc, render_out = run_script("render.py", slug)
+                if rc != 0 or not (OUT / f"{slug}.html").exists():
+                    rec["error"] = "render_failed"
+                    return rec
+                mm = re.search(r"(\d+)/(\d+) matched", render_out)
+                rec["matched"] = mm.group(0) if mm else None
+            else:
+                import render as _render
+                src = _render.absolutize_wikipedia_urls(
+                    (CACHE / f"{cache_slug}.html").read_text(encoding="utf-8"))
+                _, flags = _render.wrap_annotations(src, final["annotations"])
+                non_tomb = [i for i, a in enumerate(final["annotations"])
+                            if a.get("status") != "rejected"]
+                matched = sum(1 for i in non_tomb if flags[i])
+                rec["matched"] = f"{matched}/{len(non_tomb)} matched"
             rec["n_annotations"] = len(final["annotations"])
             rec["ladder"] = ladder
             rec["cost_usd_equiv"] = round(
