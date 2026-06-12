@@ -7,17 +7,29 @@ The three routine operations from the roadmap, as subcommands:
                bot-only PUT /api/article/:slug (contract D-C1). Candidates
                come from --from-file (discover_articles.py JSONL) or, by
                default, the catalog 404-probe fallback.
-    review     re-review existing articles (work list from GET /api/work)
-    wp-update  list articles whose pinned Wikipedia revid trails upstream
-               (SHELL ONLY this wave — stage-0 re-pin lands in Wave C3)
-    all        review, then wp-update, then new
+    review     re-review existing articles (work list from GET /api/work);
+               agents run against the article's PINNED Wikipedia revision
+               (revid-suffixed cache), never a stale/live page (F1).
+    wp-update  stage-0 deterministic re-pin, driven through
+               update_from_upstream.process_slug (F3; the script stays
+               usable standalone).
+    all        wp-update, then review, then new (F3). ORDER RATIONALE:
+               stage-0 clears ~80% of drift for ZERO tokens and resets
+               wp_drifted, so running it first — and only then fetching the
+               review job list fresh — keeps review tokens off articles whose
+               only problem was upstream drift (/api/work sorts drifted
+               articles high; re-pinned ones fall back to their age tier).
 
-Reads via GET /api/article/:slug.json, writes via bearer-authenticated
-POST /api/article/:slug with base_version (409 on staleness). Reuses the agent
-machinery from batch_annotate.py (annotate_one / _preserve_human / the
-PRIORITY ladder); this module adds work selection, the annotation-ID
-discipline post-pass (contract ID1), wire-level human preservation (the
-client-side twin of the server's 422 check), and run metadata (contract ID3).
+Reads via GET /api/article/:slug.json (bearer-authenticated: the Worker
+filters tombstones from anonymous responses, and the runner must see them —
+F15), writes via bearer-authenticated POST /api/article/:slug with
+base_version (409 → one zero-token rebase: re-GET, re-finalize, re-POST — F9).
+Reuses the agent machinery from batch_annotate.py (annotate_one /
+_preserve_human / the PRIORITY ladder); this module adds work selection, the
+annotation-ID discipline post-pass (contract ID1), wire-level human
+preservation (the client-side twin of the server's 422 check, plus the
+veto-adjacency drop for near-miss tombstone resurrections — F6), and run
+metadata (contract ID3).
 
 Auth token: WIKILEAN_API_TOKEN env var, else PIPELINE_TOKEN from wiki/.dev.vars.
 Mathlib checkout: WIKILEAN_MATHLIB env var (read by batch_annotate.MATHLIB).
@@ -34,6 +46,7 @@ import asyncio
 import hashlib
 import json
 import os
+import re
 import secrets
 import subprocess
 import sys
@@ -70,8 +83,20 @@ ba = None
 def _anchor_sig(a: dict) -> str:
     """Stable signature of an annotation's anchor. MUST stay in lockstep with
     batch_annotate._anchor_sig (copied here so this module imports without the
-    SDK; test_moderate.py asserts the two stay identical)."""
-    anc = a.get("anchor") or {}
+    SDK; test_moderate.py asserts the two stay identical).
+
+    LOCKSTEP CONTRACT (F12 — identical in batch_annotate._anchor_sig and
+    wiki/src/validation.ts anchorSig): a plain-dict `anchor` is used as before;
+    a non-dict `anchor` (string/list/number — must not crash) falls through to
+    `anchors[0]` when `anchors` is a non-empty list whose first element is a
+    plain dict; otherwise the all-null signature."""
+    anc = a.get("anchor")
+    if not isinstance(anc, dict):
+        anchors = a.get("anchors")
+        if isinstance(anchors, list) and anchors and isinstance(anchors[0], dict):
+            anc = anchors[0]
+        else:
+            anc = {}
     return json.dumps([anc.get("type"), anc.get("section"), anc.get("snippet"),
                        anc.get("value"), anc.get("from")], sort_keys=True)
 
@@ -82,6 +107,31 @@ def fresh_id(used: set[str]) -> str:
     while nid in used:
         nid = secrets.token_hex(6)
     return nid
+
+
+def _snippet_tokens(s) -> set[str]:
+    """Lowercased word tokens of a snippet (helper for the F6 veto check)."""
+    return set(re.findall(r"\w+", s.lower())) if isinstance(s, str) else set()
+
+
+def _veto_adjacent(a: dict, tombstones: list[dict]) -> bool:
+    """F6: True when `a` (a produced annotation with NO stored counterpart by
+    id or anchor sig) lands in a stored tombstone's section AND its snippet
+    contains >50% of the tombstone snippet's word tokens — a near-miss
+    resurrection of a human veto. Exact-sig resurrections are already replaced
+    by the stored tombstone; this closes the shifted-anchor bypass."""
+    anc = a.get("anchor") if isinstance(a.get("anchor"), dict) else {}
+    toks = _snippet_tokens(anc.get("snippet"))
+    if not toks:
+        return False
+    for t in tombstones:
+        tanc = t.get("anchor") if isinstance(t.get("anchor"), dict) else {}
+        ttoks = _snippet_tokens(tanc.get("snippet"))
+        if not ttoks or anc.get("section") != tanc.get("section"):
+            continue
+        if len(toks & ttoks) / len(ttoks) > 0.5:
+            return True
+    return False
 
 
 def finalize_for_post(existing: list[dict], produced: list[dict],
@@ -104,9 +154,15 @@ def finalize_for_post(existing: list[dict], produced: list[dict],
       - a stored human annotation absent from the output is re-appended;
       - a non-matching output annotation claiming provenance 'human' is
         downgraded to 'ai-moderated' (bot writes must not mint human
-        provenance — anti-laundering, mirrors the server's session-side rule).
+        provenance — anti-laundering, mirrors the server's session-side rule);
+      - a PRODUCED new annotation (no stored counterpart by id or anchor sig)
+        that near-misses a stored tombstone — same anchor section AND >50%
+        token containment of the tombstone's snippet — is DROPPED and counted
+        as veto_adjacent_dropped (F6: shifted-anchor resurrections of human
+        vetoes don't reach the wire).
     """
     humans = [a for a in existing if a.get("provenance") == "human"]
+    tombs = [a for a in existing if a.get("status") == "rejected"]
     h_by_id = {a["id"]: i for i, a in enumerate(humans)
                if isinstance(a.get("id"), str) and a["id"]}
     h_by_sig: dict[str, int] = {}
@@ -123,7 +179,7 @@ def finalize_for_post(existing: list[dict], produced: list[dict],
     consumed: set[int] = set()
     stats = {"ids_echoed": 0, "ids_inherited": 0, "ids_fresh": 0,
              "human_restored_wire": 0, "human_reinserted_wire": 0,
-             "provenance_downgraded": 0}
+             "provenance_downgraded": 0, "veto_adjacent_dropped": 0}
 
     for a in produced:
         aid = a.get("id") if isinstance(a.get("id"), str) and a.get("id") else None
@@ -141,11 +197,18 @@ def finalize_for_post(existing: list[dict], produced: list[dict],
                 stats["human_restored_wire"] += 1
             out.append(h)
             continue
-        # 2. anti-laundering: 'human' provenance without a stored human twin.
+        # 2. veto adjacency (F6): a NEW annotation (no stored counterpart by
+        #    id or sig) near-missing a stored tombstone's anchor is dropped.
+        if (tombs and (aid is None or aid not in ex_by_id)
+                and _anchor_sig(a) not in ex_by_sig
+                and _veto_adjacent(a, tombs)):
+            stats["veto_adjacent_dropped"] += 1
+            continue
+        # 3. anti-laundering: 'human' provenance without a stored human twin.
         if a.get("provenance") == "human":
             a = {**a, "provenance": "ai-moderated"}
             stats["provenance_downgraded"] += 1
-        # 3. id discipline.
+        # 4. id discipline.
         if aid is not None and aid in ex_by_id and aid not in used_ids:
             used_ids.add(aid)
             stats["ids_echoed"] += 1
@@ -163,7 +226,7 @@ def finalize_for_post(existing: list[dict], produced: list[dict],
             stats["ids_fresh"] += 1
             out.append({**a, "id": nid})
 
-    # 4. dropped humans (tombstones included — human vetoes) → re-insert verbatim.
+    # 5. dropped humans (tombstones included — human vetoes) → re-insert verbatim.
     for i, h in enumerate(humans):
         if i not in consumed:
             out.append(h)
@@ -191,7 +254,8 @@ def build_meta(ctx, rec: dict, wire_stats: dict) -> dict:
     a2 = rec.get("agent2_meta") or {}
     duration_ms = ((a1.get("duration_ms") or 0) + (a2.get("duration_ms") or 0)
                    or int((rec.get("elapsed_s") or 0) * 1000))
-    ladder = {"restored": 0, "reinserted": 0, "downgrades_blocked": 0}
+    ladder = {"restored": 0, "reinserted": 0, "downgrades_blocked": 0,
+              "moderation_flags": []}  # F14: harvested agent dissent rides meta
     ladder.update(rec.get("ladder") or {})
     return {
         "run_id": ctx.run_id,
@@ -372,9 +436,12 @@ def fetch_work(api_base: str, token: str, mode: str, limit: int) -> list[dict]:
     return r.json().get("jobs", [])
 
 
-async def get_article(api_base: str, slug: str) -> tuple[dict | None, int]:
+async def get_article(api_base: str, slug: str,
+                      token: str | None = None) -> tuple[dict | None, int]:
+    # F15: runner GETs send the bearer header — the Worker filters tombstones
+    # from anonymous responses, and the runner must keep seeing them.
     url = f"{api_base}/api/article/{urllib.parse.quote(slug)}.json"
-    r = await asyncio.to_thread(_http_get, url)
+    r = await asyncio.to_thread(_http_get, url, token)
     if r.status_code != 200:
         return None, r.status_code
     return r.json(), 200
@@ -382,20 +449,51 @@ async def get_article(api_base: str, slug: str) -> tuple[dict | None, int]:
 
 async def _write_article(ctx, slug: str, body: dict, method: str,
                          ) -> tuple[int, dict]:
-    """Bearer write with the contract's error handling: 429 → sleep 60s, retry
-    up to 3x (EDIT_LIMITER is 30 writes/min for the bot user)."""
+    """Bearer write with the contract's error handling:
+      - 429 → sleep 60s, retry up to 3x (EDIT_LIMITER is 30 writes/min);
+      - 5xx → retry twice with 5s/15s backoff (F9; the CAS guard makes a
+        committed-then-500 retry safe — it 409s into the rebase path);
+      - POST 409 → ONE zero-agent-token rebase (F9): re-GET the article,
+        re-run finalize_for_post against the fresh state, re-POST. A second
+        409 (or a PUT 409 = 'exists') is returned to the caller."""
     import requests
     url = f"{ctx.api_base}/api/article/{urllib.parse.quote(slug)}"
     headers = {"User-Agent": USER_AGENT, "Authorization": f"Bearer {ctx.token}"}
     send = requests.put if method == "put" else requests.post
     r = None
-    for attempt in range(4):
+    retries_429 = 0
+    backoffs_5xx = [5, 15]
+    rebased = False
+    while True:
         r = await asyncio.to_thread(send, url, json=body, headers=headers,
                                     timeout=120)
-        if r.status_code == 429 and attempt < 3:
-            print(f"  429 on {slug} — sleeping 60s (retry {attempt + 1}/3)", flush=True)
+        if r.status_code == 429 and retries_429 < 3:
+            retries_429 += 1
+            print(f"  429 on {slug} — sleeping 60s (retry {retries_429}/3)", flush=True)
             await asyncio.sleep(60)
             continue
+        if 500 <= r.status_code < 600 and backoffs_5xx:
+            wait = backoffs_5xx.pop(0)
+            print(f"  {r.status_code} on {slug} — retrying in {wait}s (F9; "
+                  f"CAS makes this safe)", flush=True)
+            await asyncio.sleep(wait)
+            continue
+        if (r.status_code == 409 and method == "post" and not rebased
+                and "base_version" in body):
+            rebased = True
+            art, status = await get_article(ctx.api_base, slug, ctx.token)
+            if art is not None:
+                posted, wire = finalize_for_post(
+                    art.get("annotations") or [], body.get("annotations") or [])
+                body = {**body, "annotations": posted,
+                        "base_version": art["version"]}
+                if isinstance(body.get("meta"), dict):
+                    body["meta"] = {**body["meta"], "ids": wire}
+                print(f"  409 on {slug} — rebased onto version {art['version']} "
+                      f"and re-POSTing once (zero agent tokens)", flush=True)
+                continue
+            print(f"  409 on {slug} — rebase re-GET failed ({status}); "
+                  f"returning the 409", flush=True)
         break
     try:
         payload = r.json()
@@ -420,11 +518,15 @@ async def put_article(ctx, slug: str, body: dict) -> tuple[int, dict]:
 
 async def process_review(job: dict, ctx, sem: asyncio.Semaphore) -> dict:
     """review: GET live annotations → agents (existing_override) → ID post-pass
-    → bearer POST with base_version. Dry-run: pass existing through unchanged,
-    print what WOULD be posted, zero POSTs and zero agent calls."""
+    → bearer POST with base_version. The agents review the article's PINNED
+    Wikipedia revision (F1): the GET's revid is threaded into the fetch
+    (revid-suffixed cache, oldid= on miss) and section extraction runs on that
+    HTML — but the POST still carries NO revid, so the pin is unchanged.
+    Dry-run: pass existing through unchanged, print what WOULD be posted,
+    zero POSTs and zero agent calls."""
     slug = job["slug"]
     rec: dict = {"slug": slug, "op": ctx.mode, "reason": job.get("reason")}
-    art, status = await get_article(ctx.api_base, slug)
+    art, status = await get_article(ctx.api_base, slug, ctx.token)
     if art is None:
         rec["error"] = f"get_failed_{status}"
         return rec
@@ -432,21 +534,37 @@ async def process_review(job: dict, ctx, sem: asyncio.Semaphore) -> dict:
     base_version = art["version"]
     title = art.get("wikipedia_title") or slug.replace("_", " ")
     rec["base_version"] = base_version
+    # F1: the pinned revid drives the fetch; a missing/invalid pin (shouldn't
+    # happen — all production revids verified non-null) falls back to legacy.
+    pinned = art.get("revid")
+    target_revid = (pinned if isinstance(pinned, int)
+                    and not isinstance(pinned, bool) and pinned > 0 else None)
+    if target_revid is None:
+        print(f"  ! {slug}: no pinned revid in the article JSON — reviewing "
+              f"the legacy/live HTML", flush=True)
 
     if ctx.dry_run:
         posted, wire = finalize_for_post(existing, existing)
         meta = build_meta(ctx, {}, wire)
         print(f"  DRY-RUN {slug}: would POST base_version={base_version} "
-              f"annotations={len(posted)} reason={job.get('reason')}\n"
+              f"annotations={len(posted)} revid_reviewed={target_revid} "
+              f"reason={job.get('reason')}\n"
               f"    meta={json.dumps(meta, ensure_ascii=False)}", flush=True)
         rec.update({"dry_run": True, "n_annotations": len(posted), "ids": wire})
         return rec
 
     arec = await ctx.ba.annotate_one({"title": title}, sem, ctx.seed_decls,
-                                     moderate=True, existing_override=existing)
+                                     moderate=True, existing_override=existing,
+                                     target_revid=target_revid)
     rec.update(arec)
     if arec.get("error"):
         return rec
+    # F14: surface harvested agent dissent on human annotations in the run log
+    # (it also rides meta.ladder.moderation_flags via build_meta).
+    for pair in (arec.get("ladder") or {}).get("moderation_flags") or []:
+        fid, flag = (pair + [None, None])[:2] if isinstance(pair, list) else (None, pair)
+        print(f"  ⚑ {slug}: moderation_flag on human annotation "
+              f"[{fid}]: {flag}", flush=True)
     disk_slug = arec.get("slug") or slug
     if disk_slug != slug:
         print(f"  ! slug mismatch: D1 '{slug}' vs pipeline '{disk_slug}' "
@@ -525,9 +643,16 @@ async def process_new(article: dict, ctx, sem: asyncio.Semaphore) -> dict:
         rec["error"] = f"final_read_failed: {type(e).__name__}"
         return rec
 
+    revid = sidecar_revid(disk_slug, Path(ctx.ba.CACHE))
+    if revid is None:
+        # F16: a create without a pinned revid would seed an article the
+        # wp-update loop can never reason about — refuse the PUT, continue.
+        rec["skipped"] = "no_revid"
+        print(f"  {slug}: skipped (no revid) — fetch sidecar missing/invalid; "
+              f"not creating", flush=True)
+        return rec
     body, wire = build_create_body(
-        envelope, revid=sidecar_revid(disk_slug, Path(ctx.ba.CACHE)),
-        wikidata_qid=qid, run_id=ctx.run_id)
+        envelope, revid=revid, wikidata_qid=qid, run_id=ctx.run_id)
     body["meta"] = build_meta(ctx, arec, wire)
     rec["ids"] = wire
     code, resp = await put_article(ctx, slug, body)
@@ -556,9 +681,11 @@ async def process_new(article: dict, ctx, sem: asyncio.Semaphore) -> dict:
 
 
 def probe_new_slugs(api_base: str, candidates: list[dict], limit: int,
-                    ) -> list[dict]:
-    """Keep candidates whose slug 404s on the public article JSON endpoint —
-    i.e. not yet in D1. Capped at MAX_NEW_PROBES probes."""
+                    token: str | None = None) -> list[dict]:
+    """Keep candidates whose slug 404s on the article JSON endpoint — i.e.
+    not yet in D1. Capped at MAX_NEW_PROBES probes. Sends the bearer header
+    when available (F15); a tokenless dry-run probe still works (only the
+    404-vs-200 distinction is read here)."""
     out: list[dict] = []
     probes = 0
     for a in candidates:
@@ -567,7 +694,8 @@ def probe_new_slugs(api_base: str, candidates: list[dict], limit: int,
         probes += 1
         if probes % 50 == 0:
             print(f"  …probed {probes} candidates ({len(out)} new so far)", flush=True)
-        r = _http_get(f"{api_base}/api/article/{urllib.parse.quote(a['slug'])}.json")
+        r = _http_get(f"{api_base}/api/article/{urllib.parse.quote(a['slug'])}.json",
+                      token)
         if r.status_code == 404:
             out.append(a)
         elif r.status_code != 200:
@@ -577,23 +705,50 @@ def probe_new_slugs(api_base: str, candidates: list[dict], limit: int,
     return out
 
 
-def find_new_candidates(api_base: str, limit: int) -> list[dict]:
+def find_new_candidates(api_base: str, limit: int,
+                        token: str | None = None) -> list[dict]:
     """Catalog fallback: titles from ba.load_articles, 404-probed via
     probe_new_slugs. discover_articles.py output (--from-file) is the
     preferred feed — it diffs the LIVE WikiProject list against D1."""
     articles, _seed = ba.load_articles()
     cands = [{"title": a["title"], "slug": ba.make_slug(a["title"]),
               "source": "catalog"} for a in articles]
-    return probe_new_slugs(api_base, cands, limit)
+    return probe_new_slugs(api_base, cands, limit, token)
 
 
-def print_wp_update(jobs: list[dict]) -> None:
-    print(f"wp-update drift list ({len(jobs)} articles):")
-    for j in jobs:
-        print(f"  {j['slug']:50s} revid {j.get('revid')} -> "
-              f"{j.get('latest_revid')}  [{j.get('reason')}]")
-    print("stage-0 handled by update_from_upstream (Wave C3) — "
-          "no re-anchoring is performed here.")
+def run_wp_update(args, token: str | None) -> tuple[int, int]:
+    """F3: drive update_from_upstream's stage-0 per-slug processing (the
+    script stays usable standalone). Deterministic — zero agent tokens; in
+    'all' mode this runs FIRST so the review queue, fetched fresh afterwards,
+    no longer surfaces articles whose only problem was upstream drift."""
+    import update_from_upstream as ufu
+    jobs = fetch_work(args.api_base, token, "wp-update", args.limit)
+    print(f"wp-update: {len(jobs)} drifted article(s) from /api/work"
+          f"{'  [DRY RUN]' if args.dry_run else ''}")
+    if not jobs:
+        return 0, 0
+    s = ufu.make_session()
+    ns = SimpleNamespace(dry_run=args.dry_run, force_revid=None)
+    results: list[dict] = []
+    for i, job in enumerate(jobs):
+        slug = job["slug"]
+        print(f"  [{i + 1}/{len(jobs)}] {slug}", flush=True)
+        try:
+            rec = ufu.process_slug(s, args.api_base, slug, ns, args.run_id,
+                                   lambda: token)
+        except Exception as e:  # one bad slug must not kill the sweep
+            rec = {"slug": slug, "outcome": f"error ({type(e).__name__}: {e})",
+                   "matched": None, "total": None,
+                   "old_revid": None, "new_revid": None}
+        results.append(rec)
+        print(f"      {rec['outcome']}", flush=True)
+        if rec["outcome"] == "repinned" and i + 1 < len(jobs):
+            time.sleep(ufu.WRITE_PACE_SECONDS)  # stay under EDIT_LIMITER
+    n_repinned = sum(1 for r in results if r["outcome"] == "repinned")
+    n_needs = sum(1 for r in results if r["outcome"] == "needs-work")
+    print(f"wp-update: {len(results)} processed — {n_repinned} re-pinned, "
+          f"{n_needs} need stage-1/2 (recorded in {ufu.REPORT_PATH})")
+    return 0, 0
 
 
 # ---------------------------------------------------------------------------
@@ -614,7 +769,14 @@ async def run_jobs(jobs: list, ctx, process) -> tuple[int, int]:
         async def worker(job):
             if state["abort"]:
                 return  # window/budget died — skip cheaply, retried next run
-            rec = await process(job, ctx, sem)
+            try:
+                rec = await process(job, ctx, sem)
+            except Exception as e:
+                # F12: one bad job/annotation must not kill the whole
+                # asyncio.gather — log it and count it as a job error.
+                slug = job.get("slug") if isinstance(job, dict) else None
+                rec = {"slug": slug or "?",
+                       "error": f"job_crashed: {type(e).__name__}: {e}"}
             async with lock:
                 rec["run_id"] = ctx.run_id
                 log.write(json.dumps(rec, ensure_ascii=False) + "\n")
@@ -679,12 +841,13 @@ def make_ctx(args, mode: str, token: str | None, ba_mod) -> SimpleNamespace:
 def run_mode(mode: str, args, token: str | None) -> tuple[int, int]:
     """One subcommand. Returns (exit_code, tokens_used)."""
     if mode == "wp-update":
-        jobs = fetch_work(args.api_base, token, "wp-update", args.limit)
-        print_wp_update(jobs)
-        return 0, 0
+        return run_wp_update(args, token)
 
     if mode == "review":
         ba_mod = _try_import_ba(args.auth) if args.dry_run else _import_ba(args.auth)
+        # The job list is fetched HERE — i.e. in 'all' mode AFTER wp-update
+        # has run, when stage-0 re-pins have already cleared wp_drifted for
+        # zero tokens (F3: review spend goes to articles needing judgment).
         jobs = fetch_work(args.api_base, token, "review", args.limit)
         print(f"review: {len(jobs)} jobs from /api/work")
         if not jobs:
@@ -698,12 +861,12 @@ def run_mode(mode: str, args, token: str | None) -> tuple[int, int]:
     if args.from_file:
         cands = load_candidate_file(Path(args.from_file))
         print(f"new: {len(cands)} candidates from {args.from_file}")
-        candidates = probe_new_slugs(args.api_base, cands, args.limit)
+        candidates = probe_new_slugs(args.api_base, cands, args.limit, token)
         ba_mod = (_try_import_ba(args.auth) if args.dry_run
                   else _import_ba(args.auth))
     else:
         ba_mod = _import_ba(args.auth)
-        candidates = find_new_candidates(args.api_base, args.limit)
+        candidates = find_new_candidates(args.api_base, args.limit, token)
     if not candidates:
         return 0, 0
     ctx = make_ctx(args, "new", token, ba_mod)
@@ -747,7 +910,9 @@ def main() -> int:
               "PIPELINE_TOKEN= in wiki/.dev.vars", file=sys.stderr)
         return 1
 
-    modes = (["review", "wp-update", "new"] if args.command == "all"
+    # F3: wp-update FIRST (zero-token stage-0 re-pins clear wp_drifted), then
+    # review (job list fetched fresh afterwards — see module docstring), then new.
+    modes = (["wp-update", "review", "new"] if args.command == "all"
              else [args.command])
     print(f"moderate run {args.run_id}: modes={modes} limit={args.limit} "
           f"auth={args.auth}{' DRY-RUN' if args.dry_run else ''} "
