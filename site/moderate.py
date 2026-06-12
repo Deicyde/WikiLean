@@ -31,6 +31,14 @@ preservation (the client-side twin of the server's 422 check, plus the
 veto-adjacency drop for near-miss tombstone resurrections — F6), and run
 metadata (contract ID3).
 
+Telemetry (P2c): every per-article pass appends one line to
+site/cache/.decisions.jsonl (run_id, mode, ladder/id/anchor stats, outcome),
+and every REAL (non-dry) run registers aggregate stats via POST /api/runs
+(RUNS-API contract; a 404 from a not-yet-deployed endpoint is tolerated with
+one warning — telemetry must never fail the runner). Per-annotation
+confidence and considered-candidates are deliberately NOT collected this
+wave (no new agent output fields); see docs/research-plan.md RQ6/RQ7.
+
 Auth token: WIKILEAN_API_TOKEN env var, else PIPELINE_TOKEN from wiki/.dev.vars.
 Mathlib checkout: WIKILEAN_MATHLIB env var (read by batch_annotate.MATHLIB).
 
@@ -62,6 +70,9 @@ DEFAULT_API_BASE = "https://wikilean.jackmccarthy.org"
 USER_AGENT = ("WikiLean-moderate/0.1 (https://github.com/Deicyde/WikiLean; "
               "jack.mccarthy.1@stonybrook.edu)")
 MODERATE_LOG = HERE / "cache" / ".moderate_run.log"
+# P2c: one JSONL line per article per pass — the research-grade decisions
+# sidecar (docs/research-plan.md). Gitignored with the rest of site/cache.
+DECISIONS_LOG = HERE / "cache" / ".decisions.jsonl"
 # Consecutive window-exhaustion errors before aborting (batch_annotate.run uses
 # 15 for 700-article sweeps; moderate batches are small, so trip earlier).
 ABORT_AFTER = 5
@@ -272,6 +283,174 @@ def build_meta(ctx, rec: dict, wire_stats: dict) -> dict:
     }
 
 
+def parse_anchor_stats(matched, total=None) -> dict | None:
+    """anchors {matched, total} for the decisions sidecar, from EITHER shape
+    the runner sees: the 'N/M matched' string batch_annotate records for
+    review/new passes, or the (int, int) pair update_from_upstream records
+    for wp-update. None when unavailable (errors, dry runs, agent failures)."""
+    if isinstance(matched, str):
+        mm = re.match(r"(\d+)/(\d+)", matched)
+        return ({"matched": int(mm.group(1)), "total": int(mm.group(2))}
+                if mm else None)
+    if (isinstance(matched, int) and not isinstance(matched, bool)
+            and isinstance(total, int) and not isinstance(total, bool)):
+        return {"matched": matched, "total": total}
+    return None
+
+
+def decision_outcome(rec: dict) -> str:
+    """Map one per-article rec to the decisions-sidecar outcome enum:
+    'posted' | 'noop' | '409-rebased' | '422' | 'error' | 'dry-run'.
+
+    Handles both rec shapes: the run_jobs review/new rec (post_status /
+    put_status / skipped / error / dry_run / rebased) and the wp-update rec
+    from update_from_upstream.process_slug (a string 'outcome' field).
+    'noop' = the pass completed but wrote nothing (up-to-date, needs-work,
+    exists/stale skips); '409-rebased' = the write succeeded only after the
+    single zero-token rebase (F9) — a mid-run human edit, worth counting."""
+    if rec.get("dry_run"):
+        return "dry-run"
+    out = rec.get("outcome")
+    if isinstance(out, str):  # wp-update rec shape
+        if out == "repinned":
+            return "posted"
+        if out == "would-repin":
+            return "dry-run"
+        if out.startswith("422"):
+            return "422"
+        if out.startswith(("fetch-error", "http-", "error")):
+            return "error"
+        # up-to-date | needs-work | unknown-slug | no-latest-revid | stale (409)
+        return "noop"
+    err = rec.get("error")
+    if err is not None:
+        return "422" if "422" in str(err) else "error"
+    if rec.get("skipped"):  # stale_409 / exists_409 / no_revid — nothing written
+        return "noop"
+    if rec.get("post_status") == 200 or rec.get("put_status") in (200, 201):
+        return "409-rebased" if rec.get("rebased") else "posted"
+    return "error"
+
+
+def decision_line(ctx, rec: dict) -> dict:
+    """One cache/.decisions.jsonl line (P2c telemetry sidecar). Plumbs only
+    data the run already has; per-annotation confidence/considered-candidates
+    are deferred (no new agent output fields this wave — research-plan.md).
+    NB: after a 409 rebase the `ids` stats describe the pre-rebase wire pass
+    (the rebased stats ride revisions.meta via _write_article)."""
+    return {
+        "ts": int(time.time() * 1000),
+        "run_id": ctx.run_id,
+        "mode": ctx.mode,
+        "slug": rec.get("slug"),
+        "model": getattr(ctx, "model", None),
+        "prompt_sha": getattr(ctx, "prompt_sha", None),
+        "tokens": rec.get("tokens") or 0,
+        "cost_usd_equiv": rec.get("cost_usd_equiv"),
+        "ladder": rec.get("ladder"),
+        "ids": rec.get("ids"),
+        "anchors": parse_anchor_stats(rec.get("matched"), rec.get("total")),
+        "base_version": rec.get("base_version"),
+        "outcome": decision_outcome(rec),
+    }
+
+
+def append_decision(line: dict, path: Path | None = None) -> None:
+    """Append one decisions line. Best-effort: a telemetry write must never
+    kill a run (disk-full / permission errors are warned, not raised)."""
+    p = path or DECISIONS_LOG
+    try:
+        p.parent.mkdir(parents=True, exist_ok=True)
+        with p.open("a", encoding="utf-8") as f:
+            f.write(json.dumps(line, ensure_ascii=False) + "\n")
+    except OSError as e:
+        print(f"warning: decisions sidecar write failed ({e}) — continuing",
+              file=sys.stderr)
+
+
+def build_runs_payload(*, run_id: str, kind: str, started_at: int,
+                       finished_at: int, articles_processed: int, errors: int,
+                       tokens: int, cost_usd_equiv=None, model=None,
+                       prompt_sha=None, notes=None) -> dict:
+    """POST /api/runs body (RUNS-API contract). Optional fields are omitted
+    when absent; the 'unavailable' sentinel (get_prompt_sha without the SDK,
+    dry-run model) is never sent."""
+    payload = {
+        "run_id": run_id,
+        "kind": kind,
+        "started_at": started_at,
+        "finished_at": finished_at,
+        "articles_processed": articles_processed,
+        "errors": errors,
+        "tokens": tokens,
+        "cost_usd_equiv": cost_usd_equiv,
+    }
+    if isinstance(model, str) and model and model != "unavailable":
+        payload["model"] = model
+    if isinstance(prompt_sha, str) and prompt_sha and prompt_sha != "unavailable":
+        payload["prompt_sha"] = prompt_sha
+    if isinstance(notes, str) and notes:
+        payload["notes"] = notes
+    return payload
+
+
+def register_run(api_base: str, token: str, payload: dict,
+                 transport=None) -> bool:
+    """POST /api/runs (bot-bearer). Telemetry must never fail the runner:
+    a 404 (endpoint not yet deployed), any other non-200, or a transport
+    exception each produce exactly ONE warning line and a False return.
+    200 {ok:true, duplicate:true} (idempotent retry) still counts as True."""
+    if transport is None:
+        import requests
+        transport = requests.post
+    url = f"{api_base.rstrip('/')}/api/runs"
+    headers = {"User-Agent": USER_AGENT, "Authorization": f"Bearer {token}"}
+    try:
+        r = transport(url, json=payload, headers=headers, timeout=30)
+    except Exception as e:
+        print(f"warning: POST /api/runs failed ({type(e).__name__}: {e}) — "
+              f"run not registered; continuing", file=sys.stderr)
+        return False
+    if r.status_code == 200:
+        try:
+            dup = bool(r.json().get("duplicate"))
+        except ValueError:
+            dup = False
+        print(f"run {payload.get('run_id')} registered in pipeline_runs"
+              + (" (duplicate — already registered)" if dup else ""))
+        return True
+    if r.status_code == 404:
+        print("warning: POST /api/runs → 404 (endpoint not deployed yet) — "
+              "run not registered; continuing", file=sys.stderr)
+    else:
+        print(f"warning: POST /api/runs → {r.status_code} — run not "
+              f"registered; continuing", file=sys.stderr)
+    return False
+
+
+def maybe_register_run(args, token: str | None, started_at: int, totals: dict,
+                       model=None, prompt_sha=None, notes=None,
+                       transport=None) -> bool:
+    """End-of-run pipeline_runs registration — REAL runs only (a dry run
+    makes no writes anywhere, telemetry included) and only with a token."""
+    if args.dry_run or token is None:
+        return False
+    payload = build_runs_payload(
+        run_id=args.run_id, kind=args.command,
+        started_at=started_at, finished_at=int(time.time() * 1000),
+        articles_processed=totals.get("processed", 0),
+        errors=totals.get("errors", 0),
+        tokens=totals.get("tokens", 0),
+        cost_usd_equiv=round(totals.get("cost") or 0.0, 4),
+        model=model, prompt_sha=prompt_sha, notes=notes)
+    return register_run(args.api_base, token, payload, transport=transport)
+
+
+def zero_stats() -> dict:
+    """Aggregate-stat shape every run_mode path returns (feeds /api/runs)."""
+    return {"processed": 0, "errors": 0, "tokens": 0, "cost": 0.0}
+
+
 def load_candidate_file(path: Path) -> list[dict]:
     """Parse discover_articles.py output (JSONL of {"title","slug","source"}).
     Malformed lines and records missing title/slug are skipped with a count."""
@@ -448,14 +627,17 @@ async def get_article(api_base: str, slug: str,
 
 
 async def _write_article(ctx, slug: str, body: dict, method: str,
-                         ) -> tuple[int, dict]:
+                         ) -> tuple[int, dict, bool]:
     """Bearer write with the contract's error handling:
       - 429 → sleep 60s, retry up to 3x (EDIT_LIMITER is 30 writes/min);
       - 5xx → retry twice with 5s/15s backoff (F9; the CAS guard makes a
         committed-then-500 retry safe — it 409s into the rebase path);
       - POST 409 → ONE zero-agent-token rebase (F9): re-GET the article,
         re-run finalize_for_post against the fresh state, re-POST. A second
-        409 (or a PUT 409 = 'exists') is returned to the caller."""
+        409 (or a PUT 409 = 'exists') is returned to the caller.
+    Returns (status, payload, rebased) — `rebased` is True when the single
+    F9 rebase re-POST happened (P2c: the decisions sidecar distinguishes
+    'posted' from '409-rebased', a mid-run human edit)."""
     import requests
     url = f"{ctx.api_base}/api/article/{urllib.parse.quote(slug)}"
     headers = {"User-Agent": USER_AGENT, "Authorization": f"Bearer {ctx.token}"}
@@ -499,15 +681,15 @@ async def _write_article(ctx, slug: str, body: dict, method: str,
         payload = r.json()
     except ValueError:
         payload = {}
-    return r.status_code, payload
+    return r.status_code, payload, rebased
 
 
-async def post_article(ctx, slug: str, body: dict) -> tuple[int, dict]:
+async def post_article(ctx, slug: str, body: dict) -> tuple[int, dict, bool]:
     """POST /api/article/:slug — save over an existing article."""
     return await _write_article(ctx, slug, body, "post")
 
 
-async def put_article(ctx, slug: str, body: dict) -> tuple[int, dict]:
+async def put_article(ctx, slug: str, body: dict) -> tuple[int, dict, bool]:
     """PUT /api/article/:slug — bot-only article create (contract D-C1)."""
     return await _write_article(ctx, slug, body, "put")
 
@@ -585,8 +767,10 @@ async def process_review(job: dict, ctx, sem: asyncio.Semaphore) -> dict:
         "comment": f"ai-moderate:{ctx.mode}:{ctx.run_id}",
         "meta": build_meta(ctx, arec, wire),
     }
-    code, resp = await post_article(ctx, slug, body)
+    code, resp, rebased = await post_article(ctx, slug, body)
     rec["post_status"] = code
+    if rebased:
+        rec["rebased"] = True  # P2c: decisions outcome '409-rebased' on success
     if code == 200:
         rec["posted_version"] = resp.get("version")
         rec["server_matched"] = resp.get("matched")
@@ -655,7 +839,7 @@ async def process_new(article: dict, ctx, sem: asyncio.Semaphore) -> dict:
         envelope, revid=revid, wikidata_qid=qid, run_id=ctx.run_id)
     body["meta"] = build_meta(ctx, arec, wire)
     rec["ids"] = wire
-    code, resp = await put_article(ctx, slug, body)
+    code, resp, _rebased = await put_article(ctx, slug, body)  # PUT never rebases
     rec["put_status"] = code
     if code == 201:
         rec["created_version"] = resp.get("version")
@@ -716,7 +900,7 @@ def find_new_candidates(api_base: str, limit: int,
     return probe_new_slugs(api_base, cands, limit, token)
 
 
-def run_wp_update(args, token: str | None) -> tuple[int, int]:
+def run_wp_update(args, token: str | None) -> tuple[int, dict]:
     """F3: drive update_from_upstream's stage-0 per-slug processing (the
     script stays usable standalone). Deterministic — zero agent tokens; in
     'all' mode this runs FIRST so the review queue, fetched fresh afterwards,
@@ -726,9 +910,12 @@ def run_wp_update(args, token: str | None) -> tuple[int, int]:
     print(f"wp-update: {len(jobs)} drifted article(s) from /api/work"
           f"{'  [DRY RUN]' if args.dry_run else ''}")
     if not jobs:
-        return 0, 0
+        return 0, zero_stats()
     s = ufu.make_session()
     ns = SimpleNamespace(dry_run=args.dry_run, force_revid=None)
+    # P2c: deterministic stage-0 — no model/prompt; tokens/cost stay absent.
+    wctx = SimpleNamespace(run_id=args.run_id, mode="wp-update",
+                           model=None, prompt_sha=None)
     results: list[dict] = []
     for i, job in enumerate(jobs):
         slug = job["slug"]
@@ -741,23 +928,29 @@ def run_wp_update(args, token: str | None) -> tuple[int, int]:
                    "matched": None, "total": None,
                    "old_revid": None, "new_revid": None}
         results.append(rec)
+        append_decision(decision_line(wctx, rec))  # P2c: one line per article
         print(f"      {rec['outcome']}", flush=True)
         if rec["outcome"] == "repinned" and i + 1 < len(jobs):
             time.sleep(ufu.WRITE_PACE_SECONDS)  # stay under EDIT_LIMITER
     n_repinned = sum(1 for r in results if r["outcome"] == "repinned")
     n_needs = sum(1 for r in results if r["outcome"] == "needs-work")
+    n_err = sum(1 for r in results if decision_outcome(r) in ("error", "422"))
     print(f"wp-update: {len(results)} processed — {n_repinned} re-pinned, "
           f"{n_needs} need stage-1/2 (recorded in {ufu.REPORT_PATH})")
-    return 0, 0
+    return 0, {"processed": len(results), "errors": n_err,
+               "tokens": 0, "cost": 0.0}
 
 
 # ---------------------------------------------------------------------------
 # Run loop (budget + consecutive-window-exhaustion abort, after ba.run)
 # ---------------------------------------------------------------------------
 
-async def run_jobs(jobs: list, ctx, process) -> tuple[int, int]:
-    """Returns (exit_code, tokens_used). exit_code 3 = aborted (window/budget),
-    matching batch_annotate.run's convention."""
+async def run_jobs(jobs: list, ctx, process) -> tuple[int, dict]:
+    """Returns (exit_code, stats) — stats is the zero_stats() shape
+    {processed, errors, tokens, cost} that feeds the /api/runs registration.
+    exit_code 3 = aborted (window/budget), matching batch_annotate.run's
+    convention. Every processed job also appends one decisions-sidecar line
+    (P2c) next to the run-log write, under the same lock."""
     sem = asyncio.Semaphore(ctx.concurrency)
     t0 = time.time()
     state = {"consec_err": 0, "abort": False, "n_done": 0, "n_err": 0,
@@ -781,6 +974,7 @@ async def run_jobs(jobs: list, ctx, process) -> tuple[int, int]:
                 rec["run_id"] = ctx.run_id
                 log.write(json.dumps(rec, ensure_ascii=False) + "\n")
                 log.flush()
+                append_decision(decision_line(ctx, rec))  # P2c sidecar
                 state["n_done"] += 1
                 state["tokens"] += rec.get("tokens") or 0
                 state["cost"] += rec.get("cost_usd_equiv") or 0
@@ -817,7 +1011,9 @@ async def run_jobs(jobs: list, ctx, process) -> tuple[int, int]:
           f"{time.time() - t0:.0f}s, ~${state['cost']:.2f} equiv, "
           f"{state['tokens'] / 1e6:.2f}M tokens"
           + ("  [ABORTED — rerun to resume]" if state["abort"] else ""))
-    return (3 if state["abort"] else 0), state["tokens"]
+    stats = {"processed": state["n_done"], "errors": state["n_err"],
+             "tokens": state["tokens"], "cost": round(state["cost"], 4)}
+    return (3 if state["abort"] else 0), stats
 
 
 def make_ctx(args, mode: str, token: str | None, ba_mod) -> SimpleNamespace:
@@ -838,8 +1034,8 @@ def make_ctx(args, mode: str, token: str | None, ba_mod) -> SimpleNamespace:
     )
 
 
-def run_mode(mode: str, args, token: str | None) -> tuple[int, int]:
-    """One subcommand. Returns (exit_code, tokens_used)."""
+def run_mode(mode: str, args, token: str | None) -> tuple[int, dict]:
+    """One subcommand. Returns (exit_code, stats) — zero_stats() shape."""
     if mode == "wp-update":
         return run_wp_update(args, token)
 
@@ -851,7 +1047,7 @@ def run_mode(mode: str, args, token: str | None) -> tuple[int, int]:
         jobs = fetch_work(args.api_base, token, "review", args.limit)
         print(f"review: {len(jobs)} jobs from /api/work")
         if not jobs:
-            return 0, 0
+            return 0, zero_stats()
         ctx = make_ctx(args, "review", token, ba_mod)
         return asyncio.run(run_jobs(jobs, ctx, process_review))
 
@@ -868,7 +1064,7 @@ def run_mode(mode: str, args, token: str | None) -> tuple[int, int]:
         ba_mod = _import_ba(args.auth)
         candidates = find_new_candidates(args.api_base, args.limit, token)
     if not candidates:
-        return 0, 0
+        return 0, zero_stats()
     ctx = make_ctx(args, "new", token, ba_mod)
     ctx.qid_map = load_qid_map()
     return asyncio.run(run_jobs(candidates, ctx, process_new))
@@ -920,6 +1116,8 @@ def main() -> int:
 
     rc = 0
     budget_left = args.budget_tokens
+    started_at = int(time.time() * 1000)
+    totals = zero_stats()
     for mode in modes:
         if mode in ("review", "new") and not args.dry_run:
             # Mathlib seed-decl leads for Agent 2 (cheap disk read, load once).
@@ -927,13 +1125,26 @@ def main() -> int:
                 _import_ba(args.auth)
                 _, args.seed_decls = ba.load_articles()
         args.budget_tokens = budget_left
-        mode_rc, used = run_mode(mode, args, token)
+        mode_rc, stats = run_mode(mode, args, token)
+        for k in totals:
+            totals[k] += stats.get(k) or 0
         if budget_left is not None:
-            budget_left = max(0, budget_left - used)
+            budget_left = max(0, budget_left - stats.get("tokens", 0))
         rc = max(rc, mode_rc)
         if mode_rc == 3:
             print(f"aborted during {mode} — skipping remaining modes")
             break
+
+    # P2c: register the run in pipeline_runs (REAL runs only — a dry run makes
+    # no writes anywhere, telemetry included). register_run only ever warns;
+    # a 404 from a not-yet-deployed /api/runs cannot fail the runner.
+    agent_mode = ("review" if args.command in ("review", "all")
+                  else "new" if args.command == "new" else None)
+    maybe_register_run(
+        args, token, started_at, totals,
+        model=ba.MODEL if ba is not None else None,
+        prompt_sha=get_prompt_sha(ba, agent_mode) if agent_mode else None,
+        notes=("modes=" + "+".join(modes) + (" aborted" if rc == 3 else "")))
     return rc
 
 
