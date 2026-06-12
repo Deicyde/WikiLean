@@ -9,10 +9,17 @@
 
   // ---- Toggle buttons ----
   document.querySelectorAll(".wl-toggles button").forEach((btn) => {
+    // aria-pressed mirrors .active so the toggle state is announced (fix #11b).
+    // Initialized here too, so static pages without server-set attributes get it.
+    btn.setAttribute("aria-pressed", btn.classList.contains("active") ? "true" : "false");
     btn.addEventListener("click", () => {
       const mode = btn.dataset.mode;
-      document.querySelectorAll(".wl-toggles button").forEach((b) => b.classList.remove("active"));
+      document.querySelectorAll(".wl-toggles button").forEach((b) => {
+        b.classList.remove("active");
+        b.setAttribute("aria-pressed", "false");
+      });
       btn.classList.add("active");
+      btn.setAttribute("aria-pressed", "true");
       document.body.classList.remove(
         "show-all",
         "show-formalized",
@@ -108,7 +115,9 @@
   ];
 
   // The article slug is the (already URL-encoded) path: pages serve at /:slug.
-  const flagSlug = location.pathname.replace(/^\//, "");
+  // Legacy static-site URLs end in ".html" — strip the suffix so the flag POST
+  // hits /api/flag/:slug instead of 404ing with a misleading error (fix #1).
+  const flagSlug = location.pathname.replace(/^\//, "").replace(/\.html$/, "");
 
   function openFlagForm(i) {
     const a = currentAnnos[i];
@@ -258,6 +267,26 @@
   }
 
   let activeEl = null;
+  // Keyboard pinning (fix #4): Enter/Space on a focused .anno pins the tooltip
+  // open as a dialog and moves focus into it; while pinned, the blur/mouseleave
+  // hide path is suppressed (mirrors the flagFormOpen guard). Escape returns
+  // focus to the pinning .anno and closes.
+  let pinnedEl = null;
+
+  function pinTooltip(annoEl, annos) {
+    showTooltip(annoEl, annos);
+    if (tooltip.hidden) return; // flagFormOpen guard in showTooltip won
+    pinnedEl = annoEl;
+    tooltip.setAttribute("role", "dialog");
+    tooltip.setAttribute("aria-label", "Annotation details");
+    const target = tooltip.querySelector("a, button, input, select, textarea, [tabindex]");
+    if (target) {
+      target.focus();
+    } else {
+      tooltip.setAttribute("tabindex", "-1");
+      tooltip.focus();
+    }
+  }
 
   function showTooltip(annoEl, annos) {
     // A half-typed report shouldn't be lost because the cursor grazed another
@@ -276,14 +305,18 @@
   function hideTooltip() {
     clearTimeout(hideTimer);
     tooltip.hidden = true;
+    tooltip.removeAttribute("role");
+    tooltip.removeAttribute("aria-label");
     activeEl = null;
+    pinnedEl = null;
     flagFormOpen = false;
   }
 
   function scheduleHide() {
     // Don't dismiss while someone is filling in the report form (mouseleave
-    // fires constantly while typing); explicit close paths still work.
-    if (flagFormOpen) return;
+    // fires constantly while typing), or while the tooltip is keyboard-pinned
+    // with focus inside it (fix #4); explicit close paths still work.
+    if (flagFormOpen || pinnedEl) return;
     clearTimeout(hideTimer);
     hideTimer = setTimeout(hideTooltip, HIDE_DELAY_MS);
   }
@@ -331,6 +364,13 @@
     el.addEventListener("mouseleave", scheduleHide);
     el.addEventListener("focus", () => showTooltip(el, annos));
     el.addEventListener("blur", scheduleHide);
+    // Enter/Space pins the tooltip open and moves focus into it (fix #4).
+    el.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      e.preventDefault();
+      e.stopPropagation();
+      pinTooltip(el, annos);
+    });
     el.addEventListener("click", (e) => {
       if (!noHover) return; // hover devices: let the wrapped link navigate
       e.preventDefault();
@@ -344,12 +384,30 @@
   tooltip.addEventListener("mouseenter", cancelHide);
   tooltip.addEventListener("mouseleave", scheduleHide);
 
-  // Escape closes; tapping outside (on touch) dismisses an open tooltip.
+  // Escape closes (returning focus to the pinning .anno when keyboard-pinned,
+  // fix #4); clicking/tapping outside dismisses an open tooltip.
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") hideTooltip();
+    if (e.key !== "Escape") return;
+    const ret = pinnedEl;
+    hideTooltip();
+    if (ret) ret.focus();
   });
+  // Tabbing focus out of a pinned tooltip closes it (fix #4). relatedTarget is
+  // null on clicks into non-focusable content — leave those to the click path.
+  tooltip.addEventListener("focusout", (e) => {
+    if (!pinnedEl || flagFormOpen) return;
+    const to = e.relatedTarget;
+    if (!to || tooltip.contains(to) || to === pinnedEl) return;
+    hideTooltip();
+  });
+  // Click-outside dismissal on every device — previously gated to touch, which
+  // left desktop users with no pointer path to close a pinned tooltip or an
+  // open flag form (fix #11d). Clicks inside the tooltip (incl. while typing a
+  // report) never dismiss.
   document.addEventListener("click", (e) => {
-    if (!noHover || !activeEl) return;
-    if (!activeEl.contains(e.target) && !tooltip.contains(e.target)) hideTooltip();
+    if (!activeEl && !flagFormOpen) return;
+    if (activeEl && activeEl.contains(e.target)) return;
+    if (tooltip.contains(e.target)) return;
+    hideTooltip();
   });
 })();

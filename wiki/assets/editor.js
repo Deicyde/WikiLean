@@ -24,25 +24,47 @@
   const unsavedNew = new Set();
 
   // ---- top bar ----
+  // Tombstoned (status "rejected") annotations render no highlight, so without
+  // the "N hidden" button there is no way to reach them and "pick another
+  // status and save to restore" is unreachable (fix #2).
+  const rejectedIdxs = [];
+  annos.forEach(function (a, i) {
+    if (a && a.status === "rejected") rejectedIdxs.push(i);
+  });
   const bar = document.createElement("div");
   bar.id = "wlr-bar";
   const ret = encodeURIComponent("/" + slug);
   bar.innerHTML =
     '<b>WikiLean edit</b><span>' + escapeHtml(slug) + "</span>" +
     '<span>' + annos.length + " annotations</span>" +
+    (rejectedIdxs.length
+      ? '<button id="wlr-hidden" type="button" title="Rejected annotations are hidden from readers — open one, pick another status, and save to restore it">' +
+        rejectedIdxs.length + " hidden annotation" + (rejectedIdxs.length === 1 ? "" : "s") + "</button>"
+      : "") +
     '<span style="opacity:.85">click a highlight to edit · select text to add</span>' +
     '<span class="wlr-spacer"></span>' +
     '<span style="opacity:.85">editing as ' + escapeHtml(user.name) + "</span>" +
     '<a href="/' + encodeURIComponent(slug) + '/history" style="color:#fff;margin-left:12px">history</a>' +
     '<a href="/logout?returnTo=' + ret + '" style="color:#fff;margin-left:12px">log out</a>';
-  document.body.appendChild(bar);
+  // Prepend (not append): on ≤640px review.css positions the bar sticky, which
+  // only works from the top of the document flow (fix #5).
+  document.body.prepend(bar);
+  if (rejectedIdxs.length) {
+    // Each click opens the next hidden annotation in the editor panel,
+    // cycling through all of them (fix #2).
+    let hiddenCursor = 0;
+    bar.querySelector("#wlr-hidden").addEventListener("click", function () {
+      openEditor(rejectedIdxs[hiddenCursor % rejectedIdxs.length]);
+      hiddenCursor++;
+    });
+  }
 
   // ---- floating "annotate selection" button ----
   const fab = document.createElement("button");
   fab.id = "wlr-fab";
   fab.textContent = "＋ Annotate";
   fab.style.cssText =
-    "position:fixed;z-index:6000;display:none;background:#0969da;color:#fff;" +
+    "position:fixed;z-index:6000;display:none;background:#1a4b8c;color:#fff;" +
     "border:none;border-radius:6px;padding:5px 10px;font:13px -apple-system,sans-serif;" +
     "cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25)";
   document.body.appendChild(fab);
@@ -50,11 +72,15 @@
   // ---- edit panel ----
   const panel = document.createElement("div");
   panel.id = "wlr-panel";
+  // Dialog semantics + label/for on every field for assistive tech (fix #11c).
+  panel.setAttribute("role", "dialog");
+  panel.setAttribute("aria-modal", "true");
+  panel.setAttribute("aria-labelledby", "wlr-title");
   panel.innerHTML = `
     <button id="wlr-close" type="button" title="Close (Esc)" aria-label="Close editor">×</button>
     <h3 id="wlr-title">Edit annotation</h3>
     <div class="wlr-quote" id="wlr-quote"></div>
-    <label>Status</label>
+    <label for="wlr-f-status">Status</label>
     <small class="wlr-help">Does Mathlib4 capture this statement?</small>
     <select id="wlr-f-status">
       <option value="formalized">formalized</option>
@@ -62,26 +88,26 @@
       <option value="not_formalized">not_formalized</option>
       <option value="rejected">rejected (hide)</option>
     </select>
-    <label>Kind</label>
+    <label for="wlr-f-kind">Kind</label>
     <small class="wlr-help">definition · theorem · proposition · example · corollary · lemma</small>
     <input id="wlr-f-kind" placeholder="e.g. definition">
-    <label>Label</label>
+    <label for="wlr-f-label">Label</label>
     <small class="wlr-help">Short display name shown at the top of the tooltip.</small>
     <input id="wlr-f-label" placeholder="e.g. Abelianization of a group">
-    <label>Mathlib decl</label>
+    <label for="wlr-f-decl">Mathlib decl</label>
     <small class="wlr-help">Type 2+ chars for autocomplete (~4,600 known decls). Picking a suggestion auto-fills the module.</small>
     <input id="wlr-f-decl" placeholder="e.g. Ideal.IsPrime" list="wlr-decl-options" autocomplete="off">
     <datalist id="wlr-decl-options"></datalist>
-    <label>Mathlib module</label>
+    <label for="wlr-f-module">Mathlib module</label>
     <small class="wlr-help">Dotted path, auto-filled from the decl autocomplete.</small>
     <input id="wlr-f-module" placeholder="e.g. Mathlib.RingTheory.Ideal.Prime">
-    <label>match_kind</label>
+    <label for="wlr-f-match">match_kind</label>
     <small class="wlr-help">exact · generalization · special_case · invocation</small>
     <input id="wlr-f-match" placeholder="e.g. exact">
-    <label>Note</label>
+    <label for="wlr-f-note">Note</label>
     <small class="wlr-help">Optional caveats or context for readers.</small>
     <textarea id="wlr-f-note"></textarea>
-    <label>Edit summary (optional)</label>
+    <label for="wlr-f-comment">Edit summary (optional)</label>
     <small class="wlr-help">A one-line description shown in /recent-changes.</small>
     <input id="wlr-f-comment" placeholder="what changed + why">
     <div class="wlr-actions">
@@ -141,16 +167,16 @@
       '<a href="https://leanprover-community.github.io/mathlib4_docs/" target="_blank" rel="noopener">Mathlib4</a> ' +
       "declaration. Key fields:</p>" +
       "<ul>" +
-      '<li><b>Status</b> — <span style="color:#2da44e">formalized</span> if Mathlib captures it, ' +
-      '<span style="color:#d29922">partial</span> for a related/weaker form, ' +
-      '<span style="color:#cf222e">not_formalized</span> otherwise.</li>' +
+      '<li><b>Status</b> — <span style="color:#266844">formalized</span> if Mathlib captures it, ' +
+      '<span style="color:#7d5a10">partial</span> for a related/weaker form, ' +
+      '<span style="color:#9c2f28">not_formalized</span> otherwise.</li>' +
       "<li><b>Mathlib decl</b> — declaration name, e.g. <code>Ideal.IsPrime</code>. " +
       "Type 2+ chars to autocomplete from ~4,600 known decls; picking one fills the module field.</li>" +
       "<li><b>match_kind</b> — how the decl relates: <code>exact</code> · <code>generalization</code> · " +
       "<code>special_case</code> · <code>invocation</code>.</li>" +
       "</ul>" +
       '<p class="footer">Every save flips this annotation\'s provenance to ' +
-      '<span style="color:#2da44e">✓ human-curated</span> — readers see that you\'ve reviewed it. ' +
+      '<span style="color:#266844">✓ human-curated</span> — readers see that you\'ve reviewed it. ' +
       "The <b>✓ Mark reviewed</b> button does the same without changing any field.</p>" +
       '<div class="actions"><button id="wlr-intro-ok">Got it</button></div>' +
       "</div>";
@@ -233,23 +259,24 @@
       pickerEl = null;
     }
   }
+  // Status dots in the warm palette's trio; rejected gets the untouched gray (fix #6d).
   const STATUS_COLORS = {
-    formalized: "#2da44e",
-    partial: "#d29922",
-    not_formalized: "#cf222e",
-    rejected: "#8c959f",
+    formalized: "#2f7d4f",
+    partial: "#b08020",
+    not_formalized: "#b3372f",
+    rejected: "#9a9183",
   };
   function showPicker(annoEl, idxs) {
     dismissPicker();
     pickerEl = document.createElement("div");
     pickerEl.id = "wlr-picker";
     pickerEl.style.cssText =
-      "position:fixed;z-index:6500;background:#fff;border:1px solid #d0d7de;border-radius:8px;" +
+      "position:fixed;z-index:6500;background:#fffdf9;border:1px solid #d8d0bd;border-radius:8px;" +
       "box-shadow:0 4px 14px rgba(0,0,0,.2);padding:6px;font:13px -apple-system,sans-serif;" +
       "min-width:240px;max-width:380px";
     const hdr = document.createElement("div");
     hdr.style.cssText =
-      "padding:4px 8px;font-size:11px;color:#57606a;text-transform:uppercase;letter-spacing:.04em";
+      "padding:4px 8px;font-size:11px;color:#5f594e;text-transform:uppercase;letter-spacing:.04em";
     hdr.textContent = idxs.length + " annotations here — pick one to edit";
     pickerEl.appendChild(hdr);
     idxs.forEach((i) => {
@@ -257,16 +284,16 @@
       const row = document.createElement("button");
       row.style.cssText =
         "display:block;width:100%;text-align:left;padding:7px 10px;border:none;background:transparent;" +
-        "font:inherit;cursor:pointer;border-radius:4px;color:#1f2328";
+        "font:inherit;cursor:pointer;border-radius:4px;color:#1f1d1a";
       row.onmouseenter = function () {
-        row.style.background = "#f6f8fa";
+        row.style.background = "#f7f4ee";
       };
       row.onmouseleave = function () {
         row.style.background = "transparent";
       };
       const dot =
         '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:' +
-        (STATUS_COLORS[a.status] || "#9da6b0") +
+        (STATUS_COLORS[a.status] || "#9a9183") +
         ';margin-right:8px;vertical-align:middle"></span>';
       const label = a.label || a.kind || "annotation #" + i;
       const metaBits = [];
@@ -275,7 +302,7 @@
         metaBits.push(a.status === "rejected" ? "rejected (hidden from readers)" : a.status.replace("_", " "));
       }
       const meta = metaBits.length
-        ? ' <span style="color:#8c959f;font-size:.85em;margin-left:6px">' +
+        ? ' <span style="color:#5f594e;font-size:.85em;margin-left:6px">' +
           escapeHtml(metaBits.join(" · ")) +
           "</span>"
         : "";
@@ -299,7 +326,7 @@
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       dismissPicker();
-      if (panel.classList.contains("open")) closePanel();
+      if (panel.classList.contains("open")) requestClose();
     } else if ((e.metaKey || e.ctrlKey) && e.key === "Enter" && panel.classList.contains("open")) {
       // Cmd/Ctrl+Enter saves, matching the Save button.
       e.preventDefault();
@@ -307,21 +334,41 @@
     }
   });
 
+  function maybeShowFab() {
+    const sel = window.getSelection();
+    const text = sel ? sel.toString().trim() : "";
+    if (!sel || sel.isCollapsed || text.length < 4) {
+      fab.style.display = "none";
+      return;
+    }
+    const rect = sel.getRangeAt(0).getBoundingClientRect();
+    pendingSel = { text, section: nearestSection(sel.anchorNode) };
+    fab.style.left = Math.max(8, rect.left) + "px";
+    fab.style.top = Math.max(44, rect.top - 34) + "px";
+    fab.style.display = "block";
+  }
+
   document.addEventListener("mouseup", (e) => {
     if (e.target === fab) return;
-    setTimeout(() => {
-      const sel = window.getSelection();
-      const text = sel ? sel.toString().trim() : "";
-      if (!sel || sel.isCollapsed || text.length < 4) {
-        fab.style.display = "none";
-        return;
-      }
-      const rect = sel.getRangeAt(0).getBoundingClientRect();
-      pendingSel = { text, section: nearestSection(sel.anchorNode) };
-      fab.style.left = Math.max(8, rect.left) + "px";
-      fab.style.top = Math.max(44, rect.top - 34) + "px";
-      fab.style.display = "block";
-    }, 0);
+    setTimeout(maybeShowFab, 0);
+  });
+  // iOS long-press selections don't reliably fire mouseup, so also react to
+  // touchend and (debounced) selectionchange — the latter covers dragging the
+  // native selection handles, which fires no mouse/touch events at all (fix #11f).
+  document.addEventListener("touchend", (e) => {
+    if (e.target === fab) return;
+    setTimeout(maybeShowFab, 0);
+  });
+  let selDebounce = null;
+  document.addEventListener("selectionchange", () => {
+    clearTimeout(selDebounce);
+    selDebounce = setTimeout(() => {
+      // Caret movement inside the panel's fields also fires selectionchange —
+      // don't flicker the FAB while someone is typing.
+      const ae = document.activeElement;
+      if (ae && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName)) return;
+      maybeShowFab();
+    }, 250);
   });
 
   document.addEventListener("mousedown", (e) => {
@@ -336,6 +383,75 @@
 
   function mathlib(a) {
     return a.mathlib || {};
+  }
+
+  // ---- form-state helpers (fixes #8/#9/#11c) --------------------------------
+
+  function fieldValues() {
+    return {
+      status: $("wlr-f-status").value,
+      kind: $("wlr-f-kind").value,
+      label: $("wlr-f-label").value,
+      decl: $("wlr-f-decl").value,
+      module: $("wlr-f-module").value,
+      match: $("wlr-f-match").value,
+      note: $("wlr-f-note").value,
+      comment: $("wlr-f-comment").value,
+    };
+  }
+
+  // Snapshot taken when the panel opens; Escape/× compare against it so
+  // unsaved changes prompt before being discarded (fix #11c).
+  let openSnapshot = "";
+  function fieldSnapshot() {
+    return JSON.stringify(fieldValues());
+  }
+
+  // 409 draft preservation (fix #9): the typed fields are stashed in
+  // sessionStorage keyed by slug + annotation identity, so reopening the same
+  // annotation — even after a reload to rebase — restores the draft.
+  function draftKey() {
+    let ident;
+    if (editingIndex != null) {
+      const a = annos[editingIndex];
+      ident = a && a.id ? "id:" + a.id : "idx:" + editingIndex;
+    } else {
+      ident = "new:" + (panel.dataset.newSection || "") + ":" + (panel.dataset.newSnippet || "");
+    }
+    return "wl_draft:" + slug + ":" + ident;
+  }
+  function stashDraft() {
+    try {
+      sessionStorage.setItem(draftKey(), JSON.stringify(fieldValues()));
+    } catch (_) { /* storage blocked — the panel keeps the fields anyway */ }
+  }
+  function restoreDraft() {
+    let d = null;
+    try {
+      const raw = sessionStorage.getItem(draftKey());
+      if (raw) {
+        sessionStorage.removeItem(draftKey());
+        d = JSON.parse(raw);
+      }
+    } catch (_) { /* ignore */ }
+    if (!d) return false;
+    $("wlr-f-status").value = d.status || $("wlr-f-status").value;
+    $("wlr-f-kind").value = d.kind || "";
+    $("wlr-f-label").value = d.label || "";
+    $("wlr-f-decl").value = d.decl || "";
+    $("wlr-f-module").value = d.module || "";
+    $("wlr-f-match").value = d.match || "";
+    $("wlr-f-note").value = d.note || "";
+    $("wlr-f-comment").value = d.comment || "";
+    return true;
+  }
+
+  // Disable the action buttons while a request is in flight so a double-click
+  // can't double-submit; every failure path re-enables them (fix #8).
+  function setBusy(busy) {
+    ["wlr-save", "wlr-mark-reviewed", "wlr-del"].forEach(function (id) {
+      $(id).disabled = busy;
+    });
   }
 
   function openEditor(idx) {
@@ -358,7 +474,15 @@
       a.status === "rejected"
         ? "This annotation is rejected (hidden from readers). Pick another status and save to restore it."
         : "";
+    // Snapshot the canonical values first, THEN overlay any stashed 409 draft —
+    // a restored draft must count as unsaved changes (fixes #9/#11c).
+    setBusy(false);
+    openSnapshot = fieldSnapshot();
+    if (restoreDraft()) {
+      $("wlr-status-msg").textContent = "restored your unsaved draft — review and save to re-apply it";
+    }
     panel.classList.add("open");
+    $("wlr-f-status").focus();
   }
 
   function openAdder(text, section) {
@@ -374,7 +498,16 @@
     // New annotations become human-curated on save, so nothing to mark separately.
     $("wlr-mark-reviewed").style.display = "none";
     $("wlr-status-msg").textContent = "";
+    // Same snapshot-then-restore dance as openEditor (fixes #9/#11c); the
+    // draft key includes section+snippet, so reselecting the same text after
+    // a 409 reload brings the draft back.
+    setBusy(false);
+    openSnapshot = fieldSnapshot();
+    if (restoreDraft()) {
+      $("wlr-status-msg").textContent = "restored your unsaved draft — review and save to re-apply it";
+    }
     panel.classList.add("open");
+    $("wlr-f-status").focus();
   }
 
   // Close the edit panel and return to a clean state. Nothing else removed the
@@ -387,7 +520,12 @@
     document.querySelectorAll(".anno.wlr-selected").forEach((n) => n.classList.remove("wlr-selected"));
     $("wlr-status-msg").textContent = "";
   }
-  $("wlr-close").addEventListener("click", closePanel);
+  // Escape/× with unsaved changes ask before discarding (fix #11c).
+  function requestClose() {
+    if (fieldSnapshot() !== openSnapshot && !confirm("Discard unsaved changes?")) return;
+    closePanel();
+  }
+  $("wlr-close").addEventListener("click", requestClose);
 
   function quoteOf(a) {
     const anc = a.anchor || {};
@@ -455,6 +593,7 @@
   });
 
   function endorse(idx, a) {
+    setBusy(true); // (fix #8)
     $("wlr-status-msg").textContent = "endorsing…";
     fetch("/api/article/" + encodeURIComponent(slug), {
       method: "POST",
@@ -467,6 +606,7 @@
     })
       .then((r) => Promise.all([r.status, r.json()]))
       .then(([status, res]) => {
+        setBusy(false); // endorse never reloads — re-enable on every outcome
         if (status === 409) {
           showStaleMessage();
           return;
@@ -500,16 +640,20 @@
         $("wlr-status-msg").textContent = "endorsed ✓ — now marked human-curated";
       })
       .catch((e) => {
+        setBusy(false); // (fix #8)
         $("wlr-status-msg").textContent = "error: " + e;
       });
   }
 
   // Shared 409 handling: the article changed under us — never clobber the
-  // newer revision; make the contributor reload and re-apply.
+  // newer revision, and never discard the typed work: the panel stays open
+  // with the fields intact, and the draft is stashed in sessionStorage so a
+  // reload-to-rebase can restore it (fix #9).
   function showStaleMessage() {
+    stashDraft();
     $("wlr-status-msg").innerHTML =
-      "This article was edited since you loaded it — reload to get the latest version, then re-apply your change. " +
-      '<a href="#" onclick="location.reload();return false">reload</a>';
+      "This article changed since you loaded it — your draft is preserved; " +
+      '<a href="#" onclick="location.reload();return false">reload</a> to rebase, then re-apply.';
   }
 
   function save() {
@@ -552,6 +696,7 @@
   }
 
   function persist(verb) {
+    setBusy(true); // no double-submit while the request is in flight (fix #8)
     $("wlr-status-msg").textContent = "saving…";
     fetch("/api/article/" + encodeURIComponent(slug), {
       method: "POST",
@@ -565,10 +710,12 @@
       .then((r) => Promise.all([r.status, r.json()]))
       .then(([status, res]) => {
         if (status === 409) {
+          setBusy(false); // (fix #8)
           showStaleMessage();
           return;
         }
         if (!res.ok) {
+          setBusy(false); // (fix #8)
           $("wlr-status-msg").textContent = "error: " + (res.error || "save failed");
           return;
         }
@@ -580,15 +727,18 @@
         unsavedNew.clear();
         const m = (res.matched || "").match(/(\d+)\/(\d+)/);
         if (m && m[1] !== m[2]) {
+          setBusy(false); // save DID land; allow further edits (fix #8)
           $("wlr-status-msg").innerHTML =
             verb + ", but only " + res.matched + " anchored — an annotation's text didn't match the article. " +
             '<a href="#" onclick="location.reload();return false">reload anyway</a>';
         } else {
+          // Stay disabled — the page is about to reload.
           $("wlr-status-msg").textContent = verb + " — reloading (" + (res.matched || "") + ")";
           setTimeout(() => location.reload(), 400);
         }
       })
       .catch((e) => {
+        setBusy(false); // (fix #8)
         $("wlr-status-msg").textContent = "error: " + e;
       });
   }
