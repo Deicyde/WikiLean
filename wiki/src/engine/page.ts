@@ -132,11 +132,11 @@ export function renderArticlePage(input: PageInput): string {
 <meta property="og:description" content="${descEsc}">
 <meta property="og:url" content="${canonical}">
 <meta name="twitter:card" content="summary">
-<link rel="stylesheet" href="/assets/style.css?v=5">
+<link rel="stylesheet" href="/assets/style.css?v=6">
 <style>
-.wl-attribution { max-width: 1000px; margin: 24px auto 40px; padding: 12px 16px 0; border-top: 1px solid #d8dee4; color: #57606a; font-size: 12px; line-height: 1.5; }
+.wl-attribution { max-width: 1000px; margin: 24px auto 40px; padding: 12px 16px 0; border-top: 1px solid #d8d0bd; color: #5f594e; font-size: 12px; line-height: 1.5; }
 .wl-attribution p { margin: 4px 0; }
-.wl-attribution a { color: #0969da; text-decoration: none; }
+.wl-attribution a { color: #1a4b8c; text-decoration: none; }
 .wl-attribution a:hover { text-decoration: underline; }
 </style>
 </head>

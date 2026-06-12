@@ -71,8 +71,9 @@ async function renderArticleBase(env: Env, row: ArticleRow): Promise<string> {
   // v8: tombstone skip — status='rejected' annotations are no longer wrapped
   // and drop out of header badge counts / anonymous client data. v9: cached
   // pages embed /assets/script.js?v=5 (the ⚑ flag micro-form) — evict so all
-  // readers refetch the new script.
-  const cacheKey = `render:v9:${slug}:${row.version}`;
+  // readers refetch the new script. v10: warm-palette redesign — page template
+  // links style.css?v=6 + retuned .wl-attribution.
+  const cacheKey = `render:v10:${slug}:${row.version}`;
   const cached = await env.RENDER_CACHE.get(cacheKey);
   if (cached) return cached;
 
@@ -306,7 +307,7 @@ async function emitAnnotationEvents(db: DrizzleDB, rows: AnnotationEventInsert[]
 // longer copies index.html/sitemap.xml into wiki/public/ — the asset layer
 // runs BEFORE the Worker and would otherwise shadow these paths.
 app.get("/", async (c) => {
-  const cacheKey = "page:home:v1";
+  const cacheKey = "page:home:v2";
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const db = drizzle(c.env.DB);

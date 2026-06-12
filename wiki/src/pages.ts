@@ -86,39 +86,47 @@ export function injectAuthAndEditor(
   return idx === -1 ? page + inject : page.slice(0, idx) + inject + page.slice(idx);
 }
 
+// Warm academic-minimalist shell, matching home.ts: paper background, serif
+// display headings (system stacks only), one deep-blue accent (#1a4b8c), and
+// the status trio retuned to #2f7d4f / #b08020 / #b3372f. Text-on-tint badge
+// colors use darker inks (#7d5a10, #9c2f28) to keep WCAG AA contrast.
 const SHELL_CSS = `
 *{box-sizing:border-box}
-body{margin:0;background:#fafbfc;color:#1f2328;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-.wl-header{background:#fff;border-bottom:1px solid #d0d7de;padding:14px 28px;display:flex;align-items:center;justify-content:space-between}
-.wl-brand{font-weight:700;color:#0969da;font-size:18px;text-decoration:none}
-.wl-navlink{color:#0969da;text-decoration:none;font-size:.9rem}
-.wrap{max-width:900px;margin:0 auto;padding:28px 28px 64px}
-h1{font-size:1.5rem;margin:0 0 .3rem}
-.lead{color:#57606a;margin:0 0 18px}
-table{border-collapse:collapse;width:100%;background:#fff;border:1px solid #d0d7de;border-radius:8px;overflow:hidden}
-th,td{border-bottom:1px solid #eaeef2;padding:8px 12px;text-align:left;font-size:.9rem;vertical-align:top}
-th{background:#f6f8fa;text-transform:uppercase;letter-spacing:.04em;font-size:.72rem;color:#57606a}
+body{margin:0;background:#f7f4ee;color:#1f1d1a;line-height:1.55;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+:focus-visible{outline:2px solid #1a4b8c;outline-offset:2px}
+.wl-header{display:flex;align-items:baseline;justify-content:space-between;gap:8px 20px;flex-wrap:wrap;max-width:900px;margin:0 auto;padding:20px 24px 0}
+.wl-brand{font-family:Charter,'Bitstream Charter','Iowan Old Style',Georgia,'Times New Roman',serif;font-weight:700;font-size:1.1rem;color:#1f1d1a;text-decoration:none}
+.wl-brand:hover{color:#1a4b8c}
+.wl-navlink{color:#1a4b8c;text-decoration:none;font-size:.88rem}
+.wl-navlink:hover{text-decoration:underline}
+.wrap{max-width:900px;margin:0 auto;padding:26px 24px 64px}
+h1{font-family:Charter,'Bitstream Charter','Iowan Old Style',Georgia,'Times New Roman',serif;font-size:1.6rem;margin:0 0 .35rem}
+h1 a{color:inherit}
+.lead{color:#5f594e;margin:0 0 20px}
+table{border-collapse:collapse;width:100%;background:#fffdf9;border:1px solid #d8d0bd;border-radius:8px;overflow:hidden}
+th,td{border-bottom:1px solid #ece6d8;padding:8px 12px;text-align:left;font-size:.9rem;vertical-align:top}
+th{background:#f2eee3;text-transform:uppercase;letter-spacing:.05em;font-size:.72rem;color:#5f594e}
 tr:last-child td{border-bottom:none}
-a{color:#0969da;text-decoration:none}
+a{color:#1a4b8c;text-decoration:none}
 a:hover{text-decoration:underline}
-.muted{color:#8c959f}
-button.revert{font:inherit;font-size:.8rem;padding:3px 9px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;cursor:pointer;margin-right:4px}
-button.revert:hover{background:#eaeef2}
+.muted{color:#6e675a}
+button.revert{font:inherit;font-size:.8rem;padding:3px 10px;border:1px solid #d8d0bd;border-radius:6px;background:#fffdf9;color:#1f1d1a;cursor:pointer;margin-right:4px}
+button.revert:hover{border-color:#1a4b8c;color:#1a4b8c}
 .wl-flag-reason{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.72rem;font-weight:600;white-space:nowrap}
-.wl-fr-wrong_decl{background:rgba(207,34,46,.10);color:#cf222e}
-.wl-fr-wrong_status{background:rgba(210,153,34,.14);color:#9a6700}
-.wl-fr-irrelevant{background:#eaeef2;color:#57606a}
-.wl-fr-missing_formalization{background:rgba(9,105,218,.10);color:#0969da}
-.wl-fr-other{background:#eaeef2;color:#57606a}
-.wl-diff-card{background:#fff;border:1px solid #d0d7de;border-left-width:4px;border-radius:8px;padding:12px 16px;margin:0 0 14px}
-.wl-diff-add{border-left-color:#2da44e}
-.wl-diff-delete{border-left-color:#cf222e}
-.wl-diff-modify{border-left-color:#d29922}
+.wl-fr-wrong_decl{background:rgba(179,55,47,.10);color:#9c2f28}
+.wl-fr-wrong_status{background:rgba(176,128,32,.14);color:#7d5a10}
+.wl-fr-irrelevant{background:#ece6d8;color:#5f594e}
+.wl-fr-missing_formalization{background:rgba(26,75,140,.10);color:#1a4b8c}
+.wl-fr-other{background:#ece6d8;color:#5f594e}
+.wl-diff-card{background:#fffdf9;border:1px solid #d8d0bd;border-left-width:4px;border-radius:8px;padding:12px 16px;margin:0 0 14px}
+.wl-diff-add{border-left-color:#2f7d4f}
+.wl-diff-delete{border-left-color:#b3372f}
+.wl-diff-modify{border-left-color:#b08020}
 .wl-diff-head{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;margin-bottom:6px}
 .wl-diff-type{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
-.wl-diff-add .wl-diff-type{color:#2da44e}
-.wl-diff-delete .wl-diff-type{color:#cf222e}
-.wl-diff-modify .wl-diff-type{color:#9a6700}
+.wl-diff-add .wl-diff-type{color:#2f7d4f}
+.wl-diff-delete .wl-diff-type{color:#9c2f28}
+.wl-diff-modify .wl-diff-type{color:#7d5a10}
 .wl-diff-label{font-weight:600}
 .wl-diff-card table{border:none;border-radius:0}
 .wl-diff-card td{font-size:.85rem;word-break:break-word;white-space:pre-wrap}
