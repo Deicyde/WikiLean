@@ -201,17 +201,18 @@ into `wiki/public/assets/`. Edit sources, then run build-public, never edit
   articles.anchored_count written only from live-pinned renders.
 - [ ] **Staleness banner** (per-request injection, post-cache) with one-click
   Wikipedia ?diff=cur&oldid= link.
-- [ ] **Dynamic homepage/sitemap from D1** — new articles are currently invisible
-  (static index.html/sitemap.xml); lifecycle 1 is incomplete without this.
-- [ ] **Integration test harness** (miniflare/wrangler-dev D1): the edit-safety
-  invariant as an automated test — seed → human save → moderate → push → assert
-  human annotation intact. Land BEFORE the POST-handler refactor stack.
-- [ ] **WP_HTML TTL** (e.g. 90d) + delete-old-key on re-pin (unbounded KV growth).
+- [x] **Dynamic homepage/sitemap from D1** — DONE 2026-06-12 (Wave D). GET / and
+  /sitemap.xml render from per-article count columns (KV-cached 5min/1h); static
+  copies removed from build-public so the Worker routes aren't shadowed.
+- [x] **Integration test harness** — DONE (Wave A, extended every wave since;
+  111 tests incl. the full edit-safety cycle: seed → human save → bot echo →
+  intact / bot drop → 422).
+- [x] **WP_HTML TTL** (90d, Wave A) + delete-old-key on re-pin (Wave D).
 - [ ] **Token-budget memo:** tokens/article (from cache/.batch_run.log) × corpus ×
   cadence vs Max-plan limits. Gates the "AI-moderated" claim and sizes donations ask.
-- [ ] Fix serveArticle double-read race (pass the row into renderArticleBase).
-- [ ] Remove the GET-path revid write (index.ts ~47-49) once seeding guarantees revid.
-- [ ] discover_articles.py: diff live WikiProject Math list vs D1 → feeds moderate.py new.
+- [x] Fix serveArticle double-read race (Wave A).
+- [x] Remove the GET-path revid write (Wave D; all 709 revids verified non-null).
+- [x] discover_articles.py (Wave C) → feeds moderate.py new --from-file (Wave D).
 
 ## P2 — Experiment instrumentation + contribution UX
 
@@ -219,11 +220,11 @@ into `wiki/public/assets/`. Edit sources, then run build-public, never edit
   meta TEXT (run_id, model, tokens, cost, mathlib_sha, auth_mode), parent_id, run_id.
   Backfill (comment LIKE 'revert to #%' → revert; user_id IS NULL → seed) BEFORE
   first bearer write.
-- [ ] **annotation_events table:** server-side field-level diffs at save time, keyed
-  by annotation id; event_type add|modify|delete|endorse|revert_restore; actor_type
-  from session-vs-bearer. Provenance-only flip = 'endorse' (the cleanest
-  human-agreement signal; currently indistinguishable from an edit). Runs for ALL
-  POST paths.
+- [x] **annotation_events table** — DONE 2026-06-12 (Wave D, migration 0005).
+  Field-level diffs by annotation id on every write path; event types add|modify|
+  delete|endorse|reject|revert_restore; actor session-vs-bearer. Endorse is now an
+  explicit action (POST {action:'endorse', annotation_id, base_version}) since
+  stampProvenance deliberately reverts bare provenance flips.
 - [ ] **Ladder stats:** _preserve_human returns {restored, reinserted} + ids;
   downgrades_blocked from the PRIORITY pass; moderation_flag counts → rec['ladder']
   + decisions sidecar. (Reads zero until P1 ships — that's expected, not a bug.)
@@ -231,10 +232,11 @@ into `wiki/public/assets/`. Edit sources, then run build-public, never edit
   confidence (uncalibrated covariate), considered-candidates (stripped from stored
   blob by a deterministic post-pass), truncated tool transcript. pipeline_runs
   registry in D1.
-- [ ] **Anonymous flag pipeline:** flags table keyed by annotation_id (anchor_hash
-  fallback), POST /api/flag/:slug (no auth; IP-keyed limiter; Origin check;
-  Turnstile as escalation), ⚑ micro-form in tooltip (2 taps, mobile-first), /flags
-  patrol page; flag_count feeds /api/work priority.
+- [x] **Anonymous flag pipeline** — DONE 2026-06-12 (Wave D). flags table by
+  annotation_id; POST /api/flag/:slug (no auth, FLAG_LIMITER 5/min/IP, 5-open cap
+  silent); ⚑ micro-form in the tooltip; /flags patrol queue with role-gated
+  resolve; flag_count feeds /api/work priority. Verified live end-to-end.
+  Turnstile remains the documented escalation if abuse appears.
 - [ ] **Patrol tooling:** GET /:slug/diff/:fromId/:toId field-level diff (pure read
   over revision snapshots); /recent-changes filter by revisions.kind (NOT user_id
   nullness); patrolled_by/at columns + mark-patrolled gated on role; one /patrol
