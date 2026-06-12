@@ -153,11 +153,13 @@ describe("staleness banner (injectAuthAndEditor)", () => {
     }
   });
 
-  it("logged-in viewers get the banner alongside the editor (with the v=6 asset bump)", () => {
+  it("logged-in viewers get the banner alongside the editor (with the current asset bump)", () => {
     const user = { id: "u1", name: "U", role: "user" } as never;
     const html = injectAuthAndEditor(PAGE, { ...base, user, revid: 1, latestRevid: 2, version: 7 });
     expect(html).toContain("wl-stale-banner");
-    expect(html).toContain("/assets/editor.js?v=6");
-    expect(html).not.toContain("editor.js?v=5");
+    // v=8: editor.js endorse action (D-C9). NB: this assertion was stale at
+    // v=6 when the editor shipped v=7 — keep it in lockstep with pages.ts.
+    expect(html).toContain("/assets/editor.js?v=8");
+    expect(html).not.toContain("editor.js?v=7");
   });
 });

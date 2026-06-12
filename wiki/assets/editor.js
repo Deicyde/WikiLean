@@ -434,15 +434,83 @@
     persist("deleted");
   });
   $("wlr-mark-reviewed").addEventListener("click", () => {
-    // One-click endorsement: flip provenance to "human" without touching any
-    // other field. Useful when an AI annotation is already correct and the
-    // editor just wants to signal "I've checked this."
+    // One-click endorsement: ask the server to flip provenance to "human"
+    // without touching any other field (D-C2 {action:'endorse'}). The old
+    // client-side provenance-flip-and-save no longer works — stampProvenance
+    // keeps stored provenance for unchanged annotations by design, so a bare
+    // flip in a full save silently reverts.
     if (editingIndex == null) return;
     const a = annos[editingIndex];
     if (a.provenance === "human") return;
-    a.provenance = "human";
-    persist("marked reviewed");
+    if (!a.id) {
+      // Legacy tab loaded before the id backfill: no stable id to endorse by.
+      // Fall back to the old full-save path (the flip won't stick server-side,
+      // but the save still records the review attempt) and say so.
+      console.warn("WikiLean: annotation has no id — endorsing via legacy full save");
+      a.provenance = "human";
+      persist("marked reviewed");
+      return;
+    }
+    endorse(editingIndex, a);
   });
+
+  function endorse(idx, a) {
+    $("wlr-status-msg").textContent = "endorsing…";
+    fetch("/api/article/" + encodeURIComponent(slug), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "endorse",
+        annotation_id: a.id,
+        base_version: window.__WL_VERSION__,
+      }),
+    })
+      .then((r) => Promise.all([r.status, r.json()]))
+      .then(([status, res]) => {
+        if (status === 409) {
+          showStaleMessage();
+          return;
+        }
+        if (status === 404) {
+          // The annotation vanished server-side (deleted/recreated under us).
+          console.warn("WikiLean: endorse target not found server-side — reloading");
+          $("wlr-status-msg").innerHTML =
+            'That annotation no longer exists on the server — <a href="#" onclick="location.reload();return false">reload</a> to resync.';
+          return;
+        }
+        if (!res.ok) {
+          $("wlr-status-msg").textContent = "error: " + (res.error || "endorse failed");
+          return;
+        }
+        if (typeof res.version === "number") window.__WL_VERSION__ = res.version;
+        // Cheap local refresh — no reload needed: update the model, the
+        // human-curated underline (wrap.ts uses representative provenance:
+        // any human annotation in a group marks the whole wrap), and the
+        // panel (the button only shows when there's something to flip).
+        a.provenance = "human";
+        document.querySelectorAll(".anno").forEach((el) => {
+          const raw = el.dataset.annoIndices || el.dataset.annoIndex;
+          if (raw == null) return;
+          const hit = String(raw)
+            .split(",")
+            .some((s) => parseInt(s, 10) === idx);
+          if (hit) el.dataset.provenance = "human";
+        });
+        $("wlr-mark-reviewed").style.display = "none";
+        $("wlr-status-msg").textContent = "endorsed ✓ — now marked human-curated";
+      })
+      .catch((e) => {
+        $("wlr-status-msg").textContent = "error: " + e;
+      });
+  }
+
+  // Shared 409 handling: the article changed under us — never clobber the
+  // newer revision; make the contributor reload and re-apply.
+  function showStaleMessage() {
+    $("wlr-status-msg").innerHTML =
+      "This article was edited since you loaded it — reload to get the latest version, then re-apply your change. " +
+      '<a href="#" onclick="location.reload();return false">reload</a>';
+  }
 
   function save() {
     const built = {
@@ -497,11 +565,7 @@
       .then((r) => Promise.all([r.status, r.json()]))
       .then(([status, res]) => {
         if (status === 409) {
-          // The article changed under us. Don't clobber the newer revision —
-          // make the contributor reload and re-apply their edit.
-          $("wlr-status-msg").innerHTML =
-            "This article was edited since you loaded it — reload to get the latest version, then re-apply your change. " +
-            '<a href="#" onclick="location.reload();return false">reload</a>';
+          showStaleMessage();
           return;
         }
         if (!res.ok) {
