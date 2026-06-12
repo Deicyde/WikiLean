@@ -10,7 +10,13 @@
 //       `{ results }` as row objects.
 //   client.prepare(sql).bind(...params).raw()   → typed selects; needs rows
 //       as positional value arrays in SELECT-clause order.
-// batch()/exec()/first() are not exercised by the app and throw loudly.
+//   client.batch(statements)                    → F9: the write paths bundle
+//       their post-CAS writes (and drift.ts its sweep bookkeeping) into one
+//       batch. The shim executes statements sequentially on the shared
+//       connection and returns one D1Result-shaped object per statement
+//       (real D1 batch is also sequential, plus transactional — the shim
+//       skips the transaction; no test asserts on mid-batch rollback).
+// exec()/first() are not exercised by the app and throw loudly.
 
 import { DatabaseSync, type StatementSync } from "node:sqlite";
 
@@ -49,7 +55,22 @@ function metaFor(changes: number, lastRowId: number): D1ShimMeta {
   };
 }
 
-function makeStatement(db: DatabaseSync, sql: string, params: SqliteParam[]) {
+interface D1ShimResult {
+  success: true;
+  results: Record<string, unknown>[];
+  meta: D1ShimMeta;
+}
+
+export interface D1ShimStatement {
+  bind: (...args: unknown[]) => D1ShimStatement;
+  run: () => Promise<D1ShimResult>;
+  all: () => Promise<D1ShimResult>;
+  raw: () => Promise<unknown[][]>;
+  first: () => Promise<never>;
+  _batchExec: () => Promise<D1ShimResult>;
+}
+
+function makeStatement(db: DatabaseSync, sql: string, params: SqliteParam[]): D1ShimStatement {
   // Prepare lazily so a bad-SQL error surfaces at execution time (as it would
   // on real D1), not at .prepare() — drizzle prepares eagerly per query.
   const prep = (): StatementSync => db.prepare(sql);
@@ -82,14 +103,31 @@ function makeStatement(db: DatabaseSync, sql: string, params: SqliteParam[]) {
     first: async () => {
       throw new Error("d1shim: first() not implemented");
     },
+    // Batch execution: D1's batch() returns a D1Result per statement —
+    // SELECTs carry rows in `results`, writes carry meta.changes/last_row_id.
+    _batchExec: async () => {
+      if (/^\s*select/i.test(sql)) {
+        const results = prep().all(...params) as Record<string, unknown>[];
+        return { success: true as const, results, meta: metaFor(0, 0) };
+      }
+      const r = prep().run(...params);
+      return {
+        success: true as const,
+        results: [],
+        meta: metaFor(Number(r.changes), Number(r.lastInsertRowid)),
+      };
+    },
   };
 }
 
 export function makeD1(db: DatabaseSync) {
   return {
     prepare: (sql: string) => makeStatement(db, sql, []),
-    batch: () => {
-      throw new Error("d1shim: batch() not implemented");
+    // Sequential (per-statement) execution — see the header note.
+    batch: async (stmts: D1ShimStatement[]) => {
+      const out: D1ShimResult[] = [];
+      for (const s of stmts) out.push(await s._batchExec());
+      return out;
     },
     exec: () => {
       throw new Error("d1shim: exec() not implemented");

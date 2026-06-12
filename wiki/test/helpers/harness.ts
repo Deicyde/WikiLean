@@ -266,6 +266,70 @@ export function eventRows(db: DatabaseSync, slug = SLUG): EventRow[] {
     .all(slug) as unknown as EventRow[];
 }
 
+// ---- fixture builders + invariant recounts (work-queue/authz/events suites) --
+
+// Insert a bare article row (annotations default to []). Mirrors the local
+// helper api.test.ts keeps for its pinned pre-Wave-D copies.
+export function insertArticle(
+  db: DatabaseSync,
+  slug: string,
+  opts: { version?: number; revid?: number | null; latestRevid?: number | null; annotations?: string } = {},
+): void {
+  const now = Date.now();
+  db.prepare(
+    "INSERT INTO articles (slug, wikipedia_title, display_title, revid, latest_revid, annotations, version, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,?)",
+  ).run(
+    slug,
+    slug,
+    slug,
+    opts.revid ?? null,
+    opts.latestRevid ?? null,
+    opts.annotations ?? "[]",
+    opts.version ?? 1,
+    now,
+    now,
+  );
+}
+
+export function insertModState(
+  db: DatabaseSync,
+  slug: string,
+  opts: {
+    lastReviewedAt?: number | null;
+    lastReviewedVersion?: number | null;
+    wpDrifted?: number;
+    flagCount?: number;
+  } = {},
+): void {
+  db.prepare(
+    "INSERT INTO moderation_state (slug, last_reviewed_at, last_reviewed_version, wp_drifted, flag_count, updated_at) VALUES (?,?,?,?,?,?)",
+  ).run(
+    slug,
+    opts.lastReviewedAt ?? null,
+    opts.lastReviewedVersion ?? null,
+    opts.wpDrifted ?? 0,
+    opts.flagCount ?? 0,
+    Date.now(),
+  );
+}
+
+// Independent recount of the per-status columns from the stored annotations
+// blob (tombstones excluded) — the D-C5 invariant every write path must
+// maintain. Deliberately re-implements the counting (does not import
+// src statusCounts) so a src regression can't hide in a shared helper.
+export function statusRecount(
+  db: DatabaseSync,
+  slug = SLUG,
+): { n_formalized: number; n_partial: number; n_not_formalized: number } {
+  const counts = { n_formalized: 0, n_partial: 0, n_not_formalized: 0 };
+  for (const a of storedAnnotations(db, slug)) {
+    if (a.status === "formalized") counts.n_formalized += 1;
+    else if (a.status === "partial") counts.n_partial += 1;
+    else if (a.status === "not_formalized") counts.n_not_formalized += 1;
+  }
+  return counts;
+}
+
 export interface FlagRowLite {
   id: number;
   slug: string;

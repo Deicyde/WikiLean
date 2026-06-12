@@ -1,0 +1,93 @@
+{
+  "name": "rename_ids",
+  "description": "Scenario (c): the agent renames one annotation's id to a value the store never issued and drops another's entirely. ID discipline: unknown ids are discarded and the anchor-sig twin's stored id is inherited (ids_inherited), so identity never forks.",
+  "pipeline": "moderate",
+  "title": "Eval Gamma Numbers",
+  "sections": {
+    "sections": [
+      {"heading": "Theory", "paragraphs": ["The gamma theorem holds. Its converse, the gamma lemma, also holds."]}
+    ]
+  },
+  "existing": [
+    {
+      "id": "111111111111",
+      "kind": "theorem",
+      "label": "Gamma theorem",
+      "anchor": {"section": "Theory", "snippet": "The gamma theorem holds"},
+      "status": "formalized",
+      "mathlib": {"decl": "Gamma.thm", "module": "Mathlib.Gamma", "match_kind": "exact"},
+      "note": "n",
+      "provenance": "ai"
+    },
+    {
+      "id": "222222222222",
+      "kind": "proposition",
+      "label": "Gamma lemma",
+      "anchor": {"section": "Theory", "snippet": "the gamma lemma"},
+      "status": "partial",
+      "mathlib": {"decl": null, "module": null, "match_kind": null},
+      "note": "n",
+      "provenance": "ai"
+    }
+  ],
+  "agent1_output": {
+    "annotations": [
+      {
+        "id": "deadbeefcafe",
+        "kind": "theorem",
+        "label": "Gamma theorem",
+        "anchor": {"section": "Theory", "snippet": "The gamma theorem holds"},
+        "status": "formalized",
+        "mathlib": {"decl": "Gamma.thm", "module": "Mathlib.Gamma", "match_kind": "exact"},
+        "note": "tidied",
+        "provenance": "ai"
+      },
+      {
+        "kind": "proposition",
+        "label": "Gamma lemma",
+        "anchor": {"section": "Theory", "snippet": "the gamma lemma"},
+        "status": "partial",
+        "mathlib": {"decl": null, "module": null, "match_kind": null},
+        "note": "tidied too",
+        "provenance": "ai"
+      }
+    ]
+  },
+  "agent2_output": {
+    "annotations": [
+      {
+        "id": "deadbeefcafe",
+        "kind": "theorem",
+        "label": "Gamma theorem",
+        "anchor": {"section": "Theory", "snippet": "The gamma theorem holds"},
+        "status": "formalized",
+        "mathlib": {"decl": "Gamma.thm", "module": "Mathlib.Gamma", "match_kind": "exact"},
+        "note": "tidied",
+        "provenance": "ai"
+      },
+      {
+        "kind": "proposition",
+        "label": "Gamma lemma",
+        "anchor": {"section": "Theory", "snippet": "the gamma lemma"},
+        "status": "partial",
+        "mathlib": {"decl": null, "module": null, "match_kind": null},
+        "note": "tidied too",
+        "provenance": "ai"
+      }
+    ]
+  },
+  "notes": [
+    "The renamed id ('deadbeefcafe' — valid 12-hex format, but never issued by the store) must NOT appear in the wire payload: finalize_for_post treats it as unknown and inherits '111111111111' by anchor signature. This is the client twin of the Worker's heal-adopts-stored-id."
+  ],
+  "expect": {
+    "ladder": {"restored": 0, "reinserted": 0, "downgrades_blocked": 0, "moderation_flags": []},
+    "wire": {"ids_echoed": 0, "ids_inherited": 2, "ids_fresh": 0, "human_restored_wire": 0, "human_reinserted_wire": 0, "provenance_downgraded": 0, "veto_adjacent_dropped": 0},
+    "checks": [
+      {"check": "count", "n": 2},
+      {"check": "label_id", "label": "Gamma theorem", "id": "111111111111"},
+      {"check": "label_id", "label": "Gamma lemma", "id": "222222222222"},
+      {"check": "id_absent", "id": "deadbeefcafe"},
+      {"check": "all_ids_unique_hex"}
+    ]
+  }
+}

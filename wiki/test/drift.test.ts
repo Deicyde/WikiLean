@@ -2,20 +2,25 @@
 // (rotating cursor, wrap-around, batch chunking), the MediaWiki info-query
 // URL contract, and response→slug classification (normalized titles,
 // missing/redirect flags, drift comparison). Plus the staleness banner that
-// pages.ts renders from the cron's latest_revid bookkeeping (C10).
-//
-// The scheduled() handler itself is not driven here — the d1shim has no
-// batch() — but everything it composes is.
+// pages.ts renders from the cron's latest_revid bookkeeping (C10), and —
+// now that the d1shim grew batch() (F9) — the scheduled() handler driven
+// end-to-end for the F4 parked-state recovery rules.
 
+import { readFileSync, readdirSync } from "node:fs";
+import { resolve } from "node:path";
+import { DatabaseSync } from "node:sqlite";
 import { describe, it, expect } from "vitest";
 import {
   planSweep,
   infoQueryUrl,
   classifyBatch,
+  scheduled,
   type ArticleLite,
   type InfoQueryResponse,
 } from "../src/drift.js";
 import { injectAuthAndEditor } from "../src/pages.js";
+import { makeD1, makeKV } from "./helpers/d1shim.js";
+import type { Env } from "../src/env.js";
 
 function art(slug: string, revid: number | null = 100, latestRevid: number | null = null): ArticleLite {
   return { slug, wikipediaTitle: slug.replaceAll("_", " "), revid, latestRevid };
@@ -157,9 +162,73 @@ describe("staleness banner (injectAuthAndEditor)", () => {
     const user = { id: "u1", name: "U", role: "user" } as never;
     const html = injectAuthAndEditor(PAGE, { ...base, user, revid: 1, latestRevid: 2, version: 7 });
     expect(html).toContain("wl-stale-banner");
-    // v=8: editor.js endorse action (D-C9). NB: this assertion was stale at
-    // v=6 when the editor shipped v=7 — keep it in lockstep with pages.ts.
-    expect(html).toContain("/assets/editor.js?v=8");
-    expect(html).not.toContain("editor.js?v=7");
+    // v=9: W3 UI fixes (hidden-annotation recovery, busy buttons, 409 draft
+    // preservation, panel a11y, warm palette) — keep in lockstep with pages.ts.
+    expect(html).toContain("/assets/editor.js?v=9");
+    expect(html).not.toContain("editor.js?v=8");
+  });
+});
+
+describe("scheduled(): parked-state recovery (F4)", () => {
+  const MIGRATIONS_DIR = resolve(process.cwd(), "migrations");
+  const MIGRATIONS = readdirSync(MIGRATIONS_DIR)
+    .filter((f) => f.endsWith(".sql"))
+    .sort();
+
+  function setupDb(): DatabaseSync {
+    const db = new DatabaseSync(":memory:");
+    for (const f of MIGRATIONS) db.exec(readFileSync(resolve(MIGRATIONS_DIR, f), "utf8"));
+    return db;
+  }
+
+  function insertParked(db: DatabaseSync, slug: string, state: string | null): void {
+    const now = Date.now();
+    db.prepare(
+      "INSERT INTO articles (slug, wikipedia_title, display_title, revid, annotations, version, created_at, updated_at) VALUES (?,?,?,100,'[]',1,?,?)",
+    ).run(slug, slug.replaceAll("_", " "), slug, now, now);
+    db.prepare("INSERT INTO moderation_state (slug, state, updated_at) VALUES (?,?,?)").run(slug, state, now);
+  }
+
+  function stateOf(db: DatabaseSync, slug: string): { state: string | null; wp_drifted: number } {
+    return db
+      .prepare("SELECT state, wp_drifted FROM moderation_state WHERE slug = ?")
+      .get(slug) as { state: string | null; wp_drifted: number };
+  }
+
+  it("moved/deleted articles that answer as normal pages are un-parked; needs_human never is; still-broken stay parked", async () => {
+    const db = setupDb();
+    insertParked(db, "Back_Normal", "moved"); // unchanged page → state clears
+    insertParked(db, "Back_Drifted", "deleted"); // drifted page → state clears, wp_drifted set
+    insertParked(db, "Wedged", "needs_human"); // normal page, but stage-0's marker stays (F11)
+    insertParked(db, "Still_Moved", "moved"); // still a redirect → stays parked
+
+    const env = { DB: makeD1(db), RENDER_CACHE: makeKV() } as unknown as Env;
+    const realFetch = globalThis.fetch;
+    globalThis.fetch = (async () =>
+      new Response(
+        JSON.stringify({
+          query: {
+            pages: [
+              { title: "Back Normal", lastrevid: 100 },
+              { title: "Back Drifted", lastrevid: 200 },
+              { title: "Wedged", lastrevid: 100 },
+              { title: "Still Moved", redirect: true, lastrevid: 150 },
+            ],
+          },
+        } satisfies InfoQueryResponse),
+      )) as typeof fetch;
+    try {
+      await scheduled({} as ScheduledController, env, {} as ExecutionContext);
+    } finally {
+      globalThis.fetch = realFetch;
+    }
+
+    expect(stateOf(db, "Back_Normal").state).toBeNull(); // F4: back in the flow
+    expect(stateOf(db, "Back_Drifted")).toEqual({ state: null, wp_drifted: 1 }); // F4 + drift flag
+    expect(stateOf(db, "Wedged").state).toBe("needs_human"); // F11: never cleared by the cron
+    expect(stateOf(db, "Still_Moved").state).toBe("moved");
+    // The cache invariant held: no version bumps anywhere.
+    const versions = db.prepare("SELECT version FROM articles").all() as Array<{ version: number }>;
+    expect(versions.every((v) => v.version === 1)).toBe(true);
   });
 });
