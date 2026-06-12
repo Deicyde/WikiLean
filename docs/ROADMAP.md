@@ -230,30 +230,34 @@ into `wiki/public/assets/`. Edit sources, then run build-public, never edit
   delete|endorse|reject|revert_restore; actor session-vs-bearer. Endorse is now an
   explicit action (POST {action:'endorse', annotation_id, base_version}) since
   stampProvenance deliberately reverts bare provenance flips.
-- [ ] **Ladder stats:** _preserve_human returns {restored, reinserted} + ids;
-  downgrades_blocked from the PRIORITY pass; moderation_flag counts → rec['ladder']
-  + decisions sidecar. (Reads zero until P1 ships — that's expected, not a bug.)
-- [ ] **decisions.jsonl** per AI pass: annotation_id, run_id, pass, model, prompt_sha,
-  confidence (uncalibrated covariate), considered-candidates (stripped from stored
-  blob by a deterministic post-pass), truncated tool transcript. pipeline_runs
-  registry in D1.
+- [x] **Ladder stats** — DONE (Waves C + fix wave; moderation_flag dissent
+  harvested per F14; flows into revisions.meta and the decisions sidecar).
+- [x] **decisions.jsonl + pipeline_runs** — DONE 2026-06-12 (P2 wave): per-article
+  decision lines (outcome taxonomy posted|noop|409-rebased|422|error|dry-run) in
+  site/cache/.decisions.jsonl; pipeline_runs table (migration 0006) + POST /api/runs
+  (idempotent); runner registers real runs, tolerates pre-deploy 404s.
+  DEFERRED pieces: per-annotation confidence/considered fields + tool transcripts
+  (need an Agent-2 output-schema change; see research-plan RQ6/RQ7).
 - [x] **Anonymous flag pipeline** — DONE 2026-06-12 (Wave D). flags table by
   annotation_id; POST /api/flag/:slug (no auth, FLAG_LIMITER 5/min/IP, 5-open cap
   silent); ⚑ micro-form in the tooltip; /flags patrol queue with role-gated
   resolve; flag_count feeds /api/work priority. Verified live end-to-end.
   Turnstile remains the documented escalation if abuse appears.
-- [ ] **Patrol tooling:** GET /:slug/diff/:fromId/:toId field-level diff (pure read
-  over revision snapshots); /recent-changes filter by revisions.kind (NOT user_id
-  nullness); patrolled_by/at columns + mark-patrolled gated on role; one /patrol
-  surface for both revisions and (later) contributions.
-- [ ] **Full Mathlib decl index** (doc-gen4 declaration-data → sharded static assets
-  + server lookup; curated 4,598 as boost tier regenerated from D1, not disk;
-  on-blur existence tick in editor).
-- [ ] **/stats page** with per-research-question live counts (zero count after the
-  feature ships = broken instrumentation) + nightly pseudonymized research export
-  riding the backup workflow. docs/research-plan.md (RQ1-RQ8: correction rates by
-  field, endorse-vs-modify ratio, ladder blocks, time-to-correction survival,
-  AI-vs-AI agreement, confidence calibration, cost per accepted annotation).
+- [x] **Patrol tooling** — DONE (diff pages Wave D; kind filter + patrolled_by/at
+  + mark-patrolled with CAS, P2 wave migration 0006).
+- [x] **Full Mathlib decl index** — DONE 2026-06-12: 411,273 decls from doc-gen4
+  declaration-data.bmp, 849 recursive-prefix shards (<400KB each) in
+  public/assets/decl-index/ (rebuild: npm run build:decl-index); editor
+  autocomplete = curated boost tier + full-index shards + on-blur existence tick
+  (never blocks saves). Server-side oracle consumption deferred to the
+  contribution gauntlet.
+- [x] **/stats + research export + research plan** — DONE 2026-06-12: /stats
+  (public, RQ-labeled live counts, 300s KV cache); GET /api/research/export.jsonl
+  (bot/admin, streamed, pseudonymized — sha256(user_id+salt), no PII) + nightly
+  artifact riding backup-d1.yml (PIPELINE_TOKEN repo secret set);
+  docs/research-plan.md (RQ1-RQ8 with exists-today status per question).
+  NOTE: annotation_events is legitimately ZERO so far (re-pins echo verbatim,
+  no-op reviews skip events) — first substantive edit starts the dataset.
 - [ ] Editor save UX: kind/match_kind as selects; clear comment after save; panel
   title by label not index; orphaned-anchor re-select flow; alt-click links;
   in-place body swap (deliberate refactor with initAnnotations(), NOT a line item).
@@ -318,6 +322,22 @@ into `wiki/public/assets/`. Edit sources, then run build-public, never edit
   python3 site/eval_moderation.py --offline` and `cd wiki && npm test`.
 
 ## Status log
+
+- 2026-06-12 (overnight autonomous run) — **UI redesign + review pass + eval
+  infrastructure + fix wave + P2 completion, all deployed.** (1) Warm
+  academic-minimalist redesign across homepage/shells/article chrome. (2)
+  Four-agent adversarial review: 31 findings; the fix wave closed all of them —
+  headline: F1 reviews-against-wrong-revision (verified fixed in production:
+  suffixed pinned-revid cache), F2 flagged-queue livelock (verified released
+  live), F3 stage-0 wired into the runner (12 more drifted articles re-pinned,
+  zero tokens), F4 moved/deleted parked out of selection, revert CAS, no-op
+  save short-circuit. (3) Tests 115 → 436 Worker + 76 Python + 82-case parity
+  harness + 7-scenario eval gate. (4) P2 complete: /stats, pseudonymized
+  research export (nightly artifact), pipeline_runs + decisions.jsonl,
+  411k-decl Mathlib index with editor autocomplete + existence tick, patrol
+  kind-filter + mark-patrolled. Migration 0006 applied; deployed 4b70fb99.
+  Remaining in P2: editor save-UX niceties (selects, in-place body swap),
+  trust badges, ip_address storage decision. P3 items unchanged (triggers).
 
 - 2026-06-10 — Roadmap created from architecture audit. P0 started.
 - 2026-06-10 — **P0 deployed** (Worker version 99a27390). 4 parallel coding agents on
