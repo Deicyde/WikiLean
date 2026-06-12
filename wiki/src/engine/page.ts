@@ -24,6 +24,9 @@ export function mathlibDocsUrl(module?: string | null, decl?: string | null): st
 }
 
 interface ClientAnno {
+  // Stable annotation id — lets the anonymous flag form target a specific
+  // annotation (POST /api/flag/:slug). Inert in rendering.
+  id?: string;
   status: string;
   label?: string;
   kind?: string;
@@ -53,6 +56,7 @@ export function buildClientData(annotations: Annotation[]): Array<ClientAnno | n
     const decl = m.decl || a.decl;
     const module = m.module || a.module;
     const item: ClientAnno = { status: a.status };
+    if (typeof a.id === "string") item.id = a.id;
     for (const k of ["label", "kind", "note", "proof_note", "provenance"] as const) {
       if (a[k]) item[k] = a[k] as string;
     }
@@ -128,7 +132,7 @@ export function renderArticlePage(input: PageInput): string {
 <meta property="og:description" content="${descEsc}">
 <meta property="og:url" content="${canonical}">
 <meta name="twitter:card" content="summary">
-<link rel="stylesheet" href="/assets/style.css?v=4">
+<link rel="stylesheet" href="/assets/style.css?v=5">
 <style>
 .wl-attribution { max-width: 1000px; margin: 24px auto 40px; padding: 12px 16px 0; border-top: 1px solid #d8dee4; color: #57606a; font-size: 12px; line-height: 1.5; }
 .wl-attribution p { margin: 4px 0; }
@@ -174,7 +178,7 @@ ${body}
 <script>
 window.__WL_ANNOTATIONS__ = ${data};
 </script>
-<script src="/assets/script.js?v=4"></script>
+<script src="/assets/script.js?v=6"></script>
 </body>
 </html>
 `;

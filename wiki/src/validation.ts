@@ -21,6 +21,14 @@ export const MAX_TEXT_LEN = 2000;
 export const MAX_ANNOTATIONS = 2000;
 export const MAX_ANNOTATIONS_BYTES = 256 * 1024; // 256 KB serialized JSON
 export const MAX_META_BYTES = 16 * 1024; // pipeline revisions.meta JSON (run stats, tiny in practice)
+export const MAX_FIELD_CHANGES_BYTES = 4 * 1024; // annotation_events.field_changes JSON
+
+// Allowed flag `reason` values (anonymous reader reports). Mirrors the CHECK
+// constraint in migration 0005 — the enum is defined once here and imported
+// by the endpoint validator.
+export const FLAG_REASONS = ["wrong_decl", "wrong_status", "irrelevant", "missing_formalization", "other"] as const;
+export type FlagReason = (typeof FLAG_REASONS)[number];
+export const MAX_FLAG_COMMENT_LEN = 500;
 
 // ---------------------------------------------------------------------------
 // Annotation diff helpers for the save path (P1). Annotations are loosely
@@ -99,6 +107,115 @@ export function findLostHuman(stored: AnnRecord[], posted: AnnRecord[]): string[
     }
   }
   return missing;
+}
+
+// ---------------------------------------------------------------------------
+// By-id annotation diff (annotation_events + the /:slug/diff page). One differ
+// serves both consumers: the event emitter serializes `fields` into the
+// field_changes JSON; the diff route hands `fields` to the page builder.
+
+export interface AnnotationFieldChange {
+  field: string; // top-level key, or a dotted path for nested objects ("mathlib.decl")
+  from: unknown; // null = absent on that side
+  to: unknown;
+}
+
+export interface AnnotationChange {
+  annotationId: string;
+  // 'reject' = status flipped to 'rejected' (a tombstone veto) — reported
+  // instead of 'modify' so the agreement signal is queryable directly.
+  changeType: "add" | "modify" | "delete" | "reject";
+  label: string | null; // display label (to-side preferred), for the diff page
+  fields: AnnotationFieldChange[]; // changed fields; [] for add/delete
+}
+
+function labelOf(a: AnnRecord): string | null {
+  return typeof a.label === "string" && a.label !== "" ? a.label : null;
+}
+
+function isPlainObject(v: unknown): v is AnnRecord {
+  return typeof v === "object" && v !== null && !Array.isArray(v);
+}
+
+// Field-level diff of one annotation pair. Top-level scalar/array fields are
+// compared atomically; plain-object fields (mathlib, anchor, …) descend one
+// level into dotted paths so e.g. only "mathlib.decl" is reported when the
+// decl alone changed. A field that is an object on one side and a non-object
+// scalar on the other is compared atomically under the bare key.
+export function diffFields(from: AnnRecord, to: AnnRecord): AnnotationFieldChange[] {
+  const out: AnnotationFieldChange[] = [];
+  const keys = [...new Set([...Object.keys(from), ...Object.keys(to)])].sort();
+  for (const key of keys) {
+    const a = from[key];
+    const b = to[key];
+    if (deepEqual(a, b)) continue;
+    const objecty =
+      (isPlainObject(a) || a === undefined) && (isPlainObject(b) || b === undefined);
+    if (objecty) {
+      const ao = isPlainObject(a) ? a : {};
+      const bo = isPlainObject(b) ? b : {};
+      const sub = [...new Set([...Object.keys(ao), ...Object.keys(bo)])].sort();
+      for (const sk of sub) {
+        if (!deepEqual(ao[sk], bo[sk])) {
+          out.push({ field: `${key}.${sk}`, from: ao[sk] ?? null, to: bo[sk] ?? null });
+        }
+      }
+    } else {
+      out.push({ field: key, from: a ?? null, to: b ?? null });
+    }
+  }
+  return out;
+}
+
+// Diff two annotation snapshots BY ID (the persisted side has full id coverage
+// — the save path heals ids before calling this). Entries without a string id
+// are skipped defensively: they cannot key an annotation_events row, and in
+// production every stored annotation carries an id. A status flip to
+// 'rejected' is classified 'reject' (instead of 'modify'); the status field
+// change still appears in `fields`.
+export function diffAnnotations(stored: AnnRecord[], persisted: AnnRecord[]): AnnotationChange[] {
+  const storedById = new Map<string, AnnRecord>();
+  for (const s of stored) {
+    if (typeof s.id === "string" && s.id !== "") storedById.set(s.id, s);
+  }
+  const changes: AnnotationChange[] = [];
+  const seen = new Set<string>();
+  for (const p of persisted) {
+    if (typeof p.id !== "string" || p.id === "") continue;
+    seen.add(p.id);
+    const s = storedById.get(p.id);
+    if (!s) {
+      changes.push({ annotationId: p.id, changeType: "add", label: labelOf(p), fields: [] });
+      continue;
+    }
+    if (deepEqual(s, p)) continue;
+    const changeType = s.status !== "rejected" && p.status === "rejected" ? "reject" : "modify";
+    changes.push({ annotationId: p.id, changeType, label: labelOf(p) ?? labelOf(s), fields: diffFields(s, p) });
+  }
+  for (const [id, s] of storedById) {
+    if (!seen.has(id)) {
+      changes.push({ annotationId: id, changeType: "delete", label: labelOf(s), fields: [] });
+    }
+  }
+  return changes;
+}
+
+// Serialize a change's fields into the annotation_events.field_changes JSON:
+// {field: [old, new]}, capped at MAX_FIELD_CHANGES_BYTES. Over the cap, fields
+// are dropped (in field order) until the JSON fits and {"_truncated":true}
+// flags the cut. Returns null for an empty field list (add/delete events).
+export function serializeFieldChanges(fields: AnnotationFieldChange[]): string | null {
+  if (fields.length === 0) return null;
+  const obj: Record<string, unknown> = {};
+  for (const f of fields) obj[f.field] = [f.from, f.to];
+  const json = JSON.stringify(obj);
+  if (json.length <= MAX_FIELD_CHANGES_BYTES) return json;
+  const kept: Record<string, unknown> = { _truncated: true };
+  for (const f of fields) {
+    kept[f.field] = [f.from, f.to];
+    if (JSON.stringify(kept).length > MAX_FIELD_CHANGES_BYTES) delete kept[f.field];
+  }
+  return JSON.stringify(kept);
 }
 
 // Provenance stamping for SESSION (human) saves: new or changed annotations
