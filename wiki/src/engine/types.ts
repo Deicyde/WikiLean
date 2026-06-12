@@ -24,6 +24,8 @@ export interface Anchor {
 }
 
 export interface Annotation {
+  // Stable 12-hex id (assigned by the pipeline/editor/Worker heal; immutable).
+  id?: string;
   status: string;
   kind?: string;
   label?: string;

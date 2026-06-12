@@ -6,6 +6,11 @@ export interface Env {
   EDIT_LIMITER: {
     limit: (opts: { key: string }) => Promise<{ success: boolean }>;
   };
+  // Anonymous flag-report limiter, keyed flag:<CF-Connecting-IP> (the flag
+  // endpoint has no auth, so the user-keyed EDIT_LIMITER can't cover it).
+  FLAG_LIMITER: {
+    limit: (opts: { key: string }) => Promise<{ success: boolean }>;
+  };
 
   AUTH_MODE: string; // "dev" (cookie stub) | "oauth" (better-auth)
 

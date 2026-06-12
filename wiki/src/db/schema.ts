@@ -17,6 +17,13 @@ export const articles = sqliteTable("articles", {
   annotations: text("annotations").notNull(), // JSON array (same shape as the sidecar files)
   schemaVersion: integer("schema_version").notNull().default(3), // annotation-blob schema generation (v4 = formalizations[], deferred)
   version: integer("version").notNull().default(1), // bumped each save → busts the render cache
+  // Per-status annotation counts (homepage data), computed from the FINAL
+  // persisted annotations (tombstones excluded) in every write path, in the
+  // same UPDATE as the annotations blob. NULL = not yet computed (backfill).
+  // Never part of render-cache keys.
+  nFormalized: integer("n_formalized"),
+  nPartial: integer("n_partial"),
+  nNotFormalized: integer("n_not_formalized"),
   createdAt: integer("created_at").notNull(),
   updatedAt: integer("updated_at").notNull(),
 });
@@ -56,6 +63,52 @@ export const moderationState = sqliteTable(
     updatedAt: integer("updated_at"), // ms
   },
   (t) => [index("idx_moderation_state_reviewed").on(t.lastReviewedAt)],
+);
+
+// Annotation-level change log (the experiment's primary instrument): one row
+// per annotation that changed in a write, diffed BY ID (stored vs persisted)
+// server-side. Emitted on every write path — session save, bot save, create,
+// revert, endorse. event_type/actor_type vocabularies are CHECK-constrained
+// in migration 0005.
+export const annotationEvents = sqliteTable(
+  "annotation_events",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    revisionId: integer("revision_id").notNull(),
+    slug: text("slug").notNull(),
+    annotationId: text("annotation_id").notNull(),
+    eventType: text("event_type").notNull(), // add | modify | delete | endorse | reject | revert_restore
+    actorType: text("actor_type").notNull(), // human | pipeline (from the auth seam, not client-claimed)
+    userId: text("user_id"), // acting user
+    fieldChanges: text("field_changes"), // JSON {field: [old, new]}, dotted nested paths, ≤4 KB
+    createdAt: integer("created_at").notNull(),
+  },
+  (t) => [
+    index("idx_annotation_events_annotation").on(t.annotationId, t.createdAt),
+    index("idx_annotation_events_slug").on(t.slug, t.createdAt),
+  ],
+);
+
+// Anonymous reader problem reports (tooltip ⚑ micro-form; no auth required).
+// annotation_id NULL = whole-article report. ip_hash = sha256 hex of
+// CF-Connecting-IP (pseudonymous, never exported). Open flags feed
+// moderation_state.flag_count → the /api/work priority queue.
+export const flags = sqliteTable(
+  "flags",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    slug: text("slug").notNull(),
+    annotationId: text("annotation_id"),
+    reason: text("reason").notNull(), // FLAG_REASONS enum (CHECK in migration 0005)
+    comment: text("comment"),
+    userId: text("user_id"), // recorded when the reporter happens to be logged in
+    ipHash: text("ip_hash"),
+    status: text("status").notNull().default("open"), // open | fixed | dismissed
+    resolvedBy: text("resolved_by"),
+    resolvedAt: integer("resolved_at"),
+    createdAt: integer("created_at").notNull(),
+  },
+  (t) => [index("idx_flags_slug_status").on(t.slug, t.status)],
 );
 
 // better-auth core tables. Property names must match better-auth's field names;
@@ -115,4 +168,6 @@ export const verifications = sqliteTable("verifications", {
 export type ArticleRow = typeof articles.$inferSelect;
 export type RevisionRow = typeof revisions.$inferSelect;
 export type ModerationStateRow = typeof moderationState.$inferSelect;
+export type AnnotationEventInsert = typeof annotationEvents.$inferInsert;
+export type FlagRow = typeof flags.$inferSelect;
 export type UserRow = typeof users.$inferSelect;
