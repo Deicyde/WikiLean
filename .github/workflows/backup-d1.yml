@@ -5,7 +5,7 @@
 # laptop is on. The export of the `wikilean` D1 database is uploaded as a
 # workflow artifact and retained for 30 days.
 #
-# ── Required repo secret ──────────────────────────────────────────────────
+# ── Required repo secrets ─────────────────────────────────────────────────
 #   CLOUDFLARE_API_TOKEN — a Cloudflare API token with D1 read/export scope
 #   (D1:Read on the WikiLean account). Add it under:
 #       repo Settings → Secrets and variables → Actions → New repository secret
@@ -13,6 +13,12 @@
 #   at the export step. The Cloudflare account id is read from wiki/wrangler.jsonc
 #   and exported below as CLOUDFLARE_ACCOUNT_ID so wrangler targets the right
 #   account non-interactively.
+#
+#   PIPELINE_TOKEN — the Worker's pipeline bearer secret (same value as the
+#   `wrangler secret` of that name; see wiki/.dev.vars). Used by the research-
+#   export step below to call GET /api/research/export.jsonl. Add it as a repo
+#   Actions secret named exactly PIPELINE_TOKEN. Without it, only the research-
+#   export step fails — the database backup is unaffected (continue-on-error).
 #
 # ── Running it manually ───────────────────────────────────────────────────
 #   GitHub UI:  Actions tab → "Backup D1" → "Run workflow".
@@ -60,5 +66,34 @@ jobs:
         with:
           name: wikilean-d1-${{ steps.stamp.outputs.ts }}
           path: wikilean-${{ steps.stamp.outputs.ts }}.sql
+          retention-days: 30
+          if-no-files-found: error
+
+      # ── Research export (P2a) ───────────────────────────────────────────
+      # Second nightly artifact: the pseudonymized annotation_events JSONL
+      # from the live Worker (GET /api/research/export.jsonl, bearer-gated).
+      # Ordered AFTER the backup upload and continue-on-error on purpose: a
+      # failed/missing export must never fail the database backup.
+      - name: Fetch research export
+        id: research
+        continue-on-error: true
+        env:
+          PIPELINE_TOKEN: ${{ secrets.PIPELINE_TOKEN }}
+        run: |
+          test -n "$PIPELINE_TOKEN" # fail fast (and quietly) if the secret is missing
+          curl --fail -sS --max-time 300 \
+            -H "Authorization: Bearer $PIPELINE_TOKEN" \
+            "https://wikilean.jackmccarthy.org/api/research/export.jsonl" \
+            -o "research-export-${{ steps.stamp.outputs.ts }}.jsonl"
+
+      - name: Upload research export artifact
+        # steps.research.outcome is its pre-continue-on-error result, so this
+        # step is skipped (not failed) when the fetch didn't produce a file.
+        if: steps.research.outcome == 'success'
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: research-export-${{ steps.stamp.outputs.ts }}
+          path: research-export-${{ steps.stamp.outputs.ts }}.jsonl
           retention-days: 30
           if-no-files-found: error

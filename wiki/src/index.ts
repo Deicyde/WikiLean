@@ -1,6 +1,7 @@
 import { Hono, type Context } from "hono";
 import { drizzle } from "drizzle-orm/d1";
-import { eq, and, desc, sql, inArray, isNull, type SQL } from "drizzle-orm";
+import { eq, and, desc, gt, sql, inArray, isNull, type SQL } from "drizzle-orm";
+import { alias } from "drizzle-orm/sqlite-core";
 import type { BatchItem } from "drizzle-orm/batch";
 import {
   articles,
@@ -9,6 +10,7 @@ import {
   moderationState,
   annotationEvents,
   flags,
+  pipelineRuns,
   type ArticleRow,
   type AnnotationEventInsert,
 } from "./db/schema.js";
@@ -17,7 +19,16 @@ import { renderArticlePage } from "./engine/page.js";
 import { getWikipediaHtml } from "./wikipedia.js";
 import { getUser, requireRole, registerAuthRoutes } from "./auth.js";
 import { scheduled } from "./drift.js";
-import { injectAuthAndEditor, historyPage, recentChangesPage, flagsPage, diffPage } from "./pages.js";
+import {
+  injectAuthAndEditor,
+  historyPage,
+  recentChangesPage,
+  flagsPage,
+  diffPage,
+  statsPage,
+  RECENT_KINDS,
+  type StatsEventCell,
+} from "./pages.js";
 import { homePage, sitemapXml } from "./home.js";
 import type { Annotation } from "./engine/types.js";
 import type { Env } from "./env.js";
@@ -48,6 +59,7 @@ const RESERVED = new Set([
   "sitemap.xml",
   "recent-changes",
   "flags",
+  "stats",
   "login",
   "logout",
   "graph",
@@ -371,24 +383,144 @@ app.get("/sitemap.xml", async (c) => {
   return c.body(xml, 200, headers);
 });
 
-// ---- recent changes (global patrol feed) ----
-app.get("/recent-changes", async (c) => {
+// ---- /stats — live experiment instrumentation (P2a; public) ----
+// Every number is a cheap SQL aggregate: the per-article count columns (D-C5)
+// plus GROUP BYs over annotation_events / flags / revisions / pipeline_runs.
+// Annotation blobs are never parsed here. KV-cached with TTL-only
+// invalidation (a write can be up to 5 minutes stale — fine for a dashboard).
+app.get("/stats", async (c) => {
+  const cacheKey = "page:stats:v1";
+  const cached = await c.env.RENDER_CACHE.get(cacheKey);
+  if (cached) return c.html(cached);
   const db = drizzle(c.env.DB);
+  const cutoff = Date.now() - 30 * 24 * 3600 * 1000; // "fresh"/"last 30d" boundary
+
+  // Articles by review state (never/fresh/stale, drifted, parked). LEFT JOIN:
+  // no moderation row reads as never-reviewed/not-drifted/not-parked.
+  const review = (
+    await db
+      .select({
+        total: sql<number>`COUNT(*)`,
+        neverReviewed: sql<number>`COALESCE(SUM(CASE WHEN ${moderationState.lastReviewedAt} IS NULL THEN 1 ELSE 0 END), 0)`,
+        fresh: sql<number>`COALESCE(SUM(CASE WHEN ${moderationState.lastReviewedAt} >= ${cutoff} THEN 1 ELSE 0 END), 0)`,
+        stale: sql<number>`COALESCE(SUM(CASE WHEN ${moderationState.lastReviewedAt} < ${cutoff} THEN 1 ELSE 0 END), 0)`,
+        drifted: sql<number>`COALESCE(SUM(CASE WHEN COALESCE(${moderationState.wpDrifted}, 0) = 1 THEN 1 ELSE 0 END), 0)`,
+        parked: sql<number>`COALESCE(SUM(CASE WHEN ${moderationState.state} IN ('moved','deleted','needs_human') THEN 1 ELSE 0 END), 0)`,
+      })
+      .from(articles)
+      .leftJoin(moderationState, eq(moderationState.slug, articles.slug))
+  )[0];
+
+  // Annotation totals by status from the count columns (NOT a blob parse —
+  // see the page's own note; provenance signals come from events).
+  const ann = (
+    await db
+      .select({
+        formalized: sql<number>`COALESCE(SUM(${articles.nFormalized}), 0)`,
+        partial: sql<number>`COALESCE(SUM(${articles.nPartial}), 0)`,
+        notFormalized: sql<number>`COALESCE(SUM(${articles.nNotFormalized}), 0)`,
+        pendingCounts: sql<number>`COALESCE(SUM(CASE WHEN ${articles.nFormalized} IS NULL THEN 1 ELSE 0 END), 0)`,
+      })
+      .from(articles)
+  )[0];
+
+  const events: StatsEventCell[] = await db
+    .select({
+      eventType: annotationEvents.eventType,
+      actorType: annotationEvents.actorType,
+      allTime: sql<number>`COUNT(*)`,
+      last30d: sql<number>`COALESCE(SUM(CASE WHEN ${annotationEvents.createdAt} >= ${cutoff} THEN 1 ELSE 0 END), 0)`,
+    })
+    .from(annotationEvents)
+    .groupBy(annotationEvents.eventType, annotationEvents.actorType)
+    .orderBy(annotationEvents.eventType, annotationEvents.actorType);
+
+  const flagAgg = (
+    await db
+      .select({
+        open: sql<number>`COALESCE(SUM(CASE WHEN ${flags.status} = 'open' THEN 1 ELSE 0 END), 0)`,
+        fixed: sql<number>`COALESCE(SUM(CASE WHEN ${flags.status} = 'fixed' THEN 1 ELSE 0 END), 0)`,
+        dismissed: sql<number>`COALESCE(SUM(CASE WHEN ${flags.status} = 'dismissed' THEN 1 ELSE 0 END), 0)`,
+      })
+      .from(flags)
+  )[0];
+
+  const revByKind = await db
+    .select({ kind: revisions.kind, count: sql<number>`COUNT(*)` })
+    .from(revisions)
+    .groupBy(revisions.kind)
+    .orderBy(revisions.kind);
+
+  const patrol = (
+    await db
+      .select({
+        unpatrolledEdits: sql<number>`COALESCE(SUM(CASE WHEN ${revisions.kind} = 'edit' AND ${revisions.patrolledBy} IS NULL THEN 1 ELSE 0 END), 0)`,
+        patrolledEdits: sql<number>`COALESCE(SUM(CASE WHEN ${revisions.kind} = 'edit' AND ${revisions.patrolledBy} IS NOT NULL THEN 1 ELSE 0 END), 0)`,
+      })
+      .from(revisions)
+  )[0];
+
+  const runs = await db
+    .select({
+      kind: pipelineRuns.kind,
+      runs: sql<number>`COUNT(*)`,
+      articles: sql<number>`COALESCE(SUM(${pipelineRuns.articlesProcessed}), 0)`,
+      errors: sql<number>`COALESCE(SUM(${pipelineRuns.errors}), 0)`,
+      tokens: sql<number>`COALESCE(SUM(${pipelineRuns.tokens}), 0)`,
+      // SUM over all-NULL costs is NULL → rendered as "—" (unknown ≠ $0).
+      cost: sql<number | null>`SUM(${pipelineRuns.costUsdEquiv})`,
+    })
+    .from(pipelineRuns)
+    .groupBy(pipelineRuns.kind)
+    .orderBy(pipelineRuns.kind);
+
+  const html = statsPage({
+    articles: review,
+    annotations: ann,
+    events,
+    flags: flagAgg,
+    revisions: revByKind,
+    patrol,
+    runs,
+  });
+  await c.env.RENDER_CACHE.put(cacheKey, html, { expirationTtl: 300 });
+  return c.html(html);
+});
+
+// ---- recent changes (global patrol feed) ----
+// ?kind=edit|revert|seed|pipeline|contribution narrows to one revisions.kind
+// (anything else reads as "all"). Patrol affordances: see pages.ts patrolCell.
+app.get("/recent-changes", async (c) => {
+  const kindParam = c.req.query("kind") ?? null;
+  const kind =
+    kindParam !== null && (RECENT_KINDS as readonly string[]).includes(kindParam) ? kindParam : null;
+  const db = drizzle(c.env.DB);
+  // Second users join (aliased) resolves patrolled_by → patroller name for the
+  // hover title. The .as() output alias keeps result-column names unique.
+  const patrollers = alias(users, "patrollers");
   const rows = await db
     .select({
       id: revisions.id,
       slug: revisions.slug,
       userId: revisions.userId,
       comment: revisions.comment,
+      kind: revisions.kind,
+      patrolledBy: revisions.patrolledBy,
+      patrolledAt: revisions.patrolledAt,
       createdAt: revisions.createdAt,
       displayTitle: articles.displayTitle,
       userName: users.name,
+      patrollerName: sql<string | null>`${patrollers.name}`.as("patroller_name"),
     })
     .from(revisions)
     .leftJoin(articles, eq(articles.slug, revisions.slug))
     .leftJoin(users, eq(users.id, revisions.userId))
+    .leftJoin(patrollers, eq(patrollers.id, revisions.patrolledBy))
+    .where(kind === null ? undefined : eq(revisions.kind, kind))
     .orderBy(desc(revisions.createdAt))
     .limit(100);
+  const user = await getUser(c);
+  const canPatrol = user !== null && (user.role === "patroller" || user.role === "admin");
   const html = recentChangesPage(
     rows.map((r) => ({
       slug: r.slug,
@@ -398,7 +530,12 @@ app.get("/recent-changes", async (c) => {
       userName: r.userName,
       comment: r.comment,
       createdAt: r.createdAt,
+      kind: r.kind,
+      patrolledBy: r.patrolledBy,
+      patrolledAt: r.patrolledAt,
+      patrollerName: r.patrollerName,
     })),
+    { kind, canPatrol },
   );
   return c.html(html);
 });
@@ -1389,6 +1526,231 @@ app.get("/api/work", async (c) => {
     };
   });
   return c.json({ jobs });
+});
+
+// ---- pipeline-run registry (P2a; cross-agent contract RUNS-API) -------------
+// POST /api/runs — bot bearer only. The runner reports each invocation once,
+// after it finishes; retries are idempotent on run_id (duplicate → 200
+// {ok:true, duplicate:true}, first-report row wins and is never overwritten).
+const RUN_ID_RE = /^[0-9a-f]{8}$/;
+const RUN_KINDS = new Set(["review", "wp-update", "new", "all"]);
+
+app.post("/api/runs", async (c) => {
+  const originErr = checkOrigin(c);
+  if (originErr) return originErr;
+  const user = await requireRole(c, ["bot"]);
+  if (!user) return c.json({ ok: false, error: "forbidden" }, 403);
+  let posted: Record<string, unknown>;
+  try {
+    posted = await c.req.json();
+  } catch {
+    return c.json({ ok: false, error: "bad json" }, 400);
+  }
+  if (typeof posted.run_id !== "string" || !RUN_ID_RE.test(posted.run_id)) {
+    return c.json({ ok: false, error: "bad run_id" }, 400);
+  }
+  if (typeof posted.kind !== "string" || !RUN_KINDS.has(posted.kind)) {
+    return c.json({ ok: false, error: "bad kind" }, 400);
+  }
+  // Optional identifier-sized strings.
+  for (const f of ["model", "prompt_sha"] as const) {
+    const v = posted[f];
+    if (v !== undefined && v !== null && (typeof v !== "string" || v.length === 0 || v.length > MAX_FIELD_LEN)) {
+      return c.json({ ok: false, error: `bad ${f}` }, 400);
+    }
+  }
+  // Required non-negative integers (ms timestamps + counters).
+  for (const f of ["started_at", "finished_at", "articles_processed", "errors", "tokens"] as const) {
+    const v = posted[f];
+    if (typeof v !== "number" || !Number.isInteger(v) || v < 0) {
+      return c.json({ ok: false, error: `bad ${f}` }, 400);
+    }
+  }
+  let cost: number | null = null;
+  if (posted.cost_usd_equiv !== undefined && posted.cost_usd_equiv !== null) {
+    if (
+      typeof posted.cost_usd_equiv !== "number" ||
+      !Number.isFinite(posted.cost_usd_equiv) ||
+      posted.cost_usd_equiv < 0
+    ) {
+      return c.json({ ok: false, error: "bad cost_usd_equiv" }, 400);
+    }
+    cost = posted.cost_usd_equiv;
+  }
+  // notes is free text — size-capped like every other free-text field.
+  let notes: string | null = null;
+  if (posted.notes !== undefined && posted.notes !== null) {
+    if (typeof posted.notes !== "string") return c.json({ ok: false, error: "bad notes" }, 400);
+    if (posted.notes.length > MAX_TEXT_LEN) return c.json({ ok: false, error: "notes too long" }, 413);
+    notes = posted.notes;
+  }
+  const now = Date.now();
+  const db = drizzle(c.env.DB);
+  // Idempotency without a pre-select race: INSERT OR IGNORE on the run_id PK;
+  // 0 rows changed = this run was already reported.
+  const inserted = await db
+    .insert(pipelineRuns)
+    .values({
+      runId: posted.run_id,
+      kind: posted.kind,
+      model: typeof posted.model === "string" ? posted.model : null,
+      promptSha: typeof posted.prompt_sha === "string" ? posted.prompt_sha : null,
+      startedAt: posted.started_at as number,
+      finishedAt: posted.finished_at as number,
+      articlesProcessed: posted.articles_processed as number,
+      errors: posted.errors as number,
+      tokens: posted.tokens as number,
+      costUsdEquiv: cost,
+      notes,
+      createdAt: now,
+    })
+    .onConflictDoNothing({ target: pipelineRuns.runId });
+  if (inserted.meta.changes === 0) return c.json({ ok: true, duplicate: true });
+  console.log(
+    JSON.stringify({
+      event: "run-report",
+      run_id: posted.run_id,
+      kind: posted.kind,
+      articles: posted.articles_processed,
+      errors: posted.errors,
+      tokens: posted.tokens,
+      t: now,
+    }),
+  );
+  return c.json({ ok: true });
+});
+
+// ---- research export (P2a): pseudonymized annotation_events JSONL ----------
+// GET /api/research/export.jsonl — bot bearer OR admin session. Streams one
+// JSON object per annotation_events row (id-ascending, joined to its
+// revision), paged through D1 so the response never materializes in memory.
+// Privacy contract: NO emails, IPs, names, or free-text comments — the only
+// user-linked field is `pseudonym`, sha256(user_id + PIPELINE_TOKEN-as-salt)
+// truncated to 12 hex (stable across exports while the secret is stable;
+// rotating PIPELINE_TOKEN rotates pseudonyms, which is acceptable — it
+// unlinks, never re-identifies). Pipeline events carry pseudonym null.
+app.get("/api/research/export.jsonl", async (c) => {
+  const user = await requireRole(c, ["bot", "admin"]);
+  if (!user) return c.json({ ok: false, error: "forbidden" }, 403);
+  const db = drizzle(c.env.DB);
+  const salt = c.env.PIPELINE_TOKEN ?? "";
+  const pseudoCache = new Map<string, string>();
+  const pseudonymFor = async (userId: string): Promise<string> => {
+    let p = pseudoCache.get(userId);
+    if (p === undefined) {
+      p = (await sha256Hex(userId + salt)).slice(0, 12);
+      pseudoCache.set(userId, p);
+    }
+    return p;
+  };
+
+  const PAGE = 500;
+  let cursor = 0;
+  const encoder = new TextEncoder();
+  const body = new ReadableStream<Uint8Array>({
+    pull: async (controller) => {
+      const rows = await db
+        .select({
+          id: annotationEvents.id,
+          slug: annotationEvents.slug,
+          annotationId: annotationEvents.annotationId,
+          eventType: annotationEvents.eventType,
+          actorType: annotationEvents.actorType,
+          userId: annotationEvents.userId,
+          fieldChanges: annotationEvents.fieldChanges,
+          revisionId: annotationEvents.revisionId,
+          createdAt: annotationEvents.createdAt,
+          revisionKind: revisions.kind,
+          revisionMeta: revisions.meta,
+        })
+        .from(annotationEvents)
+        .leftJoin(revisions, eq(revisions.id, annotationEvents.revisionId))
+        .where(gt(annotationEvents.id, cursor))
+        .orderBy(annotationEvents.id)
+        .limit(PAGE);
+      if (rows.length === 0) {
+        controller.close();
+        return;
+      }
+      cursor = rows[rows.length - 1].id;
+      let out = "";
+      for (const r of rows) {
+        // run_id lives in revisions.meta JSON (the runner's ID3 stamp).
+        let runId: string | null = null;
+        if (r.revisionMeta) {
+          try {
+            const m = JSON.parse(r.revisionMeta) as Record<string, unknown>;
+            if (typeof m.run_id === "string") runId = m.run_id;
+          } catch {
+            // corrupt meta → run_id null
+          }
+        }
+        let fieldChanges: unknown = null;
+        if (r.fieldChanges) {
+          try {
+            fieldChanges = JSON.parse(r.fieldChanges);
+          } catch {
+            fieldChanges = null;
+          }
+        }
+        out +=
+          JSON.stringify({
+            event_id: r.id,
+            slug: r.slug,
+            annotation_id: r.annotationId,
+            event_type: r.eventType,
+            actor_type: r.actorType,
+            pseudonym:
+              r.actorType === "pipeline" || r.userId === null ? null : await pseudonymFor(r.userId),
+            field_changes: fieldChanges,
+            revision_id: r.revisionId,
+            revision_kind: r.revisionKind,
+            run_id: runId,
+            created_at: r.createdAt,
+          }) + "\n";
+      }
+      controller.enqueue(encoder.encode(out));
+    },
+  });
+  return new Response(body, {
+    headers: {
+      "Content-Type": "application/x-ndjson; charset=utf-8",
+      "Cache-Control": "no-store",
+    },
+  });
+});
+
+// ---- mark a human revision patrolled (P2a patrol polish) --------------------
+// patroller/admin only. Only kind='edit' revisions take a patrol mark (seed/
+// pipeline/revert rows aren't patrol targets; 'contribution' joins when that
+// flow ships). CAS-ish: the UPDATE is guarded on patrolled_by IS NULL, so a
+// repeat (or a raced double-click) returns 200 {ok:true, duplicate:true} and
+// never overwrites the first patroller's mark.
+app.post("/api/revision/:id/patrol", async (c) => {
+  const originErr = checkOrigin(c);
+  if (originErr) return originErr;
+  const user = await requireRole(c, ["patroller", "admin"]);
+  if (!user) return c.json({ ok: false, error: "forbidden" }, 403);
+  const id = parseInt(c.req.param("id"), 10);
+  if (Number.isNaN(id)) return c.json({ ok: false, error: "bad revision id" }, 400);
+  const db = drizzle(c.env.DB);
+  const rev = (
+    await db
+      .select({ id: revisions.id, kind: revisions.kind, patrolledBy: revisions.patrolledBy })
+      .from(revisions)
+      .where(eq(revisions.id, id))
+      .limit(1)
+  )[0];
+  if (!rev) return c.json({ ok: false, error: "unknown revision" }, 404);
+  if (rev.kind !== "edit") return c.json({ ok: false, error: "only human edits are patrolled" }, 400);
+  const now = Date.now();
+  const updated = await db
+    .update(revisions)
+    .set({ patrolledBy: user.id, patrolledAt: now })
+    .where(and(eq(revisions.id, id), isNull(revisions.patrolledBy)));
+  if (updated.meta.changes === 0) return c.json({ ok: true, duplicate: true });
+  console.log(JSON.stringify({ event: "patrol", revision_id: id, user_id: user.id, t: now }));
+  return c.json({ ok: true });
 });
 
 // ---- article pages (clean + legacy .html) ----

@@ -87,7 +87,10 @@ interface EndpointRow {
 //   resolve  requireRole(['patroller','admin'])
 //   /api/flags requireRole(['patroller','admin'])
 //   /api/work  requireRole(['bot'])
-//   reads    public (article JSON, home, sitemap, diff)
+//   /api/runs  requireRole(['bot'])  (P2a RUNS-API)
+//   patrol     requireRole(['patroller','admin'])  (P2a)
+//   export     requireRole(['bot','admin'])  (P2a research export)
+//   reads    public (article JSON, home, sitemap, diff, /stats)
 //   /flags page: logged-in only — 302 → /login otherwise (bot counts as logged in)
 const ENDPOINTS: EndpointRow[] = [
   {
@@ -136,6 +139,28 @@ const ENDPOINTS: EndpointRow[] = [
     expected: { anon: 403, user: 403, patroller: 403, admin: 403, blocked: 403, bot: 200, wrongBearer: 403, botNoToken: 403 },
   },
   {
+    name: "POST /api/runs",
+    request: (h, opts) =>
+      post(
+        h.env,
+        "/api/runs",
+        { run_id: "deadbeef", kind: "review", started_at: 1, finished_at: 2, articles_processed: 0, errors: 0, tokens: 0 },
+        opts,
+      ),
+    expected: { anon: 403, user: 403, patroller: 403, admin: 403, blocked: 403, bot: 200, wrongBearer: 403, botNoToken: 403 },
+  },
+  {
+    name: "POST /api/revision/:id/patrol",
+    // Revision 1 = the harness seed revision (kind 'edit', unpatrolled).
+    request: (h, opts) => post(h.env, "/api/revision/1/patrol", {}, opts),
+    expected: { anon: 403, user: 403, patroller: 200, admin: 200, blocked: 403, bot: 403, wrongBearer: 403, botNoToken: 403 },
+  },
+  {
+    name: "GET /api/research/export.jsonl",
+    request: (h, opts) => get(h.env, "/api/research/export.jsonl", opts),
+    expected: { anon: 403, user: 403, patroller: 403, admin: 200, blocked: 403, bot: 200, wrongBearer: 403, botNoToken: 403 },
+  },
+  {
     name: "GET /api/article/:slug.json (public)",
     request: (h, opts) => get(h.env, `/api/article/${SLUG}.json`, opts),
     expected: { anon: 200, user: 200, patroller: 200, admin: 200, blocked: 200, bot: 200, wrongBearer: 200, botNoToken: 200 },
@@ -153,6 +178,11 @@ const ENDPOINTS: EndpointRow[] = [
   {
     name: "GET /sitemap.xml (public)",
     request: (h, opts) => get(h.env, "/sitemap.xml", opts),
+    expected: { anon: 200, user: 200, patroller: 200, admin: 200, blocked: 200, bot: 200, wrongBearer: 200, botNoToken: 200 },
+  },
+  {
+    name: "GET /stats (public)",
+    request: (h, opts) => get(h.env, "/stats", opts),
     expected: { anon: 200, user: 200, patroller: 200, admin: 200, blocked: 200, bot: 200, wrongBearer: 200, botNoToken: 200 },
   },
   {
