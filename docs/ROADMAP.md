@@ -43,9 +43,14 @@ These resolved real conflicts between competing proposals. Build each thing **on
 - **One work table** (`moderation_state`: last_reviewed_at, last_reviewed_version,
   wp_latest_revid, wp_drifted, flag_count, state, proposal) + `GET /api/work` with the
   priority policy in one ORDER BY: **flagged > drifted > human-edited-since-review >
-  oldest-reviewed > new**. No separate `article_updates` table; the claim-based `jobs`
-  table is deferred behind the first-real-donor trigger and replaces /api/work's
-  internals, not the runner.
+  never-moderated > oldest-reviewed**. (REVISED 2026-06-12 with evidence, per the
+  review pass: never-moderated sorts before stale-reviewed — every article already
+  carries one pipeline annotation pass, so first-moderation coverage beats re-review;
+  the original wording had "new" last. Also: "flagged" means flagged-SINCE-last-review,
+  or open flags livelock the queue front; moved/deleted/needs_human states are
+  excluded from selection entirely.) No separate `article_updates` table; the
+  claim-based `jobs` table is deferred behind the first-real-donor trigger and
+  replaces /api/work's internals, not the runner.
 - **One runner script** — `site/moderate.py` with subcommands `new | review | wp-update`,
   flags `--auth subscription|api-key` and `--mode trusted|contributor`. No separate
   contrib_runner.py.
@@ -286,6 +291,31 @@ into `wiki/public/assets/`. Edit sources, then run build-public, never edit
 - EDIT_LIMITER is per-isolate (advisory, not global); don't treat it as a hard cap.
 - Wikipedia page moves/deletions: drift cron must handle redirect/missing or the
   update loop wedges on first contact.
+
+## Review + eval infrastructure (added overnight 2026-06-12)
+
+- **Four-agent review pass** (moderation workflow + UI, both adversarial): 16
+  workflow findings (4 HIGH: wrong-revision reviews F1, flagged-queue livelock F2,
+  drift-tier token misdirection F3, moved/deleted unconsumed F4) + 12 UI findings
+  (4 pre-announcement: .html flag 404s, unreachable tombstone recovery,
+  guaranteed-fail revert buttons, keyboard-inaccessible tooltips) + 3 test-agent
+  findings (anchorSig anchors[] blind spot, no-op save churn, bot /flags access).
+  All triaged into one fix wave. The "verified-solid" lists from both reviews are
+  in the agent reports (session transcripts) — the 422 human-preservation core
+  held under every constructed interleaving.
+- **Test suites**: 334 Worker tests (authz matrix 13 endpoints × 8 actors;
+  /api/work ladder; annotation_events integrity incl. zero-events-on-failure;
+  boundary sweeps) + 45 Python tests + cross-language parity harness
+  (wiki/test/fixtures/parity.json, 74 cases consumed by BOTH vitest and Python —
+  pins the three sig/match/equality implementations against drift; 6 genuine
+  divergences found and pinned, 1 crash-grade fixed in the fix wave).
+- **Moderation evals**: site/eval_moderation.py --offline — 6 planted-defect
+  scenarios (drop-human, tombstone-resurrect, id-rename, provenance-downgrade,
+  create-launder, coverage-extend) through the REAL deterministic pipeline,
+  scorecard + non-zero exit as a CI gate. --live mode exists but is token-gated;
+  never run it in CI. Routine commands:
+  `python3 site/test_moderate.py && python3 site/test_parity.py &&
+  python3 site/eval_moderation.py --offline` and `cd wiki && npm test`.
 
 ## Status log
 
