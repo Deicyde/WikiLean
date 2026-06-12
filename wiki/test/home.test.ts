@@ -30,7 +30,8 @@ describe("homePage", () => {
     ]);
     expect(html).not.toContain("<script>alert(1)</script>");
     expect(html).toContain("&lt;script&gt;alert(1)&lt;/script&gt; &amp; &quot;quotes&quot; &#x27;apos&#x27;");
-    expect(html).toContain('href="/Weird&quot;slug"');
+    // W3 fix #10: slugs are now URL-encoded in hrefs (then HTML-escaped).
+    expect(html).toContain('href="/Weird%22slug"');
     // data-title (lowercased filter key) is escaped too.
     expect(html).toContain('data-title="&lt;script&gt;alert(1)&lt;/script&gt; &amp; &quot;quotes&quot; &#x27;apos&#x27;"');
   });
@@ -158,8 +159,9 @@ describe("sitemapXml", () => {
   });
 
   it("escapes slugs in <loc>", () => {
+    // W3 fix #10: slugs are percent-encoded in <loc> (then XML-escaped).
     const xml = sitemapXml([{ slug: "A&B", updatedAt: Date.UTC(2026, 5, 11) }]);
-    expect(xml).toContain("<loc>https://wikilean.jackmccarthy.org/A&amp;B</loc>");
+    expect(xml).toContain("<loc>https://wikilean.jackmccarthy.org/A%26B</loc>");
     expect(xml).not.toContain("/A&B<");
   });
 

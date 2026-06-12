@@ -1,0 +1,127 @@
+{
+  "name": "coverage_extend",
+  "description": "Scenario (e): the agent legitimately extends coverage with two new annotations while echoing the existing ones verbatim. Fresh 12-hex ids are minted for the new ones, existing ids echo through, and every ladder/anti-tamper stat stays zero — the happy path leaves no fingerprints.",
+  "pipeline": "moderate",
+  "title": "Eval Epsilon Numbers",
+  "sections": {
+    "sections": [
+      {"heading": "Theory", "paragraphs": ["The epsilon theorem holds, and its converse holds too."]},
+      {"heading": "Corollaries", "paragraphs": ["An immediate corollary follows."]},
+      {"heading": "Examples", "paragraphs": ["For instance the trivial epsilon number."]}
+    ]
+  },
+  "existing": [
+    {
+      "id": "111111111111",
+      "kind": "theorem",
+      "label": "Epsilon theorem",
+      "anchor": {"section": "Theory", "snippet": "The epsilon theorem holds"},
+      "status": "formalized",
+      "mathlib": {"decl": "Epsilon.thm", "module": "Mathlib.Epsilon", "match_kind": "exact"},
+      "note": "n",
+      "provenance": "ai"
+    },
+    {
+      "id": "222222222222",
+      "kind": "theorem",
+      "label": "Epsilon converse",
+      "anchor": {"section": "Theory", "snippet": "its converse holds"},
+      "status": "partial",
+      "mathlib": {"decl": null, "module": null, "match_kind": null},
+      "note": "n",
+      "provenance": "ai"
+    }
+  ],
+  "agent1_output": {
+    "annotations": [
+      {
+        "id": "111111111111",
+        "kind": "theorem",
+        "label": "Epsilon theorem",
+        "anchor": {"section": "Theory", "snippet": "The epsilon theorem holds"},
+        "status": "formalized",
+        "mathlib": {"decl": "Epsilon.thm", "module": "Mathlib.Epsilon", "match_kind": "exact"},
+        "note": "n",
+        "provenance": "ai"
+      },
+      {
+        "id": "222222222222",
+        "kind": "theorem",
+        "label": "Epsilon converse",
+        "anchor": {"section": "Theory", "snippet": "its converse holds"},
+        "status": "partial",
+        "mathlib": {"decl": null, "module": null, "match_kind": null},
+        "note": "n",
+        "provenance": "ai"
+      },
+      {
+        "kind": "proposition",
+        "label": "Epsilon corollary",
+        "anchor": {"section": "Corollaries", "snippet": "An immediate corollary"},
+        "provenance": "ai"
+      },
+      {
+        "kind": "example",
+        "label": "Trivial epsilon number",
+        "anchor": {"section": "Examples", "snippet": "the trivial epsilon number"},
+        "provenance": "ai"
+      }
+    ]
+  },
+  "agent2_output": {
+    "annotations": [
+      {
+        "id": "111111111111",
+        "kind": "theorem",
+        "label": "Epsilon theorem",
+        "anchor": {"section": "Theory", "snippet": "The epsilon theorem holds"},
+        "status": "formalized",
+        "mathlib": {"decl": "Epsilon.thm", "module": "Mathlib.Epsilon", "match_kind": "exact"},
+        "note": "n",
+        "provenance": "ai"
+      },
+      {
+        "id": "222222222222",
+        "kind": "theorem",
+        "label": "Epsilon converse",
+        "anchor": {"section": "Theory", "snippet": "its converse holds"},
+        "status": "partial",
+        "mathlib": {"decl": null, "module": null, "match_kind": null},
+        "note": "n",
+        "provenance": "ai"
+      },
+      {
+        "kind": "proposition",
+        "label": "Epsilon corollary",
+        "anchor": {"section": "Corollaries", "snippet": "An immediate corollary"},
+        "status": "not_formalized",
+        "mathlib": {"decl": null, "module": null, "match_kind": null},
+        "note": "no matching decl found",
+        "provenance": "ai"
+      },
+      {
+        "kind": "example",
+        "label": "Trivial epsilon number",
+        "anchor": {"section": "Examples", "snippet": "the trivial epsilon number"},
+        "status": "partial",
+        "mathlib": {"decl": "Epsilon.zero", "module": "Mathlib.Epsilon", "match_kind": "special_case"},
+        "note": "the zero case exists",
+        "provenance": "ai"
+      }
+    ]
+  },
+  "notes": [],
+  "expect": {
+    "ladder": {"restored": 0, "reinserted": 0, "downgrades_blocked": 0, "moderation_flags": []},
+    "wire": {"ids_echoed": 2, "ids_inherited": 0, "ids_fresh": 2, "human_restored_wire": 0, "human_reinserted_wire": 0, "provenance_downgraded": 0, "veto_adjacent_dropped": 0},
+    "checks": [
+      {"check": "count", "n": 4},
+      {"check": "label_id", "label": "Epsilon theorem", "id": "111111111111"},
+      {"check": "label_id", "label": "Epsilon converse", "id": "222222222222"},
+      {"check": "label_fresh_id", "label": "Epsilon corollary"},
+      {"check": "label_fresh_id", "label": "Trivial epsilon number"},
+      {"check": "label_provenance", "label": "Epsilon corollary", "provenance": "ai"},
+      {"check": "all_ids_unique_hex"}
+    ]
+  }
+}

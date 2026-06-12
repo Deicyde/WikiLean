@@ -112,12 +112,13 @@ describe("PUT /api/article/:slug (create)", () => {
   });
 
   it("defaults: no comment → 'create'; no display_title → wikipedia_title; empty annotations ok", async () => {
+    // F16: revid is now mandatory on creates, so even the minimal body pins one.
     const { db, env } = setup();
-    const res = await botCreate(env, NEW_SLUG, { wikipedia_title: "Quotient group", annotations: [] });
+    const res = await botCreate(env, NEW_SLUG, { wikipedia_title: "Quotient group", revid: 777, annotations: [] });
     expect(res.status).toBe(201);
     const row = articleRow(db, NEW_SLUG)!;
     expect(row.display_title).toBe("Quotient group");
-    expect(row.revid).toBeNull();
+    expect(row.revid).toBe(777);
     expect(row.n_formalized).toBe(0);
     expect(row.n_partial).toBe(0);
     expect(row.n_not_formalized).toBe(0);
@@ -127,9 +128,18 @@ describe("PUT /api/article/:slug (create)", () => {
     expect(eventRows(db, NEW_SLUG).length).toBe(0);
   });
 
+  it("F16: missing revid → 400 'revid required for pipeline creates', nothing written", async () => {
+    const { db, env } = setup();
+    const res = await botCreate(env, NEW_SLUG, { wikipedia_title: "Quotient group", annotations: [] });
+    expect(res.status).toBe(400);
+    expect(((await res.json()) as { error: string }).error).toBe("revid required for pipeline creates");
+    expect(articleRow(db, NEW_SLUG)).toBeUndefined();
+  });
+
   it("existing slug → 409 {error:'exists'}, nothing written", async () => {
     const { db, env } = setup();
-    const res = await botCreate(env, SLUG, { wikipedia_title: "Test Article", annotations: [] });
+    // revid present (F16) so the request reaches the existence check.
+    const res = await botCreate(env, SLUG, { wikipedia_title: "Test Article", revid: 777, annotations: [] });
     expect(res.status).toBe(409);
     expect(await res.json()).toEqual({ error: "exists" });
     expect(articleRow(db)!.version).toBe(1);
@@ -169,18 +179,22 @@ describe("PUT /api/article/:slug (create)", () => {
     expect(articleRow(limited.db, NEW_SLUG)).toBeUndefined();
   });
 
-  it("validation: missing/bad wikipedia_title, bad revid, missing annotations, bad status → 400", async () => {
+  it("validation: missing/bad wikipedia_title, missing/bad revid, missing annotations, bad status → 400", async () => {
     const { db, env } = setup();
     const cases: Array<Record<string, unknown>> = [
-      { annotations: [] }, // no wikipedia_title
-      { wikipedia_title: "", annotations: [] },
-      { wikipedia_title: 42, annotations: [] },
+      { revid: 777, annotations: [] }, // no wikipedia_title
+      { wikipedia_title: "", revid: 777, annotations: [] },
+      { wikipedia_title: 42, revid: 777, annotations: [] },
+      { wikipedia_title: "X", annotations: [] }, // F16: no revid
+      { wikipedia_title: "X", revid: null, annotations: [] }, // F16: null revid
       { wikipedia_title: "X", revid: -5, annotations: [] },
+      { wikipedia_title: "X", revid: 0, annotations: [] },
       { wikipedia_title: "X", revid: 1.5, annotations: [] },
-      { wikipedia_title: "X" }, // no annotations array
-      { wikipedia_title: "X", annotations: [{ status: "bogus" }] }, // same validator as saves
-      { wikipedia_title: "X", display_title: "", annotations: [] },
-      { wikipedia_title: "X", meta: "not-an-object", annotations: [] },
+      { wikipedia_title: "X", revid: "777", annotations: [] }, // F16: must be a number
+      { wikipedia_title: "X", revid: 777 }, // no annotations array
+      { wikipedia_title: "X", revid: 777, annotations: [{ status: "bogus" }] }, // same validator as saves
+      { wikipedia_title: "X", revid: 777, display_title: "", annotations: [] },
+      { wikipedia_title: "X", revid: 777, meta: "not-an-object", annotations: [] },
     ];
     for (const body of cases) {
       const res = await botCreate(env, NEW_SLUG, body);
@@ -193,6 +207,7 @@ describe("PUT /api/article/:slug (create)", () => {
     const { db, env } = setup();
     const res = await botCreate(env, NEW_SLUG, {
       wikipedia_title: "Quotient group",
+      revid: 777, // F16
       annotations: [
         { status: "formalized", label: "kept", provenance: "ai" },
         { status: "rejected", label: "vetoed elsewhere", provenance: "human" },

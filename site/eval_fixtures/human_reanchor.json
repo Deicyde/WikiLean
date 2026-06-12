@@ -1,0 +1,100 @@
+{
+  "name": "human_reanchor",
+  "description": "Scenario (g): the agent RE-ANCHORS a stored human annotation (same id, different snippet) and attaches a moderation_flag to its copy. Fix F7: _preserve_human matches by id FIRST and REPLACES the altered copy in place — the final output contains exactly ONE copy (the stored original), never an ai-moderated duplicate alongside a re-appended human. Fix F14: the agent's moderation_flag is harvested into ladder.moderation_flags before the restore strips it.",
+  "pipeline": "moderate",
+  "title": "Eval Eta Numbers",
+  "sections": {
+    "sections": [
+      {"heading": "(lead)", "paragraphs": ["In mathematics, an eta number is a number with the eta property. Equivalently, an eta value arises from the eta map."]},
+      {"heading": "Properties", "paragraphs": ["Every eta number is positive."]}
+    ]
+  },
+  "existing": [
+    {
+      "id": "aaaaaaaaaaaa",
+      "kind": "definition",
+      "label": "Eta number (human)",
+      "anchor": {"section": "(lead)", "snippet": "an eta number is a number"},
+      "status": "formalized",
+      "mathlib": {"decl": "Eta.def", "module": "Mathlib.Eta", "match_kind": "exact"},
+      "note": "verified by hand",
+      "provenance": "human"
+    },
+    {
+      "id": "bbbbbbbbbbbb",
+      "kind": "theorem",
+      "label": "Eta positivity",
+      "anchor": {"section": "Properties", "snippet": "eta number is positive"},
+      "status": "partial",
+      "mathlib": {"decl": null, "module": null, "match_kind": null},
+      "note": "related infra only",
+      "provenance": "ai"
+    }
+  ],
+  "agent1_output": {
+    "annotations": [
+      {
+        "id": "aaaaaaaaaaaa",
+        "kind": "definition",
+        "label": "Eta number (human)",
+        "anchor": {"section": "(lead)", "snippet": "an eta value arises from the eta map"},
+        "status": "formalized",
+        "mathlib": {"decl": "Eta.def", "module": "Mathlib.Eta", "match_kind": "exact"},
+        "note": "verified by hand",
+        "provenance": "human",
+        "moderation_flag": "anchor may be wrong — the definition moved to the second sentence"
+      },
+      {
+        "id": "bbbbbbbbbbbb",
+        "kind": "theorem",
+        "label": "Eta positivity",
+        "anchor": {"section": "Properties", "snippet": "eta number is positive"},
+        "status": "partial",
+        "mathlib": {"decl": null, "module": null, "match_kind": null},
+        "note": "related infra only",
+        "provenance": "ai"
+      }
+    ]
+  },
+  "agent2_output": {
+    "annotations": [
+      {
+        "id": "aaaaaaaaaaaa",
+        "kind": "definition",
+        "label": "Eta number (human)",
+        "anchor": {"section": "(lead)", "snippet": "an eta number is a number"},
+        "status": "formalized",
+        "mathlib": {"decl": "Eta.def", "module": "Mathlib.Eta", "match_kind": "exact"},
+        "note": "verified by hand",
+        "provenance": "human"
+      },
+      {
+        "id": "bbbbbbbbbbbb",
+        "kind": "theorem",
+        "label": "Eta positivity",
+        "anchor": {"section": "Properties", "snippet": "eta number is positive"},
+        "status": "formalized",
+        "mathlib": {"decl": "Eta.pos", "module": "Mathlib.Eta", "match_kind": "exact"},
+        "note": "direct match found",
+        "provenance": "ai"
+      }
+    ]
+  },
+  "notes": [
+    "F7: before the fix, the re-anchored copy missed the sig match, so the stored human was APPENDED alongside the agent's altered copy — a duplicate that would then 422 (altered human on the wire) or double-render. The id-first match replaces in place (ladder restored=1).",
+    "F14: the moderation_flag the agent attached to its copy is harvested as [id, flag] into ladder.moderation_flags before the restore strips it; moderate.py prints it in the run log and it rides revisions.meta."
+  ],
+  "expect": {
+    "ladder": {"restored": 1, "reinserted": 0, "downgrades_blocked": 0, "moderation_flags": [["aaaaaaaaaaaa", "anchor may be wrong — the definition moved to the second sentence"]]},
+    "wire": {"ids_echoed": 1, "ids_inherited": 0, "ids_fresh": 0, "human_restored_wire": 0, "human_reinserted_wire": 0, "provenance_downgraded": 0, "veto_adjacent_dropped": 0},
+    "checks": [
+      {"check": "count", "n": 2},
+      {"check": "human_verbatim", "id": "aaaaaaaaaaaa"},
+      {"check": "humans_intact"},
+      {"check": "label_id", "label": "Eta number (human)", "id": "aaaaaaaaaaaa"},
+      {"check": "label_provenance", "label": "Eta number (human)", "provenance": "human"},
+      {"check": "label_id", "label": "Eta positivity", "id": "bbbbbbbbbbbb"},
+      {"check": "all_ids_unique_hex"}
+    ]
+  }
+}

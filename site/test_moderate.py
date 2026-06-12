@@ -71,9 +71,35 @@ def test_anchor_sig_lockstep_with_batch_annotate():
         ann(label="b", anchor={"type": "theorem_box", "value": "Theorem 1"}),
         {"anchor": {"section": "Lead", "snippet": "s", "from": "x"}},
         {},  # no anchor at all
+        # F12 lockstep-contract shapes: non-dict anchors no longer crash and
+        # anchors[0] is the fallback when `anchor` is unusable.
+        {"anchor": "Statement"},
+        {"anchor": ["Statement"]},
+        {"anchors": [{"section": "S", "snippet": "x"}, {"section": "T"}]},
+        {"anchor": 7, "anchors": [{"type": "theorem_box", "value": "T1"}]},
+        {"anchors": []},
+        {"anchors": ["not-a-dict"]},
     ]
     for s in samples:
         assert m._anchor_sig(s) == ba._anchor_sig(s), s
+
+
+def test_anchor_sig_anchors_contract():
+    # F12 LOCKSTEP CONTRACT: plain-dict anchor unchanged; non-dict anchor
+    # falls through to anchors[0] (when a plain dict) else all-null — and
+    # never raises.
+    null_sig = m._anchor_sig({})
+    assert m._anchor_sig({"anchor": "Statement"}) == null_sig
+    assert m._anchor_sig({"anchor": ["Statement"]}) == null_sig
+    assert m._anchor_sig({"anchor": 7}) == null_sig
+    assert m._anchor_sig({"anchors": []}) == null_sig
+    assert m._anchor_sig({"anchors": ["nope"]}) == null_sig
+    a0 = m._anchor_sig({"anchors": [{"section": "S", "snippet": "x"}]})
+    assert a0 == m._anchor_sig({"anchor": {"section": "S", "snippet": "x"}})
+    # the singular dict anchor wins over anchors[]
+    both = {"anchor": {"section": "A", "snippet": "a"},
+            "anchors": [{"section": "B", "snippet": "b"}]}
+    assert m._anchor_sig(both) == m._anchor_sig({"anchor": {"section": "A", "snippet": "a"}})
 
 
 # ---------------------------------------------------------------------------
@@ -196,6 +222,66 @@ def test_anti_laundering_downgrade():
 
 
 # ---------------------------------------------------------------------------
+# finalize_for_post — veto adjacency (F6: near-miss tombstone resurrections)
+# ---------------------------------------------------------------------------
+
+def _tombstone(**kw) -> dict:
+    base = ann(label="Veto", id="cccccccccccc", provenance="human",
+               status="rejected",
+               anchor={"section": "Examples", "snippet": "the beta construction"})
+    base.update(kw)
+    return base
+
+
+def test_veto_adjacent_clear_overlap_dropped():
+    # F6: a NEW annotation in the tombstone's section whose snippet contains
+    # >50% of the tombstone snippet's tokens is dropped at the wire.
+    tomb = _tombstone()
+    near = ann(label="resurrection (shifted)",
+               anchor={"section": "Examples",
+                       "snippet": "the beta construction proceeds in stages"})
+    out, stats = m.finalize_for_post([tomb], [near])
+    assert stats["veto_adjacent_dropped"] == 1
+    assert out == [tomb]  # only the re-inserted tombstone reaches the wire
+    assert stats["human_reinserted_wire"] == 1
+
+
+def test_veto_adjacent_near_miss_survives():
+    # F6 near-miss: <=50% token containment of the tombstone snippet → kept.
+    tomb = _tombstone()
+    low = ann(label="genuinely new",
+              anchor={"section": "Examples",
+                      "snippet": "construction of gamma objects in stages"})
+    out, stats = m.finalize_for_post([tomb], [low])
+    assert stats["veto_adjacent_dropped"] == 0
+    assert any(a.get("label") == "genuinely new" for a in out)
+
+
+def test_veto_adjacent_other_section_survives():
+    # F6: high token overlap in a DIFFERENT section is not adjacency.
+    tomb = _tombstone()
+    elsewhere = ann(label="same words elsewhere",
+                    anchor={"section": "History",
+                            "snippet": "the beta construction"})
+    out, stats = m.finalize_for_post([tomb], [elsewhere])
+    assert stats["veto_adjacent_dropped"] == 0
+    assert any(a.get("label") == "same words elsewhere" for a in out)
+
+
+def test_veto_adjacent_only_applies_to_new_annotations():
+    # F6: an annotation MATCHED to existing (by id or sig) is never dropped,
+    # even when its anchor overlaps a tombstone's.
+    tomb = _tombstone()
+    existing_ai = ann(label="old ai", id="dddddddddddd",
+                      anchor={"section": "Examples",
+                              "snippet": "the beta construction proceeds"})
+    echoed = dict(existing_ai)
+    out, stats = m.finalize_for_post([tomb, existing_ai], [echoed])
+    assert stats["veto_adjacent_dropped"] == 0
+    assert stats["ids_echoed"] == 1
+
+
+# ---------------------------------------------------------------------------
 # build_meta (contract ID3) + token resolution
 # ---------------------------------------------------------------------------
 
@@ -214,9 +300,11 @@ def test_build_meta_shape():
     assert meta["ladder"]["downgrades_blocked"] == 3
     assert meta["auth_mode"] == "subscription"
     # dry-run path: empty rec still yields the full ID3 shape
+    # (moderation_flags added by fix F14 — harvested agent dissent)
     meta2 = m.build_meta(ctx, {}, {})
     assert meta2["tokens"] == 0 and meta2["ladder"] == {
-        "restored": 0, "reinserted": 0, "downgrades_blocked": 0}
+        "restored": 0, "reinserted": 0, "downgrades_blocked": 0,
+        "moderation_flags": []}
 
 
 def test_resolve_token_env_wins():
@@ -341,6 +429,514 @@ def test_load_qid_map():
 
 
 # ---------------------------------------------------------------------------
+# HTTP write path: 409/422/429 handling (no network, no agents).
+#
+# moderate.py imports `requests` lazily INSIDE each transport function, so
+# sys.modules["requests"] is a clean injection seam; the asyncio module-global
+# is swapped for a shim namespace so the 60s 429 backoff records instead of
+# sleeping. SEAM SUGGESTION (not changed here): a ctx.transport callable
+# (defaulting to requests.post/put) would make these tests need no module
+# patching at all.
+# ---------------------------------------------------------------------------
+
+import asyncio
+import contextlib
+import types
+
+
+class _Resp:
+    def __init__(self, status: int, payload):
+        self.status_code = status
+        self._payload = payload
+
+    def json(self):
+        if self._payload is None:
+            raise ValueError("no JSON body")
+        return self._payload
+
+
+@contextlib.contextmanager
+def _patched_transport(responses):
+    """Install a recording fake `requests` module + a non-sleeping asyncio
+    shim inside moderate. `responses` is a list of (status, payload); the
+    last entry repeats. An EMPTY list asserts no HTTP write happens at all."""
+    real_asyncio = m.asyncio
+    rec = SimpleNamespace(calls=[], sleeps=[])
+    queue = list(responses)
+
+    def _send(url, json=None, headers=None, timeout=None):
+        assert queue, f"unexpected HTTP write to {url}"
+        rec.calls.append({"url": url, "body": json, "headers": headers})
+        status, payload = queue.pop(0) if len(queue) > 1 else queue[0]
+        return _Resp(status, payload)
+
+    async def _sleep(seconds):
+        rec.sleeps.append(seconds)
+
+    fake_requests = types.ModuleType("requests")
+    fake_requests.post = _send
+    fake_requests.put = _send
+    shim = SimpleNamespace(to_thread=real_asyncio.to_thread, sleep=_sleep,
+                           Semaphore=real_asyncio.Semaphore,
+                           gather=real_asyncio.gather, run=real_asyncio.run)
+    saved_requests = sys.modules.get("requests")
+    sys.modules["requests"] = fake_requests
+    m.asyncio = shim
+    try:
+        yield rec
+    finally:
+        m.asyncio = real_asyncio
+        if saved_requests is None:
+            sys.modules.pop("requests", None)
+        else:
+            sys.modules["requests"] = saved_requests
+
+
+def _write_ctx():
+    return SimpleNamespace(api_base="http://api.test", token="tok-123")
+
+
+def test_write_article_retries_429_then_succeeds():
+    with _patched_transport([(429, {}), (429, {}), (200, {"version": 5})]) as t:
+        code, payload = asyncio.run(
+            m._write_article(_write_ctx(), "Lp space", {"base_version": 4}, "post"))
+    assert code == 200 and payload == {"version": 5}
+    assert t.sleeps == [60, 60]          # backed off before each retry
+    assert len(t.calls) == 3
+    assert t.calls[0]["headers"]["Authorization"] == "Bearer tok-123"
+    assert t.calls[0]["url"] == "http://api.test/api/article/Lp%20space"  # quoted
+    assert t.calls[0]["body"] == {"base_version": 4}
+
+
+def test_write_article_429_exhausts_after_three_retries():
+    with _patched_transport([(429, {"error": "rate"})]) as t:
+        code, payload = asyncio.run(
+            m._write_article(_write_ctx(), "S", {}, "post"))
+    assert code == 429 and payload == {"error": "rate"}
+    assert len(t.calls) == 4 and t.sleeps == [60, 60, 60]
+
+
+def test_write_article_non_retryable_single_attempt():
+    # 422 must NOT be retried — human-loss is not transient. (409 used to be
+    # in this test; fix F9 gives POST 409s one zero-token rebase instead —
+    # see the dedicated rebase tests. A 409 WITHOUT base_version, like this
+    # bare body, still gets no rebase.)
+    for status, payload in [(409, {"error": "stale", "version": 9}),
+                            (422, {"error": "human annotations lost", "missing": ["X"]})]:
+        with _patched_transport([(status, payload)]) as t:
+            code, got = asyncio.run(m._write_article(_write_ctx(), "S", {}, "post"))
+        assert code == status and got == payload
+        assert len(t.calls) == 1 and t.sleeps == []
+
+
+def test_write_article_409_rebases_once_with_fresh_state():
+    # F9: a stale 409 on a base_version POST triggers ONE rebase — re-GET,
+    # re-run finalize_for_post against the fresh state, re-POST — for zero
+    # agent tokens.
+    h = ann(label="h", id="aaaaaaaaaaaa", provenance="human")
+    fresh = {"annotations": [h], "version": 9, "wikipedia_title": "S"}
+    body = {"annotations": [ann(label="a", id="bbbbbbbbbbbb")],
+            "base_version": 4, "meta": {"ids": {"stale": True}}}
+    with _patched_get(200, fresh) as gets:
+        with _patched_transport([(409, {"error": "stale", "version": 9}),
+                                 (200, {"version": 10})]) as t:
+            code, payload = asyncio.run(
+                m._write_article(_write_ctx(), "S", body, "post"))
+    assert code == 200 and payload == {"version": 10}
+    assert len(t.calls) == 2 and t.sleeps == []
+    assert len(gets) == 1                       # exactly one re-GET
+    rebased = t.calls[1]["body"]
+    assert rebased["base_version"] == 9         # rebased onto the fresh version
+    assert h in rebased["annotations"]          # fresh human re-appended
+    assert rebased["meta"]["ids"]["human_reinserted_wire"] == 1  # stats refreshed
+
+
+def test_write_article_409_second_conflict_returned():
+    # F9: only ONE rebase — a second 409 goes back to the caller (skip+requeue).
+    with _patched_get(200, {"annotations": [], "version": 9}) as gets:
+        with _patched_transport([(409, {"error": "stale", "version": 9})]) as t:
+            code, _ = asyncio.run(m._write_article(
+                _write_ctx(), "S", {"annotations": [], "base_version": 4}, "post"))
+    assert code == 409
+    assert len(t.calls) == 2 and len(gets) == 1
+
+
+def test_write_article_put_409_not_rebased():
+    # F9: a PUT 409 means 'exists' — no rebase applies to creates.
+    with _patched_transport([(409, {"error": "exists"})]) as t:
+        code, _ = asyncio.run(m._write_article(
+            _write_ctx(), "S", {"base_version": 1}, "put"))
+    assert code == 409 and len(t.calls) == 1
+
+
+def test_write_article_5xx_retries_with_backoff():
+    # F9: 5xx → retry twice with 5s/15s backoff (CAS makes committed-then-500
+    # retries safe — they 409 into the rebase path).
+    with _patched_transport([(500, {}), (502, {}), (200, {"version": 5})]) as t:
+        code, payload = asyncio.run(m._write_article(_write_ctx(), "S", {}, "post"))
+    assert code == 200 and payload == {"version": 5}
+    assert t.sleeps == [5, 15] and len(t.calls) == 3
+
+
+def test_write_article_non_json_body_yields_empty_payload():
+    # (5xx now retries twice with 5s/15s backoff before giving up — fix F9)
+    with _patched_transport([(500, None)]) as t:
+        code, payload = asyncio.run(m._write_article(_write_ctx(), "S", {}, "put"))
+    assert code == 500 and payload == {}
+    assert t.sleeps == [5, 15] and len(t.calls) == 3
+
+
+# ---------------------------------------------------------------------------
+# process_review handler behavior around the write statuses (fake agents via
+# ctx.ba — annotate_one is an injection point by design; _http_get patched
+# for the read path).
+# ---------------------------------------------------------------------------
+
+_REVIEW_EXISTING = [
+    ann(label="h", id="aaaaaaaaaaaa", provenance="human"),
+    ann(label="a", id="bbbbbbbbbbbb"),
+]
+
+
+@contextlib.contextmanager
+def _patched_get(status: int, payload):
+    saved = m._http_get
+    calls = []
+
+    def fake_get(url, token=None):
+        calls.append(url)
+        return _Resp(status, payload)
+
+    m._http_get = fake_get
+    try:
+        yield calls
+    finally:
+        m._http_get = saved
+
+
+def _review_ctx(annot_dir: Path, dry_run: bool = False) -> SimpleNamespace:
+    state = {"agent_calls": 0, "target_revid": "unset"}
+
+    async def fake_annotate_one(article, sem, seed_decls, moderate=False,
+                                existing_override=None, target_revid=None):
+        # target_revid param added by fix F1 (review at the pinned revision)
+        state["agent_calls"] += 1
+        state["target_revid"] = target_revid
+        slug = article["title"].replace(" ", "_")
+        (annot_dir / f"{slug}.json").write_text(json.dumps(
+            {"annotations": existing_override or []}), encoding="utf-8")
+        return {"slug": slug, "mode": "moderate", "tokens": 10,
+                "cost_usd_equiv": 0.01, "elapsed_s": 0.1,
+                "ladder": {"restored": 0, "reinserted": 0,
+                           "downgrades_blocked": 0, "moderation_flags": []}}
+
+    ctx = SimpleNamespace(
+        mode="review", api_base="http://api.test", token="tok",
+        auth="subscription", dry_run=dry_run, concurrency=1,
+        budget_tokens=None, run_id="testrun1", seed_decls={},
+        model="test-model", prompt_sha="abc123abc123", mathlib_sha="1234567",
+        ba=SimpleNamespace(annotate_one=fake_annotate_one, ANNOT=annot_dir))
+    ctx._state = state
+    return ctx
+
+
+def _run_review(post_responses, dry_run=False, get_status=200, get_payload=None):
+    import tempfile
+    if get_payload is None:
+        get_payload = {"annotations": _REVIEW_EXISTING, "version": 7,
+                       "wikipedia_title": "T Article", "revid": 123456789}
+    with tempfile.TemporaryDirectory() as td:
+        ctx = _review_ctx(Path(td), dry_run=dry_run)
+        with _patched_get(get_status, get_payload):
+            with _patched_transport(post_responses) as t:
+                rec = asyncio.run(m.process_review(
+                    {"slug": "T_Article", "reason": "test"}, ctx,
+                    asyncio.Semaphore(1)))
+    return rec, t, ctx
+
+
+def test_process_review_200_records_version():
+    rec, t, _ = _run_review([(200, {"version": 8, "matched": "5/5"})])
+    assert rec["post_status"] == 200
+    assert rec["posted_version"] == 8 and rec["server_matched"] == "5/5"
+    body = t.calls[0]["body"]
+    assert body["base_version"] == 7
+    assert body["comment"] == "ai-moderate:review:testrun1"
+    assert body["meta"]["run_id"] == "testrun1"  # contract ID3 rides every POST
+    # the stored human went over the wire byte-identical (422 made impossible)
+    assert _REVIEW_EXISTING[0] in body["annotations"]
+
+
+def test_process_review_threads_pinned_revid_to_agents():
+    # F1: the pinned revid from the GET rides into annotate_one so the agents
+    # review exactly the revision D1 pins; the POST body carries NO revid
+    # (the pin is unchanged — that's the point).
+    rec, t, ctx = _run_review([(200, {"version": 8, "matched": "5/5"})])
+    assert ctx._state["target_revid"] == 123456789
+    assert "revid" not in t.calls[0]["body"]
+
+
+def test_process_review_409_skips_for_requeue():
+    # Mid-run human edit: F9 gives it ONE zero-token rebase (re-GET +
+    # re-finalize + re-POST); a second 409 is still not an error —
+    # /api/work re-queues it next run.
+    rec, t, _ = _run_review([(409, {"error": "stale", "version": 9})])
+    assert rec["skipped"] == "stale_409"
+    assert "error" not in rec
+    assert len(t.calls) == 2  # initial POST + the single rebase re-POST (F9)
+
+
+def test_process_review_422_loud_and_no_retry():
+    # 422 = finalize_for_post bug; must be loud and must NOT retry.
+    rec, t, _ = _run_review([(422, {"error": "human annotations lost",
+                                    "missing": ["h"]})])
+    assert rec["error"] == "human_lost_422"
+    assert len(t.calls) == 1
+
+
+def test_process_review_429_after_transport_retries():
+    rec, t, _ = _run_review([(429, {})])
+    assert rec["error"] == "rate_limited_429"
+    assert len(t.calls) == 4 and t.sleeps == [60, 60, 60]
+
+
+def test_process_review_get_failure_skips_agents():
+    rec, t, ctx = _run_review([], get_status=500, get_payload={})
+    assert rec["error"] == "get_failed_500"
+    assert ctx._state["agent_calls"] == 0  # never burned tokens
+    assert t.calls == []                   # never wrote
+
+
+def test_process_review_dry_run_no_agents_no_writes():
+    rec, t, ctx = _run_review([], dry_run=True)
+    assert rec["dry_run"] is True
+    assert rec["base_version"] == 7
+    assert ctx._state["agent_calls"] == 0
+    assert t.calls == []
+    # the dry-run wire stats come from finalize_for_post(existing, existing)
+    assert rec["ids"]["ids_echoed"] == 1          # the ai annotation echoes its id
+    assert rec["ids"]["human_restored_wire"] == 0
+
+
+def test_process_review_agent_error_short_circuits():
+    import tempfile
+    with tempfile.TemporaryDirectory() as td:
+        ctx = _review_ctx(Path(td))
+
+        async def failing_annotate_one(article, sem, seed_decls, **kw):
+            return {"slug": "T_Article", "error": "agent1_no_json"}
+
+        ctx.ba = SimpleNamespace(annotate_one=failing_annotate_one,
+                                 ANNOT=Path(td))
+        with _patched_get(200, {"annotations": [], "version": 1,
+                                "wikipedia_title": "T"}):
+            with _patched_transport([]) as t:
+                rec = asyncio.run(m.process_review(
+                    {"slug": "T_Article"}, ctx, asyncio.Semaphore(1)))
+    assert rec["error"] == "agent1_no_json"
+    assert t.calls == []
+
+
+def test_process_new_refuses_put_without_sidecar_revid():
+    import tempfile
+    # F16: a create whose fetch sidecar lacks a valid revid is skipped
+    # ('skipped (no revid)') instead of seeding an unpinnable article.
+    with tempfile.TemporaryDirectory() as td:
+        annot = Path(td) / "annotations"
+        cache = Path(td) / "cache"
+        annot.mkdir()
+        cache.mkdir()  # deliberately NO <slug>.meta.json sidecar
+
+        async def fake_annotate_one(article, sem, seed_decls, moderate=False,
+                                    existing_override=None, target_revid=None):
+            slug = article["title"].replace(" ", "_")
+            (annot / f"{slug}.json").write_text(json.dumps(
+                {"slug": slug, "wikipedia_title": article["title"],
+                 "annotations": [ann(label="a")]}), encoding="utf-8")
+            return {"slug": slug, "tokens": 5, "cost_usd_equiv": 0.01,
+                    "elapsed_s": 0.1}
+
+        ctx = SimpleNamespace(
+            mode="new", api_base="http://api.test", token="tok",
+            auth="subscription", dry_run=False, concurrency=1,
+            budget_tokens=None, run_id="testrun3", seed_decls={},
+            model="test-model", prompt_sha="abc123abc123", mathlib_sha="1234567",
+            qid_map={},
+            ba=SimpleNamespace(annotate_one=fake_annotate_one, ANNOT=annot,
+                               CACHE=cache))
+        with _patched_transport([]) as t:  # empty list asserts NO HTTP write
+            rec = asyncio.run(m.process_new(
+                {"slug": "New_Article", "title": "New Article"}, ctx,
+                asyncio.Semaphore(1)))
+    assert rec["skipped"] == "no_revid"
+    assert t.calls == []
+
+
+# ---------------------------------------------------------------------------
+# run_jobs: token budget + consecutive-window-exhaustion abort logic
+# ---------------------------------------------------------------------------
+
+@contextlib.contextmanager
+def _patched_log():
+    import tempfile
+    saved = m.MODERATE_LOG
+    with tempfile.TemporaryDirectory() as td:
+        m.MODERATE_LOG = Path(td) / "run.log"
+        try:
+            yield m.MODERATE_LOG
+        finally:
+            m.MODERATE_LOG = saved
+
+
+def _jobs_ctx(budget=None, concurrency=1):
+    return SimpleNamespace(mode="review", run_id="testrun2",
+                           concurrency=concurrency, budget_tokens=budget)
+
+
+def _scripted_process(script):
+    """Async process() that pops one rec per job, never yielding — so jobs
+    complete in submission order and abort behavior is deterministic."""
+    queue = list(script)
+
+    async def process(job, ctx, sem):
+        return {"slug": job["slug"], **queue.pop(0)}
+
+    return process
+
+
+def test_run_jobs_token_budget_aborts_remaining():
+    jobs = [{"slug": f"s{i}"} for i in range(4)]
+    script = [{"tokens": 60}] * 4
+    with _patched_log() as log:
+        rc, tokens = asyncio.run(m.run_jobs(
+            jobs, _jobs_ctx(budget=100), _scripted_process(script)))
+        lines = log.read_text().splitlines()
+    assert rc == 3              # aborted, matching batch_annotate's convention
+    assert tokens == 120        # job 0 (60) + job 1 (60, trips the budget)
+    assert len(lines) == 2      # jobs 2-3 skipped without being processed
+    assert all(json.loads(l)["run_id"] == "testrun2" for l in lines)
+
+
+def test_run_jobs_window_exhaustion_aborts_after_threshold():
+    n = m.ABORT_AFTER  # 5
+    jobs = [{"slug": f"s{i}"} for i in range(n + 2)]
+    script = [{"error": "rate limit hit", "tokens": 1}] * (n + 2)
+    with _patched_log() as log:
+        rc, _ = asyncio.run(m.run_jobs(
+            jobs, _jobs_ctx(), _scripted_process(script)))
+        lines = log.read_text().splitlines()
+    assert rc == 3
+    assert len(lines) == n      # aborted exactly at the threshold
+
+
+def test_run_jobs_success_resets_consecutive_counter():
+    n = m.ABORT_AFTER
+    jobs = [{"slug": f"s{i}"} for i in range(2 * n - 1)]
+    script = ([{"error": "overloaded", "tokens": 1}] * (n - 1)
+              + [{"tokens": 1}]
+              + [{"error": "overloaded", "tokens": 1}] * (n - 1))
+    with _patched_log() as log:
+        rc, _ = asyncio.run(m.run_jobs(
+            jobs, _jobs_ctx(), _scripted_process(script)))
+        lines = log.read_text().splitlines()
+    assert rc == 0                       # never reached ABORT_AFTER in a row
+    assert len(lines) == len(jobs)
+
+
+def test_run_jobs_process_exception_counted_not_fatal():
+    # F12: one crashing job must not kill the asyncio.gather — it is logged
+    # and counted as a job error; the rest of the batch still runs.
+    jobs = [{"slug": "boom"}, {"slug": "fine"}]
+
+    async def process(job, ctx, sem):
+        if job["slug"] == "boom":
+            raise ValueError("bad annotation")
+        return {"slug": job["slug"], "tokens": 1}
+
+    with _patched_log() as log:
+        rc, _ = asyncio.run(m.run_jobs(jobs, _jobs_ctx(), process))
+        lines = [json.loads(line) for line in log.read_text().splitlines()]
+    assert rc == 0
+    assert len(lines) == 2
+    errs = [rec for rec in lines if rec.get("error")]
+    assert len(errs) == 1
+    assert errs[0]["slug"] == "boom"
+    assert errs[0]["error"].startswith("job_crashed: ValueError")
+
+
+def test_run_jobs_non_window_errors_never_abort():
+    jobs = [{"slug": f"s{i}"} for i in range(m.ABORT_AFTER + 2)]
+    script = [{"error": "fetch_failed", "tokens": 1}] * len(jobs)
+    with _patched_log() as log:
+        rc, _ = asyncio.run(m.run_jobs(
+            jobs, _jobs_ctx(), _scripted_process(script)))
+        lines = log.read_text().splitlines()
+    assert rc == 0
+    assert len(lines) == len(jobs)       # all processed despite the errors
+
+
+# ---------------------------------------------------------------------------
+# --from-file candidate parsing: hostile/odd lines
+# ---------------------------------------------------------------------------
+
+def test_load_candidate_file_hostile_lines():
+    import tempfile
+    with tempfile.TemporaryDirectory() as td:
+        p = Path(td) / "hostile.jsonl"
+        p.write_text(
+            '"just a string"\n'                       # JSON scalar → skipped
+            "42\n"                                    # JSON number → skipped
+            "[1, 2]\n"                                # JSON array → skipped
+            "null\n"                                  # JSON null → skipped
+            '{"title": 42, "slug": "Numeric_title"}\n'   # non-str title → skipped
+            '{"title": "T", "slug": 42}\n'               # non-str slug → skipped
+            "   \n"                                   # whitespace-only → ignored
+            '{"title": "Émigré theörem", "slug": "Emigre_theorem"}\n'
+            '{"title": "Null source", "slug": "Null_source", "source": null}\n',
+            encoding="utf-8")
+        cands = m.load_candidate_file(p)
+    assert [c["slug"] for c in cands] == ["Emigre_theorem", "Null_source"]
+    assert cands[0]["title"] == "Émigré theörem"      # unicode survives
+    assert cands[1]["source"] == "from-file"          # null source → default
+
+
+def test_load_candidate_file_empty_file():
+    import tempfile
+    with tempfile.TemporaryDirectory() as td:
+        p = Path(td) / "empty.jsonl"
+        p.write_text("", encoding="utf-8")
+        assert m.load_candidate_file(p) == []
+
+
+# ---------------------------------------------------------------------------
+# eval_moderation.py wiring (the deterministic eval is its own CI gate; here
+# we only pin its CLI contract: the token gate refuses, offline exits 0)
+# ---------------------------------------------------------------------------
+
+def test_eval_moderation_live_gate_refuses_without_confirmation():
+    import subprocess
+    r = subprocess.run([sys.executable, str(Path(__file__).parent / "eval_moderation.py"),
+                        "--live"], capture_output=True, text=True)
+    assert r.returncode == 2, r.returncode
+    assert "costs tokens" in (r.stdout + r.stderr)
+
+
+def test_eval_moderation_requires_a_mode():
+    import subprocess
+    r = subprocess.run([sys.executable, str(Path(__file__).parent / "eval_moderation.py")],
+                       capture_output=True, text=True)
+    assert r.returncode == 2  # argparse: one of --offline/--live is required
+
+
+def test_eval_moderation_offline_green():
+    import subprocess
+    r = subprocess.run([sys.executable, str(Path(__file__).parent / "eval_moderation.py"),
+                        "--offline"], capture_output=True, text=True)
+    assert r.returncode == 0, f"offline eval failed:\n{r.stdout}\n{r.stderr}"
+    assert "0 failed" in r.stdout
+
+
+# ---------------------------------------------------------------------------
 # batch_annotate._preserve_human ladder stats (skips without the SDK)
 # ---------------------------------------------------------------------------
 
@@ -355,12 +951,41 @@ def test_preserve_human_stats():
                 {**h2, "note": "agent rewrote"},  # altered → restored
                 ann(label="ai-one")]              # h3 dropped → reinserted
     out, stats = ba._preserve_human(existing, produced)
-    assert stats == {"restored": 1, "reinserted": 1}
+    # 'flags' key added by fix F14 (harvested moderation_flag dissent)
+    assert stats == {"restored": 1, "reinserted": 1, "flags": []}
     assert out[1] == {**h2, "provenance": "human"}
     assert out[-1]["moderation_note"].startswith("re-inserted")
     # no humans → zero stats, produced unchanged
     out2, stats2 = ba._preserve_human([ann(label="x")], [ann(label="x")])
-    assert stats2 == {"restored": 0, "reinserted": 0} and out2 == [ann(label="x")]
+    assert stats2 == {"restored": 0, "reinserted": 0, "flags": []}
+    assert out2 == [ann(label="x")]
+
+
+def test_preserve_human_id_match_replaces_in_place():
+    if ba is None:
+        raise unittest.SkipTest("claude-agent-sdk not installed")
+    # F7: the agent re-anchors a human annotation (sig no longer matches).
+    # The id match must REPLACE the altered copy in place — the final output
+    # contains exactly ONE copy (the stored original), no duplicate.
+    h = ann(label="h", id="aabbccddeeff", provenance="human")
+    reanchored = {**h, "anchor": {"section": "Statement", "snippet": "MOVED"}}
+    other = ann(label="other", id="bbccddeeff00")
+    out, stats = ba._preserve_human([h, other], [reanchored, dict(other)])
+    assert out == [h, other]
+    assert stats["restored"] == 1 and stats["reinserted"] == 0
+
+
+def test_preserve_human_harvests_moderation_flag():
+    if ba is None:
+        raise unittest.SkipTest("claude-agent-sdk not installed")
+    # F14: dissent the agent attached to its copy of a human annotation is
+    # harvested into stats['flags'] before the restore strips it.
+    h = ann(label="h", id="aabbccddeeff", provenance="human")
+    flagged = {**h, "moderation_flag": "decl looks wrong"}
+    out, stats = ba._preserve_human([h], [flagged])
+    assert out == [h]  # the flag itself never reaches the output copy
+    assert stats == {"restored": 1, "reinserted": 0,
+                     "flags": [["aabbccddeeff", "decl looks wrong"]]}
 
 
 # ---------------------------------------------------------------------------

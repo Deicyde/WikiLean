@@ -1,0 +1,117 @@
+{
+  "name": "tombstone_resurrect",
+  "description": "Scenario (b): the agent tries to resurrect a human veto (status='rejected' tombstone) twice — once at the EXACT stored anchor, once at a shifted snippet. _preserve_human suppresses the exact-sig resurrection (by replacing it with the stored tombstone); the shifted-anchor one survives the agent pipeline but is now DROPPED at the wire by finalize_for_post's veto-adjacency check (fix F6: same section + >50% token containment of the tombstone snippet).",
+  "pipeline": "moderate",
+  "title": "Eval Beta Numbers",
+  "sections": {
+    "sections": [
+      {"heading": "Properties", "paragraphs": ["Beta numbers are bounded above."]},
+      {"heading": "Examples", "paragraphs": ["Consider the beta construction. The beta construction proceeds in stages."]}
+    ]
+  },
+  "existing": [
+    {
+      "id": "cccccccccccc",
+      "kind": "example",
+      "label": "Beta example (vetoed)",
+      "anchor": {"section": "Examples", "snippet": "the beta construction"},
+      "status": "rejected",
+      "mathlib": {"decl": null, "module": null, "match_kind": null},
+      "note": "wrong statement — human veto",
+      "provenance": "human"
+    },
+    {
+      "id": "dddddddddddd",
+      "kind": "theorem",
+      "label": "Beta bound",
+      "anchor": {"section": "Properties", "snippet": "bounded above"},
+      "status": "formalized",
+      "mathlib": {"decl": "Beta.bound", "module": "Mathlib.Beta", "match_kind": "exact"},
+      "note": "n",
+      "provenance": "ai"
+    }
+  ],
+  "agent1_output": {
+    "annotations": [
+      {
+        "id": "dddddddddddd",
+        "kind": "theorem",
+        "label": "Beta bound",
+        "anchor": {"section": "Properties", "snippet": "bounded above"},
+        "status": "formalized",
+        "mathlib": {"decl": "Beta.bound", "module": "Mathlib.Beta", "match_kind": "exact"},
+        "note": "n",
+        "provenance": "ai"
+      },
+      {
+        "kind": "example",
+        "label": "Beta construction example",
+        "anchor": {"section": "Examples", "snippet": "the beta construction"},
+        "status": "not_formalized",
+        "mathlib": {"decl": null, "module": null, "match_kind": null},
+        "note": "resurrection attempt at the exact vetoed anchor",
+        "provenance": "ai"
+      },
+      {
+        "kind": "example",
+        "label": "Beta construction (shifted)",
+        "anchor": {"section": "Examples", "snippet": "the beta construction proceeds"},
+        "status": "not_formalized",
+        "mathlib": {"decl": null, "module": null, "match_kind": null},
+        "note": "resurrection attempt at a shifted snippet (veto-adjacent)",
+        "provenance": "ai"
+      }
+    ]
+  },
+  "agent2_output": {
+    "annotations": [
+      {
+        "id": "dddddddddddd",
+        "kind": "theorem",
+        "label": "Beta bound",
+        "anchor": {"section": "Properties", "snippet": "bounded above"},
+        "status": "formalized",
+        "mathlib": {"decl": "Beta.bound", "module": "Mathlib.Beta", "match_kind": "exact"},
+        "note": "n",
+        "provenance": "ai"
+      },
+      {
+        "id": "cccccccccccc",
+        "kind": "example",
+        "label": "Beta example (vetoed)",
+        "anchor": {"section": "Examples", "snippet": "the beta construction"},
+        "status": "rejected",
+        "mathlib": {"decl": null, "module": null, "match_kind": null},
+        "note": "wrong statement — human veto",
+        "provenance": "human"
+      },
+      {
+        "kind": "example",
+        "label": "Beta construction (shifted)",
+        "anchor": {"section": "Examples", "snippet": "the beta construction proceeds"},
+        "status": "not_formalized",
+        "mathlib": {"decl": null, "module": null, "match_kind": null},
+        "note": "resurrection attempt at a shifted snippet (veto-adjacent)",
+        "provenance": "ai"
+      }
+    ]
+  },
+  "notes": [
+    "REALITY PIN: the exact-sig resurrection is suppressed by REPLACEMENT — _preserve_human swaps it for the stored tombstone and counts it as ladder restored=1 (not a dedicated 'resurrection blocked' stat).",
+    "F6: the shifted-snippet resurrection survives the agent pipeline (it reaches the disk artifact) but finalize_for_post DROPS it at the wire — same section as the tombstone, >50% token containment of the tombstone's snippet — counted as veto_adjacent_dropped.",
+    "REMAINING GAP (narrowed by F6): a re-annotation of the vetoed statement in a DIFFERENT section, or with <=50% token containment, still survives; the moderation system prompt (rule 5) and human patrol guard those. The server's 422 only demands the tombstone itself stays intact."
+  ],
+  "expect": {
+    "ladder": {"restored": 1, "reinserted": 0, "downgrades_blocked": 0, "moderation_flags": []},
+    "wire": {"ids_echoed": 1, "ids_inherited": 0, "ids_fresh": 0, "human_restored_wire": 0, "human_reinserted_wire": 0, "provenance_downgraded": 0, "veto_adjacent_dropped": 1},
+    "checks": [
+      {"check": "count", "n": 2},
+      {"check": "human_verbatim", "id": "cccccccccccc"},
+      {"check": "humans_intact"},
+      {"check": "label_status", "label": "Beta example (vetoed)", "status": "rejected"},
+      {"check": "label_absent", "label": "Beta construction example"},
+      {"check": "label_absent", "label": "Beta construction (shifted)", "note": "F6: veto-adjacent near-miss dropped at the wire"},
+      {"check": "all_ids_unique_hex"}
+    ]
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "name": "drop_human",
+  "description": "Scenario (a): the agent output DROPS a stored human annotation. The deterministic machinery must re-insert it (pass-1 reinsert with moderation_note, pass-2 restore-to-stored strips the note again) and the wire payload must carry it byte-identical, id intact.",
+  "pipeline": "moderate",
+  "title": "Eval Alpha Numbers",
+  "sections": {
+    "sections": [
+      {"heading": "(lead)", "paragraphs": ["In mathematics, an alpha number is a number with the alpha property."]},
+      {"heading": "Properties", "paragraphs": ["Doubling an alpha number yields an alpha number."]}
+    ]
+  },
+  "existing": [
+    {
+      "id": "aaaaaaaaaaaa",
+      "kind": "definition",
+      "label": "Alpha number (human)",
+      "anchor": {"section": "(lead)", "snippet": "alpha number is a number"},
+      "status": "formalized",
+      "mathlib": {"decl": "Nat.Alpha", "module": "Mathlib.Data.Nat.Alpha", "match_kind": "exact"},
+      "note": "verified by hand",
+      "provenance": "human"
+    },
+    {
+      "id": "bbbbbbbbbbbb",
+      "kind": "theorem",
+      "label": "Alpha doubling",
+      "anchor": {"section": "Properties", "snippet": "Doubling an alpha number"},
+      "status": "partial",
+      "mathlib": {"decl": null, "module": null, "match_kind": null},
+      "note": "related infra only",
+      "provenance": "ai"
+    }
+  ],
+  "agent1_output": {
+    "annotations": [
+      {
+        "id": "bbbbbbbbbbbb",
+        "kind": "theorem",
+        "label": "Alpha doubling theorem",
+        "anchor": {"section": "Properties", "snippet": "Doubling an alpha number"},
+        "status": "partial",
+        "mathlib": {"decl": null, "module": null, "match_kind": null},
+        "note": "related infra only",
+        "provenance": "ai-moderated"
+      }
+    ]
+  },
+  "agent2_output": {
+    "annotations": [
+      {
+        "id": "bbbbbbbbbbbb",
+        "kind": "theorem",
+        "label": "Alpha doubling theorem",
+        "anchor": {"section": "Properties", "snippet": "Doubling an alpha number"},
+        "status": "formalized",
+        "mathlib": {"decl": "Nat.Alpha.double", "module": "Mathlib.Data.Nat.Alpha", "match_kind": "exact"},
+        "note": "direct match found",
+        "provenance": "ai-moderated"
+      },
+      {
+        "id": "aaaaaaaaaaaa",
+        "kind": "definition",
+        "label": "Alpha number (human)",
+        "anchor": {"section": "(lead)", "snippet": "alpha number is a number"},
+        "status": "formalized",
+        "mathlib": {"decl": "Nat.Alpha", "module": "Mathlib.Data.Nat.Alpha", "match_kind": "exact"},
+        "note": "verified by hand",
+        "provenance": "human",
+        "moderation_note": "re-inserted by moderator (agent omitted it)"
+      }
+    ]
+  },
+  "notes": [
+    "Pass 1 re-inserts the dropped human WITH _preserve_human's moderation_note (ladder reinserted=1); Agent 2 realistically echoes that note back, so pass 2 counts a restore (ladder restored=1) and replaces the copy with the stored original — the note never reaches disk or the wire."
+  ],
+  "expect": {
+    "ladder": {"restored": 1, "reinserted": 1, "downgrades_blocked": 0, "moderation_flags": []},
+    "wire": {"ids_echoed": 1, "ids_inherited": 0, "ids_fresh": 0, "human_restored_wire": 0, "human_reinserted_wire": 0, "provenance_downgraded": 0, "veto_adjacent_dropped": 0},
+    "checks": [
+      {"check": "count", "n": 2},
+      {"check": "human_verbatim", "id": "aaaaaaaaaaaa"},
+      {"check": "humans_intact"},
+      {"check": "label_provenance", "label": "Alpha doubling theorem", "provenance": "ai-moderated"},
+      {"check": "label_id", "label": "Alpha doubling theorem", "id": "bbbbbbbbbbbb"},
+      {"check": "all_ids_unique_hex"}
+    ]
+  }
+}

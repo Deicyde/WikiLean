@@ -1,0 +1,97 @@
+{
+  "name": "provenance_downgrade",
+  "description": "Scenario (d): Agent 2 tries to downgrade provenance on its echo — 'ai-moderated' back to 'ai' on a reviewed annotation, and 'human' to 'ai' (plus a rewrite) on a human one. The PRIORITY ladder blocks the ai-moderated downgrade (downgrades_blocked); the human one is handled by _preserve_human's restore (counted as restored, NOT as a blocked downgrade — pinned reality).",
+  "pipeline": "moderate",
+  "title": "Eval Delta Numbers",
+  "sections": {
+    "sections": [
+      {"heading": "(lead)", "paragraphs": ["A delta number is defined by the delta property."]},
+      {"heading": "Theory", "paragraphs": ["The delta theorem characterizes them."]}
+    ]
+  },
+  "existing": [
+    {
+      "id": "111111111111",
+      "kind": "theorem",
+      "label": "Delta theorem",
+      "anchor": {"section": "Theory", "snippet": "The delta theorem"},
+      "status": "partial",
+      "mathlib": {"decl": null, "module": null, "match_kind": null},
+      "note": "old note",
+      "provenance": "ai"
+    },
+    {
+      "id": "aaaaaaaaaaaa",
+      "kind": "definition",
+      "label": "Delta definition",
+      "anchor": {"section": "(lead)", "snippet": "delta number is defined"},
+      "status": "formalized",
+      "mathlib": {"decl": "Delta.def", "module": "Mathlib.Delta", "match_kind": "exact"},
+      "note": "human checked",
+      "provenance": "human"
+    }
+  ],
+  "agent1_output": {
+    "annotations": [
+      {
+        "id": "111111111111",
+        "kind": "theorem",
+        "label": "Delta theorem (corrected)",
+        "anchor": {"section": "Theory", "snippet": "The delta theorem"},
+        "status": "partial",
+        "mathlib": {"decl": null, "module": null, "match_kind": null},
+        "note": "old note",
+        "provenance": "ai-moderated"
+      },
+      {
+        "id": "aaaaaaaaaaaa",
+        "kind": "definition",
+        "label": "Delta definition",
+        "anchor": {"section": "(lead)", "snippet": "delta number is defined"},
+        "status": "formalized",
+        "mathlib": {"decl": "Delta.def", "module": "Mathlib.Delta", "match_kind": "exact"},
+        "note": "human checked",
+        "provenance": "human"
+      }
+    ]
+  },
+  "agent2_output": {
+    "annotations": [
+      {
+        "id": "111111111111",
+        "kind": "theorem",
+        "label": "Delta theorem (corrected)",
+        "anchor": {"section": "Theory", "snippet": "The delta theorem"},
+        "status": "formalized",
+        "mathlib": {"decl": "Delta.thm", "module": "Mathlib.Delta", "match_kind": "exact"},
+        "note": "found the decl",
+        "provenance": "ai"
+      },
+      {
+        "id": "aaaaaaaaaaaa",
+        "kind": "definition",
+        "label": "Delta definition",
+        "anchor": {"section": "(lead)", "snippet": "delta number is defined"},
+        "status": "formalized",
+        "mathlib": {"decl": "Delta.def", "module": "Mathlib.Delta", "match_kind": "exact"},
+        "note": "agent rewrote this note",
+        "provenance": "ai"
+      }
+    ]
+  },
+  "notes": [
+    "REALITY PIN: the PRIORITY ladder (inline in batch_annotate.annotate_one, lines 421-436) only counts downgrades on NON-human annotations — Agent 2 echoing 'ai' for the reviewed theorem is blocked and counted (downgrades_blocked=1, provenance stays 'ai-moderated').",
+    "The human annotation's downgrade-plus-rewrite never reaches the ladder: _preserve_human's second pass restores the stored original first (ladder restored=1). Two different guards, two different counters."
+  ],
+  "expect": {
+    "ladder": {"restored": 1, "reinserted": 0, "downgrades_blocked": 1, "moderation_flags": []},
+    "wire": {"ids_echoed": 1, "ids_inherited": 0, "ids_fresh": 0, "human_restored_wire": 0, "human_reinserted_wire": 0, "provenance_downgraded": 0, "veto_adjacent_dropped": 0},
+    "checks": [
+      {"check": "count", "n": 2},
+      {"check": "label_provenance", "label": "Delta theorem (corrected)", "provenance": "ai-moderated"},
+      {"check": "human_verbatim", "id": "aaaaaaaaaaaa"},
+      {"check": "humans_intact"},
+      {"check": "all_ids_unique_hex"}
+    ]
+  }
+}

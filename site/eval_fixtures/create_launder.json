@@ -1,0 +1,56 @@
+{
+  "name": "create_launder",
+  "description": "Scenario (f): article CREATE (moderate.py new mode, contract D-C1). The pipeline envelope claims provenance 'human' on one annotation — but a create has no stored humans to launder from, so build_create_body's finalize_for_post([], ...) downgrades it to 'ai-moderated' and mints fresh ids for everything. Runs without batch_annotate (pure moderate.py).",
+  "pipeline": "create",
+  "run_id": "evalrun0",
+  "revid": 987654321,
+  "wikidata_qid": "Q9999999",
+  "envelope": {
+    "slug": "Eval_Zeta_Numbers",
+    "wikipedia_title": "Eval Zeta Numbers",
+    "display_title": "Eval Zeta Numbers",
+    "schema_version": 3,
+    "annotation_style": "theorem_article",
+    "annotations": [
+      {
+        "kind": "definition",
+        "label": "Zeta number",
+        "anchor": {"section": "(lead)", "snippet": "a zeta number is"},
+        "status": "formalized",
+        "mathlib": {"decl": "Zeta.def", "module": "Mathlib.Zeta", "match_kind": "exact"},
+        "note": "n",
+        "provenance": "ai"
+      },
+      {
+        "kind": "theorem",
+        "label": "Zeta theorem (laundered)",
+        "anchor": {"section": "Theory", "snippet": "the zeta theorem"},
+        "status": "formalized",
+        "mathlib": {"decl": "Zeta.thm", "module": "Mathlib.Zeta", "match_kind": "exact"},
+        "note": "the agent claims a human wrote this",
+        "provenance": "human"
+      }
+    ]
+  },
+  "notes": [
+    "Anti-laundering on the create path: bot writes must not mint human provenance. The server-side twin is stampProvenance (session saves only); on bearer writes provenance passes verbatim, so this client-side downgrade is the ONLY guard for creates."
+  ],
+  "expect": {
+    "wire": {"ids_echoed": 0, "ids_inherited": 0, "ids_fresh": 2, "human_restored_wire": 0, "human_reinserted_wire": 0, "provenance_downgraded": 1, "veto_adjacent_dropped": 0},
+    "body": {
+      "wikipedia_title": "Eval Zeta Numbers",
+      "display_title": "Eval Zeta Numbers",
+      "wikidata_qid": "Q9999999",
+      "revid": 987654321,
+      "comment": "ai-create:evalrun0"
+    },
+    "checks": [
+      {"check": "count", "n": 2},
+      {"check": "label_provenance", "label": "Zeta number", "provenance": "ai"},
+      {"check": "label_provenance", "label": "Zeta theorem (laundered)", "provenance": "ai-moderated"},
+      {"check": "label_fresh_id", "label": "Zeta number"},
+      {"check": "label_fresh_id", "label": "Zeta theorem (laundered)"},
+      {"check": "all_ids_unique_hex"}
+    ]
+  }
+}

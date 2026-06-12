@@ -21,7 +21,7 @@ import { app } from "../src/index.js";
 import type { Env } from "../src/env.js";
 import { makeD1, makeKV } from "./helpers/d1shim.js";
 import { assignAnnotationIds, ANNOTATION_ID_RE } from "../scripts/backfill-ids.js";
-import type { AnnRecord } from "../src/validation.js";
+import { anchorSig, type AnnRecord } from "../src/validation.js";
 
 const MIGRATIONS_DIR = resolve(process.cwd(), "migrations");
 const MIGRATIONS = readdirSync(MIGRATIONS_DIR)
@@ -234,6 +234,147 @@ describe("save-path lazy heal", () => {
     const rejected = await save(env, { annotations: dropped, base_version: 3 }, true);
     expect(rejected.status).toBe(422);
     expect(((await rejected.json()) as { missing: string[] }).missing).toEqual(["Centralizer"]);
+  });
+});
+
+describe("anchorSig + anchors[] (multi-anchor annotations)", () => {
+  // The signature is exactly [type, section, snippet, value, from] of the
+  // SINGULAR anchor (the batch_annotate.py _anchor_sig twin). Extra anchor
+  // fields and key order must not perturb it — sig stability is what lets a
+  // round-tripped id-less annotation re-find its stored twin.
+  it("sig is stable across key order and ignores non-signature anchor fields", () => {
+    const a: AnnRecord = {
+      anchor: { section: "Properties", snippet: "x", from_snippet: "ignored", to: "ignored", to_math: "ignored" },
+    };
+    const b: AnnRecord = { anchor: { snippet: "x", section: "Properties" } };
+    expect(anchorSig(a)).toBe(anchorSig(b));
+    expect(anchorSig(a)).toBe(JSON.stringify([null, "Properties", "x", null, null]));
+  });
+
+  it("TESTAGENT#1: anchors[0] feeds the signature when the singular anchor is absent", () => {
+    // Conscious update of the old 'anchors[] not read' pin (TESTAGENT#1
+    // lockstep contract, twinned with site _anchor_sig): a multi-anchor
+    // annotation now signs with anchors[0]'s [type, section, snippet, value,
+    // from], so sig-based matching CAN distinguish anchors[]-only annotations.
+    const a: AnnRecord = { label: "A", anchors: [{ section: "S1", snippet: "one" }] };
+    const b: AnnRecord = { label: "B", anchors: [{ section: "S2", snippet: "two" }] };
+    expect(anchorSig(a)).toBe(JSON.stringify([null, "S1", "one", null, null]));
+    expect(anchorSig(b)).toBe(JSON.stringify([null, "S2", "two", null, null]));
+    expect(anchorSig(a)).not.toBe(anchorSig(b));
+    // A plain-object singular `anchor` still wins over anchors[] — even an
+    // EMPTY one (it does not fall through to the array).
+    expect(anchorSig({ anchor: { section: "S0", snippet: "zero" }, anchors: [{ section: "S1", snippet: "one" }] })).toBe(
+      JSON.stringify([null, "S0", "zero", null, null]),
+    );
+    expect(anchorSig({ anchor: {}, anchors: [{ section: "S1", snippet: "one" }] })).toBe(
+      JSON.stringify([null, null, null, null, null]),
+    );
+  });
+
+  it("TESTAGENT#1: non-object anchor values never crash — they fall through to anchors[] then all-null", () => {
+    const allNull = JSON.stringify([null, null, null, null, null]);
+    // string / number / array anchors are malformed but must not throw
+    // (the Python twin used to AttributeError on these).
+    expect(anchorSig({ anchor: "lead" })).toBe(allNull);
+    expect(anchorSig({ anchor: 42 })).toBe(allNull);
+    expect(anchorSig({ anchor: ["a", "b"] })).toBe(allNull);
+    // …and a usable anchors[] is still consulted behind a malformed anchor.
+    expect(anchorSig({ anchor: 42, anchors: [{ section: "S1", snippet: "one" }] })).toBe(
+      JSON.stringify([null, "S1", "one", null, null]),
+    );
+    // Empty/garbage anchors[] → all-null.
+    expect(anchorSig({ anchors: [] })).toBe(allNull);
+    expect(anchorSig({ anchors: ["not-an-object"] })).toBe(allNull);
+    expect(anchorSig({})).toBe(allNull);
+  });
+
+  it("heal: an id-stripped anchors[]-only annotation re-adopts its stored id (sig from anchors[0])", async () => {
+    const { db, env } = setup();
+    // TESTAGENT#1: anchors[0] is the signature now, so it's chosen to be
+    // distinct from STORED_NO_ID's singular anchor ('normalizer of a
+    // subgroup') — same five fields would mean the same sig.
+    const MULTI = {
+      status: "formalized",
+      kind: "theorem",
+      label: "Multi-anchor result",
+      provenance: "ai",
+      anchors: [
+        { section: "Properties", snippet: "characteristic subgroup" },
+        { section: "Properties", snippet: "normalizer of a subgroup" },
+      ],
+    };
+    expect(
+      (await save(env, { annotations: [echo(STORED_WITH_ID), echo(STORED_NO_ID), MULTI], base_version: 1 })).status,
+    ).toBe(200);
+    const after1 = storedAnnotations(db);
+    const multiId = after1[2].id as string;
+    expect(multiId).toMatch(ANNOTATION_ID_RE);
+
+    // Client round-trips with the multi-anchor annotation's id stripped.
+    const reposted = echo(after1) as Array<Record<string, unknown>>;
+    delete reposted[2].id;
+    expect((await save(env, { annotations: reposted, base_version: 2 })).status).toBe(200);
+    const after2 = storedAnnotations(db);
+    expect(after2[2].id).toBe(multiId); // identity continuity held
+    // And the no-op round-trip added nothing to the event log.
+    const n = (
+      db.prepare("SELECT COUNT(*) AS n FROM annotation_events WHERE annotation_id = ?").get(multiId) as { n: number }
+    ).n;
+    expect(n).toBe(1); // just the original 'add'
+  });
+
+  it("TESTAGENT#1 (was PINNED HAZARD): distinct anchors[] sigs prevent the id-theft identity swap", async () => {
+    // Conscious update: this test previously PINNED the hazard that any two
+    // anchors[]-only annotations shared the all-null sig, letting an id-less
+    // imposter steal a stored id. With anchors[0] feeding the signature, the
+    // imposter's sig no longer matches the original's — each keeps (or is
+    // minted) its own identity.
+    const { db, env } = setup();
+    const MULTI = {
+      status: "formalized",
+      label: "Original multi-anchor",
+      provenance: "ai",
+      anchors: [{ section: "Properties", snippet: "characteristic subgroup" }],
+    };
+    expect(
+      (await save(env, { annotations: [echo(STORED_WITH_ID), echo(STORED_NO_ID), MULTI], base_version: 1 })).status,
+    ).toBe(200);
+    const multiId = storedAnnotations(db)[2].id as string;
+
+    const imposter = {
+      status: "not_formalized",
+      label: "Imposter",
+      provenance: "ai",
+      anchors: [{ section: "(lead)", snippet: "completely different text" }],
+    };
+    const original = echo(storedAnnotations(db)[2]) as Record<string, unknown>;
+    delete original.id;
+    expect(
+      (
+        await save(env, {
+          annotations: [echo(STORED_WITH_ID), echo(STORED_NO_ID), imposter, original],
+          base_version: 2,
+        })
+      ).status,
+    ).toBe(200);
+
+    const after = storedAnnotations(db);
+    expect(after[2].label).toBe("Imposter");
+    expect(after[2].id).toMatch(ANNOTATION_ID_RE);
+    expect(after[2].id).not.toBe(multiId); // no theft: the imposter got a fresh id
+    expect(after[3].label).toBe("Original multi-anchor");
+    expect(after[3].id).toBe(multiId); // the id-stripped original re-adopted its own id
+  });
+
+  it("F8: an id-stripped but otherwise unchanged annotation keeps its stored provenance", async () => {
+    // stampProvenance now judges "changed" with BOTH provenance and id
+    // stripped — dropping the id field alone must not launder 'ai' → 'human'.
+    const { db, env } = setup();
+    const posted = [stripId(echo(STORED_WITH_ID)), echo(STORED_NO_ID)];
+    expect((await save(env, { annotations: posted, base_version: 1 })).status).toBe(200);
+    const stored = storedAnnotations(db);
+    expect(stored[0].id).toBe(STORED_WITH_ID.id); // heal re-adopted the id
+    expect(stored[0].provenance).toBe("ai"); // F8: NOT stamped 'human'
   });
 });
 

@@ -239,6 +239,15 @@ function insertModState(
   );
 }
 
+// F2: the /api/work flagged tier reads real OPEN flag rows created after the
+// last review (flag_count stays a patrol-pressure counter only).
+function insertFlag(db: DatabaseSync, slug: string, createdAt: number): void {
+  db.prepare("INSERT INTO flags (slug, annotation_id, reason, status, created_at) VALUES (?,NULL,'other','open',?)").run(
+    slug,
+    createdAt,
+  );
+}
+
 describe("POST /api/article/:slug (save)", () => {
   it("rejects anonymous saves with 401 and writes nothing", async () => {
     const { db, env } = setup();
@@ -638,6 +647,28 @@ describe("GET /api/article/:slug.json (pipeline read path)", () => {
     const res = await get(env, "/api/article/No_Such_Article.json");
     expect(res.status).toBe(404);
   });
+
+  it("F15: tombstones are null placeholders for non-bearer readers; the bearer pipeline gets them verbatim", async () => {
+    const { env } = setup();
+    const tombstone = { ...SEED_ANNOTATIONS[0], status: "rejected" };
+    expect((await save(env, { annotations: [tombstone], base_version: 1 }, { user: "u-human" })).status).toBe(200);
+
+    // Anonymous and session readers: the veto is hidden (index-aligned null,
+    // mirroring the rendered page's buildClientData).
+    const anon = (await (await get(env, `/api/article/${SLUG}.json`)).json()) as { annotations: unknown[] };
+    expect(anon.annotations).toEqual([null]);
+    const sess = (await (await get(env, `/api/article/${SLUG}.json`, { user: "u-human" })).json()) as {
+      annotations: unknown[];
+    };
+    expect(sess.annotations).toEqual([null]);
+
+    // Bearer (the runner) needs the veto verbatim or its next echo 422s.
+    const bot = (await (await get(env, `/api/article/${SLUG}.json`, { bearer: PIPELINE_TOKEN })).json()) as {
+      annotations: Array<Record<string, unknown>>;
+    };
+    expect(bot.annotations.length).toBe(1);
+    expect(bot.annotations[0]).toMatchObject({ status: "rejected", provenance: "human" });
+  });
 });
 
 describe("GET /api/work (moderation queue)", () => {
@@ -647,6 +678,9 @@ describe("GET /api/work (moderation queue)", () => {
     // order so the test fails if ORDER BY falls back to recency or rowid.
     insertArticle(db, "Work_Flagged");
     insertModState(db, "Work_Flagged", { flagCount: 2, lastReviewedAt: 5000, lastReviewedVersion: 1 });
+    // F2: real open flags, newer than the 5000 review stamp.
+    insertFlag(db, "Work_Flagged", Date.now());
+    insertFlag(db, "Work_Flagged", Date.now());
     insertArticle(db, "Work_Drifted");
     insertModState(db, "Work_Drifted", { wpDrifted: 1, lastReviewedAt: 6000, lastReviewedVersion: 1 });
     insertArticle(db, "Work_HumanEdited", { version: 3 });
@@ -738,6 +772,162 @@ describe("POST /api/article/:slug/revert/:revid", () => {
     const { env } = setup();
     expect((await post(env, `/api/article/${SLUG}/revert/99999`, {}, { user: "u-patroller" })).status).toBe(404);
     expect((await post(env, `/api/article/${SLUG}/revert/abc`, {}, { user: "u-patroller" })).status).toBe(400);
+  });
+
+  it("F5: a concurrent version bump between the revert's read and write → 409 stale, nothing written", async () => {
+    const { db, env } = setup();
+    const seedRevId = latestRevision(db).id;
+    expect((await save(env, { annotations: HUMAN_EDIT, base_version: 1 }, { user: "u-human" })).status).toBe(200);
+
+    // Simulate the concurrent writer: bump the version the moment the revert
+    // handler prepares its CAS-guarded `update "articles"` statement — after
+    // its read (version 2), before the write.
+    const shim = env.DB as unknown as { prepare: (sql: string) => unknown };
+    const origPrepare = shim.prepare.bind(shim);
+    let bumped = false;
+    shim.prepare = (sqlStr: string) => {
+      if (!bumped && /^update "articles"/i.test(sqlStr)) {
+        bumped = true;
+        db.prepare("UPDATE articles SET version = version + 1 WHERE slug = ?").run(SLUG);
+      }
+      return origPrepare(sqlStr);
+    };
+
+    const res = await post(env, `/api/article/${SLUG}/revert/${seedRevId}`, {}, { user: "u-patroller" });
+    expect(res.status).toBe(409);
+    const body = (await res.json()) as { error: string; version: number };
+    expect(body.error).toBe("stale");
+    expect(body.version).toBe(3); // the concurrent bump
+    expect(bumped).toBe(true);
+    // No revert revision, no annotation change: the CAS lost cleanly.
+    expect(revisionCount(db)).toBe(2);
+    const row = articleRow(db);
+    expect(stripIds(JSON.parse(row.annotations) as Array<Record<string, unknown>>)).toEqual(HUMAN_EDIT);
+  });
+});
+
+describe("history page annotation counts (UI#12)", () => {
+  it("excludes tombstones, matching the page-header badges", async () => {
+    const { env } = setup();
+    // Revision 2 stores two annotations, one of them a tombstone → count 1.
+    const tombstone = { status: "rejected", label: "vetoed", provenance: "human" };
+    expect(
+      (await save(env, { annotations: [echo(SEED_ANNOTATIONS[0]), tombstone], base_version: 1 }, { user: "u-human" }))
+        .status,
+    ).toBe(200);
+
+    const res = await get(env, `/${SLUG}/history`);
+    expect(res.status).toBe(200);
+    const html = await res.text();
+    expect(html).toContain("<td>1</td>"); // both revisions count 1 live annotation
+    expect(html).not.toContain("<td>2</td>"); // the tombstone is not counted
+  });
+});
+
+describe("validation boundaries (exact caps, P0 contract)", () => {
+  // Build an annotations array whose serialized JSON is EXACTLY targetBytes —
+  // the server re-stringifies the parsed array, and for ASCII payloads that
+  // reproduces the same byte length.
+  function annotationsOfExactly(targetBytes: number): Array<Record<string, unknown>> {
+    const filler = () => ({ status: "formalized", note: "y".repeat(1800) });
+    const last: Record<string, unknown> = { status: "formalized", note: "" };
+    const arr: Array<Record<string, unknown>> = [];
+    while (JSON.stringify([...arr, filler(), last]).length <= targetBytes) arr.push(filler());
+    const pad = targetBytes - JSON.stringify([...arr, last]).length;
+    if (pad < 0 || pad > 2000) throw new Error(`payload construction failed (pad=${pad})`);
+    last.note = "x".repeat(pad);
+    const out = [...arr, last];
+    if (JSON.stringify(out).length !== targetBytes) throw new Error("payload construction failed");
+    return out;
+  }
+
+  it("payload at exactly 256KB saves; one byte over → 413", async () => {
+    const atCap = setup();
+    const exact = annotationsOfExactly(256 * 1024);
+    const ok = await save(atCap.env, { annotations: exact, base_version: 1 }, { user: "u-human" });
+    expect(ok.status).toBe(200);
+    expect(articleRow(atCap.db).version).toBe(2);
+
+    const overCap = setup();
+    const over = annotationsOfExactly(256 * 1024 + 1);
+    const rejected = await save(overCap.env, { annotations: over, base_version: 1 }, { user: "u-human" });
+    expect(rejected.status).toBe(413);
+    expect(articleRow(overCap.db).version).toBe(1);
+  });
+
+  it("exactly 2000 annotations saves (2001 is pinned as 413 above)", async () => {
+    const { db, env } = setup();
+    const annotations = Array.from({ length: 2000 }, () => ({ status: "formalized" }));
+    const res = await save(env, { annotations, base_version: 1 }, { user: "u-human" });
+    expect(res.status).toBe(200);
+    const stored = JSON.parse(articleRow(db).annotations) as Array<Record<string, unknown>>;
+    expect(stored.length).toBe(2000);
+    // Every one of the 2000 healed ids is canonical and unique.
+    const ids = stored.map((a) => a.id as string);
+    expect(ids.every((id) => ID_RE.test(id))).toBe(true);
+    expect(new Set(ids).size).toBe(2000);
+  });
+
+  it("free-text fields at exactly MAX_TEXT_LEN (2000) pass; identifier fields at exactly MAX_FIELD_LEN (300) pass, 301 fails", async () => {
+    const { env } = setup();
+    const atCaps = [
+      {
+        status: "formalized",
+        kind: "k".repeat(300),
+        label: "l".repeat(2000),
+        note: "n".repeat(2000),
+        proof_note: "p".repeat(2000),
+        mathlib: { decl: "d".repeat(300), module: "m".repeat(300), match_kind: "x".repeat(300) },
+      },
+    ];
+    expect((await save(env, { annotations: atCaps, base_version: 1 }, { user: "u-human" })).status).toBe(200);
+
+    for (const [field, ann] of [
+      ["kind", { status: "formalized", kind: "k".repeat(301) }],
+      ["label", { status: "formalized", label: "l".repeat(2001) }],
+      ["decl", { status: "formalized", decl: "d".repeat(301) }], // flat v1/v2 fallback field
+      ["mathlib.decl", { status: "formalized", mathlib: { decl: "d".repeat(301) } }],
+      ["mathlib.module", { status: "formalized", mathlib: { module: "m".repeat(301) } }],
+    ] as Array<[string, Record<string, unknown>]>) {
+      const res = await save(env, { annotations: [ann], base_version: 2 }, { user: "u-human" });
+      expect(res.status).toBe(400);
+      expect(((await res.json()) as { error: string }).error).toBe(`field ${field} too long`);
+    }
+  });
+
+  it("unicode/emoji/RTL labels round-trip byte-identical through save and the JSON read path", async () => {
+    const { db, env } = setup();
+    const label = "Théorème de Møller 群論 🎉 مرحبا עברית é ‮right-to-left‬";
+    const note = "🚀".repeat(10) + " ℵ₀ ≤ 𝔠 — ∀ε>0";
+    const posted = [{ ...SEED_ANNOTATIONS[0], label, note }];
+    expect((await save(env, { annotations: posted, base_version: 1 }, { user: "u-human" })).status).toBe(200);
+
+    const stored = JSON.parse(articleRow(db).annotations) as Array<Record<string, unknown>>;
+    expect(stored[0].label).toBe(label);
+    expect(stored[0].note).toBe(note);
+    const read = (await (await get(env, `/api/article/${SLUG}.json`)).json()) as {
+      annotations: Array<Record<string, unknown>>;
+    };
+    expect(read.annotations[0].label).toBe(label);
+    expect(read.annotations[0].note).toBe(note);
+  });
+
+  it("length caps count UTF-16 code units, not code points (pinned): 1000 astral emoji pass, 1001 fail", async () => {
+    const { env } = setup();
+    // '🎉' is one code point but two UTF-16 code units → .length 2.
+    const ok = await save(
+      env,
+      { annotations: [{ status: "formalized", label: "🎉".repeat(1000) }], base_version: 1 },
+      { user: "u-human" },
+    );
+    expect(ok.status).toBe(200);
+    const over = await save(
+      env,
+      { annotations: [{ status: "formalized", label: "🎉".repeat(1001) }], base_version: 2 },
+      { user: "u-human" },
+    );
+    expect(over.status).toBe(400);
+    expect(((await over.json()) as { error: string }).error).toBe("field label too long");
   });
 });
 
