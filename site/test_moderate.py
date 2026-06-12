@@ -232,6 +232,115 @@ def test_resolve_token_env_wins():
 
 
 # ---------------------------------------------------------------------------
+# new mode (contract D-C1): create payload builder + candidate parsing
+# (no network, no agents — pure helpers over dicts and temp files)
+# ---------------------------------------------------------------------------
+
+def _envelope(**kw) -> dict:
+    base = {"slug": "Test_article", "wikipedia_title": "Test article",
+            "display_title": "Test article", "schema_version": 3,
+            "annotations": [ann(label="a"), ann(label="b")]}
+    base.update(kw)
+    return base
+
+
+def test_build_create_body_shape():
+    body, wire = m.build_create_body(
+        _envelope(), revid=12345, wikidata_qid="Q42", run_id="deadbeef")
+    assert body["wikipedia_title"] == "Test article"
+    assert body["display_title"] == "Test article"
+    assert body["wikidata_qid"] == "Q42"
+    assert body["revid"] == 12345
+    assert body["comment"] == "ai-create:deadbeef"
+    assert "meta" not in body  # caller attaches build_meta(ctx, rec, wire)
+    # every annotation gets a fresh 12-hex id (the server heals anyway, but
+    # minting client-side keeps disk artifacts and D1 in agreement)
+    assert len(body["annotations"]) == 2
+    assert all(_is_fresh(a["id"]) for a in body["annotations"])
+    assert wire["ids_fresh"] == 2 and wire["ids_echoed"] == 0
+
+
+def test_build_create_body_optional_fields_omitted():
+    env = _envelope()
+    del env["display_title"]
+    body, _ = m.build_create_body(env, revid=None, wikidata_qid=None,
+                                  run_id="deadbeef")
+    for k in ("display_title", "wikidata_qid", "revid"):
+        assert k not in body, k
+    # non-positive / non-int revids are dropped, not sent (D-C1: positive
+    # int; True is an int subclass and is rejected too)
+    for bad in (0, -5, "12345", 1.5, True):
+        b, _ = m.build_create_body(env, revid=bad, run_id="deadbeef")
+        assert "revid" not in b, bad
+
+
+def test_build_create_body_empty_annotations_ok():
+    body, wire = m.build_create_body(_envelope(annotations=[]), run_id="x")
+    assert body["annotations"] == []
+    assert wire["ids_fresh"] == 0
+
+
+def test_build_create_body_downgrades_human_provenance():
+    # A create has no stored humans — provenance 'human' from the agent is
+    # laundering and must be downgraded (server-side twin: bot writes can't
+    # mint human provenance).
+    env = _envelope(annotations=[ann(label="fake", provenance="human")])
+    body, wire = m.build_create_body(env, run_id="x")
+    assert body["annotations"][0]["provenance"] == "ai-moderated"
+    assert wire["provenance_downgraded"] == 1
+
+
+def test_load_candidate_file(tmp_path=None):
+    import tempfile
+    with tempfile.TemporaryDirectory() as td:
+        p = Path(td) / "new-titles.jsonl"
+        p.write_text(
+            '{"title": "Pentagon tiling", "slug": "Pentagon_tiling", "source": "wpmath-embeddedin"}\n'
+            "\n"                                      # blank line ignored
+            "{not json}\n"                            # malformed → skipped
+            '{"title": "", "slug": "Empty_title"}\n'  # empty title → skipped
+            '{"title": "No slug here"}\n'             # missing slug → skipped
+            '{"title": "Dup", "slug": "Pentagon_tiling"}\n'  # dup slug → skipped
+            '{"title": "Minimal", "slug": "Minimal"}\n',     # source defaults
+            encoding="utf-8")
+        cands = m.load_candidate_file(p)
+    assert [c["slug"] for c in cands] == ["Pentagon_tiling", "Minimal"]
+    assert cands[0]["source"] == "wpmath-embeddedin"
+    assert cands[1]["source"] == "from-file"
+
+
+def test_sidecar_revid():
+    import tempfile
+    with tempfile.TemporaryDirectory() as td:
+        cache = Path(td)
+        (cache / "Good.meta.json").write_text(
+            json.dumps({"slug": "Good", "revid": 1299891234}), encoding="utf-8")
+        (cache / "BadRevid.meta.json").write_text(
+            json.dumps({"slug": "BadRevid", "revid": "not-an-int"}), encoding="utf-8")
+        (cache / "Garbage.meta.json").write_text("{nope", encoding="utf-8")
+        assert m.sidecar_revid("Good", cache) == 1299891234
+        assert m.sidecar_revid("BadRevid", cache) is None
+        assert m.sidecar_revid("Garbage", cache) is None
+        assert m.sidecar_revid("Missing", cache) is None
+
+
+def test_load_qid_map():
+    import tempfile
+    with tempfile.TemporaryDirectory() as td:
+        data = Path(td)
+        (data / "pilot_tagged.jsonl").write_text(
+            '{"title": "Cardinal number", "wikidata_qid": "Q163875"}\n'
+            '{"title": "No QID article"}\n',
+            encoding="utf-8")
+        (data / "tier2_tagged.jsonl").write_text(
+            '{"title": "Cardinal number", "wikidata_qid": "Q_LOSER"}\n'  # first wins
+            '{"title": "Monoid", "wikidata_qid": "Q208237"}\n',
+            encoding="utf-8")
+        qm = m.load_qid_map(data)
+    assert qm == {"Cardinal number": "Q163875", "Monoid": "Q208237"}
+
+
+# ---------------------------------------------------------------------------
 # batch_annotate._preserve_human ladder stats (skips without the SDK)
 # ---------------------------------------------------------------------------
 

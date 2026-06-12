@@ -994,6 +994,10 @@ def main() -> int:
         decl = m.get("decl") or a.get("decl")
         module = m.get("module") or a.get("module")
         item = {"status": a["status"]}
+        # Stable annotation id for the anonymous flag form (mirrors page.ts
+        # ClientAnno.id). Inert in rendering.
+        if isinstance(a.get("id"), str):
+            item["id"] = a["id"]
         for k in ("label", "kind", "note", "proof_note", "provenance"):
             if a.get(k):
                 item[k] = a[k]

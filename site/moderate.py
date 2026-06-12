@@ -3,7 +3,10 @@
 
 The three routine operations from the roadmap, as subcommands:
 
-    new        annotate articles in the catalog that aren't in D1 yet
+    new        annotate articles not in D1 yet and CREATE them via the
+               bot-only PUT /api/article/:slug (contract D-C1). Candidates
+               come from --from-file (discover_articles.py JSONL) or, by
+               default, the catalog 404-probe fallback.
     review     re-review existing articles (work list from GET /api/work)
     wp-update  list articles whose pinned Wikipedia revid trails upstream
                (SHELL ONLY this wave — stage-0 re-pin lands in Wave C3)
@@ -41,6 +44,7 @@ from types import SimpleNamespace
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent
+CATALOG_DATA = REPO / "catalog" / "data"
 DEFAULT_API_BASE = "https://wikilean.jackmccarthy.org"
 USER_AGENT = ("WikiLean-moderate/0.1 (https://github.com/Deicyde/WikiLean; "
               "jack.mccarthy.1@stonybrook.edu)")
@@ -204,6 +208,95 @@ def build_meta(ctx, rec: dict, wire_stats: dict) -> dict:
     }
 
 
+def load_candidate_file(path: Path) -> list[dict]:
+    """Parse discover_articles.py output (JSONL of {"title","slug","source"}).
+    Malformed lines and records missing title/slug are skipped with a count."""
+    cands: list[dict] = []
+    skipped = 0
+    seen: set[str] = set()
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            rec = json.loads(line)
+        except json.JSONDecodeError:
+            skipped += 1
+            continue
+        title = rec.get("title") if isinstance(rec, dict) else None
+        slug = rec.get("slug") if isinstance(rec, dict) else None
+        if (not isinstance(title, str) or not title
+                or not isinstance(slug, str) or not slug or slug in seen):
+            skipped += 1
+            continue
+        seen.add(slug)
+        cands.append({"title": title, "slug": slug,
+                      "source": rec.get("source") or "from-file"})
+    if skipped:
+        print(f"  note: skipped {skipped} malformed/duplicate line(s) in {path}")
+    return cands
+
+
+def sidecar_revid(slug: str, cache_dir: Path | None = None) -> int | None:
+    """Pinned Wikipedia revid from the fetch sidecar cache/<slug>.meta.json
+    (written by batch_annotate.fetch_html). None when absent/unreadable."""
+    p = (cache_dir or HERE / "cache") / f"{slug}.meta.json"
+    try:
+        revid = json.loads(p.read_text(encoding="utf-8")).get("revid")
+    except (OSError, json.JSONDecodeError):
+        return None
+    return revid if isinstance(revid, int) and revid > 0 else None
+
+
+def load_qid_map(data_dir: Path | None = None) -> dict[str, str]:
+    """title → wikidata_qid from the tagged catalog snapshots (the discovery
+    feed carries no QIDs, so absent titles simply get no wikidata_qid)."""
+    qids: dict[str, str] = {}
+    for name in ("pilot_tagged.jsonl", "tier2_tagged.jsonl"):
+        p = (data_dir or CATALOG_DATA) / name
+        if not p.exists():
+            continue
+        for line in p.open(encoding="utf-8"):
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                rec = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            title, qid = rec.get("title"), rec.get("wikidata_qid")
+            if isinstance(title, str) and isinstance(qid, str) and qid:
+                qids.setdefault(title, qid)
+    return qids
+
+
+def build_create_body(envelope: dict, *, revid: int | None = None,
+                      wikidata_qid: str | None = None, run_id: str = "",
+                      ) -> tuple[dict, dict]:
+    """PUT /api/article/:slug body (contract D-C1) from a pipeline envelope
+    (site/annotations/<slug>.json shape). Returns (body, wire_stats); the
+    caller attaches body["meta"] = build_meta(...) built from wire_stats.
+
+    Annotations go through finalize_for_post([], …): every one gets a fresh
+    12-hex id (the server heals ids anyway, but minting here keeps the disk
+    artifact and D1 in agreement) and any provenance 'human' claim is
+    downgraded — a create has no stored humans to launder from."""
+    annotations, wire = finalize_for_post([], envelope.get("annotations") or [])
+    body: dict = {
+        "wikipedia_title": envelope["wikipedia_title"],
+        "annotations": annotations,
+        "comment": f"ai-create:{run_id}",
+    }
+    dt = envelope.get("display_title")
+    if isinstance(dt, str) and dt:
+        body["display_title"] = dt
+    if isinstance(wikidata_qid, str) and wikidata_qid:
+        body["wikidata_qid"] = wikidata_qid
+    if isinstance(revid, int) and not isinstance(revid, bool) and revid > 0:
+        body["revid"] = revid
+    return body, wire
+
+
 # ---------------------------------------------------------------------------
 # Lazy imports + run fingerprints
 # ---------------------------------------------------------------------------
@@ -287,16 +380,18 @@ async def get_article(api_base: str, slug: str) -> tuple[dict | None, int]:
     return r.json(), 200
 
 
-async def post_article(ctx, slug: str, body: dict) -> tuple[int, dict]:
-    """Bearer POST with the contract's error handling: 429 → sleep 60s, retry
+async def _write_article(ctx, slug: str, body: dict, method: str,
+                         ) -> tuple[int, dict]:
+    """Bearer write with the contract's error handling: 429 → sleep 60s, retry
     up to 3x (EDIT_LIMITER is 30 writes/min for the bot user)."""
     import requests
     url = f"{ctx.api_base}/api/article/{urllib.parse.quote(slug)}"
     headers = {"User-Agent": USER_AGENT, "Authorization": f"Bearer {ctx.token}"}
+    send = requests.put if method == "put" else requests.post
     r = None
     for attempt in range(4):
-        r = await asyncio.to_thread(
-            requests.post, url, json=body, headers=headers, timeout=120)
+        r = await asyncio.to_thread(send, url, json=body, headers=headers,
+                                    timeout=120)
         if r.status_code == 429 and attempt < 3:
             print(f"  429 on {slug} — sleeping 60s (retry {attempt + 1}/3)", flush=True)
             await asyncio.sleep(60)
@@ -307,6 +402,16 @@ async def post_article(ctx, slug: str, body: dict) -> tuple[int, dict]:
     except ValueError:
         payload = {}
     return r.status_code, payload
+
+
+async def post_article(ctx, slug: str, body: dict) -> tuple[int, dict]:
+    """POST /api/article/:slug — save over an existing article."""
+    return await _write_article(ctx, slug, body, "post")
+
+
+async def put_article(ctx, slug: str, body: dict) -> tuple[int, dict]:
+    """PUT /api/article/:slug — bot-only article create (contract D-C1)."""
+    return await _write_article(ctx, slug, body, "put")
 
 
 # ---------------------------------------------------------------------------
@@ -387,41 +492,99 @@ async def process_review(job: dict, ctx, sem: asyncio.Semaphore) -> dict:
 
 
 async def process_new(article: dict, ctx, sem: asyncio.Semaphore) -> dict:
-    """new: full disk pipeline (fetch → agents → render). NOTE: the Worker has
-    no create endpoint yet (POST /api/article/:slug 404s on unknown slugs), so
-    new articles land as disk artifacts only; D1 seeding stays with the seed
-    scripts until a create path ships."""
+    """new: full disk pipeline (fetch → agents → render), then create the
+    article in D1 via the bot-only PUT /api/article/:slug (contract D-C1).
+    Dry-run: print the would-PUT summary, zero agent calls and zero writes."""
     slug, title = article["slug"], article["title"]
+    rec: dict = {"slug": slug, "op": "new", "source": article.get("source")}
+    qid = ctx.qid_map.get(title)
     if ctx.dry_run:
-        print(f"  DRY-RUN new {slug}: would run the full agent pipeline "
-              f"(disk artifacts only — no D1 create endpoint yet)", flush=True)
-        return {"slug": slug, "op": "new", "dry_run": True}
-    rec = await ctx.ba.annotate_one({"title": title}, sem, ctx.seed_decls,
-                                    moderate=False)
+        revid = sidecar_revid(slug)
+        print(f"  DRY-RUN new {slug}: would run the agent pipeline, then PUT "
+              f"/api/article/{slug} with wikipedia_title={title!r}, "
+              f"wikidata_qid={qid or '(none)'}, "
+              f"revid={revid or '(from fetch sidecar)'}, "
+              f"comment='ai-create:{ctx.run_id}'", flush=True)
+        rec["dry_run"] = True
+        return rec
+
+    arec = await ctx.ba.annotate_one({"title": title}, sem, ctx.seed_decls,
+                                     moderate=False)
+    rec.update(arec)
     rec["op"] = "new"
-    if not rec.get("error"):
-        rec["note"] = "disk artifacts only — D1 insert path pending (no create endpoint)"
+    if arec.get("error"):
+        return rec
+    disk_slug = arec.get("slug") or slug
+    if disk_slug != slug:
+        print(f"  ! slug mismatch: candidate '{slug}' vs pipeline '{disk_slug}' "
+              f"(reading disk artifact by pipeline slug, creating at D1 slug)",
+              flush=True)
+    try:
+        envelope = json.loads((ctx.ba.ANNOT / f"{disk_slug}.json").read_text())
+    except (OSError, json.JSONDecodeError) as e:
+        rec["error"] = f"final_read_failed: {type(e).__name__}"
+        return rec
+
+    body, wire = build_create_body(
+        envelope, revid=sidecar_revid(disk_slug, Path(ctx.ba.CACHE)),
+        wikidata_qid=qid, run_id=ctx.run_id)
+    body["meta"] = build_meta(ctx, arec, wire)
+    rec["ids"] = wire
+    code, resp = await put_article(ctx, slug, body)
+    rec["put_status"] = code
+    if code == 201:
+        rec["created_version"] = resp.get("version")
+        rec["server_matched"] = "created"
+    elif code == 409:
+        # {error:'exists'} — created by another runner or an earlier (crashed)
+        # pass. Not an error: log + skip; `review` owns it from here.
+        rec["skipped"] = "exists_409"
+        print(f"  409 {slug}: already exists in D1 — skipped "
+              f"(review mode owns existing articles)", flush=True)
+    elif code == 422:
+        # Impossible on create (no stored annotations to lose) — a 422 here
+        # means the server contract changed under us. Loud, no retry.
+        rec["error"] = "create_422_impossible"
+        print(f"  *** 422 {slug}: create returned the human-preservation "
+              f"error, which cannot happen on a fresh slug — server contract "
+              f"drift? body={json.dumps(resp)[:200]}", file=sys.stderr, flush=True)
+    elif code == 429:
+        rec["error"] = "rate_limited_429"
+    else:
+        rec["error"] = f"put_{code}: {json.dumps(resp)[:200]}"
     return rec
 
 
-def find_new_candidates(api_base: str, limit: int) -> list[dict]:
-    """Catalog titles (ba.load_articles) whose slug 404s on the public article
-    JSON endpoint — i.e. not yet in D1. Capped at MAX_NEW_PROBES probes."""
-    articles, _seed = ba.load_articles()
+def probe_new_slugs(api_base: str, candidates: list[dict], limit: int,
+                    ) -> list[dict]:
+    """Keep candidates whose slug 404s on the public article JSON endpoint —
+    i.e. not yet in D1. Capped at MAX_NEW_PROBES probes."""
     out: list[dict] = []
     probes = 0
-    for a in articles:
+    for a in candidates:
         if len(out) >= limit or probes >= MAX_NEW_PROBES:
             break
-        slug = ba.make_slug(a["title"])
         probes += 1
         if probes % 50 == 0:
             print(f"  …probed {probes} candidates ({len(out)} new so far)", flush=True)
-        r = _http_get(f"{api_base}/api/article/{urllib.parse.quote(slug)}.json")
+        r = _http_get(f"{api_base}/api/article/{urllib.parse.quote(a['slug'])}.json")
         if r.status_code == 404:
-            out.append({"title": a["title"], "slug": slug})
+            out.append(a)
+        elif r.status_code != 200:
+            print(f"  ! probe {a['slug']}: HTTP {r.status_code} — skipped "
+                  f"(neither in D1 nor safely new)", flush=True)
     print(f"new candidates: {len(out)} (after {probes} probes)")
     return out
+
+
+def find_new_candidates(api_base: str, limit: int) -> list[dict]:
+    """Catalog fallback: titles from ba.load_articles, 404-probed via
+    probe_new_slugs. discover_articles.py output (--from-file) is the
+    preferred feed — it diffs the LIVE WikiProject list against D1."""
+    articles, _seed = ba.load_articles()
+    cands = [{"title": a["title"], "slug": ba.make_slug(a["title"]),
+              "source": "catalog"} for a in articles]
+    return probe_new_slugs(api_base, cands, limit)
 
 
 def print_wp_update(jobs: list[dict]) -> None:
@@ -529,12 +692,22 @@ def run_mode(mode: str, args, token: str | None) -> tuple[int, int]:
         ctx = make_ctx(args, "review", token, ba_mod)
         return asyncio.run(run_jobs(jobs, ctx, process_review))
 
-    # mode == "new" — needs ba even for dry-run (catalog loader + slugger).
-    ba_mod = _import_ba(args.auth)
-    candidates = find_new_candidates(args.api_base, args.limit)
+    # mode == "new" — candidates from --from-file (discover_articles.py
+    # output: slug precomputed, no ba needed to enumerate) or the catalog
+    # fallback (needs ba.load_articles + ba.make_slug even for dry-run).
+    if args.from_file:
+        cands = load_candidate_file(Path(args.from_file))
+        print(f"new: {len(cands)} candidates from {args.from_file}")
+        candidates = probe_new_slugs(args.api_base, cands, args.limit)
+        ba_mod = (_try_import_ba(args.auth) if args.dry_run
+                  else _import_ba(args.auth))
+    else:
+        ba_mod = _import_ba(args.auth)
+        candidates = find_new_candidates(args.api_base, args.limit)
     if not candidates:
         return 0, 0
     ctx = make_ctx(args, "new", token, ba_mod)
+    ctx.qid_map = load_qid_map()
     return asyncio.run(run_jobs(candidates, ctx, process_new))
 
 
@@ -552,7 +725,11 @@ def main() -> int:
                     help="subscription pops ANTHROPIC_API_KEY (Max-plan auth); "
                          "api-key leaves it so the SDK bills the API account")
     ap.add_argument("--dry-run", action="store_true",
-                    help="no agent calls, no POSTs — print what would be written")
+                    help="no agent calls, no writes — print what would be written")
+    ap.add_argument("--from-file", default=None, metavar="JSONL",
+                    help="new mode: candidate JSONL from discover_articles.py "
+                         "({'title','slug','source'} per line; default is the "
+                         "catalog 404-probe fallback)")
     ap.add_argument("--api-base", default=DEFAULT_API_BASE)
     args = ap.parse_args()
     args.run_id = secrets.token_hex(4)
@@ -560,9 +737,11 @@ def main() -> int:
     args.api_base = args.api_base.rstrip("/")
 
     token = resolve_token()
-    # `new` only probes public GETs (and has no D1 create path yet) — the
-    # bearer token is needed for /api/work (review, wp-update) and all POSTs.
-    needs_token = args.command in ("review", "wp-update", "all")
+    # The bearer token is needed for /api/work (review, wp-update) and all
+    # writes — including `new`'s PUT creates. A dry `new` run only probes
+    # public GETs, so it stays tokenless (donor-friendly smoke test).
+    needs_token = (args.command in ("review", "wp-update", "all")
+                   or (args.command == "new" and not args.dry_run))
     if token is None and needs_token:
         print("ERROR: no API token — set WIKILEAN_API_TOKEN or put "
               "PIPELINE_TOKEN= in wiki/.dev.vars", file=sys.stderr)
