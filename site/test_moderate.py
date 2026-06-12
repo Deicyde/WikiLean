@@ -498,9 +498,10 @@ def _write_ctx():
 
 def test_write_article_retries_429_then_succeeds():
     with _patched_transport([(429, {}), (429, {}), (200, {"version": 5})]) as t:
-        code, payload = asyncio.run(
+        code, payload, rebased = asyncio.run(
             m._write_article(_write_ctx(), "Lp space", {"base_version": 4}, "post"))
     assert code == 200 and payload == {"version": 5}
+    assert rebased is False              # 429 retries are not rebases
     assert t.sleeps == [60, 60]          # backed off before each retry
     assert len(t.calls) == 3
     assert t.calls[0]["headers"]["Authorization"] == "Bearer tok-123"
@@ -510,7 +511,7 @@ def test_write_article_retries_429_then_succeeds():
 
 def test_write_article_429_exhausts_after_three_retries():
     with _patched_transport([(429, {"error": "rate"})]) as t:
-        code, payload = asyncio.run(
+        code, payload, _ = asyncio.run(
             m._write_article(_write_ctx(), "S", {}, "post"))
     assert code == 429 and payload == {"error": "rate"}
     assert len(t.calls) == 4 and t.sleeps == [60, 60, 60]
@@ -524,8 +525,10 @@ def test_write_article_non_retryable_single_attempt():
     for status, payload in [(409, {"error": "stale", "version": 9}),
                             (422, {"error": "human annotations lost", "missing": ["X"]})]:
         with _patched_transport([(status, payload)]) as t:
-            code, got = asyncio.run(m._write_article(_write_ctx(), "S", {}, "post"))
+            code, got, rebased = asyncio.run(
+                m._write_article(_write_ctx(), "S", {}, "post"))
         assert code == status and got == payload
+        assert rebased is False
         assert len(t.calls) == 1 and t.sleeps == []
 
 
@@ -540,9 +543,10 @@ def test_write_article_409_rebases_once_with_fresh_state():
     with _patched_get(200, fresh) as gets:
         with _patched_transport([(409, {"error": "stale", "version": 9}),
                                  (200, {"version": 10})]) as t:
-            code, payload = asyncio.run(
+            code, payload, rebased = asyncio.run(
                 m._write_article(_write_ctx(), "S", body, "post"))
     assert code == 200 and payload == {"version": 10}
+    assert rebased is True               # P2c: surfaces as outcome '409-rebased'
     assert len(t.calls) == 2 and t.sleeps == []
     assert len(gets) == 1                       # exactly one re-GET
     rebased = t.calls[1]["body"]
@@ -555,25 +559,27 @@ def test_write_article_409_second_conflict_returned():
     # F9: only ONE rebase — a second 409 goes back to the caller (skip+requeue).
     with _patched_get(200, {"annotations": [], "version": 9}) as gets:
         with _patched_transport([(409, {"error": "stale", "version": 9})]) as t:
-            code, _ = asyncio.run(m._write_article(
+            code, _, rebased = asyncio.run(m._write_article(
                 _write_ctx(), "S", {"annotations": [], "base_version": 4}, "post"))
     assert code == 409
+    assert rebased is True               # rebase attempted; terminal 409 → noop
     assert len(t.calls) == 2 and len(gets) == 1
 
 
 def test_write_article_put_409_not_rebased():
     # F9: a PUT 409 means 'exists' — no rebase applies to creates.
     with _patched_transport([(409, {"error": "exists"})]) as t:
-        code, _ = asyncio.run(m._write_article(
+        code, _, rebased = asyncio.run(m._write_article(
             _write_ctx(), "S", {"base_version": 1}, "put"))
     assert code == 409 and len(t.calls) == 1
+    assert rebased is False
 
 
 def test_write_article_5xx_retries_with_backoff():
     # F9: 5xx → retry twice with 5s/15s backoff (CAS makes committed-then-500
     # retries safe — they 409 into the rebase path).
     with _patched_transport([(500, {}), (502, {}), (200, {"version": 5})]) as t:
-        code, payload = asyncio.run(m._write_article(_write_ctx(), "S", {}, "post"))
+        code, payload, _ = asyncio.run(m._write_article(_write_ctx(), "S", {}, "post"))
     assert code == 200 and payload == {"version": 5}
     assert t.sleeps == [5, 15] and len(t.calls) == 3
 
@@ -581,7 +587,7 @@ def test_write_article_5xx_retries_with_backoff():
 def test_write_article_non_json_body_yields_empty_payload():
     # (5xx now retries twice with 5s/15s backoff before giving up — fix F9)
     with _patched_transport([(500, None)]) as t:
-        code, payload = asyncio.run(m._write_article(_write_ctx(), "S", {}, "put"))
+        code, payload, _ = asyncio.run(m._write_article(_write_ctx(), "S", {}, "put"))
     assert code == 500 and payload == {}
     assert t.sleeps == [5, 15] and len(t.calls) == 3
 
@@ -778,14 +784,19 @@ def test_process_new_refuses_put_without_sidecar_revid():
 
 @contextlib.contextmanager
 def _patched_log():
+    """Patch BOTH run-loop sidecars (run log + P2c decisions.jsonl) into a tmp
+    dir. Yields a namespace: .run and .decisions paths."""
     import tempfile
     saved = m.MODERATE_LOG
+    saved_dec = m.DECISIONS_LOG
     with tempfile.TemporaryDirectory() as td:
         m.MODERATE_LOG = Path(td) / "run.log"
+        m.DECISIONS_LOG = Path(td) / "decisions.jsonl"
         try:
-            yield m.MODERATE_LOG
+            yield SimpleNamespace(run=m.MODERATE_LOG, decisions=m.DECISIONS_LOG)
         finally:
             m.MODERATE_LOG = saved
+            m.DECISIONS_LOG = saved_dec
 
 
 def _jobs_ctx(budget=None, concurrency=1):
@@ -808,11 +819,12 @@ def test_run_jobs_token_budget_aborts_remaining():
     jobs = [{"slug": f"s{i}"} for i in range(4)]
     script = [{"tokens": 60}] * 4
     with _patched_log() as log:
-        rc, tokens = asyncio.run(m.run_jobs(
+        rc, stats = asyncio.run(m.run_jobs(
             jobs, _jobs_ctx(budget=100), _scripted_process(script)))
-        lines = log.read_text().splitlines()
+        lines = log.run.read_text().splitlines()
     assert rc == 3              # aborted, matching batch_annotate's convention
-    assert tokens == 120        # job 0 (60) + job 1 (60, trips the budget)
+    assert stats["tokens"] == 120  # job 0 (60) + job 1 (60, trips the budget)
+    assert stats["processed"] == 2 and stats["errors"] == 0
     assert len(lines) == 2      # jobs 2-3 skipped without being processed
     assert all(json.loads(l)["run_id"] == "testrun2" for l in lines)
 
@@ -824,7 +836,7 @@ def test_run_jobs_window_exhaustion_aborts_after_threshold():
     with _patched_log() as log:
         rc, _ = asyncio.run(m.run_jobs(
             jobs, _jobs_ctx(), _scripted_process(script)))
-        lines = log.read_text().splitlines()
+        lines = log.run.read_text().splitlines()
     assert rc == 3
     assert len(lines) == n      # aborted exactly at the threshold
 
@@ -838,7 +850,7 @@ def test_run_jobs_success_resets_consecutive_counter():
     with _patched_log() as log:
         rc, _ = asyncio.run(m.run_jobs(
             jobs, _jobs_ctx(), _scripted_process(script)))
-        lines = log.read_text().splitlines()
+        lines = log.run.read_text().splitlines()
     assert rc == 0                       # never reached ABORT_AFTER in a row
     assert len(lines) == len(jobs)
 
@@ -855,7 +867,7 @@ def test_run_jobs_process_exception_counted_not_fatal():
 
     with _patched_log() as log:
         rc, _ = asyncio.run(m.run_jobs(jobs, _jobs_ctx(), process))
-        lines = [json.loads(line) for line in log.read_text().splitlines()]
+        lines = [json.loads(line) for line in log.run.read_text().splitlines()]
     assert rc == 0
     assert len(lines) == 2
     errs = [rec for rec in lines if rec.get("error")]
@@ -870,7 +882,7 @@ def test_run_jobs_non_window_errors_never_abort():
     with _patched_log() as log:
         rc, _ = asyncio.run(m.run_jobs(
             jobs, _jobs_ctx(), _scripted_process(script)))
-        lines = log.read_text().splitlines()
+        lines = log.run.read_text().splitlines()
     assert rc == 0
     assert len(lines) == len(jobs)       # all processed despite the errors
 
@@ -986,6 +998,260 @@ def test_preserve_human_harvests_moderation_flag():
     assert out == [h]  # the flag itself never reaches the output copy
     assert stats == {"restored": 1, "reinserted": 0,
                      "flags": [["aabbccddeeff", "decl looks wrong"]]}
+
+
+# ---------------------------------------------------------------------------
+# P2c — decisions.jsonl sidecar (pure helpers + run_jobs wiring)
+# ---------------------------------------------------------------------------
+
+def test_parse_anchor_stats():
+    # review/new shape: the 'N/M matched' string batch_annotate records
+    assert m.parse_anchor_stats("5/7 matched") == {"matched": 5, "total": 7}
+    assert m.parse_anchor_stats("102/102 matched") == {"matched": 102, "total": 102}
+    # wp-update shape: int pair from update_from_upstream.process_slug
+    assert m.parse_anchor_stats(3, 4) == {"matched": 3, "total": 4}
+    assert m.parse_anchor_stats(0, 0) == {"matched": 0, "total": 0}
+    # unavailable shapes → None, never a crash
+    for bad in (None, "", "garbage", 3, (True, 4)):
+        args = bad if isinstance(bad, tuple) else (bad,)
+        assert m.parse_anchor_stats(*args) is None, bad
+    assert m.parse_anchor_stats(3, None) is None
+    assert m.parse_anchor_stats(True, 4) is None  # bool is not an anchor count
+
+
+def test_decision_outcome_review_new_recs():
+    assert m.decision_outcome({"dry_run": True}) == "dry-run"
+    assert m.decision_outcome({"post_status": 200}) == "posted"
+    assert m.decision_outcome({"put_status": 201}) == "posted"
+    assert m.decision_outcome({"post_status": 200, "rebased": True}) == "409-rebased"
+    assert m.decision_outcome({"skipped": "stale_409", "rebased": True,
+                               "post_status": 409}) == "noop"
+    assert m.decision_outcome({"skipped": "exists_409", "put_status": 409}) == "noop"
+    assert m.decision_outcome({"skipped": "no_revid"}) == "noop"
+    assert m.decision_outcome({"error": "human_lost_422",
+                               "post_status": 422}) == "422"
+    assert m.decision_outcome({"error": "create_422_impossible",
+                               "put_status": 422}) == "422"
+    assert m.decision_outcome({"error": "agent1_no_json"}) == "error"
+    assert m.decision_outcome({"error": "rate_limited_429",
+                               "post_status": 429}) == "error"
+    assert m.decision_outcome({"error": "get_failed_500"}) == "error"
+    assert m.decision_outcome({}) == "error"  # rec shape we don't recognize
+
+
+def test_decision_outcome_wp_update_recs():
+    # update_from_upstream.process_slug rec shape (string 'outcome')
+    assert m.decision_outcome({"outcome": "repinned"}) == "posted"
+    assert m.decision_outcome({"outcome": "would-repin"}) == "dry-run"
+    assert m.decision_outcome({"outcome": "up-to-date"}) == "noop"
+    assert m.decision_outcome({"outcome": "needs-work"}) == "noop"
+    assert m.decision_outcome({"outcome": "unknown-slug"}) == "noop"
+    assert m.decision_outcome({"outcome": "no-latest-revid"}) == "noop"
+    assert m.decision_outcome(
+        {"outcome": "stale (409) — re-run to rebase"}) == "noop"
+    assert m.decision_outcome(
+        {"outcome": "422 human-preservation: ['x']"}) == "422"
+    assert m.decision_outcome({"outcome": "fetch-error (boom)"}) == "error"
+    assert m.decision_outcome({"outcome": "http-500: 'oops'"}) == "error"
+    assert m.decision_outcome({"outcome": "error (ValueError: x)"}) == "error"
+
+
+def test_decision_line_shape():
+    ctx = SimpleNamespace(run_id="deadbeef", mode="review",
+                          model="test-model", prompt_sha="abc123abc123")
+    ladder = {"restored": 1, "reinserted": 0, "downgrades_blocked": 0,
+              "moderation_flags": [["aabbccddeeff", "decl looks wrong"]]}
+    ids = {"ids_echoed": 5, "ids_fresh": 1}
+    rec = {"slug": "Lp_space", "tokens": 1000, "cost_usd_equiv": 1.23,
+           "ladder": ladder, "ids": ids, "matched": "6/6 matched",
+           "base_version": 7, "post_status": 200}
+    line = m.decision_line(ctx, rec)
+    assert set(line) == {"ts", "run_id", "mode", "slug", "model", "prompt_sha",
+                         "tokens", "cost_usd_equiv", "ladder", "ids",
+                         "anchors", "base_version", "outcome"}
+    assert isinstance(line["ts"], int) and line["ts"] > 1_700_000_000_000  # ms
+    assert line["run_id"] == "deadbeef" and line["mode"] == "review"
+    assert line["ladder"]["moderation_flags"] == [["aabbccddeeff",
+                                                   "decl looks wrong"]]
+    assert line["anchors"] == {"matched": 6, "total": 6}
+    assert line["base_version"] == 7 and line["outcome"] == "posted"
+    # a ctx without model/prompt_sha (wp-update, bare test ctx) → None, no crash
+    line2 = m.decision_line(SimpleNamespace(run_id="r", mode="wp-update"),
+                            {"slug": "X", "outcome": "up-to-date",
+                             "matched": 3, "total": 4})
+    assert line2["model"] is None and line2["prompt_sha"] is None
+    assert line2["tokens"] == 0 and line2["cost_usd_equiv"] is None
+    assert line2["anchors"] == {"matched": 3, "total": 4}
+    assert line2["outcome"] == "noop"
+
+
+def test_append_decision_tmp_dir():
+    import tempfile
+    with tempfile.TemporaryDirectory() as td:
+        p = Path(td) / "nested" / "decisions.jsonl"  # parent dir auto-created
+        m.append_decision({"slug": "A", "outcome": "posted"}, p)
+        m.append_decision({"slug": "B", "outcome": "noop"}, p)
+        lines = [json.loads(l) for l in p.read_text().splitlines()]
+    assert [l["slug"] for l in lines] == ["A", "B"]
+
+
+def test_run_jobs_appends_one_decision_line_per_job():
+    jobs = [{"slug": "posted_one"}, {"slug": "dry_one"},
+            {"slug": "skipped_one"}, {"slug": "error_one"}]
+    script = [
+        {"tokens": 100, "cost_usd_equiv": 0.5, "base_version": 3,
+         "matched": "5/7 matched", "post_status": 200,
+         "ladder": {"restored": 0, "reinserted": 0, "downgrades_blocked": 0,
+                    "moderation_flags": []},
+         "ids": {"ids_echoed": 5}},
+        {"dry_run": True, "base_version": 9, "ids": {"ids_echoed": 2}},
+        {"skipped": "stale_409", "post_status": 409, "rebased": True},
+        {"error": "agent2_no_json", "tokens": 7},
+    ]
+    with _patched_log() as log:
+        rc, stats = asyncio.run(m.run_jobs(
+            jobs, _jobs_ctx(), _scripted_process(script)))
+        dec = [json.loads(l) for l in log.decisions.read_text().splitlines()]
+    assert rc == 0 and stats["processed"] == 4 and stats["errors"] == 1
+    by_slug = {d["slug"]: d for d in dec}
+    assert len(dec) == 4 and len(by_slug) == 4  # one line per article
+    assert by_slug["posted_one"]["outcome"] == "posted"
+    assert by_slug["posted_one"]["anchors"] == {"matched": 5, "total": 7}
+    assert by_slug["posted_one"]["base_version"] == 3
+    assert by_slug["dry_one"]["outcome"] == "dry-run"
+    assert by_slug["skipped_one"]["outcome"] == "noop"
+    assert by_slug["error_one"]["outcome"] == "error"
+    assert all(d["run_id"] == "testrun2" and d["mode"] == "review"
+               for d in dec)
+
+
+def test_process_review_rebased_success_marks_409_rebased():
+    # Mid-run human edit, but the F9 rebase lands: outcome '409-rebased'.
+    rec, t, _ = _run_review([(409, {"error": "stale", "version": 9}),
+                             (200, {"version": 10})])
+    assert rec["post_status"] == 200 and rec["rebased"] is True
+    assert rec["posted_version"] == 10
+    assert m.decision_outcome(rec) == "409-rebased"
+    assert len(t.calls) == 2
+
+
+# ---------------------------------------------------------------------------
+# P2c — pipeline_runs registration (RUNS-API contract; injected transport)
+# ---------------------------------------------------------------------------
+
+def test_build_runs_payload_shape():
+    p = m.build_runs_payload(
+        run_id="cafebabe", kind="review", started_at=1_000, finished_at=2_000,
+        articles_processed=3, errors=1, tokens=12345, cost_usd_equiv=2.96,
+        model="claude-opus-4-7", prompt_sha="abc123abc123",
+        notes="modes=review")
+    assert p == {"run_id": "cafebabe", "kind": "review",
+                 "started_at": 1_000, "finished_at": 2_000,
+                 "articles_processed": 3, "errors": 1, "tokens": 12345,
+                 "cost_usd_equiv": 2.96, "model": "claude-opus-4-7",
+                 "prompt_sha": "abc123abc123", "notes": "modes=review"}
+
+
+def test_build_runs_payload_optional_fields_and_sentinels():
+    p = m.build_runs_payload(
+        run_id="cafebabe", kind="wp-update", started_at=1, finished_at=2,
+        articles_processed=0, errors=0, tokens=0, cost_usd_equiv=None,
+        model=None, prompt_sha="unavailable", notes=None)
+    # optional fields omitted; the 'unavailable' sentinel never goes on the wire
+    for k in ("model", "prompt_sha", "notes"):
+        assert k not in p, k
+    assert p["cost_usd_equiv"] is None  # contract: number|null
+
+
+def _runs_transport(status, payload):
+    calls = []
+
+    def transport(url, json=None, headers=None, timeout=None):
+        calls.append({"url": url, "body": json, "headers": headers})
+        return _Resp(status, payload)
+
+    return transport, calls
+
+
+def test_register_run_200_posts_bearer():
+    transport, calls = _runs_transport(200, {"ok": True})
+    ok = m.register_run("http://api.test/", "tok-123",
+                        {"run_id": "cafebabe"}, transport=transport)
+    assert ok is True
+    assert len(calls) == 1
+    assert calls[0]["url"] == "http://api.test/api/runs"  # trailing / stripped
+    assert calls[0]["headers"]["Authorization"] == "Bearer tok-123"
+    assert calls[0]["body"] == {"run_id": "cafebabe"}
+
+
+def test_register_run_duplicate_still_ok():
+    transport, calls = _runs_transport(200, {"ok": True, "duplicate": True})
+    assert m.register_run("http://api.test", "tok", {"run_id": "x"},
+                          transport=transport) is True
+
+
+def test_register_run_404_tolerated():
+    # Endpoint not deployed yet: one warning, False return, NO exception —
+    # the runner must never fail on telemetry.
+    transport, calls = _runs_transport(404, {"error": "not found"})
+    ok = m.register_run("http://api.test", "tok", {"run_id": "x"},
+                        transport=transport)
+    assert ok is False and len(calls) == 1  # exactly one attempt, no retries
+
+
+def test_register_run_other_status_tolerated():
+    for status in (400, 403, 500):
+        transport, calls = _runs_transport(status, {})
+        assert m.register_run("http://api.test", "tok", {"run_id": "x"},
+                              transport=transport) is False
+        assert len(calls) == 1
+
+
+def test_register_run_transport_exception_tolerated():
+    def exploding_transport(url, json=None, headers=None, timeout=None):
+        raise OSError("connection refused")
+
+    assert m.register_run("http://api.test", "tok", {"run_id": "x"},
+                          transport=exploding_transport) is False
+
+
+def _runs_args(dry_run: bool):
+    return SimpleNamespace(dry_run=dry_run, run_id="cafebabe",
+                           command="review", api_base="http://api.test")
+
+
+def test_maybe_register_run_real_run_posts_aggregates():
+    transport, calls = _runs_transport(200, {"ok": True})
+    totals = {"processed": 3, "errors": 1, "tokens": 12345, "cost": 2.9614}
+    ok = m.maybe_register_run(_runs_args(dry_run=False), "tok", 1_000, totals,
+                              model="test-model", prompt_sha="abc123abc123",
+                              notes="modes=review", transport=transport)
+    assert ok is True and len(calls) == 1
+    body = calls[0]["body"]
+    assert body["run_id"] == "cafebabe" and body["kind"] == "review"
+    assert body["articles_processed"] == 3 and body["errors"] == 1
+    assert body["tokens"] == 12345 and body["cost_usd_equiv"] == 2.9614
+    assert body["started_at"] == 1_000
+    assert isinstance(body["finished_at"], int)
+    assert body["finished_at"] >= body["started_at"]
+
+
+def test_maybe_register_run_dry_run_never_posts():
+    def forbidden_transport(url, json=None, headers=None, timeout=None):
+        raise AssertionError("dry-run must not POST /api/runs")
+
+    ok = m.maybe_register_run(_runs_args(dry_run=True), "tok", 1_000,
+                              m.zero_stats(), transport=forbidden_transport)
+    assert ok is False
+
+
+def test_maybe_register_run_tokenless_never_posts():
+    def forbidden_transport(url, json=None, headers=None, timeout=None):
+        raise AssertionError("tokenless run must not POST /api/runs")
+
+    ok = m.maybe_register_run(_runs_args(dry_run=False), None, 1_000,
+                              m.zero_stats(), transport=forbidden_transport)
+    assert ok is False
 
 
 # ---------------------------------------------------------------------------
