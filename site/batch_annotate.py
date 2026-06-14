@@ -224,9 +224,10 @@ def run_script(script: str, slug: str) -> tuple[int, str]:
 
 
 async def run_agent(system: str, user: str, cwd: Path,
-                    tools: list[str], max_turns: int) -> tuple[dict | None, dict]:
+                    tools: list[str], max_turns: int,
+                    mcp_servers: dict | None = None) -> tuple[dict | None, dict]:
     """Run one agent via the SDK. Returns (parsed_json_or_None, meta)."""
-    options = ClaudeAgentOptions(
+    opt_kwargs = dict(
         model=MODEL,
         system_prompt=system,
         allowed_tools=tools,
@@ -234,9 +235,13 @@ async def run_agent(system: str, user: str, cwd: Path,
         permission_mode="bypassPermissions",
         max_turns=max_turns,
     )
+    if mcp_servers:
+        opt_kwargs["mcp_servers"] = mcp_servers
+    options = ClaudeAgentOptions(**opt_kwargs)
     last_text = ""
     result_obj = None
     n_tool = 0
+    tools_used: dict[str, int] = {}
     async for msg in query(prompt=user, options=options):
         if isinstance(msg, AssistantMessage):
             for b in msg.content:
@@ -244,6 +249,8 @@ async def run_agent(system: str, user: str, cwd: Path,
                     last_text = b.text or last_text
                 elif isinstance(b, ToolUseBlock):
                     n_tool += 1
+                    name = getattr(b, "name", "?")
+                    tools_used[name] = tools_used.get(name, 0) + 1
         elif isinstance(msg, ResultMessage):
             result_obj = msg
             if msg.result:
@@ -254,6 +261,7 @@ async def run_agent(system: str, user: str, cwd: Path,
         tokens = (usage.get("input_tokens") or 0) + (usage.get("output_tokens") or 0)
     meta = {
         "n_tool_calls": n_tool,
+        "tools_used": tools_used,
         # NOTE: this is the *equivalent* API cost the SDK reports; under
         # Max-plan auth no per-token dollars are billed — it's a usage proxy.
         "cost_usd_equiv": getattr(result_obj, "total_cost_usd", None) if result_obj else None,
@@ -261,6 +269,15 @@ async def run_agent(system: str, user: str, cwd: Path,
         "duration_ms": getattr(result_obj, "duration_ms", None) if result_obj else None,
     }
     return parse_json_object(last_text), meta
+
+
+# Search tools for Agent 2 (decl/QID verification). Built once; (None, []) when
+# disabled via WIKILEAN_SEARCH_TOOLS=0 or if the skill CLIs/SDK are unavailable.
+try:
+    from search_tools import build_search_server, AGENT2_TOOLS_GUIDANCE
+    _SEARCH_SERVER, _SEARCH_TOOLS = build_search_server()
+except Exception:
+    _SEARCH_SERVER, _SEARCH_TOOLS, AGENT2_TOOLS_GUIDANCE = None, [], ""
 
 
 # ---------------------------------------------------------------------------
@@ -459,8 +476,12 @@ async def annotate_one(article: dict, sem: asyncio.Semaphore, seed_decls: dict,
                 "Classify each against Mathlib4 per the system prompt. "
                 "Reply with ONLY the JSON object."
             )
-            a2, a2_meta = await run_agent(AGENT2_SYSTEM, a2_prompt, MATHLIB,
-                                          ["Read", "Grep", "Glob"], 60)
+            a2_system = AGENT2_SYSTEM + (AGENT2_TOOLS_GUIDANCE if _SEARCH_TOOLS else "")
+            a2, a2_meta = await run_agent(
+                a2_system, a2_prompt, MATHLIB,
+                ["Read", "Grep", "Glob"] + _SEARCH_TOOLS, 60,
+                mcp_servers={"wikilean": _SEARCH_SERVER} if _SEARCH_SERVER else None,
+            )
             if not a2 or "annotations" not in a2:
                 rec["error"] = "agent2_no_json"
                 return rec

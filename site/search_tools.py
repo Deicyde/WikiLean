@@ -1,0 +1,156 @@
+"""In-process search tools for the moderation pipeline's Agent 2.
+
+Wraps the reviewer search-skill CLIs (.claude/skills/*) as claude-agent-sdk
+custom tools, so Agent 2 can verify Mathlib decls and Wikidata cross-references
+as it annotates. Deliberately NOT raw Bash: Agent 2 consumes Wikipedia-derived
+text (a prompt-injection surface), so it gets named, fixed-argv, read-only
+search tools — the worst an injection can do is run a public search with an
+attacker-chosen string, never a shell command.
+
+Disable with WIKILEAN_SEARCH_TOOLS=0 (falls back to grep-only Agent 2).
+"""
+from __future__ import annotations
+
+import asyncio
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+try:
+    from claude_agent_sdk import tool, create_sdk_mcp_server
+    _SDK_OK = True
+except Exception:  # SDK missing / too old — caller falls back to grep-only.
+    _SDK_OK = False
+
+SERVER_NAME = "wikilean"
+_SKILLS = Path(__file__).resolve().parent.parent / ".claude" / "skills"
+MATHLIB_CLI = _SKILLS / "mathlib-search" / "mathlib_search.py"
+WIKIDATA_CLI = _SKILLS / "wikidata-search" / "wikidata.py"
+
+_TIMEOUT = 45        # per search; the public APIs are usually < 2s
+_MAX_OUT = 6000      # cap tool output so one search can't flood the agent context
+
+
+def _run_cli(cli: Path, *argv: str) -> str:
+    """Run a skill CLI with fixed argv (no shell). Returns text for the agent."""
+    try:
+        p = subprocess.run(
+            [sys.executable, str(cli), *argv, "--json"],
+            capture_output=True, text=True, timeout=_TIMEOUT,
+        )
+    except subprocess.TimeoutExpired:
+        return f"search timed out after {_TIMEOUT}s — treat as no result."
+    except Exception as e:  # pragma: no cover - defensive
+        return f"search failed to run: {e}"
+    out = (p.stdout or "").strip()
+    if p.returncode != 0:
+        err = (p.stderr or "").strip() or out or "(no output)"
+        return f"no result / error (exit {p.returncode}): {err[:800]}"
+    if not out:
+        return "no result."
+    return out[:_MAX_OUT] + ("\n…(truncated)" if len(out) > _MAX_OUT else "")
+
+
+def _text(s: str) -> dict:
+    return {"content": [{"type": "text", "text": s}]}
+
+
+def build_search_server():
+    """Return (server, tool_names) for Agent 2, or (None, []) if disabled.
+
+    Cheap and network-free: only builds the in-process server object.
+    """
+    if not _SDK_OK or os.environ.get("WIKILEAN_SEARCH_TOOLS") == "0":
+        return None, []
+    if not MATHLIB_CLI.exists() or not WIKIDATA_CLI.exists():
+        return None, []
+
+    @tool(
+        "decl_exists",
+        "Confirm a Mathlib4 declaration name EXISTS and get its module. Use this "
+        "before citing any decl as a formalization — never output a `decl` you "
+        "have not confirmed (a hallucinated name is worse than not_formalized). "
+        "Input: the exact dotted name, e.g. 'Nat.add_comm'.",
+        {"name": str},
+    )
+    async def decl_exists(args):
+        return _text(await asyncio.to_thread(_run_cli, MATHLIB_CLI, "decl", args["name"]))
+
+    @tool(
+        "loogle",
+        "Find a Mathlib4 lemma by pattern when you don't know the exact name. "
+        "Query forms (comma = AND): a dotted constant `Real.sin`; a quoted "
+        "name-substring `\"add_comm\"`; a type pattern with ?a/?b metavariables "
+        "`?a * ?b = ?b * ?a`; or a main conclusion prefixed with `|-`. Anchor "
+        "equation/inequality patterns under `|-` or with a constant or it may "
+        "time out.",
+        {"query": str},
+    )
+    async def loogle(args):
+        return _text(await asyncio.to_thread(_run_cli, MATHLIB_CLI, "loogle", args["query"]))
+
+    @tool(
+        "mathlib_semantic",
+        "Natural-language search of Mathlib4 — describe the statement in prose "
+        "and get candidate decls with informal descriptions. Use when grep, "
+        "decl_exists, and loogle have not settled the match.",
+        {"query": str},
+    )
+    async def mathlib_semantic(args):
+        return _text(await asyncio.to_thread(_run_cli, MATHLIB_CLI, "semantic", args["query"]))
+
+    @tool(
+        "wikidata_search",
+        "Find the Wikidata QID(s) for a concept name. Returns candidates with "
+        "descriptions so you can disambiguate (do not trust the top hit blindly).",
+        {"label": str},
+    )
+    async def wikidata_search(args):
+        return _text(await asyncio.to_thread(_run_cli, WIKIDATA_CLI, "search", args["label"]))
+
+    @tool(
+        "wikidata_xrefs",
+        "Given a Wikidata QID, list its formal-library cross-references (Metamath, "
+        "nLab, MathWorld, ProofWiki, defining formula) and its English Wikipedia "
+        "article. Optional context for judging whether a concept is formalized "
+        "elsewhere. Input: a QID like 'Q11518'.",
+        {"qid": str},
+    )
+    async def wikidata_xrefs(args):
+        return _text(await asyncio.to_thread(_run_cli, WIKIDATA_CLI, "xrefs", args["qid"]))
+
+    tools = [decl_exists, loogle, mathlib_semantic, wikidata_search, wikidata_xrefs]
+    server = create_sdk_mcp_server(SERVER_NAME, "1.0.0", tools)
+    names = [f"mcp__{SERVER_NAME}__{t.name}" for t in tools]
+    return server, names
+
+
+# Guidance appended to AGENT2_SYSTEM when the tools are wired in.
+AGENT2_TOOLS_GUIDANCE = """
+
+VERIFICATION TOOLS — use them, do not rely on grep alone:
+- decl_exists(name): confirm a Mathlib decl is REAL before citing it. Never
+  output a `decl` you have not confirmed by grep/read OR decl_exists. A
+  hallucinated decl is worse than "not_formalized".
+- loogle(query): find a lemma by pattern when grep is unfruitful (dotted
+  constant, "name substring", ?a/?b type pattern, or `|-` conclusion).
+- mathlib_semantic(query): natural-language fallback for uncertain matches.
+- wikidata_search(label) / wikidata_xrefs(qid): optional — check what formal
+  references a concept already carries.
+These are cheap and prevent wrong citations; prefer them to settle any match
+you are not certain of.
+"""
+
+
+if __name__ == "__main__":
+    # Zero-agent smoke: prove each wrapped CLI returns real data.
+    server, names = build_search_server()
+    print("server built:", server is not None, "| tools:", names)
+    for cli, argv in [
+        (MATHLIB_CLI, ("decl", "Nat.add_comm")),
+        (MATHLIB_CLI, ("loogle", "Real.sin, Continuous")),
+        (WIKIDATA_CLI, ("xrefs", "Q11518")),
+    ]:
+        print(f"\n$ {cli.name} {' '.join(argv)} --json")
+        print(_run_cli(cli, *argv)[:300])
