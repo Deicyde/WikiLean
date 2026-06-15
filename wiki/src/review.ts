@@ -678,15 +678,17 @@ pre.lean{font-family:"JuliaMono","JetBrains Mono","SF Mono",Menlo,Consolas,monos
 .wd-lead p{font-size:.88rem;line-height:1.5;margin:.4rem 0 0}
 .wd-lead .more{font-size:.8rem;margin-top:.3rem}.wd-lead .more a{color:var(--accent)}
 /* Lean syntax palette (Mathlib-docs-derived) */
-pre.lean .sd{color:#4a5e2a;font-style:italic}
-pre.lean .c1{color:#5d6b50;font-style:italic}
-pre.lean .kn{color:#1F497F;font-weight:700}
-pre.lean .kt{color:#73461C;font-weight:700}
-pre.lean .nf{color:#134E2D;font-weight:500}
-pre.lean .o{color:#262626}
-pre.lean .s{color:#6B1B1A}
-pre.lean .mi{color:#6B1B1A;font-weight:500}
-pre.lean .n{color:#0a0a0a}
+/* Standard Lean palette — VS Code "Light+" token colors (how Lean looks in
+   the default editor). */
+pre.lean .sd{color:#008000;font-style:italic}
+pre.lean .c1{color:#008000;font-style:italic}
+pre.lean .kn{color:#0000ff}
+pre.lean .kt{color:#267f99}
+pre.lean .nf{color:#795e26}
+pre.lean .o{color:#000000}
+pre.lean .s{color:#a31515}
+pre.lean .mi{color:#098658}
+pre.lean .n{color:#1f1f1f}
 @media (max-width:820px){.panes{grid-template-columns:1fr}.src{border-right:none;border-bottom:1px solid var(--rule)}}
 #controls{margin:0 0 1rem;display:flex;gap:1rem;align-items:center;flex-wrap:wrap;font-size:.9rem}
 #controls select{font:inherit;padding:.25rem .4rem;border:1px solid var(--rule);border-radius:6px;background:#fff}
@@ -828,7 +830,36 @@ function parseStatus(comments){
 }
 function statusBadge(s){
   if(!s) return '<span class="badge none">◯ no review yet</span>';
-  return '<span class="badge '+s+'">'+(EMO[s]||"")+' '+s+'</span>';
+  const label = s==="flag" ? "deletion-candidate" : s;
+  return '<span class="badge '+s+'">'+(EMO[s]||"")+' '+label+'</span>';
+}
+
+// For a wikilean-review comment, return just the NOTE html (the status label +
+// marker are already shown by the "Existing review" row, so they'd be
+// redundant). Returns "" for a status-only comment (nothing to add).
+function reviewNote(c){
+  let h = c.bodyHtml || "";
+  if(!h){
+    const lines=(c.body||"").split("\n").filter(l=>!/^\*\*/.test(l.trim())&&!/<sub>/.test(l)&&l.trim()!=="");
+    const t=lines.map(l=>l.replace(/^>\s?/,"")).join("\n").trim();
+    return (t && t!=="_(no note)_") ? "<p>"+esc(t)+"</p>" : "";
+  }
+  h = h.replace(/<p[^>]*>\s*<strong>[^<]*(WikiLean reviewer note|Deletion candidate)[^<]*<\/strong>[^<]*<\/p>/i,"");
+  h = h.replace(/<p[^>]*>\s*<sub>[\s\S]*?<\/sub>\s*<\/p>/i,"");
+  h = h.replace(/<sub>[\s\S]*?<\/sub>/i,"");
+  h = h.trim();
+  if(h==="" || /^<p[^>]*>\s*<em>\(no note\)<\/em>\s*<\/p>$/i.test(h)) return "";
+  return h;
+}
+// Render one comment; review comments show note-only (or are dropped), others full.
+function commentHtml(c){
+  if(/wikilean-review:Q/.test(c.body||"")){
+    const note = reviewNote(c);
+    if(!note) return "";
+    return '<div class="cmt"><div class="who">'+esc(c.user)+'</div><div class="body md">'+note+'</div></div>';
+  }
+  return '<div class="cmt"><div class="who">'+esc(c.user)+'</div>'+
+    (c.bodyHtml ? '<div class="body md">'+c.bodyHtml+'</div>' : '<div class="body">'+esc(c.body)+'</div>')+'</div>';
 }
 
 function render(data){
@@ -853,11 +884,8 @@ function render(data){
     const pending = !!(st.changeStatus || (st.note && st.note.trim()));
     const el = document.createElement("article");
     el.className = "entry" + (pending?" pending":""); el.dataset.status = cs || "";
-    const commentsHtml = d.comments.length
-      ? d.comments.map(c => '<div class="cmt"><div class="who">' + esc(c.user) +
-          '</div>' + (c.bodyHtml ? '<div class="body md">' + c.bodyHtml + '</div>'
-                                 : '<div class="body">' + esc(c.body) + '</div>') + '</div>').join("")
-      : '<div class="none">No existing comments on this line.</div>';
+    const cmtsHtml = d.comments.map(commentHtml).filter(Boolean).join("");
+    const commentsHtml = cmtsHtml || '<div class="none">No other comments on this line.</div>';
     const wd = d.wd || {};
     const wikiHead = wd.enwikiUrl
       ? '<p class="wd-head"><a href="' + wd.enwikiUrl + '" target="_blank">' + esc(wd.enwikiTitle || wd.label || d.qid) + '</a></p>'
