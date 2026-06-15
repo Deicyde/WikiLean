@@ -170,6 +170,174 @@ function keyOf(path: string, line: number): string {
   return `${path}:${line}`;
 }
 
+// ---- Wikidata label/description/enwiki + Wikipedia lead (cached) ----
+
+export interface WdInfo {
+  label: string | null;
+  description: string | null;
+  enwikiUrl: string | null;
+  enwikiTitle: string | null;
+  lead: string | null;
+}
+
+const WD_API = "https://www.wikidata.org/w/api.php";
+const EN_API = "https://en.wikipedia.org/w/api.php";
+
+// Batched wbgetentities (50 ids/call) → label, description, enwiki sitelink.
+// Per-qid KV cache (7d).
+async function fetchWikidata(qids: string[], env: Env): Promise<Map<string, WdInfo>> {
+  const out = new Map<string, WdInfo>();
+  const missing: string[] = [];
+  for (const q of qids) {
+    const c = await env.RENDER_CACHE.get(`wd:${q}`);
+    if (c !== null) out.set(q, JSON.parse(c) as WdInfo);
+    else missing.push(q);
+  }
+  for (let i = 0; i < missing.length; i += 50) {
+    const chunk = missing.slice(i, i + 50);
+    const url =
+      `${WD_API}?action=wbgetentities&ids=${chunk.join("|")}` +
+      `&props=labels|descriptions|sitelinks/urls&languages=en&sitefilter=enwiki&format=json&origin=*`;
+    let data: any;
+    try {
+      const r = await fetch(url, { headers: { "User-Agent": UA } });
+      if (!r.ok) continue;
+      data = await r.json();
+    } catch {
+      continue;
+    }
+    for (const q of chunk) {
+      const e = data?.entities?.[q] ?? {};
+      const sl = e?.sitelinks?.enwiki ?? {};
+      const info: WdInfo = {
+        label: e?.labels?.en?.value ?? null,
+        description: e?.descriptions?.en?.value ?? null,
+        enwikiUrl: sl?.url ?? null,
+        enwikiTitle: sl?.title ?? null,
+        lead: null,
+      };
+      out.set(q, info);
+      await env.RENDER_CACHE.put(`wd:${q}`, JSON.stringify(info), { expirationTtl: 60 * 60 * 24 * 7 });
+    }
+  }
+  return out;
+}
+
+// Batched Wikipedia lead extracts (20 titles/call), per-title KV cache (7d).
+async function fetchLeads(titles: string[], env: Env): Promise<Map<string, string>> {
+  const out = new Map<string, string>();
+  const missing: string[] = [];
+  for (const t of titles) {
+    const c = await env.RENDER_CACHE.get(`wplead:${t}`);
+    if (c !== null) out.set(t, c);
+    else missing.push(t);
+  }
+  for (let i = 0; i < missing.length; i += 20) {
+    const chunk = missing.slice(i, i + 20);
+    const url =
+      `${EN_API}?action=query&prop=extracts&exintro=1&explaintext=1&redirects=1` +
+      `&titles=${chunk.map(encodeURIComponent).join("|")}&format=json&formatversion=2&origin=*`;
+    let data: any;
+    try {
+      const r = await fetch(url, { headers: { "User-Agent": UA } });
+      if (!r.ok) continue;
+      data = await r.json();
+    } catch {
+      continue;
+    }
+    const norm: Record<string, string> = {};
+    for (const n of data?.query?.normalized ?? []) norm[n.from] = n.to;
+    const redir: Record<string, string> = {};
+    for (const n of data?.query?.redirects ?? []) redir[n.from] = n.to;
+    const byTitle: Record<string, string> = {};
+    for (const p of data?.query?.pages ?? []) byTitle[p.title] = p.extract ?? "";
+    for (const t of chunk) {
+      const canon = redir[norm[t] ?? t] ?? norm[t] ?? t;
+      const lead = byTitle[canon] ?? "";
+      out.set(t, lead);
+      await env.RENDER_CACHE.put(`wplead:${t}`, lead, { expirationTtl: 60 * 60 * 24 * 7 });
+    }
+  }
+  return out;
+}
+
+// ---- full decl-body extraction from the file at the PR head (cached) ----
+
+const TOPLEVEL_PREFIXES = [
+  "def ", "theorem ", "lemma ", "class ", "structure ", "inductive ", "abbrev ",
+  "instance ", "instance:", "example ", "axiom ", "constant ", "opaque ",
+  "noncomputable ", "protected ", "private ", "public ", "nonrec ", "mutual ",
+  "@[", "attribute ", "/--", "/-!", "/-", "namespace ", "end ", "section",
+  "variable ", "open ", "export ", "import ", "notation", "scoped ", "local ",
+  "infix", "prefix", "postfix", "syntax", "macro", "elab", "add_decl_doc",
+  "initialize ", "builtin_", "#", "--",
+];
+const BARE_MODIFIERS = new Set(["noncomputable", "private", "protected", "public", "nonrec", "unsafe", "partial"]);
+
+function isTopLevel(line: string): boolean {
+  if (!line || line[0] === " " || line[0] === "\t") return false;
+  if (line.startsWith("deriving ")) return false;
+  return TOPLEVEL_PREFIXES.some((p) => line.startsWith(p));
+}
+
+// Given file lines and a qid, return the full declaration slice (docstring +
+// attributes + modifiers + signature + body) around its @[wikidata Qxxx] tag.
+export function extractDeclBody(lines: string[], qid: string): string | null {
+  const pat = new RegExp(`wikidata\\s+${qid}\\b`);
+  const idx = lines.findIndex((l) => pat.test(l));
+  if (idx < 0) return null;
+  // Forward: skip the attribute block + bare-modifier lines to the signature,
+  // then walk to the next top-level construct.
+  let sig = idx + 1;
+  while (sig < lines.length && (lines[sig].trimStart().startsWith("@[") || BARE_MODIFIERS.has(lines[sig].trim()))) sig++;
+  let end = sig + 1;
+  while (end < lines.length && !isTopLevel(lines[end])) end++;
+  while (end > sig + 1 && lines[end - 1].trim() === "") end--;
+  // Backward: include the attribute block, interleaved `--` comments, the
+  // docstring, and a `variable … in` clause.
+  let start = idx;
+  while (start > 0) {
+    const prev = lines[start - 1].trimStart();
+    if (prev.startsWith("@[") || prev.startsWith("-- ") || prev === "--") start--;
+    else break;
+  }
+  if (start > 0 && lines[start - 1].trimEnd().endsWith("-/")) {
+    if (lines[start - 1].includes("/--")) start--;
+    else {
+      let j = start - 1;
+      while (j >= 0 && !lines[j].includes("/--")) j--;
+      if (j >= 0) start = j;
+    }
+  }
+  if (start > 0 && /^variable\s.*\sin\s*$/.test(lines[start - 1].trimEnd())) start--;
+  return lines.slice(start, end).join("\n");
+}
+
+// Fetch a file's text at a commit (raw contents API), KV-cached by sha+path.
+async function fetchFileLines(
+  repoFull: string,
+  path: string,
+  sha: string,
+  token: string | undefined,
+  env: Env,
+): Promise<string[] | null> {
+  const key = `ghfile:${sha}:${path}`;
+  const cached = await env.RENDER_CACHE.get(key);
+  if (cached !== null) return cached.split("\n");
+  try {
+    const r = await fetch(
+      `${GH_API}/repos/${repoFull}/contents/${path.split("/").map(encodeURIComponent).join("/")}?ref=${sha}`,
+      { headers: ghHeaders(token, "application/vnd.github.raw") },
+    );
+    if (!r.ok) return null;
+    const text = await r.text();
+    await env.RENDER_CACHE.put(key, text, { expirationTtl: 60 * 60 * 24 * 30 });
+    return text.split("\n");
+  } catch {
+    return null;
+  }
+}
+
 // ---- the assembled review payload returned to the browser ----
 
 export interface ReviewPayload {
@@ -177,7 +345,7 @@ export interface ReviewPayload {
   pr: number;
   head_sha: string;
   title: string;
-  decls: Array<DeclTag & { comments: ReviewComment[] }>;
+  decls: Array<DeclTag & { comments: ReviewComment[]; source: string; wd: WdInfo | null }>;
 }
 
 async function buildReviewPayload(
@@ -228,12 +396,41 @@ async function buildReviewPayload(
     });
   }
 
+  // Page mode (renderMarkdown): also fetch the full decl body per tag and the
+  // Wikidata description + Wikipedia lead per qid. Skipped for the POST path.
+  const sourceByQid = new Map<string, string>();
+  let wdByQid = new Map<string, WdInfo>();
+  if (renderMarkdown && env) {
+    // Full bodies: one file fetch per unique file (cached), reused across tags.
+    const fileCache = new Map<string, string[] | null>();
+    for (const t of tags) {
+      let lines = fileCache.get(t.file);
+      if (lines === undefined) {
+        lines = await fetchFileLines(full, t.file, meta.head.sha, token, env);
+        fileCache.set(t.file, lines);
+      }
+      const body = lines ? extractDeclBody(lines, t.qid) : null;
+      if (body) sourceByQid.set(t.qid, body);
+    }
+    // Wikidata + Wikipedia leads.
+    const qids = [...new Set(tags.map((t) => t.qid))];
+    wdByQid = await fetchWikidata(qids, env);
+    const titles = [...wdByQid.values()].map((w) => w.enwikiTitle).filter((x): x is string => !!x);
+    const leads = await fetchLeads(titles, env);
+    for (const [, w] of wdByQid) if (w.enwikiTitle) w.lead = leads.get(w.enwikiTitle) ?? null;
+  }
+
   return {
     repo: full,
     pr,
     head_sha: meta.head.sha,
     title: meta.title,
-    decls: tags.map((t) => ({ ...t, comments: byLine.get(keyOf(t.file, t.line)) ?? [] })),
+    decls: tags.map((t) => ({
+      ...t,
+      comments: byLine.get(keyOf(t.file, t.line)) ?? [],
+      source: sourceByQid.get(t.qid) ?? t.hunk.join("\n"),
+      wd: wdByQid.get(t.qid) ?? null,
+    })),
   };
 }
 
@@ -426,6 +623,27 @@ pre.lean{font-family:"JuliaMono","JetBrains Mono","SF Mono",Menlo,Consolas,monos
 .cmt .body.md sub{color:var(--muted)}
 .cmt .body.md h1,.cmt .body.md h2,.cmt .body.md h3{font-size:1rem;margin:.3rem 0}
 .none{color:var(--muted);font-size:.85rem;font-style:italic;padding:.2rem .9rem .5rem}
+.panes{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--rule)}
+.src{border-right:1px solid var(--rule);background:#fdfcf8;overflow:auto}
+.src pre.lean{border-bottom:none;margin:0}
+.wiki-pane{padding:.7rem .9rem}
+.wd-desc{font-size:.95rem;line-height:1.45;margin:0 0 .7rem;padding:.5rem .7rem;background:#fbf6ec;border-left:3px solid var(--accent);border-radius:0 3px 3px 0;color:#3a2a20;font-style:italic}
+.wd-desc.empty{background:none;border-left:none;padding:0;color:var(--muted);font-style:italic}
+.wd-head{font-size:.9rem;margin:0 0 .3rem}.wd-head a{color:var(--ink);font-weight:600;text-decoration:none}.wd-head a:hover{text-decoration:underline}
+.wd-lead summary{cursor:pointer;color:var(--accent);font-weight:500;font-size:.85rem}
+.wd-lead p{font-size:.88rem;line-height:1.5;margin:.4rem 0 0}
+.wd-lead .more{font-size:.8rem;margin-top:.3rem}.wd-lead .more a{color:var(--accent)}
+/* Lean syntax palette (Mathlib-docs-derived) */
+pre.lean .sd{color:#4a5e2a;font-style:italic}
+pre.lean .c1{color:#5d6b50;font-style:italic}
+pre.lean .kn{color:#1F497F;font-weight:700}
+pre.lean .kt{color:#73461C;font-weight:700}
+pre.lean .nf{color:#134E2D;font-weight:500}
+pre.lean .o{color:#262626}
+pre.lean .s{color:#6B1B1A}
+pre.lean .mi{color:#6B1B1A;font-weight:500}
+pre.lean .n{color:#0a0a0a}
+@media (max-width:820px){.panes{grid-template-columns:1fr}.src{border-right:none;border-bottom:1px solid var(--rule)}}
 .form{padding:.6rem .9rem;border-top:1px dashed var(--rule);background:#fcfaf4}
 .form .row{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-bottom:.4rem}
 .form label{display:inline-flex;align-items:center;gap:.3rem;padding:.15rem .55rem;border:1px solid var(--rule);border-radius:14px;background:#fff;cursor:pointer;font-size:.85rem}
@@ -500,6 +718,29 @@ async function loadPR(){
   } catch(e){ $("#status").textContent = "Fetch failed: " + e; }
 }
 
+// Minimal Lean 4 highlighter → spans with the Mathlib-palette classes.
+function hl(src){
+  const KW = new Set(["def","theorem","lemma","class","structure","inductive","abbrev","instance","where","extends","noncomputable","protected","private","partial","mutual","namespace","end","open","variable","variables","import","deriving","by","fun","let","in","do","match","with","if","then","else","from","attribute","scoped","local","nonrec","opaque","example","section","return","have","show","calc"]);
+  const DECL = new Set(["def","theorem","lemma","class","structure","inductive","abbrev","instance","opaque"]);
+  const TY = new Set(["Type","Prop","Sort"]);
+  const re = /(\/-[-!]?[\s\S]*?-\/)|(--[^\n]*)|("(?:[^"\\]|\\.)*")|([A-Za-z_À-￿][A-Za-z0-9_'.À-￿]*)|(\d[\d.]*)|(\s+)|([^\s])/g;
+  let out="", m, afterDecl=false;
+  while((m = re.exec(src))){
+    if(m[1]) out += '<span class="sd">'+esc(m[1])+'</span>';
+    else if(m[2]) out += '<span class="c1">'+esc(m[2])+'</span>';
+    else if(m[3]) out += '<span class="s">'+esc(m[3])+'</span>';
+    else if(m[4]){ const w=m[4]; let cls;
+      if(KW.has(w)){ cls="kn"; afterDecl = DECL.has(w); }
+      else if(TY.has(w)){ cls="kt"; afterDecl=false; }
+      else { cls = afterDecl ? "nf" : "n"; afterDecl=false; }
+      out += '<span class="'+cls+'">'+esc(w)+'</span>'; }
+    else if(m[5]) out += '<span class="mi">'+esc(m[5])+'</span>';
+    else if(m[6]) out += esc(m[6]);
+    else out += '<span class="o">'+esc(m[7])+'</span>';
+  }
+  return out;
+}
+
 function render(data){
   $("#status").innerHTML = "<b>" + esc(data.title) + "</b> — " + data.decls.length +
     " tagged declarations · commit <code>" + data.head_sha.slice(0,10) + "</code>";
@@ -513,11 +754,26 @@ function render(data){
           '</div>' + (c.bodyHtml ? '<div class="body md">' + c.bodyHtml + '</div>'
                                  : '<div class="body">' + esc(c.body) + '</div>') + '</div>').join("")
       : '<div class="none">No existing comments on this line.</div>';
+    const wd = d.wd || {};
+    const wikiHead = wd.enwikiUrl
+      ? '<p class="wd-head"><a href="' + wd.enwikiUrl + '" target="_blank">' + esc(wd.enwikiTitle || wd.label || d.qid) + '</a></p>'
+      : (wd.label ? '<p class="wd-head">' + esc(wd.label) + '</p>' : '');
+    const descHtml = wd.description
+      ? '<p class="wd-desc">' + esc(wd.description) + '</p>'
+      : '<p class="wd-desc empty">(no Wikidata description)</p>';
+    const leadHtml = wd.lead
+      ? '<details class="wd-lead"><summary>Wikipedia lead ↓</summary><p>' + esc(wd.lead.slice(0,900)) + '</p>' +
+        (wd.enwikiUrl ? '<p class="more"><a href="' + wd.enwikiUrl + '" target="_blank">Read full article ↗</a></p>' : '') +
+        '</details>'
+      : (wd.enwikiUrl ? '<p class="wd-lead"><a href="' + wd.enwikiUrl + '" target="_blank">Read on Wikipedia ↗</a></p>' : '');
     el.innerHTML =
       '<header><span class="qid"><a href="https://www.wikidata.org/wiki/' + d.qid +
         '" target="_blank">' + d.qid + '</a></span>' +
         '<span class="loc">' + esc(d.file) + ':' + d.line + '</span></header>' +
-      '<pre class="lean">' + esc(d.hunk.join("\n")) + '</pre>' +
+      '<div class="panes">' +
+        '<section class="src"><pre class="lean">' + hl(d.source || "") + '</pre></section>' +
+        '<section class="wiki-pane">' + wikiHead + descHtml + leadHtml + '</section>' +
+      '</div>' +
       '<div class="comments">' + commentsHtml + '</div>' +
       '<div class="form"><div class="row">' +
         radio(d.qid,"approve","🟢 Approve",st.status) +
