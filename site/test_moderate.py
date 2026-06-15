@@ -455,11 +455,37 @@ class _Resp:
         return self._payload
 
 
+# The real requests.exceptions hierarchy — so the `except
+# requests.exceptions.RequestException` in _write_article resolves against the
+# fake `requests` module the harness installs (the fake module otherwise has no
+# `.exceptions`). Imported once; if requests isn't installed the network-raise
+# tests self-skip (see _require_requests_exceptions).
+try:
+    import requests as _real_requests
+    _REAL_REQ_EXC = _real_requests.exceptions
+except ImportError:  # pragma: no cover - requests is a hard dep in the venv
+    _real_requests = None
+    _REAL_REQ_EXC = None
+
+
+def _require_requests_exceptions():
+    if _REAL_REQ_EXC is None:
+        raise unittest.SkipTest("requests not installed (network-raise tests)")
+
+
 @contextlib.contextmanager
 def _patched_transport(responses):
     """Install a recording fake `requests` module + a non-sleeping asyncio
-    shim inside moderate. `responses` is a list of (status, payload); the
-    last entry repeats. An EMPTY list asserts no HTTP write happens at all."""
+    shim inside moderate. `responses` is a list of entries; the last repeats.
+    An EMPTY list asserts no HTTP write happens at all.
+
+    Each entry is normally an (status, payload) tuple. ADDITIVE extension for
+    the checkpoint-and-retry-POST fix: an entry of the form
+    ("raise", exc_instance) makes `_send` RAISE exc_instance instead of
+    returning a response — so the `except requests.exceptions.RequestException`
+    network-drop path in _write_article can be exercised. The fake module's
+    `.exceptions` is wired to the real requests.exceptions so that except
+    clause resolves. Existing (status, payload) callers are unchanged."""
     real_asyncio = m.asyncio
     rec = SimpleNamespace(calls=[], sleeps=[])
     queue = list(responses)
@@ -467,7 +493,10 @@ def _patched_transport(responses):
     def _send(url, json=None, headers=None, timeout=None):
         assert queue, f"unexpected HTTP write to {url}"
         rec.calls.append({"url": url, "body": json, "headers": headers})
-        status, payload = queue.pop(0) if len(queue) > 1 else queue[0]
+        entry = queue.pop(0) if len(queue) > 1 else queue[0]
+        if isinstance(entry, tuple) and len(entry) == 2 and entry[0] == "raise":
+            raise entry[1]            # additive: simulate a dropped connection
+        status, payload = entry
         return _Resp(status, payload)
 
     async def _sleep(seconds):
@@ -476,6 +505,8 @@ def _patched_transport(responses):
     fake_requests = types.ModuleType("requests")
     fake_requests.post = _send
     fake_requests.put = _send
+    if _REAL_REQ_EXC is not None:
+        fake_requests.exceptions = _REAL_REQ_EXC  # resolve the except clause
     shim = SimpleNamespace(to_thread=real_asyncio.to_thread, sleep=_sleep,
                            Semaphore=real_asyncio.Semaphore,
                            gather=real_asyncio.gather, run=real_asyncio.run)
@@ -1252,6 +1283,700 @@ def test_maybe_register_run_tokenless_never_posts():
     ok = m.maybe_register_run(_runs_args(dry_run=False), None, 1_000,
                               m.zero_stats(), transport=forbidden_transport)
     assert ok is False
+
+
+# ===========================================================================
+# Checkpoint-and-retry-POST durability fix
+# (write_checkpoint / clear_checkpoint / list_checkpoints, the _write_article
+# network-drop path, the process_* checkpoint lifecycle, and flush_pending —
+# the headline recovery routine. All checkpoint I/O uses tmp pending dirs so
+# nothing touches the real site/cache/.pending_posts.)
+# ===========================================================================
+
+import tempfile as _tempfile
+
+
+@contextlib.contextmanager
+def _tmp_pending():
+    """A tmp directory for checkpoint files (never the real PENDING_DIR)."""
+    with _tempfile.TemporaryDirectory() as td:
+        yield Path(td)
+
+
+@contextlib.contextmanager
+def _patched_pending_dir():
+    """Point moderate.PENDING_DIR at a tmp dir so process_review/process_new —
+    which call write/clear_checkpoint WITHOUT a pending_dir arg (they default
+    to the module global) — write into the sandbox. Yields the tmp Path."""
+    saved = m.PENDING_DIR
+    with _tempfile.TemporaryDirectory() as td:
+        m.PENDING_DIR = Path(td)
+        try:
+            yield Path(td)
+        finally:
+            m.PENDING_DIR = saved
+
+
+@contextlib.contextmanager
+def _patched_get_article(sequence):
+    """Scriptable async get_article for flush_pending (which calls m.get_article
+    directly, not _http_get). `sequence` is a list of (dict_or_None, status);
+    the last repeats. Records the slugs requested, in order."""
+    saved = m.get_article
+    queue = list(sequence)
+    calls: list[str] = []
+
+    async def fake_get_article(api_base, slug, token=None):
+        calls.append(slug)
+        return queue.pop(0) if len(queue) > 1 else queue[0]
+
+    m.get_article = fake_get_article
+    try:
+        yield calls
+    finally:
+        m.get_article = saved
+
+
+def _flush_ctx():
+    return SimpleNamespace(api_base="http://api.test", token="tok-flush")
+
+
+# ---------------------------------------------------------------------------
+# 1. write_checkpoint / clear_checkpoint / list_checkpoints
+# ---------------------------------------------------------------------------
+
+def test_checkpoint_roundtrip_and_atomic_file():
+    with _tmp_pending() as pend:
+        body = {"annotations": [ann(label="a")], "base_version": 7}
+        m.write_checkpoint("Lp_space", "post", body, "run-abc", "review",
+                           pending_dir=pend)
+        files = sorted(p.name for p in pend.iterdir())
+        assert files == ["Lp_space.json"]            # final name only, no .tmp
+        cps = m.list_checkpoints(pend)
+        assert len(cps) == 1
+        cp = cps[0]
+        assert cp["slug"] == "Lp_space" and cp["method"] == "post"
+        assert cp["kind"] == "review" and cp["run_id"] == "run-abc"
+        assert cp["body"] == body
+        assert isinstance(cp["saved_at"], int) and cp["saved_at"] > 0
+
+
+def test_clear_checkpoint_removes_then_noop_on_missing():
+    with _tmp_pending() as pend:
+        m.write_checkpoint("S", "post", {}, "r", "review", pending_dir=pend)
+        assert len(m.list_checkpoints(pend)) == 1
+        m.clear_checkpoint("S", pending_dir=pend)
+        assert m.list_checkpoints(pend) == []
+        # clearing an absent slug is a silent no-op (FileNotFoundError swallowed)
+        m.clear_checkpoint("S", pending_dir=pend)
+        m.clear_checkpoint("never-existed", pending_dir=pend)
+
+
+def test_list_checkpoints_skips_corrupt_file_not_fatal():
+    with _tmp_pending() as pend:
+        m.write_checkpoint("Good", "post", {"x": 1}, "r", "review",
+                           pending_dir=pend)
+        # a corrupt checkpoint (truncated JSON) must be dropped, not crash
+        (pend / "Corrupt.json").write_text("{not json", encoding="utf-8")
+        cps = m.list_checkpoints(pend)
+        assert [c["slug"] for c in cps] == ["Good"]   # corrupt one skipped
+
+
+def test_list_checkpoints_missing_dir_is_empty():
+    with _tmp_pending() as pend:
+        sub = pend / "does-not-exist"
+        assert m.list_checkpoints(sub) == []          # no crash on absent dir
+
+
+def test_list_checkpoints_ignores_half_written_tmp():
+    # Crash-safety: a .{slug}.tmp partial write (write_checkpoint's pre-replace
+    # artifact) is NOT *.json, so list_checkpoints never reads a torn file.
+    with _tmp_pending() as pend:
+        m.write_checkpoint("Done", "post", {"x": 1}, "r", "review",
+                           pending_dir=pend)
+        import urllib.parse
+        tmp = pend / f".{urllib.parse.quote('Half', safe='')}.tmp"
+        tmp.write_text("{partial", encoding="utf-8")   # simulate mid-replace
+        cps = m.list_checkpoints(pend)
+        assert [c["slug"] for c in cps] == ["Done"]    # tmp invisible
+
+
+def test_checkpoint_url_unsafe_slugs_roundtrip():
+    # Slugs with chars unsafe in filenames must encode and decode losslessly.
+    with _tmp_pending() as pend:
+        slugs = ["C*-algebra", "0.999...", "L^p_space", "a/b", "x?y", "Σ-algebra"]
+        for s in slugs:
+            m.write_checkpoint(s, "post", {"slug_echo": s}, "r", "review",
+                               pending_dir=pend)
+        got = {c["slug"]: c["body"]["slug_echo"] for c in m.list_checkpoints(pend)}
+        assert set(got) == set(slugs)
+        for s in slugs:
+            assert got[s] == s
+            # round-trip through clear, too (uses the same quoting)
+            m.clear_checkpoint(s, pending_dir=pend)
+        assert m.list_checkpoints(pend) == []
+
+
+def test_checkpoint_overwrite_same_slug_replaces():
+    # Re-checkpointing the same slug (e.g. a retried run) replaces, not appends.
+    with _tmp_pending() as pend:
+        m.write_checkpoint("S", "post", {"v": 1}, "r1", "review", pending_dir=pend)
+        m.write_checkpoint("S", "post", {"v": 2}, "r2", "review", pending_dir=pend)
+        cps = m.list_checkpoints(pend)
+        assert len(cps) == 1 and cps[0]["body"] == {"v": 2}
+        assert cps[0]["run_id"] == "r2"
+
+
+# ---------------------------------------------------------------------------
+# 2. _write_article: dropped-connection retry+sentinel (no crash)
+# ---------------------------------------------------------------------------
+
+def test_write_article_network_drop_retries_then_sentinel():
+    # A raised requests.exceptions.ConnectionError retries on the 5s/15s 5xx
+    # backoff schedule, then returns (0, {}, False) — NOT a crash. The (0)
+    # sentinel is what tells the caller to KEEP the checkpoint.
+    _require_requests_exceptions()
+    ce = _REAL_REQ_EXC.ConnectionError("name resolution failed")
+    with _patched_transport([("raise", ce)]) as t:
+        code, payload, rebased = asyncio.run(
+            m._write_article(_write_ctx(), "Lp space",
+                             {"base_version": 4}, "post"))
+    assert code == 0 and payload == {} and rebased is False
+    assert t.sleeps == [5, 15]            # retried on the backoff schedule
+    assert len(t.calls) == 3             # initial + two retries, then give up
+
+
+def test_write_article_network_drop_then_recovers():
+    # The connection drops once, then the retry succeeds — no sentinel, a real
+    # 200 comes back (proves the retry actually re-sends, not just swallows).
+    _require_requests_exceptions()
+    ce = _REAL_REQ_EXC.ConnectTimeout("timed out")
+    with _patched_transport([("raise", ce), (200, {"version": 6})]) as t:
+        code, payload, rebased = asyncio.run(
+            m._write_article(_write_ctx(), "S", {"base_version": 4}, "post"))
+    assert code == 200 and payload == {"version": 6}
+    assert t.sleeps == [5]              # one backoff, then success
+    assert len(t.calls) == 2
+
+
+def test_write_article_503_then_200_still_works():
+    # Existing-style 5xx recovery still works alongside the new except clause.
+    with _patched_transport([(503, {}), (200, {"version": 5})]) as t:
+        code, payload, _ = asyncio.run(
+            m._write_article(_write_ctx(), "S", {}, "post"))
+    assert code == 200 and payload == {"version": 5}
+    assert t.sleeps == [5] and len(t.calls) == 2
+
+
+def test_write_article_network_drop_on_put_sentinel():
+    # The sentinel path is method-agnostic — a PUT create that loses the network
+    # also returns (0, {}, False) so process_new keeps its create checkpoint.
+    _require_requests_exceptions()
+    ce = _REAL_REQ_EXC.ConnectionError("down")
+    with _patched_transport([("raise", ce)]) as t:
+        code, payload, rebased = asyncio.run(
+            m._write_article(_write_ctx(), "S", {}, "put"))
+    assert code == 0 and payload == {} and rebased is False
+    assert t.sleeps == [5, 15] and len(t.calls) == 3
+
+
+# ---------------------------------------------------------------------------
+# 3. process_review checkpoint lifecycle (real handler, fake agents, sandboxed
+#    PENDING_DIR). Asserts the checkpoint is cleared on durable outcomes and
+#    KEPT (+ rec.checkpointed) on transient ones.
+# ---------------------------------------------------------------------------
+
+def _run_review_cp(post_responses, dry_run=False, get_status=200,
+                   get_payload=None):
+    """_run_review, but with PENDING_DIR sandboxed to a tmp dir; returns
+    (rec, transport_rec, ctx, pending_dir) so the test can inspect what
+    survived on disk."""
+    if get_payload is None:
+        get_payload = {"annotations": _REVIEW_EXISTING, "version": 7,
+                       "wikipedia_title": "T Article", "revid": 123456789}
+    with _patched_pending_dir() as pend:
+        with _tempfile.TemporaryDirectory() as td:
+            ctx = _review_ctx(Path(td), dry_run=dry_run)
+            with _patched_get(get_status, get_payload):
+                with _patched_transport(post_responses) as t:
+                    rec = asyncio.run(m.process_review(
+                        {"slug": "T_Article", "reason": "test"}, ctx,
+                        asyncio.Semaphore(1)))
+            survivors = m.list_checkpoints(pend)
+    return rec, t, ctx, survivors
+
+
+def test_process_review_200_clears_checkpoint():
+    rec, t, _, survivors = _run_review_cp([(200, {"version": 8, "matched": "5/5"})])
+    assert rec["post_status"] == 200
+    assert "checkpointed" not in rec
+    assert survivors == []                 # cleared — durable in D1
+
+
+def test_process_review_network_failure_keeps_checkpoint():
+    # code 0 (dropped network, retries exhausted) → KEEP checkpoint + flag rec.
+    _require_requests_exceptions()
+    ce = _REAL_REQ_EXC.ConnectionError("down")
+    rec, t, _, survivors = _run_review_cp([("raise", ce)])
+    assert rec["checkpointed"] is True
+    assert rec["error"] == "network_post_failed"
+    assert rec["post_status"] == 0
+    assert m.decision_outcome(rec) == "checkpointed"
+    assert len(survivors) == 1 and survivors[0]["slug"] == "T_Article"
+    assert survivors[0]["method"] == "post"
+    # the survived checkpoint carries the finalized body, ready to flush
+    assert survivors[0]["body"]["base_version"] == 7
+    assert _REVIEW_EXISTING[0] in survivors[0]["body"]["annotations"]  # human kept
+
+
+def test_process_review_5xx_exhausted_keeps_checkpoint():
+    # 500 that never clears (last entry repeats) → 5xx-exhausted → KEEP.
+    rec, t, _, survivors = _run_review_cp([(500, {"error": "boom"})])
+    assert rec["checkpointed"] is True
+    assert rec["post_status"] == 500
+    assert m.decision_outcome(rec) == "checkpointed"
+    assert len(survivors) == 1
+    assert t.sleeps == [5, 15]             # exhausted the 5xx schedule first
+
+
+def test_process_review_429_exhausted_keeps_checkpoint():
+    rec, t, _, survivors = _run_review_cp([(429, {})])
+    assert rec["checkpointed"] is True
+    assert rec["error"] == "rate_limited_429"
+    assert m.decision_outcome(rec) == "checkpointed"
+    assert len(survivors) == 1
+
+
+def test_process_review_409_clears_checkpoint():
+    # A true edit conflict (twice — past the in-line rebase) is re-queued, not
+    # flushed: the stale rebase isn't worth keeping. Checkpoint cleared.
+    rec, t, _, survivors = _run_review_cp([(409, {"error": "stale", "version": 9})])
+    assert rec["skipped"] == "stale_409"
+    assert "checkpointed" not in rec
+    assert survivors == []
+
+
+def test_process_review_422_clears_checkpoint():
+    # Unretryable finalize bug — re-POST won't help, so don't keep a checkpoint.
+    rec, t, _, survivors = _run_review_cp(
+        [(422, {"error": "human annotations lost", "missing": ["h"]})])
+    assert rec["error"] == "human_lost_422"
+    assert "checkpointed" not in rec
+    assert survivors == []
+
+
+def test_process_review_get_failure_writes_no_checkpoint():
+    # The checkpoint is written only just before the POST — a GET failure
+    # short-circuits before any agent run or checkpoint write.
+    rec, t, ctx, survivors = _run_review_cp([], get_status=500, get_payload={})
+    assert rec["error"] == "get_failed_500"
+    assert survivors == []                 # nothing was ever checkpointed
+
+
+def test_process_new_network_failure_keeps_put_checkpoint():
+    # process_new mirrors the pattern with method 'put'.
+    _require_requests_exceptions()
+    ce = _REAL_REQ_EXC.ConnectionError("down")
+    with _patched_pending_dir() as pend:
+        with _tempfile.TemporaryDirectory() as td:
+            annot = Path(td) / "annotations"
+            cache = Path(td) / "cache"
+            annot.mkdir()
+            cache.mkdir()
+            (cache / "New_Article.meta.json").write_text(
+                json.dumps({"slug": "New_Article", "revid": 1299891234}),
+                encoding="utf-8")
+
+            async def fake_annotate_one(article, sem, seed_decls, moderate=False,
+                                        existing_override=None, target_revid=None):
+                slug = article["title"].replace(" ", "_")
+                (annot / f"{slug}.json").write_text(json.dumps(
+                    {"slug": slug, "wikipedia_title": article["title"],
+                     "annotations": [ann(label="a")]}), encoding="utf-8")
+                return {"slug": slug, "tokens": 5, "cost_usd_equiv": 0.01,
+                        "elapsed_s": 0.1}
+
+            ctx = SimpleNamespace(
+                mode="new", api_base="http://api.test", token="tok",
+                auth="subscription", dry_run=False, concurrency=1,
+                budget_tokens=None, run_id="testrunN", seed_decls={},
+                model="test-model", prompt_sha="abc123abc123",
+                mathlib_sha="1234567", qid_map={},
+                ba=SimpleNamespace(annotate_one=fake_annotate_one, ANNOT=annot,
+                                   CACHE=cache))
+            with _patched_transport([("raise", ce)]) as t:
+                rec = asyncio.run(m.process_new(
+                    {"slug": "New_Article", "title": "New Article"}, ctx,
+                    asyncio.Semaphore(1)))
+            survivors = m.list_checkpoints(pend)
+    assert rec["checkpointed"] is True
+    assert rec["error"] == "network_put_failed"
+    assert rec["put_status"] == 0
+    assert m.decision_outcome(rec) == "checkpointed"
+    assert len(survivors) == 1 and survivors[0]["method"] == "put"
+
+
+# ---------------------------------------------------------------------------
+# 4. flush_pending — the headline recovery routine (ZERO agent tokens).
+# ---------------------------------------------------------------------------
+
+def _human(label="h", **kw):
+    base = ann(label=label, id="aaaaaaaaaaaa", provenance="human")
+    base.update(kw)
+    return base
+
+
+def test_flush_post_preserves_human_and_clears():
+    # Seed a 'post' checkpoint whose body does NOT contain a human annotation;
+    # current D1 state (re-GET) DOES (a human edit landed after the failed
+    # write). flush must re-finalize against current state, PRESERVE the human
+    # annotation verbatim, set base_version to current, re-POST, and clear.
+    with _tmp_pending() as pend:
+        ai = ann(label="a", id="bbbbbbbbbbbb")
+        body = {"annotations": [ai], "base_version": 3,
+                "comment": "ai-moderate:review:r0",
+                "meta": {"run_id": "r0", "ids": {"stale": True}}}
+        m.write_checkpoint("Foo", "post", body, "r0", "review", pending_dir=pend)
+        human = _human()
+        current = {"annotations": [human], "version": 9,
+                   "wikipedia_title": "Foo"}
+        with _patched_get_article([(current, 200)]) as gets:
+            with _patched_transport([(200, {"version": 10})]) as t:
+                stats = asyncio.run(m.flush_pending(_flush_ctx(),
+                                                    pending_dir=pend))
+        assert stats == {"flushed": 1, "skipped": 0, "failed": 0}
+        assert gets == ["Foo"]                       # exactly one re-GET
+        posted = t.calls[0]["body"]
+        assert posted["base_version"] == 9           # rebased onto current
+        assert human in posted["annotations"]        # human edit PRESERVED
+        assert posted["meta"]["flushed"] is True     # flush marker on meta
+        assert posted["meta"]["ids"]["human_reinserted_wire"] == 1
+        assert m.list_checkpoints(pend) == []        # cleared on 200
+
+
+def test_flush_post_422_clears_and_counts_failed():
+    with _tmp_pending() as pend:
+        body = {"annotations": [ann(label="a")], "base_version": 3,
+                "meta": {"run_id": "r0"}}
+        m.write_checkpoint("Foo", "post", body, "r0", "review", pending_dir=pend)
+        current = {"annotations": [], "version": 9, "wikipedia_title": "Foo"}
+        with _patched_get_article([(current, 200)]):
+            with _patched_transport([(422, {"missing": ["h"]})]):
+                stats = asyncio.run(m.flush_pending(_flush_ctx(),
+                                                    pending_dir=pend))
+        assert stats == {"flushed": 0, "skipped": 0, "failed": 1}
+        assert m.list_checkpoints(pend) == []        # 422 → drop (won't help)
+
+
+def test_flush_post_reget_none_keeps_checkpoint():
+    # re-GET returns None (the article 404'd / read failed) → KEEP + failed.
+    with _tmp_pending() as pend:
+        body = {"annotations": [ann(label="a")], "base_version": 3}
+        m.write_checkpoint("Foo", "post", body, "r0", "review", pending_dir=pend)
+        with _patched_get_article([(None, 404)]):
+            with _patched_transport([]) as t:        # empty → asserts NO POST
+                stats = asyncio.run(m.flush_pending(_flush_ctx(),
+                                                    pending_dir=pend))
+        assert stats == {"flushed": 0, "skipped": 0, "failed": 1}
+        assert t.calls == []                         # never re-POSTed
+        assert len(m.list_checkpoints(pend)) == 1    # KEPT for next flush
+
+
+def test_flush_post_409_keeps_checkpoint_deferred():
+    # 409 on flush = actively edited again. KEEP + skipped (deferred, retry).
+    with _tmp_pending() as pend:
+        body = {"annotations": [ann(label="a")], "base_version": 3}
+        m.write_checkpoint("Foo", "post", body, "r0", "review", pending_dir=pend)
+        current = {"annotations": [], "version": 9, "wikipedia_title": "Foo"}
+        with _patched_get_article([(current, 200)]):
+            with _patched_transport([(409, {"error": "stale", "version": 11})]):
+                stats = asyncio.run(m.flush_pending(_flush_ctx(),
+                                                    pending_dir=pend))
+        assert stats == {"flushed": 0, "skipped": 1, "failed": 0}
+        assert len(m.list_checkpoints(pend)) == 1    # KEPT (deferred)
+
+
+def test_flush_post_transient_keeps_checkpoint():
+    # A 500 on flush (still transient) → KEEP + failed, ready for next flush.
+    with _tmp_pending() as pend:
+        body = {"annotations": [ann(label="a")], "base_version": 3}
+        m.write_checkpoint("Foo", "post", body, "r0", "review", pending_dir=pend)
+        current = {"annotations": [], "version": 9, "wikipedia_title": "Foo"}
+        with _patched_get_article([(current, 200)]):
+            with _patched_transport([(500, {})]):
+                stats = asyncio.run(m.flush_pending(_flush_ctx(),
+                                                    pending_dir=pend))
+        assert stats == {"flushed": 0, "skipped": 0, "failed": 1}
+        assert len(m.list_checkpoints(pend)) == 1
+
+
+def test_flush_put_already_exists_dropped():
+    # A 'put' create checkpoint whose slug now EXISTS (GET 200) is dropped
+    # (skipped) with no PUT — review mode owns existing articles.
+    with _tmp_pending() as pend:
+        body = {"wikipedia_title": "Foo", "annotations": [], "revid": 1}
+        m.write_checkpoint("Foo", "put", body, "r0", "new", pending_dir=pend)
+        current = {"annotations": [], "version": 1, "wikipedia_title": "Foo"}
+        with _patched_get_article([(current, 200)]):
+            with _patched_transport([]) as t:        # empty → asserts NO PUT
+                stats = asyncio.run(m.flush_pending(_flush_ctx(),
+                                                    pending_dir=pend))
+        assert stats == {"flushed": 0, "skipped": 1, "failed": 0}
+        assert t.calls == []
+        assert m.list_checkpoints(pend) == []        # dropped
+
+
+def test_flush_put_absent_creates_and_clears():
+    # A 'put' checkpoint whose slug is absent (GET 404) → PUT 201 → flushed.
+    with _tmp_pending() as pend:
+        body = {"wikipedia_title": "Foo", "annotations": [ann(label="a")],
+                "revid": 1, "comment": "ai-create:r0"}
+        m.write_checkpoint("Foo", "put", body, "r0", "new", pending_dir=pend)
+        with _patched_get_article([(None, 404)]) as gets:
+            with _patched_transport([(201, {"version": 1})]) as t:
+                stats = asyncio.run(m.flush_pending(_flush_ctx(),
+                                                    pending_dir=pend))
+        assert stats == {"flushed": 1, "skipped": 0, "failed": 0}
+        assert gets == ["Foo"]
+        assert len(t.calls) == 1                      # the PUT
+        assert m.list_checkpoints(pend) == []         # cleared on 201
+
+
+def test_flush_put_409_race_dropped():
+    # A 'put' whose slug is absent on GET but 409s on PUT (a racing writer
+    # created it) → cleared + skipped (not a transient failure).
+    with _tmp_pending() as pend:
+        body = {"wikipedia_title": "Foo", "annotations": [], "revid": 1}
+        m.write_checkpoint("Foo", "put", body, "r0", "new", pending_dir=pend)
+        with _patched_get_article([(None, 404)]):
+            with _patched_transport([(409, {"error": "exists"})]):
+                stats = asyncio.run(m.flush_pending(_flush_ctx(),
+                                                    pending_dir=pend))
+        assert stats == {"flushed": 0, "skipped": 1, "failed": 0}
+        assert m.list_checkpoints(pend) == []
+
+
+def test_flush_put_transient_keeps_checkpoint():
+    with _tmp_pending() as pend:
+        body = {"wikipedia_title": "Foo", "annotations": [], "revid": 1}
+        m.write_checkpoint("Foo", "put", body, "r0", "new", pending_dir=pend)
+        with _patched_get_article([(None, 404)]):
+            with _patched_transport([(500, {})]):
+                stats = asyncio.run(m.flush_pending(_flush_ctx(),
+                                                    pending_dir=pend))
+        assert stats == {"flushed": 0, "skipped": 0, "failed": 1}
+        assert len(m.list_checkpoints(pend)) == 1     # KEPT
+
+
+def test_flush_empty_dir_no_network():
+    # Empty pending dir → {0,0,0} and ZERO HTTP. The empty transport list and a
+    # get_article that would explode both prove no network is touched.
+    with _tmp_pending() as pend:
+        async def exploding_get(api_base, slug, token=None):
+            raise AssertionError("flush of an empty dir must not GET")
+        saved = m.get_article
+        m.get_article = exploding_get
+        try:
+            with _patched_transport([]) as t:
+                stats = asyncio.run(m.flush_pending(_flush_ctx(),
+                                                    pending_dir=pend))
+        finally:
+            m.get_article = saved
+        assert stats == {"flushed": 0, "skipped": 0, "failed": 0}
+        assert t.calls == []
+
+
+def test_flush_malformed_checkpoint_dropped():
+    # A checkpoint with no slug (or a non-dict body) is dropped + failed,
+    # without touching the network.
+    with _tmp_pending() as pend:
+        (pend / "bad1.json").write_text(
+            json.dumps({"method": "post", "body": {}}), encoding="utf-8")  # no slug
+        (pend / "bad2.json").write_text(
+            json.dumps({"slug": "X", "method": "post", "body": "not-a-dict"}),
+            encoding="utf-8")
+        async def exploding_get(api_base, slug, token=None):
+            raise AssertionError("malformed checkpoints must not GET")
+        saved = m.get_article
+        m.get_article = exploding_get
+        try:
+            with _patched_transport([]) as t:
+                stats = asyncio.run(m.flush_pending(_flush_ctx(),
+                                                    pending_dir=pend))
+        finally:
+            m.get_article = saved
+        assert stats["failed"] == 2 and stats["flushed"] == 0
+        assert t.calls == []
+
+
+def test_flush_idempotent_when_still_failing():
+    # Idempotence: flushing twice with a still-failing transport leaves the
+    # checkpoint on disk BOTH times (recovery is retried, never lost).
+    with _tmp_pending() as pend:
+        body = {"annotations": [ann(label="a")], "base_version": 3}
+        m.write_checkpoint("Foo", "post", body, "r0", "review", pending_dir=pend)
+        current = {"annotations": [], "version": 9, "wikipedia_title": "Foo"}
+        for _ in range(2):
+            with _patched_get_article([(current, 200)]):
+                with _patched_transport([(500, {})]):
+                    stats = asyncio.run(m.flush_pending(_flush_ctx(),
+                                                        pending_dir=pend))
+            assert stats == {"flushed": 0, "skipped": 0, "failed": 1}
+            assert len(m.list_checkpoints(pend)) == 1   # survives every attempt
+
+
+def test_flush_mixed_batch_independent_outcomes():
+    # Several checkpoints in one flush: a successful post, a deferred 409 post,
+    # and a put that already exists — each handled independently, stats summed.
+    # (Slugs are processed in sorted filename order: A_post, B_409, C_put.)
+    # NB: B_409's flush re-POST 409s, which fires the single in-line F9 rebase
+    # inside _write_article — one extra re-GET + re-POST — before the terminal
+    # 409 is returned as 'deferred'. So GETs = A(1)+B(2)+C(1)=4, POSTs=A(1)+B(2).
+    with _tmp_pending() as pend:
+        m.write_checkpoint("A_post", "post", {"annotations": [], "base_version": 1},
+                           "r", "review", pending_dir=pend)
+        m.write_checkpoint("B_409", "post", {"annotations": [], "base_version": 1},
+                           "r", "review", pending_dir=pend)
+        m.write_checkpoint("C_put", "put", {"wikipedia_title": "C", "annotations": [],
+                           "revid": 1}, "r", "new", pending_dir=pend)
+        cur = lambda v: {"annotations": [], "version": v, "wikipedia_title": "x"}
+        # GET order: A_post flush-GET, B_409 flush-GET, B_409 inline-rebase GET,
+        # C_put existence GET.
+        with _patched_get_article([(cur(5), 200), (cur(5), 200),
+                                   (cur(5), 200), (cur(1), 200)]) as gets:
+            # POST order: A_post→200, B_409→409, B_409 rebase re-POST→409.
+            with _patched_transport([(200, {"version": 6}),
+                                     (409, {"error": "stale"})]) as t:
+                stats = asyncio.run(m.flush_pending(_flush_ctx(),
+                                                    pending_dir=pend))
+        # A_post → flushed; B_409 → deferred (skipped, kept); C_put → already
+        # exists (skipped, cleared). Both deferrals/drops count as 'skipped'.
+        assert stats == {"flushed": 1, "skipped": 2, "failed": 0}
+        assert gets == ["A_post", "B_409", "B_409", "C_put"]
+        assert len(t.calls) == 3                     # A(1) + B(2 incl. rebase)
+        survivors = {c["slug"] for c in m.list_checkpoints(pend)}
+        assert survivors == {"B_409"}                # only the deferred one stays
+
+
+# ---------------------------------------------------------------------------
+# 5. decision_outcome: 'checkpointed' is distinct from error/posted.
+# ---------------------------------------------------------------------------
+
+def test_decision_outcome_checkpointed():
+    # The transient-write-failure rec maps to 'checkpointed', NOT error/posted —
+    # even though it also carries an `error` string and a 0/429/5xx post_status.
+    assert m.decision_outcome(
+        {"checkpointed": True, "error": "network_post_failed",
+         "post_status": 0}) == "checkpointed"
+    assert m.decision_outcome(
+        {"checkpointed": True, "error": "rate_limited_429",
+         "post_status": 429}) == "checkpointed"
+    assert m.decision_outcome(
+        {"checkpointed": True, "error": "post_500: {}",
+         "post_status": 500}) == "checkpointed"
+    assert m.decision_outcome(
+        {"checkpointed": True, "error": "network_put_failed",
+         "put_status": 0}) == "checkpointed"
+    # checkpointed takes precedence over the error mapping (no false 'error')
+    for rec in ({"checkpointed": True, "error": "network_post_failed"},):
+        assert m.decision_outcome(rec) != "error"
+        assert m.decision_outcome(rec) != "posted"
+    # a real (non-checkpointed) error still maps to 'error', not 'checkpointed'
+    assert m.decision_outcome({"error": "agent1_no_json"}) == "error"
+    # a clean post is 'posted', never 'checkpointed'
+    assert m.decision_outcome({"post_status": 200}) == "posted"
+
+
+# ---------------------------------------------------------------------------
+# Adversarial-review demonstrations (checkpoint lifecycle bug hunt).
+# These DOCUMENT what the lead claimed and pin the behavior the trace relied
+# on. None is a FAIL of the current code; if one ever flips, it surfaces the
+# regression the prose warned about. (See the agent report for the written-up
+# findings with severity + file:line.)
+# ---------------------------------------------------------------------------
+
+def test_adversarial_a_no_leak_every_post_path_clears_or_flags():
+    # (a) Leak hunt: across the four process_review POST outcomes, the
+    # checkpoint is EITHER cleared OR intentionally kept with rec.checkpointed.
+    # There is no path that writes a checkpoint and silently strips it.
+    cleared = [
+        ([(200, {"version": 8, "matched": "5/5"})], False),   # 200 → clear
+        ([(409, {"error": "stale", "version": 9})], False),   # 409 → clear
+        ([(422, {"missing": ["h"]})], False),                 # 422 → clear
+    ]
+    for resp, _ in cleared:
+        rec, _t, _c, survivors = _run_review_cp(resp)
+        assert survivors == [], resp
+        assert not rec.get("checkpointed"), resp
+    # kept paths are flagged (tested above) — assert the invariant directly:
+    rec, _t, _c, survivors = _run_review_cp([(500, {})])
+    assert bool(survivors) == bool(rec.get("checkpointed")) is True
+
+
+def test_adversarial_b_flush_rebases_onto_current_not_stale():
+    # (b) Clobber hunt: flush sets base_version to the CURRENT D1 version from
+    # the fresh re-GET, never the stale checkpoint base_version — so a CAS
+    # write can't overwrite an intervening human edit blindly.
+    with _tmp_pending() as pend:
+        body = {"annotations": [ann(label="a")], "base_version": 3}  # stale base
+        m.write_checkpoint("Foo", "post", body, "r0", "review", pending_dir=pend)
+        current = {"annotations": [_human()], "version": 99,
+                   "wikipedia_title": "Foo"}
+        with _patched_get_article([(current, 200)]):
+            with _patched_transport([(200, {"version": 100})]) as t:
+                asyncio.run(m.flush_pending(_flush_ctx(), pending_dir=pend))
+        assert t.calls[0]["body"]["base_version"] == 99   # current, not 3
+        assert _human() in t.calls[0]["body"]["annotations"]
+
+
+def test_adversarial_d_flush_409_loop_is_bounded_per_run():
+    # (d) Infinite-loop hunt: a 409 on flush KEEPS the checkpoint, but flush
+    # processes each checkpoint a BOUNDED number of times per invocation — it
+    # iterates a snapshot list, not a re-polled queue. The flush's own re-GET
+    # builds a base_version body, so the post_article call ALSO runs the single
+    # in-line F9 rebase (one extra re-GET + re-POST) before the terminal 409
+    # propagates back as 'deferred'. That's exactly 2 GETs and 2 POSTs for one
+    # hot article, then it defers to the NEXT run — no spin within one flush.
+    with _tmp_pending() as pend:
+        body = {"annotations": [], "base_version": 1}
+        m.write_checkpoint("Hot", "post", body, "r0", "review", pending_dir=pend)
+        current = {"annotations": [], "version": 5, "wikipedia_title": "Hot"}
+        get_calls = {"n": 0}
+        async def counting_get(api_base, slug, token=None):
+            get_calls["n"] += 1
+            return current, 200
+        saved = m.get_article
+        m.get_article = counting_get
+        try:
+            with _patched_transport([(409, {"error": "stale"})]) as t:
+                stats = asyncio.run(m.flush_pending(_flush_ctx(),
+                                                    pending_dir=pend))
+        finally:
+            m.get_article = saved
+        # BOUNDED: flush re-GET (1) + F9 in-line rebase re-GET (1) = 2; two
+        # POSTs; then the second 409 terminates. Not unbounded.
+        assert get_calls["n"] == 2
+        assert len(t.calls) == 2
+        assert stats["skipped"] == 1
+        assert len(m.list_checkpoints(pend)) == 1   # deferred to next run
+
+
+def test_adversarial_f_checkpointed_sentinel_is_a_job_error_not_window():
+    # (f) The (0) network sentinel rec has rec.error set, so run_jobs counts it
+    # as a job error (n_err) — but 'network_post_failed' is NOT a window-type
+    # error string, so it does NOT trip the consec-error abort. A whole batch
+    # of network drops must not be mistaken for window exhaustion.
+    jobs = [{"slug": f"s{i}"} for i in range(m.ABORT_AFTER + 2)]
+    script = [{"checkpointed": True, "error": "network_post_failed",
+               "post_status": 0}] * len(jobs)
+    with _patched_log() as log:
+        rc, stats = asyncio.run(m.run_jobs(
+            jobs, _jobs_ctx(), _scripted_process(script)))
+        lines = [json.loads(l) for l in log.run.read_text().splitlines()]
+    assert rc == 0                               # NOT aborted (network != window)
+    assert stats["processed"] == len(jobs)       # every job ran
+    assert stats["errors"] == len(jobs)          # each counted as an error
+    assert all(m.decision_outcome(rec) == "checkpointed" for rec in lines)
 
 
 # ---------------------------------------------------------------------------

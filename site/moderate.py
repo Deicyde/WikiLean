@@ -73,6 +73,55 @@ MODERATE_LOG = HERE / "cache" / ".moderate_run.log"
 # P2c: one JSONL line per article per pass — the research-grade decisions
 # sidecar (docs/research-plan.md). Gitignored with the rest of site/cache.
 DECISIONS_LOG = HERE / "cache" / ".decisions.jsonl"
+
+# Checkpoint-and-retry-POST: the finalized payload is written here BEFORE the
+# bearer write, so a transient POST/network failure (Cloudflare 5xx, a 429
+# storm, or the laptop's network dropping mid-run) never discards the expensive
+# completed agent work. flush_pending() re-POSTs survivors with ZERO agent
+# tokens, re-finalized against current D1 state so human edits since are kept.
+# Under site/cache (gitignored).
+PENDING_DIR = HERE / "cache" / ".pending_posts"
+
+
+def _pending_path(slug: str, pending_dir: Path | None = None) -> Path:
+    safe = urllib.parse.quote(slug, safe="")
+    return (pending_dir or PENDING_DIR) / f"{safe}.json"
+
+
+def write_checkpoint(slug: str, method: str, body: dict, run_id: str, kind: str,
+                     pending_dir: Path | None = None) -> None:
+    """Atomically persist a to-be-POSTed payload before the network write."""
+    d = pending_dir or PENDING_DIR
+    d.mkdir(parents=True, exist_ok=True)
+    final = _pending_path(slug, d)
+    tmp = d / f".{urllib.parse.quote(slug, safe='')}.tmp"
+    tmp.write_text(json.dumps(
+        {"slug": slug, "method": method, "kind": kind, "run_id": run_id,
+         "saved_at": int(time.time()), "body": body},
+        ensure_ascii=False), encoding="utf-8")
+    tmp.replace(final)  # atomic on POSIX — never a half-written checkpoint
+
+
+def clear_checkpoint(slug: str, pending_dir: Path | None = None) -> None:
+    try:
+        _pending_path(slug, pending_dir).unlink()
+    except FileNotFoundError:
+        pass
+
+
+def list_checkpoints(pending_dir: Path | None = None) -> list[dict]:
+    d = pending_dir or PENDING_DIR
+    if not d.exists():
+        return []
+    out = []
+    for p in sorted(d.glob("*.json")):
+        try:
+            out.append(json.loads(p.read_text(encoding="utf-8")))
+        except (OSError, json.JSONDecodeError):
+            continue  # a corrupt checkpoint is dropped on the floor, not fatal
+    return out
+
+
 # Consecutive window-exhaustion errors before aborting (batch_annotate.run uses
 # 15 for 700-article sweeps; moderate batches are small, so trip earlier).
 ABORT_AFTER = 5
@@ -300,7 +349,7 @@ def parse_anchor_stats(matched, total=None) -> dict | None:
 
 def decision_outcome(rec: dict) -> str:
     """Map one per-article rec to the decisions-sidecar outcome enum:
-    'posted' | 'noop' | '409-rebased' | '422' | 'error' | 'dry-run'.
+    'posted' | 'noop' | '409-rebased' | '422' | 'checkpointed' | 'error' | 'dry-run'.
 
     Handles both rec shapes: the run_jobs review/new rec (post_status /
     put_status / skipped / error / dry_run / rebased) and the wp-update rec
@@ -322,6 +371,8 @@ def decision_outcome(rec: dict) -> str:
             return "error"
         # up-to-date | needs-work | unknown-slug | no-latest-revid | stale (409)
         return "noop"
+    if rec.get("checkpointed"):  # transient write failure, work preserved on disk
+        return "checkpointed"
     err = rec.get("error")
     if err is not None:
         return "422" if "422" in str(err) else "error"
@@ -647,8 +698,23 @@ async def _write_article(ctx, slug: str, body: dict, method: str,
     backoffs_5xx = [5, 15]
     rebased = False
     while True:
-        r = await asyncio.to_thread(send, url, json=body, headers=headers,
-                                    timeout=120)
+        try:
+            r = await asyncio.to_thread(send, url, json=body, headers=headers,
+                                        timeout=120)
+        except requests.exceptions.RequestException as e:
+            # Network down / DNS failure / timeout (the laptop dropped its
+            # connection mid-run). Retry on the same backoff schedule as 5xx;
+            # if exhausted, return sentinel status 0 so the caller KEEPS the
+            # checkpoint instead of crashing the job and losing agent work.
+            if backoffs_5xx:
+                wait = backoffs_5xx.pop(0)
+                print(f"  network error on {slug} ({type(e).__name__}) — "
+                      f"retrying in {wait}s", flush=True)
+                await asyncio.sleep(wait)
+                continue
+            print(f"  network error on {slug} ({type(e).__name__}) — giving up "
+                  f"this attempt; checkpoint kept for flush", flush=True)
+            return 0, {}, rebased
         if r.status_code == 429 and retries_429 < 3:
             retries_429 += 1
             print(f"  429 on {slug} — sleeping 60s (retry {retries_429}/3)", flush=True)
@@ -692,6 +758,81 @@ async def post_article(ctx, slug: str, body: dict) -> tuple[int, dict, bool]:
 async def put_article(ctx, slug: str, body: dict) -> tuple[int, dict, bool]:
     """PUT /api/article/:slug — bot-only article create (contract D-C1)."""
     return await _write_article(ctx, slug, body, "put")
+
+
+async def flush_pending(ctx, pending_dir: Path | None = None) -> dict:
+    """Re-POST checkpoints whose original write failed transiently — ZERO agent
+    tokens. Runs before /api/work each real run (so recovered articles update
+    last_reviewed_version and aren't re-picked), and standalone via `flush`.
+
+    Each post checkpoint is re-finalized against CURRENT D1 state before the
+    re-POST, so any human edit that landed since the failed write is preserved
+    (finalize_for_post keeps human annotations verbatim). A create checkpoint
+    whose slug now exists is simply dropped."""
+    cps = list_checkpoints(pending_dir)
+    stats = {"flushed": 0, "skipped": 0, "failed": 0}
+    if not cps:
+        return stats
+    print(f"flushing {len(cps)} pending POST(s) from prior runs "
+          f"(no agent tokens)…", flush=True)
+    for cp in cps:
+        slug = cp.get("slug")
+        method = cp.get("method", "post")
+        body = cp.get("body") or {}
+        if not slug or not isinstance(body, dict):
+            clear_checkpoint(slug or "", pending_dir)  # malformed → drop
+            stats["failed"] += 1
+            continue
+
+        if method == "put":
+            art, st = await get_article(ctx.api_base, slug, ctx.token)
+            if art is not None:
+                clear_checkpoint(slug, pending_dir)  # already created elsewhere
+                stats["skipped"] += 1
+                print(f"  {slug}: already exists — dropping create checkpoint",
+                      flush=True)
+                continue
+            code, resp, _ = await put_article(ctx, slug, body)
+            if code in (200, 201, 409):  # 409 = created by a racing writer
+                clear_checkpoint(slug, pending_dir)
+                stats["flushed" if code in (200, 201) else "skipped"] += 1
+                print(f"  {slug}: create flushed ({code})", flush=True)
+            else:
+                stats["failed"] += 1  # transient — keep for next time
+            continue
+
+        # review/save checkpoint: re-finalize against current state, re-POST.
+        art, st = await get_article(ctx.api_base, slug, ctx.token)
+        if art is None:
+            stats["failed"] += 1
+            print(f"  {slug}: re-GET failed ({st}) — keeping checkpoint", flush=True)
+            continue
+        posted, wire = finalize_for_post(
+            art.get("annotations") or [], body.get("annotations") or [])
+        nbody = {**body, "annotations": posted, "base_version": art["version"]}
+        if isinstance(nbody.get("meta"), dict):
+            nbody["meta"] = {**nbody["meta"], "ids": wire, "flushed": True}
+        code, resp, _ = await post_article(ctx, slug, nbody)
+        if code == 200:
+            clear_checkpoint(slug, pending_dir)
+            stats["flushed"] += 1
+            print(f"  {slug}: flushed (recovered) → version "
+                  f"{resp.get('version')}", flush=True)
+        elif code == 422:
+            clear_checkpoint(slug, pending_dir)  # human lost — re-POST won't help
+            stats["failed"] += 1
+            print(f"  *** {slug}: 422 on flush — human annotation lost; dropping "
+                  f"checkpoint. missing={json.dumps(resp.get('missing'))}",
+                  file=sys.stderr, flush=True)
+        elif code == 409:
+            stats["skipped"] += 1  # actively edited — keep, retry next flush
+            print(f"  {slug}: 409 on flush (edited again) — keeping checkpoint",
+                  flush=True)
+        else:
+            stats["failed"] += 1  # still transient — keep
+    print(f"flush: {stats['flushed']} recovered, {stats['skipped']} deferred, "
+          f"{stats['failed']} still pending", flush=True)
+    return stats
 
 
 # ---------------------------------------------------------------------------
@@ -767,29 +908,42 @@ async def process_review(job: dict, ctx, sem: asyncio.Semaphore) -> dict:
         "comment": f"ai-moderate:{ctx.mode}:{ctx.run_id}",
         "meta": build_meta(ctx, arec, wire),
     }
+    # Checkpoint the finalized payload BEFORE the network write so a transient
+    # failure (5xx / 429 / dropped network) can be flushed later with zero
+    # agent tokens instead of discarding this article's completed agent work.
+    write_checkpoint(slug, "post", body, ctx.run_id, "review")
     code, resp, rebased = await post_article(ctx, slug, body)
     rec["post_status"] = code
     if rebased:
         rec["rebased"] = True  # P2c: decisions outcome '409-rebased' on success
     if code == 200:
+        clear_checkpoint(slug)  # durable in D1 now
         rec["posted_version"] = resp.get("version")
         rec["server_matched"] = resp.get("matched")
     elif code == 409:
-        # Someone edited mid-run. Skip; /api/work re-queues it next run
-        # (article.version > last_reviewed_version → 'human-edited' tier).
+        # Someone edited mid-run (twice — past the in-line rebase). Re-queues
+        # next run; the agent work is re-done then. Drop the checkpoint: a stale
+        # rebase isn't worth flushing over a true edit conflict.
+        clear_checkpoint(slug)
         rec["skipped"] = "stale_409"
         print(f"  409 {slug}: edited mid-run (server version "
               f"{resp.get('version')}) — skipped, re-queued next run", flush=True)
     elif code == 422:
-        # BUG: finalize_for_post should make this impossible. Do NOT retry.
+        # BUG: finalize_for_post should make this impossible. Re-POST won't help.
+        clear_checkpoint(slug)
         rec["error"] = "human_lost_422"
         print(f"  *** 422 {slug}: HUMAN ANNOTATION LOST — finalize_for_post bug; "
               f"NOT retrying. missing={json.dumps(resp.get('missing'))}",
               file=sys.stderr, flush=True)
-    elif code == 429:
-        rec["error"] = "rate_limited_429"
     else:
-        rec["error"] = f"post_{code}: {json.dumps(resp)[:200]}"
+        # Transient: 0 (network), 429-exhausted, or 5xx-exhausted. KEEP the
+        # checkpoint — flush_pending() recovers it next run with zero tokens.
+        rec["checkpointed"] = True
+        rec["error"] = ("network_post_failed" if code == 0
+                        else "rate_limited_429" if code == 429
+                        else f"post_{code}: {json.dumps(resp)[:200]}")
+        print(f"  {code or 'network'} {slug}: POST failed — checkpoint kept; "
+              f"flush recovers it next run (no agent re-run)", flush=True)
     return rec
 
 
@@ -839,28 +993,37 @@ async def process_new(article: dict, ctx, sem: asyncio.Semaphore) -> dict:
         envelope, revid=revid, wikidata_qid=qid, run_id=ctx.run_id)
     body["meta"] = build_meta(ctx, arec, wire)
     rec["ids"] = wire
+    write_checkpoint(slug, "put", body, ctx.run_id, "new")  # before the write
     code, resp, _rebased = await put_article(ctx, slug, body)  # PUT never rebases
     rec["put_status"] = code
     if code == 201:
+        clear_checkpoint(slug)
         rec["created_version"] = resp.get("version")
         rec["server_matched"] = "created"
     elif code == 409:
         # {error:'exists'} — created by another runner or an earlier (crashed)
         # pass. Not an error: log + skip; `review` owns it from here.
+        clear_checkpoint(slug)
         rec["skipped"] = "exists_409"
         print(f"  409 {slug}: already exists in D1 — skipped "
               f"(review mode owns existing articles)", flush=True)
     elif code == 422:
         # Impossible on create (no stored annotations to lose) — a 422 here
         # means the server contract changed under us. Loud, no retry.
+        clear_checkpoint(slug)
         rec["error"] = "create_422_impossible"
         print(f"  *** 422 {slug}: create returned the human-preservation "
               f"error, which cannot happen on a fresh slug — server contract "
               f"drift? body={json.dumps(resp)[:200]}", file=sys.stderr, flush=True)
-    elif code == 429:
-        rec["error"] = "rate_limited_429"
     else:
-        rec["error"] = f"put_{code}: {json.dumps(resp)[:200]}"
+        # Transient (0 network / 429 / 5xx): keep the create checkpoint; flush
+        # re-attempts it (dropping it if the slug exists by then).
+        rec["checkpointed"] = True
+        rec["error"] = ("network_put_failed" if code == 0
+                        else "rate_limited_429" if code == 429
+                        else f"put_{code}: {json.dumps(resp)[:200]}")
+        print(f"  {code or 'network'} {slug}: PUT failed — checkpoint kept for "
+              f"flush", flush=True)
     return rec
 
 
@@ -1073,7 +1236,9 @@ def run_mode(mode: str, args, token: str | None) -> tuple[int, dict]:
 def main() -> int:
     ap = argparse.ArgumentParser(
         description="Unified D1-direct moderation runner (new | review | wp-update | all).")
-    ap.add_argument("command", choices=["new", "review", "wp-update", "all"])
+    ap.add_argument("command", choices=["new", "review", "wp-update", "all", "flush"],
+                    help="flush = re-POST checkpointed payloads from prior runs "
+                         "whose write failed transiently (zero agent tokens)")
     ap.add_argument("--limit", type=int, default=10,
                     help="max articles per mode (default 10; /api/work caps at 100)")
     ap.add_argument("--concurrency", type=int, default=2)
@@ -1099,12 +1264,24 @@ def main() -> int:
     # The bearer token is needed for /api/work (review, wp-update) and all
     # writes — including `new`'s PUT creates. A dry `new` run only probes
     # public GETs, so it stays tokenless (donor-friendly smoke test).
-    needs_token = (args.command in ("review", "wp-update", "all")
+    needs_token = (args.command in ("review", "wp-update", "all", "flush")
                    or (args.command == "new" and not args.dry_run))
     if token is None and needs_token:
         print("ERROR: no API token — set WIKILEAN_API_TOKEN or put "
               "PIPELINE_TOKEN= in wiki/.dev.vars", file=sys.stderr)
         return 1
+    args.token = token  # flush_pending / get_article read it off the ctx
+
+    # `flush`: recover prior runs' transiently-failed writes and stop.
+    if args.command == "flush":
+        st = asyncio.run(flush_pending(args))
+        return 0 if st["failed"] == 0 else 2
+
+    # Before any real run, flush prior checkpoints first — recovered articles
+    # update last_reviewed_version, so /api/work won't re-pick them and burn
+    # agent tokens re-doing work that's already finalized on disk.
+    if not args.dry_run:
+        asyncio.run(flush_pending(args))
 
     # F3: wp-update FIRST (zero-token stage-0 re-pins clear wp_drifted), then
     # review (job list fetched fresh afterwards — see module docstring), then new.
