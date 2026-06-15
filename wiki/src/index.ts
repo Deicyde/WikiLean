@@ -30,6 +30,7 @@ import {
   type StatsEventCell,
 } from "./pages.js";
 import { homePage, sitemapXml } from "./home.js";
+import { registerReviewRoutes } from "./review.js";
 import type { Annotation } from "./engine/types.js";
 import type { Env } from "./env.js";
 import {
@@ -66,10 +67,12 @@ const RESERVED = new Set([
   "graph_data.json",
   "article-graph",
   "article-graph-data.json",
+  "review",
 ]);
 
 const app = new Hono<{ Bindings: Env }>();
 registerAuthRoutes(app);
+registerReviewRoutes(app);
 
 // Renders (and KV-caches) the anonymous base page for an article. Takes the
 // already-SELECTed row so the cached base and the caller's injected editor
