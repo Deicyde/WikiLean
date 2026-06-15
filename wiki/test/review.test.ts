@@ -3,7 +3,7 @@
 // (buildReviewCommentBody). No network — the GitHub fetch/post paths are
 // exercised against a real PR via the running Worker.
 import { describe, it, expect } from "vitest";
-import { parseWikidataTags, buildReviewCommentBody } from "../src/review.js";
+import { parseWikidataTags, buildReviewCommentBody, cleanLead } from "../src/review.js";
 
 describe("parseWikidataTags", () => {
   it("finds an added @[wikidata] tag with its new-file line number", () => {
@@ -88,5 +88,20 @@ describe("buildReviewCommentBody", () => {
   it("omits 'changed from' when status is unchanged or had no prior", () => {
     expect(buildReviewCommentBody("Q1", "reject", "x", "reject")).not.toContain("changed from");
     expect(buildReviewCommentBody("Q1", "reject", "x", "")).not.toContain("changed from");
+  });
+});
+
+describe("cleanLead", () => {
+  it("strips {\\displaystyle …} math wrappers to readable text", () => {
+    const inp = "the absolute value of a real number {\\displaystyle |x|}, is the non-negative value.";
+    expect(cleanLead(inp)).toBe("the absolute value of a real number |x|, is the non-negative value.");
+  });
+  it("handles one level of nested braces", () => {
+    expect(cleanLead("for {\\displaystyle x\\in \\mathbb {R} } we have")).toContain("\\mathbb {R}");
+    expect(cleanLead("for {\\displaystyle x\\in \\mathbb {R} } we have")).not.toContain("\\displaystyle");
+  });
+  it("passes through plain text and null", () => {
+    expect(cleanLead("just prose, no math.")).toBe("just prose, no math.");
+    expect(cleanLead(null)).toBe(null);
   });
 });
