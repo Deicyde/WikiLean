@@ -195,7 +195,6 @@ export interface WdInfo {
 }
 
 const WD_API = "https://www.wikidata.org/w/api.php";
-const EN_API = "https://en.wikipedia.org/w/api.php";
 
 // Batched wbgetentities (50 ids/call) → label, description, enwiki sitelink.
 // Per-qid KV cache (7d).
@@ -238,40 +237,51 @@ async function fetchWikidata(qids: string[], env: Env): Promise<Map<string, WdIn
 }
 
 // Batched Wikipedia lead extracts (20 titles/call), per-title KV cache (7d).
+// Tidy a Wikipedia lead extract. The REST summary API drops inline <math>,
+// leaving gaps like "denoted , is" and "magnitude of  measured"; collapse the
+// resulting orphaned punctuation/whitespace. Also strips any stray
+// {\displaystyle …} TeX wrappers (belt-and-suspenders for other sources).
+export function cleanLead(t: string | null): string | null {
+  if (!t) return t;
+  for (let i = 0; i < 4; i++) {
+    t = t.replace(/\{\\(?:display|text)style\s*([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}/g, "$1");
+  }
+  t = t.replace(/\\(?:display|text)style\s+/g, "");
+  return t
+    .replace(/[ \t\n]{2,}/g, " ")
+    .replace(/\s+([,.;:)])/g, "$1")
+    .replace(/\(\s+/g, "(")
+    .trim();
+}
+
+// Wikipedia leads via the REST summary API (one request per title, KV-cached).
+// Cleaner than prop=extracts for math articles — explaintext mangles inline
+// <math> into duplicated whitespace garbage; the summary drops it cleanly.
 async function fetchLeads(titles: string[], env: Env): Promise<Map<string, string>> {
   const out = new Map<string, string>();
-  const missing: string[] = [];
-  for (const t of titles) {
-    const c = await env.RENDER_CACHE.get(`wplead:${t}`);
-    if (c !== null) out.set(t, c);
-    else missing.push(t);
-  }
-  for (let i = 0; i < missing.length; i += 20) {
-    const chunk = missing.slice(i, i + 20);
-    const url =
-      `${EN_API}?action=query&prop=extracts&exintro=1&explaintext=1&redirects=1` +
-      `&titles=${chunk.map(encodeURIComponent).join("|")}&format=json&formatversion=2&origin=*`;
-    let data: any;
-    try {
-      const r = await fetch(url, { headers: { "User-Agent": UA } });
-      if (!r.ok) continue;
-      data = await r.json();
-    } catch {
-      continue;
-    }
-    const norm: Record<string, string> = {};
-    for (const n of data?.query?.normalized ?? []) norm[n.from] = n.to;
-    const redir: Record<string, string> = {};
-    for (const n of data?.query?.redirects ?? []) redir[n.from] = n.to;
-    const byTitle: Record<string, string> = {};
-    for (const p of data?.query?.pages ?? []) byTitle[p.title] = p.extract ?? "";
-    for (const t of chunk) {
-      const canon = redir[norm[t] ?? t] ?? norm[t] ?? t;
-      const lead = byTitle[canon] ?? "";
-      out.set(t, lead);
-      await env.RENDER_CACHE.put(`wplead:${t}`, lead, { expirationTtl: 60 * 60 * 24 * 7 });
-    }
-  }
+  await Promise.all(
+    titles.map(async (t) => {
+      const key = `wplead2:${t}`; // bumped from wplead: — different source/format
+      const cached = await env.RENDER_CACHE.get(key);
+      if (cached !== null) {
+        out.set(t, cached);
+        return;
+      }
+      try {
+        const r = await fetch(
+          `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(t)}`,
+          { headers: { "User-Agent": UA } },
+        );
+        if (!r.ok) return;
+        const j = (await r.json()) as { extract?: string };
+        const lead = cleanLead(j.extract ?? "") ?? "";
+        out.set(t, lead);
+        await env.RENDER_CACHE.put(key, lead, { expirationTtl: 60 * 60 * 24 * 7 });
+      } catch {
+        /* leave this title without a lead */
+      }
+    }),
+  );
   return out;
 }
 
