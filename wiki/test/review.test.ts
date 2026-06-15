@@ -78,4 +78,15 @@ describe("buildReviewCommentBody", () => {
     expect(body).toContain("🟢 WikiLean reviewer note (approve)");
     expect(body).toContain("_(no note)_");
   });
+
+  it("annotates a status change with 'changed from'", () => {
+    const body = buildReviewCommentBody("Q1", "reject", "disagree", "approve");
+    expect(body).toContain("🔴 WikiLean reviewer note (reject) — changed from 🟢 approve");
+    expect(body).toContain("> disagree");
+  });
+
+  it("omits 'changed from' when status is unchanged or had no prior", () => {
+    expect(buildReviewCommentBody("Q1", "reject", "x", "reject")).not.toContain("changed from");
+    expect(buildReviewCommentBody("Q1", "reject", "x", "")).not.toContain("changed from");
+  });
 });

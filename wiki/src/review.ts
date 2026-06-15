@@ -35,6 +35,20 @@ async function ghJson<T>(url: string, token?: string): Promise<T> {
   return r.json() as Promise<T>;
 }
 
+// The authenticated user's GitHub login (for per-author idempotency). Null if
+// unauthenticated or the call fails.
+async function ghLogin(token: string | undefined): Promise<string | null> {
+  if (!token) return null;
+  try {
+    const r = await fetch(`${GH_API}/user`, { headers: ghHeaders(token) });
+    if (!r.ok) return null;
+    const d = (await r.json()) as { login?: string };
+    return d.login ?? null;
+  } catch {
+    return null;
+  }
+}
+
 // Paginate a GitHub list endpoint (follows rel="next" Link headers).
 async function ghPaginate<T>(url: string, token?: string): Promise<T[]> {
   const out: T[] = [];
@@ -484,7 +498,7 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
       );
     }
 
-    let body: { decisions?: Record<string, { status?: string; notes?: string }> };
+    let body: { decisions?: Record<string, { status?: string; notes?: string; was?: string }> };
     try {
       body = await c.req.json();
     } catch {
@@ -500,21 +514,27 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
       return c.json({ ok: false, error: String(e instanceof Error ? e.message : e) }, 502);
     }
     const tagByQid = new Map(payload.decls.map((d) => [d.qid, d]));
-    const alreadyPosted = new Set<string>();
+    // Per-author idempotency: a reviewer can add their note even when someone
+    // else already reviewed the tag, but won't double-post their own. Match by
+    // GitHub login (the comment author), not the WikiLean account name.
+    const myLogin = await ghLogin(token);
+    const alreadyByMe = new Set<string>();
     for (const d of payload.decls) {
       for (const cm of d.comments) {
         const m = cm.body.match(/wikilean-review:(Q\d+)/);
-        if (m) alreadyPosted.add(m[1]);
+        if (m && myLogin && cm.user === myLogin) alreadyByMe.add(m[1]);
       }
     }
 
     const results: Array<{ qid: string; posted: boolean; skipped?: string; error?: string }> = [];
+    let changed = 0; // posted comments that set a status differing from the existing one
     for (const [qid, dec] of Object.entries(decisions)) {
       const status = (dec.status ?? "").trim();
       const notes = (dec.notes ?? "").trim();
-      if (!status && !notes) continue; // pending — nothing to post
-      if (alreadyPosted.has(qid)) {
-        results.push({ qid, posted: false, skipped: "already has a review comment" });
+      const was = (dec.was ?? "").trim();
+      if (!status && !notes) continue; // nothing to post
+      if (alreadyByMe.has(qid)) {
+        results.push({ qid, posted: false, skipped: "you already commented on this tag" });
         continue;
       }
       const tag = tagByQid.get(qid);
@@ -522,7 +542,7 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
         results.push({ qid, posted: false, error: "tag not present in this PR" });
         continue;
       }
-      const commentBody = buildReviewCommentBody(qid, status, notes);
+      const commentBody = buildReviewCommentBody(qid, status, notes, was);
       const r = await fetch(`${GH_API}/repos/${owner}/${repo}/pulls/${pr}/comments`, {
         method: "POST",
         headers: { ...ghHeaders(token), "Content-Type": "application/json" },
@@ -536,12 +556,27 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
       });
       if (r.ok) {
         results.push({ qid, posted: true });
+        if (status && status !== was) changed++;
       } else {
         results.push({ qid, posted: false, error: `GitHub ${r.status}: ${(await r.text()).slice(0, 120)}` });
       }
     }
     const posted = results.filter((x) => x.posted).length;
-    return c.json({ ok: true, posted, results });
+    // Top-level "Reviewed" summary comment (one per submission that posted
+    // anything), so the PR thread logs each review pass.
+    if (posted > 0) {
+      const who = myLogin ? `@${myLogin}` : user.name || "a reviewer";
+      const summary =
+        `**Reviewed by ${who}.** Added ${posted} inline comment${posted === 1 ? "" : "s"}` +
+        (changed ? `, including ${changed} status change${changed === 1 ? "" : "s"}` : "") +
+        `. <!-- wikilean-review-summary -->`;
+      await fetch(`${GH_API}/repos/${owner}/${repo}/issues/${pr}/comments`, {
+        method: "POST",
+        headers: { ...ghHeaders(token), "Content-Type": "application/json" },
+        body: JSON.stringify({ body: summary }),
+      }).catch(() => {});
+    }
+    return c.json({ ok: true, posted, changed, results });
   });
 
   // The review page (shell + client script).
@@ -553,9 +588,18 @@ const EMOJI: Record<string, string> = { approve: "🟢", revise: "🟡", reject:
 // Build the inline-comment body: traffic-light label + the reviewer's VERBATIM
 // note (blockquoted), plus the idempotency marker. Identical shape to the CLI
 // poster (post_review_comments.py), so both tools interoperate via the marker.
-export function buildReviewCommentBody(qid: string, status: string, notes: string): string {
+export function buildReviewCommentBody(
+  qid: string,
+  status: string,
+  notes: string,
+  wasStatus = "",
+): string {
   const em = EMOJI[status] ?? "";
-  const label = status ? `${em} WikiLean reviewer note (${status})`.trim() : "WikiLean reviewer note";
+  let label = status ? `${em} WikiLean reviewer note (${status})`.trim() : "WikiLean reviewer note";
+  if (status && wasStatus && wasStatus !== status) {
+    const we = EMOJI[wasStatus] ?? "";
+    label += ` — changed from ${we} ${wasStatus}`.replace("  ", " ");
+  }
   const quoted = notes ? notes.split("\n").map((l) => "> " + l).join("\n") : "_(no note)_";
   return (
     `**${label}**\n\n${quoted}\n\n` +
@@ -644,8 +688,24 @@ pre.lean .s{color:#6B1B1A}
 pre.lean .mi{color:#6B1B1A;font-weight:500}
 pre.lean .n{color:#0a0a0a}
 @media (max-width:820px){.panes{grid-template-columns:1fr}.src{border-right:none;border-bottom:1px solid var(--rule)}}
+#controls{margin:0 0 1rem;display:flex;gap:1rem;align-items:center;flex-wrap:wrap;font-size:.9rem}
+#controls select{font:inherit;padding:.25rem .4rem;border:1px solid var(--rule);border-radius:6px;background:#fff}
+.entry.pending{box-shadow:inset 3px 0 0 #1a4b8c}
+.cur{font-size:.88rem;margin-bottom:.45rem}
+.cur .badge{padding:.1rem .5rem;border-radius:12px;font-weight:600}
+.cur .badge.approve{background:var(--gb);color:var(--g)}
+.cur .badge.revise{background:var(--yb);color:var(--y)}
+.cur .badge.reject{background:var(--rb);color:var(--r)}
+.cur .badge.flag{background:#f3e8fb;color:#6b1f9c}
+.cur .badge.none{background:#eee;color:var(--muted)}
+.cur .by{color:var(--muted)}
+.acts{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.4rem}
+.acts button{font:inherit;font-size:.83rem;padding:.3rem .7rem;border:1px solid var(--accent);background:#fff;color:var(--accent);border-radius:6px;cursor:pointer}
+.acts button:hover{background:#fbf6ec}
+.acts button.on{background:var(--accent);color:#fff}
 .form{padding:.6rem .9rem;border-top:1px dashed var(--rule);background:#fcfaf4}
 .form .row{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-bottom:.4rem}
+.form .row[hidden]{display:none}
 .form label{display:inline-flex;align-items:center;gap:.3rem;padding:.15rem .55rem;border:1px solid var(--rule);border-radius:14px;background:#fff;cursor:pointer;font-size:.85rem}
 .form label:has(input[value=approve]:checked){background:var(--gb);border-color:var(--g);color:var(--g);font-weight:600}
 .form label:has(input[value=revise]:checked){background:var(--yb);border-color:var(--y);color:var(--y);font-weight:600}
@@ -667,14 +727,24 @@ pre.lean .n{color:#0a0a0a}
   <span class="note">e.g. <code>leanprover-community/mathlib4</code> · <code>Deicyde/mathlib4</code></span>
 </form>
 <div id="status"></div>
+<div id="controls" hidden>
+  <label>Filter by your review:
+    <select id="filter">
+      <option value="all">All</option>
+      <option value="approve">🟢 approve</option>
+      <option value="revise">🟡 revise</option>
+      <option value="reject">🔴 reject</option>
+      <option value="flag">⚠️ deletion-candidate</option>
+      <option value="none">◯ no review yet</option>
+    </select>
+  </label>
+  <span id="dist" class="note"></span>
+</div>
 <div id="entries"></div>
 </div>
 <div id="bar" hidden>
   <div class="counts">
-    <span id="c-approve" style="background:var(--gb);color:var(--g)">🟢 0</span>
-    <span id="c-revise"  style="background:var(--yb);color:var(--y)">🟡 0</span>
-    <span id="c-reject"  style="background:var(--rb);color:var(--r)">🔴 0</span>
-    <span id="c-pending" style="background:#eee;color:var(--muted)">· pending 0</span>
+    <span id="c-pending" style="background:#e8edf7;color:#1a4b8c">0 changes pending</span>
   </div>
   <div>
     <span class="note" id="submit-note">Checking sign-in…</span>
@@ -696,6 +766,7 @@ let STATE = {};   // qid -> {status, notes}
 let KEY = "";
 let CUR = null;   // {owner, repo, pr} of the loaded PR
 let ME = null;    // logged-in user or null
+let DATA = null;  // last loaded payload (for re-render on filter change)
 
 function storageKey(repo, pr){ return "wl-review:" + repo + "#" + pr; }
 function load(){ try { return JSON.parse(localStorage.getItem(KEY) || "{}"); } catch(e){ return {}; } }
@@ -741,14 +812,47 @@ function hl(src){
   return out;
 }
 
+const EMO = {approve:"🟢",revise:"🟡",reject:"🔴",flag:"⚠️"};
+
+// Your existing review status for a decl, parsed from the latest
+// wikilean-review GitHub comment (the one you posted via the CLI/web tool).
+function parseStatus(comments){
+  let best=null;
+  (comments||[]).forEach(c=>{ if(/wikilean-review:Q/.test(c.body||"")){
+    if(!best || (c.created_at||"") > (best.created_at||"")) best=c; } });
+  if(!best) return {status:"", by:""};
+  let status="";
+  if(/Deletion candidate/.test(best.body)) status="flag";
+  else { const m=best.body.match(/\((approve|revise|reject)\)/); if(m) status=m[1]; }
+  return {status, by:best.user||""};
+}
+function statusBadge(s){
+  if(!s) return '<span class="badge none">◯ no review yet</span>';
+  return '<span class="badge '+s+'">'+(EMO[s]||"")+' '+s+'</span>';
+}
+
 function render(data){
+  DATA = data;
+  // Per-decl existing status.
+  const cur = data.decls.map(d => parseStatus(d.comments));
+  // Distribution across ALL decls.
+  const dist = {approve:0,revise:0,reject:0,flag:0,none:0};
+  cur.forEach(c => dist[c.status||"none"]++);
+  $("#dist").textContent = "🟢 "+dist.approve+" · 🟡 "+dist.revise+" · 🔴 "+dist.reject+
+    " · ⚠️ "+dist.flag+" · ◯ "+dist.none;
+  $("#controls").hidden = false;
   $("#status").innerHTML = "<b>" + esc(data.title) + "</b> — " + data.decls.length +
     " tagged declarations · commit <code>" + data.head_sha.slice(0,10) + "</code>";
+
+  const filter = $("#filter").value;
   const root = $("#entries"); root.innerHTML = "";
-  data.decls.forEach((d) => {
-    const st = (STATE[d.qid] || {});
+  data.decls.forEach((d, i) => {
+    const cs = cur[i].status;                       // your existing status
+    if(filter!=="all" && (filter==="none" ? cs!=="" : cs!==filter)) return;
+    const st = (STATE[d.qid] || {});                // reviewer's pending input
+    const pending = !!(st.changeStatus || (st.note && st.note.trim()));
     const el = document.createElement("article");
-    el.className = "entry"; el.dataset.status = st.status || "";
+    el.className = "entry" + (pending?" pending":""); el.dataset.status = cs || "";
     const commentsHtml = d.comments.length
       ? d.comments.map(c => '<div class="cmt"><div class="who">' + esc(c.user) +
           '</div>' + (c.bodyHtml ? '<div class="body md">' + c.bodyHtml + '</div>'
@@ -766,6 +870,9 @@ function render(data){
         (wd.enwikiUrl ? '<p class="more"><a href="' + wd.enwikiUrl + '" target="_blank">Read full article ↗</a></p>' : '') +
         '</details>'
       : (wd.enwikiUrl ? '<p class="wd-lead"><a href="' + wd.enwikiUrl + '" target="_blank">Read on Wikipedia ↗</a></p>' : '');
+    const byHtml = cur[i].by ? ' <span class="by">by @' + esc(cur[i].by) + '</span>' : '';
+    const showStatus = !!st.changeStatus;
+    const showNote = !!(st.note && st.note.length);
     el.innerHTML =
       '<header><span class="qid"><a href="https://www.wikidata.org/wiki/' + d.qid +
         '" target="_blank">' + d.qid + '</a></span>' +
@@ -775,18 +882,33 @@ function render(data){
         '<section class="wiki-pane">' + wikiHead + descHtml + leadHtml + '</section>' +
       '</div>' +
       '<div class="comments">' + commentsHtml + '</div>' +
-      '<div class="form"><div class="row">' +
-        radio(d.qid,"approve","🟢 Approve",st.status) +
-        radio(d.qid,"revise","🟡 Revise",st.status) +
-        radio(d.qid,"reject","🔴 Reject",st.status) +
-      '</div><textarea data-qid="' + d.qid + '" placeholder="Your note (verbatim, posted to GitHub)…">' +
-        esc(st.notes||"") + '</textarea></div>';
+      '<div class="form">' +
+        '<div class="cur">Existing review: ' + statusBadge(cs) + byHtml + '</div>' +
+        '<div class="acts">' +
+          '<button class="act-status' + (showStatus?" on":"") + '" data-qid="' + d.qid + '">Change review status</button>' +
+          '<button class="act-note' + (showNote?" on":"") + '" data-qid="' + d.qid + '">Add note</button>' +
+        '</div>' +
+        '<div class="row status-ctrl" data-qid="' + d.qid + '"' + (showStatus?"":" hidden") + '>' +
+          radio(d.qid,"approve","🟢 Approve",st.changeStatus) +
+          radio(d.qid,"revise","🟡 Revise",st.changeStatus) +
+          radio(d.qid,"reject","🔴 Reject",st.changeStatus) +
+        '</div>' +
+        '<textarea class="note-ctrl" data-qid="' + d.qid + '"' + (showNote?"":" hidden") +
+          ' placeholder="Your note (verbatim, posted to GitHub)…">' + esc(st.note||"") + '</textarea>' +
+      '</div>';
     root.appendChild(el);
   });
-  root.querySelectorAll('input[type=radio]').forEach(r =>
-    r.addEventListener("change", e => set(e.target.dataset.qid, "status", e.target.value)));
-  root.querySelectorAll('textarea[data-qid]').forEach(t =>
-    t.addEventListener("input", e => set(e.target.dataset.qid, "notes", e.target.value)));
+  // Wire actions.
+  root.querySelectorAll('.act-status').forEach(b => b.addEventListener("click", e => {
+    const qid=e.target.dataset.qid, ctrl=root.querySelector('.status-ctrl[data-qid="'+qid+'"]');
+    ctrl.hidden = !ctrl.hidden; e.target.classList.toggle("on", !ctrl.hidden); }));
+  root.querySelectorAll('.act-note').forEach(b => b.addEventListener("click", e => {
+    const qid=e.target.dataset.qid, ta=root.querySelector('.note-ctrl[data-qid="'+qid+'"]');
+    ta.hidden = !ta.hidden; e.target.classList.toggle("on", !ta.hidden); if(!ta.hidden) ta.focus(); }));
+  root.querySelectorAll('.status-ctrl input[type=radio]').forEach(r =>
+    r.addEventListener("change", e => set(e.target.dataset.qid, "changeStatus", e.target.value)));
+  root.querySelectorAll('textarea.note-ctrl').forEach(t =>
+    t.addEventListener("input", e => set(e.target.dataset.qid, "note", e.target.value)));
   $("#bar").hidden = false; counts();
 }
 
@@ -796,21 +918,16 @@ function radio(qid, val, label, cur){
 }
 function set(qid, field, value){
   STATE[qid] = STATE[qid] || {}; STATE[qid][field] = value; save();
-  if(field==="status"){ const el = [...document.querySelectorAll(".entry")].find(e =>
-    e.querySelector('input[name=r-'+qid+']')); if(el) el.dataset.status = value; }
+  const el = [...document.querySelectorAll(".entry")].find(e => {
+    const b=e.querySelector('.act-status'); return b && b.dataset.qid===qid; });
+  if(el){ const st=STATE[qid]; el.classList.toggle("pending", !!(st.changeStatus || (st.note&&st.note.trim()))); }
   counts();
 }
 function counts(){
-  const c = {approve:0,revise:0,reject:0,pending:0};
-  document.querySelectorAll(".entry").forEach(e => {
-    const q = e.querySelector('input[type=radio]'); const qid = q && q.dataset.qid;
-    const s = qid && STATE[qid] && STATE[qid].status;
-    if(s) c[s]++; else c.pending++;
-  });
-  $("#c-approve").textContent = "🟢 " + c.approve;
-  $("#c-revise").textContent  = "🟡 " + c.revise;
-  $("#c-reject").textContent  = "🔴 " + c.reject;
-  $("#c-pending").textContent = "· pending " + c.pending;
+  let pending=0;
+  Object.keys(STATE).forEach(qid => { const s=STATE[qid]||{};
+    if(s.changeStatus || (s.note && s.note.trim())) pending++; });
+  $("#c-pending").textContent = pending + (pending===1?" change":" changes") + " pending";
 }
 
 async function checkAuth(){
@@ -824,13 +941,18 @@ async function checkAuth(){
 async function submitReview(){
   if(!CUR){ return; }
   if(!ME){ $("#submit-note").textContent = "Sign in first."; return; }
+  // Map each decl to your existing status, so a status change records "was".
+  const wasByQid = {};
+  if(DATA) DATA.decls.forEach(d => { wasByQid[d.qid] = parseStatus(d.comments).status; });
   const decisions = {};
   Object.keys(STATE).forEach(qid => {
     const s = STATE[qid] || {};
-    if((s.status && s.status.trim()) || (s.notes && s.notes.trim())) decisions[qid] = { status: s.status||"", notes: s.notes||"" };
+    const status = (s.changeStatus||"").trim();
+    const noteTxt = (s.note||"").trim();
+    if(status || noteTxt) decisions[qid] = { status: status, notes: noteTxt, was: wasByQid[qid]||"" };
   });
   const n = Object.keys(decisions).length;
-  if(!n){ $("#submit-note").textContent = "No decisions to post yet."; return; }
+  if(!n){ $("#submit-note").textContent = "No changes or notes to post yet."; return; }
   const btn = $("#submit"); btn.disabled = true; const note = $("#submit-note");
   note.textContent = "Posting " + n + " comment(s)…";
   try {
@@ -842,16 +964,18 @@ async function submitReview(){
     if(!d.ok){ note.textContent = "Error: " + d.error; btn.disabled = false; return; }
     const skipped = (d.results||[]).filter(x => x.skipped).length;
     const errs = (d.results||[]).filter(x => x.error);
-    note.innerHTML = "Posted <b>" + d.posted + "</b>" + (skipped?(" · skipped " + skipped + " (already commented)"):"") +
-      (errs.length?(" · " + errs.length + " error(s)"):"");
-    // Refresh so the new comments appear under each decl.
-    setTimeout(loadPR, 700);
+    note.innerHTML = "Posted <b>" + d.posted + "</b>" + (d.changed?(" ("+d.changed+" status change"+(d.changed===1?"":"s")+")"):"") +
+      (skipped?(" · skipped " + skipped):"") + (errs.length?(" · " + errs.length + " error(s)"):"");
+    // Clear the posted inputs locally, then refresh so the new comments show.
+    (d.results||[]).filter(x=>x.posted).forEach(x=>{ delete STATE[x.qid]; }); save();
+    setTimeout(loadPR, 800);
   } catch(e){ note.textContent = "Submit failed: " + e; btn.disabled = false; }
 }
 
 $("#load").addEventListener("click", loadPR);
 $("#pr").addEventListener("keydown", e => { if(e.key==="Enter") loadPR(); });
 $("#submit").addEventListener("click", submitReview);
+$("#filter").addEventListener("change", () => { if(DATA) render(DATA); });
 checkAuth();
 // Deep-link support: /review?repo=owner/name&pr=6
 const qp = new URLSearchParams(location.search);
