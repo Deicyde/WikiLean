@@ -150,6 +150,14 @@ const ENDPOINTS: EndpointRow[] = [
     expected: { anon: 403, user: 403, patroller: 403, admin: 403, blocked: 403, bot: 200, wrongBearer: 403, botNoToken: 403 },
   },
   {
+    name: "POST /api/admin/revert-run/:runId",
+    // Admin OR bot only (insurance run from the site or by ops/the runner).
+    // Unknown run → 200 idempotent no-op for the authorized actors, so the
+    // cell exercises the auth gate cleanly without seeding a run.
+    request: (h, opts) => post(h.env, "/api/admin/revert-run/authzrun", {}, opts),
+    expected: { anon: 403, user: 403, patroller: 403, admin: 200, blocked: 403, bot: 200, wrongBearer: 403, botNoToken: 403 },
+  },
+  {
     name: "POST /api/revision/:id/patrol",
     // Revision 1 = the harness seed revision (kind 'edit', unpatrolled).
     request: (h, opts) => post(h.env, "/api/revision/1/patrol", {}, opts),

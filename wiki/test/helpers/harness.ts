@@ -181,6 +181,27 @@ export function botCreate(env: Env, slug: string, body: Record<string, unknown>)
   return put(env, `/api/article/${slug}`, body, { bearer: PIPELINE_TOKEN, origin: null });
 }
 
+// Bot save that stamps a pipeline run: meta.run_id = runId + a run-shaped
+// comment (`ai-moderate:review:<runId>`), exactly how the runner tags the
+// revisions a `revert-run` later finds. `phase` lets a test write the
+// comment-fallback shape (`wp-update:stage0:<runId>`) too. Defaults the
+// post to a bare SLUG bot save; pass `slug` for multi-article runs.
+export function botSaveRun(
+  env: Env,
+  body: Record<string, unknown>,
+  runId: string,
+  opts: { slug?: string; phase?: string } = {},
+): Promise<Response> {
+  const slug = opts.slug ?? SLUG;
+  const comment = `${opts.phase ?? "ai-moderate:review"}:${runId}`;
+  return post(
+    env,
+    `/api/article/${slug}`,
+    { comment, meta: { run_id: runId }, ...body },
+    { bearer: PIPELINE_TOKEN, origin: null },
+  );
+}
+
 // ---- row accessors ----------------------------------------------------------
 
 export interface ArticleRowLite {
@@ -230,6 +251,15 @@ export function latestRevision(db: DatabaseSync, slug = SLUG): RevisionRowLite {
       "SELECT id, user_id, annotations, comment, kind, meta, parent_id, patrolled_by, patrolled_at FROM revisions WHERE slug = ? ORDER BY id DESC LIMIT 1",
     )
     .get(slug) as unknown as RevisionRowLite;
+}
+
+// All revisions for a slug, id-ascending (revert-run history assertions).
+export function revisionRows(db: DatabaseSync, slug = SLUG): RevisionRowLite[] {
+  return db
+    .prepare(
+      "SELECT id, user_id, annotations, comment, kind, meta, parent_id, patrolled_by, patrolled_at FROM revisions WHERE slug = ? ORDER BY id",
+    )
+    .all(slug) as unknown as RevisionRowLite[];
 }
 
 export function revisionById(db: DatabaseSync, id: number): RevisionRowLite | undefined {

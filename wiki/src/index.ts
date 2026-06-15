@@ -1259,6 +1259,217 @@ app.post("/api/article/:slug/revert/:revid", async (c) => {
   return c.json({ ok: true, version: newVersion });
 });
 
+// ---- run-level revert: undo a whole AI-moderation batch (admin OR bot) ------
+// POST /api/admin/revert-run/:runId — insurance against a bad pipeline batch.
+// A pipeline run stamps every revision it writes with meta.run_id = <runId>
+// (and a comment like `ai-moderate:review:<runId>` / `wp-update:stage0:<runId>`,
+// the LIKE fallback for rows whose meta is null). This finds every article the
+// run touched and rolls each back to the state JUST BEFORE the run first
+// touched it — reusing the exact save/revert mechanics (CAS-guarded UPDATE,
+// kind='revert' revision, revert_restore events, recomputed counts, one batch
+// per slug).
+//
+// SAFETY + IDEMPOTENCE SEMANTICS (load-bearing — read before changing):
+//   * HUMAN-PRESERVATION: if a human revision (kind 'edit'/'revert') landed
+//     AFTER the run's last touch of a slug, that slug is SKIPPED
+//     ('human-edited-since'). We never clobber human work to undo a bot batch;
+//     the human can revert the offending revision themselves. Seed/pipeline
+//     revisions after the run do NOT block (they aren't human work).
+//   * ALREADY-REVERTED (the re-run guard): if this endpoint has already
+//     reverted a slug for THIS run, its latest revision is our own marker
+//     (kind='revert', comment `revert-run:<runId>`). A second call detects that
+//     marker as the latest revision and skips the slug ('already-reverted') —
+//     it does NOT re-revert. A no-op (the article is already byte-identical to
+//     its pre-run state, e.g. the run changed nothing for this slug, or a human
+//     already restored it) is likewise reported 'already-reverted' and writes
+//     nothing. NB: the run's own revisions stay in history on a second call —
+//     we key idempotence off "is the slug already at its pre-run state / behind
+//     our marker", not off deleting the run's rows.
+//   * CONFLICT: each slug reverts independently under its own CAS. A concurrent
+//     write that bumps the version between our read and UPDATE leaves the slug
+//     'conflict' (no error) — the rest of the batch still reverts.
+//   * PRE-RUN STATE: restore the annotations of the revision immediately before
+//     the run FIRST touched the slug (the earliest run revision's parent_id if
+//     set, else the highest-id revision below it). If the run CREATED the
+//     article (no prior revision), the pre-run state is the empty array.
+//   * Unknown / no-touch runId → 200 {reverted:[], skipped:[]} (idempotent, not
+//     404): "revert this run" is a safe no-op when there's nothing to undo.
+app.post("/api/admin/revert-run/:runId", async (c) => {
+  const originErr = checkOrigin(c);
+  if (originErr) return originErr;
+  // Admin session OR the pipeline bot (the insurance is run by either an
+  // operator from the site or the runner/ops tooling holding the bearer).
+  const user = await requireRole(c, ["admin", "bot"]);
+  if (!user) return c.json({ ok: false, error: "forbidden" }, 403);
+  const { success: allowed } = await c.env.EDIT_LIMITER.limit({ key: `edit:${user.id}` });
+  if (!allowed) return c.json({ ok: false, error: "rate limited — slow down" }, 429);
+  const runId = c.req.param("runId");
+  if (typeof runId !== "string" || runId.length === 0 || runId.length > MAX_FIELD_LEN) {
+    return c.json({ ok: false, error: "bad run id" }, 400);
+  }
+  const revertComment = `revert-run:${runId}`;
+
+  const db = drizzle(c.env.DB);
+  // Every revision the run stamped, keyed by run_id in meta (the LIKE fallback
+  // catches rows whose meta is null — comment ends in `:<runId>`). Drizzle's
+  // sql template parameterizes runId, so it's injection-safe.
+  const runRevs = await db
+    .select({ id: revisions.id, slug: revisions.slug })
+    .from(revisions)
+    .where(
+      sql`json_extract(${revisions.meta}, '$.run_id') = ${runId} OR (${revisions.meta} IS NULL AND ${revisions.comment} LIKE ${"%:" + runId})`,
+    );
+
+  // Group the run's revisions by slug; track the earliest and latest run
+  // revision id per slug (earliest = where to revert TO the state before;
+  // latest = the watermark for the human-edited-since check).
+  const bySlug = new Map<string, { earliest: number; latest: number }>();
+  for (const r of runRevs) {
+    const cur = bySlug.get(r.slug);
+    if (!cur) bySlug.set(r.slug, { earliest: r.id, latest: r.id });
+    else {
+      if (r.id < cur.earliest) cur.earliest = r.id;
+      if (r.id > cur.latest) cur.latest = r.id;
+    }
+  }
+
+  const reverted: string[] = [];
+  const skipped: Array<{ slug: string; reason: string }> = [];
+
+  for (const [slug, { earliest, latest }] of bySlug) {
+    // All revisions for the slug (id-ordered): the pre-run snapshot, the
+    // human-edited-since watermark, and the already-reverted marker all read
+    // off this one list.
+    const revs = await db
+      .select({
+        id: revisions.id,
+        kind: revisions.kind,
+        comment: revisions.comment,
+        parentId: revisions.parentId,
+        annotations: revisions.annotations,
+      })
+      .from(revisions)
+      .where(eq(revisions.slug, slug))
+      .orderBy(revisions.id);
+    const runIds = new Set(runRevs.filter((r) => r.slug === slug).map((r) => r.id));
+
+    // ALREADY-REVERTED: our own marker is the slug's latest revision → this run
+    // was already reverted here; do not re-revert.
+    const top = revs[revs.length - 1];
+    if (top && top.kind === "revert" && top.comment === revertComment) {
+      skipped.push({ slug, reason: "already-reverted" });
+      continue;
+    }
+
+    // HUMAN-PRESERVATION: a human edit/revert landed after the run's last touch.
+    const humanAfter = revs.some(
+      (r) => r.id > latest && !runIds.has(r.id) && (r.kind === "edit" || r.kind === "revert"),
+    );
+    if (humanAfter) {
+      skipped.push({ slug, reason: "human-edited-since" });
+      continue;
+    }
+
+    // PRE-RUN STATE: the revision immediately before the run's earliest touch —
+    // parent_id if it points at a real revision, else the highest id below the
+    // earliest run revision. No prior revision (run created the article) → [].
+    const earliestRev = revs.find((r) => r.id === earliest);
+    let preRev: { annotations: string } | undefined;
+    if (earliestRev?.parentId != null) {
+      preRev = revs.find((r) => r.id === earliestRev.parentId);
+    }
+    if (!preRev) {
+      const below = revs.filter((r) => r.id < earliest);
+      preRev = below.length > 0 ? below[below.length - 1] : undefined;
+    }
+    const preAnnotations: AnnRecord[] = preRev ? (JSON.parse(preRev.annotations) as AnnRecord[]) : [];
+    const preAnnJson = JSON.stringify(preAnnotations);
+
+    // Current article state (for CAS + the by-id event diff).
+    const row = (await db.select().from(articles).where(eq(articles.slug, slug)).limit(1))[0];
+    if (!row) {
+      // The run touched a revision for a slug with no article row — nothing to
+      // restore (shouldn't happen; revisions outlive deletes only via a path we
+      // don't ship). Treat as a conflict-class skip rather than erroring.
+      skipped.push({ slug, reason: "conflict" });
+      continue;
+    }
+    const current = JSON.parse(row.annotations) as AnnRecord[];
+
+    // No-op: already byte-identical to the pre-run state (run changed nothing
+    // here, or a human already restored it). Report 'already-reverted', write
+    // nothing — keeps the revert log clean and the operation idempotent.
+    if (deepEqual(current, preAnnotations)) {
+      skipped.push({ slug, reason: "already-reverted" });
+      continue;
+    }
+
+    const now = Date.now();
+    const newVersion = row.version + 1;
+    // Same CAS contract as the single-revision revert: guard the UPDATE on the
+    // version we read; 0 rows changed = a concurrent write raced us → 'conflict'.
+    const updated = await db
+      .update(articles)
+      .set({
+        annotations: preAnnJson,
+        version: newVersion,
+        updatedAt: now,
+        ...statusCounts(preAnnotations),
+      })
+      .where(and(eq(articles.slug, slug), eq(articles.version, row.version)));
+    if (updated.meta.changes === 0) {
+      skipped.push({ slug, reason: "conflict" });
+      continue;
+    }
+    const prior = (
+      await db
+        .select({ id: revisions.id })
+        .from(revisions)
+        .where(eq(revisions.slug, slug))
+        .orderBy(desc(revisions.id))
+        .limit(1)
+    )[0];
+    // F9: revision + revert_restore events land in one atomic batch (per slug).
+    const revertBatch: WriteBatch = [
+      db.insert(revisions).values({
+        slug,
+        userId: user.id,
+        annotations: preAnnJson,
+        comment: revertComment,
+        kind: "revert",
+        meta: JSON.stringify({ reverted_run: runId }),
+        parentId: prior?.id ?? null,
+        createdAt: now,
+      }),
+      ...eventInsertStatements(
+        db,
+        eventRowsFromChanges(diffAnnotations(current, preAnnotations), {
+          revisionId: newRevisionId(slug),
+          slug,
+          actorType: user.role === "bot" ? "pipeline" : "human",
+          userId: user.id,
+          now,
+          eventTypeOverride: "revert_restore",
+        }),
+      ),
+    ];
+    await db.batch(revertBatch);
+    reverted.push(slug);
+  }
+
+  console.log(
+    JSON.stringify({
+      event: "revert-run",
+      run_id: runId,
+      user_id: user.id,
+      reverted: reverted.length,
+      skipped: skipped.length,
+      t: Date.now(),
+    }),
+  );
+  return c.json({ ok: true, run_id: runId, reverted, skipped });
+});
+
 // ---- anonymous flag pipeline (D-C4) ----
 const FLAG_REASON_SET = new Set<string>(FLAG_REASONS);
 
