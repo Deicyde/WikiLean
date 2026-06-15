@@ -11,7 +11,15 @@
         "section": "Algebraic operations",
         "snippet": "a basic algebraic operation is a mathematical operation similar to any one of the common operations of elementary algebra"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has the specific operations (+, ×, ^, etc.) but no general informal notion of 'basic algebraic operation'.",
+      "provenance": "ai-agent1",
+      "id": "754d0aea4640"
     },
     {
       "kind": "definition",
@@ -20,7 +28,15 @@
         "section": "Algebraic operations",
         "snippet": "may be defined more formally as a function that maps to"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib models operations via typeclasses/functions but has no dedicated definition of an n-ary 'algebraic operation' as a function Sⁿ → S.",
+      "provenance": "ai-agent1",
+      "id": "cbdf21b74eba"
     },
     {
       "kind": "definition",
@@ -29,7 +45,15 @@
         "section": "Algebraic operations",
         "snippet": "The length of the tuples is called the arity of the operation"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib declaration captures the informal concepts of 'arity' and 'operand' of an operation.",
+      "provenance": "ai-agent1",
+      "id": "3b3ced26aa45"
     },
     {
       "kind": "definition",
@@ -38,7 +62,15 @@
         "section": "Algebraic operations",
         "snippet": "the operation is called a binary operation and the operands form an ordered pair"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib represents specific binary operations via Mul/Add typeclasses but has no generic 'BinaryOperation' definition.",
+      "provenance": "ai-agent1",
+      "id": "29d57fccbf69"
     },
     {
       "kind": "definition",
@@ -47,7 +79,15 @@
         "section": "Algebraic operations",
         "snippet": "A unary operation is an operation of arity one that has only one operand"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated 'unary operation' definition exists; such maps are just functions α → α.",
+      "provenance": "ai-agent1",
+      "id": "98de424f4559"
     },
     {
       "kind": "example",
@@ -56,7 +96,15 @@
         "section": "Algebraic operations",
         "snippet": "An example of a ternary operation (arity three) is the triple product"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "triple_product_eq_det",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes the scalar triple product (triple_product_eq_det) as a specific ternary map, but not the general notion of a ternary operation.",
+      "provenance": "ai-agent1",
+      "id": "00953af64611"
     },
     {
       "kind": "definition",
@@ -65,7 +113,15 @@
         "section": "Algebraic operations",
         "snippet": "The term algebraic operation may also be used for operations that may be defined by compounding basic algebraic operations"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib declaration formalizes the informal notion of compounding basic algebraic operations.",
+      "provenance": "ai-agent1",
+      "id": "846e6e6a3360"
     },
     {
       "kind": "definition",
@@ -74,7 +130,15 @@
         "section": "Algebraic notation",
         "snippet": "A coefficient is a numerical value, or letter representing a numerical constant, that multiplies a variable"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.coeff",
+        "module": "Mathlib.Algebra.Polynomial.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib has Polynomial.coeff for coefficients of polynomials, which is related infrastructure but not the informal elementary-algebra notion.",
+      "provenance": "ai-agent1",
+      "id": "207bfb1de18a"
     },
     {
       "kind": "definition",
@@ -83,7 +147,15 @@
         "section": "Algebraic notation",
         "snippet": "A term is an addend or a summand"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no declaration formalizing the informal notion of a 'term' (addend/summand) of an expression.",
+      "provenance": "ai-agent1",
+      "id": "c4a4b9d8c0bf"
     },
     {
       "kind": "proposition",
@@ -92,6 +164,30 @@
         "section": "Algebraic notation",
         "snippet": "When the exponent is zero, the result is always 1"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "pow_zero",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "pow_zero states a ^ 0 = 1, exactly matching the claim.",
+      "provenance": "ai-agent1",
+      "id": "0f4136863dcf"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponent of one is the base",
+      "anchor": {
+        "section": "Algebraic notation",
+        "snippet": "Likewise when the exponent (power) is one"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "pow_one",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "pow_one states a ^ 1 = a, exactly matching the claim that an exponent of one may be omitted.",
       "provenance": "ai-agent1"
     },
     {
@@ -101,7 +197,15 @@
         "section": "Variables",
         "snippet": "Variables may represent numbers whose values are not yet known"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an informal description of the use of variables, not a formalizable statement.",
+      "provenance": "ai-agent1",
+      "id": "12acf980c81a"
     },
     {
       "kind": "example",
@@ -110,7 +214,15 @@
         "section": "Variables",
         "snippet": "Variables allow one to describe general problems"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal motivation for using variables, with no corresponding Mathlib declaration.",
+      "provenance": "ai-agent1",
+      "id": "029f58df3362"
     },
     {
       "kind": "example",
@@ -119,7 +231,15 @@
         "section": "Variables",
         "snippet": "Variables allow one to describe mathematical relationships between quantities that may vary"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal description of variables expressing relationships, not a formalizable statement.",
+      "provenance": "ai-agent1",
+      "id": "a4a04672ce8f"
     },
     {
       "kind": "proposition",
@@ -128,7 +248,15 @@
         "section": "Variables",
         "snippet": "a basic property of addition is commutativity which states that the order of numbers being added together does not matter"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "add_comm",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "add_comm states a + b = b + a in any additive commutative structure, exactly the stated property.",
+      "provenance": "ai-agent1",
+      "id": "c406c462410a"
     },
     {
       "kind": "example",
@@ -137,7 +265,15 @@
         "section": "Simplifying expressions",
         "snippet": "Added terms are simplified using coefficients"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This describes a syntactic simplification heuristic rather than a stated theorem.",
+      "provenance": "ai-agent1",
+      "id": "d251b9fdda5b"
     },
     {
       "kind": "example",
@@ -146,7 +282,15 @@
         "section": "Simplifying expressions",
         "snippet": "Multiplied terms are simplified using exponents"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This describes a simplification heuristic (collecting factors into exponents) rather than a single theorem.",
+      "provenance": "ai-agent1",
+      "id": "63a9e32c8180"
     },
     {
       "kind": "example",
@@ -155,7 +299,15 @@
         "section": "Simplifying expressions",
         "snippet": "Like terms are added together"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Combining like terms is an informal simplification procedure with no dedicated Mathlib declaration.",
+      "provenance": "ai-agent1",
+      "id": "578d989bcd9b"
     },
     {
       "kind": "example",
@@ -164,7 +316,15 @@
         "section": "Simplifying expressions",
         "snippet": "Brackets can be \"multiplied out\", using the distributive property"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "left_distrib",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "left_distrib states a * (b + c) = a * b + a * c, exactly the distributive law used to expand brackets.",
+      "provenance": "ai-agent1",
+      "id": "7c48a07a1922"
     },
     {
       "kind": "example",
@@ -173,7 +333,15 @@
         "section": "Simplifying expressions",
         "snippet": "Expressions can be factored"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Factoring is described as a manipulation procedure, not formalized as a single statement.",
+      "provenance": "ai-agent1",
+      "id": "f880d6ba251d"
     },
     {
       "kind": "definition",
@@ -182,7 +350,15 @@
         "section": "Equations",
         "snippet": "An equation states that two expressions are equal using the symbol for equality"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The underlying equality relation is Lean's core Eq, but Mathlib has no declaration defining 'equation' as such.",
+      "provenance": "ai-agent1",
+      "id": "68879971e242"
     },
     {
       "kind": "example",
@@ -191,7 +367,15 @@
         "section": "Equations",
         "snippet": "describes Pythagoras' law relating the length of the sides of a right angle triangle"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.dist_sq_eq_dist_sq_add_dist_sq_iff_angle_eq_pi_div_two",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.RightAngle",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's Pythagorean theorem states dist² = dist² + dist² iff the angle is π/2, generalizing a²+b²=c² to Euclidean spaces.",
+      "provenance": "ai-agent1",
+      "id": "13f16474d07b"
     },
     {
       "kind": "definition",
@@ -200,7 +384,15 @@
         "section": "Equations",
         "snippet": "such equations are called identities"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An identity is an equation true for all values; Mathlib expresses these as universally quantified equalities but has no 'identity' definition.",
+      "provenance": "ai-agent1",
+      "id": "00149b6ee661"
     },
     {
       "kind": "definition",
@@ -209,7 +401,15 @@
         "section": "Equations",
         "snippet": "Conditional equations are true for only some values of the involved variables"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib declaration formalizes the informal notion of a 'conditional equation'.",
+      "provenance": "ai-agent1",
+      "id": "255bf5b9a253"
     },
     {
       "kind": "definition",
@@ -218,7 +418,15 @@
         "section": "Equations",
         "snippet": "Inequalities are used to show that one side of the equation is greater, or less, than the other"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The order relations < and ≤ (LT.lt/LE.le) provide the underlying infrastructure, but there is no 'inequality' definition itself.",
+      "provenance": "ai-agent1",
+      "id": "cdae83948059"
     },
     {
       "kind": "proposition",
@@ -227,7 +435,15 @@
         "section": "Equations",
         "snippet": "when multiplying or dividing by a negative number, the inequality symbol must be flipped"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mul_lt_mul_of_neg_left",
+        "module": "Mathlib.Algebra.Order.Ring.Unbundled.Basic",
+        "match_kind": "exact"
+      },
+      "note": "mul_lt_mul_of_neg_left (and _right) state that multiplying by a negative reverses a strict inequality.",
+      "provenance": "ai-agent1",
+      "id": "61c8d233ed9b"
     },
     {
       "kind": "theorem",
@@ -236,7 +452,15 @@
         "section": "Properties of equality",
         "snippet": "equality is an equivalence relation , meaning it is reflexive"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "eq_equivalence",
+        "module": "Mathlib.Logic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "eq_equivalence proves Equivalence (@Eq α), i.e. equality is reflexive, symmetric and transitive.",
+      "provenance": "ai-agent1",
+      "id": "92cecedaaa36"
     },
     {
       "kind": "proposition",
@@ -245,7 +469,15 @@
         "section": "Properties of equality",
         "snippet": "if two symbols are used for equal things, then one symbol can be substituted for the other in any true statement about the first"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Eq.subst",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "Lean's core Eq.subst (the Eq eliminator) is exactly the Leibniz substitution principle for equal terms.",
+      "provenance": "ai-agent1",
+      "id": "bb08b6259748"
     },
     {
       "kind": "proposition",
@@ -254,7 +486,15 @@
         "section": "Properties of inequality",
         "snippet": "have the property of transitivity"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lt_trans",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "lt_trans (and le_trans, aliased in Mathlib.Order.Basic) give transitivity of strict and non-strict inequalities.",
+      "provenance": "ai-agent1",
+      "id": "268d8501ed10"
     },
     {
       "kind": "proposition",
@@ -263,7 +503,15 @@
         "section": "Properties of inequality",
         "snippet": "By reversing the inequation"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ge_iff_le",
+        "module": null,
+        "match_kind": "exact"
+      },
+      "note": "ge_iff_le states a ≥ b ↔ b ≤ a, formalizing the swap of ≤ and ≥ by reversing an inequation.",
+      "provenance": "ai-agent1",
+      "id": "68160e914003"
     },
     {
       "kind": "definition",
@@ -272,7 +520,15 @@
         "section": "Substitution",
         "snippet": "Substitution is replacing the terms in an expression to create a new expression"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Substituting values into expressions is realized via function/polynomial evaluation but has no dedicated 'substitution' definition.",
+      "provenance": "ai-agent1",
+      "id": "2b02e43f4b88"
     },
     {
       "kind": "proposition",
@@ -281,7 +537,15 @@
         "section": "Substitution",
         "snippet": "then xy = 0 implies x = 0 or y = 0"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mul_eq_zero",
+        "module": "Mathlib.Algebra.GroupWithZero.Defs",
+        "match_kind": "exact"
+      },
+      "note": "mul_eq_zero states a * b = 0 ↔ a = 0 ∨ b = 0 in a domain, exactly the zero-product property.",
+      "provenance": "ai-agent1",
+      "id": "fddb289c77d1"
     },
     {
       "kind": "definition",
@@ -290,7 +554,15 @@
         "section": "Linear equations with one variable",
         "snippet": "Linear equations are so-called, because when they are plotted, they describe a straight line"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has LinearMap/AffineMap and lines, but no definition of 'linear equation' as an elementary-algebra object.",
+      "provenance": "ai-agent1",
+      "id": "a1953b329d60"
     },
     {
       "kind": "example",
@@ -299,7 +571,15 @@
         "section": "Linear equations with one variable",
         "snippet": "If you double the age of a child and add 4, the resulting answer is 12"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a worked word problem, not a formalizable mathematical statement.",
+      "provenance": "ai-agent1",
+      "id": "3c93208360b7"
     },
     {
       "kind": "proposition",
@@ -308,7 +588,15 @@
         "section": "Linear equations with one variable",
         "snippet": "The general form of a linear equation with one variable, can be written as"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib theorem states the general solution x = -b/a of ax + b = 0, though field arithmetic lemmas could derive it.",
+      "provenance": "ai-agent1",
+      "id": "43f839d565e7"
     },
     {
       "kind": "proposition",
@@ -317,7 +605,15 @@
         "section": "Linear equations with two variables",
         "snippet": "A linear equation with two variables has many (i.e. an infinite number of) solutions"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated Mathlib statement asserts that a single linear equation in two variables has infinitely many solutions.",
+      "provenance": "ai-agent1",
+      "id": "a280a81432c0"
     },
     {
       "kind": "example",
@@ -326,7 +622,15 @@
         "section": "Linear equations with two variables",
         "snippet": "A father is 22 years older than his son"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a worked word problem, not a formalizable mathematical statement.",
+      "provenance": "ai-agent1",
+      "id": "449aaff7c753"
     },
     {
       "kind": "definition",
@@ -335,7 +639,15 @@
         "section": "Quadratic equations",
         "snippet": "A quadratic equation is one which includes a term with an exponent of 2"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "discrim",
+        "module": "Mathlib.Algebra.QuadraticDiscriminant",
+        "match_kind": null
+      },
+      "note": "Mathlib reasons about quadratics via discrim and related lemmas (a*(x*x)+b*x+c) but has no standalone 'quadratic equation' definition.",
+      "provenance": "ai-agent1",
+      "id": "ed494a238d9d"
     },
     {
       "kind": "proposition",
@@ -344,7 +656,15 @@
         "section": "Quadratic equations",
         "snippet": "we may divide by a and rearrange the equation into the standard form"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib statement formalizes normalizing a quadratic to monic standard form by dividing through by a.",
+      "provenance": "ai-agent1",
+      "id": "1e0ed563be83"
     },
     {
       "kind": "theorem",
@@ -353,7 +673,15 @@
         "section": "Quadratic equations",
         "snippet": "leads to the quadratic formula"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "quadratic_eq_zero_iff",
+        "module": "Mathlib.Algebra.QuadraticDiscriminant",
+        "match_kind": "exact"
+      },
+      "note": "quadratic_eq_zero_iff gives the roots (-b ± s)/(2a) where s² = discrim, i.e. the quadratic formula.",
+      "provenance": "ai-agent1",
+      "id": "b1d2b93c2587"
     },
     {
       "kind": "proposition",
@@ -362,7 +690,15 @@
         "section": "Quadratic equations",
         "snippet": "Quadratic equations can also be solved using factorization"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "mul_eq_zero",
+        "module": "Mathlib.Algebra.GroupWithZero.Defs",
+        "match_kind": null
+      },
+      "note": "The factorization method relies on the zero-product property (mul_eq_zero), but the procedure itself is not a single formalized theorem.",
+      "provenance": "ai-agent1",
+      "id": "8fda6f4a1ec2"
     },
     {
       "kind": "proposition",
@@ -371,7 +707,15 @@
         "section": "Quadratic equations",
         "snippet": "It follows from the zero-product property that either"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mul_eq_zero",
+        "module": "Mathlib.Algebra.GroupWithZero.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "This is a direct application of mul_eq_zero to a factored quadratic (x-r)(x-s) = 0.",
+      "provenance": "ai-agent1",
+      "id": "fe1b7dbaf3e2"
     },
     {
       "kind": "example",
@@ -380,7 +724,15 @@
         "section": "Quadratic equations",
         "snippet": "has no real number solution since no real number squared equals −1"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "quadratic_ne_zero_of_discrim_ne_sq",
+        "module": "Mathlib.Algebra.QuadraticDiscriminant",
+        "match_kind": null
+      },
+      "note": "quadratic_ne_zero_of_discrim_ne_sq gives nonexistence of roots when the discriminant is not a square, covering x²+1=0 over ℝ, but the specific example is not a named result.",
+      "provenance": "ai-agent1",
+      "id": "d4f82134e3ae"
     },
     {
       "kind": "example",
@@ -389,7 +741,15 @@
         "section": "Quadratic equations",
         "snippet": "Sometimes a quadratic equation has a root of multiplicity 2"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "quadratic_eq_zero_iff_of_discrim_eq_zero",
+        "module": "Mathlib.Algebra.QuadraticDiscriminant",
+        "match_kind": null
+      },
+      "note": "quadratic_eq_zero_iff_of_discrim_eq_zero shows a unique (double) root -b/(2a) when the discriminant is zero, but 'multiplicity 2' per se uses Polynomial.rootMultiplicity.",
+      "provenance": "ai-agent1",
+      "id": "855ff46f5651"
     },
     {
       "kind": "theorem",
@@ -398,7 +758,15 @@
         "section": "Complex numbers",
         "snippet": "All quadratic equations have exactly two solutions in complex numbers"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "exists_quadratic_eq_zero",
+        "module": "Mathlib.Algebra.QuadraticDiscriminant",
+        "match_kind": null
+      },
+      "note": "exists_quadratic_eq_zero gives existence of roots when the discriminant is a square (always true over the algebraically closed ℂ), but the exact 'two solutions counted with multiplicity' statement is not stated for quadratics specifically.",
+      "provenance": "ai-agent1",
+      "id": "f53d906a64e9"
     },
     {
       "kind": "example",
@@ -407,7 +775,15 @@
         "section": "Complex numbers",
         "snippet": "Complex numbers first arise in the teaching of quadratic equations and the quadratic formula"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "exists_quadratic_eq_zero",
+        "module": "Mathlib.Algebra.QuadraticDiscriminant",
+        "match_kind": null
+      },
+      "note": "Solving quadratics over ℂ is supported via exists_quadratic_eq_zero plus ℂ being algebraically closed, but this illustrative example is not itself formalized.",
+      "provenance": "ai-agent1",
+      "id": "8c354887a0fc"
     },
     {
       "kind": "definition",
@@ -416,7 +792,15 @@
         "section": "Exponential and logarithmic equations",
         "snippet": "An exponential equation is one which has the form"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has rpow/exp but no definition of 'exponential equation' as an elementary-algebra object.",
+      "provenance": "ai-agent1",
+      "id": "43e38a8f37fe"
     },
     {
       "kind": "definition",
@@ -425,7 +809,15 @@
         "section": "Exponential and logarithmic equations",
         "snippet": "A logarithmic equation is an equation of the form"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Real.log but no definition of a 'logarithmic equation'.",
+      "provenance": "ai-agent1",
+      "id": "71103c34c80a"
     },
     {
       "kind": "definition",
@@ -434,7 +826,15 @@
         "section": "Radical equations",
         "snippet": "A radical equation is one that includes a radical sign, which includes square roots"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has roots/Real.sqrt but no definition of a 'radical equation'.",
+      "provenance": "ai-agent1",
+      "id": "b96bc3bdd208"
     },
     {
       "kind": "proposition",
@@ -443,7 +843,15 @@
         "section": "Radical equations",
         "snippet": "Recall that an n th root can be rewritten in exponential format"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.rpow_inv_natCast_pow",
+        "module": "Mathlib.Analysis.SpecialFunctions.Pow.Real",
+        "match_kind": "exact"
+      },
+      "note": "Real.rpow_inv_natCast_pow states (x^(1/n))^n = x for x ≥ 0, formalizing the nth root as the exponent 1/n.",
+      "provenance": "ai-agent1",
+      "id": "424273872a74"
     },
     {
       "kind": "example",
@@ -452,7 +860,15 @@
         "section": "Elimination method",
         "snippet": "An example of solving a system of linear equations is by using the elimination method"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The elimination solving procedure is illustrated by example and is not formalized as a stated theorem.",
+      "provenance": "ai-agent1",
+      "id": "1d2bc090c4de"
     },
     {
       "kind": "example",
@@ -461,7 +877,15 @@
         "section": "Substitution method",
         "snippet": "Another way of solving the same system of linear equations is by substitution"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The substitution solving procedure is illustrated by example and is not formalized as a stated theorem.",
+      "provenance": "ai-agent1",
+      "id": "f1c38b9e99bd"
     },
     {
       "kind": "definition",
@@ -470,7 +894,15 @@
         "section": "Inconsistent systems",
         "snippet": "Such a system is called inconsistent"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib reasons about solvability of linear systems but has no definition of an 'inconsistent system'.",
+      "provenance": "ai-agent1",
+      "id": "de12f8bc12ee"
     },
     {
       "kind": "example",
@@ -479,7 +911,15 @@
         "section": "Undetermined systems",
         "snippet": "There are also systems which have infinitely many solutions"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated Mathlib statement formalizes this illustrative example of a system with infinitely many solutions.",
+      "provenance": "ai-agent1",
+      "id": "85f3a99bc36a"
     },
     {
       "kind": "definition",
@@ -488,7 +928,15 @@
         "section": "Over- and underdetermined systems",
         "snippet": "Systems with more variables than the number of linear equations are called underdetermined"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no definition for 'underdetermined system' of linear equations.",
+      "provenance": "ai-agent1",
+      "id": "d39e26cdac8e"
     },
     {
       "kind": "definition",
@@ -497,7 +945,15 @@
         "section": "Over- and underdetermined systems",
         "snippet": "A system with a higher number of equations than variables is called overdetermined"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no definition for 'overdetermined system' of linear equations.",
+      "provenance": "ai-agent1",
+      "id": "ece4b689ac15"
     }
   ]
 }

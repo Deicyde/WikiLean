@@ -412,6 +412,159 @@
       "note": "`Associates α` carries a `Lattice` instance with `gcd`/`lcm` as meet/join, witnessing the divisibility lattice for UFDs including `ℕ`.",
       "provenance": "ai",
       "id": "99423e3a712f"
+    },
+    {
+      "kind": "proposition",
+      "label": "Units divide every integer",
+      "anchor": {
+        "section": "General",
+        "snippet": "1 and −1 divide (are divisors of) every integer"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "one_dvd",
+        "module": "Mathlib.Algebra.Divisibility.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`one_dvd : ∀ a, 1 ∣ a`; combined with `neg_one_dvd` (or `(-1 : ℤ) ∣ a` via `Units.dvd`), this captures that ±1 divide every integer.",
+      "provenance": "ai",
+      "id": "9a516eb89397"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every integer divides itself",
+      "anchor": {
+        "section": "General",
+        "snippet": "Every integer (and its negation) is a divisor of itself"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dvd_refl",
+        "module": "Mathlib.Algebra.Divisibility.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`dvd_refl : ∀ a, a ∣ a` formalizes reflexivity of divisibility.",
+      "provenance": "ai",
+      "id": "592ec28ab92e"
+    },
+    {
+      "kind": "proposition",
+      "label": "Divisibility closed under sum",
+      "anchor": {
+        "section": "Further notions and facts",
+        "snippet": "However, if [MATH] and [MATH] then [MATH] does not always hold"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dvd_add",
+        "module": "Mathlib.Algebra.Ring.Divisibility.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`dvd_add : a ∣ b → a ∣ c → a ∣ b + c` formalizes that if `a` divides `b` and `c` then `a` divides `b + c`.",
+      "provenance": "ai",
+      "id": "a5d94f2187a3"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of arithmetic",
+      "anchor": {
+        "section": "Further notions and facts",
+        "snippet": "This is a consequence of the fundamental theorem of arithmetic"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.primeFactorsList_unique",
+        "module": "Mathlib.Data.Nat.Factors",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.primeFactorsList_unique` (together with `UniqueFactorizationMonoid` for `ℕ`) is Mathlib's formalization of the fundamental theorem of arithmetic.",
+      "provenance": "ai",
+      "id": "80ee0ad5cd5b"
+    },
+    {
+      "kind": "definition",
+      "label": "Divisor function",
+      "anchor": {
+        "section": "Further notions and facts",
+        "snippet": "Both of these functions are examples of divisor functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.sigma",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Misc",
+        "match_kind": "exact"
+      },
+      "note": "`ArithmeticFunction.sigma k n = ∑ d ∈ divisors n, d^k` is the generalized divisor function σ_k.",
+      "provenance": "ai",
+      "id": "ced13781d7da"
+    },
+    {
+      "kind": "definition",
+      "label": "Multiplicative arithmetic function",
+      "anchor": {
+        "section": "Further notions and facts",
+        "snippet": "is a multiplicative function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ArithmeticFunction.IsMultiplicative",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`ArithmeticFunction.IsMultiplicative f` requires `f 1 = 1` and `Coprime m n → f (m*n) = f m * f n`, matching the article's definition.",
+      "provenance": "ai",
+      "id": "6e1a62556f4f"
+    },
+    {
+      "kind": "definition",
+      "label": "Greatest common divisor (as meet)",
+      "anchor": {
+        "section": "Division lattice",
+        "snippet": "The meet operation ∧ is given by the greatest common divisor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.gcd",
+        "module": "Mathlib.Data.Nat.GCD.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.gcd` is the meet of the divisibility order on `ℕ`; `Associates.instLattice` realizes gcd as `⊓` for UFDs.",
+      "provenance": "ai",
+      "id": "a7e8a816cceb"
+    },
+    {
+      "kind": "definition",
+      "label": "Least common multiple (as join)",
+      "anchor": {
+        "section": "Division lattice",
+        "snippet": "the join operation ∨ by the least common multiple"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.lcm",
+        "module": "Mathlib.Data.Nat.GCD.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.lcm` is the join of the divisibility order on `ℕ`; `Associates.instLattice` realizes lcm as `⊔` for UFDs.",
+      "provenance": "ai",
+      "id": "c7f41a9d5161"
+    },
+    {
+      "kind": "proposition",
+      "label": "Coprime numbers",
+      "anchor": {
+        "section": "Further notions and facts",
+        "snippet": "are relatively prime"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Coprime",
+        "module": "Mathlib.Data.Nat.GCD.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Coprime m n := Nat.gcd m n = 1` formalizes the relatively-prime relation for naturals, with `IsCoprime` providing the ring-theoretic analogue.",
+      "provenance": "ai",
+      "id": "9b087a4c83e6"
     }
   ]
 }

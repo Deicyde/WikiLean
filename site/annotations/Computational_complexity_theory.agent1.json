@@ -11,7 +11,15 @@
         "section": "(Lead)",
         "snippet": "computational complexity theory focuses on classifying computational problems according to their resource usage"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formalization of the field/discipline of computational complexity theory itself.",
+      "provenance": "ai-agent1",
+      "id": "32ccbdb06cea"
     },
     {
       "kind": "definition",
@@ -20,7 +28,15 @@
         "section": "(Lead)",
         "snippet": "A computational problem is a task solved by a computer"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no general definition of a 'computational problem' in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "1b89e5c51015"
     },
     {
       "kind": "definition",
@@ -29,7 +45,15 @@
         "section": "(Lead)",
         "snippet": "A problem is regarded as inherently difficult if its solution requires significant resources"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of inherently difficult problems or resource lower bounds for problems.",
+      "provenance": "ai-agent1",
+      "id": "28b8d337d4fb"
     },
     {
       "kind": "definition",
@@ -38,7 +62,15 @@
         "section": "Problem instances",
         "snippet": "A computational problem can be viewed as an infinite collection of instances"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define problems as collections of instances.",
+      "provenance": "ai-agent1",
+      "id": "bf68977df9a3"
     },
     {
       "kind": "example",
@@ -47,7 +79,15 @@
         "section": "Problem instances",
         "snippet": "consider the problem of primality testing"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.decidablePrime",
+        "module": "Mathlib.Data.Nat.Prime.Defs",
+        "match_kind": null
+      },
+      "note": "Primality is formalized as a decidable predicate (`Nat.decidablePrime`), giving an algorithm to test instances, but not as a complexity-theory problem.",
+      "provenance": "ai-agent1",
+      "id": "9354d69ce6bc"
     },
     {
       "kind": "example",
@@ -56,7 +96,15 @@
         "section": "Problem instances",
         "snippet": "consider the following instance of the decision version of the travelling salesman problem"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The travelling salesman problem is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "7c4ac1fa495c"
     },
     {
       "kind": "definition",
@@ -65,7 +113,15 @@
         "section": "Representing problem instances",
         "snippet": "a problem instance is a string over an alphabet"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Computability.Encoding",
+        "module": "Mathlib.Computability.Encoding",
+        "match_kind": null
+      },
+      "note": "`Computability.Encoding` formalizes encoding a type as strings (`List Γ`) over an alphabet, which is the representation device, though not framed as 'problem instances'.",
+      "provenance": "ai-agent1",
+      "id": "77f65e368822"
     },
     {
       "kind": "definition",
@@ -74,7 +130,15 @@
         "section": "Decision problems as formal languages",
         "snippet": "A decision problem is a type of computational problem where the answer is either yes or no"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Language",
+        "module": "Mathlib.Computability.Language",
+        "match_kind": null
+      },
+      "note": "Mathlib's `Language α := Set (List α)` is exactly the formal-language view of a decision problem, but there is no decl named/defined as 'decision problem'.",
+      "provenance": "ai-agent1",
+      "id": "f73b86acb908"
     },
     {
       "kind": "example",
@@ -83,7 +147,15 @@
         "section": "Decision problems as formal languages",
         "snippet": "An example of a decision problem is the following."
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "SimpleGraph.Connected",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Connectivity.Connected",
+        "match_kind": null
+      },
+      "note": "Graph connectivity is formalized as the predicate `SimpleGraph.Connected`, but not cast as a decision problem/language.",
+      "provenance": "ai-agent1",
+      "id": "46a880d7fb56"
     },
     {
       "kind": "definition",
@@ -92,7 +164,15 @@
         "section": "Function problems",
         "snippet": "A function problem is a computational problem where a single output"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define the complexity-theoretic notion of a function problem.",
+      "provenance": "ai-agent1",
+      "id": "42eacc285d4c"
     },
     {
       "kind": "example",
@@ -101,7 +181,15 @@
         "section": "Function problems",
         "snippet": "the multiplication of two integers can be expressed as the set of triples"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Integer multiplication exists, but its recasting as the decision-problem set of triples is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "77078817ea6c"
     },
     {
       "kind": "definition",
@@ -110,7 +198,15 @@
         "section": "Measuring the size of an instance",
         "snippet": "is defined to be the maximum time taken over all inputs of size"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Turing.TM2ComputableInTime",
+        "module": "Mathlib.Computability.TuringMachine.Computable",
+        "match_kind": null
+      },
+      "note": "`TM2ComputableInTime` bounds steps by `time(input.length)` over all inputs of that length (worst case), but worst-case time complexity is not defined as a stand-alone quantity.",
+      "provenance": "ai-agent1",
+      "id": "253578e2296a"
     },
     {
       "kind": "definition",
@@ -119,7 +215,15 @@
         "section": "Measuring the size of an instance",
         "snippet": "the algorithm is said to be a polynomial time algorithm"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Turing.TM2ComputableInPolyTime",
+        "module": "Mathlib.Computability.TuringMachine.Computable",
+        "match_kind": "exact"
+      },
+      "note": "`TM2ComputableInPolyTime` packages a Turing machine with a polynomial time bound proving it computes a function in polynomial time.",
+      "provenance": "ai-agent1",
+      "id": "c846ac825e66"
     },
     {
       "kind": "proposition",
@@ -128,7 +232,15 @@
         "section": "Measuring the size of an instance",
         "snippet": "Cobham's thesis argues that a problem can be solved with a feasible amount of resources if and only if it admits a polynomial-time algorithm"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cobham's thesis is an informal claim and is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "d410c8d995b8"
     },
     {
       "kind": "definition",
@@ -137,7 +249,15 @@
         "section": "Turing machine",
         "snippet": "A Turing machine is a mathematical model of a general computing machine."
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Turing.TM0.Machine",
+        "module": "Mathlib.Computability.TuringMachine.PostTuringMachine",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines Turing machine models (TM0/TM1/TM2), e.g. `Turing.TM0.Machine`.",
+      "provenance": "ai-agent1",
+      "id": "ec0d005c91df"
     },
     {
       "kind": "proposition",
@@ -146,7 +266,15 @@
         "section": "Turing machine",
         "snippet": "this is the statement of the Church–Turing thesis"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Church–Turing thesis is informal and not formalized.",
+      "provenance": "ai-agent1",
+      "id": "b379880e5c29"
     },
     {
       "kind": "definition",
@@ -155,7 +283,15 @@
         "section": "Turing machine",
         "snippet": "A deterministic Turing machine is the most basic Turing machine"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Turing.TM0.Machine",
+        "module": "Mathlib.Computability.TuringMachine.PostTuringMachine",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's Turing machines are deterministic by construction (`step : Cfg → Option Cfg`), so `Turing.TM0.Machine` is a deterministic Turing machine.",
+      "provenance": "ai-agent1",
+      "id": "7f41c4d74fcc"
     },
     {
       "kind": "definition",
@@ -164,7 +300,15 @@
         "section": "Turing machine",
         "snippet": "A probabilistic Turing machine is a deterministic Turing machine with an extra supply of random bits."
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Probabilistic/randomized Turing machines are not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "84fbf4e60218"
     },
     {
       "kind": "definition",
@@ -173,7 +317,15 @@
         "section": "Turing machine",
         "snippet": "A non-deterministic Turing machine is a deterministic Turing machine with an added feature of non-determinism"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's Turing machines are deterministic only; nondeterministic Turing machines are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "ab832f88c98d"
     },
     {
       "kind": "proposition",
@@ -182,7 +334,15 @@
         "section": "Other machine models",
         "snippet": "each of these models can be converted to another without providing any extra computational power"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Turing.PartrecToTM2.tr_eval",
+        "module": "Mathlib.Computability.TuringMachine.ToPartrec",
+        "match_kind": null
+      },
+      "note": "`PartrecToTM2.tr_eval` shows a TM2 machine evaluates partial-recursive programs, establishing one model equivalence, but no general 'all reasonable models are equivalent' theorem is stated.",
+      "provenance": "ai-agent1",
+      "id": "279ea0750e4e"
     },
     {
       "kind": "definition",
@@ -191,7 +351,15 @@
         "section": "Complexity measures",
         "snippet": "is the total number of state transitions, or steps, the machine makes before it halts"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Turing.TM2OutputsInTime",
+        "module": "Mathlib.Computability.TuringMachine.Computable",
+        "match_kind": null
+      },
+      "note": "`TM2OutputsInTime` counts the number of steps until halting, capturing running time, but as a step-count bound rather than a named time measure.",
+      "provenance": "ai-agent1",
+      "id": "6571885d332c"
     },
     {
       "kind": "definition",
@@ -200,6 +368,46 @@
         "section": "Complexity measures",
         "snippet": "is then denoted by DTIME"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The DTIME complexity class is not defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "91e3d1c822c4"
+    },
+    {
+      "kind": "definition",
+      "label": "Blum complexity axioms",
+      "anchor": {
+        "section": "Complexity measures",
+        "snippet": "Complexity measures are very generally defined by the Blum complexity axioms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Blum axioms characterizing abstract complexity measures on partial-recursive functions are not formalized in Mathlib.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Big O notation",
+      "anchor": {
+        "section": "Complexity measures",
+        "snippet": "The complexity of an algorithm is often expressed using big O notation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Asymptotics.IsBigO` formalizes the big-O relation `f =O[l] g` between functions, the analytic form of the notation used for complexity bounds.",
       "provenance": "ai-agent1"
     },
     {
@@ -209,7 +417,15 @@
         "section": "Best, worst and average case complexity",
         "snippet": "refer to three different ways of measuring the time complexity"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Best/average-case complexity measures (and the distinction) are not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "729891e35252"
     },
     {
       "kind": "example",
@@ -218,7 +434,15 @@
         "section": "Best, worst and average case complexity",
         "snippet": "the deterministic sorting algorithm quicksort addresses the problem of sorting a list of integers"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quicksort and its complexity analysis are not in Mathlib (only merge sort exists, without complexity bounds).",
+      "provenance": "ai-agent1",
+      "id": "75067fcec4d5"
     },
     {
       "kind": "definition",
@@ -227,7 +451,15 @@
         "section": "Defining complexity classes",
         "snippet": "A complexity class is a set of problems of related complexity."
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no general notion of a complexity class.",
+      "provenance": "ai-agent1",
+      "id": "6b546b0c2827"
     },
     {
       "kind": "proposition",
@@ -236,7 +468,15 @@
         "section": "Defining complexity classes",
         "snippet": "the time complexities in any two reasonable and general models of computation are polynomially related"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Cobham–Edmonds thesis (polynomial relation of time across models) is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "1d7fa6737c84"
     },
     {
       "kind": "definition",
@@ -245,7 +485,15 @@
         "section": "Defining complexity classes",
         "snippet": "the complexity class P , which is the set of decision problems solvable by a deterministic Turing machine within polynomial time"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Turing.TM2ComputableInPolyTime",
+        "module": "Mathlib.Computability.TuringMachine.Computable",
+        "match_kind": null
+      },
+      "note": "Polynomial-time deterministic TM computation exists via `TM2ComputableInPolyTime`, but the class P (set of poly-time decision problems) is not defined.",
+      "provenance": "ai-agent1",
+      "id": "d14aa02b376d"
     },
     {
       "kind": "theorem",
@@ -254,7 +502,15 @@
         "section": "Important complexity classes",
         "snippet": "It turns out that PSPACE = NPSPACE and EXPSPACE = NEXPSPACE by Savitch's theorem."
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Space complexity classes and Savitch's theorem are not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "03c074267299"
     },
     {
       "kind": "theorem",
@@ -263,7 +519,15 @@
         "section": "Hierarchy theorems",
         "snippet": "the time hierarchy theorem states that"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The time hierarchy theorem is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "10ccda65277c"
     },
     {
       "kind": "theorem",
@@ -272,7 +536,15 @@
         "section": "Hierarchy theorems",
         "snippet": "The space hierarchy theorem states that"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The space hierarchy theorem is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "c988088d864d"
     },
     {
       "kind": "proposition",
@@ -281,7 +553,15 @@
         "section": "Hierarchy theorems",
         "snippet": "the time hierarchy theorem tells us that P is strictly contained in EXPTIME"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classes P and EXPTIME and the separation P ⊊ EXPTIME are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "db330eca6bcf"
     },
     {
       "kind": "definition",
@@ -290,6 +570,30 @@
         "section": "Reduction",
         "snippet": "A reduction is a transformation of one problem into another problem."
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ManyOneReducible",
+        "module": "Mathlib.Computability.Reduce",
+        "match_kind": null
+      },
+      "note": "`ManyOneReducible` formalizes computable many-one reduction between problems, but not the resource-bounded (e.g. polynomial-time) reductions used in complexity theory.",
+      "provenance": "ai-agent1",
+      "id": "e7bb7a21f897"
+    },
+    {
+      "kind": "definition",
+      "label": "Polynomial-time reduction",
+      "anchor": {
+        "section": "Reduction",
+        "snippet": "The most commonly used reduction is a polynomial-time reduction."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Polynomial-time (Karp/Cook) reductions between decision problems are not formalized in Mathlib.",
       "provenance": "ai-agent1"
     },
     {
@@ -299,7 +603,15 @@
         "section": "Reduction",
         "snippet": "the problem of squaring an integer can be reduced to the problem of multiplying two integers"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific reduction between squaring and multiplication problems is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "774c2b915bc8"
     },
     {
       "kind": "definition",
@@ -308,6 +620,30 @@
         "section": "Reduction",
         "snippet": "is hard for a class of problems"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hardness for a complexity class is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "e0ac9d08bf94"
+    },
+    {
+      "kind": "definition",
+      "label": "NP-hard problem",
+      "anchor": {
+        "section": "Reduction",
+        "snippet": "the set of problems that are hard for NP is the set of NP-hard problems"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "NP-hardness (problems to which every NP problem polynomially reduces) is not formalized in Mathlib.",
       "provenance": "ai-agent1"
     },
     {
@@ -317,6 +653,30 @@
         "section": "Reduction",
         "snippet": "is said to be complete for"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Completeness for a complexity class is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "888e7d639b96"
+    },
+    {
+      "kind": "definition",
+      "label": "NP-complete problem",
+      "anchor": {
+        "section": "Reduction",
+        "snippet": "the class of NP-complete problems contains the most difficult problems in NP"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "NP-completeness (being in NP and NP-hard) is not formalized in Mathlib.",
       "provenance": "ai-agent1"
     },
     {
@@ -326,6 +686,30 @@
         "section": "P versus NP problem",
         "snippet": "each problem in P is also member of the class NP"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classes P and NP and the inclusion P ⊆ NP are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "8d57f1c402e9"
+    },
+    {
+      "kind": "example",
+      "label": "Boolean satisfiability problem",
+      "anchor": {
+        "section": "P versus NP problem",
+        "snippet": "such as the Boolean satisfiability problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "SAT, the canonical NP-complete decision problem, is not formalized in Mathlib.",
       "provenance": "ai-agent1"
     },
     {
@@ -335,7 +719,15 @@
         "section": "Problems in NP not known to be in P or NP-complete",
         "snippet": "It was shown by Ladner that if"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ladner's theorem on NP-intermediate problems is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "71b044bbc8b6"
     },
     {
       "kind": "definition",
@@ -344,7 +736,15 @@
         "section": "Problems in NP not known to be in P or NP-complete",
         "snippet": "The graph isomorphism problem is the computational problem of determining whether two finite graphs are isomorphic"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "SimpleGraph.Iso",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Maps",
+        "match_kind": null
+      },
+      "note": "Graph isomorphism is formalized as `SimpleGraph.Iso` (`G ≃g H`), but not as the computational decision problem.",
+      "provenance": "ai-agent1",
+      "id": "03e8c9553a2c"
     },
     {
       "kind": "definition",
@@ -353,7 +753,15 @@
         "section": "Problems in NP not known to be in P or NP-complete",
         "snippet": "The integer factorization problem is the computational problem of determining the prime factorization of a given integer."
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.factorization",
+        "module": "Mathlib.Data.Nat.Factorization.Defs",
+        "match_kind": null
+      },
+      "note": "Prime factorization is formalized (`Nat.factorization`, `Nat.primeFactorsList`), but not framed as the integer-factorization computational problem.",
+      "provenance": "ai-agent1",
+      "id": "91107ee26cda"
     },
     {
       "kind": "definition",
@@ -362,7 +770,15 @@
         "section": "Separations between other complexity classes",
         "snippet": "is the class containing the complement problems"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "NP and its complement class co-NP are not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "60dda574738c"
     },
     {
       "kind": "definition",
@@ -371,7 +787,15 @@
         "section": "Intractability",
         "snippet": "is known as an intractable problem"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of an intractable problem is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "a91906efcd0b"
     },
     {
       "kind": "definition",
@@ -380,7 +804,15 @@
         "section": "Intractability",
         "snippet": "a problem that can be solved in practice is called a tractable problem"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of a tractable problem is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "2c4dc576c5d1"
     },
     {
       "kind": "proposition",
@@ -389,7 +821,15 @@
         "section": "Intractability",
         "snippet": "Problems that are known to be intractable in this sense include those that are EXPTIME"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "EXPTIME-hardness and intractability claims are not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "33aef0290ccf"
     },
     {
       "kind": "example",
@@ -398,7 +838,15 @@
         "section": "Intractability",
         "snippet": "the decision problem in Presburger arithmetic has been shown not to be in"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "FirstOrder.Language.presburger",
+        "module": "Mathlib.ModelTheory.Arithmetic.Presburger.Basic",
+        "match_kind": null
+      },
+      "note": "Presburger arithmetic is formalized (`Language.presburger`), but its complexity lower bound (not in P) is not.",
+      "provenance": "ai-agent1",
+      "id": "e3557cb85f99"
     },
     {
       "kind": "example",
@@ -407,6 +855,46 @@
         "section": "Intractability",
         "snippet": "consider a program that makes"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This illustrative exponential-runtime example is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "fc77b53297c5"
+    },
+    {
+      "kind": "theorem",
+      "label": "Blum's speed-up theorem",
+      "anchor": {
+        "section": "History",
+        "snippet": "proved an important result, the so-called speed-up theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Blum's speed-up theorem (existence of computable functions admitting no asymptotically best algorithm) is not formalized in Mathlib.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Karp's 21 NP-complete problems",
+      "anchor": {
+        "section": "History",
+        "snippet": "he showed that 21 diverse combinatorial and graph theoretical problems, each infamous for its computational intractability, are NP-complete"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Karp's 1972 reductions establishing NP-completeness of 21 combinatorial problems are not formalized in Mathlib.",
       "provenance": "ai-agent1"
     }
   ]

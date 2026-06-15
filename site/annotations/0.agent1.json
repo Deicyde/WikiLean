@@ -14,7 +14,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "Zero",
-        "module": null,
+        "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": null
       },
       "note": "Mathlib has the `Zero` typeclass providing a distinguished `0`, but the informal 'empty quantity' semantics is not itself a theorem.",
@@ -99,7 +99,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Nat.zero_le",
-        "module": null,
+        "module": "Mathlib.Data.Nat.Defs",
         "match_kind": "special_case"
       },
       "note": "`Nat.zero_le : 0 ≤ n` establishes `0` as the least element of ℕ (also reflected by ℕ's `OrderBot`).",
@@ -113,13 +113,13 @@
         "section": "Elementary algebra",
         "snippet": "The natural number following 0 is 1"
       },
-      "status": "formalized",
+      "status": "partial",
       "mathlib": {
         "decl": null,
         "module": null,
         "match_kind": null
       },
-      "note": "Holds definitionally since `1` is defined as `Nat.succ 0`, but there is no dedicated named lemma.",
+      "note": "Holds definitionally since `1` is defined as `Nat.succ 0`, but there is no dedicated named lemma — status downgraded to partial to reflect the absence of a citable declaration.",
       "provenance": "ai-agent1",
       "id": "1966fb728e66"
     },
@@ -153,7 +153,7 @@
         "module": "Mathlib.Algebra.Group.Even",
         "match_kind": "exact"
       },
-      "note": "`Even.zero : Even (0 : α)` states that zero is even.",
+      "note": "`Even.zero : Even (0 : α)` (auto-generated from `IsSquare.one` via `@[to_additive]`) states that zero is even.",
       "provenance": "ai-agent1",
       "id": "d33caeab2551"
     },
@@ -337,10 +337,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Cardinal.mk_eq_zero",
-        "module": "Mathlib.SetTheory.Cardinal.Basic",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
         "match_kind": "exact"
       },
-      "note": "`Cardinal.mk_eq_zero` gives `#(empty) = 0` (also `Set.ncard_empty`, `Finset.card_empty`).",
+      "note": "`Cardinal.mk_eq_zero : [IsEmpty α] → #α = 0` (also `Set.ncard_empty`, `Finset.card_empty`).",
       "provenance": "ai-agent1",
       "id": "cc781cca71e9"
     },
@@ -374,7 +374,7 @@
         "module": "Mathlib.SetTheory.Ordinal.Basic",
         "match_kind": "exact"
       },
-      "note": "Ordinals carry `OrderBot` with `bot_eq_zero`, so `0` is the least ordinal.",
+      "note": "`Ordinal.bot_eq_zero : (⊥ : Ordinal) = 0` shows `0` is the least ordinal.",
       "provenance": "ai-agent1",
       "id": "b763f4f7eec5"
     },
@@ -405,7 +405,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Zero",
-        "module": null,
+        "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "exact"
       },
       "note": "The `Zero` typeclass denotes the distinguished zero element of an algebraic structure.",
@@ -613,7 +613,8 @@
         "match_kind": "exact"
       },
       "note": "`zero_div : 0 / a = 0` in any `GroupWithZero` (in fact for any `a`, by Mathlib's convention).",
-      "provenance": "ai-agent1"
+      "provenance": "ai-agent1",
+      "id": "87dd70c80f51"
     },
     {
       "kind": "proposition",
@@ -629,7 +630,8 @@
         "match_kind": "generalization"
       },
       "note": "`zero_pow : n ≠ 0 → (0 : M) ^ n = 0` in a `MonoidWithZero`; the textbook's positive-exponent case is a special case.",
-      "provenance": "ai-agent1"
+      "provenance": "ai-agent1",
+      "id": "592cd8610f7a"
     },
     {
       "kind": "definition",
@@ -645,7 +647,8 @@
         "match_kind": "exact"
       },
       "note": "`HasZeroMorphisms` provides a distinguished zero morphism `0 : X ⟶ Y` in each hom-set, generalizing the zero function.",
-      "provenance": "ai-agent1"
+      "provenance": "ai-agent1",
+      "id": "d5015373a8bb"
     },
     {
       "kind": "proposition",
@@ -661,6 +664,55 @@
         "match_kind": "exact"
       },
       "note": "`dvd_zero : ∀ a, a ∣ 0` states every element divides zero, so 0 is a multiple of any integer/rational/real.",
+      "provenance": "ai-agent1",
+      "id": "c6a2a1c555b0"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero is a rational and real number",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "it is an integer , and hence a rational number and a real number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Rat.instZero",
+        "module": "Mathlib.Data.Rat.Defs",
+        "match_kind": "exact"
+      },
+      "note": "ℤ, ℚ, and ℝ all have a `Zero` instance, and the canonical embeddings `Int.cast 0 = 0` and `Rat.cast 0 = 0` show 0 is an integer, rational, and real.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "All rationals are algebraic",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "All rational numbers are algebraic numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isAlgebraic_rat",
+        "module": "Mathlib.RingTheory.Algebraic.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`isAlgebraic_rat` (or equivalently the `IsAlgebraic ℚ` instance for rationals) shows every rational number is algebraic over ℚ.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Zero as absorbing element for multiplication",
+      "anchor": {
+        "section": "Other uses in mathematics",
+        "snippet": "an absorbing element for multiplication"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulZeroClass",
+        "module": "Mathlib.Algebra.GroupWithZero.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`MulZeroClass` axiomatizes that `0` is an absorbing element for multiplication: `0 * a = 0` and `a * 0 = 0`.",
       "provenance": "ai-agent1"
     }
   ]

@@ -83,7 +83,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "affineSpan",
-        "module": null,
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Defs",
         "match_kind": null
       },
       "note": "Mathlib has the affine span of two points (the line through them) but does not axiomatize Euclid's postulate synthetically.",
@@ -168,7 +168,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "Eq.trans",
-        "module": null,
+        "module": "Init.Prelude",
         "match_kind": null
       },
       "note": "Individual common notions like transitivity of equality are core (Eq.trans), but the bundle is not formalized as Euclid's common notions.",
@@ -414,6 +414,23 @@
       "id": "e7fda19bbb08"
     },
     {
+      "kind": "proposition",
+      "label": "Volume scales as cube of linear dimension",
+      "anchor": {
+        "section": "Scaling of area and volume",
+        "snippet": "the volume of a solid to the cube"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.addHaar_smul",
+        "module": "Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar",
+        "match_kind": "generalization"
+      },
+      "note": "Same Haar-measure scaling law μ(r • s) = |r|^(finrank) · μ(s) gives the cube-scaling of volume in dimension 3.",
+      "provenance": "ai",
+      "id": "43b65a041127"
+    },
+    {
       "kind": "theorem",
       "label": "Sphere is 2/3 volume of circumscribing cylinder",
       "anchor": {
@@ -466,6 +483,23 @@
     },
     {
       "kind": "definition",
+      "label": "Archimedean property",
+      "anchor": {
+        "section": "Archimedes and Apollonius",
+        "snippet": "enunciated the Archimedean property of finite numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Archimedean",
+        "module": "Mathlib.Algebra.Order.Archimedean.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's Archimedean typeclass states that for any x there exists n with n • 1 ≥ x, the standard Archimedean property.",
+      "provenance": "ai",
+      "id": "e4fd453359fa"
+    },
+    {
+      "kind": "definition",
       "label": "Euclidean metric",
       "anchor": {
         "section": "17th century: Descartes",
@@ -494,7 +528,7 @@
         "module": "Mathlib.LinearAlgebra.AffineSpace.Defs",
         "match_kind": null
       },
-      "note": "AffineSpace (notation for AddTorsor) and a full affine geometry library exist, capturing the field but not a single 'affine geometry' statement.",
+      "note": "AffineSpace is a scoped notation for AddTorsor and a full affine geometry library exists, capturing the field but not a single 'affine geometry' statement.",
       "provenance": "ai",
       "id": "493a12cf9db3"
     },
@@ -514,6 +548,40 @@
       "note": "Mathlib has no theory of compass-and-straightedge constructible numbers proving angle trisection impossible.",
       "provenance": "ai",
       "id": "3aac1671b17b"
+    },
+    {
+      "kind": "theorem",
+      "label": "Impossibility of doubling the cube",
+      "anchor": {
+        "section": "18th century",
+        "snippet": "doubling the cube"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formalization of the impossibility of doubling the cube with compass and straightedge.",
+      "provenance": "ai",
+      "id": "e42238b46706"
+    },
+    {
+      "kind": "theorem",
+      "label": "Impossibility of squaring the circle",
+      "anchor": {
+        "section": "18th century",
+        "snippet": "squaring the circle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Real.transcendental_pi but no derivation of the impossibility of squaring the circle as a constructibility result.",
+      "provenance": "ai",
+      "id": "d79681a97c74"
     },
     {
       "kind": "proposition",
@@ -576,7 +644,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "and_not_self_iff",
-        "module": null,
+        "module": "Init.PropLemmas",
         "match_kind": "exact"
       },
       "note": "The lemma and_not_self_iff : (a ∧ ¬a) ↔ False expresses non-contradiction, though it is a core/Batteries lemma rather than Mathlib-defined.",

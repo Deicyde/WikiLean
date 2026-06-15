@@ -11,7 +11,15 @@
         "section": "(Lead)",
         "snippet": "an elliptic curve is a smooth , projective , algebraic curve of genus one"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "WeierstrassCurve.IsElliptic",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Weierstrass",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib defines an elliptic curve as a Weierstrass curve with unit discriminant, a concrete model rather than the abstract smooth projective genus-one curve with a point.",
+      "provenance": "ai-agent1",
+      "id": "29ba73cfa5b7"
     },
     {
       "kind": "definition",
@@ -20,6 +28,30 @@
         "section": "(Lead)",
         "snippet": "The curve is required to be non-singular , which means that the curve has no cusps or self-intersections ."
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeierstrassCurve.Affine.Nonsingular",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Basic",
+        "match_kind": "exact"
+      },
+      "note": "WeierstrassCurve.Affine.Nonsingular is exactly the non-vanishing-partial-derivatives nonsingularity condition at an affine point.",
+      "provenance": "ai-agent1",
+      "id": "b3d142c4f8ee"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-singular iff 4a³ + 27b² ≠ 0",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "This is equivalent to the condition 4 a 3 + 27 b 2 ≠ 0"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "WeierstrassCurve.Affine.equation_iff_nonsingular_of_Δ_ne_zero",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves nonvanishing of the discriminant (which specializes to 4a³ + 27b² ≠ 0 in short Weierstrass form) implies nonsingularity at every solution point.",
       "provenance": "ai-agent1"
     },
     {
@@ -29,7 +61,15 @@
         "section": "(Lead)",
         "snippet": "An elliptic curve is an abelian variety"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of abelian variety to identify an elliptic curve with.",
+      "provenance": "ai-agent1",
+      "id": "ac63ba9d4b5e"
     },
     {
       "kind": "proposition",
@@ -38,7 +78,15 @@
         "section": "(Lead)",
         "snippet": "the solution set is a nonsingular plane curve of genus one"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "WeierstrassCurve.Affine.equation_iff_nonsingular_of_Δ_ne_zero",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves Δ ≠ 0 (distinct roots) forces every solution point to be nonsingular, but the genus-one conclusion is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "3b23ff6ba75a"
     },
     {
       "kind": "proposition",
@@ -47,7 +95,15 @@
         "section": "(Lead)",
         "snippet": "elliptic curves defined over the complex numbers correspond to embeddings of the torus into the complex projective plane"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No construction of the embedding ℂ/Λ → ℙ²(ℂ) exists in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "3c17faa11c64"
     },
     {
       "kind": "proposition",
@@ -56,7 +112,15 @@
         "section": "(Lead)",
         "snippet": "there is a natural representation of real elliptic curves with shape invariant j ≥ 1 as ellipses in the hyperbolic plane"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No such hyperbolic-plane representation of real elliptic curves is in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "24a6641b513f"
     },
     {
       "kind": "proposition",
@@ -65,7 +129,15 @@
         "section": "(Lead)",
         "snippet": "a complex elliptic curve is a torus , while a complex ellipse is a sphere"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The topological homeomorphism of a complex elliptic curve with a torus is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "eeaf76ca7fb8"
     },
     {
       "kind": "definition",
@@ -74,7 +146,15 @@
         "section": "Elliptic curves over the real numbers",
         "snippet": "an elliptic curve is a plane curve defined by an equation of the form"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeierstrassCurve.IsShortNF",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.NormalForms",
+        "match_kind": "exact"
+      },
+      "note": "WeierstrassCurve.IsShortNF is exactly the short Weierstrass form Y² = X³ + a₄X + a₆.",
+      "provenance": "ai-agent1",
+      "id": "a1cc1ed183db"
     },
     {
       "kind": "definition",
@@ -83,7 +163,15 @@
         "section": "Elliptic curves over the real numbers",
         "snippet": "Algebraically, this holds if and only if the discriminant"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "WeierstrassCurve.Affine.equation_iff_nonsingular_of_Δ_ne_zero",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves the Δ ≠ 0 ⟹ nonsingular direction (and defines IsElliptic via IsUnit Δ), but not the full biconditional with discriminant as in the article.",
+      "provenance": "ai-agent1",
+      "id": "af5f50cd5c9f"
     },
     {
       "kind": "proposition",
@@ -92,7 +180,15 @@
         "section": "Elliptic curves over the real numbers",
         "snippet": "The real graph of a non-singular curve has two components if its discriminant is positive"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The number of real connected components as a function of the discriminant sign is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "1120c88bf08a"
     },
     {
       "kind": "example",
@@ -101,7 +197,15 @@
         "section": "Elliptic curves over the real numbers",
         "snippet": "the discriminant in the first case is 64, and in the second case is −368"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "These specific numeric discriminant examples are not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "904bd64a6904"
     },
     {
       "kind": "proposition",
@@ -110,7 +214,15 @@
         "section": "Group law",
         "snippet": "which is thus the unique intersection of the curve with the line at infinity"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "WeierstrassCurve.Affine.Point",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Point",
+        "match_kind": "special_case"
+      },
+      "note": "The unique point at infinity is modeled as the single `zero` constructor of Point, but the projective intersection-with-line-at-infinity statement is not proven.",
+      "provenance": "ai-agent1",
+      "id": "a6ffa7196347"
     },
     {
       "kind": "proposition",
@@ -119,7 +231,15 @@
         "section": "Group law",
         "snippet": "this point at infinity is the identity element of a group structure"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeierstrassCurve.Affine.Point.instAddCommGroup",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Point",
+        "match_kind": "exact"
+      },
+      "note": "In the AddCommGroup instance the point at infinity `Point.zero` is the additive identity (zero_add/add_zero).",
+      "provenance": "ai-agent1",
+      "id": "3254d0db224b"
     },
     {
       "kind": "definition",
@@ -128,7 +248,15 @@
         "section": "Group law",
         "snippet": "we can take − P to be the point opposite it"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeierstrassCurve.Affine.Point.neg",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Point",
+        "match_kind": "exact"
+      },
+      "note": "Point.neg defines −P as the third intersection with the vertical line through P.",
+      "provenance": "ai-agent1",
+      "id": "f7274666ea74"
     },
     {
       "kind": "definition",
@@ -137,7 +265,15 @@
         "section": "Group law",
         "snippet": "then we can uniquely describe a third point P + Q in the following way"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeierstrassCurve.Affine.Point.add",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Point",
+        "match_kind": "exact"
+      },
+      "note": "Point.add defines P + Q via the secant/tangent (chord) construction.",
+      "provenance": "ai-agent1",
+      "id": "8d54f747d122"
     },
     {
       "kind": "definition",
@@ -146,7 +282,15 @@
         "section": "Group law",
         "snippet": "This definition for addition works except in a few special cases related to the point at infinity and intersection multiplicity"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeierstrassCurve.Affine.Point.add",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Point",
+        "match_kind": "exact"
+      },
+      "note": "The add definition explicitly handles the point-at-infinity and y₁ = negY (vertical line) special cases via case analysis.",
+      "provenance": "ai-agent1",
+      "id": "ae056e251e01"
     },
     {
       "kind": "definition",
@@ -155,7 +299,15 @@
         "section": "Group law",
         "snippet": "the K - rational points of E are the points on E whose coordinates all lie in K"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeierstrassCurve.Affine.Point",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Point",
+        "match_kind": "exact"
+      },
+      "note": "WeierstrassCurve.Affine.Point over a field F is exactly the set of F-rational points (nonsingular points with coordinates in F, plus infinity).",
+      "provenance": "ai-agent1",
+      "id": "e17a1fd031c0"
     },
     {
       "kind": "proposition",
@@ -164,7 +316,15 @@
         "section": "Group law",
         "snippet": "E ( K ) is a group, because properties of polynomial equations show"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeierstrassCurve.Affine.Point.instAddCommGroup",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Point",
+        "match_kind": "exact"
+      },
+      "note": "The nonsingular points form an AddCommGroup under the chord-tangent law.",
+      "provenance": "ai-agent1",
+      "id": "9df7d1bf004c"
     },
     {
       "kind": "proposition",
@@ -173,7 +333,15 @@
         "section": "Group law",
         "snippet": "if K is a subfield of L , then E ( K ) is a subgroup of E ( L )"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeierstrassCurve.Affine.Point.map",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Point",
+        "match_kind": "generalization"
+      },
+      "note": "Point.map is an additive group homomorphism E(K) →+ E(L) induced by a field extension, and map_injective shows it embeds E(K) as a subgroup.",
+      "provenance": "ai-agent1",
+      "id": "6b24e205cd6c"
     },
     {
       "kind": "proposition",
@@ -182,7 +350,15 @@
         "section": "Algebraic interpretation",
         "snippet": "assume first that x P ≠ x Q"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeierstrassCurve.Affine.slope_of_X_ne",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Formula",
+        "match_kind": "exact"
+      },
+      "note": "slope_of_X_ne gives slope (y₁−y₂)/(x₁−x₂), combined with addX/addY for the secant addition formula.",
+      "provenance": "ai-agent1",
+      "id": "9b695884c56b"
     },
     {
       "kind": "proposition",
@@ -191,7 +367,15 @@
         "section": "Algebraic interpretation",
         "snippet": "the inverse of each point on the curve is found by reflecting it across the x axis"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeierstrassCurve.Affine.negY",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Formula",
+        "match_kind": "special_case"
+      },
+      "note": "negY = −y − a₁x − a₃ gives the inverse's y-coordinate; reflection y ↦ −y is the special case a₁ = a₃ = 0.",
+      "provenance": "ai-agent1",
+      "id": "72d3c44ef961"
     },
     {
       "kind": "proposition",
@@ -200,7 +384,15 @@
         "section": "Algebraic interpretation",
         "snippet": "The slope is given by the tangent to the curve at"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeierstrassCurve.Affine.slope_of_Y_ne",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Formula",
+        "match_kind": "exact"
+      },
+      "note": "slope_of_Y_ne gives the tangent-line slope (3x²+2a₂x+a₄−a₁y)/(2y+a₁x+a₃) used for point doubling.",
+      "provenance": "ai-agent1",
+      "id": "8ca331b8417f"
     },
     {
       "kind": "proposition",
@@ -209,7 +401,15 @@
         "section": "Algebraic interpretation",
         "snippet": "that works in both case 1 and case 2 is"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeierstrassCurve.Affine.slope",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Formula",
+        "match_kind": "exact"
+      },
+      "note": "The single `slope` definition covers both the secant and tangent cases.",
+      "provenance": "ai-agent1",
+      "id": "811fe669238a"
     },
     {
       "kind": "proposition",
@@ -218,7 +418,15 @@
         "section": "Non-Weierstrass curves",
         "snippet": "the general form of an elliptic curve with characteristic 3"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "WeierstrassCurve.IsCharThreeNF",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.NormalForms",
+        "match_kind": "special_case"
+      },
+      "note": "The characteristic-3 normal form is formalized and the general affine addition formulas apply, but no explicit char-3 addition formulas are stated separately.",
+      "provenance": "ai-agent1",
+      "id": "58cffdb6f05c"
     },
     {
       "kind": "definition",
@@ -227,7 +435,15 @@
         "section": "Non-Weierstrass curves",
         "snippet": "we can still define a group structure by designating one of its nine inflection points as the identity O"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib only has the group law on Weierstrass models, not on a general plane cubic via a chosen inflection point.",
+      "provenance": "ai-agent1",
+      "id": "b6d42958a9e2"
     },
     {
       "kind": "example",
@@ -236,7 +452,15 @@
         "section": "Non-Weierstrass curves",
         "snippet": "For an example of the group law over a non-Weierstrass curve, see Hessian curves"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hessian curves and their group law are not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "781b81c7ee1b"
     },
     {
       "kind": "proposition",
@@ -245,7 +469,15 @@
         "section": "Elliptic curves over the rational numbers",
         "snippet": "the set of rational points of E forms a subgroup of the group of real points of E"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeierstrassCurve.Affine.Point.map",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Point",
+        "match_kind": "special_case"
+      },
+      "note": "The injective base-change homomorphism Point.map specializes to E(ℚ) →+ E(ℝ), realizing E(ℚ) as a subgroup.",
+      "provenance": "ai-agent1",
+      "id": "36d743e6eba7"
     },
     {
       "kind": "example",
@@ -254,7 +486,15 @@
         "section": "Integral points",
         "snippet": "has eight integral solutions with y > 0"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific enumeration of integral points is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "411a3e6c828e"
     },
     {
       "kind": "example",
@@ -263,7 +503,15 @@
         "section": "Integral points",
         "snippet": "has only four solutions with y ≥ 0"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ljunggren's equation and its solution count are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "783f60b07348"
     },
     {
       "kind": "theorem",
@@ -272,7 +520,15 @@
         "section": "The structure of rational points",
         "snippet": "the Mordell–Weil theorem states that the group E ( Q ) is a finitely generated (abelian) group"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Mordell–Weil theorem is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "c5847ddeaf91"
     },
     {
       "kind": "proposition",
@@ -281,7 +537,15 @@
         "section": "The structure of rational points",
         "snippet": "it is therefore a finite direct sum of copies of Z and finite cyclic groups"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "AddCommGroup.equiv_free_prod_directSum_zmod",
+        "module": "Mathlib.GroupTheory.FiniteAbelian.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The general structure theorem for finitely generated abelian groups is formalized, but its application to E(ℚ) depends on the unformalized Mordell–Weil theorem.",
+      "provenance": "ai-agent1",
+      "id": "f854bca0961e"
     },
     {
       "kind": "theorem",
@@ -290,7 +554,15 @@
         "section": "The structure of rational points",
         "snippet": "the quotient group E ( Q )/ mE ( Q ) is finite (this is the weak Mordell–Weil theorem)"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The weak Mordell–Weil theorem is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "9c54c4ad4262"
     },
     {
       "kind": "proposition",
@@ -299,7 +571,15 @@
         "section": "The structure of rational points",
         "snippet": "only finitely many rational points with height smaller than any constant exist on E"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Heights of points on elliptic curves and their finiteness are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "f7933268e0d2"
     },
     {
       "kind": "definition",
@@ -308,7 +588,15 @@
         "section": "The structure of rational points",
         "snippet": "The rank of E ( Q ) is the number of copies of Z in E ( Q )"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Mordell–Weil rank of an elliptic curve is not defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "058f829a558c"
     },
     {
       "kind": "example",
@@ -317,7 +605,15 @@
         "section": "The structure of rational points",
         "snippet": "It has rank 20, found by Noam Elkies and Zev Klagsbrun in 2020"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This record rank example is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "6c55ade4d20f"
     },
     {
       "kind": "theorem",
@@ -326,7 +622,15 @@
         "section": "The structure of rational points",
         "snippet": "the torsion subgroup of E ( Q ) is one of the 15 following groups ( a theorem due to Barry Mazur )"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mazur's classification of torsion subgroups is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "c9efbb796c44"
     },
     {
       "kind": "theorem",
@@ -335,7 +639,15 @@
         "section": "The Birch and Swinnerton-Dyer conjecture",
         "snippet": "The Birch and Swinnerton-Dyer conjecture (BSD) is one of the Millennium problems of the Clay Mathematics Institute"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The BSD conjecture is not stated in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "d8dd8b5b818a"
     },
     {
       "kind": "definition",
@@ -344,7 +656,15 @@
         "section": "The Birch and Swinnerton-Dyer conjecture",
         "snippet": "the Hasse–Weil zeta function of E over Q"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "WeierstrassCurve.LFunction",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.LFunction",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib defines the L-function via local Euler factors, closely related to but not identical with the Hasse–Weil zeta function.",
+      "provenance": "ai-agent1",
+      "id": "2de528b97df9"
     },
     {
       "kind": "definition",
@@ -353,7 +673,15 @@
         "section": "The Birch and Swinnerton-Dyer conjecture",
         "snippet": "in which case E is said to be of bad reduction at p"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "WeierstrassCurve.HasGoodReduction",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Reduction",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib defines good, multiplicative, and additive reduction; bad reduction is the complement of HasGoodReduction but has no standalone predicate.",
+      "provenance": "ai-agent1",
+      "id": "e63146a33996"
     },
     {
       "kind": "definition",
@@ -362,7 +690,15 @@
         "section": "The Birch and Swinnerton-Dyer conjecture",
         "snippet": "The zeta function of an elliptic curve over a finite field F p is, in some sense, a generating function"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "WeierstrassCurve.localPolynomial",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.LFunction",
+        "match_kind": "special_case"
+      },
+      "note": "localPolynomial gives the numerator 1 − aT + qT² of the local zeta function, but the exp-generating-series zeta function over a finite field is not defined.",
+      "provenance": "ai-agent1",
+      "id": "f95dcd1a1f83"
     },
     {
       "kind": "proposition",
@@ -371,7 +707,15 @@
         "section": "The Birch and Swinnerton-Dyer conjecture",
         "snippet": "the so-defined zeta function is a rational function in T"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem asserting rationality of the elliptic-curve zeta function is in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "3261604eae6d"
     },
     {
       "kind": "definition",
@@ -380,7 +724,15 @@
         "section": "The Birch and Swinnerton-Dyer conjecture",
         "snippet": "the 'trace of Frobenius' term"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "WeierstrassCurve.localPolynomial",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.LFunction",
+        "match_kind": "special_case"
+      },
+      "note": "The quantity aₚ = q + 1 − |E(κ)| appears inside localPolynomial but there is no standalone trace-of-Frobenius definition.",
+      "provenance": "ai-agent1",
+      "id": "308cc26fb7b0"
     },
     {
       "kind": "definition",
@@ -389,7 +741,15 @@
         "section": "The Birch and Swinnerton-Dyer conjecture",
         "snippet": "The L-function of E over Q is then defined by collecting this information together, for all primes p"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeierstrassCurve.LFunction",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.LFunction",
+        "match_kind": "generalization"
+      },
+      "note": "WeierstrassCurve.LFunction (and LSeries) defines the L-function over any number field via the Euler product of local factors, with ℚ as a special case.",
+      "provenance": "ai-agent1",
+      "id": "4796cfabbcc7"
     },
     {
       "kind": "definition",
@@ -398,7 +758,15 @@
         "section": "The Birch and Swinnerton-Dyer conjecture",
         "snippet": "where N is the conductor of E , i.e. the product of primes with bad reduction"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The conductor of an elliptic curve is not defined in Mathlib (existing `conductor` decls are unrelated ring/character conductors).",
+      "provenance": "ai-agent1",
+      "id": "44a34d5b021c"
     },
     {
       "kind": "example",
@@ -407,7 +775,15 @@
         "section": "The Birch and Swinnerton-Dyer conjecture",
         "snippet": "has bad reduction at 17, because"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific bad-reduction example is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "00a1568879c8"
     },
     {
       "kind": "theorem",
@@ -416,7 +792,15 @@
         "section": "The Birch and Swinnerton-Dyer conjecture",
         "snippet": "Hasse's conjecture affirms that the L -function admits an analytic continuation to the whole complex plane"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Analytic continuation of the elliptic-curve L-function is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "2d56f716a2d9"
     },
     {
       "kind": "theorem",
@@ -425,7 +809,15 @@
         "section": "The Birch and Swinnerton-Dyer conjecture",
         "snippet": "which asserts that every elliptic curve over Q is a modular curve"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The modularity theorem is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "1624ddff9a9b"
     },
     {
       "kind": "proposition",
@@ -434,7 +826,15 @@
         "section": "The Birch and Swinnerton-Dyer conjecture",
         "snippet": "the vanishing order of the L -function at s = 1 equals the rank of E"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The BSD rank/order-of-vanishing statement is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "6f5a3e3462d4"
     },
     {
       "kind": "definition",
@@ -443,7 +843,15 @@
         "section": "The Birch and Swinnerton-Dyer conjecture",
         "snippet": "A congruent number is defined as an odd square-free integer n which is the area of a right triangle with rational side lengths"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Congruent numbers are not defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "cfb85bec938e"
     },
     {
       "kind": "proposition",
@@ -452,7 +860,15 @@
         "section": "The Birch and Swinnerton-Dyer conjecture",
         "snippet": "has a rational point of infinite order"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The congruent-number criterion via infinite-order rational points is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "123582ad3eff"
     },
     {
       "kind": "theorem",
@@ -461,7 +877,15 @@
         "section": "The Birch and Swinnerton-Dyer conjecture",
         "snippet": "Tunnell has shown a related result: assuming BSD"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Tunnell's theorem is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "29834774f3ef"
     },
     {
       "kind": "proposition",
@@ -470,7 +894,15 @@
         "section": "The Birch and Swinnerton-Dyer conjecture",
         "snippet": "assuming the generalized Riemann hypothesis and BSD"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Average-rank results for elliptic curves are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "3728468bf962"
     },
     {
       "kind": "theorem",
@@ -479,7 +911,15 @@
         "section": "Elliptic curves over finite fields",
         "snippet": "Hasse's theorem on elliptic curves gives the following inequality"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hasse's bound |#E(F_q) − (q+1)| ≤ 2√q is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "b555cefd894a"
     },
     {
       "kind": "proposition",
@@ -488,7 +928,15 @@
         "section": "Elliptic curves over finite fields",
         "snippet": "It is always cyclic or the product of two cyclic groups"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The structure of E(F_q) as cyclic or a product of two cyclic groups is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "3750d58d8355"
     },
     {
       "kind": "example",
@@ -497,7 +945,15 @@
         "section": "Elliptic curves over finite fields",
         "snippet": "over F 71 has 72 points"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific point-count example is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "4dcfab2d54c2"
     },
     {
       "kind": "definition",
@@ -506,7 +962,15 @@
         "section": "Elliptic curves over finite fields",
         "snippet": "the local zeta function of E over F q , defined by a generating series"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "WeierstrassCurve.localPolynomial",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.LFunction",
+        "match_kind": "special_case"
+      },
+      "note": "localPolynomial provides the local factor 1 − aT + qT², but the full local zeta generating series is not defined.",
+      "provenance": "ai-agent1",
+      "id": "833325c35dae"
     },
     {
       "kind": "proposition",
@@ -515,7 +979,15 @@
         "section": "Elliptic curves over finite fields",
         "snippet": "The zeta function is a rational function in T"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No rationality theorem for the local zeta function is in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "3bc5b628b7d4"
     },
     {
       "kind": "example",
@@ -524,7 +996,15 @@
         "section": "Elliptic curves over finite fields",
         "snippet": "the zeta function of E : y 2 + y = x 3 over the field F 2 is given by"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific zeta-function computation is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "8b0eec21dd32"
     },
     {
       "kind": "proposition",
@@ -533,7 +1013,15 @@
         "section": "Elliptic curves over finite fields",
         "snippet": "The functional equation is"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The functional equation of the elliptic-curve zeta function is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "a19a7edd51ec"
     },
     {
       "kind": "theorem",
@@ -542,7 +1030,15 @@
         "section": "Elliptic curves over finite fields",
         "snippet": "The Sato–Tate conjecture is a statement about how the error term"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Sato–Tate conjecture is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "8f3ca98479cf"
     },
     {
       "kind": "definition",
@@ -551,7 +1047,15 @@
         "section": "Elliptic curves over a general field",
         "snippet": "the formal definition of an elliptic curve is a non-singular projective algebraic curve over K with genus 1"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "WeierstrassCurve.IsElliptic",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Weierstrass",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib's IsElliptic over a field captures elliptic curves via the Weierstrass model (unit discriminant), not the abstract genus-one projective curve definition.",
+      "provenance": "ai-agent1",
+      "id": "0d6cbd0aba86"
     },
     {
       "kind": "proposition",
@@ -560,7 +1064,15 @@
         "section": "Elliptic curves over a general field",
         "snippet": "then every elliptic curve over K can be written in the form"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeierstrassCurve.exists_variableChange_isShortNF",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.NormalForms",
+        "match_kind": "exact"
+      },
+      "note": "When 2 and 3 are invertible, exists_variableChange_isShortNF gives a change of variables to Y² = X³ + a₄X + a₆.",
+      "provenance": "ai-agent1",
+      "id": "7d9309228ece"
     },
     {
       "kind": "proposition",
@@ -569,7 +1081,15 @@
         "section": "Elliptic curves over a general field",
         "snippet": "in characteristic 3, the most general equation is of the form"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeierstrassCurve.exists_variableChange_isCharThreeNF",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.NormalForms",
+        "match_kind": "exact"
+      },
+      "note": "exists_variableChange_isCharThreeNF reduces any curve over a char-3 field to the IsCharThreeNF normal form.",
+      "provenance": "ai-agent1",
+      "id": "7e2c6e87ba3f"
     },
     {
       "kind": "proposition",
@@ -578,7 +1098,15 @@
         "section": "Elliptic curves over a general field",
         "snippet": "In characteristic 2, even this much is not possible, and the most general equation is"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeierstrassCurve.exists_variableChange_isCharTwoNF",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.NormalForms",
+        "match_kind": "exact"
+      },
+      "note": "exists_variableChange_isCharTwoNF reduces any curve over a char-2 field to the IsCharTwoNF normal form.",
+      "provenance": "ai-agent1",
+      "id": "735366ef7673"
     },
     {
       "kind": "definition",
@@ -587,7 +1115,15 @@
         "section": "Elliptic curves over a general field",
         "snippet": "Points of the curve whose coordinates both belong to K are called K -rational points"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeierstrassCurve.Affine.Point",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Affine.Point",
+        "match_kind": "exact"
+      },
+      "note": "WeierstrassCurve.Affine.Point over a field K is exactly the set of K-rational points.",
+      "provenance": "ai-agent1",
+      "id": "f44190eebf0c"
     },
     {
       "kind": "theorem",
@@ -596,7 +1132,15 @@
         "section": "Elliptic curves over a general field",
         "snippet": "the group E(K) of K -rational points of an elliptic curve E defined over K is finitely generated"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Mordell–Weil theorem over number fields is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "071de695f9b0"
     },
     {
       "kind": "theorem",
@@ -605,7 +1149,15 @@
         "section": "Elliptic curves over a general field",
         "snippet": "A theorem due to Loïc Merel shows that for a given integer d"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Merel's uniform boundedness theorem is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "6f566f6864a2"
     },
     {
       "kind": "theorem",
@@ -614,7 +1166,15 @@
         "section": "Elliptic curves over a general field",
         "snippet": "Then there are only finitely many points of E(K) whose x -coordinate is in the ring of integers O K"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Siegel's theorem on finiteness of integral points is not formalized (Mathlib's Siegel's lemma is unrelated).",
+      "provenance": "ai-agent1",
+      "id": "d2e29cc267e3"
     },
     {
       "kind": "proposition",
@@ -623,7 +1183,15 @@
         "section": "Elliptic curves over the complex numbers",
         "snippet": "These functions and their first derivative are related by the formula"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PeriodPair.derivWeierstrassP_sq",
+        "module": "Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass",
+        "match_kind": "exact"
+      },
+      "note": "derivWeierstrassP_sq proves ℘'(z)² = 4℘(z)³ − g₂℘(z) − g₃.",
+      "provenance": "ai-agent1",
+      "id": "a328950c1ebd"
     },
     {
       "kind": "definition",
@@ -632,7 +1200,15 @@
         "section": "Elliptic curves over the complex numbers",
         "snippet": "The Weierstrass functions are doubly periodic"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PeriodPair.weierstrassP_add_coe",
+        "module": "Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass",
+        "match_kind": "exact"
+      },
+      "note": "weierstrassP_add_coe (and derivWeierstrassP_add_coe) prove ℘ and ℘' are invariant under lattice translations, i.e. doubly periodic.",
+      "provenance": "ai-agent1",
+      "id": "223f42603d8e"
     },
     {
       "kind": "proposition",
@@ -641,7 +1217,15 @@
         "section": "Elliptic curves over the complex numbers",
         "snippet": "This map is a group isomorphism of the torus"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The group isomorphism ℂ/Λ ≅ E(ℂ) via (℘, ℘') is not constructed in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "9207bbf9a3aa"
     },
     {
       "kind": "proposition",
@@ -650,7 +1234,15 @@
         "section": "Elliptic curves over the complex numbers",
         "snippet": "then the corresponding curves are isomorphic"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The statement that homothetic lattices yield isomorphic complex curves is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "85e3598e6233"
     },
     {
       "kind": "proposition",
@@ -659,7 +1251,15 @@
         "section": "Elliptic curves over the complex numbers",
         "snippet": "Isomorphism classes of elliptic curves are specified by the j -invariant"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeierstrassCurve.exists_variableChange_of_j_eq",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.IsomOfJ",
+        "match_kind": "generalization"
+      },
+      "note": "Over a separably closed field, equal j-invariants imply the curves are related by a change of variables, generalizing the ℂ case.",
+      "provenance": "ai-agent1",
+      "id": "f2c0ba6fc8b4"
     },
     {
       "kind": "definition",
@@ -668,7 +1268,15 @@
         "section": "Elliptic curves over the complex numbers",
         "snippet": "The constants g 2 and g 3 , called the modular invariants , are uniquely determined by the lattice"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PeriodPair.g₂",
+        "module": "Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass",
+        "match_kind": "exact"
+      },
+      "note": "PeriodPair.g₂ = 60·G₄ and PeriodPair.g₃ = 140·G₆ are the lattice invariants, matching the article's definitions.",
+      "provenance": "ai-agent1",
+      "id": "5e87b50e601c"
     },
     {
       "kind": "example",
@@ -677,7 +1285,15 @@
         "section": "Elliptic curves over the complex numbers",
         "snippet": "it yields the integer j (2 i ) = 66 3 = 287 496"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific value of the analytic j-function is not computed in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "c591e8a9d188"
     },
     {
       "kind": "proposition",
@@ -686,7 +1302,15 @@
         "section": "Elliptic curves over the complex numbers",
         "snippet": "is generally a transcendental number"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transcendence of the modular discriminant is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "943c7501cb77"
     },
     {
       "kind": "theorem",
@@ -695,7 +1319,15 @@
         "section": "Elliptic curves over the complex numbers",
         "snippet": "the uniformization theorem implies that every compact Riemann surface of genus one can be represented as a torus"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The uniformization theorem for genus-one Riemann surfaces is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "6771ba13ffcb"
     },
     {
       "kind": "proposition",
@@ -704,7 +1336,15 @@
         "section": "Elliptic curves over the complex numbers",
         "snippet": "then the n -torsion points are the (equivalence classes of) points of the form"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The explicit description of n-torsion of ℂ/Λ in the elliptic-curve setting is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "82c961c7d477"
     },
     {
       "kind": "proposition",
@@ -713,7 +1353,15 @@
         "section": "Elliptic curves over the complex numbers",
         "snippet": "a pair of fundamental periods of E can be calculated very rapidly by"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Computing periods via the arithmetic–geometric mean is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "5887b1dda4bb"
     },
     {
       "kind": "proposition",
@@ -722,6 +1370,30 @@
         "section": "Elliptic curves over the complex numbers",
         "snippet": "Over the complex numbers, every elliptic curve has nine inflection points"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The nine inflection points and Hesse configuration are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "0a75fec11ee3"
+    },
+    {
+      "kind": "definition",
+      "label": "Isogeny of elliptic curves",
+      "anchor": {
+        "section": "The dual isogeny",
+        "snippet": "Given an isogeny"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of an isogeny between elliptic curves is not formalized in Mathlib.",
       "provenance": "ai-agent1"
     },
     {
@@ -731,6 +1403,30 @@
         "section": "The dual isogeny",
         "snippet": "the dual isogeny is an isogeny"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Isogenies of elliptic curves are not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "5aaf0c0a60c4"
+    },
+    {
+      "kind": "proposition",
+      "label": "Composition of dual and original is multiplication-by-n",
+      "anchor": {
+        "section": "The dual isogeny",
+        "snippet": "of the same degree such that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The defining identity f̂ ∘ f = [n] is not formalized.",
       "provenance": "ai-agent1"
     },
     {
@@ -740,7 +1436,15 @@
         "section": "Construction of the dual isogeny",
         "snippet": "it can be explicitly given as the composition"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No construction of the dual isogeny exists in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "c4bbabd4d749"
     },
     {
       "kind": "proposition",
@@ -749,7 +1453,15 @@
         "section": "Construction of the dual isogeny",
         "snippet": "descends to an isomorphism"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Picard-group construction of the dual isogeny is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "56f29de2dd69"
     },
     {
       "kind": "proposition",
@@ -758,7 +1470,15 @@
         "section": "Construction of the dual isogeny",
         "snippet": "also implies the conjugate relation"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The conjugate relation of the dual isogeny is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "20e5370692fd"
     }
   ]
 }

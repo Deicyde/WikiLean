@@ -983,11 +983,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Basis.orientation_eq_iff_det_pos",
+        "decl": "Module.Basis.orientation_eq_iff_det_pos",
         "module": "Mathlib.LinearAlgebra.Orientation",
         "match_kind": "exact"
       },
-      "note": "`orientation_eq_iff_det_pos` characterizes equality of orientations via positivity of the change-of-basis determinant.",
+      "note": "`Module.Basis.orientation_eq_iff_det_pos` characterizes equality of orientations via positivity of the change-of-basis determinant.",
       "provenance": "ai",
       "id": "7a2ed7260344"
     },
@@ -1296,6 +1296,74 @@
       "note": "Mathlib defines `Matrix.det` only over commutative rings; no formal incompatibility no-go theorem is stated.",
       "provenance": "ai",
       "id": "83a0ced0db8e"
+    },
+    {
+      "kind": "definition",
+      "label": "General linear group",
+      "anchor": {
+        "section": "Multiplicativity and matrix groups",
+        "snippet": "the set of such matrices (of fixed size"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.GeneralLinearGroup",
+        "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.GeneralLinearGroup n R` is the group of units in `Matrix n n R`.",
+      "provenance": "ai",
+      "id": "10ed5e25ba4f"
+    },
+    {
+      "kind": "definition",
+      "label": "Special linear group",
+      "anchor": {
+        "section": "Multiplicativity and matrix groups",
+        "snippet": "a subgroup called the special linear group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.SpecialLinearGroup",
+        "module": "Mathlib.LinearAlgebra.Matrix.SpecialLinearGroup",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.SpecialLinearGroup n R` is the subgroup of `GL n R` consisting of determinant-1 matrices.",
+      "provenance": "ai",
+      "id": "4c3e534795eb"
+    },
+    {
+      "kind": "proposition",
+      "label": "Determinant respects ring homomorphisms (naturality)",
+      "anchor": {
+        "section": "Square matrices over commutative rings",
+        "snippet": "The determinant respects these maps"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RingHom.map_det",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`RingHom.map_det` shows `f (det A) = det (A.map f)` for a ring homomorphism `f`.",
+      "provenance": "ai",
+      "id": "cea6fa2c806c"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cayley–Hamilton theorem",
+      "anchor": {
+        "section": "Trace",
+        "snippet": "cf. Cayley-Hamilton theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.aeval_self_charpoly",
+        "module": "Mathlib.LinearAlgebra.Matrix.Charpoly.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.aeval_self_charpoly` states that a matrix satisfies its own characteristic polynomial.",
+      "provenance": "ai",
+      "id": "af60cb675639"
     }
   ]
 }
