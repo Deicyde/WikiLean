@@ -30,9 +30,19 @@ type Ctx = Context<{ Bindings: Env }>;
 // Per-request better-auth instance (Workers bindings are only available per request).
 export function makeAuth(env: Env) {
   const db = drizzle(env.DB);
-  const socialProviders: Record<string, { clientId: string; clientSecret: string }> = {};
+  const socialProviders: Record<
+    string,
+    { clientId: string; clientSecret: string; scope?: string[] }
+  > = {};
   if (env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET) {
-    socialProviders.github = { clientId: env.GITHUB_CLIENT_ID, clientSecret: env.GITHUB_CLIENT_SECRET };
+    // `public_repo` lets logged-in reviewers post PR comments via the /review
+    // tool (commenting on a public PR is a write action → needs the scope).
+    // read:user/user:email keep identity working. Existing users re-consent once.
+    socialProviders.github = {
+      clientId: env.GITHUB_CLIENT_ID,
+      clientSecret: env.GITHUB_CLIENT_SECRET,
+      scope: ["read:user", "user:email", "public_repo"],
+    };
   }
   if (env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET) {
     socialProviders.google = { clientId: env.GOOGLE_CLIENT_ID, clientSecret: env.GOOGLE_CLIENT_SECRET };
