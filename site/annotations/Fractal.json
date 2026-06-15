@@ -69,7 +69,7 @@
         "module": "Mathlib.MeasureTheory.Measure.Hausdorff",
         "match_kind": "generalization"
       },
-      "note": "`hausdorffMeasure_smul₀` proves μH[d](r•s)=‖r‖^d•μH[d] s for real d, formalizing how d-dimensional content scales by a possibly non-integer power, but without the 'fractal' framing.",
+      "note": "`hausdorffMeasure_smul₀` proves μH[d](r•s)=‖r‖^d•μH[d] s for real d, formalizing how d-dimensional content scales by a possibly non-integer power, without the 'fractal' framing.",
       "provenance": "ai",
       "id": "8c1fb164c0e2"
     },
@@ -82,11 +82,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "MeasureTheory.dimH",
+        "decl": "dimH",
         "module": "Mathlib.Topology.MetricSpace.HausdorffDimension",
         "match_kind": "generalization"
       },
-      "note": "`MeasureTheory.dimH` is the Hausdorff dimension, the rigorous form of the fractal/scaling dimension defined for arbitrary sets.",
+      "note": "`dimH` is the Hausdorff dimension, the rigorous form of the fractal/scaling dimension defined for arbitrary sets in an (e)metric space.",
       "provenance": "ai",
       "id": "f809af8256c7"
     },
@@ -116,7 +116,7 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "MeasureTheory.dimH",
+        "decl": "dimH",
         "module": "Mathlib.Topology.MetricSpace.HausdorffDimension",
         "match_kind": null
       },
@@ -167,11 +167,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "MeasureTheory.dimH_univ_eq_finrank",
+        "decl": "Real.dimH_univ_eq_finrank",
         "module": "Mathlib.Topology.MetricSpace.HausdorffDimension",
         "match_kind": "generalization"
       },
-      "note": "A square's dimension being 2 follows from `dimH_univ_eq_finrank` (and area scales by r² via `hausdorffMeasure_smul₀`), but rep-tiling is not formalized.",
+      "note": "A square's dimension being 2 follows from `Real.dimH_univ_eq_finrank` (and area scales by r² via `hausdorffMeasure_smul₀`), but rep-tiling is not formalized.",
       "provenance": "ai",
       "id": "c397142bc27c"
     },
@@ -188,7 +188,7 @@
         "module": "Mathlib.MeasureTheory.Measure.Hausdorff",
         "match_kind": "generalization"
       },
-      "note": "The scaling law μH[n](r•s)=r^n·μH[n] s captures the n-dimensional scaling content, but the rep-tiling/piece-counting formulation is absent.",
+      "note": "The scaling law μH[n](r•s)=‖r‖^n·μH[n] s captures the n-dimensional scaling content, but the rep-tiling/piece-counting formulation is absent.",
       "provenance": "ai",
       "id": "8a3adce7e68b"
     },
@@ -205,7 +205,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The Koch curve and its Hausdorff dimension log 4/log 3 are not formalized (Snowflaking.lean only mentions the Koch snowflake in prose).",
+      "note": "The Koch curve and its Hausdorff dimension log 4/log 3 are not formalized in Mathlib.",
       "provenance": "ai",
       "id": "ac6e362fde2f"
     },
@@ -239,7 +239,7 @@
         "module": "Counterexamples.NowhereDifferentiable",
         "match_kind": "exact"
       },
-      "note": "A continuous-everywhere, nowhere-differentiable Weierstrass function is fully formalized, though it lives in the Counterexamples directory rather than the core Mathlib library.",
+      "note": "A continuous-everywhere, nowhere-differentiable Weierstrass-type function is formalized, though it lives in the Counterexamples directory rather than core Mathlib.",
       "provenance": "ai",
       "id": "7ba90a9ff3a1"
     },
@@ -256,7 +256,7 @@
         "module": "Mathlib.Topology.Instances.CantorSet",
         "match_kind": "exact"
       },
-      "note": "`cantorSet` is the ternary Cantor set defined as ⋂ₙ preCantorSet n on the real line.",
+      "note": "`cantorSet` is the ternary Cantor set defined on the real line in `Mathlib.Topology.Instances.CantorSet`.",
       "provenance": "ai",
       "id": "61202df29c0a"
     },
@@ -269,11 +269,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "MeasureTheory.dimH",
+        "decl": "dimH",
         "module": "Mathlib.Topology.MetricSpace.HausdorffDimension",
         "match_kind": "generalization"
       },
-      "note": "`MeasureTheory.dimH` takes values in ℝ≥0∞ and may be non-integer, exactly the Hausdorff dimension allowing fractional dimensions.",
+      "note": "`dimH` takes values in ℝ≥0∞ and may be non-integer, exactly the Hausdorff dimension allowing fractional dimensions.",
       "provenance": "ai",
       "id": "2b053f356136"
     },
@@ -286,11 +286,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "MeasureTheory.dimH",
+        "decl": "dimH",
         "module": "Mathlib.Topology.MetricSpace.HausdorffDimension",
         "match_kind": null
       },
-      "note": "Both `dimH` and a topological (`smallInductiveDimension`) dimension exist, but Mathlib has no predicate for dimH exceeding topological dimension.",
+      "note": "Both `dimH` and a topological dimension (`smallInductiveDimension`) exist, but Mathlib has no predicate for dimH exceeding topological dimension.",
       "provenance": "ai",
       "id": "a39b2cc55465"
     },
@@ -548,6 +548,142 @@
       "note": "Finite subdivision rules for refining tilings are not formalized in Mathlib.",
       "provenance": "ai",
       "id": "e42a3d616c99"
+    },
+    {
+      "kind": "example",
+      "label": "Mandelbrot set",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "successive magnifications of the Mandelbrot set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Mandelbrot set (parameters c for which the orbit of 0 under z ↦ z²+c stays bounded) is not defined in Mathlib.",
+      "provenance": "ai",
+      "id": "b3673e77950e"
+    },
+    {
+      "kind": "example",
+      "label": "Menger sponge",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "as in the Menger sponge"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Menger sponge is not defined in Mathlib.",
+      "provenance": "ai",
+      "id": "2e18fa0d753c"
+    },
+    {
+      "kind": "definition",
+      "label": "Topological dimension",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "having a fractal dimension strictly exceeding the topological dimension"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "smallInductiveDimension",
+        "module": "Mathlib.Topology.SmallInductiveDimension",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has `smallInductiveDimension`, the small inductive (topological) dimension of a topological space — the classical analogue used in Mandelbrot's definition.",
+      "provenance": "ai",
+      "id": "f9e75904b3b4"
+    },
+    {
+      "kind": "definition",
+      "label": "Hausdorff dimension links fractals to measure theory",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Fractal geometry relates to the mathematical branch of measure theory by their Hausdorff dimension"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dimH",
+        "module": "Mathlib.Topology.MetricSpace.HausdorffDimension",
+        "match_kind": "exact"
+      },
+      "note": "Hausdorff dimension is defined in Mathlib via the Hausdorff (outer) measure on a metric space.",
+      "provenance": "ai",
+      "id": "c20614388e22"
+    },
+    {
+      "kind": "example",
+      "label": "Sierpiński triangle",
+      "anchor": {
+        "section": "History",
+        "snippet": "Wacław Sierpiński constructed his famous triangle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Sierpiński triangle/gasket is not defined in Mathlib.",
+      "provenance": "ai",
+      "id": "162dd5ba8c11"
+    },
+    {
+      "kind": "example",
+      "label": "Sierpinski carpet",
+      "anchor": {
+        "section": "Common techniques for generating fractals",
+        "snippet": "Sierpinski carpet"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Sierpiński carpet is not defined in Mathlib.",
+      "provenance": "ai",
+      "id": "0be9e975a60e"
+    },
+    {
+      "kind": "example",
+      "label": "Brownian motion / Wiener process",
+      "anchor": {
+        "section": "Natural phenomena with fractal features",
+        "snippet": "Brownian motion (generated by a one-dimensional Wiener process )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not yet have a definition of Brownian motion or the Wiener process.",
+      "provenance": "ai",
+      "id": "72bd59b06445"
+    },
+    {
+      "kind": "example",
+      "label": "Julia set",
+      "anchor": {
+        "section": "Common techniques for generating fractals",
+        "snippet": "the Mandelbrot set , Julia set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Julia sets of complex polynomials are not defined in Mathlib.",
+      "provenance": "ai",
+      "id": "d6d0b0e0f18e"
     }
   ]
 }

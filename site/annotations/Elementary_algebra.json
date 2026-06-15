@@ -176,6 +176,23 @@
       "id": "0f4136863dcf"
     },
     {
+      "kind": "proposition",
+      "label": "Exponent of one is the base",
+      "anchor": {
+        "section": "Algebraic notation",
+        "snippet": "Likewise when the exponent (power) is one"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "pow_one",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "pow_one states a ^ 1 = a, exactly matching the claim that an exponent of one may be omitted.",
+      "provenance": "ai",
+      "id": "02fbae2bab20"
+    },
+    {
       "kind": "example",
       "label": "Variables for unknown values",
       "anchor": {
@@ -457,7 +474,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Eq.subst",
-        "module": null,
+        "module": "Init.Prelude",
         "match_kind": "exact"
       },
       "note": "Lean's core Eq.subst (the Eq eliminator) is exactly the Leibniz substitution principle for equal terms.",
@@ -474,10 +491,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "lt_trans",
-        "module": null,
+        "module": "Mathlib.Order.Defs.PartialOrder",
         "match_kind": "exact"
       },
-      "note": "lt_trans (and le_trans, aliased in Mathlib.Order.Basic) give transitivity of strict and non-strict inequalities.",
+      "note": "lt_trans (and le_trans) give transitivity of strict and non-strict inequalities.",
       "provenance": "ai",
       "id": "268d8501ed10"
     },
@@ -491,7 +508,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "ge_iff_le",
-        "module": null,
+        "module": "Init.Core",
         "match_kind": "exact"
       },
       "note": "ge_iff_le states a ≥ b ↔ b ≤ a, formalizing the swap of ≤ and ≥ by reversing an inequation.",

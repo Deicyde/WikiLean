@@ -15,10 +15,10 @@
       "status": "partial",
       "mathlib": {
         "decl": "Zero",
-        "module": "Mathlib.Algebra.Group.Defs",
+        "module": "Init.Prelude",
         "match_kind": null
       },
-      "note": "Mathlib has the `Zero` typeclass providing a distinguished `0`, but the informal 'empty quantity' semantics is not itself a theorem.",
+      "note": "Mathlib/Lean has the `Zero` typeclass providing a distinguished `0`, but the informal 'empty quantity' semantics is not itself a theorem.",
       "provenance": "ai",
       "id": "b222d50591fb"
     },
@@ -48,11 +48,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "mul_zero",
+        "decl": "MulZeroClass.mul_zero",
         "module": "Mathlib.Algebra.GroupWithZero.Defs",
         "match_kind": "generalization"
       },
-      "note": "`mul_zero`/`zero_mul` from `MulZeroClass` give `a * 0 = 0` and `0 * a = 0`.",
+      "note": "`MulZeroClass.mul_zero`/`MulZeroClass.zero_mul` give `a * 0 = 0` and `0 * a = 0`.",
       "provenance": "ai",
       "id": "58ab1eb10064"
     },
@@ -100,7 +100,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Nat.zero_le",
-        "module": "Mathlib.Data.Nat.Defs",
+        "module": "Init.Prelude",
         "match_kind": "special_case"
       },
       "note": "`Nat.zero_le : 0 ≤ n` establishes `0` as the least element of ℕ (also reflected by ℕ's `OrderBot`).",
@@ -114,14 +114,14 @@
         "section": "Elementary algebra",
         "snippet": "The natural number following 0 is 1"
       },
-      "status": "formalized",
+      "status": "partial",
       "mathlib": {
         "decl": null,
         "module": null,
         "match_kind": null
       },
-      "note": "Holds definitionally since `1` is defined as `Nat.succ 0`, but there is no dedicated named lemma.",
-      "provenance": "ai",
+      "note": "Holds definitionally since `1` is defined as `Nat.succ 0`, but there is no dedicated named lemma — status downgraded to partial to reflect the absence of a citable declaration.",
+      "provenance": "ai-moderated",
       "id": "1966fb728e66"
     },
     {
@@ -154,7 +154,7 @@
         "module": "Mathlib.Algebra.Group.Even",
         "match_kind": "exact"
       },
-      "note": "`Even.zero : Even (0 : α)` (auto-generated from `IsSquare.one` via `@[to_additive]`) states that zero is even.",
+      "note": "`Even.zero : Even (0 : α)` states that zero is even.",
       "provenance": "ai",
       "id": "d33caeab2551"
     },
@@ -222,7 +222,7 @@
         "module": "Mathlib.Algebra.Group.Basic",
         "match_kind": "generalization"
       },
-      "note": "`sub_zero : a - 0 = a` and `zero_sub : 0 - a = -a` hold in any subtraction monoid.",
+      "note": "`sub_zero : a - 0 = a` (with `zero_sub : 0 - a = -a`) holds in any subtraction monoid.",
       "provenance": "ai",
       "id": "edced1cd07e0"
     },
@@ -235,11 +235,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "mul_zero",
+        "decl": "MulZeroClass.mul_zero",
         "module": "Mathlib.Algebra.GroupWithZero.Defs",
         "match_kind": "generalization"
       },
-      "note": "`mul_zero`/`zero_mul` give the multiplication-by-zero rule in any `MulZeroClass`.",
+      "note": "`MulZeroClass.mul_zero`/`MulZeroClass.zero_mul` give the multiplication-by-zero rule in any `MulZeroClass`.",
       "provenance": "ai",
       "id": "48295336dd49"
     },
@@ -253,7 +253,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "inv_zero",
-        "module": "Mathlib.Algebra.GroupWithZero.Basic",
+        "module": "Mathlib.Algebra.GroupWithZero.Defs",
         "match_kind": "invocation"
       },
       "note": "Mathlib's `GroupWithZero` excludes 0 from units; by convention `inv_zero : 0⁻¹ = 0` and `div_zero : a / 0 = 0`.",
@@ -273,7 +273,7 @@
         "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "generalization"
       },
-      "note": "`pow_zero : a ^ 0 = 1` (and `zero_pow` for `0 ^ n`) formalize exponentiation involving zero.",
+      "note": "`pow_zero : a ^ 0 = 1` (with `zero_pow` for `0 ^ n`) formalizes exponentiation involving zero.",
       "provenance": "ai",
       "id": "c30264ede67b"
     },
@@ -406,7 +406,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Zero",
-        "module": "Mathlib.Algebra.Group.Defs",
+        "module": "Init.Prelude",
         "match_kind": "exact"
       },
       "note": "The `Zero` typeclass denotes the distinguished zero element of an algebraic structure.",
@@ -423,7 +423,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Pi.zero_apply",
-        "module": "Mathlib.Algebra.Group.Pi.Basic",
+        "module": "Mathlib.Algebra.Notation.Pi.Defs",
         "match_kind": "exact"
       },
       "note": "`Pi.instZero` defines the zero function with `Pi.zero_apply : (0 : ∀ i, f i) a = 0`.",
@@ -614,7 +614,8 @@
         "match_kind": "exact"
       },
       "note": "`zero_div : 0 / a = 0` in any `GroupWithZero` (in fact for any `a`, by Mathlib's convention).",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "87dd70c80f51"
     },
     {
       "kind": "proposition",
@@ -626,11 +627,12 @@
       "status": "formalized",
       "mathlib": {
         "decl": "zero_pow",
-        "module": "Mathlib.Algebra.GroupPower.Basic",
+        "module": "Mathlib.Algebra.GroupWithZero.Basic",
         "match_kind": "generalization"
       },
       "note": "`zero_pow : n ≠ 0 → (0 : M) ^ n = 0` in a `MonoidWithZero`; the textbook's positive-exponent case is a special case.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "592cd8610f7a"
     },
     {
       "kind": "definition",
@@ -646,7 +648,8 @@
         "match_kind": "exact"
       },
       "note": "`HasZeroMorphisms` provides a distinguished zero morphism `0 : X ⟶ Y` in each hom-set, generalizing the zero function.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "d5015373a8bb"
     },
     {
       "kind": "proposition",
@@ -658,11 +661,63 @@
       "status": "formalized",
       "mathlib": {
         "decl": "dvd_zero",
-        "module": "Mathlib.Algebra.Divisibility.Basic",
+        "module": "Mathlib.Algebra.GroupWithZero.Divisibility",
         "match_kind": "exact"
       },
       "note": "`dvd_zero : ∀ a, a ∣ 0` states every element divides zero, so 0 is a multiple of any integer/rational/real.",
-      "provenance": "ai"
+      "provenance": "ai",
+      "id": "c6a2a1c555b0"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero is a rational and real number",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "it is an integer , and hence a rational number and a real number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Rat.cast_zero",
+        "module": "Mathlib.Data.Rat.Cast.Defs",
+        "match_kind": "exact"
+      },
+      "note": "ℤ, ℚ, and ℝ all have a `Zero` instance, and `Rat.cast_zero`/`Int.cast_zero` show `0` is consistently an integer, rational, and real.",
+      "provenance": "ai",
+      "id": "e11c313e9045"
+    },
+    {
+      "kind": "proposition",
+      "label": "All rationals are algebraic",
+      "anchor": {
+        "section": "Elementary algebra",
+        "snippet": "All rational numbers are algebraic numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isAlgebraic_rat",
+        "module": "Mathlib.RingTheory.Algebraic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`isAlgebraic_rat` shows every rational number is algebraic over ℚ.",
+      "provenance": "ai",
+      "id": "72845cb7d4ac"
+    },
+    {
+      "kind": "definition",
+      "label": "Zero as absorbing element for multiplication",
+      "anchor": {
+        "section": "Other uses in mathematics",
+        "snippet": "an absorbing element for multiplication"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulZeroClass",
+        "module": "Mathlib.Algebra.GroupWithZero.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`MulZeroClass` axiomatizes that `0` is an absorbing element for multiplication: `0 * a = 0` and `a * 0 = 0`.",
+      "provenance": "ai",
+      "id": "1cc5dec7b343"
     }
   ]
 }

@@ -75,6 +75,74 @@
     },
     {
       "kind": "definition",
+      "label": "Epsilon–delta definition of a limit",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The epsilon–delta definition of a limit was introduced to formalize the definition of continuity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.tendsto_nhds",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes the ε–δ characterization of limits via `Metric.tendsto_nhds` and related lemmas.",
+      "provenance": "ai",
+      "id": "c7fa92c65398"
+    },
+    {
+      "kind": "definition",
+      "label": "Uniform continuity (concept)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A stronger form of continuity is uniform continuity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UniformContinuous",
+        "module": "Mathlib.Topology.UniformSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`UniformContinuous` is the standard Mathlib definition.",
+      "provenance": "ai",
+      "id": "bca39215627e"
+    },
+    {
+      "kind": "definition",
+      "label": "Scott continuity (concept)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "In order theory , especially in domain theory , a related concept of continuity is Scott continuity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ScottContinuous",
+        "module": "Mathlib.Order.ScottContinuity",
+        "match_kind": "exact"
+      },
+      "note": "`ScottContinuous` formalizes Scott continuity in domain theory.",
+      "provenance": "ai",
+      "id": "7e35ec29c4fa"
+    },
+    {
+      "kind": "definition",
+      "label": "Microcontinuity (nonstandard)",
+      "anchor": {
+        "section": "History",
+        "snippet": "see microcontinuity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not develop nonstandard-analysis microcontinuity.",
+      "provenance": "ai",
+      "id": "642b2b08c0c5"
+    },
+    {
+      "kind": "definition",
       "label": "Continuity at a real number via limits",
       "anchor": {
         "section": "Definition",
@@ -212,7 +280,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "continuous_of_discreteTopology",
-        "module": "Mathlib.Topology.Defs.Basic",
+        "module": "Mathlib.Topology.Order",
         "match_kind": "generalization"
       },
       "note": "`continuous_of_discreteTopology` (with `ℤ` having the discrete topology) gives this as a special case.",
@@ -343,11 +411,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "oscillation_eq_zero",
+        "decl": "Oscillation.eq_zero_iff_continuousAt",
         "module": "Mathlib.Analysis.Oscillation",
         "match_kind": "exact"
       },
-      "note": "`oscillation_eq_zero` characterizes continuity at a point by vanishing oscillation.",
+      "note": "`Oscillation.eq_zero_iff_continuousAt` characterizes continuity at a point by vanishing oscillation.",
       "provenance": "ai",
       "id": "92c1966fc1e0"
     },
@@ -384,6 +452,57 @@
       "note": "Mathlib has extensive infrastructure (`Continuous.comp`, `Continuous.add`, `fun_prop` tactic, etc.) for combining continuous functions.",
       "provenance": "ai",
       "id": "a0f928f70edb"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuity of sine and cosine",
+      "anchor": {
+        "section": "Rules for continuity",
+        "snippet": "The sine and cosine functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.continuous_sin",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Real.continuous_sin` and `Real.continuous_cos` formalize this.",
+      "provenance": "ai",
+      "id": "e660e636cdaf"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuity of exponential function",
+      "anchor": {
+        "section": "Rules for continuity",
+        "snippet": "The exponential function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.continuous_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.Exp",
+        "match_kind": "exact"
+      },
+      "note": "`Real.continuous_exp` formalizes continuity of the exponential everywhere.",
+      "provenance": "ai",
+      "id": "16db4853eaca"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuity of natural logarithm on positive reals",
+      "anchor": {
+        "section": "Rules for continuity",
+        "snippet": "The natural logarithm"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.continuousOn_log",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Real.continuousOn_log` formalizes continuity of `log` on positive reals.",
+      "provenance": "ai",
+      "id": "b3769e211849"
     },
     {
       "kind": "proposition",
@@ -466,7 +585,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "SignType.sign",
-        "module": "Mathlib.Topology.Instances.Sign",
+        "module": "Mathlib.Data.Sign.Defs",
         "match_kind": "invocation"
       },
       "note": "Mathlib defines `SignType.sign`; discontinuity at 0 isn't stated as a named lemma.",
@@ -545,7 +664,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "ContinuousAt.preimage_mem_nhds",
-        "module": "Mathlib.Topology.ContinuousOn",
+        "module": "Mathlib.Topology.Continuous",
         "match_kind": "generalization"
       },
       "note": "`ContinuousAt.preimage_mem_nhds` (and `ContinuousAt.eventually_ne`) give the standard local-preservation result.",
@@ -711,7 +830,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "ContinuousOn.intervalIntegrable",
-        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic",
         "match_kind": "exact"
       },
       "note": "`ContinuousOn.intervalIntegrable` gives integrability of continuous functions on intervals.",
@@ -769,7 +888,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "TendstoUniformly.continuous",
-        "module": "Mathlib.Topology.UniformSpace.UniformConvergence",
+        "module": "Mathlib.Topology.UniformSpace.UniformApproximation",
         "match_kind": "exact"
       },
       "note": "`TendstoUniformly.continuous` formalizes that uniform limits of continuous functions are continuous.",
@@ -863,6 +982,40 @@
     },
     {
       "kind": "definition",
+      "label": "Upper semi-continuity",
+      "anchor": {
+        "section": "Semicontinuity",
+        "snippet": "The reverse condition is upper semi-continuity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UpperSemicontinuous",
+        "module": "Mathlib.Topology.Semicontinuity.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`UpperSemicontinuous` and variants are in Mathlib.",
+      "provenance": "ai",
+      "id": "d390d80c5c94"
+    },
+    {
+      "kind": "definition",
+      "label": "Metric space",
+      "anchor": {
+        "section": "Continuous functions between metric spaces",
+        "snippet": "A metric space is a set"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MetricSpace",
+        "module": "Mathlib.Topology.MetricSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`MetricSpace` is the standard Mathlib structure.",
+      "provenance": "ai",
+      "id": "bc7cf26c5dfc"
+    },
+    {
+      "kind": "definition",
       "label": "Continuity between metric spaces",
       "anchor": {
         "section": "Continuous functions between metric spaces",
@@ -901,11 +1054,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "oscillation_eq_zero",
+        "decl": "Oscillation.eq_zero_iff_continuousAt",
         "module": "Mathlib.Analysis.Oscillation",
         "match_kind": "invocation"
       },
-      "note": "Mathlib has the oscillation infrastructure to express this, but I did not find a direct named lemma asserting the continuity set is `IsGδ`.",
+      "note": "Mathlib has the oscillation/continuity characterization, but I did not find a direct named lemma asserting the continuity set is `IsGδ`.",
       "provenance": "ai",
       "id": "f17dd24c93b1"
     },
@@ -975,6 +1128,23 @@
       "id": "c9b24c2e8c18"
     },
     {
+      "kind": "proposition",
+      "label": "Continuous on compact implies uniformly continuous",
+      "anchor": {
+        "section": "Uniform, Hölder and Lipschitz continuity",
+        "snippet": "The converse does not generally hold but holds when the domain space X is compact"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompactSpace.uniformContinuous_of_continuous",
+        "module": "Mathlib.Topology.UniformSpace.HeineCantor",
+        "match_kind": "exact"
+      },
+      "note": "Heine–Cantor: continuous functions on compact uniform spaces are uniformly continuous.",
+      "provenance": "ai",
+      "id": "d134fdf39cde"
+    },
+    {
       "kind": "definition",
       "label": "Hölder continuity",
       "anchor": {
@@ -1038,6 +1208,23 @@
     },
     {
       "kind": "definition",
+      "label": "Topological space",
+      "anchor": {
+        "section": "Continuous functions between topological spaces",
+        "snippet": "A topological space is a set X together with a topology on X"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace",
+        "module": "Mathlib.Topology.Defs.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`TopologicalSpace` is the standard Mathlib structure.",
+      "provenance": "ai",
+      "id": "fa1d976a1b17"
+    },
+    {
+      "kind": "definition",
       "label": "Continuity between topological spaces",
       "anchor": {
         "section": "Continuous functions between topological spaces",
@@ -1094,7 +1281,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "continuous_of_discreteTopology",
-        "module": "Mathlib.Topology.Defs.Basic",
+        "module": "Mathlib.Topology.Order",
         "match_kind": "exact"
       },
       "note": "`continuous_of_discreteTopology` covers exactly this fact.",
@@ -1180,6 +1367,23 @@
       "id": "ea1d94ff2c5e"
     },
     {
+      "kind": "definition",
+      "label": "Sequential space",
+      "anchor": {
+        "section": "Sequences and nets",
+        "snippet": "The spaces for which the two properties are equivalent are called sequential spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SequentialSpace",
+        "module": "Mathlib.Topology.Defs.Sequences",
+        "match_kind": "exact"
+      },
+      "note": "`SequentialSpace` is the Mathlib class for spaces where sequential continuity equals continuity.",
+      "provenance": "ai",
+      "id": "22d7455915f7"
+    },
+    {
       "kind": "theorem",
       "label": "Theorem: continuity iff sequential continuity (real case)",
       "anchor": {
@@ -1212,6 +1416,23 @@
       "note": "`continuous_iff_image_closure_subset_closure_image`, together with `continuous_iff_isClosed`/`continuous_iff_isOpen`, gives the equivalent forms.",
       "provenance": "ai",
       "id": "14c8ae21ae07"
+    },
+    {
+      "kind": "definition",
+      "label": "Kuratowski closure axioms",
+      "anchor": {
+        "section": "Closure operator and interior operator definitions",
+        "snippet": "satisfies the Kuratowski closure axioms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace.mkOfClosure",
+        "module": "Mathlib.Topology.Order",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib derives a topology from a Kuratowski-style closure construction via `TopologicalSpace.mkOfClosure`.",
+      "provenance": "ai",
+      "id": "b41f82b34458"
     },
     {
       "kind": "proposition",
@@ -1324,11 +1545,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "IsSeparable.image",
+        "decl": "TopologicalSpace.IsSeparable.image",
         "module": "Mathlib.Topology.Bases",
         "match_kind": "exact"
       },
-      "note": "`IsSeparable.image` formalizes this property.",
+      "note": "`TopologicalSpace.IsSeparable.image` formalizes this property.",
       "provenance": "ai",
       "id": "a1b1fbf21e61"
     },
@@ -1410,7 +1631,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "TopologicalSpace.coinduced",
-        "module": "Mathlib.Topology.Order",
+        "module": "Mathlib.Topology.Defs.Induced",
         "match_kind": "exact"
       },
       "note": "`TopologicalSpace.coinduced` is the single-map version; `iSup` over a family yields the general final topology.",
@@ -1429,6 +1650,23 @@
     },
     {
       "kind": "definition",
+      "label": "Quotient topology (as final topology of surjection)",
+      "anchor": {
+        "section": "Defining topologies via continuous functions",
+        "snippet": "this topology is canonically identified with the quotient topology under the equivalence relation defined by f"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Quotient.instTopologicalSpace",
+        "module": "Mathlib.Topology.Constructions",
+        "match_kind": "exact"
+      },
+      "note": "The quotient topology on `Quotient r` is exactly the coinduced topology along the quotient map.",
+      "provenance": "ai",
+      "id": "93332c68ab08"
+    },
+    {
+      "kind": "definition",
       "label": "Initial topology",
       "anchor": {
         "section": "Defining topologies via continuous functions",
@@ -1437,7 +1675,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "TopologicalSpace.induced",
-        "module": "Mathlib.Topology.Order",
+        "module": "Mathlib.Topology.Defs.Induced",
         "match_kind": "exact"
       },
       "note": "`TopologicalSpace.induced` (with `iInf` over a family) realizes the initial topology.",
@@ -1477,6 +1715,40 @@
       "note": "`IsDenseInducing.extend` constructs the continuous extension along a dense-inducing map.",
       "provenance": "ai",
       "id": "113cec029f9c"
+    },
+    {
+      "kind": "theorem",
+      "label": "Tietze extension theorem",
+      "anchor": {
+        "section": "Related notions",
+        "snippet": "This notion is used, for example, in the Tietze extension theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BoundedContinuousFunction.exists_extension_norm_eq_of_isClosedEmbedding",
+        "module": "Mathlib.Topology.TietzeExtension",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib formalizes the Tietze extension theorem in `Mathlib.Topology.TietzeExtension`.",
+      "provenance": "ai",
+      "id": "aa6c382e1ac5"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hahn–Banach theorem",
+      "anchor": {
+        "section": "Related notions",
+        "snippet": "the Hahn–Banach theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_extension_norm_eq",
+        "module": "Mathlib.Analysis.Normed.Module.HahnBanach",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib formalizes Hahn–Banach as `exists_extension_norm_eq` and related lemmas.",
+      "provenance": "ai",
+      "id": "f97718a7985d"
     },
     {
       "kind": "proposition",

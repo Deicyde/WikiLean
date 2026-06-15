@@ -32,21 +32,11 @@
       "status": "formalized",
       "mathlib": {
         "decl": "norm_eq_sqrt_re_inner",
-        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
         "match_kind": "exact"
       },
       "note": "`norm_eq_sqrt_re_inner` records that the norm induced by an inner product is ‖x‖ = √(re⟪x,x⟫).",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Statement of the inequality",
-          "snippet": "Every inner product gives rise to a Euclidean"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\|\\mathbf {u} \\|:={\\sqrt {\\langle \\mathbf {u} ,\\mathbf {u} \\rangle }},}"
-        }
-      ],
       "id": "063046f52ec6"
     },
     {
@@ -81,20 +71,6 @@
       },
       "note": "`sq_sum_div_le_sum_sq_div` is documented as Sedrakyan's/Titu's/Engel's lemma: (∑fᵢ)²/∑gᵢ ≤ ∑ fᵢ²/gᵢ.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Sedrakyan's lemma – positive real numbers",
-          "snippet": "Sedrakyan's inequality , also known as"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {\\left(u_{1}+u_{2}+\\cdots +u_{n}\\right)^{2}}{v_{1}+v_{2}+\\cdots +v_{n}}}\\leq {\\frac {u_{1}^{2}}{v_{1}}}+{\\frac {u_{2}^{2}}{v_{2}}}+\\cdots +{\\frac {u_{n}^{2}}{v_{n}}},}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\dfrac {\\left(\\sum \\limits _{i=1}^{n}u_{i}\\right)^{2}}{\\sum \\limits _{i=1}^{n}v_{i}}}\\leq \\sum _{i=1}^{n}{\\frac {u_{i}^{2}}{v_{i}}}.}"
-        }
-      ],
       "id": "cc0b8e71d715"
     },
     {
@@ -112,16 +88,6 @@
       },
       "note": "The R² dot-product case is the two-term instance of the general finite-sum Cauchy–Schwarz `sum_mul_sq_le_sq_mul_sq`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "R 2 - The plane",
-          "snippet": "then the Cauchy–Schwarz inequality becomes"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\langle \\mathbf {u} ,\\mathbf {v} \\rangle ^{2}={\\bigl (}\\|\\mathbf {u} \\|\\|\\mathbf {v} \\|\\cos \\theta {\\bigr )}^{2}\\leq \\|\\mathbf {u} \\|^{2}\\|\\mathbf {v} \\|^{2},}"
-        }
-      ],
       "id": "e68fe1091fed"
     },
     {
@@ -139,16 +105,6 @@
       },
       "note": "`sum_mul_sq_le_sq_mul_sq` is exactly (∑fᵢgᵢ)² ≤ (∑fᵢ²)(∑gᵢ²), the Cauchy–Schwarz inequality for the dot product on Rⁿ.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "R n : n -dimensional Euclidean space",
-          "snippet": "with the standard inner product, which is the dot product"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\biggl (}\\sum _{i=1}^{n}u_{i}v_{i}{\\biggr )}^{2}\\leq {\\biggl (}\\sum _{i=1}^{n}u_{i}^{2}{\\biggr )}{\\biggl (}\\sum _{i=1}^{n}v_{i}^{2}{\\biggr )}.}"
-        }
-      ],
       "id": "ae08abc6b425"
     },
     {
@@ -166,16 +122,6 @@
       },
       "note": "Cⁿ with its canonical inner product is an RCLike inner product space, so the general `inner_mul_inner_self_le` specializes to this case.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "C n : n -dimensional complex space",
-          "snippet": "is the canonical complex inner product"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\bigl |}\\langle \\mathbf {u} ,\\mathbf {v} \\rangle {\\bigr |}^{2}={\\Biggl |}\\sum _{k=1}^{n}u_{k}{\\bar {v}}_{k}{\\Biggr |}^{2}\\leq \\langle \\mathbf {u} ,\\mathbf {u} \\rangle \\langle \\mathbf {v} ,\\mathbf {v} \\rangle ={\\biggl (}\\sum _{k=1}^{n}u_{k}{\\bar {u}}_{k}{\\biggr )}{\\biggl (}\\sum _{k=1}^{n}v_{k}{\\bar {v}}_{k}{\\biggr )}=\\sum _{j=1}^{n}|u_{j}|^{2}\\sum _{k=1}^{n}|v_{k}|^{2}.}"
-        }
-      ],
       "id": "f267b0891777"
     },
     {
@@ -193,16 +139,6 @@
       },
       "note": "L² is given an inner product space instance (Mathlib.MeasureTheory.Function.L2Space), so the general `norm_inner_le_norm` yields the L² Cauchy–Schwarz inequality.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "L 2",
-          "snippet": "For the inner product space of square-integrable complex-valued functions"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\left|\\int _{\\mathbb {R} ^{n}}f(x){\\overline {g(x)}}\\,dx\\right|^{2}\\leq \\int _{\\mathbb {R} ^{n}}{\\bigl |}f(x){\\bigr |}^{2}\\,dx\\int _{\\mathbb {R} ^{n}}{\\bigl |}g(x){\\bigr |}^{2}\\,dx.}"
-        }
-      ],
       "id": "32c7d03e253c"
     },
     {
@@ -220,16 +156,6 @@
       },
       "note": "The triangle inequality ‖x+y‖ ≤ ‖x‖+‖y‖ is `norm_add_le`, proven generally for normed groups (more general than the inner-product-space case).",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Analysis",
-          "snippet": "the triangle inequality is a consequence of the Cauchy–Schwarz inequality"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{alignedat}{4}\\|\\mathbf {u} +\\mathbf {v} \\|^{2}&amp;=\\langle \\mathbf {u} +\\mathbf {v} ,\\mathbf {u} +\\mathbf {v} \\rangle &amp;&amp;\\\\&amp;=\\|\\mathbf {u} \\|^{2}+\\langle \\mathbf {u} ,\\mathbf {v} \\rangle +\\langle \\mathbf {v} ,\\mathbf {u} \\rangle +\\|\\mathbf {v} \\|^{2}~&amp;&amp;~{\\text{ where }}\\langle \\mathbf {v} ,\\mathbf {u} \\rangle ={\\overline {\\langle \\mathbf {u} ,\\mathbf {v} \\rangle }}\\\\&amp;=\\|\\mathbf {u} \\|^{2}+2\\operatorname {Re} \\langle \\mathbf {u} ,\\mathbf {v} \\rangle +\\|\\mathbf {v} \\|^{2}&amp;&amp;\\\\&amp;\\leq \\|\\mathbf {u} \\|^{2}+2|\\langle \\mathbf {u} ,\\mathbf {v} \\rangle |+\\|\\mathbf {v} \\|^{2}&amp;&amp;\\\\&amp;\\leq \\|\\mathbf {u} \\|^{2}+2\\|\\mathbf {u} \\|\\|\\mathbf {v} \\|+\\|\\mathbf {v} \\|^{2}~&amp;&amp;~{\\text{ using CS}}\\\\&amp;={\\bigl (}\\|\\mathbf {u} \\|+\\|\\mathbf {v} \\|{\\bigr )}^{2}.&amp;&amp;\\end{alignedat}}}"
-        }
-      ],
       "id": "debef77505e9"
     },
     {
@@ -264,16 +190,6 @@
       },
       "note": "`InnerProductGeometry.angle x y = arccos(⟪x,y⟫/(‖x‖‖y‖))` is the angle defined via Cauchy–Schwarz.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Geometry",
-          "snippet": "allows one to extend the notion of"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\cos \\theta _{\\mathbf {u} \\mathbf {v} }={\\frac {\\langle \\mathbf {u} ,\\mathbf {v} \\rangle }{\\|\\mathbf {u} \\|\\|\\mathbf {v} \\|}}.}"
-        }
-      ],
       "id": "ee568d7a5efe"
     },
     {
@@ -291,16 +207,6 @@
       },
       "note": "The covariance bilinear form is proven positive semidefinite, but the explicit Cauchy–Schwarz bound Cov(X,Y)² ≤ Var(X)·Var(Y) is not stated.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Probability theory",
-          "snippet": "Then the covariance inequality"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\operatorname {Var} (X)\\geq {\\frac {\\operatorname {Cov} (X,Y)^{2}}{\\operatorname {Var} (Y)}}.}"
-        }
-      ],
       "id": "b6f49dc06d57"
     },
     {
@@ -421,6 +327,40 @@
       "note": "No declaration for Callebaut's inequality was found in Mathlib.",
       "provenance": "ai",
       "id": "4b7d3756281a"
+    },
+    {
+      "kind": "proposition",
+      "label": "Discriminant proof of Cauchy–Schwarz in Rⁿ",
+      "anchor": {
+        "section": "R n : n -dimensional Euclidean space",
+        "snippet": "Since the latter polynomial is nonnegative, it has at most one real root, hence its discriminant is less than or equal to zero."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "discrim_le_zero",
+        "module": "Mathlib.Algebra.QuadraticDiscriminant",
+        "match_kind": "invocation"
+      },
+      "note": "`discrim_le_zero` gives that a nonnegative real quadratic has discriminant ≤ 0, the key fact used in this proof of Cauchy–Schwarz on Rⁿ.",
+      "provenance": "ai",
+      "id": "2ad08306b7f7"
+    },
+    {
+      "kind": "proposition",
+      "label": "Handshaking lemma",
+      "anchor": {
+        "section": "Graph Theory",
+        "snippet": "And then by applying the handshaking lemma"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.sum_degrees_eq_twice_card_edges",
+        "module": "Mathlib.Combinatorics.SimpleGraph.DegreeSum",
+        "match_kind": "exact"
+      },
+      "note": "`SimpleGraph.sum_degrees_eq_twice_card_edges` is the handshaking lemma: ∑ deg(v) = 2·|E|.",
+      "provenance": "ai",
+      "id": "25c8e9fe6df8"
     }
   ]
 }

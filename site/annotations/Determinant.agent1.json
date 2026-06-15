@@ -11,7 +11,15 @@
         "section": "(Lead)",
         "snippet": "the determinant is a scalar -valued function of the entries of a square matrix"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.det` defines the determinant of a square matrix over a commutative ring.",
+      "provenance": "ai-agent1",
+      "id": "e4c74088ba30"
     },
     {
       "kind": "proposition",
@@ -20,7 +28,15 @@
         "section": "(Lead)",
         "snippet": "the determinant is nonzero if and only if the matrix is invertible"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.isUnit_iff_isUnit_det",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "generalization"
+      },
+      "note": "Stated as `IsUnit A ↔ IsUnit A.det`, which over a field is `A invertible ↔ det A ≠ 0`.",
+      "provenance": "ai-agent1",
+      "id": "9acf4e634e20"
     },
     {
       "kind": "proposition",
@@ -29,7 +45,15 @@
         "section": "(Lead)",
         "snippet": "the determinant of a product of matrices is the product of their determinants"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_mul",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.det_mul` and `Matrix.det_of_upperTriangular` together give the product and triangular rules.",
+      "provenance": "ai-agent1",
+      "id": "4674f4dffa49"
     },
     {
       "kind": "theorem",
@@ -38,7 +62,15 @@
         "section": "(Lead)",
         "snippet": "The determinant of the identity matrix is 1"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.detRowAlternating",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": null
+      },
+      "note": "`detRowAlternating` packages the alternating-multilinear properties and `det_one` gives identity = 1, but the precise four-property axiomatic characterization is not stated as a single theorem.",
+      "provenance": "ai-agent1",
+      "id": "a54828038493"
     },
     {
       "kind": "proposition",
@@ -47,7 +79,15 @@
         "section": "(Lead)",
         "snippet": "The determinant is invariant under matrix similarity"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_conj",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.det_conj` shows `det (M * N * M⁻¹) = det N` when `M` is a unit.",
+      "provenance": "ai-agent1",
+      "id": "958790356836"
     },
     {
       "kind": "definition",
@@ -56,7 +96,15 @@
         "section": "Two by two matrices",
         "snippet": "The determinant of a 2 × 2 matrix"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_fin_two",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`det_fin_two` gives `det A = A 0 0 * A 1 1 - A 0 1 * A 1 0`.",
+      "provenance": "ai-agent1",
+      "id": "d73bd5a055e8"
     },
     {
       "kind": "proposition",
@@ -65,7 +113,15 @@
         "section": "First properties",
         "snippet": "first, the determinant of the identity matrix"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_one",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.det_one : det (1 : Matrix n n R) = 1`.",
+      "provenance": "ai-agent1",
+      "id": "369c60f8e887"
     },
     {
       "kind": "proposition",
@@ -74,7 +130,15 @@
         "section": "First properties",
         "snippet": "the determinant is zero if two rows are the same"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_zero_of_row_eq",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`det_zero_of_row_eq` shows that a repeated row makes the determinant zero.",
+      "provenance": "ai-agent1",
+      "id": "49f0307867ff"
     },
     {
       "kind": "proposition",
@@ -83,7 +147,15 @@
         "section": "First properties",
         "snippet": "if any column is multiplied by some number"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_updateCol_smul",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`det_updateCol_smul` scales the determinant by `s` when one column is scaled by `s`.",
+      "provenance": "ai-agent1",
+      "id": "afcc26ea5d68"
     },
     {
       "kind": "proposition",
@@ -92,7 +164,15 @@
         "section": "Geometric meaning",
         "snippet": "The absolute value of ad − bc is the area of the parallelogram"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "OrthonormalBasis.volume_parallelepiped",
+        "module": "Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace",
+        "match_kind": null
+      },
+      "note": "Mathlib relates `|det|` to volume of `parallelepiped` in general dimension, but no specific 2D `|ad-bc|` = area statement is isolated.",
+      "provenance": "ai-agent1",
+      "id": "3d1c0142e61c"
     },
     {
       "kind": "definition",
@@ -101,7 +181,15 @@
         "section": "Geometric meaning",
         "snippet": "The absolute value of the determinant together with the sign becomes the signed area"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Orientation.areaForm",
+        "module": "Mathlib.Analysis.InnerProductSpace.TwoDim",
+        "match_kind": null
+      },
+      "note": "The 2D oriented `areaForm` in `InnerProductSpace.TwoDim` realizes signed area via `Matrix.det_fin_two`, though signed-area-of-parallelogram is not stated as a named lemma.",
+      "provenance": "ai-agent1",
+      "id": "2b6811b57d5e"
     },
     {
       "kind": "proposition",
@@ -110,7 +198,15 @@
         "section": "Geometric meaning",
         "snippet": "The determinant gives the signed n -dimensional volume of this parallelotope"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Orientation.volumeForm",
+        "module": "Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace",
+        "match_kind": null
+      },
+      "note": "`Orientation.volumeForm` gives signed volume via determinants, but signed-volume-of-parallelotope is not stated verbatim.",
+      "provenance": "ai-agent1",
+      "id": "aa85f068b1d9"
     },
     {
       "kind": "definition",
@@ -119,7 +215,15 @@
         "section": "Definition",
         "snippet": "The determinant of A is denoted by det( A )"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Written as `Matrix.det A` or `A.det`.",
+      "provenance": "ai-agent1",
+      "id": "4c533152a2c1"
     },
     {
       "kind": "definition",
@@ -128,7 +232,15 @@
         "section": "3 × 3 matrices",
         "snippet": "The Leibniz formula for the determinant of a 3 × 3 matrix"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_fin_three",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`det_fin_three` gives the explicit six-term expansion.",
+      "provenance": "ai-agent1",
+      "id": "5d07413dc5c3"
     },
     {
       "kind": "proposition",
@@ -137,7 +249,15 @@
         "section": "3 × 3 matrices",
         "snippet": "The rule of Sarrus is a mnemonic for the expanded form"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_fin_three",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Sarrus's mnemonic is the same identity as `det_fin_three`.",
+      "provenance": "ai-agent1",
+      "id": "a6c8daffa14a"
     },
     {
       "kind": "definition",
@@ -146,7 +266,15 @@
         "section": "n × n matrices",
         "snippet": "A permutation of the set"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm",
+        "module": "Mathlib.Logic.Equiv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv.Perm α := α ≃ α` formalizes permutations of any (finite) type.",
+      "provenance": "ai-agent1",
+      "id": "b3fb76b47ab7"
     },
     {
       "kind": "definition",
@@ -155,7 +283,15 @@
         "section": "n × n matrices",
         "snippet": "the Leibniz formula for its determinant is, using sigma notation for the sum"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_apply",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`det_apply` states `M.det = ∑ σ, sign σ • ∏ i, M (σ i) i`.",
+      "provenance": "ai-agent1",
+      "id": "67b704070b57"
     },
     {
       "kind": "definition",
@@ -164,7 +300,15 @@
         "section": "n × n matrices",
         "snippet": "The Levi-Civita symbol"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Equiv.Perm.sign",
+        "module": "Mathlib.GroupTheory.Perm.Sign",
+        "match_kind": null
+      },
+      "note": "`Equiv.Perm.sign` plays the role of the Levi-Civita symbol on permutations, though no `LeviCivita` symbol exists per se.",
+      "provenance": "ai-agent1",
+      "id": "e4583bff01b9"
     },
     {
       "kind": "proposition",
@@ -173,7 +317,15 @@
         "section": "Characterization of the determinant",
         "snippet": "The determinant is multilinear"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.detRowAlternating",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`detRowAlternating` exhibits `det` as an `AlternatingMap`, which is in particular multilinear.",
+      "provenance": "ai-agent1",
+      "id": "a50ea6361bfe"
     },
     {
       "kind": "proposition",
@@ -182,7 +334,15 @@
         "section": "Characterization of the determinant",
         "snippet": "The determinant is alternating"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.detRowAlternating",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Recorded directly in the type of `detRowAlternating : (n → R) [⋀^n]→ₗ[R] R`.",
+      "provenance": "ai-agent1",
+      "id": "db3909430e11"
     },
     {
       "kind": "theorem",
@@ -191,7 +351,15 @@
         "section": "Characterization of the determinant",
         "snippet": "there is exactly one function that assigns to any"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlternatingMap",
+        "module": "Mathlib.LinearAlgebra.Alternating.Basic",
+        "match_kind": null
+      },
+      "note": "The 1-dimensional space of top alternating multilinear forms is developed, but uniqueness of `det` from the three axioms is not stated as a single named theorem.",
+      "provenance": "ai-agent1",
+      "id": "ef5a4a8ffbb9"
     },
     {
       "kind": "proposition",
@@ -200,7 +368,25 @@
         "section": "Immediate consequences",
         "snippet": "The determinant is a homogeneous function"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_smul",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`det_smul` shows `det (c • A) = c ^ Fintype.card n * det A`.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Immediate consequences",
+          "snippet": "The determinant is a homogeneous function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\det(cA)=c^{n}\\det(A)}"
+        }
+      ],
+      "id": "b0652f76a89b"
     },
     {
       "kind": "proposition",
@@ -209,7 +395,29 @@
         "section": "Immediate consequences",
         "snippet": "Interchanging any pair of columns of a matrix multiplies its determinant by"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_permute",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`det_permute` shows permuting columns by σ multiplies the determinant by `sign σ`; a swap gives `-1`.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Immediate consequences",
+          "snippet": "Interchanging any pair of columns of a matrix multiplies its determinant by"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle |a_{1},\\dots ,a_{j},\\dots a_{i},\\dots ,a_{n}|=-|a_{1},\\dots ,a_{i},\\dots ,a_{j},\\dots ,a_{n}|.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle |a_{3},a_{1},a_{2},a_{4}\\dots ,a_{n}|=-|a_{1},a_{3},a_{2},a_{4},\\dots ,a_{n}|=|a_{1},a_{2},a_{3},a_{4},\\dots ,a_{n}|.}"
+        }
+      ],
+      "id": "d1bcd5492f7b"
     },
     {
       "kind": "proposition",
@@ -218,7 +426,15 @@
         "section": "Immediate consequences",
         "snippet": "If some column can be expressed as a linear combination of the other columns"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_eq_zero_of_not_linearIndependent_cols",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Directly states `¬ LinearIndependent → det = 0`.",
+      "provenance": "ai-agent1",
+      "id": "e93b3cb943bf"
     },
     {
       "kind": "proposition",
@@ -227,7 +443,15 @@
         "section": "Immediate consequences",
         "snippet": "Adding a scalar multiple of one column to another column does not change the value of the determinant"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_updateCol_add_smul_self",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`det_updateCol_add_smul_self` shows adding `c • A j` to column `i ≠ j` leaves the determinant unchanged.",
+      "provenance": "ai-agent1",
+      "id": "86774108d044"
     },
     {
       "kind": "proposition",
@@ -236,7 +460,25 @@
         "section": "Immediate consequences",
         "snippet": "its determinant equals the product of the diagonal entries"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_of_upperTriangular",
+        "module": "Mathlib.LinearAlgebra.Matrix.Block",
+        "match_kind": "exact"
+      },
+      "note": "`det_of_upperTriangular` (and its lower analogue) give the product-of-diagonal formula.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Immediate consequences",
+          "snippet": "its determinant equals the product of the diagonal entries"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\det(A)=a_{11}a_{22}\\cdots a_{nn}=\\prod _{i=1}^{n}a_{ii}.}"
+        }
+      ],
+      "id": "31d422a7fef4"
     },
     {
       "kind": "example",
@@ -245,7 +487,15 @@
         "section": "Example",
         "snippet": "The following concrete example illustrates the computation of the determinant"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A worked numerical example, not a theorem; nothing to formalize.",
+      "provenance": "ai-agent1",
+      "id": "325a4ecbad7c"
     },
     {
       "kind": "proposition",
@@ -254,7 +504,15 @@
         "section": "Transpose",
         "snippet": "The determinant of the transpose"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_transpose",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`det_transpose : Mᵀ.det = M.det`.",
+      "provenance": "ai-agent1",
+      "id": "b83f1961c94d"
     },
     {
       "kind": "theorem",
@@ -263,7 +521,15 @@
         "section": "Multiplicativity and matrix groups",
         "snippet": "The determinant is a multiplicative map"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_mul",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`det_mul : det (M * N) = det M * det N`; packaged also as `Matrix.detMonoidHom`.",
+      "provenance": "ai-agent1",
+      "id": "8d9e353ba4ca"
     },
     {
       "kind": "theorem",
@@ -272,7 +538,15 @@
         "section": "Multiplicativity and matrix groups",
         "snippet": "is invertible precisely if its determinant is nonzero"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.isUnit_iff_isUnit_det",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "generalization"
+      },
+      "note": "Stated over commutative rings: `IsUnit A ↔ IsUnit A.det`, which over a field becomes `det A ≠ 0`.",
+      "provenance": "ai-agent1",
+      "id": "516f57a1a7ff"
     },
     {
       "kind": "proposition",
@@ -281,7 +555,15 @@
         "section": "Multiplicativity and matrix groups",
         "snippet": "the determinant of the inverse matrix is given by"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_nonsing_inv",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "exact"
+      },
+      "note": "`det_nonsing_inv : A⁻¹.det = A.det⁻¹ʳ` (Ring.inverse), plus `det_invOf` for `Invertible`.",
+      "provenance": "ai-agent1",
+      "id": "ca7cc0ea320d"
     },
     {
       "kind": "proposition",
@@ -290,7 +572,15 @@
         "section": "Multiplicativity and matrix groups",
         "snippet": "it is in fact a group homomorphism"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.GeneralLinearGroup.det",
+        "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.GeneralLinearGroup.det : GLₙ R →* Rˣ` is the determinant as a group homomorphism.",
+      "provenance": "ai-agent1",
+      "id": "d53ec1c574f1"
     },
     {
       "kind": "theorem",
@@ -299,7 +589,15 @@
         "section": "Multiplicativity and matrix groups",
         "snippet": "The Cauchy–Binet formula is a generalization"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Cauchy–Binet formula for products of non-square matrices was located in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "35769f05213e"
     },
     {
       "kind": "theorem",
@@ -308,7 +606,15 @@
         "section": "Laplace expansion",
         "snippet": "which is called the Laplace expansion along the i th row"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_succ_row",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`det_succ_row` (and `det_succ_column`) give the Laplace expansion for `Fin (n+1)` matrices.",
+      "provenance": "ai-agent1",
+      "id": "e7fbb9b9a610"
     },
     {
       "kind": "definition",
@@ -317,7 +623,15 @@
         "section": "Laplace expansion",
         "snippet": "Laplace expansion expresses the determinant of a matrix"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.submatrix",
+        "module": "Mathlib.Data.Matrix.Basic",
+        "match_kind": null
+      },
+      "note": "Minors are taken via `Matrix.submatrix` (used inside `det_succ_row`), but no named `cofactor` or `minor` definitions exist.",
+      "provenance": "ai-agent1",
+      "id": "e6aff5bf20a1"
     },
     {
       "kind": "definition",
@@ -326,7 +640,15 @@
         "section": "Adjugate matrix",
         "snippet": "The adjugate matrix"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.adjugate",
+        "module": "Mathlib.LinearAlgebra.Matrix.Adjugate",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.adjugate` defines the classical adjugate (transpose of the cofactor matrix).",
+      "provenance": "ai-agent1",
+      "id": "8f8104e64622"
     },
     {
       "kind": "proposition",
@@ -335,7 +657,15 @@
         "section": "Adjugate matrix",
         "snippet": "Thus the adjugate matrix can be used for expressing the inverse"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.mul_adjugate",
+        "module": "Mathlib.LinearAlgebra.Matrix.Adjugate",
+        "match_kind": "exact"
+      },
+      "note": "`mul_adjugate`/`adjugate_mul` give `A * adjugate A = det A • 1`, and `Matrix.inv_def` expresses `A⁻¹` using the adjugate.",
+      "provenance": "ai-agent1",
+      "id": "d78c10594fe5"
     },
     {
       "kind": "theorem",
@@ -344,7 +674,15 @@
         "section": "Block matrices",
         "snippet": "continues to hold, under appropriate further assumptions, for a block matrix"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_fromBlocks_zero₂₁",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`det_fromBlocks_zero₂₁`/`zero₁₂` and Schur-complement formulas in `Mathlib.LinearAlgebra.Matrix.SchurComplement` cover block determinants.",
+      "provenance": "ai-agent1",
+      "id": "daaefe2292bf"
     },
     {
       "kind": "theorem",
@@ -353,7 +691,15 @@
         "section": "Sylvester's determinant theorem",
         "snippet": "Sylvester's determinant theorem states that for A"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_one_add_mul_comm",
+        "module": "Mathlib.LinearAlgebra.Matrix.SchurComplement",
+        "match_kind": "exact"
+      },
+      "note": "`det_one_add_mul_comm` (Weinstein–Aronszajn) gives `det(1 + AB) = det(1 + BA)` for rectangular `A`, `B`.",
+      "provenance": "ai-agent1",
+      "id": "4069469ff085"
     },
     {
       "kind": "proposition",
@@ -362,7 +708,29 @@
         "section": "Sum",
         "snippet": "for positive semidefinite matrices"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has PSD matrix infrastructure (`Matrix.PosSemidef`) but no `det(A + B) ≥ det A + det B` style inequality was found.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Sum",
+          "snippet": "for positive semidefinite matrices"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\det(A+B+C)+\\det(C)\\geq \\det(A+C)+\\det(B+C){\\text{,}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\det(A+B)\\geq \\det(A)+\\det(B){\\text{.}}}"
+        }
+      ],
+      "id": "cab9aca640e2"
     },
     {
       "kind": "theorem",
@@ -371,7 +739,25 @@
         "section": "Sum",
         "snippet": "Brunn–Minkowski theorem implies that the n th root of determinant is a concave function"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Concavity of `(det A)^(1/n)` on PSD matrices was not located.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Sum",
+          "snippet": "Brunn–Minkowski theorem implies that the n th root of determinant is a concave function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\sqrt[{n}]{\\det(A+B)}}\\geq {\\sqrt[{n}]{\\det(A)}}+{\\sqrt[{n}]{\\det(B)}},}"
+        }
+      ],
+      "id": "315b55dbd260"
     },
     {
       "kind": "proposition",
@@ -380,7 +766,15 @@
         "section": "Sum identity for 2×2 matrices",
         "snippet": "the determinant of the sum can be written in terms of determinants and traces"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identity `det(A+B) = det A + det B + tr A tr B − tr(AB)` for 2×2 matrices was not found.",
+      "provenance": "ai-agent1",
+      "id": "42e1b226f63d"
     },
     {
       "kind": "theorem",
@@ -389,7 +783,15 @@
         "section": "Eigenvalues and characteristic polynomial",
         "snippet": "the determinant of A is equal to the product of these eigenvalues"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_eq_prod_roots_charpoly",
+        "module": "Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs",
+        "match_kind": "exact"
+      },
+      "note": "`det_eq_prod_roots_charpoly` (alg. closed) and `IsHermitian.det_eq_prod_eigenvalues` give this identity.",
+      "provenance": "ai-agent1",
+      "id": "ee9f81ad8fed"
     },
     {
       "kind": "definition",
@@ -398,7 +800,15 @@
         "section": "Eigenvalues and characteristic polynomial",
         "snippet": "The product of all non-zero eigenvalues is referred to as pseudo-determinant"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No pseudo-determinant was located in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "6a14c771a962"
     },
     {
       "kind": "definition",
@@ -407,7 +817,15 @@
         "section": "Eigenvalues and characteristic polynomial",
         "snippet": "The characteristic polynomial is defined as"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.charpoly",
+        "module": "Mathlib.LinearAlgebra.Matrix.Charpoly.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.charpoly A := det (charmatrix A)`.",
+      "provenance": "ai-agent1",
+      "id": "ba5d6bfead71"
     },
     {
       "kind": "theorem",
@@ -416,7 +834,15 @@
         "section": "Eigenvalues and characteristic polynomial",
         "snippet": "Sylvester's criterion asserts that this is equivalent to the determinants of the submatrices"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines `Matrix.PosDef` but no Sylvester's-criterion characterization via leading principal minors was found.",
+      "provenance": "ai-agent1",
+      "id": "f6aaf9ef5d13"
     },
     {
       "kind": "theorem",
@@ -425,7 +851,15 @@
         "section": "Trace",
         "snippet": "Here exp( A ) denotes the matrix exponential of A"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `det_exp = exp_trace` style identity was located in `Mathlib.Analysis.Normed.Algebra.MatrixExponential`.",
+      "provenance": "ai-agent1",
+      "id": "09fc0c47531c"
     },
     {
       "kind": "proposition",
@@ -434,7 +868,15 @@
         "section": "Upper and lower bounds",
         "snippet": "the trace operator gives the following tight lower and upper bounds on the log determinant"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No log-determinant/trace inequalities were located in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "aad7750c5ed9"
     },
     {
       "kind": "theorem",
@@ -443,7 +885,15 @@
         "section": "Derivative",
         "snippet": "Its derivative can be expressed using Jacobi's formula"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.derivative_det_one_add_X_smul",
+        "module": "Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff",
+        "match_kind": null
+      },
+      "note": "A specialized polynomial-derivative version exists; the general analytic `d/dt det A(t) = tr(adj A · A')` Jacobi formula was not found.",
+      "provenance": "ai-agent1",
+      "id": "b27aeb0df109"
     },
     {
       "kind": "theorem",
@@ -452,7 +902,15 @@
         "section": "Cramer's rule",
         "snippet": "the solution is given by Cramer's rule"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.cramer",
+        "module": "Mathlib.LinearAlgebra.Matrix.Adjugate",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.cramer` and `Matrix.mulVec_cramer` formalize Cramer's rule.",
+      "provenance": "ai-agent1",
+      "id": "38f7162f2e3a"
     },
     {
       "kind": "proposition",
@@ -461,7 +919,15 @@
         "section": "Linear independence",
         "snippet": "Determinants can be used to characterize linearly dependent vectors"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_eq_zero_of_not_linearIndependent_cols",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Together with `linearIndependent_cols_of_det_ne_zero` this gives the iff over a domain.",
+      "provenance": "ai-agent1",
+      "id": "d14b0621067b"
     },
     {
       "kind": "definition",
@@ -470,7 +936,15 @@
         "section": "Linear independence",
         "snippet": "the Wronskian is defined to be"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Wronskian definition was located in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "295dbae7d8ea"
     },
     {
       "kind": "proposition",
@@ -479,7 +953,25 @@
         "section": "Cross Product",
         "snippet": "The computation of a cross product is equivalent to finding the formal determinant"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "crossProduct",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": null
+      },
+      "note": "`crossProduct` is defined and appears (e.g. in `triple_product_eq_det`-style lemmas using `det_fin_three`) but it is not defined or characterized as a 'formal' 3×3 determinant explicitly.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Cross Product",
+          "snippet": "The computation of a cross product is equivalent to finding the formal determinant"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {a\\times b} =\\det {\\begin{pmatrix}\\mathbf {i} &amp;\\mathbf {j} &amp;\\mathbf {k} \\\\a_{1}&amp;a_{2}&amp;a_{3}\\\\b_{1}&amp;b_{2}&amp;b_{3}\\\\\\end{pmatrix}}}"
+        }
+      ],
+      "id": "c9543af48021"
     },
     {
       "kind": "proposition",
@@ -488,7 +980,15 @@
         "section": "Orientation of a basis",
         "snippet": "the sign of the determinant determines whether the orientation of the basis is consistent"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Basis.orientation_eq_iff_det_pos",
+        "module": "Mathlib.LinearAlgebra.Orientation",
+        "match_kind": "exact"
+      },
+      "note": "`orientation_eq_iff_det_pos` characterizes equality of orientations via positivity of the change-of-basis determinant.",
+      "provenance": "ai-agent1",
+      "id": "7a2ed7260344"
     },
     {
       "kind": "proposition",
@@ -497,7 +997,15 @@
         "section": "Volume and Jacobian determinant",
         "snippet": "the absolute value of the determinant of real vectors is equal to the volume of the parallelepiped"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "OrthonormalBasis.volume_parallelepiped",
+        "module": "Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace",
+        "match_kind": null
+      },
+      "note": "`OrthonormalBasis.volume_parallelepiped` and `Basis.addHaar` relate parallelepiped volume to determinants but the bare `|det| = volume` identity for arbitrary vectors is not a single named lemma.",
+      "provenance": "ai-agent1",
+      "id": "2e1adcf477c8"
     },
     {
       "kind": "definition",
@@ -506,7 +1014,15 @@
         "section": "Volume and Jacobian determinant",
         "snippet": "the Jacobian matrix is the n × n matrix whose entries are given by the partial derivatives"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "fderiv",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib uses the coordinate-free `fderiv` rather than an explicit Jacobian matrix; `(fderiv 𝕜 f x).det` plays the Jacobian determinant role.",
+      "provenance": "ai-agent1",
+      "id": "163417356030"
     },
     {
       "kind": "theorem",
@@ -515,7 +1031,15 @@
         "section": "Volume and Jacobian determinant",
         "snippet": "the higher-dimensional version of integration by substitution"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_image_eq_integral_abs_det_fderiv_smul",
+        "module": "Mathlib.MeasureTheory.Function.Jacobian",
+        "match_kind": "exact"
+      },
+      "note": "`integral_image_eq_integral_abs_det_fderiv_smul` is the n-dimensional change-of-variables formula.",
+      "provenance": "ai-agent1",
+      "id": "99e20414865b"
     },
     {
       "kind": "proposition",
@@ -524,7 +1048,15 @@
         "section": "Areas and Collinearity",
         "snippet": "The area of a triangle whose vertices are"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific triangle-area-via-3×3-determinant lemma was located.",
+      "provenance": "ai-agent1",
+      "id": "acad14b42f75"
     },
     {
       "kind": "proposition",
@@ -533,7 +1065,15 @@
         "section": "Determinant of an endomorphism",
         "snippet": "similar matrices have the same determinant"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_conj",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "exact"
+      },
+      "note": "`det_conj h N : det (M * N * M⁻¹) = det N` when `M` is a unit.",
+      "provenance": "ai-agent1",
+      "id": "32cfb5b73a64"
     },
     {
       "kind": "definition",
@@ -542,7 +1082,15 @@
         "section": "Determinant of an endomorphism",
         "snippet": "The determinant of a linear transformation"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.det",
+        "module": "Mathlib.LinearAlgebra.Determinant",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.det : (M →ₗ[R] M) →* R` is the basis-independent determinant of an endomorphism.",
+      "provenance": "ai-agent1",
+      "id": "d0fab5e01133"
     },
     {
       "kind": "definition",
@@ -551,7 +1099,15 @@
         "section": "Square matrices over commutative rings",
         "snippet": "The above definition of the determinant using the Leibniz rule works more generally"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.det` is defined for any matrix over a `CommRing R`.",
+      "provenance": "ai-agent1",
+      "id": "e6fc054d0238"
     },
     {
       "kind": "theorem",
@@ -560,7 +1116,15 @@
         "section": "Square matrices over commutative rings",
         "snippet": "is invertible (in the sense that there is an inverse matrix whose entries are in"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.isUnit_iff_isUnit_det",
+        "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
+        "match_kind": "exact"
+      },
+      "note": "`IsUnit A ↔ IsUnit A.det` over a commutative ring.",
+      "provenance": "ai-agent1",
+      "id": "91b8201fd1b6"
     },
     {
       "kind": "definition",
@@ -569,7 +1133,15 @@
         "section": "Square matrices over commutative rings",
         "snippet": "Such a matrix is called unimodular"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.IsTotallyUnimodular",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.TotallyUnimodular",
+        "match_kind": null
+      },
+      "note": "Only the stronger 'totally unimodular' notion is defined; a `IsUnimodular := IsUnit A.det` definition was not found as a standalone name.",
+      "provenance": "ai-agent1",
+      "id": "430b02c9c8a2"
     },
     {
       "kind": "definition",
@@ -578,7 +1150,15 @@
         "section": "Exterior algebra",
         "snippet": "can be formulated in a coordinate-free manner by considering"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.det",
+        "module": "Mathlib.LinearAlgebra.Determinant",
+        "match_kind": null
+      },
+      "note": "`LinearMap.det` is coordinate-free but Mathlib defines it via `Matrix.det` after choosing a basis rather than via the top exterior power.",
+      "provenance": "ai-agent1",
+      "id": "4c712bba1880"
     },
     {
       "kind": "definition",
@@ -587,7 +1167,15 @@
         "section": "Berezin integral",
         "snippet": "the determinant can be written using the somewhat surprising notation of the Berezin integral"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Berezin-integral formalism was located.",
+      "provenance": "ai-agent1",
+      "id": "41871133e672"
     },
     {
       "kind": "proposition",
@@ -596,7 +1184,15 @@
         "section": "Berezin integral",
         "snippet": "is the square-root of the determinant"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Pfaffian definition was found in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "444f24620cb6"
     },
     {
       "kind": "definition",
@@ -605,7 +1201,15 @@
         "section": "Generalizations and related notions",
         "snippet": "the permanent of a matrix is defined as the determinant"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.permanent",
+        "module": "Mathlib.LinearAlgebra.Matrix.Permanent",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.permanent` defines the permanent as a sum over permutations without signs.",
+      "provenance": "ai-agent1",
+      "id": "17496f7ac119"
     },
     {
       "kind": "definition",
@@ -614,7 +1218,15 @@
         "section": "Generalizations and related notions",
         "snippet": "The immanant generalizes both by introducing a character"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No immanant definition was located in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "8f57cc4cb9df"
     },
     {
       "kind": "definition",
@@ -623,7 +1235,15 @@
         "section": "Determinants for finite-dimensional algebras",
         "snippet": "there is a determinant map"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra.norm",
+        "module": "Mathlib.RingTheory.Norm.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Algebra.norm` is the determinant of multiplication-by-x on a finite free algebra; coincides with the algebra-norm determinant.",
+      "provenance": "ai-agent1",
+      "id": "820098ae0093"
     },
     {
       "kind": "definition",
@@ -632,7 +1252,15 @@
         "section": "Infinite matrices",
         "snippet": "The Fredholm determinant defines the determinant for operators known as trace class operators"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Fredholm determinant was located in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "2cb70ae53a6b"
     },
     {
       "kind": "definition",
@@ -641,7 +1269,15 @@
         "section": "Operators in von Neumann algebras",
         "snippet": "one may define a positive real-valued determinant called the Fuglede−Kadison determinant"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Fuglede–Kadison determinant was located in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "b46ee3cd6b2e"
     },
     {
       "kind": "proposition",
@@ -650,6 +1286,78 @@
         "section": "Related notions for non-commutative rings",
         "snippet": "multilinearity and alternating properties are incompatible"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines `Matrix.det` only over commutative rings; no formal incompatibility no-go theorem is stated.",
+      "provenance": "ai-agent1",
+      "id": "83a0ced0db8e"
+    },
+    {
+      "kind": "definition",
+      "label": "General linear group",
+      "anchor": {
+        "section": "Multiplicativity and matrix groups",
+        "snippet": "the set of such matrices (of fixed size"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.GeneralLinearGroup",
+        "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.GeneralLinearGroup n R` is the group of units in `Matrix n n R`.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Special linear group",
+      "anchor": {
+        "section": "Multiplicativity and matrix groups",
+        "snippet": "a subgroup called the special linear group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.SpecialLinearGroup",
+        "module": "Mathlib.LinearAlgebra.Matrix.SpecialLinearGroup",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.SpecialLinearGroup n R` is the subgroup of `GL n R` consisting of determinant-1 matrices.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Determinant respects ring homomorphisms (naturality)",
+      "anchor": {
+        "section": "Square matrices over commutative rings",
+        "snippet": "The determinant respects these maps"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_map",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.det_map` shows `det (A.map f) = f (det A)` for a ring homomorphism `f`.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cayley–Hamilton theorem",
+      "anchor": {
+        "section": "Trace",
+        "snippet": "cf. Cayley-Hamilton theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.aeval_self_charpoly",
+        "module": "Mathlib.LinearAlgebra.Matrix.Charpoly.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.aeval_self_charpoly` states that a matrix satisfies its own characteristic polynomial.",
       "provenance": "ai-agent1"
     }
   ]
