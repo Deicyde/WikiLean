@@ -128,8 +128,42 @@ export interface ReviewComment {
   id: number;
   user: string;
   body: string;
+  bodyHtml: string | null; // GitHub-rendered (sanitized) markdown, or null on fallback
   html_url: string;
   created_at: string;
+}
+
+async function sha256Hex(s: string): Promise<string> {
+  const d = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(d), (b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+// Render a comment body to HTML via GitHub's own /markdown (GFM) endpoint, so
+// it matches GitHub exactly AND is sanitized by GitHub (safe to inject — public
+// PR comments are untrusted). Cached in KV by content hash; null on failure
+// (caller falls back to escaped plaintext).
+async function ghRenderMarkdown(
+  text: string,
+  repoFull: string,
+  token: string | undefined,
+  env: Env,
+): Promise<string | null> {
+  try {
+    const key = "md:" + (await sha256Hex(repoFull + "\n" + text));
+    const cached = await env.RENDER_CACHE.get(key);
+    if (cached !== null) return cached;
+    const r = await fetch(`${GH_API}/markdown`, {
+      method: "POST",
+      headers: { ...ghHeaders(token), "Content-Type": "application/json" },
+      body: JSON.stringify({ text, mode: "gfm", context: repoFull }),
+    });
+    if (!r.ok) return null;
+    const html = await r.text();
+    await env.RENDER_CACHE.put(key, html, { expirationTtl: 60 * 60 * 24 * 7 });
+    return html;
+  } catch {
+    return null;
+  }
 }
 
 function keyOf(path: string, line: number): string {
@@ -151,6 +185,8 @@ async function buildReviewPayload(
   repo: string,
   pr: number,
   token?: string,
+  env?: Env,
+  renderMarkdown = false,
 ): Promise<ReviewPayload> {
   const full = `${owner}/${repo}`;
   const meta = await ghJson<{ head: { sha: string }; title: string }>(
@@ -168,6 +204,14 @@ async function buildReviewPayload(
     `${GH_API}/repos/${full}/pulls/${pr}/comments`,
     token,
   );
+  // Render bodies to HTML in parallel (cached). Only for the page read path.
+  const htmlById = new Map<number, string>();
+  if (renderMarkdown && env) {
+    const rendered = await Promise.all(
+      comments.map(async (c) => [c.id, await ghRenderMarkdown(c.body, full, token, env)] as const),
+    );
+    for (const [id, html] of rendered) if (html !== null) htmlById.set(id, html);
+  }
   const byLine = new Map<string, ReviewComment[]>();
   for (const c of comments) {
     const ln = c.line ?? c.original_line;
@@ -178,6 +222,7 @@ async function buildReviewPayload(
       id: c.id,
       user: c.user?.login ?? "unknown",
       body: c.body,
+      bodyHtml: htmlById.get(c.id) ?? null,
       html_url: c.html_url,
       created_at: c.created_at,
     });
@@ -208,7 +253,7 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
     }
     const { token } = await githubAccountFor(c);
     try {
-      const payload = await buildReviewPayload(owner, repo, pr, token);
+      const payload = await buildReviewPayload(owner, repo, pr, token, c.env, true);
       return c.json({ ok: true, ...payload });
     } catch (e) {
       return c.json({ ok: false, error: String(e instanceof Error ? e.message : e) }, 502);
@@ -372,6 +417,14 @@ pre.lean{font-family:"JuliaMono","JetBrains Mono","SF Mono",Menlo,Consolas,monos
 .cmt{font-size:.88rem;background:#fbf9f3;border:1px solid var(--rule);border-radius:6px;padding:.45rem .6rem}
 .cmt .who{font-weight:600;font-size:.8rem;color:var(--muted)}
 .cmt .body{white-space:pre-wrap;margin-top:.2rem}
+.cmt .body.md{white-space:normal}
+.cmt .body.md p{margin:.2rem 0}
+.cmt .body.md blockquote{margin:.3rem 0;padding:.1rem .7rem;border-left:3px solid var(--rule);color:#4a463c}
+.cmt .body.md code{background:var(--code);padding:.05em .35em;border-radius:3px;font-family:"SF Mono",Menlo,monospace;font-size:.92em}
+.cmt .body.md pre{background:var(--code);padding:.5rem .7rem;border-radius:5px;overflow:auto}
+.cmt .body.md a{color:var(--accent)}
+.cmt .body.md sub{color:var(--muted)}
+.cmt .body.md h1,.cmt .body.md h2,.cmt .body.md h3{font-size:1rem;margin:.3rem 0}
 .none{color:var(--muted);font-size:.85rem;font-style:italic;padding:.2rem .9rem .5rem}
 .form{padding:.6rem .9rem;border-top:1px dashed var(--rule);background:#fcfaf4}
 .form .row{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-bottom:.4rem}
@@ -457,7 +510,8 @@ function render(data){
     el.className = "entry"; el.dataset.status = st.status || "";
     const commentsHtml = d.comments.length
       ? d.comments.map(c => '<div class="cmt"><div class="who">' + esc(c.user) +
-          '</div><div class="body">' + esc(c.body) + '</div></div>').join("")
+          '</div>' + (c.bodyHtml ? '<div class="body md">' + c.bodyHtml + '</div>'
+                                 : '<div class="body">' + esc(c.body) + '</div>') + '</div>').join("")
       : '<div class="none">No existing comments on this line.</div>';
     el.innerHTML =
       '<header><span class="qid"><a href="https://www.wikidata.org/wiki/' + d.qid +
