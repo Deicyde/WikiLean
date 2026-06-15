@@ -721,10 +721,10 @@ pre.lean .n{color:#0a0a0a}
 <h1>WikiLean · <code>@[wikidata]</code> review</h1>
 <p class="lede">Paste a pull request; review each tagged declaration with its existing GitHub comments, then submit your decisions.</p>
 <form class="load" onsubmit="return false">
-  <input id="repo" placeholder="owner/repo" value="Deicyde/mathlib4">
+  <input id="repo" placeholder="owner/repo" value="leanprover-community/mathlib4">
   <input id="pr" placeholder="PR #" inputmode="numeric">
   <button id="load">Load PR</button>
-  <span class="note">e.g. <code>leanprover-community/mathlib4</code> · <code>Deicyde/mathlib4</code></span>
+  <span class="note">e.g. <code>leanprover-community/mathlib4</code> · <code>Deicyde/mathlib4</code> (fork)</span>
 </form>
 <div id="status"></div>
 <div id="controls" hidden>
