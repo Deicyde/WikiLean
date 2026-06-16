@@ -437,6 +437,7 @@ export function htmlLeadToText(html: string): string {
   }
   const sb = (c: string, map: Record<string, string>): string => {
     const x = decodeEntities(c.replace(/<[^>]+>/g, "")).trim();
+    if (/^\[.*\]$/.test(x)) return ""; // footnote/citation marker, e.g. [1] or [note 1]
     const u = toScript(x, map);
     return u !== null ? u : x ? (map === SUP_MAP ? "^" : "_") + (x.length > 1 ? "(" + x + ")" : x) : "";
   };
@@ -473,7 +474,7 @@ async function fetchLeads(titles: string[], env: Env): Promise<Map<string, strin
   const out = new Map<string, string>();
   await Promise.all(
     titles.map(async (t) => {
-      const key = `wplead3:${t}`; // bumped from wplead2: — new source (action API HTML)
+      const key = `wplead4:${t}`; // bumped from wplead3: — footnote-marker stripping
       const cached = await env.RENDER_CACHE.get(key);
       if (cached !== null) {
         out.set(t, cached);
