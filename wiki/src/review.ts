@@ -965,14 +965,14 @@ function render(data){
     const otherHtml = otherCmts.map(commentHtml).filter(Boolean).join("");
     let reviewBlock;
     if(reviewCmts.length){
-      reviewBlock = '<div class="cur"><span class="cur-label">Existing review</span>' +
+      reviewBlock = '<div class="cur"><span class="cur-label">Reviews</span>' +
         reviewCmts.map(c => { const ps = parseStatus([c]); const note = reviewNote(c);
           return '<div class="rev-item">' + statusBadge(ps.status) +
             (ps.by ? ' <span class="by">@' + esc(ps.by) + '</span>' : '') +
             (note ? '<div class="rev-note md">' + note + '</div>' : '') + '</div>';
         }).join("") + '</div>';
     } else {
-      reviewBlock = '<div class="cur"><span class="cur-label">Existing review</span> ' + statusBadge("") + '</div>';
+      reviewBlock = '<div class="cur"><span class="cur-label">Reviews</span> ' + statusBadge("") + '</div>';
     }
     const wd = d.wd || {};
     const wikiHead = wd.enwikiUrl
@@ -1000,7 +1000,7 @@ function render(data){
       '<div class="form">' +
         reviewBlock +
         '<div class="acts">' +
-          '<button class="act-status' + (showStatus?" on":"") + '" data-qid="' + d.qid + '">Change review status</button>' +
+          '<button class="act-status' + (showStatus?" on":"") + '" data-qid="' + d.qid + '">Add Review</button>' +
           '<button class="act-note' + (showNote?" on":"") + '" data-qid="' + d.qid + '">Add note</button>' +
         '</div>' +
         '<div class="row status-ctrl" data-qid="' + d.qid + '"' + (showStatus?"":" hidden") + '>' +
