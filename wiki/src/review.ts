@@ -1168,7 +1168,7 @@ pre.lean .n{color:#1f1f1f}
 #bar{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--rule);padding:.6rem 1.3rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;box-shadow:0 -2px 8px rgba(0,0,0,.06)}
 #bar .counts span{padding:.1rem .5rem;border-radius:12px;font-size:.85rem;margin-right:.4rem}
 #bar button{font:inherit;font-weight:600;padding:.4rem 1rem;border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:6px;cursor:pointer}
-#bar #submit{background:#fff;color:var(--accent)}
+#bar #submit-gh{background:#fff;color:var(--accent)}
 #bar button:disabled{opacity:.5;cursor:default}
 .note{font-size:.8rem;color:var(--muted)}
 </style></head>
@@ -1204,8 +1204,8 @@ pre.lean .n{color:#1f1f1f}
   </div>
   <div>
     <span class="note" id="submit-note"></span>
+    <button id="submit">📋 Copy review</button>
     <button id="submit-gh">✅ Submit to GitHub</button>
-    <button id="submit">📋 Copy instead</button>
   </div>
 </div>
 <dialog id="copybox">
