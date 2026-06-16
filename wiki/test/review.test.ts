@@ -3,7 +3,14 @@
 // (buildReviewCommentBody). No network — the GitHub fetch/post paths are
 // exercised against a real PR via the running Worker.
 import { describe, it, expect } from "vitest";
-import { parseWikidataTags, buildReviewCommentBody, cleanLead, extractDeclName } from "../src/review.js";
+import {
+  parseWikidataTags,
+  buildReviewCommentBody,
+  cleanLead,
+  extractDeclName,
+  mathToUnicode,
+  htmlLeadToText,
+} from "../src/review.js";
 
 describe("parseWikidataTags", () => {
   it("finds an added @[wikidata] tag with its new-file line number", () => {
@@ -123,12 +130,57 @@ describe("cleanLead", () => {
     const inp = "the absolute value of a real number {\\displaystyle |x|}, is the non-negative value.";
     expect(cleanLead(inp)).toBe("the absolute value of a real number |x|, is the non-negative value.");
   });
-  it("handles one level of nested braces", () => {
-    expect(cleanLead("for {\\displaystyle x\\in \\mathbb {R} } we have")).toContain("\\mathbb {R}");
-    expect(cleanLead("for {\\displaystyle x\\in \\mathbb {R} } we have")).not.toContain("\\displaystyle");
+  it("scrubs leftover TeX commands and braces as a safety net", () => {
+    const out = cleanLead("for {\\displaystyle x\\in \\mathbb {R} } we have")!;
+    expect(out).not.toContain("\\displaystyle");
+    expect(out).not.toContain("\\mathbb");
+    expect(out).not.toMatch(/[{}]/);
   });
   it("passes through plain text and null", () => {
     expect(cleanLead("just prose, no math.")).toBe("just prose, no math.");
     expect(cleanLead(null)).toBe(null);
+  });
+});
+
+// Real MathML fragments as emitted by the MediaWiki action API (prop=extracts).
+const mml = (inner: string) =>
+  `<math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow>${inner}</mrow>` +
+  `<annotation encoding="application/x-tex">IGNORED</annotation></semantics></math>`;
+
+describe("mathToUnicode", () => {
+  it("renders double-struck letters, an operator and an arrow", () => {
+    const x = mml(`<mi>&#x3C7;</mi><mo>:</mo><mi mathvariant="double-struck">Z</mi><mo>&#x2192;</mo><mi mathvariant="double-struck">C</mi>`);
+    expect(mathToUnicode(x)).toBe("χ: ℤ → ℂ");
+  });
+  it("maps a simple superscript to a Unicode exponent", () => {
+    expect(mathToUnicode(mml(`<msup><mi>i</mi><mrow><mn>2</mn></mrow></msup><mo>=</mo><mo>&#x2212;</mo><mn>1</mn>`))).toBe("i² = −1");
+  });
+  it("renders a fraction with parenthesized denominator", () => {
+    expect(mathToUnicode(mml(`<mn>1</mn><mo>/</mo><msup><mi>n</mi><mrow><mi>s</mi></mrow></msup>`))).toContain("1/n^s");
+    expect(mathToUnicode(mml(`<mfrac><mn>1</mn><msup><mi>n</mi><mi>s</mi></msup></mfrac>`))).toBe("1/(n^s)");
+  });
+  it("ignores the x-tex annotation entirely (no LaTeX residue)", () => {
+    const out = mathToUnicode(mml(`<mi>x</mi>`));
+    expect(out).toBe("x");
+    expect(out).not.toContain("IGNORED");
+  });
+  it("is not fooled by a '>' inside an alttext attribute", () => {
+    const x = `<math alttext="{\\displaystyle \\operatorname {Re} (s)>1}"><semantics><mrow><mi>Re</mi><mo>(</mo><mi>s</mi><mo>)</mo><mo>&gt;</mo><mn>1</mn></mrow></semantics></math>`;
+    const out = mathToUnicode(x);
+    expect(out).toBe("Re(s) > 1");
+    expect(out).not.toContain('">');
+  });
+});
+
+describe("htmlLeadToText", () => {
+  it("renders math and strips tags, leaving clean prose", () => {
+    const html =
+      `<p>A function ${mml(`<mi>&#x3C7;</mi><mo>:</mo><mi mathvariant="double-struck">Z</mi><mo>&#x2192;</mo><mi mathvariant="double-struck">C</mi>`)} ` +
+      `is a <b>Dirichlet character</b>.<sup class="reference">[1]</sup></p>`;
+    const out = cleanLead(htmlLeadToText(html))!;
+    expect(out).toBe("A function χ: ℤ → ℂ is a Dirichlet character.");
+  });
+  it("converts a prose HTML superscript to a Unicode exponent", () => {
+    expect(cleanLead(htmlLeadToText("<p>10<sup>3</sup> = 1000.</p>"))).toBe("10³ = 1000.");
   });
 });
