@@ -58,7 +58,7 @@ on the VSCode-extension setup. Instead, fire it yourself in one command when you
 see you're near reset with capacity left:
 
 ```sh
-bash site/ops/run-now.sh        # detached; reviews up to 30 (WIKILEAN_REVIEW_LIMIT)
+bash site/ops/run-now.sh        # detached; reviews up to 100 (WIKILEAN_REVIEW_LIMIT)
 # or alias it:  alias wlmod='~/Desktop/LEAN/WikiLean/site/ops/run-now.sh'  →  wlmod
 ```
 It runs in your login context (Max auth, no FDA needed), detaches (survives
