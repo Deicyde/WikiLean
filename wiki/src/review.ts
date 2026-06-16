@@ -445,14 +445,16 @@ async function buildReviewPayload(
   const sourceByQid = new Map<string, string>();
   let wdByQid = new Map<string, WdInfo>();
   if (renderMarkdown && env) {
-    // Full bodies: one file fetch per unique file (cached), reused across tags.
+    // Full bodies: fetch each unique file once, in parallel, then slice.
     const fileCache = new Map<string, string[] | null>();
+    const uniqueFiles = [...new Set(tags.map((t) => t.file))];
+    await Promise.all(
+      uniqueFiles.map(async (f) => {
+        fileCache.set(f, await fetchFileLines(full, f, meta.head.sha, token, env));
+      }),
+    );
     for (const t of tags) {
-      let lines = fileCache.get(t.file);
-      if (lines === undefined) {
-        lines = await fetchFileLines(full, t.file, meta.head.sha, token, env);
-        fileCache.set(t.file, lines);
-      }
+      const lines = fileCache.get(t.file) ?? null;
       const body = lines ? extractDeclBody(lines, t.qid) : null;
       if (body) sourceByQid.set(t.qid, body);
     }
@@ -482,6 +484,10 @@ async function buildReviewPayload(
 
 const OWNER_RE = /^[A-Za-z0-9_.-]+$/;
 
+function reviewCacheKey(owner: string, repo: string, pr: number): string {
+  return `reviewpayload:${owner}/${repo}:${pr}`;
+}
+
 export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
   // JSON: PR tags + existing comments. Public PRs need no auth; if the reviewer
   // is logged in with a stored GitHub token we use it (5000/hr vs 60/hr).
@@ -492,6 +498,13 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
     if (!OWNER_RE.test(owner) || !OWNER_RE.test(repo) || !Number.isInteger(pr) || pr <= 0) {
       return c.json({ ok: false, error: "bad owner/repo/pr" }, 400);
     }
+    // Full-payload cache (60s) — a refresh within the window returns instantly
+    // from KV with zero GitHub calls. Busted on POST so a just-submitted review
+    // shows immediately; external comments are at most 60s stale.
+    const pageKey = reviewCacheKey(owner, repo, pr);
+    const cached = await c.env.RENDER_CACHE.get(pageKey);
+    if (cached) return c.body(cached, 200, { "Content-Type": "application/json" });
+
     // Reads use the logged-in user's token if present, else the server token
     // (5000/hr) — a single page load makes ~50 GitHub calls and would blow the
     // shared 60/hr unauthenticated limit otherwise.
@@ -499,7 +512,9 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
     const readToken = token || c.env.GITHUB_API_TOKEN;
     try {
       const payload = await buildReviewPayload(owner, repo, pr, readToken, c.env, true);
-      return c.json({ ok: true, ...payload });
+      const json = JSON.stringify({ ok: true, ...payload });
+      await c.env.RENDER_CACHE.put(pageKey, json, { expirationTtl: 60 });
+      return c.body(json, 200, { "Content-Type": "application/json" });
     } catch (e) {
       return c.json({ ok: false, error: String(e instanceof Error ? e.message : e) }, 502);
     }
@@ -596,6 +611,9 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
       }
     }
     const posted = results.filter((x) => x.posted).length;
+    // Invalidate the page cache so the submitter's refresh shows the new
+    // comments immediately (rather than the up-to-60s-stale cached page).
+    if (posted > 0) await c.env.RENDER_CACHE.delete(reviewCacheKey(owner, repo, pr));
     // Top-level "Reviewed" summary comment (one per submission that posted
     // anything), so the PR thread logs each review pass.
     if (posted > 0) {
