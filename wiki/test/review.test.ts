@@ -159,6 +159,11 @@ describe("mathToUnicode", () => {
     expect(mathToUnicode(mml(`<mn>1</mn><mo>/</mo><msup><mi>n</mi><mrow><mi>s</mi></mrow></msup>`))).toContain("1/n^s");
     expect(mathToUnicode(mml(`<mfrac><mn>1</mn><msup><mi>n</mi><mi>s</mi></msup></mfrac>`))).toBe("1/(n^s)");
   });
+  it("renders a barless fraction (binomial coefficient) as 'n choose k'", () => {
+    // \binom{n}{k} is a zero-linethickness <mfrac>; "(n/k)" would read as division.
+    const x = mml(`<mo>(</mo><mfrac linethickness="0"><mi>n</mi><mi>k</mi></mfrac><mo>)</mo>`);
+    expect(mathToUnicode(x)).toBe("(n choose k)");
+  });
   it("ignores the x-tex annotation entirely (no LaTeX residue)", () => {
     const out = mathToUnicode(mml(`<mi>x</mi>`));
     expect(out).toBe("x");
