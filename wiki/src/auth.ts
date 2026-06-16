@@ -35,17 +35,17 @@ export function makeAuth(env: Env) {
     { clientId: string; clientSecret: string; scope?: string[] }
   > = {};
   if (env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET) {
-    // Stopgap auto-post: `public_repo` lets a signed-in reviewer post their
-    // review as inline PR comments in-app (POST /api/review). Caveat: this
-    // classic scope grants read+WRITE to ALL of the user's public repos — an
-    // over-broad grant we accept only as a stopgap. (Existing users must sign
-    // out + back in once to grant the added scope.)
-    // TODO(github-app): replace with a fine-grained GitHub App ("Pull requests:
-    // write" on selected repos) so we can drop `public_repo` entirely.
+    // IDENTITY ONLY. The wiki login exists to attribute edits to a GitHub
+    // user — nothing more. It must NOT request `public_repo` (read+write to
+    // all of a user's public repos): that scope alarms contributors signing
+    // in just to edit an article, and storing such tokens in D1 is a real
+    // liability. The Wikidata-tags PR review tool (src/review.ts, POST
+    // /api/review) needs repo-write, but that belongs to a SEPARATE GitHub
+    // OAuth app + flow, not this shared login. See review.ts for that path.
     socialProviders.github = {
       clientId: env.GITHUB_CLIENT_ID,
       clientSecret: env.GITHUB_CLIENT_SECRET,
-      scope: ["read:user", "user:email", "public_repo"],
+      scope: ["read:user", "user:email"],
     };
   }
   if (env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET) {
