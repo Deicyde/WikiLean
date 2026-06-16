@@ -5,13 +5,15 @@
 # and needs no Full Disk Access grant (that's only for the launchd path).
 #
 # Burns leftover capacity: reviews up to WIKILEAN_REVIEW_LIMIT articles (default
-# 30 — higher than the nightly 15 since you're deliberately spending the tail of
-# a window). The runner aborts cleanly the moment the window is exhausted, so
-# overshooting the limit is harmless. The single-instance lock in
-# nightly-moderate.sh prevents overlap with the nightly run.
+# 100 — the /api/work per-fetch cap, and as much as a window can realistically
+# spend). The real limiter is window exhaustion: the runner aborts cleanly the
+# moment the Max window is spent, so overshooting the limit is harmless. We also
+# lift the nightly 700k-token budget cap to ~6M here (WIKILEAN_BUDGET_TOKENS) so
+# it can't prematurely halt a deliberate near-reset burn. The single-instance
+# lock in nightly-moderate.sh prevents overlap with the nightly run.
 #
-#   bash site/ops/run-now.sh            # default burn (review 30)
-#   WIKILEAN_REVIEW_LIMIT=60 bash site/ops/run-now.sh   # bigger burn
+#   bash site/ops/run-now.sh                              # full burn (review 100)
+#   WIKILEAN_REVIEW_LIMIT=25 bash site/ops/run-now.sh     # smaller burn
 #
 # Suggested shell alias (add to ~/.zshrc):
 #   alias wlmod='~/Desktop/LEAN/WikiLean/site/ops/run-now.sh'
@@ -19,7 +21,8 @@
 set -uo pipefail
 
 REPO="/Users/jack/Desktop/LEAN/WikiLean"
-: "${WIKILEAN_REVIEW_LIMIT:=30}"; export WIKILEAN_REVIEW_LIMIT
+: "${WIKILEAN_REVIEW_LIMIT:=100}"; export WIKILEAN_REVIEW_LIMIT
+: "${WIKILEAN_BUDGET_TOKENS:=6000000}"; export WIKILEAN_BUDGET_TOKENS
 mkdir -p "$HOME/Library/Logs/WikiLean"
 
 nohup /bin/bash "$REPO/site/ops/nightly-moderate.sh" >/dev/null 2>&1 &
