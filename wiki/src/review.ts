@@ -693,6 +693,11 @@ function reviewPageHtml(): string {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>WikiLean · @[wikidata] review</title>
 <style>
+/* JuliaMono — full Lean glyph coverage (subscript letters like ₗ in →ₗ, 𝕜, ↪, ⋀, …)
+   that system monospace fonts lack. font-display:swap → text shows immediately
+   in a fallback, then swaps in once loaded (cached after first visit). */
+@font-face{font-family:"JuliaMono";font-style:normal;font-weight:400;font-display:swap;
+  src:url("https://cdn.jsdelivr.net/gh/cormullion/juliamono@v0.058/webfonts/JuliaMono-Regular.woff2") format("woff2");}
 :root{--bg:#faf7f1;--card:#fffdf9;--rule:#e3dccb;--ink:#1f1d1a;--muted:#6b6457;--accent:#7a3d2a;--code:#f3efe6;
       --g:#2d7a4a;--y:#b77a14;--r:#a02828;--gb:#e8f4ec;--yb:#fbf3e0;--rb:#fbe8e8;}
 *{box-sizing:border-box}
@@ -718,7 +723,7 @@ pre.lean{font-family:"JuliaMono","JetBrains Mono","SF Mono",Menlo,Consolas,monos
 .cmt .body.md{white-space:normal}
 .cmt .body.md p{margin:.2rem 0}
 .cmt .body.md blockquote{margin:.3rem 0;padding:.1rem .7rem;border-left:3px solid var(--rule);color:#4a463c}
-.cmt .body.md code{background:var(--code);padding:.05em .35em;border-radius:3px;font-family:"SF Mono",Menlo,monospace;font-size:.92em}
+.cmt .body.md code{background:var(--code);padding:.05em .35em;border-radius:3px;font-family:"JuliaMono","SF Mono",Menlo,monospace;font-size:.92em}
 .cmt .body.md pre{background:var(--code);padding:.5rem .7rem;border-radius:5px;overflow:auto}
 .cmt .body.md a{color:var(--accent)}
 .cmt .body.md sub{color:var(--muted)}
