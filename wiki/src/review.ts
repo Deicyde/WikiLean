@@ -250,45 +250,239 @@ async function fetchWikidata(qids: string[], env: Env): Promise<Map<string, WdIn
   return out;
 }
 
-// Batched Wikipedia lead extracts (20 titles/call), per-title KV cache (7d).
-// Tidy a Wikipedia lead extract. The REST summary API drops inline <math>,
-// leaving gaps like "denoted , is" and "magnitude of  measured"; collapse the
-// resulting orphaned punctuation/whitespace. Also strips any stray
-// {\displaystyle …} TeX wrappers (belt-and-suspenders for other sources).
+// ---- MathML → Unicode (for rendering Wikipedia math leads cleanly) ----
+//
+// The Wikipedia REST summary `extract` leaks broken LaTeX for math articles
+// (e.g. ":\mathbb {Z} \rightarrow \mathbb {C} }"). Instead we fetch the action
+// API's HTML intro, where each formula is a self-contained <math> element with
+// full presentation MathML (the glyphs are already Unicode), and render it to
+// compact inline Unicode ("χ: ℤ → ℂ", "i² = −1", "∑ₙ₌₁^∞ 1/(n^s)").
+
+const DS_UP: Record<string, string> = { C: "ℂ", H: "ℍ", N: "ℕ", P: "ℙ", Q: "ℚ", R: "ℝ", Z: "ℤ" };
+// Map ASCII to blackboard-bold (double-struck), honoring the Letterlike-Symbols
+// exceptions (ℂℍℕℙℚℝℤ live outside the Mathematical Alphanumeric block).
+function doubleStruck(s: string): string {
+  let o = "";
+  for (const ch of s) {
+    const c = ch.codePointAt(0)!;
+    if (DS_UP[ch]) o += DS_UP[ch];
+    else if (ch >= "A" && ch <= "Z") o += String.fromCodePoint(0x1d538 + (c - 65));
+    else if (ch >= "a" && ch <= "z") o += String.fromCodePoint(0x1d552 + (c - 97));
+    else if (ch >= "0" && ch <= "9") o += String.fromCodePoint(0x1d7d8 + (c - 48));
+    else o += ch;
+  }
+  return o;
+}
+const SUP_MAP: Record<string, string> = { "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴", "5": "⁵", "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹", "+": "⁺", "-": "⁻", "−": "⁻", "=": "⁼", "(": "⁽", ")": "⁾", n: "ⁿ", i: "ⁱ" };
+const SUB_MAP: Record<string, string> = { "0": "₀", "1": "₁", "2": "₂", "3": "₃", "4": "₄", "5": "₅", "6": "₆", "7": "₇", "8": "₈", "9": "₉", "+": "₊", "-": "₋", "−": "₋", "=": "₌", "(": "₍", ")": "₎", n: "ₙ", i: "ᵢ", k: "ₖ", a: "ₐ", x: "ₓ", j: "ⱼ", m: "ₘ", s: "ₛ", t: "ₜ", l: "ₗ", p: "ₚ", r: "ᵣ", u: "ᵤ", v: "ᵥ", o: "ₒ", e: "ₑ", h: "ₕ" };
+function toScript(s: string, map: Record<string, string>): string | null {
+  if (!s) return null;
+  let o = "";
+  for (const ch of s) {
+    if (!map[ch]) return null;
+    o += map[ch];
+  }
+  return o;
+}
+// Invisible/format chars: soft hyphen, ZWSP/ZWNJ/ZWJ, word joiner, the four
+// invisible math operators (function application, invisible times/comma), BOM.
+const INVIS = /[­​‌‍⁠⁡⁢⁣⁤﻿]/g;
+function decodeEntities(s: string): string {
+  return s
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#160;|&nbsp;/g, " ")
+    .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(+n))
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, n) => String.fromCodePoint(parseInt(n, 16)))
+    .replace(/&amp;/g, "&");
+}
+// Index just past the '>' that ends the tag starting at `lt`, skipping quoted
+// attribute values (so a '>' inside alttext="…>…" doesn't terminate the tag).
+function tagEnd(s: string, lt: number): number {
+  let q = "";
+  for (let i = lt + 1; i < s.length; i++) {
+    const c = s[i];
+    if (q) {
+      if (c === q) q = "";
+    } else if (c === '"' || c === "'") q = c;
+    else if (c === ">") return i + 1;
+  }
+  return s.length;
+}
+
+interface MNode {
+  t: string;
+  attrs?: string;
+  kids?: MNode[];
+  text?: string;
+}
+const SPACED = ["⟺", "⟹", "⟶", "↦", "→", "⇒", "⇔", "≡", "≅", "≈", "≤", "≥", "≠", "∈", "∉", "⊆", "⊂", "⊇", "⊃", "=", "×", "≪", "≫", "<", ">"];
+
+// Render one <math>…</math> element (presentation MathML) to inline Unicode.
+export function mathToUnicode(xml: string): string {
+  xml = xml
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/<annotation(-xml)?\b[\s\S]*?<\/annotation(-xml)?>/g, "");
+  let i = 0;
+  function children(): MNode[] {
+    const kids: MNode[] = [];
+    while (i < xml.length) {
+      if (xml[i] !== "<") {
+        const j = xml.indexOf("<", i);
+        const stop = j < 0 ? xml.length : j;
+        kids.push({ t: "#text", text: xml.slice(i, stop) });
+        i = stop;
+        continue;
+      }
+      const end = tagEnd(xml, i);
+      const raw = xml.slice(i + 1, end - 1);
+      i = end;
+      if (raw[0] === "/") return kids;
+      const self = raw.endsWith("/");
+      const name = raw.replace(/^\s+/, "").split(/[\s/>]/)[0];
+      if (self) {
+        kids.push({ t: name, attrs: raw, kids: [] });
+        continue;
+      }
+      kids.push({ t: name, attrs: raw, kids: children() });
+    }
+    return kids;
+  }
+  const root = children();
+  const wrap = (s: string): string => ((s = s || ""), s.length > 1 ? "(" + s + ")" : s);
+  const scr = (s: string, map: Record<string, string>, fb: string): string => {
+    s = (s || "").trim();
+    const m = toScript(s, map);
+    return m !== null ? m : fb + wrap(s);
+  };
+  function rend(node: MNode): string {
+    if (node.t === "#text") return decodeEntities(node.text ?? "").replace(INVIS, "");
+    const all = node.kids ?? [];
+    // Inter-element whitespace is insignificant in presentation MathML; drop it
+    // (so "f⁡(x)" → "f(x)") except inside <mtext>, where spaces are literal.
+    const keep = node.t === "mtext" ? all : all.filter((k) => !(k.t === "#text" && !(k.text ?? "").trim()));
+    const r = keep.map(rend);
+    const e = keep.filter((k) => k.t !== "#text").map((k) => rend(k).trim());
+    switch (node.t) {
+      case "mi":
+      case "mn":
+      case "mo":
+      case "mtext": {
+        let t = keep.map(rend).join("");
+        const mv = (node.attrs?.match(/mathvariant="([^"]+)"/) || [])[1];
+        if (mv === "double-struck") t = doubleStruck(t);
+        return t;
+      }
+      case "mspace":
+        return " ";
+      case "msup": {
+        const sup = toScript((e[1] || "").trim(), SUP_MAP);
+        return (e[0] || "") + (sup !== null ? sup : "^" + wrap(e[1]));
+      }
+      case "msub": {
+        const sub = toScript((e[1] || "").trim(), SUB_MAP);
+        return (e[0] || "") + (sub !== null ? sub : "_" + wrap(e[1]));
+      }
+      case "msubsup":
+        return (e[0] || "") + scr(e[1], SUB_MAP, "_") + scr(e[2], SUP_MAP, "^");
+      case "munderover":
+        return (e[0] || "") + scr(e[1], SUB_MAP, "_") + scr(e[2], SUP_MAP, "^");
+      case "munder":
+        return (e[0] || "") + "_" + wrap(e[1]);
+      case "mover":
+        return (e[0] || "") + "^" + wrap(e[1]);
+      case "mfrac":
+        return wrap(e[0]) + "/" + wrap(e[1]);
+      case "msqrt":
+        return "√" + wrap(e.join(""));
+      case "mroot":
+        return (e[1] || "") + "√" + wrap(e[0]);
+      default:
+        return r.join("");
+    }
+  }
+  let s = root.map(rend).join("").replace(/\s+/g, " ").trim();
+  for (const op of SPACED) s = s.split(op).join(" " + op + " ");
+  s = s.replace(/([,;:])(?=[^\s)\]])/g, "$1 "); // space after , ; : when crowded
+  return s.replace(/\s+/g, " ").trim();
+}
+
+// Turn the action API's HTML intro into plain text: take the first paragraphs,
+// render each <math> to Unicode, convert prose <sup>/<sub>, drop everything else.
+export function htmlLeadToText(html: string): string {
+  const paras = [...html.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/g)].map((m) => m[1]);
+  const body = paras.slice(0, 2).join(" ") || html;
+  let out = "";
+  let k = 0;
+  for (;;) {
+    const lt = body.indexOf("<math", k);
+    if (lt < 0) {
+      out += body.slice(k);
+      break;
+    }
+    out += body.slice(k, lt);
+    const close = body.indexOf("</math>", lt);
+    if (close < 0) {
+      out += body.slice(lt);
+      break;
+    }
+    out += mathToUnicode(body.slice(lt, close + 7));
+    k = close + 7;
+  }
+  const sb = (c: string, map: Record<string, string>): string => {
+    const x = decodeEntities(c.replace(/<[^>]+>/g, "")).trim();
+    const u = toScript(x, map);
+    return u !== null ? u : x ? (map === SUP_MAP ? "^" : "_") + (x.length > 1 ? "(" + x + ")" : x) : "";
+  };
+  out = out
+    .replace(/<sup\b[^>]*class="[^"]*reference[^"]*"[^>]*>[\s\S]*?<\/sup>/g, "") // drop citation markers
+    .replace(/<sup\b[^>]*>([\s\S]*?)<\/sup>/g, (_, c) => sb(c, SUP_MAP))
+    .replace(/<sub\b[^>]*>([\s\S]*?)<\/sub>/g, (_, c) => sb(c, SUB_MAP))
+    .replace(/<style\b[\s\S]*?<\/style>/g, "")
+    .replace(/<(?:[^>"']|"[^"]*"|'[^']*')*>/g, ""); // quote-aware tag strip
+  return decodeEntities(out);
+}
+
+// Final tidy + safety net: collapse whitespace and orphaned punctuation, and
+// strip any TeX/brace residue that slipped past the MathML renderer.
 export function cleanLead(t: string | null): string | null {
   if (!t) return t;
   for (let i = 0; i < 4; i++) {
     t = t.replace(/\{\\(?:display|text)style\s*([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}/g, "$1");
   }
-  t = t.replace(/\\(?:display|text)style\s+/g, "");
+  t = t.replace(/\\[a-zA-Z]+\s*/g, "").replace(/[{}]/g, "");
   return t
+    .replace(INVIS, "")
     .replace(/[ \t\n]{2,}/g, " ")
-    .replace(/\s+([,.;:)])/g, "$1")
-    .replace(/\(\s+/g, "(")
+    .replace(/\s+([,.;:)\]])/g, "$1")
+    .replace(/([([])\s+/g, "$1")
+    .replace(/\s+/g, " ")
     .trim();
 }
 
-// Wikipedia leads via the REST summary API (one request per title, KV-cached).
-// Cleaner than prop=extracts for math articles — explaintext mangles inline
-// <math> into duplicated whitespace garbage; the summary drops it cleanly.
+// Wikipedia leads via the action API HTML intro (one request/title, KV-cached).
+// We render math from the MathML the action API embeds — far cleaner than the
+// REST summary `extract`, which leaks broken LaTeX for math-heavy articles.
 async function fetchLeads(titles: string[], env: Env): Promise<Map<string, string>> {
   const out = new Map<string, string>();
   await Promise.all(
     titles.map(async (t) => {
-      const key = `wplead2:${t}`; // bumped from wplead: — different source/format
+      const key = `wplead3:${t}`; // bumped from wplead2: — new source (action API HTML)
       const cached = await env.RENDER_CACHE.get(key);
       if (cached !== null) {
         out.set(t, cached);
         return;
       }
       try {
-        const r = await fetch(
-          `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(t)}`,
-          { headers: { "User-Agent": UA } },
-        );
+        const u =
+          `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro=1` +
+          `&redirects=1&format=json&titles=${encodeURIComponent(t)}`;
+        const r = await fetch(u, { headers: { "User-Agent": UA } });
         if (!r.ok) return;
-        const j = (await r.json()) as { extract?: string };
-        const lead = cleanLead(j.extract ?? "") ?? "";
+        const j = (await r.json()) as { query?: { pages?: Record<string, { extract?: string }> } };
+        const page = Object.values(j.query?.pages ?? {})[0];
+        const lead = (cleanLead(htmlLeadToText(page?.extract ?? "")) ?? "").slice(0, 1000);
         out.set(t, lead);
         await env.RENDER_CACHE.put(key, lead, { expirationTtl: 60 * 60 * 24 * 7 });
       } catch {
