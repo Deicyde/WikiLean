@@ -219,4 +219,8 @@ describe("htmlLeadToText", () => {
   it("converts a prose HTML superscript to a Unicode exponent", () => {
     expect(cleanLead(htmlLeadToText("<p>10<sup>3</sup> = 1000.</p>"))).toBe("10³ = 1000.");
   });
+  it("drops bracketed footnote/citation superscripts (e.g. [note 1])", () => {
+    const html = '<p>an abelian group,<sup>[note 1]</sup> also called commutative.<sup class="reference">[1]</sup></p>';
+    expect(cleanLead(htmlLeadToText(html))).toBe("an abelian group, also called commutative.");
+  });
 });
