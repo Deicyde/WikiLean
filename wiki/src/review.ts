@@ -1168,6 +1168,7 @@ pre.lean .n{color:#1f1f1f}
 #bar{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--rule);padding:.6rem 1.3rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;box-shadow:0 -2px 8px rgba(0,0,0,.06)}
 #bar .counts span{padding:.1rem .5rem;border-radius:12px;font-size:.85rem;margin-right:.4rem}
 #bar button{font:inherit;font-weight:600;padding:.4rem 1rem;border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:6px;cursor:pointer}
+#bar #submit{background:#fff;color:var(--accent)}
 #bar button:disabled{opacity:.5;cursor:default}
 .note{font-size:.8rem;color:var(--muted)}
 </style></head>
@@ -1203,7 +1204,8 @@ pre.lean .n{color:#1f1f1f}
   </div>
   <div>
     <span class="note" id="submit-note"></span>
-    <button id="submit">📋 Copy review for GitHub</button>
+    <button id="submit-gh">✅ Submit to GitHub</button>
+    <button id="submit">📋 Copy instead</button>
   </div>
 </div>
 <dialog id="copybox">
@@ -1524,9 +1526,44 @@ async function copyReview(){
   }
 }
 
+// Auto-post the pending decisions as inline PR comments via the reviewer's own
+// GitHub OAuth token (POST /api/review). Requires signing in with GitHub (the
+// public_repo scope). Falls back to a helpful message on 401/403.
+async function submitToGitHub(){
+  if(!DATA) return;
+  const parts = DATA.repo.split("/"); const owner=parts[0], repo=parts[1];
+  const wasByQid = {}; DATA.decls.forEach(d => { wasByQid[d.qid] = parseStatus(d.comments).status; });
+  const decisions = {};
+  Object.keys(STATE).forEach(qid => {
+    const s = STATE[qid] || {}; const status=(s.changeStatus||"").trim(); const notes=(s.note||"").trim();
+    if(!status && !notes) return;
+    decisions[qid] = { status, notes, was: wasByQid[qid]||"" };
+  });
+  const note = $("#submit-note");
+  if(!Object.keys(decisions).length){ note.textContent = "Nothing to submit — set a status change or add a note first."; return; }
+  note.textContent = "Posting to GitHub…";
+  try {
+    const r = await fetch("/api/review/"+owner+"/"+repo+"/"+DATA.pr,
+      {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({decisions})});
+    let j = {}; try { j = await r.json(); } catch(e){}
+    if(r.status===401){ const ret=encodeURIComponent(location.pathname+location.search);
+      note.innerHTML = 'Sign in with GitHub to post — <a href="/login?returnTo='+ret+'">sign in ↗</a>.'; return; }
+    if(r.status===403){ note.textContent = (j.error||"GitHub permission needed")+" — sign out and back in to grant comment access."; return; }
+    if(!j.ok){ note.textContent = "Could not post: "+(j.error||("HTTP "+r.status)); return; }
+    ((j.results)||[]).filter(x=>x.posted).forEach(x=>{ delete STATE[x.qid]; }); save();
+    const skipped = ((j.results)||[]).filter(x=>x.skipped).length;
+    note.innerHTML = "✓ Posted "+j.posted+" comment"+(j.posted===1?"":"s")+
+      (j.changed?(" ("+j.changed+" status change"+(j.changed===1?"":"s")+")"):"")+
+      (skipped?(" · "+skipped+" already yours"):"")+
+      ' — see <a href="'+prUrl()+'" target="_blank" rel="noopener">the PR ↗</a>. Reloading…';
+    loadPR();
+  } catch(e){ note.textContent = "Network error: "+e; }
+}
+
 $("#load").addEventListener("click", loadPR);
 $("#pr").addEventListener("keydown", e => { if(e.key==="Enter") loadPR(); });
 $("#submit").addEventListener("click", copyReview);
+$("#submit-gh").addEventListener("click", submitToGitHub);
 $("#filter").addEventListener("change", () => { if(DATA) render(DATA); });
 $("#open-all").addEventListener("click", toggleAllReviews);
 const cbClose = document.getElementById("copybox-close");
