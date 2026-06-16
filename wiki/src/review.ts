@@ -850,8 +850,12 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
       return c.json({ ok: false, error: "no linked GitHub account — sign in with GitHub" }, 403);
     }
     if (!/(^|[\s,])(public_repo|repo)([\s,]|$)/.test(scope ?? "")) {
+      // The wiki login is identity-only (no public_repo) by design — see
+      // auth.ts. In-app PR posting needs repo-write, which belongs to a
+      // separate GitHub OAuth app/flow not yet wired; until then, copy the
+      // generated review and paste it on GitHub by hand.
       return c.json(
-        { ok: false, error: "GitHub token lacks comment permission — sign out and back in to grant it" },
+        { ok: false, error: "in-app posting unavailable: the wiki login no longer carries repo-write scope. Copy the review and paste it on GitHub, or set up the dedicated review OAuth app." },
         403,
       );
     }
