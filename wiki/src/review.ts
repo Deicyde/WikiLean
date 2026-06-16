@@ -756,6 +756,14 @@ pre.lean .n{color:#1f1f1f}
 #controls select{font:inherit;padding:.25rem .4rem;border:1px solid var(--rule);border-radius:6px;background:#fff}
 .entry.pending{box-shadow:inset 3px 0 0 #1a4b8c}
 .cur{font-size:.88rem;margin-bottom:.45rem}
+.cur-label{font-weight:600;color:var(--muted);margin-right:.4rem;font-size:.82rem;text-transform:uppercase;letter-spacing:.03em}
+.rev-item{margin:.25rem 0}
+.rev-note{margin:.15rem 0 .15rem 1.1rem;font-size:.9rem}
+.rev-note p{margin:.15rem 0}
+.rev-note blockquote{margin:.2rem 0;padding:.05rem .6rem;border-left:3px solid var(--rule);color:#4a463c}
+.rev-note code{background:var(--code);padding:.05em .35em;border-radius:3px;font-family:"JuliaMono","SF Mono",Menlo,monospace;font-size:.92em}
+.rev-note a{color:var(--accent)}
+.comments-label{font-weight:600;color:var(--muted);font-size:.82rem;text-transform:uppercase;letter-spacing:.03em}
 .cur .badge{padding:.1rem .5rem;border-radius:12px;font-weight:600}
 .cur .badge.approve{background:var(--gb);color:var(--g)}
 .cur .badge.revise{background:var(--yb);color:var(--y)}
@@ -950,8 +958,22 @@ function render(data){
     const pending = !!(st.changeStatus || (st.note && st.note.trim()));
     const el = document.createElement("article");
     el.className = "entry" + (pending?" pending":""); el.dataset.status = cs || "";
-    const cmtsHtml = d.comments.map(commentHtml).filter(Boolean).join("");
-    const commentsHtml = cmtsHtml || '<div class="none">No other comments on this line.</div>';
+    // Split existing comments: WikiLean reviews (folded into the "Existing
+    // review" block, status + note together) vs. other discussion.
+    const reviewCmts = d.comments.filter(c => /wikilean-review:Q/.test(c.body||""));
+    const otherCmts = d.comments.filter(c => !/wikilean-review:Q/.test(c.body||""));
+    const otherHtml = otherCmts.map(commentHtml).filter(Boolean).join("");
+    let reviewBlock;
+    if(reviewCmts.length){
+      reviewBlock = '<div class="cur"><span class="cur-label">Existing review</span>' +
+        reviewCmts.map(c => { const ps = parseStatus([c]); const note = reviewNote(c);
+          return '<div class="rev-item">' + statusBadge(ps.status) +
+            (ps.by ? ' <span class="by">@' + esc(ps.by) + '</span>' : '') +
+            (note ? '<div class="rev-note md">' + note + '</div>' : '') + '</div>';
+        }).join("") + '</div>';
+    } else {
+      reviewBlock = '<div class="cur"><span class="cur-label">Existing review</span> ' + statusBadge("") + '</div>';
+    }
     const wd = d.wd || {};
     const wikiHead = wd.enwikiUrl
       ? '<p class="wd-head"><a href="' + wd.enwikiUrl + '" target="_blank">' + esc(wd.enwikiTitle || wd.label || d.qid) + '</a></p>'
@@ -964,7 +986,6 @@ function render(data){
         (wd.enwikiUrl ? '<p class="more"><a href="' + wd.enwikiUrl + '" target="_blank">Read full article ↗</a></p>' : '') +
         '</details>'
       : (wd.enwikiUrl ? '<p class="wd-lead"><a href="' + wd.enwikiUrl + '" target="_blank">Read on Wikipedia ↗</a></p>' : '');
-    const byHtml = cur[i].by ? ' <span class="by">by @' + esc(cur[i].by) + '</span>' : '';
     const showStatus = !!st.changeStatus;
     const showNote = !!(st.note && st.note.length);
     el.innerHTML =
@@ -975,9 +996,9 @@ function render(data){
         '<section class="src"><pre class="lean">' + hl(d.source || "") + '</pre></section>' +
         '<section class="wiki-pane">' + wikiHead + descHtml + leadHtml + '</section>' +
       '</div>' +
-      '<div class="comments">' + commentsHtml + '</div>' +
+      (otherHtml ? '<div class="comments"><div class="comments-label">Other comments</div>' + otherHtml + '</div>' : '') +
       '<div class="form">' +
-        '<div class="cur">Existing review: ' + statusBadge(cs) + byHtml + '</div>' +
+        reviewBlock +
         '<div class="acts">' +
           '<button class="act-status' + (showStatus?" on":"") + '" data-qid="' + d.qid + '">Change review status</button>' +
           '<button class="act-note' + (showNote?" on":"") + '" data-qid="' + d.qid + '">Add note</button>' +
