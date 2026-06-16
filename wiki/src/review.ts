@@ -1342,10 +1342,13 @@ function render(data){
     const pending = !!(st.changeStatus || (st.note && st.note.trim()));
     const el = document.createElement("article");
     el.className = "entry" + (pending?" pending":""); el.dataset.status = cs || "";
-    // Split existing comments: WikiLean reviews (folded into the "Existing
-    // review" block, status + note together) vs. other discussion.
+    // Split existing comments: WikiLean reviews (folded into the "Reviews"
+    // block, status + note together) vs. other discussion. Johan's crossref-bot
+    // comments are dropped from "Other comments" — they just restate the
+    // Wikidata label/description already shown in the card's Wikidata pane.
     const reviewCmts = d.comments.filter(c => /wikilean-review:Q/.test(c.body||""));
-    const otherCmts = d.comments.filter(c => !/wikilean-review:Q/.test(c.body||""));
+    const otherCmts = d.comments.filter(c =>
+      !/wikilean-review:Q/.test(c.body||"") && !/crossref-bot:Q/.test(c.body||""));
     const otherHtml = otherCmts.map(commentHtml).filter(Boolean).join("");
     let reviewBlock;
     if(reviewCmts.length){
