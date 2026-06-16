@@ -1178,7 +1178,7 @@ pre.lean .n{color:#1f1f1f}
   <input id="repo" placeholder="owner/repo" value="leanprover-community/mathlib4">
   <input id="pr" placeholder="PR #" inputmode="numeric">
   <button id="load">Load PR</button>
-  <span class="note">e.g. <code>leanprover-community/mathlib4</code> · <code>Deicyde/mathlib4</code> (fork)</span>
+  <span class="note">e.g. <code>leanprover-community/mathlib4</code></span>
 </form>
 <div id="status"></div>
 <div id="controls" hidden>
