@@ -184,6 +184,20 @@ function keyOf(path: string, line: number): string {
   return `${path}:${line}`;
 }
 
+// True for a wikilean-review comment that carries only a status (no note) — the
+// client drops these (the status shows in the "Existing review" row), so we
+// skip rendering their markdown.
+function statusOnlyReviewComment(body: string): boolean {
+  if (!/wikilean-review:Q/.test(body)) return false;
+  const rest = body
+    .split("\n")
+    .filter((l) => !/^\s*\*\*/.test(l) && !/<sub>/.test(l) && l.trim() !== "")
+    .map((l) => l.replace(/^>\s?/, ""))
+    .join("\n")
+    .trim();
+  return rest === "" || rest === "_(no note)_";
+}
+
 // ---- Wikidata label/description/enwiki + Wikipedia lead (cached) ----
 
 export interface WdInfo {
@@ -396,11 +410,17 @@ async function buildReviewPayload(
     `${GH_API}/repos/${full}/pulls/${pr}/comments`,
     token,
   );
-  // Render bodies to HTML in parallel (cached). Only for the page read path.
+  // Render bodies to HTML in parallel (cached). Only for the page read path —
+  // and skip status-only review comments (the client drops them), saving a
+  // GitHub /markdown call each.
   const htmlById = new Map<number, string>();
   if (renderMarkdown && env) {
     const rendered = await Promise.all(
-      comments.map(async (c) => [c.id, await ghRenderMarkdown(c.body, full, token, env)] as const),
+      comments.map(async (c) =>
+        statusOnlyReviewComment(c.body)
+          ? ([c.id, null] as const)
+          : ([c.id, await ghRenderMarkdown(c.body, full, token, env)] as const),
+      ),
     );
     for (const [id, html] of rendered) if (html !== null) htmlById.set(id, html);
   }
@@ -472,9 +492,13 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
     if (!OWNER_RE.test(owner) || !OWNER_RE.test(repo) || !Number.isInteger(pr) || pr <= 0) {
       return c.json({ ok: false, error: "bad owner/repo/pr" }, 400);
     }
+    // Reads use the logged-in user's token if present, else the server token
+    // (5000/hr) — a single page load makes ~50 GitHub calls and would blow the
+    // shared 60/hr unauthenticated limit otherwise.
     const { token } = await githubAccountFor(c);
+    const readToken = token || c.env.GITHUB_API_TOKEN;
     try {
-      const payload = await buildReviewPayload(owner, repo, pr, token, c.env, true);
+      const payload = await buildReviewPayload(owner, repo, pr, readToken, c.env, true);
       return c.json({ ok: true, ...payload });
     } catch (e) {
       return c.json({ ok: false, error: String(e instanceof Error ? e.message : e) }, 502);

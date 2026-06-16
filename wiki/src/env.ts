@@ -27,4 +27,11 @@ export interface Env {
   GITHUB_CLIENT_SECRET?: string;
   GOOGLE_CLIENT_ID?: string;
   GOOGLE_CLIENT_SECRET?: string;
+
+  // GitHub token for the /review tool's READ calls (PR diff, comments, file
+  // contents, /markdown). Authenticated reads get 5000/hr vs the shared 60/hr
+  // unauthenticated limit a single page load would blow. A no-scope classic PAT
+  // (or fine-grained read-only) suffices — it only reads public PRs. Posting
+  // still uses the logged-in reviewer's own OAuth token.
+  GITHUB_API_TOKEN?: string;
 }
