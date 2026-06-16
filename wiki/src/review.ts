@@ -672,6 +672,36 @@ async function buildReviewPayload(
     });
   }
 
+  // Page mode: also pull top-level "## WikiLean review" comments (the pasted
+  // copy-paste reviews) and fold their per-qid entries into the matching cards,
+  // in the same inline shape the client renders.
+  const pastedByQid = new Map<string, ReviewComment[]>();
+  if (renderMarkdown) {
+    const issueComments = await ghPaginate<{
+      id: number;
+      body: string;
+      user: { login: string } | null;
+      html_url: string;
+      created_at: string;
+    }>(`${GH_API}/repos/${full}/issues/${pr}/comments`, token);
+    for (const ic of issueComments) {
+      if (!ic.body || !isWikiLeanReview(ic.body)) continue;
+      for (const e of parseClipboardReview(ic.body)) {
+        const body = synthReviewBody(e.qid, e.status, e.note);
+        const bodyHtml = e.note && env ? await ghRenderMarkdown(body, full, token, env) : null;
+        if (!pastedByQid.has(e.qid)) pastedByQid.set(e.qid, []);
+        pastedByQid.get(e.qid)!.push({
+          id: ic.id,
+          user: ic.user?.login ?? "unknown",
+          body,
+          bodyHtml,
+          html_url: ic.html_url,
+          created_at: ic.created_at,
+        });
+      }
+    }
+  }
+
   // Page mode (renderMarkdown): also fetch the full decl body per tag and the
   // Wikidata description + Wikipedia lead per qid. Skipped for the POST path.
   const sourceByQid = new Map<string, string>();
@@ -708,7 +738,7 @@ async function buildReviewPayload(
     title: meta.title,
     decls: tags.map((t) => ({
       ...t,
-      comments: byLine.get(keyOf(t.file, t.line)) ?? [],
+      comments: [...(byLine.get(keyOf(t.file, t.line)) ?? []), ...(pastedByQid.get(t.qid) ?? [])],
       source: sourceByQid.get(t.qid) ?? t.hunk.join("\n"),
       wd: wdByQid.get(t.qid) ?? null,
       decl: declByQid.get(t.qid) ?? null,
@@ -899,6 +929,77 @@ export function buildReviewCommentBody(
     `<sub><a href="https://www.wikidata.org/wiki/${qid}">${qid}</a> ` +
     `<!-- wikilean-review:${qid} --></sub>`
   );
+}
+
+// ---- pasted top-level reviews ("Copy review for GitHub" output) ----
+//
+// The web tool's copy-paste flow assembles a "## WikiLean review" Markdown list
+// (buildClipboardReview), which the reviewer pastes as a single top-level PR
+// comment. Those live under /issues/:pr/comments (not the inline
+// /pulls/:pr/comments the tool normally reads), so we fetch them separately,
+// recognize them, split them back into per-qid entries, and re-emit each in the
+// inline-comment shape so the existing per-card rendering picks them up.
+
+function isWikiLeanReview(body: string): boolean {
+  return /^\s*##\s*WikiLean review/m.test(body) || /wikilean\.jackmccarthy\.org\/review/.test(body);
+}
+
+export interface PastedEntry {
+  qid: string;
+  status: string; // approve | revise | reject | flag | ""
+  note: string;
+}
+
+// Parse a pasted "## WikiLean review" comment back into per-qid {status, note}.
+// Mirrors the client's buildClipboardReview format (entry header + indented
+// `- status:` and note sub-bullets).
+export function parseClipboardReview(body: string): PastedEntry[] {
+  const out: PastedEntry[] = [];
+  let cur: PastedEntry | null = null;
+  let note: string[] = [];
+  const flush = () => {
+    if (cur) {
+      cur.note = note.join("\n").trim();
+      out.push(cur);
+    }
+  };
+  for (const ln of body.split("\n")) {
+    const h = ln.match(/^-\s*\*\*\[(Q\d+)\]/);
+    if (h) {
+      flush();
+      cur = { qid: h[1], status: "", note: "" };
+      note = [];
+      continue;
+    }
+    if (!cur) continue;
+    const st = ln.match(/^\s*-\s*status:[^\n]*\*\*(approve|revise|reject|flag)\*\*/i);
+    if (st) {
+      cur.status = st[1].toLowerCase();
+      note = [];
+      continue;
+    }
+    const nb = ln.match(/^\s*-\s+(.*)$/);
+    if (nb) {
+      note = [nb[1]];
+      continue;
+    }
+    if (note.length && /^\s+\S/.test(ln)) note.push(ln.trim());
+  }
+  flush();
+  return out.filter((e) => e.status || e.note);
+}
+
+// Re-emit a parsed pasted entry in the inline-comment body shape so the client's
+// parseStatus/reviewNote handle it identically to a real inline review comment.
+function synthReviewBody(qid: string, status: string, note: string): string {
+  if (status === "flag") {
+    const quoted = note ? note.split("\n").map((l) => "> " + l).join("\n") : "_(no note)_";
+    return (
+      `**⚠️ WikiLean reviewer note (Deletion candidate)**\n\n${quoted}\n\n` +
+      `<sub><a href="https://www.wikidata.org/wiki/${qid}">${qid}</a> <!-- wikilean-review:${qid} --></sub>`
+    );
+  }
+  return buildReviewCommentBody(qid, status, note);
 }
 
 // Read the logged-in user's stored GitHub OAuth token + granted scope
