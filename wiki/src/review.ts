@@ -392,8 +392,13 @@ export function mathToUnicode(xml: string): string {
         return (e[0] || "") + "_" + wrap(e[1]);
       case "mover":
         return (e[0] || "") + "^" + wrap(e[1]);
-      case "mfrac":
+      case "mfrac": {
+        // A zero-thickness fraction bar is \binom{n}{k} — render as "n choose k"
+        // rather than "(n/k)", which would misleadingly read as division.
+        const bar = (node.attrs?.match(/linethickness="([^"]*)"/) || [])[1];
+        if (bar !== undefined && /^0/.test(bar)) return wrap(e[0]) + " choose " + wrap(e[1]);
         return wrap(e[0]) + "/" + wrap(e[1]);
+      }
       case "msqrt":
         return "√" + wrap(e.join(""));
       case "mroot":
