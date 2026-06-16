@@ -323,6 +323,19 @@ into `wiki/public/assets/`. Edit sources, then run build-public, never edit
 
 ## Status log
 
+- 2026-06-16 — **Search-verified moderation + nightly automation live.** Reviewer
+  search skills (.claude/skills/{mathlib,wikidata,wikipedia}-search) built and
+  wired into Agent 2 as SDK custom tools (site/search_tools.py) — quality read of
+  a real batch confirmed they FIX stale/hallucinated Mathlib decls
+  (Basis.ofVectorSpace→Module.Basis.ofVectorSpace etc.), not churn. Durability:
+  checkpoint-and-retry-POST (moderate.py flush) + run-level revert endpoint
+  (deployed). NIGHTLY launchd schedule live (site/ops/, 03:00 local, flush→
+  wp-update→review, token-capped) — needs Full Disk Access on /bin/bash (Desktop
+  TCC); verified end-to-end (Max auth works under detached launchd). Security:
+  wiki login narrowed to identity-only — public_repo dropped (it was leaking
+  repo-write to every editor via the shared review-tool OAuth; that tool now
+  needs its own GitHub OAuth app).
+
 - 2026-06-12 (overnight autonomous run) — **UI redesign + review pass + eval
   infrastructure + fix wave + P2 completion, all deployed.** (1) Warm
   academic-minimalist redesign across homepage/shells/article chrome. (2)
