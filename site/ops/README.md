@@ -50,3 +50,21 @@ launchctl bootout   gui/$(id -u)/org.wikilean.moderate                     # dis
 ```
 A failed batch can be undone with the run-level revert (see the run id in the
 log): `curl -X POST .../api/admin/revert-run/<run_id> -H "Authorization: Bearer <PIPELINE_TOKEN>"`.
+
+## Manual trigger (use leftover Max capacity near a window reset)
+The exact 5-hour window reset isn't readable by a background script (only the
+`/usage` view shows it), so "fire 30 min before reset" can't be fully automated
+on the VSCode-extension setup. Instead, fire it yourself in one command when you
+see you're near reset with capacity left:
+
+```sh
+bash site/ops/run-now.sh        # detached; reviews up to 30 (WIKILEAN_REVIEW_LIMIT)
+# or alias it:  alias wlmod='~/Desktop/LEAN/WikiLean/site/ops/run-now.sh'  →  wlmod
+```
+It runs in your login context (Max auth, no FDA needed), detaches (survives
+closing the terminal), and the runner aborts cleanly when the window is spent.
+Bind `run-now.sh` to a Raycast script or macOS Shortcut for a literal hotkey.
+
+The **nightly 3 AM launchd run stays installed as a fallback** for days you
+forget — both share the same wrapper + single-instance lock, so they never
+double-run.
