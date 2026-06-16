@@ -1175,8 +1175,8 @@ pre.lean .n{color:#1f1f1f}
 <h1>WikiLean · <code>@[wikidata]</code> review</h1>
 <p class="lede">Paste a pull request; review each tagged declaration with its existing GitHub comments, then submit your decisions.</p>
 <form class="load" onsubmit="return false">
-  <input id="repo" placeholder="owner/repo" value="leanprover-community/mathlib4">
-  <input id="pr" placeholder="PR #" inputmode="numeric">
+  <input id="repo" placeholder="owner/repo" value="leanprover-community/mathlib4" autocomplete="off">
+  <input id="pr" placeholder="PR #" inputmode="numeric" autocomplete="off">
   <button id="load">Load PR</button>
   <span class="note">e.g. <code>leanprover-community/mathlib4</code></span>
 </form>
@@ -1533,7 +1533,9 @@ const cbClose = document.getElementById("copybox-close");
 if(cbClose) cbClose.addEventListener("click", () => { const d=$("#copybox"); if(d.close) d.close(); });
 // Deep-link support: /review?repo=owner/name&pr=6
 const qp = new URLSearchParams(location.search);
-if(qp.get("repo")) $("#repo").value = qp.get("repo");
+// Always default to upstream Mathlib on load (overriding any browser session
+// restore); a ?repo= deep-link still wins.
+$("#repo").value = qp.get("repo") || "leanprover-community/mathlib4";
 if(qp.get("pr")){ $("#pr").value = qp.get("pr"); loadPR(); }
 `;
 }
