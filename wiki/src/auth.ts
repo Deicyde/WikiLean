@@ -35,13 +35,18 @@ export function makeAuth(env: Env) {
     { clientId: string; clientSecret: string; scope?: string[] }
   > = {};
   if (env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET) {
-    // `public_repo` lets logged-in reviewers post PR comments via the /review
-    // tool (commenting on a public PR is a write action → needs the scope).
-    // read:user/user:email keep identity working. Existing users re-consent once.
+    // Identity-only scopes — no repo write. The classic `public_repo` scope
+    // would grant read+write to ALL public repos just to comment on a PR, which
+    // is an alarming over-grant. Short term, the /review tool lets reviewers
+    // COPY their review as markdown and paste it on the PR themselves (no write
+    // token needed).
+    // TODO(github-app): migrate this classic OAuth App to a fine-grained GitHub
+    // App so the tool can post PR comments with only "Pull requests: write" on
+    // selected repos, then restore the in-app submit flow (POST /api/review).
     socialProviders.github = {
       clientId: env.GITHUB_CLIENT_ID,
       clientSecret: env.GITHUB_CLIENT_SECRET,
-      scope: ["read:user", "user:email", "public_repo"],
+      scope: ["read:user", "user:email"],
     };
   }
   if (env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET) {
