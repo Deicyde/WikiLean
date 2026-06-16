@@ -132,6 +132,8 @@ interface GhReviewComment {
   path: string;
   line: number | null;
   original_line: number | null;
+  start_line: number | null; // multi-line comments (e.g. crossref's start_line=tag, line=tag+1)
+  original_start_line: number | null;
   body: string;
   user: { login: string } | null;
   html_url: string;
@@ -467,35 +469,55 @@ export function cleanLead(t: string | null): string | null {
     .trim();
 }
 
-// Wikipedia leads via the action API HTML intro (one request/title, KV-cached).
-// We render math from the MathML the action API embeds — far cleaner than the
-// REST summary `extract`, which leaks broken LaTeX for math-heavy articles.
+// Run async tasks with a bounded concurrency (a worker pool).
+async function runPool<T>(items: T[], limit: number, fn: (item: T) => Promise<void>): Promise<void> {
+  const queue = [...items];
+  const worker = async () => {
+    for (let it = queue.shift(); it !== undefined; it = queue.shift()) await fn(it);
+  };
+  await Promise.all(Array.from({ length: Math.min(limit, queue.length) }, worker));
+}
+
+// Wikipedia leads via the action API HTML intro, KV-cached. We render math from
+// the MathML the action API embeds — far cleaner than the REST summary
+// `extract`, which leaks broken LaTeX for math-heavy articles. Fetched through a
+// small worker pool with one retry: firing all titles at once bursts Wikipedia's
+// per-IP rate limit, so a cold load of a fresh PR was getting only ~half its
+// leads (the rest filled in over later loads as the cache warmed).
 async function fetchLeads(titles: string[], env: Env): Promise<Map<string, string>> {
   const out = new Map<string, string>();
-  await Promise.all(
-    titles.map(async (t) => {
-      const key = `wplead4:${t}`; // bumped from wplead3: — footnote-marker stripping
-      const cached = await env.RENDER_CACHE.get(key);
-      if (cached !== null) {
-        out.set(t, cached);
-        return;
-      }
+  const fetchOne = async (t: string) => {
+    const key = `wplead4:${t}`; // bumped from wplead3: — footnote-marker stripping
+    const cached = await env.RENDER_CACHE.get(key);
+    if (cached !== null) {
+      out.set(t, cached);
+      return;
+    }
+    const u =
+      `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro=1` +
+      `&redirects=1&format=json&titles=${encodeURIComponent(t)}`;
+    for (let attempt = 0; attempt < 2; attempt++) {
       try {
-        const u =
-          `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro=1` +
-          `&redirects=1&format=json&titles=${encodeURIComponent(t)}`;
         const r = await fetch(u, { headers: { "User-Agent": UA } });
-        if (!r.ok) return;
+        if (!r.ok) {
+          if (attempt === 0) {
+            await new Promise((res) => setTimeout(res, 300));
+            continue;
+          }
+          return;
+        }
         const j = (await r.json()) as { query?: { pages?: Record<string, { extract?: string }> } };
         const page = Object.values(j.query?.pages ?? {})[0];
         const lead = (cleanLead(htmlLeadToText(page?.extract ?? "")) ?? "").slice(0, 1000);
         out.set(t, lead);
         await env.RENDER_CACHE.put(key, lead, { expirationTtl: 60 * 60 * 24 * 7 });
+        return;
       } catch {
-        /* leave this title without a lead */
+        if (attempt === 0) await new Promise((res) => setTimeout(res, 300));
       }
-    }),
-  );
+    }
+  };
+  await runPool(titles, 5, fetchOne);
   return out;
 }
 
@@ -659,18 +681,27 @@ async function buildReviewPayload(
   }
   const byLine = new Map<string, ReviewComment[]>();
   for (const c of comments) {
-    const ln = c.line ?? c.original_line;
-    if (ln == null) continue;
-    const k = keyOf(c.path, ln);
-    if (!byLine.has(k)) byLine.set(k, []);
-    byLine.get(k)!.push({
+    // Index under every anchor line a comment carries. Multi-line comments (the
+    // crossref tool posts start_line=tag, line=tag+1) would otherwise only key
+    // on `line` and miss the decl, which is pinned to the tag (start) line.
+    const anchors = new Set<number>();
+    for (const v of [c.line, c.start_line, c.original_line, c.original_start_line]) {
+      if (v != null) anchors.add(v);
+    }
+    if (!anchors.size) continue;
+    const rc: ReviewComment = {
       id: c.id,
       user: c.user?.login ?? "unknown",
       body: c.body,
       bodyHtml: htmlById.get(c.id) ?? null,
       html_url: c.html_url,
       created_at: c.created_at,
-    });
+    };
+    for (const ln of anchors) {
+      const k = keyOf(c.path, ln);
+      if (!byLine.has(k)) byLine.set(k, []);
+      byLine.get(k)!.push(rc);
+    }
   }
 
   // Page mode: also pull top-level "## WikiLean review" comments (the pasted
