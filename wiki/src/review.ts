@@ -993,6 +993,8 @@ pre.lean .n{color:#1f1f1f}
 @media (max-width:820px){.panes{grid-template-columns:1fr}.src{border-right:none;border-bottom:1px solid var(--rule)}}
 #controls{margin:0 0 1rem;display:flex;gap:1rem;align-items:center;flex-wrap:wrap;font-size:.9rem}
 #controls select{font:inherit;padding:.25rem .4rem;border:1px solid var(--rule);border-radius:6px;background:#fff}
+#open-all{font:inherit;font-size:.83rem;padding:.3rem .7rem;border:1px solid var(--accent);background:#fff;color:var(--accent);border-radius:6px;cursor:pointer}
+#open-all:hover{background:#fbf6ec}
 .entry.pending{box-shadow:inset 3px 0 0 #1a4b8c}
 .cur{font-size:.88rem;margin-bottom:.45rem}
 .cur-label{font-weight:600;color:var(--muted);margin-right:.4rem;font-size:.82rem;text-transform:uppercase;letter-spacing:.03em}
@@ -1049,6 +1051,7 @@ pre.lean .n{color:#1f1f1f}
       <option value="none">◯ no review yet</option>
     </select>
   </label>
+  <button id="open-all" type="button">Open all reviews</button>
   <span id="dist" class="note"></span>
 </div>
 <div id="entries"></div>
@@ -1267,7 +1270,7 @@ function render(data){
   // Wire actions.
   root.querySelectorAll('.act-status').forEach(b => b.addEventListener("click", e => {
     const qid=e.target.dataset.qid, ctrl=root.querySelector('.status-ctrl[data-qid="'+qid+'"]');
-    ctrl.hidden = !ctrl.hidden; e.target.classList.toggle("on", !ctrl.hidden); }));
+    ctrl.hidden = !ctrl.hidden; e.target.classList.toggle("on", !ctrl.hidden); syncOpenAll(); }));
   root.querySelectorAll('.act-note').forEach(b => b.addEventListener("click", e => {
     const qid=e.target.dataset.qid, ta=root.querySelector('.note-ctrl[data-qid="'+qid+'"]');
     ta.hidden = !ta.hidden; e.target.classList.toggle("on", !ta.hidden); if(!ta.hidden) ta.focus(); }));
@@ -1275,7 +1278,25 @@ function render(data){
     r.addEventListener("change", e => set(e.target.dataset.qid, "changeStatus", e.target.value)));
   root.querySelectorAll('textarea.note-ctrl').forEach(t =>
     t.addEventListener("input", e => set(e.target.dataset.qid, "note", e.target.value)));
-  $("#bar").hidden = false; counts();
+  $("#bar").hidden = false; counts(); syncOpenAll();
+}
+
+// Open (or close) every "Add Review" form at once. Toggles based on whether any
+// are currently closed: any closed → open all; all open → close all.
+function toggleAllReviews(){
+  const root = $("#entries");
+  const ctrls = [...root.querySelectorAll('.status-ctrl')];
+  if(!ctrls.length) return;
+  const anyHidden = ctrls.some(c => c.hidden);
+  ctrls.forEach(c => { c.hidden = !anyHidden; });
+  root.querySelectorAll('.act-status').forEach(b => b.classList.toggle("on", anyHidden));
+  syncOpenAll();
+}
+function syncOpenAll(){
+  const oa = $("#open-all"); if(!oa) return;
+  const ctrls = [...$("#entries").querySelectorAll('.status-ctrl')];
+  const allOpen = ctrls.length > 0 && ctrls.every(c => !c.hidden);
+  oa.textContent = allOpen ? "Close all reviews" : "Open all reviews";
 }
 
 function radio(qid, val, label, cur){
@@ -1343,6 +1364,7 @@ $("#load").addEventListener("click", loadPR);
 $("#pr").addEventListener("keydown", e => { if(e.key==="Enter") loadPR(); });
 $("#submit").addEventListener("click", copyReview);
 $("#filter").addEventListener("change", () => { if(DATA) render(DATA); });
+$("#open-all").addEventListener("click", toggleAllReviews);
 const cbClose = document.getElementById("copybox-close");
 if(cbClose) cbClose.addEventListener("click", () => { const d=$("#copybox"); if(d.close) d.close(); });
 // Deep-link support: /review?repo=owner/name&pr=6
