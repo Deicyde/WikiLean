@@ -351,6 +351,39 @@ export function extractDeclBody(lines: string[], qid: string): string | null {
   return lines.slice(start, end).join("\n");
 }
 
+const DECL_SIG_RE =
+  /^(?:protected\s+|private\s+|noncomputable\s+|public\s+|nonrec\s+|unsafe\s+|partial\s+|scoped\s+|local\s+)*(?:def|theorem|lemma|class|structure|inductive|abbrev|instance|opaque|axiom)\s+([^\s:({\[]+)/;
+
+// Given file lines and a qid, return the fully-qualified declaration name around
+// its @[wikidata Qxxx] tag (e.g. "Module.Projective"), by reading the signature
+// line and prepending any enclosing `namespace`s. Used to anchor the Mathlib
+// docs link. Null when there is no named signature (e.g. an anonymous instance).
+export function extractDeclName(lines: string[], qid: string): string | null {
+  const pat = new RegExp(`wikidata\\s+${qid}\\b`);
+  const idx = lines.findIndex((l) => pat.test(l));
+  if (idx < 0) return null;
+  let sig = idx + 1;
+  while (sig < lines.length && (lines[sig].trimStart().startsWith("@[") || BARE_MODIFIERS.has(lines[sig].trim()))) sig++;
+  const m = (lines[sig] ?? "").match(DECL_SIG_RE);
+  if (!m) return null;
+  const short = m[1];
+  // Namespace walk from the file top to the signature line (`end <name>` pops a
+  // namespace; a bare `end` closing a section doesn't match and is ignored).
+  const stack: string[] = [];
+  for (let i = 0; i < sig; i++) {
+    const t = lines[i].trim();
+    const o = t.match(/^namespace\s+(\S+)/);
+    const c = t.match(/^end\s+(\S+)/);
+    if (o) stack.push(o[1]);
+    else if (c && stack.length && stack[stack.length - 1] === c[1]) stack.pop();
+  }
+  if (stack.length) {
+    const prefix = stack.join(".");
+    if (!short.startsWith(prefix + ".") && short !== prefix) return prefix + "." + short;
+  }
+  return short;
+}
+
 // Fetch a file's text at a commit (raw contents API), KV-cached by sha+path.
 async function fetchFileLines(
   repoFull: string,
@@ -383,7 +416,7 @@ export interface ReviewPayload {
   pr: number;
   head_sha: string;
   title: string;
-  decls: Array<DeclTag & { comments: ReviewComment[]; source: string; wd: WdInfo | null }>;
+  decls: Array<DeclTag & { comments: ReviewComment[]; source: string; wd: WdInfo | null; decl: string | null }>;
 }
 
 async function buildReviewPayload(
@@ -443,6 +476,7 @@ async function buildReviewPayload(
   // Page mode (renderMarkdown): also fetch the full decl body per tag and the
   // Wikidata description + Wikipedia lead per qid. Skipped for the POST path.
   const sourceByQid = new Map<string, string>();
+  const declByQid = new Map<string, string>();
   let wdByQid = new Map<string, WdInfo>();
   if (renderMarkdown && env) {
     // Full bodies: fetch each unique file once, in parallel, then slice.
@@ -457,6 +491,8 @@ async function buildReviewPayload(
       const lines = fileCache.get(t.file) ?? null;
       const body = lines ? extractDeclBody(lines, t.qid) : null;
       if (body) sourceByQid.set(t.qid, body);
+      const name = lines ? extractDeclName(lines, t.qid) : null;
+      if (name) declByQid.set(t.qid, name);
     }
     // Wikidata + Wikipedia leads.
     const qids = [...new Set(tags.map((t) => t.qid))];
@@ -476,6 +512,7 @@ async function buildReviewPayload(
       comments: byLine.get(keyOf(t.file, t.line)) ?? [],
       source: sourceByQid.get(t.qid) ?? t.hunk.join("\n"),
       wd: wdByQid.get(t.qid) ?? null,
+      decl: declByQid.get(t.qid) ?? null,
     })),
   };
 }
@@ -714,7 +751,10 @@ form.load button{font:inherit;font-weight:600;padding:.45rem 1rem;border:1px sol
 .entry[data-status=approve]{border-left-color:var(--g)}.entry[data-status=revise]{border-left-color:var(--y)}.entry[data-status=reject]{border-left-color:var(--r)}
 .entry header{display:flex;gap:.5rem;align-items:baseline;flex-wrap:wrap;padding:.6rem .9rem;background:#f6f2e9;border-bottom:1px solid var(--rule)}
 .entry header .qid a{font-family:"SF Mono",Menlo,monospace;color:var(--accent);text-decoration:none;font-size:.85rem}
-.entry header .loc{color:var(--muted);font-size:.82rem;font-family:"SF Mono",Menlo,monospace}
+.entry header .loc{color:var(--muted);font-size:.82rem;font-family:"SF Mono",Menlo,monospace;text-decoration:none}
+.entry header .loc:hover{color:var(--accent);text-decoration:underline}
+.entry header .loc-src{color:var(--muted);font-size:.74rem;font-family:"SF Mono",Menlo,monospace;text-decoration:none;opacity:.7;margin-left:.4rem}
+.entry header .loc-src:hover{color:var(--accent);opacity:1;text-decoration:underline}
 pre.lean{font-family:"JuliaMono","JetBrains Mono","SF Mono",Menlo,Consolas,monospace;font-size:.82rem;background:var(--code);margin:0;padding:.7rem .9rem;overflow:auto;white-space:pre-wrap;border-bottom:1px solid var(--rule)}
 .comments{padding:.5rem .9rem;display:flex;flex-direction:column;gap:.5rem}
 .cmt{font-size:.88rem;background:#fbf9f3;border:1px solid var(--rule);border-radius:6px;padding:.45rem .6rem}
@@ -988,10 +1028,22 @@ function render(data){
       : (wd.enwikiUrl ? '<p class="wd-lead"><a href="' + wd.enwikiUrl + '" target="_blank">Read on Wikipedia ↗</a></p>' : '');
     const showStatus = !!st.changeStatus;
     const showNote = !!(st.note && st.note.length);
+    // file:line links to the Mathlib docs for the decl (module page + #name
+    // anchor); a small "src ↗" links to the exact line of GitHub source. For a
+    // non-Mathlib file (no docs page) the location itself links to source.
+    const srcUrl = "https://github.com/" + data.repo + "/blob/" + data.head_sha + "/" + d.file + "#L" + d.line;
+    const docsUrl = /^Mathlib\//.test(d.file || "")
+      ? "https://leanprover-community.github.io/mathlib4_docs/" + d.file.replace(/\.lean$/, ".html") +
+        (d.decl ? "#" + encodeURIComponent(d.decl) : "")
+      : null;
+    const locHtml = docsUrl
+      ? '<a class="loc" href="' + docsUrl + '" target="_blank" rel="noopener" title="Open in Mathlib docs">' + esc(d.file) + ':' + d.line + '</a>' +
+        ' <a class="loc-src" href="' + srcUrl + '" target="_blank" rel="noopener" title="View source on GitHub">src&nbsp;↗</a>'
+      : '<a class="loc" href="' + srcUrl + '" target="_blank" rel="noopener" title="View source on GitHub">' + esc(d.file) + ':' + d.line + '</a>';
     el.innerHTML =
       '<header><span class="qid"><a href="https://www.wikidata.org/wiki/' + d.qid +
         '" target="_blank">' + d.qid + '</a></span>' +
-        '<span class="loc">' + esc(d.file) + ':' + d.line + '</span></header>' +
+        locHtml + '</header>' +
       '<div class="panes">' +
         '<section class="src"><pre class="lean">' + hl(d.source || "") + '</pre></section>' +
         '<section class="wiki-pane">' + wikiHead + descHtml + leadHtml + '</section>' +

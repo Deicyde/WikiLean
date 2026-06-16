@@ -3,7 +3,7 @@
 // (buildReviewCommentBody). No network — the GitHub fetch/post paths are
 // exercised against a real PR via the running Worker.
 import { describe, it, expect } from "vitest";
-import { parseWikidataTags, buildReviewCommentBody, cleanLead } from "../src/review.js";
+import { parseWikidataTags, buildReviewCommentBody, cleanLead, extractDeclName } from "../src/review.js";
 
 describe("parseWikidataTags", () => {
   it("finds an added @[wikidata] tag with its new-file line number", () => {
@@ -88,6 +88,33 @@ describe("buildReviewCommentBody", () => {
   it("omits 'changed from' when status is unchanged or had no prior", () => {
     expect(buildReviewCommentBody("Q1", "reject", "x", "reject")).not.toContain("changed from");
     expect(buildReviewCommentBody("Q1", "reject", "x", "")).not.toContain("changed from");
+  });
+});
+
+describe("extractDeclName", () => {
+  it("reads a fully-qualified name declared inline", () => {
+    const lines = ["@[wikidata Q123]", "class Module.Projective (R : Type*) [Semiring R] : Prop where", "  out : True"];
+    expect(extractDeclName(lines, "Q123")).toBe("Module.Projective");
+  });
+  it("prepends an enclosing namespace to a short name", () => {
+    const lines = ["namespace Order", "", "@[wikidata Q42]", "def cof (o : Ordinal) : Ordinal := o", "", "end Order"];
+    expect(extractDeclName(lines, "Q42")).toBe("Order.cof");
+  });
+  it("skips bare modifiers and stacked attributes on their own lines", () => {
+    const lines = ["@[wikidata Q7]", "@[simp]", "noncomputable", "def foo : Nat := 0"];
+    expect(extractDeclName(lines, "Q7")).toBe("foo");
+  });
+  it("keeps subscripts and primes in the name", () => {
+    const lines = ["@[wikidata Q9]", "def jacobiTheta₂' (z τ : ℂ) : ℂ := z"];
+    expect(extractDeclName(lines, "Q9")).toBe("jacobiTheta₂'");
+  });
+  it("returns null for an anonymous instance", () => {
+    const lines = ["@[wikidata Q5]", "instance : Foo Nat where", "  bar := 0"];
+    expect(extractDeclName(lines, "Q5")).toBeNull();
+  });
+  it("doesn't double-prefix when the signature already carries the namespace", () => {
+    const lines = ["namespace A", "@[wikidata Q1]", "def A.foo : Nat := 0", "end A"];
+    expect(extractDeclName(lines, "Q1")).toBe("A.foo");
   });
 });
 
