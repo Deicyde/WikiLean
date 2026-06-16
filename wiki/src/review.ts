@@ -1016,6 +1016,8 @@ pre.lean .n{color:#1f1f1f}
 .acts button{font:inherit;font-size:.83rem;padding:.3rem .7rem;border:1px solid var(--accent);background:#fff;color:var(--accent);border-radius:6px;cursor:pointer}
 .acts button:hover{background:#fbf6ec}
 .acts button.on{background:var(--accent);color:#fff}
+.acts button.act-clear{border-color:var(--rule);color:var(--muted)}
+.acts button.act-clear:hover{background:#f4efe6;color:var(--ink)}
 .form{padding:.6rem .9rem;border-top:1px dashed var(--rule);background:#fcfaf4}
 .form .row{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-bottom:.4rem}
 .form .row[hidden]{display:none}
@@ -1256,6 +1258,7 @@ function render(data){
         '<div class="acts">' +
           '<button class="act-status' + (showStatus?" on":"") + '" data-qid="' + d.qid + '">Add Review</button>' +
           '<button class="act-note' + (showNote?" on":"") + '" data-qid="' + d.qid + '">Add note</button>' +
+          '<button class="act-clear" data-qid="' + d.qid + '"' + (showStatus||showNote?"":" hidden") + '>Clear</button>' +
         '</div>' +
         '<div class="row status-ctrl" data-qid="' + d.qid + '"' + (showStatus?"":" hidden") + '>' +
           radio(d.qid,"approve","🟢 Approve",st.changeStatus) +
@@ -1274,10 +1277,23 @@ function render(data){
   root.querySelectorAll('.act-note').forEach(b => b.addEventListener("click", e => {
     const qid=e.target.dataset.qid, ta=root.querySelector('.note-ctrl[data-qid="'+qid+'"]');
     ta.hidden = !ta.hidden; e.target.classList.toggle("on", !ta.hidden); if(!ta.hidden) ta.focus(); }));
+  // Click (not change) so clicking the already-selected option deselects it.
   root.querySelectorAll('.status-ctrl input[type=radio]').forEach(r =>
-    r.addEventListener("change", e => set(e.target.dataset.qid, "changeStatus", e.target.value)));
+    r.addEventListener("click", e => {
+      const qid=e.target.dataset.qid, val=e.target.value;
+      if(((STATE[qid]||{}).changeStatus)===val){ e.target.checked=false; set(qid,"changeStatus",""); }
+      else set(qid,"changeStatus",val);
+    }));
   root.querySelectorAll('textarea.note-ctrl').forEach(t =>
     t.addEventListener("input", e => set(e.target.dataset.qid, "note", e.target.value)));
+  // Clear: drop this decl's status + note entirely (it leaves the summary).
+  root.querySelectorAll('.act-clear').forEach(b => b.addEventListener("click", e => {
+    const qid=e.target.dataset.qid; delete STATE[qid]; save();
+    const card=e.target.closest('.entry');
+    card.querySelectorAll('.status-ctrl input[type=radio]').forEach(r => { r.checked=false; });
+    const ta=card.querySelector('textarea.note-ctrl'); if(ta) ta.value="";
+    card.classList.remove("pending"); e.target.hidden=true; counts();
+  }));
   $("#bar").hidden = false; counts(); syncOpenAll();
 }
 
@@ -1307,7 +1323,9 @@ function set(qid, field, value){
   STATE[qid] = STATE[qid] || {}; STATE[qid][field] = value; save();
   const el = [...document.querySelectorAll(".entry")].find(e => {
     const b=e.querySelector('.act-status'); return b && b.dataset.qid===qid; });
-  if(el){ const st=STATE[qid]; el.classList.toggle("pending", !!(st.changeStatus || (st.note&&st.note.trim()))); }
+  if(el){ const st=STATE[qid]; const pend=!!(st.changeStatus || (st.note&&st.note.trim()));
+    el.classList.toggle("pending", pend);
+    const cb=el.querySelector('.act-clear'); if(cb) cb.hidden=!pend; }
   counts();
 }
 function counts(){
