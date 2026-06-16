@@ -418,7 +418,13 @@ export function mathToUnicode(xml: string): string {
 // Turn the action API's HTML intro into plain text: take the first paragraphs,
 // render each <math> to Unicode, convert prose <sup>/<sub>, drop everything else.
 export function htmlLeadToText(html: string): string {
-  const paras = [...html.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/g)].map((m) => m[1]);
+  // Skip empty/structural paragraphs (Wikipedia leads can open with a couple of
+  // `mw-empty-elt` <p>s) so "first 2 paragraphs" lands on real content. A
+  // formula-only paragraph survives — its MathML glyphs aren't empty after the
+  // tag strip.
+  const paras = [...html.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/g)]
+    .map((m) => m[1])
+    .filter((p) => decodeEntities(p.replace(/<[^>]+>/g, "")).trim() !== "");
   const body = paras.slice(0, 2).join(" ") || html;
   let out = "";
   let k = 0;
@@ -487,7 +493,7 @@ async function runPool<T>(items: T[], limit: number, fn: (item: T) => Promise<vo
 async function fetchLeads(titles: string[], env: Env): Promise<Map<string, string>> {
   const out = new Map<string, string>();
   const fetchOne = async (t: string) => {
-    const key = `wplead4:${t}`; // bumped from wplead3: — footnote-marker stripping
+    const key = `wplead5:${t}`; // bumped from wplead4: — skip empty leading paragraphs
     const cached = await env.RENDER_CACHE.get(key);
     if (cached !== null) {
       out.set(t, cached);
