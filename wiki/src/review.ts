@@ -1063,8 +1063,12 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
     return c.redirect(c.req.query("returnTo") || "/review");
   });
 
-  // The review page (shell + client script).
-  app.get("/review", (c) => c.html(reviewPageHtml()));
+  // The review page (shell + client script). no-cache so a deploy's updated
+  // client reaches reviewers immediately (must-revalidate, not stale browser copy).
+  app.get("/review", (c) => {
+    c.header("Cache-Control", "no-cache, must-revalidate");
+    return c.html(reviewPageHtml());
+  });
 }
 
 const EMOJI: Record<string, string> = { approve: "🟢", revise: "🟡", reject: "🔴" };
@@ -1691,13 +1695,21 @@ async function submitToGitHub(){
     let j = {}; try { j = await r.json(); } catch(e){}
     if(j.needsConnect){ note.textContent = "Connecting to GitHub…"; connectGitHub(); return; }
     if(!j.ok){ note.textContent = j.error || ("Could not post (HTTP "+r.status+") — use Copy review."); return; }
-    ((j.results)||[]).filter(x=>x.posted).forEach(x=>{ delete STATE[x.qid]; }); save();
-    const skipped = ((j.results)||[]).filter(x=>x.skipped).length;
-    note.innerHTML = "✓ Posted "+j.posted+" comment"+(j.posted===1?"":"s")+
-      (j.changed?(" ("+j.changed+" status change"+(j.changed===1?"":"s")+")"):"")+
-      (skipped?(" · "+skipped+" unchanged"):"")+
-      ' — see <a href="'+prUrl()+'" target="_blank" rel="noopener">the PR ↗</a>. Reloading…';
-    loadPR();
+    const res = j.results || [];
+    res.filter(x=>x.posted).forEach(x=>{ delete STATE[x.qid]; }); save();
+    const skipped = res.filter(x=>x.skipped).length;
+    const errs = res.filter(x=>x.error);
+    const parts = ["Posted "+j.posted+" comment"+(j.posted===1?"":"s")+
+      (j.changed?(" ("+j.changed+" status change"+(j.changed===1?"":"s")+")"):"")];
+    if(skipped) parts.push(skipped+" unchanged");
+    if(errs.length) parts.push(errs.length+" failed — "+errs.map(e=>e.qid+": "+e.error).join("; "));
+    const msg = parts.join(" · ");
+    if(j.posted>0){
+      note.innerHTML = "✓ "+msg+' — see <a href="'+prUrl()+'" target="_blank" rel="noopener">the PR ↗</a>. Reloading…';
+      loadPR();
+    } else {
+      note.textContent = (errs.length?"⚠️ ":"")+msg+(res.length?"":" — nothing to submit.");
+    }
   } catch(e){ note.textContent = "Network error: "+e; }
 }
 
