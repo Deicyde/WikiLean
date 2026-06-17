@@ -898,15 +898,23 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
       return c.json({ ok: false, error: String(e instanceof Error ? e.message : e) }, 502);
     }
     const tagByQid = new Map(payload.decls.map((d) => [d.qid, d]));
-    // Per-author idempotency: a reviewer can add their note even when someone
-    // else already reviewed the tag, but won't double-post their own. Match by
-    // GitHub login (the comment author), not the WikiLean account name.
+    // Idempotency by GitHub login (comment author), tracking my LATEST status per
+    // tag so a reviewer can still change their mind (revise→approve) or add a
+    // note — we only skip a true no-op (same status, no new note).
     const myLogin = await ghLogin(token);
-    const alreadyByMe = new Set<string>();
+    const myLatest = new Map<string, { status: string; at: string }>();
     for (const d of payload.decls) {
       for (const cm of d.comments) {
         const m = cm.body.match(/wikilean-review:(Q\d+)/);
-        if (m && myLogin && cm.user === myLogin) alreadyByMe.add(m[1]);
+        if (!m || !myLogin || cm.user !== myLogin) continue;
+        let st = "";
+        if (/Deletion candidate/.test(cm.body)) st = "flag";
+        else {
+          const sm = cm.body.match(/\((approve|revise|reject)\)/);
+          if (sm) st = sm[1];
+        }
+        const prev = myLatest.get(m[1]);
+        if (!prev || (cm.created_at || "") > prev.at) myLatest.set(m[1], { status: st, at: cm.created_at || "" });
       }
     }
 
@@ -917,8 +925,9 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
       const notes = (dec.notes ?? "").trim();
       const was = (dec.was ?? "").trim();
       if (!status && !notes) continue; // nothing to post
-      if (alreadyByMe.has(qid)) {
-        results.push({ qid, posted: false, skipped: "you already commented on this tag" });
+      const mine = myLatest.get(qid);
+      if (mine && mine.status === status && !notes) {
+        results.push({ qid, posted: false, skipped: "no change from your last review" });
         continue;
       }
       const tag = tagByQid.get(qid);
@@ -926,7 +935,10 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
         results.push({ qid, posted: false, error: "tag not present in this PR" });
         continue;
       }
-      const commentBody = buildReviewCommentBody(qid, status, notes, was);
+      // "changed from" should reflect MY own prior status when I've reviewed
+      // this tag before; else fall back to the client-sent prior.
+      const prior = mine ? mine.status : was;
+      const commentBody = buildReviewCommentBody(qid, status, notes, prior);
       const r = await fetch(`${GH_API}/repos/${owner}/${repo}/pulls/${pr}/comments`, {
         method: "POST",
         headers: { ...ghHeaders(token), "Content-Type": "application/json" },
@@ -940,7 +952,7 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
       });
       if (r.ok) {
         results.push({ qid, posted: true });
-        if (status && status !== was) changed++;
+        if (status && status !== prior) changed++;
       } else {
         results.push({ qid, posted: false, error: `GitHub ${r.status}: ${(await r.text()).slice(0, 120)}` });
       }
@@ -1683,7 +1695,7 @@ async function submitToGitHub(){
     const skipped = ((j.results)||[]).filter(x=>x.skipped).length;
     note.innerHTML = "✓ Posted "+j.posted+" comment"+(j.posted===1?"":"s")+
       (j.changed?(" ("+j.changed+" status change"+(j.changed===1?"":"s")+")"):"")+
-      (skipped?(" · "+skipped+" already yours"):"")+
+      (skipped?(" · "+skipped+" unchanged"):"")+
       ' — see <a href="'+prUrl()+'" target="_blank" rel="noopener">the PR ↗</a>. Reloading…';
     loadPR();
   } catch(e){ note.textContent = "Network error: "+e; }
