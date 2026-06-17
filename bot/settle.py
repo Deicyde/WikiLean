@@ -12,7 +12,9 @@ Rule (see bot/README.md):
 """
 import json, subprocess, re, sys, datetime as dt
 
-MAINTAINERS = {"jcommelin"}          # explicit verdict trumps everything
+MAINTAINERS = {"jcommelin"}          # allowlist seed (always treated as maintainer)
+# GitHub author_association values that mark a Mathlib maintainer/reviewer.
+ORG_ROLES = {"OWNER", "MEMBER", "COLLABORATOR"}
 OBJECT = ("reject", "revise", "flag")  # hard objections (a note is NOT one)
 BOTS = {"github-actions[bot]"}
 
@@ -97,6 +99,13 @@ def classify(pr, repo="leanprover-community/mathlib4"):
 
     # explicit[(qid, login)] = (status, ts); notes[(qid, login)] = text
     explicit, notes, reviewers = {}, {}, set()
+    # Maintainers/reviewers: anyone whose GitHub author_association on the PR is an
+    # org role, seeded by the explicit allowlist. Their verdict trumps, and the
+    # settle gate needs >=1 of them.
+    maint = set(MAINTAINERS)
+    def record_assoc(login, assoc):
+        if login and login not in BOTS and assoc in ORG_ROLES:
+            maint.add(login)
     def note_explicit(qid, login, status, ts, text=""):
         if not login or login in BOTS:
             return
@@ -109,6 +118,7 @@ def classify(pr, repo="leanprover-community/mathlib4"):
 
     for c in gh_list(repo, f"pulls/{pr}/comments"):
         u = (c.get("user") or {}).get("login", "")
+        record_assoc(u, c.get("author_association"))
         b = c.get("body", "") or ""
         m = re.search(r"wikilean-review:(Q\d+)", b)
         if m:
@@ -116,6 +126,7 @@ def classify(pr, repo="leanprover-community/mathlib4"):
                           note_text_inline(b))
     for c in gh_list(repo, f"issues/{pr}/comments"):
         u = (c.get("user") or {}).get("login", "")
+        record_assoc(u, c.get("author_association"))
         b = c.get("body", "") or ""
         if u in BOTS:
             continue
@@ -126,6 +137,7 @@ def classify(pr, repo="leanprover-community/mathlib4"):
     pr_state = {}
     for r in gh_list(repo, f"pulls/{pr}/reviews"):
         u = (r.get("user") or {}).get("login", "")
+        record_assoc(u, r.get("author_association"))
         if not u or u in BOTS:
             continue
         ts = r.get("submitted_at", "") or ""
@@ -137,7 +149,7 @@ def classify(pr, repo="leanprover-community/mathlib4"):
     def decide(qid):
         ex = {u: stt for (q, u), (stt, _) in explicit.items() if q == qid}
         real = {u: stt for u, stt in ex.items() if stt != "(note)"}
-        mver = [stt for u, stt in real.items() if u in MAINTAINERS]
+        mver = [stt for u, stt in real.items() if u in maint]
         if mver:
             if any(s in OBJECT for s in mver):
                 return "recycle", ex, "maintainer rejected/revised"
@@ -168,11 +180,14 @@ def classify(pr, repo="leanprover-community/mathlib4"):
         }
         (green if verdict == "green" else recycle).append(rec)
 
-    gate_ok = len(reviewers) >= 2 and age_h >= 24
+    maint_reviewers = sorted(reviewers & maint)
+    gate_ok = len(reviewers) >= 2 and bool(maint_reviewers)
     return {
         "pr": pr, "repo": repo, "head_sha": head_sha, "age_h": round(age_h, 1),
         "reviewers": sorted(reviewers), "blanket_approvers": sorted(blanket),
-        "gate": gate_ok, "gate_reasons": {"two_reviewers": len(reviewers) >= 2, "24h": age_h >= 24},
+        "maintainer_reviewers": maint_reviewers,
+        "gate": gate_ok,
+        "gate_reasons": {"two_reviewers": len(reviewers) >= 2, "has_maintainer": bool(maint_reviewers)},
         "tags": tags, "green": green, "recycle": recycle,
     }
 
@@ -180,8 +195,8 @@ def classify(pr, repo="leanprover-community/mathlib4"):
 if __name__ == "__main__":
     pr = int([a for a in sys.argv[1:] if a.isdigit()][0]) if any(a.isdigit() for a in sys.argv[1:]) else 40682
     r = classify(pr)
-    print(f"PR #{r['pr']} · age {r['age_h']}h · reviewers {r['reviewers']} · maintainers {sorted(MAINTAINERS)}")
-    print(f"GATE: 2-reviewers={r['gate_reasons']['two_reviewers']} 24h={r['gate_reasons']['24h']} -> {'OPEN' if r['gate'] else 'WAIT'}")
+    print(f"PR #{r['pr']} · reviewers {r['reviewers']} · maintainer-reviewers {r['maintainer_reviewers']}")
+    print(f"GATE: 2-reviewers={r['gate_reasons']['two_reviewers']} >=1-maintainer={r['gate_reasons']['has_maintainer']} -> {'OPEN' if r['gate'] else 'WAIT'}")
     print(f"\nGREEN ({len(r['green'])}/{len(r['tags'])}): {[g['qid'] for g in r['green']]}")
     print(f"\nRECYCLE ({len(r['recycle'])}):")
     for e in r["recycle"]:

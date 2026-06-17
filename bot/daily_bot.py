@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Daily @[wikidata] batch bot — orchestrator. DRY-RUN by default.
+"""@[wikidata] batch bot — manual all-in-one orchestrator. DRY-RUN by default.
+
+NOTE: the production trigger is event-driven `poll.py` (acts on GitHub state —
+merge → open, gate-met → settle), NOT this timer-style one-shot. Keep daily_bot
+for manual/testing runs; use poll.py (--watch) for the live loop.
 
 Two phases per run:
   SETTLE the current PR (deterministic): if the gate is open, split it down to
