@@ -119,15 +119,25 @@ def main():
             else:
                 print(f"  L{i+1} edit:   {old.strip()}  ->  {new.strip()}")
     if not args.apply:
-        print("\n[dry-run] no files changed. Would then run, in", args.mathlib, ":")
-        print("  lake build  (verify)")
-        print(f"  git add -A && git commit --amend --no-edit")
-        print(f"  git push --force-with-lease origin {args.branch}")
+        print("\n[dry-run] no files changed. On --apply, would (on the CURRENT remote tip):")
+        print(f"  git fetch origin {args.branch} && git reset --hard origin/{args.branch}")
+        print("  <re-apply removals>  +  lake build <touched modules>")
+        print('  git commit -m "doc: drop recycled @[wikidata] tags pending re-review"')
+        print(f"  git push origin {args.branch}   (fast-forward, no --force)")
         return
 
+    # Operate on the CURRENT remote tip: the branch commonly has master merged in
+    # between open and settle, so we add a NEW commit on top (plain push) rather
+    # than amend+force-push (which would clobber that merge — and a stale lease
+    # would reject it anyway).
+    run(["git", "fetch", "origin", args.branch], cwd=args.mathlib)
+    run(["git", "reset", "--hard", f"origin/{args.branch}"], cwd=args.mathlib)
+    edits = plan(args.mathlib, recycle)  # re-plan against the fresh tip
+    if not edits:
+        print("nothing to remove on the current tip — done."); return
     apply_edits(edits)
-    # Build ONLY the touched modules — removing a doc attribute + unused import
-    # is semantically inert, so this is a fast confidence check (CI re-verifies).
+    # Build ONLY the touched modules — removing a doc attribute + unused import is
+    # semantically inert, so this is a fast confidence check (CI re-verifies).
     mods = ["Mathlib." + str(p).split("/Mathlib/", 1)[1].replace(".lean", "").replace("/", ".")
             for p in edits]
     print("\n[apply] files written. building touched modules:", mods)
@@ -139,8 +149,8 @@ def main():
             sys.exit(1)
         print("  build OK")
     run(["git", "add", "-A"], cwd=args.mathlib)
-    run(["git", "commit", "--amend", "--no-edit"], cwd=args.mathlib)
-    run(["git", "push", "--force-with-lease", "origin", args.branch], cwd=args.mathlib)
+    run(["git", "commit", "-m", "doc: drop recycled @[wikidata] tags pending re-review"], cwd=args.mathlib)
+    run(["git", "push", "origin", args.branch], cwd=args.mathlib)  # fast-forward, no force
     print("pushed — PR now reflects the green-only set.")
 
 
