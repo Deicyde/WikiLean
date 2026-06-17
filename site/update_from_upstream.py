@@ -78,6 +78,12 @@ UA = render.UA
 
 # EDIT_LIMITER allows 30 writes/min per user (bot included) — pace under it.
 WRITE_PACE_SECONDS = 2.1
+# Light pace between non-writing articles too: a fast burst of GET/POSTs trips
+# Cloudflare's per-IP rate limit and 503-storms the whole sweep (the review
+# stage is immune only because each agent review is naturally slow).
+GET_PACE_SECONDS = 0.5
+# Backoff schedule for transient 5xx / network errors on a single request.
+RETRY_BACKOFFS = [2, 5, 12]
 
 
 # ---------------------------------------------------------------------------
@@ -123,39 +129,61 @@ def get_article(s: requests.Session, base: str, slug: str,
     # tombstones (status='rejected') from anonymous responses, and a stage-0
     # echo that misses a tombstone would 422 (or worse, silently drop a veto).
     headers = {"Authorization": f"Bearer {token}"} if token else {}
-    r = s.get(
-        f"{base}/api/article/{urllib.parse.quote(slug, safe='')}.json",
-        headers=headers,
-        timeout=30,
-    )
-    if r.status_code == 404:
-        return None
-    r.raise_for_status()
-    return r.json()
+    url = f"{base}/api/article/{urllib.parse.quote(slug, safe='')}.json"
+    backoffs = list(RETRY_BACKOFFS)
+    while True:
+        try:
+            r = s.get(url, headers=headers, timeout=30)
+        except requests.exceptions.RequestException as e:
+            if backoffs:
+                w = backoffs.pop(0)
+                print(f"  [GET network error ({type(e).__name__}); retry {w}s]", flush=True)
+                time.sleep(w); continue
+            raise
+        if r.status_code == 404:
+            return None
+        # Transient edge/server errors (incl. Cloudflare 503 rate-limit pages)
+        # are retried with backoff rather than raised as a fetch-error.
+        if (r.status_code == 429 or 500 <= r.status_code < 600) and backoffs:
+            w = _retry_after(r) or backoffs.pop(0)
+            print(f"  [GET {r.status_code}; retry in {w}s]", flush=True)
+            time.sleep(min(w, 60)); continue
+        r.raise_for_status()
+        return r.json()
 
 
 def post_repin(s: requests.Session, base: str, token: str, slug: str,
                payload: dict) -> tuple[int, dict]:
-    """POST with 429 retry (Retry-After honored). Returns (status, body)."""
+    """POST with retry on 429 (Retry-After), 5xx, and network errors (backoff).
+    Returns (status, body). A bare Cloudflare 503 rate-limit page no longer
+    becomes a terminal http-503 — it's retried like any transient 5xx."""
     url = f"{base}/api/article/{urllib.parse.quote(slug, safe='')}"
-    for attempt in range(4):
-        r = s.post(
-            url,
-            json=payload,
-            headers={"Authorization": f"Bearer {token}"},
-            timeout=60,
-        )
-        if r.status_code == 429:
+    headers = {"Authorization": f"Bearer {token}"}
+    n429 = 0
+    backoffs = list(RETRY_BACKOFFS)
+    while True:
+        try:
+            r = s.post(url, json=payload, headers=headers, timeout=60)
+        except requests.exceptions.RequestException as e:
+            if backoffs:
+                w = backoffs.pop(0)
+                print(f"  [POST network error ({type(e).__name__}); retry {w}s]", flush=True)
+                time.sleep(w); continue
+            return 0, {"error": f"network: {e}"}
+        if r.status_code == 429 and n429 < 3:
+            n429 += 1
             wait = _retry_after(r) or 30
             print(f"  [429 rate-limited; sleep {wait}s]", flush=True)
-            time.sleep(min(wait, 120))
-            continue
+            time.sleep(min(wait, 120)); continue
+        if 500 <= r.status_code < 600 and backoffs:
+            wait = _retry_after(r) or backoffs.pop(0)
+            print(f"  [{r.status_code} from edge; retry in {wait}s]", flush=True)
+            time.sleep(min(wait, 60)); continue
         try:
             body = r.json()
         except ValueError:
             body = {"error": r.text[:200]}
         return r.status_code, body
-    return 429, {"error": "rate limited after retries"}
 
 
 def _retry_after(r: requests.Response) -> int | None:
@@ -352,8 +380,12 @@ def main() -> int:
         print(f"[{i + 1}/{len(slugs)}] {slug}", flush=True)
         rec = process_slug(s, base, slug, args, run_id, token_getter)
         results.append(rec)
-        if rec["outcome"] == "repinned" and i + 1 < len(slugs):
-            time.sleep(WRITE_PACE_SECONDS)  # stay under EDIT_LIMITER
+        if i + 1 < len(slugs):
+            # Pace EVERY article (not just after a write): a full write-pace
+            # after a re-pin to stay under EDIT_LIMITER, a light pace otherwise
+            # so even GET-only articles don't burst Cloudflare's per-IP limit.
+            time.sleep(WRITE_PACE_SECONDS if rec["outcome"] == "repinned"
+                       else GET_PACE_SECONDS)
 
     # Summary table.
     print(f"\n{'slug':40} {'revid old→new':>24} {'anchors':>9}  outcome")
