@@ -261,6 +261,13 @@ into `wiki/public/assets/`. Edit sources, then run build-public, never edit
 - [ ] Editor save UX: kind/match_kind as selects; clear comment after save; panel
   title by label not index; orphaned-anchor re-select flow; alt-click links;
   in-place body swap (deliberate refactor with initAnnotations(), NOT a line item).
+- [ ] **Propose-then-approve: AI may propose updates to human annotations** —
+  designed in [propose-then-approve.md](propose-then-approve.md), awaiting Jack's
+  UX pick (§5) before build. Foundation already exists (dormant
+  `moderation_state.proposal` column + F14 `moderation_flag` harvest + `endorse`
+  template); the agent never mutates a human annotation — it proposes, Jack
+  one-click approves. `findLostHuman` 422 stays the floor. Jack's directive:
+  "human-curated does NOT mean it shouldn't be updated by reviewers."
 - [ ] Trust signals: "N/M human-reviewed" badge; legend popover; least-reviewed list
   on the (now dynamic) homepage.
 - [ ] Privacy: stop storing session ip_address if better-auth allows; IRB exemption
