@@ -1128,7 +1128,10 @@ export function parseClipboardReview(body: string): PastedEntry[] {
       out.push(cur);
     }
   };
-  for (const ln of body.split("\n")) {
+  // Normalize CRLF→LF first: GitHub serves comment bodies with \r\n, and a
+  // trailing \r breaks the note regex's `$` anchor (`.` doesn't match \r),
+  // which would drop every note (and any note-only entry entirely).
+  for (const ln of body.replace(/\r\n?/g, "\n").split("\n")) {
     const h = ln.match(/^-\s*\*\*\[(Q\d+)\]/);
     if (h) {
       flush();
