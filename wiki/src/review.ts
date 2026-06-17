@@ -1551,9 +1551,11 @@ async function submitToGitHub(){
       {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({decisions})});
     let j = {}; try { j = await r.json(); } catch(e){}
     if(r.status===401){ const ret=encodeURIComponent(location.pathname+location.search);
-      note.innerHTML = 'Sign in with GitHub to post — <a href="/login?returnTo='+ret+'">sign in ↗</a>.'; return; }
-    if(r.status===403){ note.textContent = (j.error||"GitHub permission needed")+" — sign out and back in to grant comment access."; return; }
-    if(!j.ok){ note.textContent = "Could not post: "+(j.error||("HTTP "+r.status)); return; }
+      note.innerHTML = 'Sign in with GitHub first — <a href="/login?returnTo='+ret+'">sign in ↗</a> — then use Copy review for now.'; return; }
+    // Surface the server message verbatim (e.g. in-app posting unavailable →
+    // use Copy review). Don't suggest re-login: the wiki login is identity-only
+    // by design and will never carry repo-write.
+    if(!j.ok){ note.textContent = j.error || ("Could not post (HTTP "+r.status+") — use Copy review."); return; }
     ((j.results)||[]).filter(x=>x.posted).forEach(x=>{ delete STATE[x.qid]; }); save();
     const skipped = ((j.results)||[]).filter(x=>x.skipped).length;
     note.innerHTML = "✓ Posted "+j.posted+" comment"+(j.posted===1?"":"s")+
