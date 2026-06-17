@@ -1,0 +1,72 @@
+# WikiLean daily `@[wikidata]` batch bot
+
+Runs one batch of 25 `@[wikidata]` cross-reference tags per day through review →
+merge-or-recycle against `leanprover-community/mathlib4`.
+
+## The loop
+
+Each run does two phases:
+
+1. **Settle** the current PR (`settle.py`, deterministic):
+   - **Gate:** ≥2 distinct human reviewers on the PR **and** ≥24h since it opened.
+   - When the gate is open, classify each tag and **split** the PR down to its
+     green tags (`split.py`, force-push), then post a ready-to-merge comment.
+   - A maintainer (jcommelin) merges the now-all-green PR (bot can't merge upstream).
+2. **Open** the next batch (`open_batch_pr.py`): requeued (retargeted) recycled
+   tags + fresh pool tags → 25 → new PR + crossref comments + `LLM-generated`
+   label + side-by-side table.
+
+## Per-tag rule (`settle.py`)
+
+- A bare **note/comment = "defer to the other reviewer"** → ignored.
+- A **maintainer's explicit approve/reject/revise/flag trumps** everything.
+- Otherwise: any **reject/revise/flag → recycle**; else **≥1 approve → green**;
+  else (no review) → recycle.
+
+So one approval suffices per tag (silence = agreement), but any unresolved
+objection recycles, and a maintainer overrides. Recording model: the detailed
+reviewer GitHub-**Approves** the PR (blanket = approve all) + inline
+revise/reject exceptions; the double-checking maintainer inline-flags only their
+concerns.
+
+## Recycle triage (`triage.py`) — the ONE LLM step
+
+The deterministic settler produces the recycle set; `triage.py` asks an LLM (via
+`claude -p`) to read each tag's reviewer notes + context and decide **requeue**
+(a fixable retarget — proposes & verifies a `suggested_decl`) or **cut** (not
+cleanly in Mathlib / not worth a review slot). Tag *generation* stays
+deterministic — the LLM only proposes the target declaration; `open_batch_pr.py`
+applies it.
+
+## Determinism boundary (hard rule)
+
+Everything is deterministic **except** `triage.py`. The split, the gate, the
+green/recycle classification, PR opening, comments, and label are all plain
+fetch/parse/git/gh — no LLM.
+
+## Safety / rollout
+
+- **Everything is `--dry-run` by default.** `daily_bot.py` and `split.py` mutate
+  GitHub/Mathlib only with `--apply`.
+- Run `--apply` **by hand** for the first several daily cycles and watch each
+  step (force-push, daily PR, triage) before wrapping in cron.
+- `split.py` force-pushes the *fork* branch with `--force-with-lease`.
+- Confirm the daily cadence with Mathlib maintainers before automating.
+
+## Run
+
+    python3 daily_bot.py --mathlib ~/path/to/mathlib4              # dry-run
+    python3 daily_bot.py --mathlib ~/path/to/mathlib4 --apply      # act
+
+`state/bot_state.json` tracks `{current_pr, batch_num, branch}`;
+`state/recycle_queue.json` carries requeued retargets to the next batch.
+
+## Files
+
+| file | role | LLM? |
+|---|---|---|
+| `settle.py` | gate + green/recycle classification | no |
+| `split.py` | remove recycled tags, rebuild, force-push to greens | no |
+| `triage.py` | requeue-vs-cut + retarget suggestion | **yes** |
+| `daily_bot.py` | orchestrator (settle → split → triage → open) | only via triage |
+| `open_batch_pr.py` | apply tags + build + open PR (from the existing pipeline) | no |
