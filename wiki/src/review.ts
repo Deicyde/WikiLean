@@ -13,11 +13,40 @@
 // OAuth `public_repo` scope land in increment 2.
 
 import type { Context, Hono } from "hono";
+import { getCookie, setCookie, deleteCookie } from "hono/cookie";
 import type { Env } from "./env.js";
 import { getUser } from "./auth.js";
 
 const GH_API = "https://api.github.com";
 const UA = "WikiLean-review/0.1 (+https://wikilean.jackmccarthy.org)";
+
+// ---- dedicated review-posting OAuth (separate app from the wiki login) ----
+// A reviewer who wants in-app posting clicks "Connect GitHub"; we run a classic
+// OAuth flow against the REVIEW_GITHUB_* app (scope public_repo) and stash the
+// token server-side in KV keyed by an opaque cookie id. Kept entirely off the
+// identity-only wiki login (auth.ts), so article editors never see repo-write.
+const REVIEW_COOKIE = "wl_review_gh"; // opaque session id → KV token
+const REVIEW_STATE_COOKIE = "wl_review_oauth"; // CSRF state for the OAuth round-trip
+const REVIEW_TOK_TTL = 60 * 60 * 12; // 12h
+const GH_OAUTH_AUTHORIZE = "https://github.com/login/oauth/authorize";
+const GH_OAUTH_TOKEN = "https://github.com/login/oauth/access_token";
+
+function reviewBaseUrl(c: Ctx): string {
+  return (c.env.BETTER_AUTH_URL || new URL(c.req.url).origin).replace(/\/$/, "");
+}
+
+// The connected reviewer's GitHub token + login, from the cookie→KV mapping.
+async function reviewToken(c: Ctx): Promise<{ token?: string; login?: string }> {
+  const id = getCookie(c, REVIEW_COOKIE);
+  if (!id) return {};
+  const raw = await c.env.RENDER_CACHE.get(`reviewtok:${id}`);
+  if (!raw) return {};
+  try {
+    return JSON.parse(raw) as { token?: string; login?: string };
+  } catch {
+    return {};
+  }
+}
 
 type Ctx = Context<{ Bindings: Env }>;
 
@@ -824,39 +853,32 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
     }
   });
 
-  // Post the reviewer's decisions/notes as inline PR comments, as the logged-in
-  // user, via their stored GitHub token. Verbatim notes, never LLM-authored.
-  //
-  // NOTE: currently UNUSED by the page — the client copies a Markdown review to
-  // paste manually, so we don't request the broad `public_repo` write scope.
-  // Kept for the GitHub-App migration (see TODO in auth.ts), after which the
-  // page can call this again with a fine-grained token.
+  // Post the reviewer's decisions/notes as inline PR comments, via the token
+  // from the dedicated review OAuth app ("Connect GitHub" flow above) — NOT the
+  // identity-only wiki login. Verbatim notes, never LLM-authored.
   app.post("/api/review/:owner/:repo/:pr", async (c) => {
     // CSRF defense-in-depth: reject cross-origin browser POSTs.
     const origin = c.req.header("Origin");
     if (origin && origin !== new URL(c.req.url).origin) {
       return c.json({ ok: false, error: "cross-origin request rejected" }, 403);
     }
-    const user = await getUser(c);
-    if (!user) return c.json({ ok: false, error: "login required" }, 401);
     const owner = c.req.param("owner");
     const repo = c.req.param("repo");
     const pr = parseInt(c.req.param("pr"), 10);
     if (!OWNER_RE.test(owner) || !OWNER_RE.test(repo) || !Number.isInteger(pr) || pr <= 0) {
       return c.json({ ok: false, error: "bad owner/repo/pr" }, 400);
     }
-    const { token, scope } = await githubAccountFor(c);
-    if (!token) {
-      return c.json({ ok: false, error: "no linked GitHub account — sign in with GitHub" }, 403);
-    }
-    if (!/(^|[\s,])(public_repo|repo)([\s,]|$)/.test(scope ?? "")) {
-      // The wiki login is identity-only (no public_repo) by design — see
-      // auth.ts. In-app PR posting needs repo-write, which belongs to a
-      // separate GitHub OAuth app/flow not yet wired; until then, copy the
-      // generated review and paste it on GitHub by hand.
+    if (!c.env.REVIEW_GITHUB_CLIENT_ID || !c.env.REVIEW_GITHUB_CLIENT_SECRET) {
       return c.json(
-        { ok: false, error: "in-app posting unavailable: the wiki login no longer carries repo-write scope. Copy the review and paste it on GitHub, or set up the dedicated review OAuth app." },
-        403,
+        { ok: false, error: "in-app posting isn't configured — use Copy review.", needsConnect: false },
+        503,
+      );
+    }
+    const { token } = await reviewToken(c);
+    if (!token) {
+      return c.json(
+        { ok: false, error: "Connect GitHub to post your review.", needsConnect: true },
+        401,
       );
     }
 
@@ -930,7 +952,7 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
     // Top-level "Reviewed" summary comment (one per submission that posted
     // anything), so the PR thread logs each review pass.
     if (posted > 0) {
-      const who = myLogin ? `@${myLogin}` : user.name || "a reviewer";
+      const who = myLogin ? `@${myLogin}` : "a reviewer";
       const summary =
         `**Reviewed by ${who}.** Added ${posted} inline comment${posted === 1 ? "" : "s"}` +
         (changed ? `, including ${changed} status change${changed === 1 ? "" : "s"}` : "") +
@@ -942,6 +964,91 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
       }).catch(() => {});
     }
     return c.json({ ok: true, posted, changed, results });
+  });
+
+  // ---- dedicated review-posting OAuth flow (separate GitHub app) ----
+
+  // Whether the current browser is connected for posting (+ the GitHub login).
+  app.get("/api/review/connected", async (c) => {
+    const configured = !!(c.env.REVIEW_GITHUB_CLIENT_ID && c.env.REVIEW_GITHUB_CLIENT_SECRET);
+    const { login } = await reviewToken(c);
+    return c.json({ configured, connected: !!login, login: login ?? null });
+  });
+
+  // Step 1: redirect to GitHub to authorize the review app (scope public_repo).
+  app.get("/review/auth/start", (c) => {
+    const cid = c.env.REVIEW_GITHUB_CLIENT_ID;
+    if (!cid || !c.env.REVIEW_GITHUB_CLIENT_SECRET) {
+      return c.text("Review OAuth app not configured (set REVIEW_GITHUB_CLIENT_ID/SECRET).", 503);
+    }
+    const returnTo = c.req.query("returnTo") || "/review";
+    const safeReturn = returnTo.startsWith("/") ? returnTo : "/review"; // same-origin only
+    const state = crypto.randomUUID();
+    setCookie(c, REVIEW_STATE_COOKIE, state + "|" + safeReturn, {
+      path: "/review/auth",
+      httpOnly: true,
+      secure: true,
+      sameSite: "Lax",
+      maxAge: 600,
+    });
+    const u = new URL(GH_OAUTH_AUTHORIZE);
+    u.searchParams.set("client_id", cid);
+    u.searchParams.set("redirect_uri", reviewBaseUrl(c) + "/review/auth/callback");
+    u.searchParams.set("scope", "public_repo");
+    u.searchParams.set("state", state);
+    return c.redirect(u.toString());
+  });
+
+  // Step 2: exchange the code for a token, stash it in KV, set the session cookie.
+  app.get("/review/auth/callback", async (c) => {
+    const code = c.req.query("code");
+    const state = c.req.query("state");
+    const saved = getCookie(c, REVIEW_STATE_COOKIE) || "";
+    deleteCookie(c, REVIEW_STATE_COOKIE, { path: "/review/auth" });
+    const [savedState, returnTo] = saved.split("|");
+    if (!code || !state || !savedState || state !== savedState) {
+      return c.text("Invalid OAuth state — try connecting again.", 400);
+    }
+    let accessToken: string | undefined;
+    try {
+      const r = await fetch(GH_OAUTH_TOKEN, {
+        method: "POST",
+        headers: { Accept: "application/json", "Content-Type": "application/json", "User-Agent": UA },
+        body: JSON.stringify({
+          client_id: c.env.REVIEW_GITHUB_CLIENT_ID,
+          client_secret: c.env.REVIEW_GITHUB_CLIENT_SECRET,
+          code,
+          redirect_uri: reviewBaseUrl(c) + "/review/auth/callback",
+        }),
+      });
+      accessToken = ((await r.json()) as { access_token?: string }).access_token;
+    } catch {
+      /* fall through */
+    }
+    if (!accessToken) return c.text("GitHub token exchange failed — try again.", 502);
+    const login = await ghLogin(accessToken);
+    const id = crypto.randomUUID();
+    await c.env.RENDER_CACHE.put(
+      `reviewtok:${id}`,
+      JSON.stringify({ token: accessToken, login }),
+      { expirationTtl: REVIEW_TOK_TTL },
+    );
+    setCookie(c, REVIEW_COOKIE, id, {
+      path: "/",
+      httpOnly: true,
+      secure: true,
+      sameSite: "Lax",
+      maxAge: REVIEW_TOK_TTL,
+    });
+    return c.redirect((returnTo || "/review").startsWith("/") ? returnTo : "/review");
+  });
+
+  // Disconnect: drop the stored token + cookie.
+  app.get("/review/auth/logout", async (c) => {
+    const id = getCookie(c, REVIEW_COOKIE);
+    if (id) await c.env.RENDER_CACHE.delete(`reviewtok:${id}`);
+    deleteCookie(c, REVIEW_COOKIE, { path: "/" });
+    return c.redirect(c.req.query("returnTo") || "/review");
   });
 
   // The review page (shell + client script).
@@ -1530,11 +1637,31 @@ async function copyReview(){
   }
 }
 
-// Auto-post the pending decisions as inline PR comments via the reviewer's own
-// GitHub OAuth token (POST /api/review). Requires signing in with GitHub (the
-// public_repo scope). Falls back to a helpful message on 401/403.
+// --- dedicated review-posting connection state (separate from wiki login) ---
+let GH_CONFIGURED=false, GH_CONNECTED=false, GH_LOGIN="";
+async function refreshConnected(){
+  try { const r = await fetch("/api/review/connected"); const j = await r.json();
+    GH_CONFIGURED=!!j.configured; GH_CONNECTED=!!j.connected; GH_LOGIN=j.login||""; } catch(e){}
+  updateSubmitBtn();
+}
+function updateSubmitBtn(){
+  const b = $("#submit-gh"); if(!b) return;
+  if(GH_CONFIGURED && GH_CONNECTED){ b.textContent = "✅ Submit as @"+GH_LOGIN; b.title="Post your review as inline PR comments"; }
+  else if(GH_CONFIGURED){ b.textContent = "🔗 Connect GitHub to post"; b.title="Authorize the review app to post on your behalf"; }
+  else { b.textContent = "✅ Submit to GitHub"; b.title="In-app posting isn’t set up yet — use Copy review"; }
+}
+function connectGitHub(){
+  // Carry the loaded PR in returnTo so the page re-loads it after the OAuth
+  // round-trip; pending decisions persist in localStorage (keyed by repo#pr).
+  const ret = DATA ? ("/review?repo="+encodeURIComponent(DATA.repo)+"&pr="+DATA.pr) : (location.pathname+location.search);
+  location.href = "/review/auth/start?returnTo=" + encodeURIComponent(ret);
+}
+
+// Post pending decisions as inline PR comments via the dedicated review OAuth
+// token. If not connected, kick off the Connect-GitHub flow first.
 async function submitToGitHub(){
   if(!DATA) return;
+  if(GH_CONFIGURED && !GH_CONNECTED){ connectGitHub(); return; }
   const parts = DATA.repo.split("/"); const owner=parts[0], repo=parts[1];
   const wasByQid = {}; DATA.decls.forEach(d => { wasByQid[d.qid] = parseStatus(d.comments).status; });
   const decisions = {};
@@ -1550,11 +1677,7 @@ async function submitToGitHub(){
     const r = await fetch("/api/review/"+owner+"/"+repo+"/"+DATA.pr,
       {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({decisions})});
     let j = {}; try { j = await r.json(); } catch(e){}
-    if(r.status===401){ const ret=encodeURIComponent(location.pathname+location.search);
-      note.innerHTML = 'Sign in with GitHub first — <a href="/login?returnTo='+ret+'">sign in ↗</a> — then use Copy review for now.'; return; }
-    // Surface the server message verbatim (e.g. in-app posting unavailable →
-    // use Copy review). Don't suggest re-login: the wiki login is identity-only
-    // by design and will never carry repo-write.
+    if(j.needsConnect){ note.textContent = "Connecting to GitHub…"; connectGitHub(); return; }
     if(!j.ok){ note.textContent = j.error || ("Could not post (HTTP "+r.status+") — use Copy review."); return; }
     ((j.results)||[]).filter(x=>x.posted).forEach(x=>{ delete STATE[x.qid]; }); save();
     const skipped = ((j.results)||[]).filter(x=>x.skipped).length;
@@ -1580,5 +1703,6 @@ const qp = new URLSearchParams(location.search);
 // restore); a ?repo= deep-link still wins.
 $("#repo").value = qp.get("repo") || "leanprover-community/mathlib4";
 if(qp.get("pr")){ $("#pr").value = qp.get("pr"); loadPR(); }
+refreshConnected();
 `;
 }
