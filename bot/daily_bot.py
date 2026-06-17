@@ -85,7 +85,9 @@ def main():
     inflight = set(r["tags"]) if pr else set()
     inflight |= {e["qid"] for e in requeued}
     need = max(0, 25 - len(requeued))
-    fresh = pool.candidates(need, exclude=inflight)  # deterministic pool selector
+    if not dry:  # keep the live tagged-set current before selecting (skips in dry-run)
+        sh([sys.executable, str(HERE / "refresh_tagged.py"), "--mathlib", str(args.mathlib)])
+    fresh = pool.candidates(need, exclude=inflight)  # deterministic pool selector (+ P31 field filter)
     print(f"\n{tag}NEXT BATCH: {len(requeued)} requeued (retargeted) + {len(fresh)} fresh = "
           f"{len(requeued) + len(fresh)}/25")
     for e in requeued:
