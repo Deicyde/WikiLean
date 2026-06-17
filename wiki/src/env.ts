@@ -34,4 +34,12 @@ export interface Env {
   // (or fine-grained read-only) suffices — it only reads public PRs. Posting
   // still uses the logged-in reviewer's own OAuth token.
   GITHUB_API_TOKEN?: string;
+
+  // Dedicated GitHub OAuth app for the /review tool's POSTING flow only — kept
+  // SEPARATE from the wiki login (GITHUB_CLIENT_ID above stays identity-only).
+  // This app requests `public_repo` so an opted-in reviewer can post inline PR
+  // comments in-app; only reviewers who click "Connect GitHub" ever grant it.
+  // Register a GitHub OAuth app with callback {BETTER_AUTH_URL}/review/auth/callback.
+  REVIEW_GITHUB_CLIENT_ID?: string;
+  REVIEW_GITHUB_CLIENT_SECRET?: string;
 }
