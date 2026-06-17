@@ -10,6 +10,20 @@ Auth: --token or $PIPELINE_TOKEN. --dry-run prints the payload instead of POSTin
 import argparse, json, os, subprocess, sys
 from pathlib import Path
 
+DEV_VARS = Path(__file__).resolve().parent.parent / "wiki" / ".dev.vars"
+
+
+def find_token():
+    """WIKILEAN_API_TOKEN env, else PIPELINE_TOKEN= from wiki/.dev.vars (as moderate.py)."""
+    tok = os.environ.get("WIKILEAN_API_TOKEN") or os.environ.get("PIPELINE_TOKEN")
+    if tok:
+        return tok
+    if DEV_VARS.exists():
+        for line in DEV_VARS.read_text().splitlines():
+            if line.startswith("PIPELINE_TOKEN="):
+                return line.split("=", 1)[1].strip().strip('"').strip("'")
+    return ""
+
 
 def main():
     ap = argparse.ArgumentParser()
@@ -17,9 +31,10 @@ def main():
     ap.add_argument("--payload", type=Path)
     ap.add_argument("--recycle", type=Path)
     ap.add_argument("--candidates", type=Path)
-    ap.add_argument("--token", default=os.environ.get("PIPELINE_TOKEN", ""))
+    ap.add_argument("--token", default="")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
+    token = args.token or find_token()
 
     items = []
     if args.payload and args.payload.exists():
@@ -44,10 +59,10 @@ def main():
     payload = {"items": items}
     if args.dry_run:
         print(json.dumps(payload, indent=1)); return
-    if not args.token:
-        sys.exit("need --token or PIPELINE_TOKEN env")
+    if not token:
+        sys.exit("no token: set WIKILEAN_API_TOKEN, pass --token, or add PIPELINE_TOKEN= to wiki/.dev.vars")
     r = subprocess.run(["curl", "-sS", "-X", "POST", args.wiki + "/api/queue",
-                        "-H", "Authorization: Bearer " + args.token,
+                        "-H", "Authorization: Bearer " + token,
                         "-H", "Content-Type: application/json", "-d", json.dumps(payload)],
                        capture_output=True, text=True)
     print(r.stdout or r.stderr)

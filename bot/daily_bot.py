@@ -18,7 +18,7 @@ hand for the first cycles; only then wrap in cron.
 """
 import argparse, json, subprocess, sys
 from pathlib import Path
-import settle
+import settle, pool
 
 HERE = Path(__file__).resolve().parent
 STATE = HERE / "state" / "bot_state.json"          # {current_pr, batch_num, branch}
@@ -80,14 +80,36 @@ def main():
     else:
         print("no current PR in state — first run will just open a batch.")
 
-    # ---- OPEN the next batch ----
-    requeued = json.loads(QUEUE.read_text()) if QUEUE.exists() else []
-    print(f"\n{tag}OPEN next batch: {len(requeued)} requeued (retargeted) + fresh from pool -> 25")
+    # ---- BUILD next batch + REFRESH the public queue ----
+    requeued = json.loads(QUEUE.read_text()) if QUEUE.exists() else []  # triage output
+    inflight = set(r["tags"]) if pr else set()
+    inflight |= {e["qid"] for e in requeued}
+    need = max(0, 25 - len(requeued))
+    fresh = pool.candidates(need, exclude=inflight)  # deterministic pool selector
+    print(f"\n{tag}NEXT BATCH: {len(requeued)} requeued (retargeted) + {len(fresh)} fresh = "
+          f"{len(requeued) + len(fresh)}/25")
     for e in requeued:
         t = e.get("triage", {})
-        print(f"  requeue {e['qid']} -> {t.get('suggested_decl','?')}  ({t.get('fix_hint','')[:60]})")
-    print("  + fresh tags via the deterministic pool selector (most_used_1000qids ∩ catalog ∩ untagged)")
-    print("  then: open_batch_pr.py --apply --check --build --open-pr  (+ crossref comments, LLM-label, table)")
+        print(f"  requeue {e['qid']} -> {t.get('suggested_decl','?')}")
+    for c in fresh[:6]:
+        print(f"  fresh   {c['qid']} {c['label'][:30]:30} -> {c['decl']}")
+    if len(fresh) > 6:
+        print(f"  … +{len(fresh)-6} more fresh")
+
+    # Publish recycled + unreviewed to the wiki /queue page.
+    cand_file = HERE / "state" / "pool_candidates.json"
+    print(f"\n{tag}PUBLISH queue (/queue): {len(requeued)} recycled + {len(fresh)} unreviewed")
+    if dry:
+        print("  (dry-run) would POST recycled + unreviewed to /api/queue")
+    else:
+        cand_file.write_text(json.dumps(fresh))
+        cmd = [sys.executable, str(HERE / "publish_queue.py"), "--candidates", str(cand_file)]
+        if QUEUE.exists():
+            cmd += ["--recycle", str(QUEUE)]
+        sh(cmd)
+
+    print(f"\n{tag}OPEN PR: open_batch_pr.py --apply --check --build --open-pr  "
+          f"(requeued retargets + fresh) + crossref comments + LLM-label + table")
     if dry:
         print("\n[dry-run] complete — nothing mutated. Re-run with --apply to act.")
 
