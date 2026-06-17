@@ -242,19 +242,30 @@ async def run_agent(system: str, user: str, cwd: Path,
     result_obj = None
     n_tool = 0
     tools_used: dict[str, int] = {}
-    async for msg in query(prompt=user, options=options):
-        if isinstance(msg, AssistantMessage):
-            for b in msg.content:
-                if isinstance(b, TextBlock):
-                    last_text = b.text or last_text
-                elif isinstance(b, ToolUseBlock):
-                    n_tool += 1
-                    name = getattr(b, "name", "?")
-                    tools_used[name] = tools_used.get(name, 0) + 1
-        elif isinstance(msg, ResultMessage):
-            result_obj = msg
-            if msg.result:
-                last_text = msg.result
+    try:
+        async for msg in query(prompt=user, options=options):
+            if isinstance(msg, AssistantMessage):
+                for b in msg.content:
+                    if isinstance(b, TextBlock):
+                        last_text = b.text or last_text
+                    elif isinstance(b, ToolUseBlock):
+                        n_tool += 1
+                        name = getattr(b, "name", "?")
+                        tools_used[name] = tools_used.get(name, 0) + 1
+            elif isinstance(msg, ResultMessage):
+                result_obj = msg
+                if msg.result:
+                    last_text = msg.result
+    except Exception as e:
+        # The SDK raises a generic "Claude Code returned an error result:
+        # <subtype>" and discards the CLI's actual result text — which is where
+        # the real cause lives (e.g. "Credit balance is too low" when an
+        # ANTHROPIC_API_KEY shadows the Max login, or a rate-limit notice). The
+        # ResultMessage is yielded just before the raise, so surface its text so
+        # the runner logs WHY instead of the opaque subtype. Keeps "limit"/
+        # "credit balance" substrings the runner keys on for fast abort.
+        detail = getattr(result_obj, "result", None) if result_obj else None
+        raise RuntimeError(f"agent_error: {detail or e}") from e
     usage = getattr(result_obj, "usage", None) if result_obj else None
     tokens = 0
     if isinstance(usage, dict):

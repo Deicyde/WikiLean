@@ -1145,14 +1145,22 @@ async def run_jobs(jobs: list, ctx, process) -> tuple[int, dict]:
                 if err:
                     state["n_err"] += 1
                     low = str(err).lower()
-                    if ("error result: success" in low or "rate" in low
+                    # An auth/credit misconfiguration (e.g. an ANTHROPIC_API_KEY
+                    # shadowing the Max login → "Credit balance is too low") fails
+                    # EVERY article identically and won't self-resolve — abort on
+                    # the first one instead of burning the whole batch.
+                    if "credit balance" in low or "authentication" in low:
+                        state["consec_err"] = ABORT_AFTER
+                    elif ("error result" in low or "rate" in low
                             or "limit" in low or "overloaded" in low):
                         state["consec_err"] += 1
-                        if state["consec_err"] >= ABORT_AFTER and not state["abort"]:
-                            state["abort"] = True
-                            print(f"  ⚠ {state['consec_err']} consecutive window-"
-                                  f"exhaustion errors — aborting; rerun resumes "
-                                  f"after the window resets", flush=True)
+                    else:
+                        state["consec_err"] = 0
+                    if state["consec_err"] >= ABORT_AFTER and not state["abort"]:
+                        state["abort"] = True
+                        print(f"  ⚠ aborting after {state['consec_err']} "
+                              f"consecutive fatal errors (last: {str(err)[:80]}); "
+                              f"rerun resumes once the cause clears", flush=True)
                 else:
                     state["consec_err"] = 0
                 if (ctx.budget_tokens and state["tokens"] >= ctx.budget_tokens

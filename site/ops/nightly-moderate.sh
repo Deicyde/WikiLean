@@ -17,6 +17,13 @@ export PATH="/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 export WIKILEAN_MATHLIB="/Users/jack/Desktop/LEAN/mathlib4"
 export WIKILEAN_API_TOKEN="$(sed -n 's/^PIPELINE_TOKEN=//p' "$REPO/wiki/.dev.vars")"
 
+# Force Max-subscription auth. launchd hands us a bare env (no key), but when
+# this is launched interactively via run-now.sh it inherits ANTHROPIC_API_KEY
+# from the user's profile — the SDK would then bill that (out-of-credits) API
+# account and every agent call dies "Credit balance is too low" with 0 tokens.
+# Scrub it so both launch paths use the Max login.
+unset ANTHROPIC_API_KEY ANTHROPIC_AUTH_TOKEN
+
 # Tunables (production defaults; overridden in the smoke test).
 WPUPDATE_LIMIT="${WIKILEAN_WPUPDATE_LIMIT:-300}"
 REVIEW_LIMIT="${WIKILEAN_REVIEW_LIMIT:-15}"
