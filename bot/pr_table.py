@@ -9,8 +9,22 @@ no judgement: same PR in → same table out.
   pr_table.py <pr> [--repo owner/name] [--header "…"]
 """
 import argparse, json, subprocess, sys
+import settle
 
 WIKI = "https://wikilean.jackmccarthy.org"
+# what reviewers put -> dot. A bare note (no verdict) shows as a comment marker.
+EMO = {"approve": "🟢", "revise": "🟡", "reject": "🔴", "flag": "⚠️", "(note)": "💬"}
+
+
+def reviews_cell(verdicts):
+    """e.g. '🟡 @Deicyde · 🟢 @jcommelin' from {login: status}."""
+    if not verdicts:
+        return "—"
+    parts = []
+    for login, status in verdicts.items():
+        mark = "\\*" if login in settle.MAINTAINERS else ""  # maintainer marked with *
+        parts.append(f"{EMO.get(status, '·')} @{login}{mark}")
+    return " · ".join(parts)
 
 
 def table(pr, repo="leanprover-community/mathlib4", header=None):
@@ -22,6 +36,9 @@ def table(pr, repo="leanprover-community/mathlib4", header=None):
     if not data.get("ok", True) and "decls" not in data:
         raise SystemExit(f"/api/review error: {data.get('error')}")
     decls = data.get("decls", [])
+    # per-tag reviewer verdicts (deterministic — same logic as the settler)
+    cls = settle.classify(pr, repo)
+    verdicts = {e["qid"]: e["verdicts"] for e in cls["green"] + cls["recycle"]}
     rows = []
     for i, d in enumerate(decls, 1):
         qid = d["qid"]
@@ -30,10 +47,11 @@ def table(pr, repo="leanprover-community/mathlib4", header=None):
         concept = wd.get("enwikiTitle") or wd.get("label") or ""
         wp = wd.get("enwikiUrl")
         c = f"[{concept}]({wp})" if (concept and wp) else (concept or "—")
-        rows.append(f"| {i} | {c} | [{qid}](https://www.wikidata.org/wiki/{qid}) | `{decl}` | `{d.get('file','')}:{d.get('line','')}` |")
+        rows.append(f"| {i} | {c} | [{qid}](https://www.wikidata.org/wiki/{qid}) | `{decl}` | {reviews_cell(verdicts.get(qid, {}))} |")
     head = header or f"The **{len(decls)}** `@[wikidata]` tags in this PR:"
-    return (head + "\n\n| # | Concept | Wikidata | Mathlib declaration | Source |\n"
-            "|--:|:--|:--|:--|:--|\n" + "\n".join(rows))
+    return (head + "\n\n| # | Concept | Wikidata | Mathlib declaration | Reviews |\n"
+            "|--:|:--|:--|:--|:--|\n" + "\n".join(rows) +
+            "\n\n<sub>Reviews: 🟢 approve · 🟡 revise · 🔴 reject · ⚠️ deletion-candidate · 💬 comment. \\* = maintainer.</sub>")
 
 
 if __name__ == "__main__":
