@@ -68,7 +68,11 @@ def main():
                 p = subprocess.run([sys.executable, str(HERE / "triage.py"),
                                     "--out-queue", str(QUEUE), "--model", args.model],
                                    input=json.dumps(recycle), text=True)
-            # 3) ready-to-merge comment
+            # 3) deterministic reviewer table (post/update, idempotent)
+            print(f"\n{tag}TABLE on #{pr}: pr_table.py --post (per-tag reviews)")
+            if not dry:
+                sh([sys.executable, str(HERE / "pr_table.py"), str(pr), "--repo", REPO, "--post"])
+            # 4) ready-to-merge comment
             body = (f"**WikiLean bot:** {len(green)} tag(s) approved by ≥2 reviewers over 24h — "
                     f"ready to merge. {len(recycle)} recycled to the next batch. "
                     f"<!-- wikilean-bot-ready -->")

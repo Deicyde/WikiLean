@@ -90,9 +90,21 @@ def main():
             "--apply", "--check", "--build", "--open-pr"])
     if r.returncode != 0:
         print("open_batch_pr failed — stopping before finalize."); sys.exit(1)
-    # NOTE: finalize (crossref comments, LLM-label, reviewer table, state advance,
-    # queue refresh) runs next — wired but supervised on the first batch-3 run.
-    print("\nPR opened. Finalize steps (run/verify): post-wikidata-comments.sh, --llm-label, pr_table.py comment, advance state, publish queue.")
+
+    # New PR number for this branch.
+    prn = subprocess.run(["gh", "pr", "list", "--repo", REPO, "--head", approved["branch"],
+                          "--json", "number", "--jq", ".[0].number"],
+                         capture_output=True, text=True).stdout.strip()
+    print(f"\nopened PR #{prn}. finalizing…")
+    # Deterministic reviewer table (per-tag reviews; idempotent).
+    sh([sys.executable, str(HERE / "pr_table.py"), prn, "--repo", REPO, "--post", "--fresh"])
+    # Advance state so a re-run no-ops (idempotent open).
+    st.update({"current_pr": int(prn), "batch_num": nxt, "branch": approved["branch"]})
+    STATE.write_text(json.dumps(st, indent=1))
+    # NOTE (supervised on first batch-3): crossref comments + LLM-generated label
+    # still run manually — both need the brew-bash + CROSSREF_DIFF_FILE workaround:
+    print(f"  then run (supervised): warm-cache.sh {prn} ; post-wikidata-comments.sh {prn} ; "
+          f"open_batch_pr.py --llm-label --pr {prn} ; publish_queue.py --candidates <fresh>")
 
 
 if __name__ == "__main__":

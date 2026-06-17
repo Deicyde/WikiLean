@@ -27,7 +27,7 @@ def reviews_cell(verdicts):
     return " · ".join(parts)
 
 
-def table(pr, repo="leanprover-community/mathlib4", header=None):
+def table(pr, repo="leanprover-community/mathlib4", header=None, fresh=False):
     owner, name = repo.split("/")
     url = f"{WIKI}/api/review/{owner}/{name}/{pr}"
     out = subprocess.run(["curl", "-s", "-H", "User-Agent: WikiLean-bot/1.0", url],
@@ -48,10 +48,33 @@ def table(pr, repo="leanprover-community/mathlib4", header=None):
         wp = wd.get("enwikiUrl")
         c = f"[{concept}]({wp})" if (concept and wp) else (concept or "—")
         rows.append(f"| {i} | {c} | [{qid}](https://www.wikidata.org/wiki/{qid}) | `{decl}` | {reviews_cell(verdicts.get(qid, {}))} |")
-    head = header or f"The **{len(decls)}** `@[wikidata]` tags in this PR:"
+    head = header or (
+        f"This PR adds **{len(decls)}** `@[wikidata]` cross-reference tags." if fresh
+        else f"This PR was trimmed to the **{len(decls)}** `@[wikidata]` tags that were approved 🟢 in review.")
     return (head + "\n\n| # | Concept | Wikidata | Mathlib declaration | Reviews |\n"
             "|--:|:--|:--|:--|:--|\n" + "\n".join(rows) +
-            "\n\n<sub>Reviews: 🟢 approve · 🟡 revise · 🔴 reject · ⚠️ deletion-candidate · 💬 comment. \\* = maintainer.</sub>")
+            "\n\n<sub>Reviews: 🟢 approve · 🟡 revise · 🔴 reject · ⚠️ deletion-candidate · 💬 comment. \\* = maintainer. "
+            "Recycled tags: https://wikilean.jackmccarthy.org/queue</sub>"
+            "\n<!-- wikilean-tag-table -->")
+
+
+MARKER = "<!-- wikilean-tag-table -->"
+
+
+def post(pr, repo, body):
+    """Idempotent: update the existing wikilean-tag-table comment, else create it."""
+    ids = subprocess.run(
+        ["gh", "api", f"repos/{repo}/issues/{pr}/comments", "--paginate",
+         "--jq", f'.[] | select(.body | contains("{MARKER}")) | .id'],
+        capture_output=True, text=True).stdout.split()
+    if ids:
+        cmd = ["gh", "api", "--method", "PATCH", f"repos/{repo}/issues/comments/{ids[0]}"]
+        action = "updated"
+    else:
+        cmd = ["gh", "api", "--method", "POST", f"repos/{repo}/issues/{pr}/comments"]
+        action = "created"
+    p = subprocess.run(cmd + ["-F", "body=@-"], input=body, capture_output=True, text=True)
+    return action, p.returncode, (p.stderr or p.stdout)[:200]
 
 
 if __name__ == "__main__":
@@ -59,5 +82,12 @@ if __name__ == "__main__":
     ap.add_argument("pr", type=int)
     ap.add_argument("--repo", default="leanprover-community/mathlib4")
     ap.add_argument("--header", default=None)
+    ap.add_argument("--fresh", action="store_true", help="freshly-opened batch header (adds N tags)")
+    ap.add_argument("--post", action="store_true", help="post/update the comment on the PR (idempotent)")
     args = ap.parse_args()
-    print(table(args.pr, args.repo, args.header))
+    md = table(args.pr, args.repo, args.header, args.fresh)
+    if args.post:
+        action, rc, msg = post(args.pr, args.repo, md)
+        print(f"{action} tag-table comment on #{args.pr}" + (f" (error: {msg})" if rc else ""))
+    else:
+        print(md)
