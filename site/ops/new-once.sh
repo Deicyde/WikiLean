@@ -12,6 +12,14 @@ export PATH="/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 export WIKILEAN_MATHLIB="/Users/jack/Desktop/LEAN/mathlib4"
 export WIKILEAN_API_TOKEN="$(sed -n 's/^PIPELINE_TOKEN=//p' "$REPO/wiki/.dev.vars")"
 
+# Force Max-subscription auth. If this script is launched from an interactive
+# shell (e.g. run-now), it inherits ANTHROPIC_API_KEY from the user's profile;
+# the agent SDK would then bill that (out-of-credits) API account instead of the
+# Max login, and every agent call dies with "Credit balance is too low" before
+# spending a token. launchd never sees the key (no profile sourced); scrub it
+# here so BOTH launch paths use the subscription.
+unset ANTHROPIC_API_KEY ANTHROPIC_AUTH_TOKEN
+
 LIMIT="${WIKILEAN_NEW_LIMIT:-25}"
 BUDGET="${WIKILEAN_BUDGET_TOKENS:-6000000}"
 CANDS="$REPO/site/data/new-candidates.jsonl"
