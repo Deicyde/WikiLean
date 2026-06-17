@@ -11,6 +11,7 @@ import {
   annotationEvents,
   flags,
   pipelineRuns,
+  watchlist,
   type ArticleRow,
   type AnnotationEventInsert,
 } from "./db/schema.js";
@@ -26,11 +27,14 @@ import {
   flagsPage,
   diffPage,
   statsPage,
+  userProfilePage,
   RECENT_KINDS,
   type StatsEventCell,
+  type UserProfileRow,
 } from "./pages.js";
 import { homePage, sitemapXml } from "./home.js";
 import { registerReviewRoutes } from "./review.js";
+import { registerQueueRoutes } from "./queue.js";
 import type { Annotation } from "./engine/types.js";
 import type { Env } from "./env.js";
 import {
@@ -68,11 +72,14 @@ const RESERVED = new Set([
   "article-graph",
   "article-graph-data.json",
   "review",
+  "queue",
+  "u",
 ]);
 
 const app = new Hono<{ Bindings: Env }>();
 registerAuthRoutes(app);
 registerReviewRoutes(app);
+registerQueueRoutes(app);
 
 // Renders (and KV-caches) the anonymous base page for an article. Takes the
 // already-SELECTed row so the cached base and the caller's injected editor
@@ -91,7 +98,14 @@ async function renderArticleBase(env: Env, row: ArticleRow): Promise<string> {
   // readers refetch the new script. v10: warm-palette redesign — page template
   // links style.css?v=6 + retuned .wl-attribution. v11: page-template changes
   // shipping in the same review wave (frontend agent) — evict in lockstep.
-  const cacheKey = `render:v11:${slug}:${row.version}`;
+  // v12 (now v13): snippet-respect — engine no longer promotes prose-snippet
+  // wraps to a whole-block <div> at all. Math nested inside the sentence used
+  // to force a promotion that swept in sibling sentences in the same <p>; the
+  // .anno-X .mwe-math-element-block CSS rule paints display math directly now,
+  // so a span sentence-wrap is fine even when it contains a display equation.
+  // Editing the snippet actually tightens the highlight box, and the next
+  // sentence in the same <p> stays unannotated.
+  const cacheKey = `render:v13:${slug}:${row.version}`;
   const cached = await env.RENDER_CACHE.get(cacheKey);
   if (cached) return cached;
 
@@ -497,10 +511,33 @@ app.get("/recent-changes", async (c) => {
   const kindParam = c.req.query("kind") ?? null;
   const kind =
     kindParam !== null && (RECENT_KINDS as readonly string[]).includes(kindParam) ? kindParam : null;
+  // P3: ?watching=1 filters to articles in the viewer's watchlist. Requires
+  // login — anonymous users with the param get the unfiltered feed, no error.
+  const wantWatching = c.req.query("watching") === "1";
+  const user = await getUser(c);
+  const watching = wantWatching && user !== null;
+
   const db = drizzle(c.env.DB);
-  // Second users join (aliased) resolves patrolled_by → patroller name for the
-  // hover title. The .as() output alias keeps result-column names unique.
   const patrollers = alias(users, "patrollers");
+  let watchedSlugs: Set<string> | null = null;
+  if (watching) {
+    const ws = await db
+      .select({ slug: watchlist.slug })
+      .from(watchlist)
+      .where(eq(watchlist.userId, user!.id));
+    watchedSlugs = new Set(ws.map((r) => r.slug));
+    if (watchedSlugs.size === 0) {
+      // No watched slugs → no rows, skip the query entirely.
+      const html = recentChangesPage([], {
+        kind,
+        canPatrol: user.role === "patroller" || user.role === "admin",
+        watching: true,
+        loggedIn: true,
+      });
+      return c.html(html);
+    }
+  }
+
   const rows = await db
     .select({
       id: revisions.id,
@@ -521,11 +558,11 @@ app.get("/recent-changes", async (c) => {
     .leftJoin(patrollers, eq(patrollers.id, revisions.patrolledBy))
     .where(kind === null ? undefined : eq(revisions.kind, kind))
     .orderBy(desc(revisions.createdAt))
-    .limit(100);
-  const user = await getUser(c);
+    .limit(watching ? 500 : 100); // wider pre-filter window when filtering watchlist
   const canPatrol = user !== null && (user.role === "patroller" || user.role === "admin");
+  const filteredRows = watchedSlugs ? rows.filter((r) => watchedSlugs!.has(r.slug)).slice(0, 100) : rows;
   const html = recentChangesPage(
-    rows.map((r) => ({
+    filteredRows.map((r) => ({
       slug: r.slug,
       displayTitle: r.displayTitle ?? r.slug,
       id: r.id,
@@ -538,9 +575,120 @@ app.get("/recent-changes", async (c) => {
       patrolledAt: r.patrolledAt,
       patrollerName: r.patrollerName,
     })),
-    { kind, canPatrol },
+    { kind, canPatrol, watching, loggedIn: user !== null },
   );
   return c.html(html);
+});
+
+// ---- /u/:id — user profile (P3 contribution-loop) --------------------------
+// Public read of any user's stats + recent revisions. When the viewer IS the
+// profile owner, also includes their watchlist (private signal — not exposed
+// to other users; we don't want to leak which articles someone follows).
+app.get("/u/:id", async (c) => {
+  const profileId = c.req.param("id");
+  const db = drizzle(c.env.DB);
+  const profile = (await db.select().from(users).where(eq(users.id, profileId)).limit(1))[0];
+  if (!profile) return c.notFound();
+  const viewer = await getUser(c);
+  const isSelf = viewer !== null && viewer.id === profile.id;
+
+  // Stats. One round-trip per metric is fine — these are cheap on the indexed
+  // user_id column.
+  const [totalEdits, articlesTouched, humanRevs] = await Promise.all([
+    db.select({ n: sql<number>`count(*)` }).from(revisions).where(eq(revisions.userId, profile.id)),
+    db
+      .select({ n: sql<number>`count(distinct ${revisions.slug})` })
+      .from(revisions)
+      .where(eq(revisions.userId, profile.id)),
+    db
+      .select({ n: sql<number>`count(*)` })
+      .from(revisions)
+      .where(and(eq(revisions.userId, profile.id), eq(revisions.kind, "edit"))),
+  ]);
+
+  const recent = await db
+    .select({
+      id: revisions.id,
+      slug: revisions.slug,
+      comment: revisions.comment,
+      kind: revisions.kind,
+      createdAt: revisions.createdAt,
+      displayTitle: articles.displayTitle,
+    })
+    .from(revisions)
+    .leftJoin(articles, eq(articles.slug, revisions.slug))
+    .where(eq(revisions.userId, profile.id))
+    .orderBy(desc(revisions.createdAt))
+    .limit(50);
+
+  let watching: string[] = [];
+  if (isSelf) {
+    const ws = await db
+      .select({ slug: watchlist.slug })
+      .from(watchlist)
+      .where(eq(watchlist.userId, profile.id))
+      .orderBy(desc(watchlist.createdAt));
+    watching = ws.map((r) => r.slug);
+  }
+
+  const html = userProfilePage(
+    {
+      id: profile.id,
+      name: profile.name,
+      image: profile.image,
+      role: profile.role,
+      // users.createdAt is stored as `timestamp` (Date object via Drizzle); the
+      // page helper takes ms (so format/relative-time work). Fall back to null.
+      createdAt: profile.createdAt instanceof Date ? profile.createdAt.getTime() : null,
+    },
+    {
+      totalEdits: totalEdits[0]?.n ?? 0,
+      articlesTouched: articlesTouched[0]?.n ?? 0,
+      humanRevs: humanRevs[0]?.n ?? 0,
+    },
+    recent.map(
+      (r): UserProfileRow => ({
+        id: r.id,
+        slug: r.slug,
+        displayTitle: r.displayTitle ?? r.slug,
+        comment: r.comment,
+        kind: r.kind,
+        createdAt: r.createdAt,
+      }),
+    ),
+    watching,
+    isSelf,
+  );
+  return c.html(html);
+});
+
+// ---- /api/watch/:slug — toggle watchlist entry (P3) ------------------------
+// POST adds (idempotent — duplicate rows would 1555 in SQLite; OR IGNORE keeps
+// the round-trip a single insert), DELETE removes.
+app.post("/api/watch/:slug", async (c) => {
+  const user = await getUser(c);
+  if (!user) return c.json({ ok: false, error: "login required" }, 401);
+  const slug = c.req.param("slug");
+  const db = drizzle(c.env.DB);
+  // Confirm slug exists — don't let clients spam arbitrary keys.
+  const art = (await db.select({ slug: articles.slug }).from(articles).where(eq(articles.slug, slug)).limit(1))[0];
+  if (!art) return c.json({ ok: false, error: "unknown slug" }, 404);
+  await c.env.DB.prepare(
+    "INSERT OR IGNORE INTO watchlist (user_id, slug, created_at) VALUES (?, ?, ?)",
+  )
+    .bind(user.id, slug, Date.now())
+    .run();
+  return c.json({ ok: true, watching: true });
+});
+app.delete("/api/watch/:slug", async (c) => {
+  const user = await getUser(c);
+  if (!user) return c.json({ ok: false, error: "login required" }, 401);
+  const slug = c.req.param("slug");
+  const db = drizzle(c.env.DB);
+  await db
+    .delete(watchlist)
+    .where(and(eq(watchlist.userId, user.id), eq(watchlist.slug, slug)));
+  return c.json({ ok: true, watching: false });
 });
 
 // ---- /flags — open-flag patrol queue (D-C6) ----
@@ -1976,6 +2124,17 @@ async function serveArticle(c: Context<{ Bindings: Env }>, slug: string) {
   const base = await renderArticleBase(c.env, row);
   const user = await getUser(c);
   const annotations = JSON.parse(row.annotations) as Annotation[];
+  // P3: look up the viewer's watch state for this slug so the ★ Watch toggle
+  // renders with the correct initial state (no client roundtrip on first paint).
+  let isWatching = false;
+  if (user) {
+    const w = await db
+      .select({ slug: watchlist.slug })
+      .from(watchlist)
+      .where(and(eq(watchlist.userId, user.id), eq(watchlist.slug, slug)))
+      .limit(1);
+    isWatching = w.length > 0;
+  }
   // latestRevid/revid feed the per-request staleness banner (rendered by
   // injectAuthAndEditor — never baked into the cached base page).
   const page = injectAuthAndEditor(base, {
@@ -1985,6 +2144,7 @@ async function serveArticle(c: Context<{ Bindings: Env }>, slug: string) {
     version: row.version,
     latestRevid: row.latestRevid,
     revid: row.revid,
+    isWatching,
   });
   return c.html(page);
 }
