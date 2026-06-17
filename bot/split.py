@@ -102,6 +102,7 @@ def main():
     ap.add_argument("--branch", required=True)
     ap.add_argument("--recycle", required=True, help="comma-separated qids to remove")
     ap.add_argument("--apply", action="store_true", help="write + build + amend + force-push")
+    ap.add_argument("--no-build", action="store_true", help="skip the local build (CI verifies)")
     args = ap.parse_args()
     recycle = [q.strip() for q in args.recycle.split(",") if q.strip()]
 
@@ -125,10 +126,18 @@ def main():
         return
 
     apply_edits(edits)
-    print("\n[apply] files written. building…")
-    b = run(["lake", "build"], cwd=args.mathlib, check=False)
-    if b.returncode != 0:
-        print("BUILD FAILED — not pushing.\n" + b.stdout[-1500:]); sys.exit(1)
+    # Build ONLY the touched modules — removing a doc attribute + unused import
+    # is semantically inert, so this is a fast confidence check (CI re-verifies).
+    mods = ["Mathlib." + str(p).split("/Mathlib/", 1)[1].replace(".lean", "").replace("/", ".")
+            for p in edits]
+    print("\n[apply] files written. building touched modules:", mods)
+    if not args.no_build:
+        b = run(["lake", "build", *mods], cwd=args.mathlib, check=False)
+        if b.returncode != 0:
+            print("BUILD FAILED — restoring files, not pushing.\n" + b.stdout[-1500:])
+            run(["git", "checkout", "--", *[str(p) for p in edits]], cwd=args.mathlib, check=False)
+            sys.exit(1)
+        print("  build OK")
     run(["git", "add", "-A"], cwd=args.mathlib)
     run(["git", "commit", "--amend", "--no-edit"], cwd=args.mathlib)
     run(["git", "push", "--force-with-lease", "origin", args.branch], cwd=args.mathlib)
