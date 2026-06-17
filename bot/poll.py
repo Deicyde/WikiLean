@@ -61,15 +61,20 @@ def do_open(mathlib, dry):
     sh([sys.executable, str(HERE / "open_batch.py"), "--mathlib", str(mathlib)] + ([] if dry else ["--apply"]))
 
 
-def tick(mathlib, dry):
+def tick(mathlib, dry, no_open=False):
     st = json.loads(STATE.read_text()) if STATE.exists() else {}
     pr, branch = st.get("current_pr"), st.get("branch")
     if not pr:
         print("no current PR in state — opening first batch")
-        do_open(mathlib, dry); return
+        if not no_open:
+            do_open(mathlib, dry)
+        return
     state = gh_state(pr)
     print(f"poll #{pr}: state={state}  settled={st.get('settled_pr') == pr}")
     if state == "MERGED":
+        if no_open:
+            print("  MERGED ✓ — open the next batch (supervised): "
+                  "`poll.py --apply` without --no-open, or open_batch.py --apply"); return
         do_open(mathlib, dry)
         if not dry:  # open_batch advanced current_pr; clear the stale settled marker
             st = json.loads(STATE.read_text()); st.pop("settled_pr", None); STATE.write_text(json.dumps(st, indent=1))
@@ -91,10 +96,12 @@ def main():
     ap.add_argument("--mathlib", type=Path, required=True)
     ap.add_argument("--apply", action="store_true")
     ap.add_argument("--watch", type=int, default=0, help="poll every N seconds (0 = one tick)")
+    ap.add_argument("--no-open", action="store_true",
+                    help="on merge, alert instead of auto-opening the next batch (supervise the first open)")
     args = ap.parse_args()
     dry = not args.apply
     while True:
-        tick(args.mathlib, dry)
+        tick(args.mathlib, dry, args.no_open)
         if not args.watch:
             break
         time.sleep(args.watch)
