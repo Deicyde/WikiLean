@@ -32,7 +32,7 @@ from pathlib import Path
 # --- decl targeting -------------------------------------------------------
 
 MODIFIERS = r"(?:@\[[^\]]*\]\s*)*(?:protected\s+|private\s+|noncomputable\s+|public\s+|nonrec\s+|scoped\s+|local\s+)*"
-KINDS     = r"(?:def|theorem|lemma|class|structure|inductive|abbrev|instance|opaque)"
+KINDS     = r"(?:irreducible_def|def|theorem|lemma|class|structure|inductive|abbrev|instance|opaque)"
 TERMINATOR = r"(?=[\s:({\[]|$)"   # decl name must end here — NOT a bare \b
 
 def find_decl_line(lines: list[str], qualified: str) -> int | None:
@@ -191,6 +191,16 @@ PR_BODY = """This PR adds a batch of wikidata attributes to mathematical concept
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/from-referrer/)
 """
 
+def fork_owner(mathlib: Path) -> str | None:
+    """Owner of the `origin` remote — the fork the branch is pushed to (e.g.
+    'Deicyde'). The PR head must reference this owner, NOT the base repo's, or a
+    cross-fork `gh pr create` fails with 'No commits between … / Head ref must be
+    a branch'."""
+    url = run(["git", "remote", "get-url", "origin"], cwd=mathlib).stdout.strip()
+    m = re.search(r"[:/]([^/]+)/[^/]+?(?:\.git)?$", url)
+    return m.group(1) if m else None
+
+
 def open_pr(approved: dict, mathlib: Path, repo: str, base: str):
     branch = approved["branch"]
     title  = approved["title"]
@@ -205,11 +215,14 @@ def open_pr(approved: dict, mathlib: Path, repo: str, base: str):
         if r.returncode != 0 and desc != "commit":
             print(r.stdout + r.stderr); sys.exit(1)
         print((r.stdout + r.stderr).strip()[:400])
-    print("[gh] pr create")
+    fo = fork_owner(mathlib) or repo.split('/')[0]
+    print(f"[gh] pr create (head {fo}:{branch} -> {repo}:{base})")
     r = run(["gh", "pr", "create", "--repo", repo, "--base", base,
-             "--head", f"{repo.split('/')[0]}:{branch}",
+             "--head", f"{fo}:{branch}",
              "--title", title, "--body", PR_BODY], cwd=mathlib)
     print((r.stdout + r.stderr).strip())
+    if r.returncode != 0:
+        sys.exit(1)
 
 # --- LLM-generated disclosure + label -------------------------------------
 
@@ -274,7 +287,8 @@ def main():
 def _pr_number(args):
     if args.pr:
         return args.pr
-    r = run(["gh", "pr", "view", f"{args.repo.split('/')[0]}:{json.loads(args.approved.read_text())['branch']}",
+    fo = fork_owner(args.mathlib) or args.repo.split('/')[0]
+    r = run(["gh", "pr", "view", f"{fo}:{json.loads(args.approved.read_text())['branch']}",
              "--repo", args.repo, "--json", "number", "--jq", ".number"])
     return int(r.stdout.strip()) if r.returncode == 0 and r.stdout.strip() else None
 

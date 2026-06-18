@@ -97,6 +97,8 @@ def main():
     prn = subprocess.run(["gh", "pr", "list", "--repo", REPO, "--head", approved["branch"],
                           "--json", "number", "--jq", ".[0].number"],
                          capture_output=True, text=True).stdout.strip()
+    if not prn:
+        print("could not find the new PR (did gh pr create fail?) — stopping before finalize."); sys.exit(1)
     print(f"\nopened PR #{prn}. finalizing…")
     # Deterministic reviewer table (per-tag reviews; idempotent).
     sh([sys.executable, str(HERE / "pr_table.py"), prn, "--repo", REPO, "--post", "--fresh"])
