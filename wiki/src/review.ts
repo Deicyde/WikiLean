@@ -559,6 +559,7 @@ async function fetchLeads(titles: string[], env: Env): Promise<Map<string, strin
 // ---- full decl-body extraction from the file at the PR head (cached) ----
 
 const TOPLEVEL_PREFIXES = [
+  "irreducible_def ",
   "def ", "theorem ", "lemma ", "class ", "structure ", "inductive ", "abbrev ",
   "instance ", "instance:", "example ", "axiom ", "constant ", "opaque ",
   "noncomputable ", "protected ", "private ", "public ", "nonrec ", "mutual ",
@@ -609,7 +610,7 @@ export function extractDeclBody(lines: string[], qid: string): string | null {
 }
 
 const DECL_SIG_RE =
-  /^(?:protected\s+|private\s+|noncomputable\s+|public\s+|nonrec\s+|unsafe\s+|partial\s+|scoped\s+|local\s+)*(?:def|theorem|lemma|class|structure|inductive|abbrev|instance|opaque|axiom)\s+([^\s:({\[]+)/;
+  /^(?:protected\s+|private\s+|noncomputable\s+|public\s+|nonrec\s+|unsafe\s+|partial\s+|scoped\s+|local\s+)*(?:irreducible_def|def|theorem|lemma|class|structure|inductive|abbrev|instance|opaque|axiom)\s+([^\s:({\[]+)/;
 
 // Given file lines and a qid, return the fully-qualified declaration name around
 // its @[wikidata Qxxx] tag (e.g. "Module.Projective"), by reading the signature
