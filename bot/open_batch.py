@@ -77,9 +77,13 @@ def main():
         print(f"  pr_table.py N | gh pr comment N ; advance state -> batch {nxt} ; publish /queue")
         return
 
+    # Refresh the merged-tag set FIRST (the previous batch just landed on master),
+    # then RE-assemble so the pool can't re-propose a just-merged tag.
+    sh(["python3", str(HERE / "refresh_tagged.py"), "--mathlib", str(args.mathlib)])
+    approved, nq, nf = assemble(nxt)
+    print(f"after refresh: {nq} requeued + {nf} fresh = {len(approved['tags'])}")
     apath.write_text(json.dumps(approved, indent=1, ensure_ascii=False))
     # Branch the new batch off fresh upstream master.
-    sh(["python3", str(HERE / "refresh_tagged.py"), "--mathlib", str(args.mathlib)])
     sh(["git", "-C", str(args.mathlib), "fetch", "https://github.com/leanprover-community/mathlib4", "master"])
     sh(["git", "-C", str(args.mathlib), "checkout", "-B", approved["branch"], "FETCH_HEAD"])
     sh(["lake", "exe", "cache", "get"], cwd=str(args.mathlib))  # prebuilt oleans for the new master
