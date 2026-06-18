@@ -70,8 +70,9 @@ def tick(mathlib, dry, no_open=False):
             do_open(mathlib, dry)
         return
     state = gh_state(pr)
-    print(f"poll #{pr}: state={state}  settled={st.get('settled_pr') == pr}")
-    if state == "MERGED":
+    merged = settle.is_merged(pr, REPO)  # bors closes the PR, so check title/merged too
+    print(f"poll #{pr}: state={state} merged={merged}  settled={st.get('settled_pr') == pr}")
+    if merged:
         if no_open:
             print("  MERGED ✓ — open the next batch (supervised): "
                   "`poll.py --apply` without --no-open, or open_batch.py --apply"); return
@@ -80,7 +81,7 @@ def tick(mathlib, dry, no_open=False):
             st = json.loads(STATE.read_text()); st.pop("settled_pr", None); STATE.write_text(json.dumps(st, indent=1))
         return
     if state != "OPEN":
-        print(f"  #{pr} is {state} (not merged) — needs manual attention; skipping"); return
+        print(f"  #{pr} is {state} but NOT merged — needs manual attention; skipping"); return
     if st.get("settled_pr") == pr:
         print("  already settled — waiting for merge"); return
     cls = settle.classify(pr, REPO)
