@@ -40,6 +40,16 @@ def gh_obj(repo, path):
                                      capture_output=True, text=True).stdout)
 
 
+def is_merged(pr, repo="leanprover-community/mathlib4"):
+    """True if the PR merged. Mathlib merges via BORS, which closes the PR (state
+    'closed', merged=false) and prefixes the title '[Merged by Bors] - …' —
+    GitHub's own 'merged'/MERGED only covers the green-button path."""
+    j = gh_obj(repo, f"pulls/{pr}")
+    if j.get("merged") or j.get("merged_at"):
+        return True
+    return j.get("state") == "closed" and j.get("title", "").startswith("[Merged by Bors]")
+
+
 def status_of(body):
     if re.search(r"Deletion candidate", body):
         return "flag"

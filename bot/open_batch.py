@@ -15,7 +15,7 @@ is the per-tag retarget the triage already chose (recycle_queue.json).
 """
 import argparse, json, subprocess, sys
 from pathlib import Path
-import pool
+import pool, settle
 
 HERE = Path(__file__).resolve().parent
 STATE = HERE / "state" / "bot_state.json"
@@ -31,10 +31,7 @@ def sh(cmd, **kw):
 
 
 def merged(pr):
-    out = subprocess.run(["gh", "pr", "view", str(pr), "--repo", REPO, "--json", "state,mergedAt"],
-                         capture_output=True, text=True).stdout
-    j = json.loads(out or "{}")
-    return j.get("state") == "MERGED"
+    return settle.is_merged(pr, REPO)  # bors-aware (CLOSED + "[Merged by Bors]")
 
 
 def assemble(batch_num):
