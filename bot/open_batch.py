@@ -85,6 +85,7 @@ def main():
     sh(["python3", str(HERE / "refresh_tagged.py"), "--mathlib", str(args.mathlib)])
     sh(["git", "-C", str(args.mathlib), "fetch", "https://github.com/leanprover-community/mathlib4", "master"])
     sh(["git", "-C", str(args.mathlib), "checkout", "-B", approved["branch"], "FETCH_HEAD"])
+    sh(["lake", "exe", "cache", "get"], cwd=str(args.mathlib))  # prebuilt oleans for the new master
     r = sh(["python3", str(HERE / "open_batch_pr.py"), "--approved", str(apath),
             "--mathlib", str(args.mathlib), "--repo", REPO, "--base", "master",
             "--apply", "--check", "--build", "--open-pr"])
