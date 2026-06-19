@@ -38,9 +38,20 @@ def assemble(batch_num):
     """approved JSON for the next batch: requeued retargets + fresh, to 25."""
     requeued = json.loads(QUEUE.read_text()) if QUEUE.exists() else []
     cut = {e["qid"] for e in (json.loads(CUTLOG.read_text()) if CUTLOG.exists() else [])}
-    tags = [{"qid": e["qid"], "file": e["file"], "decl": e["triage"]["suggested_decl"]}
-            for e in requeued if e.get("triage", {}).get("suggested_decl")]
-    exclude = {t["qid"] for t in tags} | cut
+    # A requeued tag may correct the declaration, the QID (too-broad concept), or
+    # both. Use the triage's suggested_qid/suggested_decl, falling back to the
+    # originals; skip any entry with neither a usable decl nor a real change.
+    tags = []
+    for e in requeued:
+        tr = e.get("triage", {})
+        if not (tr.get("suggested_decl") or tr.get("suggested_qid")):
+            continue
+        decl = tr.get("suggested_decl") or e.get("decl")
+        if not decl:                       # can't tag without a target declaration
+            continue
+        tags.append({"qid": tr.get("suggested_qid") or e["qid"], "file": e["file"], "decl": decl})
+    # Exclude both the original and corrected QIDs so the pool fill never re-proposes them.
+    exclude = {t["qid"] for t in tags} | {e["qid"] for e in requeued} | cut
     fresh = pool.candidates(25 - len(tags), exclude=exclude)
     tags += [{"qid": c["qid"], "file": c["file"], "decl": c["decl"]} for c in fresh]
     branch = f"wikilean/wikidata-batch-{batch_num}"
@@ -73,8 +84,8 @@ def main():
         print(f"\n[dry-run] would write {apath} and run:")
         print(f"  (refresh tagged) ; reset checkout to upstream/master")
         print(f"  open_batch_pr.py --approved {apath.name} --mathlib {args.mathlib} --repo {REPO} --base master --apply --check --build --open-pr")
-        print(f"  warm-cache.sh N ; post-wikidata-comments.sh N ; open_batch_pr.py --llm-label --pr N")
-        print(f"  pr_table.py N | gh pr comment N ; advance state -> batch {nxt} ; publish /queue")
+        print(f"  pr_table.py N --post --fresh ; advance state -> batch {nxt}")
+        print(f"  finalize.py --pr N (LLM-label + crossref comments + /queue publish)")
         return
 
     # Refresh the merged-tag set FIRST (the previous batch just landed on master),
@@ -102,13 +113,13 @@ def main():
     print(f"\nopened PR #{prn}. finalizing…")
     # Deterministic reviewer table (per-tag reviews; idempotent).
     sh([sys.executable, str(HERE / "pr_table.py"), prn, "--repo", REPO, "--post", "--fresh"])
-    # Advance state so a re-run no-ops (idempotent open).
+    # Advance state FIRST so a re-run no-ops even if finalize stumbles.
     st.update({"current_pr": int(prn), "batch_num": nxt, "branch": approved["branch"]})
     STATE.write_text(json.dumps(st, indent=1))
-    # NOTE (supervised on first batch-3): crossref comments + LLM-generated label
-    # still run manually — both need the brew-bash + CROSSREF_DIFF_FILE workaround:
-    print(f"  then run (supervised): warm-cache.sh {prn} ; post-wikidata-comments.sh {prn} ; "
-          f"open_batch_pr.py --llm-label --pr {prn} ; publish_queue.py --candidates <fresh>")
+    # Finalize — fully automated now (best-effort, finalize.py always exits 0):
+    # the REQUIRED LLM-generated label + crossref inline comments + /queue publish.
+    sh([sys.executable, str(HERE / "finalize.py"), "--pr", prn,
+        "--mathlib", str(args.mathlib), "--approved", str(apath)])
 
 
 if __name__ == "__main__":
