@@ -37,6 +37,18 @@ def gh_state(pr):
 
 def do_settle(pr, branch, mathlib, cls, dry):
     recycle = cls["recycle"]
+    # Enrich each recycled entry with the decl that was tagged — triage needs it
+    # for QID-only corrections (right decl, too-broad QID), where the decl stays
+    # the same. settle's diff parse doesn't carry the decl name; the opened
+    # batch's approved JSON does.
+    try:
+        bn = json.loads(STATE.read_text()).get("batch_num")
+        appr = json.loads((HERE / "state" / f"batch{bn}_approved.json").read_text())
+        decl_by_qid = {t["qid"]: t["decl"] for t in appr.get("tags", [])}
+        for e in recycle:
+            e.setdefault("decl", decl_by_qid.get(e["qid"]))
+    except Exception as ex:
+        print(f"  (could not enrich recycle decls: {ex})")
     qids = ",".join(e["qid"] for e in recycle)
     green = len(cls["green"])
     print(f"  SETTLE #{pr}: {green} green / {len(recycle)} recycle "

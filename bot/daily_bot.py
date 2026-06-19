@@ -52,6 +52,15 @@ def main():
         r = settle.classify(pr, REPO)
         green = [g["qid"] for g in r["green"]]
         recycle = r["recycle"]
+        # Enrich recycled entries with the tagged decl (triage needs it for
+        # QID-only corrections); the opened batch's approved JSON carries it.
+        try:
+            appr = json.loads((HERE / "state" / f"batch{st.get('batch_num')}_approved.json").read_text())
+            decl_by_qid = {t["qid"]: t["decl"] for t in appr.get("tags", [])}
+            for e in recycle:
+                e.setdefault("decl", decl_by_qid.get(e["qid"]))
+        except Exception:
+            pass
         print(f"PR #{pr} · age {r['age_h']}h · reviewers {r['reviewers']} · "
               f"gate {'OPEN' if r['gate'] else 'WAIT'}")
         print(f"  green {len(green)} · recycle {len(recycle)}")
