@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer, real, index } from "drizzle-orm/sqlite-core";
+import { sqliteTable, text, integer, real, index, primaryKey } from "drizzle-orm/sqlite-core";
 
 // Page-revision model (Wikipedia-style): `articles` holds the current state;
 // every save appends a full snapshot to `revisions` (audit log + revert source).
@@ -189,6 +189,21 @@ export const verifications = sqliteTable("verifications", {
   createdAt: integer("created_at", { mode: "timestamp" }),
   updatedAt: integer("updated_at", { mode: "timestamp" }),
 });
+
+// Per-user article watchlist (P3 contribution-loop: "watch" a slug to filter
+// /recent-changes to articles you care about). One row per (user, slug).
+export const watchlist = sqliteTable(
+  "watchlist",
+  {
+    userId: text("user_id").notNull(),
+    slug: text("slug").notNull(),
+    createdAt: integer("created_at").notNull(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.userId, t.slug] }),
+    index("idx_watchlist_user").on(t.userId, t.createdAt),
+  ],
+);
 
 export type ArticleRow = typeof articles.$inferSelect;
 export type RevisionRow = typeof revisions.$inferSelect;

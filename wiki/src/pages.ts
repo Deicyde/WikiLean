@@ -40,6 +40,9 @@ export function injectAuthAndEditor(
     // seen by the drift cron (articles.revid / articles.latest_revid).
     revid?: number | null;
     latestRevid?: number | null;
+    // P3: is the logged-in viewer watching this article? Drives the
+    // ★ Watch / ★ Watching toggle state in the editor bar.
+    isWatching?: boolean;
   },
 ): string {
   const ret = encodeURIComponent("/" + opts.slug);
@@ -47,18 +50,21 @@ export function injectAuthAndEditor(
   if (opts.user) {
     inject =
       `<script>window.__WL_SLUG__=${safeJson(opts.slug)};` +
-      `window.__WL_USER__=${safeJson({ name: opts.user.name, role: opts.user.role })};` +
+      // P3: ship the user id so the editor bar can link "editing as <name>" → /u/<id>.
+      `window.__WL_USER__=${safeJson({ id: opts.user.id, name: opts.user.name, role: opts.user.role })};` +
       // base_version for optimistic concurrency: the editor POSTs this back so
       // the server can 409 if the article was edited since this page loaded.
       `window.__WL_VERSION__=${safeJson(opts.version ?? 0)};` +
+      `window.__WL_WATCHING__=${safeJson(Boolean(opts.isWatching))};` +
       `window.__WL_FULL_ANNOS__=${safeJson({ annotations: opts.annotations })};</script>\n` +
       // v=4: warm-palette editor chrome + sticky bar offsets (W3 fixes #5/#6d).
-      `<link rel="stylesheet" href="/assets/review.css?v=4">\n` +
+      // v=5: anchor-editing fieldset styles (highlight-range box + Use-selection btn).
+      `<link rel="stylesheet" href="/assets/review.css?v=5">\n` +
       // Bump ?v= when these assets change so browsers refetch (the URL is the
       // cache key; without this, returning users see the stale editor / CSS).
-      // v=9: hidden-annotation recovery, busy buttons, 409 draft preservation,
-      // panel a11y, palette (W3 fixes #2/#6d/#8/#9/#11c/#11f).
-      `<script src="/assets/editor.js?v=10"></script>\n`;
+      // v=14: highlight-range editing — Section + Snippet are now exposed in
+      // the panel with a "Use selection" button (typed anchors stay locked).
+      `<script src="/assets/editor.js?v=14"></script>\n`;
   } else {
     inject =
       `<a id="wl-signin" href="/login?returnTo=${ret}" ` +
@@ -150,6 +156,15 @@ button.revert:hover{border-color:#1a4b8c;color:#1a4b8c}
 .wl-stat-num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
 .wl-stats-foot{color:#6e675a;font-size:.82rem;margin:22px 0 0;line-height:1.6}
 h2.wl-stats-h{font-family:Charter,'Bitstream Charter','Iowan Old Style',Georgia,'Times New Roman',serif;font-size:1.15rem;margin:28px 0 10px}
+.wl-profile-hdr{display:flex;gap:18px;align-items:center;margin:0 0 6px}
+.wl-avatar{width:56px;height:56px;border-radius:50%;background:#ece6d8;flex:0 0 56px}
+.wl-avatar-fallback{display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:1.4rem;color:#5f594e}
+.wl-profile-name{margin:0}
+.wl-role{display:inline-block;padding:1px 8px;border-radius:10px;font-size:.7rem;font-weight:700;background:rgba(26,75,140,.10);color:#1a4b8c;text-transform:uppercase;letter-spacing:.04em;vertical-align:3px;margin-left:6px}
+.wl-profile-stats{display:flex;gap:18px;color:#5f594e;font-size:.92rem;margin:14px 0 18px;flex-wrap:wrap}
+.wl-profile-stats b{color:#1f1d1a}
+.wl-watch-list{padding-left:1.2em;margin:8px 0 8px;columns:2;column-gap:36px}
+.wl-watch-list li{margin:3px 0;break-inside:avoid}
 `;
 
 function shell(title: string, bodyInner: string, extraScript = ""): string {
@@ -267,20 +282,44 @@ function patrolCell(r: RecentRow, canPatrol: boolean): string {
 
 export function recentChangesPage(
   rows: RecentRow[],
-  opts: { kind: string | null; canPatrol: boolean },
+  opts: { kind: string | null; canPatrol: boolean; watching?: boolean; loggedIn?: boolean },
 ): string {
-  // Filter chrome: all + one link per revisions.kind value.
-  const filterLinks = [
-    `<a href="/recent-changes"${opts.kind === null ? ' class="active"' : ""}>all</a>`,
+  // Filter chrome: all + one link per revisions.kind value. ?watching=1 is an
+  // additional axis (logged-in only); we render it as a separate "scope"
+  // section so the kind filters compose with it.
+  const watchingActive = Boolean(opts.watching);
+  const kindBase = watchingActive ? "/recent-changes?watching=1" : "/recent-changes";
+  const kindLinks = [
+    `<a href="${kindBase}"${opts.kind === null ? ' class="active"' : ""}>all</a>`,
     ...RECENT_KINDS.map(
-      (k) => `<a href="/recent-changes?kind=${k}"${opts.kind === k ? ' class="active"' : ""}>${k}</a>`,
+      (k) =>
+        `<a href="${watchingActive ? `${kindBase}&kind=${k}` : `/recent-changes?kind=${k}`}"${opts.kind === k ? ' class="active"' : ""}>${k}</a>`,
     ),
   ].join(" · ");
 
+  // Scope chrome: visible only to logged-in viewers (anonymous viewers can't
+  // have a watchlist, so showing the tab would be confusing).
+  let scopeBar = "";
+  if (opts.loggedIn) {
+    const kindSuffix = opts.kind ? `&kind=${opts.kind}` : "";
+    scopeBar =
+      `<p class="wl-filterbar">Scope: ` +
+      `<a href="/recent-changes${opts.kind ? `?kind=${opts.kind}` : ""}"${!watchingActive ? ' class="active"' : ""}>everything</a>` +
+      ` · ` +
+      `<a href="/recent-changes?watching=1${kindSuffix}"${watchingActive ? ' class="active"' : ""}>your watchlist</a>` +
+      `</p>`;
+  }
+
+  const heading = watchingActive ? "Recent changes · watchlist" : "Recent changes";
+  const intro = watchingActive
+    ? `<p class="lead">Latest edits to articles you're watching. Add more with the <b>★ Watch</b> button on any article.</p>`
+    : `<p class="lead">Latest annotation edits across all articles. Patrol here — open an article's history to revert.</p>`;
+
   const body =
-    `<h1>Recent changes</h1>` +
-    `<p class="lead">Latest annotation edits across all articles. Patrol here — open an article's history to revert.</p>` +
-    `<p class="wl-filterbar">Show: ${filterLinks}</p>` +
+    `<h1>${heading}</h1>` +
+    intro +
+    scopeBar +
+    `<p class="wl-filterbar">Show: ${kindLinks}</p>` +
     `<div style="overflow-x:auto">` +
     `<table><thead><tr><th>When</th><th>Article</th><th>Editor</th><th>Kind</th><th>Comment</th><th>Patrol</th><th></th></tr></thead><tbody>` +
     rows
@@ -646,4 +685,88 @@ export function statsPage(d: StatsData): string {
     `are deferred pending their sample/field (docs/research-plan.md).</p>`;
 
   return shell("Stats", body);
+}
+
+// ---- /u/:id — user profile (P3 contribution-loop) --------------------------
+
+export interface UserProfileRow {
+  id: number;
+  slug: string;
+  displayTitle: string;
+  comment: string | null;
+  kind: string;
+  createdAt: number;
+}
+
+export function userProfilePage(
+  profile: {
+    id: string;
+    name: string | null;
+    image: string | null;
+    role: string;
+    createdAt: number | null;
+  },
+  stats: {
+    totalEdits: number;
+    articlesTouched: number;
+    humanRevs: number;
+  },
+  recent: UserProfileRow[],
+  watching: string[], // slugs watched by THIS user (only populated when viewing own profile)
+  isSelf: boolean,
+): string {
+  const name = htmlEscape(profile.name ?? profile.id.slice(0, 8), false);
+  const avatar = profile.image
+    ? `<img src="${htmlEscape(profile.image, true)}" alt="" class="wl-avatar">`
+    : `<span class="wl-avatar wl-avatar-fallback">${name.charAt(0).toUpperCase()}</span>`;
+  const role =
+    profile.role && profile.role !== "user"
+      ? ` <span class="wl-role">${htmlEscape(profile.role, false)}</span>`
+      : "";
+  const joined = profile.createdAt
+    ? ` · joined ${htmlEscape(fmtDate(profile.createdAt), false)}`
+    : "";
+
+  const recentRows = recent.length
+    ? recent
+        .map(
+          (r) =>
+            `<tr><td>${fmtDate(r.createdAt)}</td>` +
+            `<td><a href="/${encodeURIComponent(r.slug)}">${htmlEscape(r.displayTitle, false)}</a></td>` +
+            `<td><span class="wl-kind wl-kind-${htmlEscape(r.kind, true)}">${htmlEscape(r.kind, false)}</span></td>` +
+            `<td>${r.comment ? htmlEscape(r.comment, false) : '<span class="muted">—</span>'}</td>` +
+            `<td><a href="/${encodeURIComponent(r.slug)}/history">history</a></td></tr>`,
+        )
+        .join("")
+    : `<tr><td colspan="5" class="muted">No edits yet.</td></tr>`;
+
+  const watchSection = isSelf
+    ? `<h2 class="wl-stats-h">Watchlist (${watching.length})</h2>` +
+      (watching.length
+        ? `<ul class="wl-watch-list">${watching
+            .map(
+              (s) =>
+                `<li><a href="/${encodeURIComponent(s)}">${htmlEscape(s.replace(/_/g, " "), false)}</a></li>`,
+            )
+            .join("")}</ul>` +
+          `<p class="muted" style="font-size:.85rem">Filter <a href="/recent-changes?watching=1">recent changes</a> to just these articles.</p>`
+        : `<p class="muted">No watched articles yet. Click <b>★ Watch</b> in the editor bar of any article to add it here.</p>`)
+    : "";
+
+  const body =
+    `<div class="wl-profile-hdr">${avatar}` +
+    `<div><h1 class="wl-profile-name">${name}${role}</h1>` +
+    `<p class="muted" style="font-size:.9rem">${htmlEscape(profile.id, false)}${joined}</p></div></div>` +
+    `<div class="wl-profile-stats">` +
+    `<span><b>${stats.totalEdits}</b> revisions</span>` +
+    `<span><b>${stats.articlesTouched}</b> articles touched</span>` +
+    `<span><b>${stats.humanRevs}</b> direct edits (non-revert)</span>` +
+    `</div>` +
+    watchSection +
+    `<h2 class="wl-stats-h">Recent revisions</h2>` +
+    `<div style="overflow-x:auto"><table>` +
+    `<thead><tr><th>When</th><th>Article</th><th>Kind</th><th>Comment</th><th></th></tr></thead>` +
+    `<tbody>${recentRows}</tbody></table></div>`;
+
+  return shell(name, body);
 }

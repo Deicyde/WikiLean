@@ -43,7 +43,17 @@
       : "") +
     '<span style="opacity:.85">click a highlight to edit · select text to add</span>' +
     '<span class="wlr-spacer"></span>' +
-    '<span style="opacity:.85">editing as ' + escapeHtml(user.name) + "</span>" +
+    // P3: name links to /u/<id> when the id is known (older cached pages
+    // without __WL_USER__.id fall back to plain text).
+    '<span style="opacity:.85">editing as ' +
+      (user.id
+        ? '<a href="/u/' + encodeURIComponent(user.id) + '" style="color:#fff;text-decoration:underline">' + escapeHtml(user.name) + "</a>"
+        : escapeHtml(user.name)) +
+      "</span>" +
+    // P3: ★ Watch / ★ Watching toggle. Initial state from window.__WL_WATCHING__.
+    '<button id="wlr-watch" type="button" data-watching="' + (window.__WL_WATCHING__ ? "1" : "0") +
+      '" style="margin-left:12px">' +
+      (window.__WL_WATCHING__ ? "★ Watching" : "☆ Watch") + "</button>" +
     '<a href="/' + encodeURIComponent(slug) + '/history" style="color:#fff;margin-left:12px">history</a>' +
     '<a href="/logout?returnTo=' + ret + '" style="color:#fff;margin-left:12px">log out</a>';
   // Prepend (not append): on ≤640px review.css positions the bar sticky, which
@@ -56,6 +66,29 @@
     bar.querySelector("#wlr-hidden").addEventListener("click", function () {
       openEditor(rejectedIdxs[hiddenCursor % rejectedIdxs.length]);
       hiddenCursor++;
+    });
+  }
+
+  // ---- P3: ★ Watch toggle ---------------------------------------------------
+  const watchBtn = bar.querySelector("#wlr-watch");
+  if (watchBtn) {
+    watchBtn.addEventListener("click", async function () {
+      const watching = watchBtn.dataset.watching === "1";
+      watchBtn.disabled = true;
+      try {
+        const res = await fetch("/api/watch/" + encodeURIComponent(slug), {
+          method: watching ? "DELETE" : "POST",
+        });
+        if (!res.ok) throw new Error("watch toggle failed: " + res.status);
+        const next = !watching;
+        watchBtn.dataset.watching = next ? "1" : "0";
+        watchBtn.textContent = next ? "★ Watching" : "☆ Watch";
+      } catch (e) {
+        // Re-enable on failure; leave label as-is so the user can retry.
+        console.warn(e);
+      } finally {
+        watchBtn.disabled = false;
+      }
     });
   }
 
@@ -80,6 +113,17 @@
     <button id="wlr-close" type="button" title="Close (Esc)" aria-label="Close editor">×</button>
     <h3 id="wlr-title">Edit annotation</h3>
     <div class="wlr-quote" id="wlr-quote"></div>
+    <fieldset id="wlr-f-anchor-set" class="wlr-anchor-set">
+      <legend>Highlight range
+        <button type="button" id="wlr-f-anchor-pick" title="Replace this annotation's range with whatever text is currently selected in the article">Use selection</button>
+      </legend>
+      <small class="wlr-help">What text in the article this annotation wraps. Edit to resize / re-anchor the box. Snippet must be a substring of the section's prose.</small>
+      <label for="wlr-f-anchor-section">Section</label>
+      <input id="wlr-f-anchor-section" placeholder="Section heading (e.g. 'Definition', or '(Lead)' for the lead)" autocomplete="off">
+      <label for="wlr-f-anchor-snippet">Snippet</label>
+      <textarea id="wlr-f-anchor-snippet" rows="2" placeholder="Text that appears verbatim in the section"></textarea>
+      <small id="wlr-f-anchor-locked" class="wlr-help wlr-anchor-locked-msg" style="display:none">This annotation uses a typed anchor (<span id="wlr-f-anchor-type"></span>) — direct re-anchoring isn't supported in the editor yet. Delete and recreate to change its range.</small>
+    </fieldset>
     <label for="wlr-f-status">Status</label>
     <small class="wlr-help">Does Mathlib4 capture this statement?</small>
     <select id="wlr-f-status">
@@ -386,8 +430,16 @@
     take(cContains);
     take(full.starts);
     take(full.contains);
+    // Include the decl in the option's visible text so Safari/Firefox (which
+    // display the inner text, not the `value` attribute, in the datalist
+    // dropdown) show the decl first with the module as a hint. Clicking still
+    // inserts only the `value` (just the decl); the module is auto-filled by
+    // the change handler below.
     list.innerHTML = out
-      .map(([d, m]) => '<option value="' + escapeHtml(d) + '">' + escapeHtml(m) + "</option>")
+      .map(
+        ([d, m]) =>
+          '<option value="' + escapeHtml(d) + '">' + escapeHtml(d) + " — " + escapeHtml(m) + "</option>",
+      )
       .join("");
   });
   // When a suggestion is picked from the datalist, fill the module field if
@@ -505,10 +557,26 @@
     }
   });
 
+  // Cached article-body element — selections must live inside this to count as
+  // an "annotate this prose" gesture. Outside (top bar, edit panel, intro
+  // overlay, page footer, etc.) selecting text should never pop the FAB.
+  const articleBody = document.querySelector(".wl-article-body");
+
   function maybeShowFab() {
     const sel = window.getSelection();
     const text = sel ? sel.toString().trim() : "";
     if (!sel || sel.isCollapsed || text.length < 4) {
+      fab.style.display = "none";
+      return;
+    }
+    // Both endpoints must be inside the article body. Without this, selecting
+    // the editor panel's help text (e.g. "Status — Does Mathlib4 capture this
+    // statement?") pops a confusing "+ Annotate" button.
+    if (
+      !articleBody ||
+      !articleBody.contains(sel.anchorNode) ||
+      !articleBody.contains(sel.focusNode)
+    ) {
       fab.style.display = "none";
       return;
     }
@@ -568,6 +636,10 @@
       match: $("wlr-f-match").value,
       note: $("wlr-f-note").value,
       comment: $("wlr-f-comment").value,
+      // Include anchor fields so editing the highlight range counts as an
+      // unsaved change (and the 409 draft-restore captures it).
+      anchorSection: $("wlr-f-anchor-section").value,
+      anchorSnippet: $("wlr-f-anchor-snippet").value,
     };
   }
 
@@ -638,6 +710,7 @@
     $("wlr-f-module").value = m.module || a.module || "";
     $("wlr-f-match").value = m.match_kind || a.match_kind || "";
     $("wlr-f-note").value = a.note || "";
+    populateAnchorFields(a.anchor || {});
     setDeclCheck("", true);
     $("wlr-del").style.display = "";
     // Show the one-click endorsement only when there's something to flip.
@@ -666,6 +739,9 @@
     $("wlr-f-status").value = "not_formalized";
     ["kind", "label", "decl", "module", "match"].forEach((f) => ($("wlr-f-" + f).value = ""));
     $("wlr-f-note").value = "";
+    // New annotations always use the section+snippet anchor type, so the
+    // fields are editable from the start.
+    populateAnchorFields({ section, snippet: text });
     setDeclCheck("", true);
     $("wlr-del").style.display = "none";
     // New annotations become human-curated on save, so nothing to mark separately.
@@ -704,6 +780,62 @@
     const anc = a.anchor || {};
     return anc.snippet || anc.value || anc.from || "(" + (anc.section || "?") + ")";
   }
+
+  // Populate the Section/Snippet inputs from an anchor. Section+snippet anchors
+  // (the dominant case — ~99% of annotations) become editable; typed anchors
+  // (math_alttext / theorem_box / prose_range) display the anchor's text but
+  // lock the inputs and show a "not editable yet" note instead of risking a
+  // malformed write to a typed-anchor payload.
+  function populateAnchorFields(anc) {
+    const secInput = $("wlr-f-anchor-section");
+    const snipInput = $("wlr-f-anchor-snippet");
+    const pickBtn = $("wlr-f-anchor-pick");
+    const lockedMsg = $("wlr-f-anchor-locked");
+    const isTyped = typeof anc.type === "string" && anc.type.length > 0;
+    if (isTyped) {
+      secInput.value = anc.section || "";
+      snipInput.value = anc.snippet || anc.value || anc.from || "";
+      secInput.disabled = true;
+      snipInput.disabled = true;
+      pickBtn.disabled = true;
+      $("wlr-f-anchor-type").textContent = anc.type;
+      lockedMsg.style.display = "";
+    } else {
+      secInput.value = anc.section || "";
+      snipInput.value = anc.snippet || "";
+      secInput.disabled = false;
+      snipInput.disabled = false;
+      pickBtn.disabled = false;
+      lockedMsg.style.display = "none";
+    }
+  }
+
+  // "Use selection" button: replace the snippet (and section, if we can infer
+  // one) with whatever the user currently has selected in the article body.
+  // The same article-body containment guard that the FAB uses applies here.
+  $("wlr-f-anchor-pick").addEventListener("click", () => {
+    if ($("wlr-f-anchor-pick").disabled) return;
+    const sel = window.getSelection();
+    const text = sel ? sel.toString().trim() : "";
+    if (!sel || sel.isCollapsed || text.length < 2) {
+      $("wlr-status-msg").textContent =
+        "Select the new range in the article first, then click Use selection.";
+      return;
+    }
+    if (
+      !articleBody ||
+      !articleBody.contains(sel.anchorNode) ||
+      !articleBody.contains(sel.focusNode)
+    ) {
+      $("wlr-status-msg").textContent =
+        "The selection must be inside the article body (not the editor panel).";
+      return;
+    }
+    $("wlr-f-anchor-snippet").value = text;
+    const sec = nearestSection(sel.anchorNode);
+    if (sec) $("wlr-f-anchor-section").value = sec;
+    $("wlr-status-msg").textContent = "Snippet updated from selection — Save to apply.";
+  });
 
   function headingTextOf(el) {
     if (/^H[1-4]$/.test(el.tagName)) return el.textContent.replace(/\[edit\]/g, "").trim();
@@ -844,8 +976,15 @@
     }
     built.provenance = "human";
 
+    // Build the anchor from the form. For section+snippet anchors (new + the
+    // ~99% case for edits) the inputs ARE the anchor; for typed anchors the
+    // inputs are disabled and we preserve the original payload to avoid
+    // corrupting the typed shape.
+    const formSection = $("wlr-f-anchor-section").value.trim();
+    const formSnippet = $("wlr-f-anchor-snippet").value.trim();
+
     if (editingIndex == null) {
-      built.anchor = { section: panel.dataset.newSection, snippet: panel.dataset.newSnippet };
+      built.anchor = { section: formSection, snippet: formSnippet };
       // Stable annotation id (C1): stamp brand-new annotations client-side so
       // the id is known before the round-trip. 12 lowercase hex chars, same
       // contract as the server's lazy-heal (which backstops any client that
@@ -855,12 +994,18 @@
       unsavedNew.add(built);
       annos.push(built);
     } else {
+      const prev = annos[editingIndex];
+      const prevAnchor = prev.anchor || {};
+      const isTyped = typeof prevAnchor.type === "string" && prevAnchor.type.length > 0;
+      // For section+snippet anchors (or untyped legacy anchors), accept the
+      // form values — this is how a contributor resizes the highlight box.
+      // For typed anchors, preserve the original payload to avoid risking a
+      // malformed write.
+      built.anchor = isTyped ? prevAnchor : { section: formSection, snippet: formSnippet };
       // Spread the original first so fields the form doesn't expose (proof_note,
       // id, formalizations, tombstone markers, moderation_flag, …) survive; the
       // form-derived fields in `built` win, so explicitly cleared fields (e.g. an
       // emptied note) are still written through.
-      built.anchor = annos[editingIndex].anchor;
-      const prev = annos[editingIndex];
       annos[editingIndex] = { ...prev, ...built };
       // The merge creates a new object — carry over never-persisted tracking.
       if (unsavedNew.delete(prev)) unsavedNew.add(annos[editingIndex]);
