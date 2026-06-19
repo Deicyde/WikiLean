@@ -16,7 +16,7 @@ re-open). Dry-run by default — prints the decision; --apply acts.
 """
 import argparse, json, subprocess, sys, time
 from pathlib import Path
-import settle, pool
+import settle, pool, split
 
 HERE = Path(__file__).resolve().parent
 STATE = HERE / "state" / "bot_state.json"
@@ -110,15 +110,22 @@ def tick(mathlib, dry, no_open=False):
     if state != "OPEN":
         print(f"  #{pr} is {state} but NOT merged — needs manual attention; skipping"); return
     if st.get("settled_pr") == pr:
-        # Self-heal the fork-CI cache flake (Post-Build 'target is out-of-date'):
-        # a close+reopen re-runs CI against a warmer cache. At most ONCE per PR
-        # (retriggered_pr marker) so a genuinely-stuck PR doesn't loop close/reopen.
+        # Self-heal the fork-CI cache-verify failure (Post-Build 'target is
+        # out-of-date'): the proven fix is merging current master into the branch
+        # — a stale merged-master leaves core-file oleans uncached — and the push
+        # re-runs CI. If the branch is ALREADY current it's a genuine flake, not
+        # staleness, so fall back to a plain close+reopen re-trigger. At most ONCE
+        # per PR (retriggered_pr) so a genuinely-stuck PR doesn't loop.
         if st.get("retriggered_pr") != pr and ci_cache_flake(pr, REPO):
-            print("  Post-Build cache flake — re-triggering CI (close+reopen)")
+            print("  Post-Build cache failure — freshening branch against master")
             if dry:
-                print(f"    [dry-run] would close+reopen #{pr}")
+                print(f"    [dry-run] would merge master into {branch} + push (else close+reopen)")
             else:
-                retrigger(pr, REPO)
+                if split.freshen_branch_and_push(branch, mathlib):
+                    print("    pushed master-merge — CI re-runs")
+                else:
+                    print("    already current — re-triggering via close+reopen")
+                    retrigger(pr, REPO)
                 st["retriggered_pr"] = pr
                 STATE.write_text(json.dumps(st, indent=1))
         else:

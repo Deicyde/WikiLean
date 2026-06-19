@@ -96,6 +96,39 @@ def apply_edits(edits):
         path.write_text("\n".join(out), encoding="utf-8")
 
 
+def freshen_master(mathlib: Path) -> bool:
+    """Merge current upstream/master into HEAD. A STALE merged-master is what
+    breaks CI's 'verify that everything was available in the cache' (Post-Build
+    Step): when a deeply-imported file (e.g. Module.Defs) is tagged on top of an
+    old master, its olean — and its downstream subtree — fall outside the warm
+    cache and lake reports 'target is out-of-date'. Merging current master
+    realigns them (this is the fix a human used to unblock #40747). Best-effort:
+    aborts and returns False on the (rare, for doc-only attrs) merge conflict."""
+    run(["git", "fetch", "upstream", "master"], cwd=mathlib, check=False)
+    m = run(["git", "merge", "--no-edit", "upstream/master"], cwd=mathlib, check=False)
+    if m.returncode != 0:
+        run(["git", "merge", "--abort"], cwd=mathlib, check=False)
+        return False
+    return True
+
+
+def freshen_branch_and_push(branch: str, mathlib: Path) -> bool:
+    """Reactive twin of freshen_master for an ALREADY-settled PR (poller
+    self-heal): fetch the branch, merge current master, push. Returns True iff a
+    new merge commit was pushed (False if already up to date, or a conflict
+    blocked it — caller can then fall back to a plain CI re-trigger)."""
+    run(["git", "fetch", "origin", branch], cwd=mathlib)
+    run(["git", "reset", "--hard", f"origin/{branch}"], cwd=mathlib)
+    before = run(["git", "rev-parse", "HEAD"], cwd=mathlib).stdout.strip()
+    if not freshen_master(mathlib):
+        return False
+    after = run(["git", "rev-parse", "HEAD"], cwd=mathlib).stdout.strip()
+    if before == after:
+        return False  # already current — nothing to push
+    run(["git", "push", "origin", branch], cwd=mathlib)
+    return True
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--mathlib", type=Path, required=True)
@@ -121,6 +154,7 @@ def main():
     if not args.apply:
         print("\n[dry-run] no files changed. On --apply, would (on the CURRENT remote tip):")
         print(f"  git fetch origin {args.branch} && git reset --hard origin/{args.branch}")
+        print("  git merge upstream/master   (freshen so the cache-verify passes)")
         print("  <re-apply removals>  +  lake build <touched modules>")
         print('  git commit -m "doc: drop recycled @[wikidata] tags pending re-review"')
         print(f"  git push origin {args.branch}   (fast-forward, no --force)")
@@ -132,6 +166,10 @@ def main():
     # would reject it anyway).
     run(["git", "fetch", "origin", args.branch], cwd=args.mathlib)
     run(["git", "reset", "--hard", f"origin/{args.branch}"], cwd=args.mathlib)
+    # Freshen against current master BEFORE trimming so the build-cache-verify
+    # passes (a stale merged-master leaves core-file oleans uncached).
+    print("  freshened against upstream/master" if freshen_master(args.mathlib)
+          else "  (upstream/master merge conflicted — trimming on the branch tip)")
     edits = plan(args.mathlib, recycle)  # re-plan against the fresh tip
     if not edits:
         print("nothing to remove on the current tip — done."); return
