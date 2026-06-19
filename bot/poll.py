@@ -65,6 +65,27 @@ def do_open(mathlib, dry):
     sh([sys.executable, str(HERE / "open_batch.py"), "--mathlib", str(mathlib)] + ([] if dry else ["--apply"]))
 
 
+def ci_cache_flake(pr, repo):
+    """The fork-CI cache-replay flake: 'Post-Build Step' failed while 'Build'
+    passed — lake 'target is out-of-date' at cache replay, on core files the PR
+    never touched. A close+reopen re-runs CI against a warmer cache and clears it
+    (batch #40682 passed Post-Build with the same files; #40747 flaked)."""
+    out = subprocess.run(["gh", "pr", "checks", str(pr), "--repo", repo],
+                         capture_output=True, text=True).stdout
+    rows = [l.split("\t") for l in out.splitlines() if "\t" in l]
+    pb = [r[1] for r in rows if len(r) > 1 and "Post-Build Step" in r[0]]
+    build = [r[1] for r in rows if len(r) > 1 and "/ Build" in r[0]]
+    return ("fail" in pb) and ("pass" in build) and ("fail" not in build)
+
+
+def retrigger(pr, repo):
+    """Re-run a fork PR's CI without a noise commit: close then reopen (the
+    'reopened' event re-fires the workflow). A fork author can do this; they
+    can't hit 'Re-run' on the upstream Actions UI."""
+    sh(["gh", "pr", "close", str(pr), "--repo", repo])
+    sh(["gh", "pr", "reopen", str(pr), "--repo", repo])
+
+
 def tick(mathlib, dry, no_open=False):
     st = json.loads(STATE.read_text()) if STATE.exists() else {}
     pr, branch = st.get("current_pr"), st.get("branch")
@@ -81,13 +102,28 @@ def tick(mathlib, dry, no_open=False):
             print("  MERGED ✓ — open the next batch (supervised): "
                   "`poll.py --apply` without --no-open, or open_batch.py --apply"); return
         do_open(mathlib, dry)
-        if not dry:  # open_batch advanced current_pr; clear the stale settled marker
-            st = json.loads(STATE.read_text()); st.pop("settled_pr", None); STATE.write_text(json.dumps(st, indent=1))
+        if not dry:  # open_batch advanced current_pr; clear the stale markers
+            st = json.loads(STATE.read_text())
+            st.pop("settled_pr", None); st.pop("retriggered_pr", None)
+            STATE.write_text(json.dumps(st, indent=1))
         return
     if state != "OPEN":
         print(f"  #{pr} is {state} but NOT merged — needs manual attention; skipping"); return
     if st.get("settled_pr") == pr:
-        print("  already settled — waiting for merge"); return
+        # Self-heal the fork-CI cache flake (Post-Build 'target is out-of-date'):
+        # a close+reopen re-runs CI against a warmer cache. At most ONCE per PR
+        # (retriggered_pr marker) so a genuinely-stuck PR doesn't loop close/reopen.
+        if st.get("retriggered_pr") != pr and ci_cache_flake(pr, REPO):
+            print("  Post-Build cache flake — re-triggering CI (close+reopen)")
+            if dry:
+                print(f"    [dry-run] would close+reopen #{pr}")
+            else:
+                retrigger(pr, REPO)
+                st["retriggered_pr"] = pr
+                STATE.write_text(json.dumps(st, indent=1))
+        else:
+            print("  already settled — waiting for merge")
+        return
     cls = settle.classify(pr, REPO)
     if not cls["gate"]:
         print(f"  gate not met ({cls['gate_reasons']}) — waiting for reviews"); return
