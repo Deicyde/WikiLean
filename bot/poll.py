@@ -47,13 +47,17 @@ def do_settle(pr, branch, mathlib, cls, dry):
     sh([sys.executable, str(HERE / "split.py"), "--mathlib", str(mathlib), "--branch", branch,
         "--recycle", qids, "--apply", "--no-build"])
     sh([sys.executable, str(HERE / "triage.py"), "--out-queue", str(QUEUE)], input=json.dumps(recycle))
-    sh([sys.executable, str(HERE / "pr_table.py"), str(pr), "--repo", REPO, "--post"])
+    # The tag table IS the trim/ready notice: ONE idempotent comment carrying the
+    # green-only table + the ready-to-merge + recycled summary, rather than a
+    # separate bare line (template: the trim comment on #40682).
+    header = (f"This PR was trimmed to the **{green}** `@[wikidata]` tags approved 🟢 "
+              f"by ≥2 reviewers (incl. a maintainer) — **ready to merge**."
+              + (f" {len(recycle)} recycled to the next batch." if recycle else "")
+              + " <!-- wikilean-bot-ready -->")
+    sh([sys.executable, str(HERE / "pr_table.py"), str(pr), "--repo", REPO, "--post", "--header", header])
     fresh = pool.candidates(20, exclude=set(cls["tags"]) | {e["qid"] for e in recycle})
     CANDS.write_text(json.dumps(fresh))
     sh([sys.executable, str(HERE / "publish_queue.py"), "--recycle", str(QUEUE), "--candidates", str(CANDS)])
-    body = (f"**WikiLean bot:** {green} tag(s) approved (≥2 reviewers, ≥1 maintainer) — ready to merge. "
-            f"{len(recycle)} recycled to the next batch. <!-- wikilean-bot-ready -->")
-    sh(["gh", "pr", "comment", str(pr), "--repo", REPO, "--body", body])
 
 
 def do_open(mathlib, dry):
