@@ -72,19 +72,18 @@ def main():
                 p = subprocess.run([sys.executable, str(HERE / "triage.py"),
                                     "--out-queue", str(QUEUE), "--model", args.model],
                                    input=json.dumps(recycle), text=True)
-            # 3) deterministic reviewer table (post/update, idempotent)
-            print(f"\n{tag}TABLE on #{pr}: pr_table.py --post (per-tag reviews)")
-            if not dry:
-                sh([sys.executable, str(HERE / "pr_table.py"), str(pr), "--repo", REPO, "--post"])
-            # 4) ready-to-merge comment
-            body = (f"**WikiLean bot:** {len(green)} tag(s) approved by ≥2 reviewers over 24h — "
-                    f"ready to merge. {len(recycle)} recycled to the next batch. "
-                    f"<!-- wikilean-bot-ready -->")
-            print(f"\n{tag}READY comment on #{pr}:")
+            # 3) tag table = trim/ready notice (one idempotent comment: green table
+            #    + ready-to-merge + recycled summary; template: trim comment on #40682)
+            header = (f"This PR was trimmed to the **{len(green)}** `@[wikidata]` tags approved 🟢 "
+                      f"by ≥2 reviewers (incl. a maintainer) — **ready to merge**."
+                      + (f" {len(recycle)} recycled to the next batch." if recycle else "")
+                      + " <!-- wikilean-bot-ready -->")
+            print(f"\n{tag}TABLE+READY on #{pr}: pr_table.py --post --header …")
             if dry:
-                print("  " + body)
+                print("  " + header)
             else:
-                sh(["gh", "pr", "comment", str(pr), "--repo", REPO, "--body", body])
+                sh([sys.executable, str(HERE / "pr_table.py"), str(pr), "--repo", REPO,
+                    "--post", "--header", header])
     else:
         print("no current PR in state — first run will just open a batch.")
 
