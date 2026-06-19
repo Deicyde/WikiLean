@@ -59,6 +59,14 @@ def do_settle(pr, branch, mathlib, cls, dry):
     sh([sys.executable, str(HERE / "split.py"), "--mathlib", str(mathlib), "--branch", branch,
         "--recycle", qids, "--apply", "--no-build"])
     sh([sys.executable, str(HERE / "triage.py"), "--out-queue", str(QUEUE)], input=json.dumps(recycle))
+    # Feedback loop (deterministic, idempotent): harvest every reviewer
+    # reject/revise (corrections, with the narrower QID they named) + approve
+    # "also tag X" notes (additions) into the dataset, then apply the explicit
+    # QID fixes to the requeue and collect the additions. Grows the few-shot
+    # corpus tag_with_mathlib learns from, and ensures requeued tags carry the
+    # CORRECTED QID rather than repeating the rejected broad one.
+    sh([sys.executable, str(HERE / "harvest_corrections.py"), str(pr), "--repo", REPO])
+    sh([sys.executable, str(HERE / "apply_corrections.py")])
     # The tag table IS the trim/ready notice: ONE idempotent comment carrying the
     # green-only table + the ready-to-merge + recycled summary, rather than a
     # separate bare line (template: the trim comment on #40682).
