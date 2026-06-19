@@ -14,6 +14,12 @@ Output = recycle_queue.json (requeued) + cut_log.json.
 import argparse, json, subprocess, sys
 from pathlib import Path
 
+# Default outputs live in bot/state/ (script-relative), so a caller that omits
+# --out-queue/--out-cut (poll.py, daily_bot.py) still writes to the canonical
+# location rather than the process CWD. open_batch.py reads state/cut_log.json
+# to exclude permanently-cut QIDs from future batches.
+STATE = Path(__file__).resolve().parent / "state"
+
 PROMPT = """You are triaging a Wikipedia↔Mathlib `@[wikidata]` cross-reference tag that human \
 reviewers did NOT approve for merge into Mathlib. Decide whether it is worth fixing and \
 re-reviewing, or cutting.
@@ -60,8 +66,8 @@ def ask_llm(entry, model):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--in", dest="inp", type=Path, help="settle recycle JSON (else stdin)")
-    ap.add_argument("--out-queue", type=Path, default=Path("recycle_queue.json"))
-    ap.add_argument("--out-cut", type=Path, default=Path("cut_log.json"))
+    ap.add_argument("--out-queue", type=Path, default=STATE / "recycle_queue.json")
+    ap.add_argument("--out-cut", type=Path, default=STATE / "cut_log.json")
     ap.add_argument("--model", default="")
     ap.add_argument("--dry-run", action="store_true", help="print prompts, don't call the LLM")
     args = ap.parse_args()
@@ -81,8 +87,16 @@ def main():
               + (f"  [-> {d['suggested_decl']}]" if d.get("suggested_decl") else ""))
     if not args.dry_run:
         args.out_queue.write_text(json.dumps(requeue, indent=1))
-        args.out_cut.write_text(json.dumps(cut, indent=1))
-        print(f"\nrequeue {len(requeue)} -> {args.out_queue}   cut {len(cut)} -> {args.out_cut}")
+        # cut_log is a CUMULATIVE permanent-exclusion ledger (open_batch reads it
+        # to keep cut QIDs out of future batches) — merge with any existing cuts
+        # rather than overwriting, newest record winning on a QID collision.
+        prior = json.loads(args.out_cut.read_text()) if args.out_cut.exists() else []
+        merged = {e["qid"]: e for e in prior}
+        for e in cut:
+            merged[e["qid"]] = e
+        args.out_cut.write_text(json.dumps(list(merged.values()), indent=1))
+        print(f"\nrequeue {len(requeue)} -> {args.out_queue}   "
+              f"cut {len(cut)} this run ({len(merged)} total) -> {args.out_cut}")
 
 
 if __name__ == "__main__":
