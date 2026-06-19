@@ -158,7 +158,41 @@ ${recent.map(recentItem).join("\n")}
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>WikiLean — Wikipedia&#x27;s mathematics, annotated with its formalization status in Mathlib</title>
-<meta name="description" content="A mirror of WikiProject Mathematics articles annotated with links into Mathlib, color-coded by formalization coverage.">
+<meta name="description" content="WikiLean is a mirror of WikiProject Mathematics articles annotated with links into Mathlib4, color-coded by formalization coverage in Lean.">
+<link rel="canonical" href="https://wikilean.jackmccarthy.org/">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="WikiLean">
+<meta property="og:title" content="WikiLean — Wikipedia mathematics, mapped to Lean">
+<meta property="og:description" content="WikiLean is a mirror of WikiProject Mathematics articles annotated with links into Mathlib4, color-coded by formalization coverage in Lean.">
+<meta property="og:url" content="https://wikilean.jackmccarthy.org/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="WikiLean — Wikipedia mathematics, mapped to Lean">
+<meta name="twitter:description" content="A mirror of WikiProject Mathematics articles annotated with links into Mathlib4, color-coded by formalization coverage in Lean.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://wikilean.jackmccarthy.org/#website",
+      "url": "https://wikilean.jackmccarthy.org/",
+      "name": "WikiLean",
+      "alternateName": "WikiLean — Wikipedia mathematics, mapped to Lean",
+      "description": "WikiLean is a mirror of WikiProject Mathematics articles annotated inline with links into Mathlib4, color-coded by whether each definition, theorem, and proof has been formalized in Lean.",
+      "inLanguage": "en",
+      "sameAs": ["https://github.com/Deicyde/WikiLean"],
+      "publisher": {"@id": "https://wikilean.jackmccarthy.org/#person"}
+    },
+    {
+      "@type": "Person",
+      "@id": "https://wikilean.jackmccarthy.org/#person",
+      "name": "Jack McCarthy",
+      "url": "https://jackmccarthy.org"
+    }
+  ]
+}
+</script>
 <style>
 :root {
   --paper:#f7f4ee; --surface:#fffdf9; --ink:#1f1d1a; --muted:#5f594e;
@@ -388,16 +422,25 @@ ${sorted.map(dirRow).join("\n")}
 }
 
 export function sitemapXml(rows: SitemapRow[]): string {
-  const urls = [...rows]
-    .sort((a, b) => (a.slug < b.slug ? -1 : a.slug > b.slug ? 1 : 0))
-    .map(
-      (r) =>
-        // <loc> must be a valid URL: percent-encode the slug, then XML-escape
-        // (W3 fix #10).
-        `  <url><loc>${SITE_ORIGIN}/${esc(encodeURIComponent(r.slug))}</loc>` +
-        `<lastmod>${new Date(r.updatedAt).toISOString().slice(0, 10)}</lastmod>` +
-        `<priority>0.6</priority></url>`,
-    );
+  // Homepage root first, at top priority — it's the page that owns the brand
+  // query. lastmod tracks the most recently updated article (the homepage
+  // re-renders whenever any article changes).
+  const newest = rows.reduce((m, r) => (r.updatedAt > m ? r.updatedAt : m), 0);
+  const rootMod = newest ? `<lastmod>${new Date(newest).toISOString().slice(0, 10)}</lastmod>` : "";
+  const rootUrl = `  <url><loc>${SITE_ORIGIN}/</loc>${rootMod}<priority>1.0</priority></url>`;
+  const urls = [
+    rootUrl,
+    ...[...rows]
+      .sort((a, b) => (a.slug < b.slug ? -1 : a.slug > b.slug ? 1 : 0))
+      .map(
+        (r) =>
+          // <loc> must be a valid URL: percent-encode the slug, then XML-escape
+          // (W3 fix #10).
+          `  <url><loc>${SITE_ORIGIN}/${esc(encodeURIComponent(r.slug))}</loc>` +
+          `<lastmod>${new Date(r.updatedAt).toISOString().slice(0, 10)}</lastmod>` +
+          `<priority>0.6</priority></url>`,
+      ),
+  ];
   return (
     `<?xml version="1.0" encoding="UTF-8"?>\n` +
     `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +

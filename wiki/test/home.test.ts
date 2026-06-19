@@ -156,6 +156,14 @@ describe("sitemapXml", () => {
     );
     expect(xml.indexOf("Abelian_group")).toBeLessThan(xml.indexOf("Zorn_lemma"));
     expect(xml.trimEnd().endsWith("</urlset>")).toBe(true);
+    // Homepage root is listed first at top priority (brand-query target),
+    // lastmod tracking the most recently updated article.
+    expect(xml).toContain(
+      "<url><loc>https://wikilean.jackmccarthy.org/</loc><lastmod>2026-06-11</lastmod><priority>1.0</priority></url>",
+    );
+    expect(xml.indexOf("<loc>https://wikilean.jackmccarthy.org/</loc>")).toBeLessThan(
+      xml.indexOf("Abelian_group"),
+    );
   });
 
   it("escapes slugs in <loc>", () => {
@@ -165,9 +173,12 @@ describe("sitemapXml", () => {
     expect(xml).not.toContain("/A&B<");
   });
 
-  it("renders an empty urlset for zero rows", () => {
+  it("still lists the homepage root when there are zero article rows", () => {
     const xml = sitemapXml([]);
-    expect(xml).toContain('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n</urlset>');
+    // No articles, but the homepage itself always exists — root with no lastmod.
+    expect(xml).toContain(
+      '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url><loc>https://wikilean.jackmccarthy.org/</loc><priority>1.0</priority></url>\n</urlset>',
+    );
   });
 });
 

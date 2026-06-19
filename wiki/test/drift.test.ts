@@ -162,10 +162,10 @@ describe("staleness banner (injectAuthAndEditor)", () => {
     const user = { id: "u1", name: "U", role: "user" } as never;
     const html = injectAuthAndEditor(PAGE, { ...base, user, revid: 1, latestRevid: 2, version: 7 });
     expect(html).toContain("wl-stale-banner");
-    // v=9: W3 UI fixes (hidden-annotation recovery, busy buttons, 409 draft
-    // preservation, panel a11y, warm palette) — keep in lockstep with pages.ts.
-    expect(html).toContain("/assets/editor.js?v=10");
-    expect(html).not.toContain("editor.js?v=9");
+    // v=14: highlight-range editing (Section + Snippet anchors editable via a
+    // "Use selection" button) — keep in lockstep with pages.ts.
+    expect(html).toContain("/assets/editor.js?v=14");
+    expect(html).not.toContain("editor.js?v=10");
   });
 });
 
