@@ -25,25 +25,40 @@ reviewers did NOT approve for merge into Mathlib. Decide whether it is worth fix
 re-reviewing, or cutting.
 
 Wikidata QID: {qid}  (https://www.wikidata.org/wiki/{qid})
+Mathlib declaration tagged: {decl}
 Mathlib file: {file}
 Reviewer verdicts: {verdicts}
 Reviewer notes (verbatim):
 {notes}
 
-A tag is worth REQUEUEing if a reviewer note points at a concrete, fixable retargeting \
-(e.g. "tag the class not the structure", "tag `abs` instead", "also tag the completed \
-version") — i.e. the CONCEPT is in Mathlib, just on a different declaration. CUT it if the \
-mapping is fundamentally ambiguous, the concept isn't cleanly in Mathlib, or it would burn a \
-review slot better spent on a fresh high-confidence tag.
+A tag can be wrong in two distinct ways — read the notes to tell which:
+  (A) WRONG DECLARATION — the QID/concept is fine but it was attached to the wrong \
+declaration (e.g. "tag the class not the structure", "tag `abs` instead"). Fix via \
+`suggested_decl`.
+  (B) WRONG / TOO-BROAD QID — the declaration is correct but the Wikidata concept is a \
+broader parent than what the decl actually formalizes (e.g. reviewer says the decl `Basis` \
+should be tagged with Q189569 (Basis) instead of "Coordinate system"; `Module.Dual` with \
+Q752487 (Dual space) instead of "Duality"). Fix via `suggested_qid` — and set \
+`suggested_decl` to the SAME (correct) declaration so the requeued tag is complete.
+Both can apply at once (new qid AND new decl).
+
+REQUEUE if a reviewer note points at a concrete, fixable retargeting of the declaration \
+and/or the QID — i.e. the right concept IS in Mathlib/Wikidata, just on a different \
+declaration or under a more specific QID. CUT it if the mapping is fundamentally ambiguous, \
+the concept isn't cleanly in Mathlib, or it would burn a review slot better spent on a fresh \
+high-confidence tag. A requeue MUST change at least one of the declaration or the QID.
 
 Respond with ONLY a JSON object, no prose:
 {{"decision": "requeue" | "cut", "reason": "<one sentence>", "suggested_decl": "<Mathlib \
-declaration to tag instead, or empty>", "fix_hint": "<short instruction for re-tagging, or empty>"}}"""
+declaration to tag (the corrected one, or the same decl if only the QID changes), or empty>", \
+"suggested_qid": "<corrected Wikidata QID like Q189569 if the concept maps to a different/more \
+specific QID, or empty to keep {qid}>", "fix_hint": "<short instruction for re-tagging, or empty>"}}"""
 
 
 def ask_llm(entry, model):
     notes = "\n".join(f"  - {n['login']} [{n['status']}]: {n['text']}" for n in entry.get("notes", [])) or "  (none)"
-    prompt = PROMPT.format(qid=entry["qid"], file=entry.get("file"),
+    prompt = PROMPT.format(qid=entry["qid"], decl=entry.get("decl") or "(unknown)",
+                           file=entry.get("file"),
                            verdicts=entry.get("verdicts"), notes=notes)
     cmd = ["claude", "-p", prompt, "--output-format", "json"]
     if model:
@@ -83,8 +98,11 @@ def main():
         d = ask_llm(e, args.model)
         rec = {**e, "triage": d}
         (requeue if d.get("decision") == "requeue" else cut).append(rec)
+        retarget = " ".join(filter(None, [
+            f"decl->{d['suggested_decl']}" if d.get("suggested_decl") else "",
+            f"qid->{d['suggested_qid']}" if d.get("suggested_qid") else ""]))
         print(f"{e['qid']}: {d.get('decision','?').upper()} — {d.get('reason','')}"
-              + (f"  [-> {d['suggested_decl']}]" if d.get("suggested_decl") else ""))
+              + (f"  [{retarget}]" if retarget else ""))
     if not args.dry_run:
         args.out_queue.write_text(json.dumps(requeue, indent=1))
         # cut_log is a CUMULATIVE permanent-exclusion ledger (open_batch reads it

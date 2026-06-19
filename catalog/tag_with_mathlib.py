@@ -61,6 +61,38 @@ Process:
   3. Use Read to verify candidates exist and match the concept.
   4. Report ONLY declarations you verified by grep/read. Do NOT invent names.
   5. Prefer 1-5 high-confidence decls over a long list of guesses.
+     Prefer the canonical / most-general formalization of the concept as the
+     primary decl (avoid tagging a narrow special-case theorem when a canonical
+     statement of the concept exists).
+
+SPECIFICITY STEP (do this AFTER you have chosen primary_decl):
+  The article's Wikidata QID (given in the prompt) may be a BROAD parent
+  concept. Determine the MOST SPECIFIC Wikidata concept that the chosen
+  declaration actually formalizes. If the declaration is NARROWER than the
+  article's concept, search Wikidata for the precise concept and use that
+  narrower QID instead of the article's QID. To do this you may run `curl`:
+
+    search:  curl -s -A '<UA>' \\
+      'https://www.wikidata.org/w/api.php?action=wbsearchentities&search=<term>&language=en&format=json&limit=10'
+    entity:  curl -s -A '<UA>' \\
+      'https://www.wikidata.org/w/api.php?action=wbgetentities&ids=<QID>&props=labels|descriptions|claims&languages=en&format=json'
+
+  (In the entity JSON, claim P279 = "subclass of" and P31 = "instance of";
+  a broad parent concept typically has the narrower concept as a subclass.)
+  URL-encode the search term. Verify with wbgetentities that the candidate's
+  English-Wikipedia article describes the SAME object the declaration defines
+  (same scope) — NOT a generalization, NOT a sibling. Only then use that
+  narrower QID. If the article's QID is already the right granularity, keep it.
+
+  Examples of the mistake to avoid:
+    - tagging `Basis` with 'Coordinate system' — use 'Basis' (Q189569)
+    - tagging `Module.Dual` with 'Duality' — use 'Dual space' (Q752487)
+    - tagging `trapezoidal_integral` with 'Numerical integration'
+        — use 'Trapezoidal rule' (Q833293)
+    - tagging `binomialRandom` with 'Random graph'
+        — use 'Erdős–Rényi model' (Q605807)
+    - tagging `IsBigO` with 'Asymptotic analysis'
+        — use 'Big-O notation' (Q623950)
 
 OUTPUT FORMAT — your final reply must be ONLY one JSON object, no prose:
 
@@ -75,14 +107,104 @@ OUTPUT FORMAT — your final reply must be ONLY one JSON object, no prose:
     }
   ],
   "primary_decl": "<single most central decl name, or null>",
+  "primary_qid": "<the most-specific QID for primary_decl; default to the article's QID if it is already correct>",
+  "primary_qid_label": "<English label of primary_qid>",
+  "qid_changed": true | false,
+  "qid_reasoning": "<one sentence: why this QID is the right granularity>",
   "notes": "<at most one sentence>",
   "no_match_reason": null
 }
 
+`qid_changed` is true iff `primary_qid` differs from the article's QID given in
+the prompt. If `primary_decl` is null, set `primary_qid` to the article's QID,
+`qid_changed` to false, and explain in `qid_reasoning`.
+
 If nothing exists, return `mathlib_decls: []` and set `no_match_reason` to one
 of: "not formalized", "too elementary", "not amenable to formalization",
 "unclear scope", "other".
-"""
+""".replace("<UA>", WIKI_UA)
+
+
+# Reviewer-correction feedback loop. If this file exists, past human rejections
+# are distilled into few-shot "AVOID" lines and appended to the system prompt so
+# the agent does not repeat the same too-broad-QID mistakes.
+CORRECTIONS = Path("/Users/jack/Desktop/LEAN/WikiLean/bot/data/corrections.jsonl")
+MAX_CORRECTION_SHOTS = 15
+
+
+# ---------------------------------------------------------------------------
+# Reviewer-correction few-shots (the feedback loop)
+# ---------------------------------------------------------------------------
+
+def load_correction_shots(path: Path = CORRECTIONS, cap: int = MAX_CORRECTION_SHOTS) -> list[str]:
+    """Build concise 'AVOID' few-shot lines from reviewer corrections.
+
+    Each line in the JSONL has schema {pr,qid,label,decl,file,status,reviewer,
+    is_maintainer,note,suggested_qid,suggested_qid_label,suggested_decl,
+    failure_mode}. We only use records that name a `suggested_qid` (i.e. the
+    reviewer pointed at the correct narrower concept). Missing file => no shots.
+    """
+    if not path.exists():
+        return []
+    shots: list[str] = []
+    seen: set[tuple] = set()
+    try:
+        lines = path.read_text(encoding="utf-8").splitlines()
+    except OSError:
+        return []
+    for line in lines:
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            rec = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        # Only "correction" records are AVOID examples; "addition" records are
+        # queue candidates, not mistakes. Missing kind => legacy correction.
+        if rec.get("kind") == "addition":
+            continue
+        sugg_qid = rec.get("suggested_qid")
+        if not sugg_qid:
+            continue
+        # Identify the mis-tagged decl: prefer the recorded decl, then the
+        # reviewer's suggested decl. A bare file stem (e.g. "Defs") is not a
+        # decl name, so fall back to a concept-to-concept phrasing instead.
+        decl = rec.get("decl") or rec.get("suggested_decl")
+        label = rec.get("label") or "?"
+        qid = rec.get("qid") or "?"
+        sugg_label = rec.get("suggested_qid_label") or "?"
+        key = (decl, qid, sugg_qid)
+        if key in seen:
+            continue
+        seen.add(key)
+        if decl:
+            shots.append(
+                f"AVOID: tagging `{decl}` with {label} ({qid}) — reviewers "
+                f"rejected this; the correct concept is {sugg_label} ({sugg_qid})."
+            )
+        else:
+            shots.append(
+                f"AVOID: tagging the decl for {label} ({qid}) with that broad "
+                f"QID — reviewers rejected it; the correct concept is "
+                f"{sugg_label} ({sugg_qid})."
+            )
+        if len(shots) >= cap:
+            break
+    return shots
+
+
+def build_system_prompt() -> str:
+    """SYSTEM_PROMPT plus, if available, a reviewer-correction few-shot block."""
+    shots = load_correction_shots()
+    if not shots:
+        return SYSTEM_PROMPT
+    block = "\n".join(shots)
+    return (
+        f"{SYSTEM_PROMPT}\n"
+        "## Past reviewer corrections — do not repeat these mistakes:\n"
+        f"{block}\n"
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -158,15 +280,20 @@ def fetch_leads(titles: list[str]) -> dict[str, str]:
 # ---------------------------------------------------------------------------
 
 def build_user_prompt(article: dict, lead: str) -> str:
+    qid = article.get("wikidata_qid", "unknown")
     return (
         f"Article: {article['title']}\n"
-        f"Wikidata: {article.get('wikidata_qid', 'unknown')}\n"
+        f"Wikidata (article QID): {qid}\n"
         f"Class: {article.get('class')} / Importance: {article.get('importance')}\n"
         f"P31 (instance of): {article.get('p31') or []}\n\n"
         f"Lead:\n{lead or '(no lead available)'}\n\n"
         "Identify Mathlib declarations that formalize the central concept of "
-        "this article.\nReply with ONLY the JSON object specified in the "
-        "system prompt — no other text."
+        "this article. Then run the SPECIFICITY STEP: decide the MOST SPECIFIC "
+        f"Wikidata QID for primary_decl (the article QID above is {qid}; set "
+        "qid_changed=true only if your primary_qid differs from it).\n"
+        "Reply with ONLY the JSON object specified in the system prompt "
+        "(including primary_qid, primary_qid_label, qid_changed, qid_reasoning) "
+        "— no other text."
     )
 
 
@@ -270,10 +397,18 @@ async def run(
     model: str,
     max_turns: int,
 ) -> int:
+    # Wikidata lookup capability: we use scoped Bash (`Bash(curl:*)`) rather
+    # than WebFetch. Both were probed live and work under Max auth, but:
+    #   * WebFetch routes the response through a secondary extraction model, so
+    #     the agent never sees the raw JSON — lossy for reading P279/P31 claim
+    #     QIDs in wbgetentities. curl returns the exact JSON to parse.
+    #   * `Bash(curl:*)` scopes the shell to curl only (no unrestricted shell),
+    #     and reuses the existing WIKI_UA. The system prompt hands the agent the
+    #     exact wbsearchentities/wbgetentities curl commands to run.
     options = ClaudeAgentOptions(
         model=model,
-        system_prompt=SYSTEM_PROMPT,
-        allowed_tools=["Read", "Grep", "Glob"],
+        system_prompt=build_system_prompt(),
+        allowed_tools=["Read", "Grep", "Glob", "Bash(curl:*)"],
         cwd=str(MATHLIB),
         permission_mode="bypassPermissions",
         max_turns=max_turns,
@@ -350,6 +485,11 @@ def main() -> int:
 
     if _popped_key:
         print("(unset ANTHROPIC_API_KEY for this process → using Max-plan auth)")
+    shots = load_correction_shots()
+    if shots:
+        print(f"(loaded {len(shots)} reviewer-correction few-shots from {CORRECTIONS})")
+    elif CORRECTIONS.exists():
+        print(f"(no usable few-shots in {CORRECTIONS} — none have a suggested_qid)")
     if not MATHLIB.exists():
         print(f"ERROR: mathlib4 not found at {MATHLIB}", file=sys.stderr)
         return 1
