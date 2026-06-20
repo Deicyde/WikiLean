@@ -12,7 +12,10 @@ import json, sys, argparse, subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-CATALOG = [ROOT / "catalog/data/pilot_tagged.jsonl", ROOT / "catalog/data/tier2_tagged.jsonl"]
+# Later files win on a QID collision — refresh_tagged.jsonl holds re-tags from the
+# improved agent (verified decls + tightest primary_qid) and overrides the originals.
+CATALOG = [ROOT / "catalog/data/pilot_tagged.jsonl", ROOT / "catalog/data/tier2_tagged.jsonl",
+           ROOT / "catalog/data/refresh_tagged.jsonl"]
 MOST_USED = ROOT / "bot/data/most_used_qids.json"
 TAGGED = ROOT / "bot/data/tagged_in_master.txt"
 WD_API = "https://www.wikidata.org/w/api.php"
@@ -59,12 +62,16 @@ def load_catalog():
             q, pd = r.get("wikidata_qid"), r.get("primary_decl")
             if not q or not pd:
                 continue
+            # tag_qid is the most-specific QID for the decl (the improved agent's
+            # primary_qid); fall back to the article QID for legacy entries.
+            tag_qid = r.get("primary_qid") or q
             file, conf = None, None
             for d in r.get("mathlib_decls", []):
                 if d.get("decl") == pd:
                     file, conf = module_to_file(d.get("module")), d.get("confidence")
                     break
-            cat[q] = {"decl": pd, "file": file, "label": r.get("title", ""), "confidence": conf}
+            cat[q] = {"tag_qid": tag_qid, "decl": pd, "file": file,
+                      "label": r.get("title", ""), "confidence": conf}
     return cat
 
 
@@ -74,15 +81,19 @@ def candidates(n=25, exclude=(), require_high=True, p31_filter=True):
     if TAGGED.exists():
         excl |= {l.strip() for l in TAGGED.read_text().splitlines() if l.strip().startswith("Q")}
     order = list(json.loads(MOST_USED.read_text()).keys())
-    eligible = []
+    eligible, seen_tag = [], set()
     for q in order:
         if q in excl or q not in cat:
             continue
         c = cat[q]
         if require_high and c.get("confidence") != "high":
             continue
-        eligible.append({"qid": q, "label": c["label"], "decl": c["decl"], "file": c["file"],
-                         "status": "unreviewed"})
+        tq = c["tag_qid"]                      # the QID we actually tag (tightest)
+        if tq in excl or tq in seen_tag:       # already tagged / in-flight / duplicate concept
+            continue
+        seen_tag.add(tq)
+        eligible.append({"qid": tq, "article_qid": q, "label": c["label"], "decl": c["decl"],
+                         "file": c["file"], "status": "unreviewed"})
     if p31_filter and eligible:
         # only probe the head we might return (bounded network), in rank order
         head = [c["qid"] for c in eligible[: max(n * 3, 60)]]
