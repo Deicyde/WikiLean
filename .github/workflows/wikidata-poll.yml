@@ -28,7 +28,12 @@ name: wikidata batch poller
 on:
   schedule:
     - cron: '*/30 * * * *'        # GitHub may delay scheduled runs under load
-  workflow_dispatch:               # run on demand (use this to validate first)
+  workflow_dispatch:               # run on demand
+    inputs:
+      force_heavy:
+        description: "Force the heavy setup + apply even if decide=wait (one-off validation)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write                  # commit the advanced poll state back
@@ -60,6 +65,9 @@ jobs:
       - name: Decide
         id: decide
         run: |
+          if [ "${{ inputs.force_heavy }}" = "true" ]; then
+            echo "act=true" >> "$GITHUB_OUTPUT"; echo "forced heavy path (validation)"; exit 0
+          fi
           python3 bot/poll.py --mathlib /tmp/unused --decide | tee /tmp/decide.txt
           if grep -q 'POLL_DECISION=act' /tmp/decide.txt; then
             echo "act=true" >> "$GITHUB_OUTPUT"
