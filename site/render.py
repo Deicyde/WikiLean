@@ -361,29 +361,26 @@ def find_prose_block(src: str, section: str, snippet: str) -> tuple[int, int, st
                     # leaving the list unhighlighted. We snap the start back to
                     # the block opening (m.start()).
                     if _matched_ends_with_colon(src, rng[0], rng[1]):
+                        # ":" introduces a list — absorb it.
                         list_end = _find_following_list(src, end, section_end)
                         if list_end is not None:
                             return (m.start(), list_end, "div")
-                    # If the matched paragraph contains display math anywhere
-                    # (the sentence often *swallows* the equation because
-                    # _find_sentence_range only stops at .!?, not ':'), or if
-                    # display math follows the paragraph, promote the wrap to a
-                    # block-level <div>. A <span> wrap can't visually highlight
-                    # a child element with display:block (the bg doesn't extend
-                    # past an inline parent), so the equation would render
-                    # un-highlighted even when it's technically inside the wrap.
-                    block_has_display_math = src.find(
-                        "mwe-math-element-block", m.start(), end) != -1
-                    math_after = _find_following_display_math(src, end, section_end)
-                    if block_has_display_math or math_after is not None:
-                        new_end = math_after if math_after is not None else end
-                        return (m.start(), new_end, "div")
+                        # ":" also introduces a display equation.
+                        math_end = _find_following_display_math(src, end, section_end)
+                        if math_end is not None:
+                            return (m.start(), math_end, "div")
+                    # Wrap the sentence range as-is. Display math nested inside
+                    # the sentence used to force a promotion to a whole-block
+                    # <div>, which dragged in sibling sentences in the same <p>
+                    # — the snippet-edit bug. The .anno-X .mwe-math-element-block
+                    # CSS rule paints display math directly now, so a <span>
+                    # sentence wrap with a display:block child still reads as
+                    # one continuously highlighted statement.
                     return (rng[0], rng[1], "span")
-            # Fallback: wrap the entire block (extended over any display math
-            # that follows it, for the same definition+equation pattern).
-            math_end = _find_following_display_math(src, end, section_end)
-            if math_end is not None:
-                return (m.start(), math_end, "div")
+            # Fallback: wrap the entire block. (Older versions absorbed
+            # immediately-following display math here too, but that captured
+            # unrelated equations; per-equation math_alttext anchors cover
+            # display math now.)
             return (m.start(), end, "div")
     return None
 
