@@ -71,24 +71,35 @@ cp wikifunctions/WikifunctionsSpecs.lean <mathlib4>/Scratch.lean
 cd <mathlib4> && lake env lean Scratch.lean   # exit 0, no errors/warnings
 ```
 
-## Verified composite evaluator (PoC)
+## Verified composite evaluator
 
-`WikifunctionsEval.lean` is the first "verified for real" result. It gives a small **deep
-embedding** of the Wikifunctions composition language — the `Z7` call / `Z18` argument-reference
-model that composite implementations (`Z14K2`) are built from — with a total evaluator
-(`eval`/`evalArgs`, mutual structural recursion). It then proves that `Z13701`'s real composite
-implementation `Z13702 = equals(gcd(K₁,K₂), 1)` evaluates to exactly Mathlib's `Nat.Coprime`:
+`WikifunctionsEval.lean` is the "verified for real" layer. It gives a **deep embedding** of the
+Wikifunctions composition language — the `Z7` call / `Z18` argument-reference model that composite
+implementations (`Z14K2`) are built from: a value universe `Val` (naturals, booleans, rationals),
+a leaf library `Leaf` (each leaf carrying its Mathlib-backed denotation), a composition AST `Expr`,
+and a total evaluator `eval`/`evalArgs` (mutual structural recursion).
 
-```
-theorem coprimeComposite_correct (a b : Nat) :
-    eval [.nat a, .nat b] coprimeComposite = some (.bool (decide (Nat.Coprime a b)))
-```
+It then proves the **real `Z14K2` bodies** of six Wikifunctions equal to their Mathlib oracle:
 
-The composite **inherits** correctness from (i) the leaf semantics (`gcd ↦ Nat.gcd`,
-`natEq ↦ decidable equality), each its own Mathlib spec, and (ii) the evaluator — the
-compositional verification story. Builds green; `#print axioms` reports only `[propext]` (no
-`sorry`, no `Classical.choice`, no `native_decide`). The executable `#eval`s reproduce
-Wikifunctions' own testers (e.g. `coprime(64,99) = true` is tester `Z13703`).
+| ZID | function | real composite | proved equal to |
+|---|---|---|---|
+| `Z13701` | are coprime | `equals(gcd(a,b), 1)` | `decide (Nat.Coprime a b)` |
+| `Z13660` | lcm | `divide(multiply(a,b), gcd(a,b))` | `Nat.lcm a b` |
+| `Z15849` | Kronecker delta | `if(equals(a,b), 1, 0)` | `if a = b then 1 else 0` |
+| `Z15483` | r-simplex number | `binomial(add(a, dec(b)), b)` | `Nat.choose (a+(b-1)) b` |
+| `Z20000` | Bayes' P(A\|B) | `divide(multiply(pBA,pA), pB)` | `pBA * pA / pB` (ℚ) |
+| `Z14933` | is perfect | `equals(sumProperDivisors(n), n)` | `Nat.Perfect n` (for `n>0`) |
+
+Each composite **inherits** correctness from (i) its leaf semantics — each leaf clause *is* a
+Mathlib spec — and (ii) the evaluator: the compositional verification story. Builds green;
+`#print axioms` on every theorem reports only `[propext, Classical.choice, Quot.sound]` (Mathlib's
+standard trusted base — no `sorry`, no `native_decide`, no cheats). Executable `decide` checks
+reproduce Wikifunctions' own testers (e.g. `coprime(64,99) = true` is tester `Z13703`).
+
+**The frontier:** the other provable-tier composites use **recursion or higher-order combinators**
+in their real bodies — gcd (Euclidean), factorial/fib/powerset (self-recursion), totient (map over
+a range) — which this first-order embedding can't express. Extending it with bounded recursion
+(fuel) or a fold combinator is the next step; the flat layer above is its foundation.
 
 ## Status
 
