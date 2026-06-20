@@ -11,7 +11,15 @@
         "section": "Motivation",
         "snippet": "An operation on pairs of vectors that, like the dot product, satisfies these three properties is known as a"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Inner",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `Inner` typeclass with `InnerProductSpace ℝ E` axiomatizes the real inner product.",
+      "provenance": "ai-agent1",
+      "id": "842b0017b897"
     },
     {
       "kind": "definition",
@@ -20,7 +28,15 @@
         "section": "Motivation",
         "snippet": "A vector space equipped with such an inner product is known as a"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`InnerProductSpace ℝ E` is exactly a real inner product space.",
+      "provenance": "ai-agent1",
+      "id": "4e6cde1fa208"
     },
     {
       "kind": "proposition",
@@ -29,7 +45,15 @@
         "section": "Motivation",
         "snippet": "Every finite-dimensional inner product space is also a Hilbert space"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FiniteDimensional.complete",
+        "module": "Mathlib.Analysis.Normed.Module.FiniteDimension",
+        "match_kind": "generalization"
+      },
+      "note": "The general fact that any finite-dimensional normed space over a complete field is complete subsumes this.",
+      "provenance": "ai-agent1",
+      "id": "0eab229de5dd"
     },
     {
       "kind": "definition",
@@ -38,7 +62,15 @@
         "section": "Motivation",
         "snippet": "is absolutely convergent provided that the sum of the lengths converges as an ordinary series of real numbers"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Summable.of_norm",
+        "module": "Mathlib.Analysis.Normed.Group.InfiniteSum",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib encodes absolute convergence as `Summable (fun n => ‖f n‖)`.",
+      "provenance": "ai-agent1",
+      "id": "e117cf558004"
     },
     {
       "kind": "proposition",
@@ -47,7 +79,15 @@
         "section": "Motivation",
         "snippet": "This property expresses the completeness of Euclidean space"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "invocation"
+      },
+      "note": "`EuclideanSpace 𝕜 n` is complete via the finite-dimensional `CompleteSpace` instance.",
+      "provenance": "ai-agent1",
+      "id": "6bb0f3a6edd5"
     },
     {
       "kind": "definition",
@@ -56,7 +96,15 @@
         "section": "Motivation",
         "snippet": "the complex modulus | z | , which is defined as the square root of the product of z with its complex conjugate"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.abs",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The complex modulus is `Complex.abs`.",
+      "provenance": "ai-agent1",
+      "id": "6198a0fdc74b"
     },
     {
       "kind": "definition",
@@ -65,7 +113,15 @@
         "section": "Motivation",
         "snippet": "The inner product of a pair of complex numbers z and w is the product of z with the complex conjugate of w"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.innerProductSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The standard `InnerProductSpace ℂ ℂ` instance gives `⟪z,w⟫ = conj w * z`.",
+      "provenance": "ai-agent1",
+      "id": "2859b2a6fc6a"
     },
     {
       "kind": "example",
@@ -74,7 +130,15 @@
         "section": "Motivation",
         "snippet": "A second example is the space"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "invocation"
+      },
+      "note": "`EuclideanSpace ℂ (Fin 2)` realizes ℂ² with its standard inner product.",
+      "provenance": "ai-agent1",
+      "id": "3624708592f9"
     },
     {
       "kind": "proposition",
@@ -83,7 +147,15 @@
         "section": "Motivation",
         "snippet": "This inner product is Hermitian symmetric"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "inner_conj_symm",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`inner_conj_symm` gives `⟪x,y⟫ = conj ⟪y,x⟫` in any `InnerProductSpace`.",
+      "provenance": "ai-agent1",
+      "id": "7e7c7fb92ab4"
     },
     {
       "kind": "definition",
@@ -92,7 +164,15 @@
         "section": "Formal definition",
         "snippet": "A Hilbert space is a real or complex inner product space that is also a complete metric space"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib expresses Hilbert spaces as `[InnerProductSpace 𝕜 E] [CompleteSpace E]` rather than a single class.",
+      "provenance": "ai-agent1",
+      "id": "6f3fe05d9457"
     },
     {
       "kind": "definition",
@@ -101,7 +181,15 @@
         "section": "Formal definition",
         "snippet": "To say that a complex vector space H is a complex inner product space means"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`InnerProductSpace ℂ E` is the complex inner product space class.",
+      "provenance": "ai-agent1",
+      "id": "1884d254dee0"
     },
     {
       "kind": "proposition",
@@ -110,7 +198,15 @@
         "section": "Formal definition",
         "snippet": "The inner product is conjugate symmetric"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "inner_conj_symm",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`inner_conj_symm : ⟪y,x⟫ = conj ⟪x,y⟫` is in `InnerProductSpace.Defs`.",
+      "provenance": "ai-agent1",
+      "id": "9c7d1a0fd6a9"
     },
     {
       "kind": "proposition",
@@ -119,7 +215,15 @@
         "section": "Formal definition",
         "snippet": "The inner product is linear in its first argument"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "inner_add_left",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`inner_add_left`/`inner_smul_left` give linearity in the first slot (Mathlib's convention).",
+      "provenance": "ai-agent1",
+      "id": "6537313f43a7"
     },
     {
       "kind": "proposition",
@@ -128,7 +232,15 @@
         "section": "Formal definition",
         "snippet": "The inner product of an element with itself is positive definite"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "inner_self_eq_zero",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Combined with `inner_self_nonneg`, this is positive definiteness.",
+      "provenance": "ai-agent1",
+      "id": "dfa8d71bb93b"
     },
     {
       "kind": "proposition",
@@ -137,7 +249,15 @@
         "section": "Formal definition",
         "snippet": "It follows from properties 1 and 2 that a complex inner product is antilinear"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "inner_add_right",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`inner_add_right` and `inner_smul_right` (with conjugation) give antilinearity in the second slot.",
+      "provenance": "ai-agent1",
+      "id": "61d70aa191c0"
     },
     {
       "kind": "definition",
@@ -146,7 +266,15 @@
         "section": "Formal definition",
         "snippet": "A real inner product space is defined in the same way"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`InnerProductSpace ℝ E` instantiates the real version.",
+      "provenance": "ai-agent1",
+      "id": "c21e168c925c"
     },
     {
       "kind": "definition",
@@ -155,7 +283,15 @@
         "section": "Formal definition",
         "snippet": "The norm is the real-valued function"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.Core.toNormedAddCommGroup",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The inner product induces a `NormedAddCommGroup` via the `InnerProductSpace.Core` construction.",
+      "provenance": "ai-agent1",
+      "id": "41ba29ea7504"
     },
     {
       "kind": "theorem",
@@ -164,7 +300,15 @@
         "section": "Formal definition",
         "snippet": "This last property is ultimately a consequence of the more fundamental Cauchy–Schwarz inequality"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "inner_mul_le_norm_mul_norm",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Cauchy–Schwarz is `inner_mul_le_norm_mul_norm` (with several equivalent forms).",
+      "provenance": "ai-agent1",
+      "id": "860d60ade728"
     },
     {
       "kind": "definition",
@@ -173,7 +317,15 @@
         "section": "Formal definition",
         "snippet": "any inner product space is a metric space , and sometimes is known as a pre-Hilbert space"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `InnerProductSpace` (without completeness) corresponds to a pre-Hilbert space.",
+      "provenance": "ai-agent1",
+      "id": "d26e925a2d91"
     },
     {
       "kind": "definition",
@@ -182,7 +334,15 @@
         "section": "Formal definition",
         "snippet": "Any pre-Hilbert space that is additionally also a complete space is a Hilbert space"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Hilbert spaces are `[InnerProductSpace 𝕜 E] [CompleteSpace E]` as an idiomatic combination.",
+      "provenance": "ai-agent1",
+      "id": "df6eb39a9542"
     },
     {
       "kind": "proposition",
@@ -191,7 +351,15 @@
         "section": "Formal definition",
         "snippet": "The completeness of H is expressed using a form of the Cauchy criterion for sequences in H"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "summable_of_summable_norm",
+        "module": "Mathlib.Analysis.Normed.Group.InfiniteSum",
+        "match_kind": "generalization"
+      },
+      "note": "In any complete normed group, absolute convergence implies convergence.",
+      "provenance": "ai-agent1",
+      "id": "2fa84cfd2022"
     },
     {
       "kind": "proposition",
@@ -200,7 +368,15 @@
         "section": "Formal definition",
         "snippet": "As a complete normed space, Hilbert spaces are by definition also Banach spaces"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.toNormedSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "The `InnerProductSpace` instance provides the `NormedSpace` structure, so with `CompleteSpace` it is a Banach space.",
+      "provenance": "ai-agent1",
+      "id": "9a54c44824f4"
     },
     {
       "kind": "proposition",
@@ -209,7 +385,15 @@
         "section": "Formal definition",
         "snippet": "Of special importance is the notion of a closed linear subspace of a Hilbert space"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.instInnerProductSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "A submodule inherits an `InnerProductSpace` instance; closed submodules of complete spaces are complete.",
+      "provenance": "ai-agent1",
+      "id": "6ac602c480a5"
     },
     {
       "kind": "definition",
@@ -218,7 +402,15 @@
         "section": "Sequence spaces",
         "snippet": "consists of all infinite sequences"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lp",
+        "module": "Mathlib.Analysis.Normed.Lp.lpSpace",
+        "match_kind": "generalization"
+      },
+      "note": "`lp E 2` is the ℓ² sequence space.",
+      "provenance": "ai-agent1",
+      "id": "7e3cff42149e"
     },
     {
       "kind": "definition",
@@ -227,16 +419,32 @@
         "section": "Sequence spaces",
         "snippet": "The inner product on l 2 is defined by"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lp.instInnerProductSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
+        "match_kind": "exact"
+      },
+      "note": "`l2Space.lean` provides the inner product instance on `lp G 2`.",
+      "provenance": "ai-agent1",
+      "id": "be89102f359b"
     },
     {
       "kind": "proposition",
       "label": "Completeness of ℓ²",
       "anchor": {
         "section": "Sequence spaces",
-        "snippet": "Completeness of the space holds provided that whenever a series of elements"
+        "snippet": "Completeness of the space holds provided that whenever a series of elements from"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lp.instCompleteSpace",
+        "module": "Mathlib.Analysis.Normed.Lp.lpSpace",
+        "match_kind": "exact"
+      },
+      "note": "`lp` spaces are complete via the standard `CompleteSpace` instance.",
+      "provenance": "ai-agent1",
+      "id": "70f1f4bb98b8"
     },
     {
       "kind": "definition",
@@ -245,7 +453,15 @@
         "section": "Lebesgue spaces",
         "snippet": "Lebesgue spaces are function spaces associated to measure spaces"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Lp",
+        "module": "Mathlib.MeasureTheory.Function.LpSpace.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Lp E 2 μ` is the L²(X,μ) space.",
+      "provenance": "ai-agent1",
+      "id": "c8468bd6e9cf"
     },
     {
       "kind": "definition",
@@ -254,7 +470,15 @@
         "section": "Lebesgue spaces",
         "snippet": "The inner product of functions f and g in L 2 ( X , μ ) is then defined as"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.L2.innerProductSpace",
+        "module": "Mathlib.MeasureTheory.Function.L2Space",
+        "match_kind": "exact"
+      },
+      "note": "`L2.innerProductSpace` provides the L² inner product.",
+      "provenance": "ai-agent1",
+      "id": "b6b3408fb8f5"
     },
     {
       "kind": "theorem",
@@ -263,7 +487,15 @@
         "section": "Lebesgue spaces",
         "snippet": "Equipped with this inner product, L 2 is in fact complete"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Lp.instCompleteSpace",
+        "module": "Mathlib.MeasureTheory.Function.LpSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "All `Lp` spaces (including p=2) are complete.",
+      "provenance": "ai-agent1",
+      "id": "131473e830b5"
     },
     {
       "kind": "definition",
@@ -272,7 +504,15 @@
         "section": "Lebesgue spaces",
         "snippet": "is called the weighted L 2 space"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Lp",
+        "module": "Mathlib.MeasureTheory.Function.LpSpace.Basic",
+        "match_kind": null
+      },
+      "note": "Weighted L² is not a separate definition, but is obtained as `Lp` of the weighted measure `w • μ`.",
+      "provenance": "ai-agent1",
+      "id": "278b55b3f1ac"
     },
     {
       "kind": "definition",
@@ -281,7 +521,15 @@
         "section": "Sobolev spaces",
         "snippet": "the Sobolev space H s (Ω) contains L 2 functions whose weak derivatives of order up to s are also L 2"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "TemperedDistribution.MemSobolev",
+        "module": "Mathlib.Analysis.Distribution.Sobolev",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines Sobolev membership via Bessel potentials for tempered distributions; the classical weak-derivative definition is not present.",
+      "provenance": "ai-agent1",
+      "id": "0ae6b75ff169"
     },
     {
       "kind": "definition",
@@ -290,7 +538,15 @@
         "section": "Sobolev spaces",
         "snippet": "one can define the Sobolev space H s (Ω) as the space of Bessel potentials"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TemperedDistribution.MemSobolev",
+        "module": "Mathlib.Analysis.Distribution.Sobolev",
+        "match_kind": "exact"
+      },
+      "note": "`MemSobolev` is defined precisely via Bessel potentials on tempered distributions.",
+      "provenance": "ai-agent1",
+      "id": "551c1af565d0"
     },
     {
       "kind": "definition",
@@ -299,7 +555,15 @@
         "section": "Hardy spaces",
         "snippet": "the Hardy space H 2 ( U ) is defined as the space of holomorphic functions f on U such that the means"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Hardy-space definition appears in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "63a14693f536"
     },
     {
       "kind": "proposition",
@@ -308,7 +572,15 @@
         "section": "Hardy spaces",
         "snippet": "Thus H 2 ( U ) consists of those functions that are L 2 on the circle, and whose negative frequency Fourier coefficients vanish"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hardy-space/Fourier characterization is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "a86194c564e7"
     },
     {
       "kind": "definition",
@@ -317,7 +589,15 @@
         "section": "Bergman spaces",
         "snippet": "let L 2, h ( D ) be the space of holomorphic functions f in D that are also in L 2 ( D )"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bergman spaces are not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "b210a656dce1"
     },
     {
       "kind": "proposition",
@@ -326,7 +606,15 @@
         "section": "Bergman spaces",
         "snippet": "is known as the Bergman kernel of D"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Bergman-kernel construction exists in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "086cb2cc967b"
     },
     {
       "kind": "definition",
@@ -335,7 +623,15 @@
         "section": "Bergman spaces",
         "snippet": "A Bergman space is an example of a reproducing kernel Hilbert space"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "InnerProductSpace.Reproducing",
+        "module": "Mathlib.Analysis.InnerProductSpace.Reproducing",
+        "match_kind": "generalization"
+      },
+      "note": "`Reproducing.lean` develops a reproducing-kernel framework on Hilbert spaces.",
+      "provenance": "ai-agent1",
+      "id": "a0e4e993e716"
     },
     {
       "kind": "example",
@@ -344,7 +640,15 @@
         "section": "Sturm–Liouville theory",
         "snippet": "the Sturm–Liouville problem arises in the study of the harmonics of waves in a violin string or a drum"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Sturm–Liouville theory is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "5a2f5a9d6014"
     },
     {
       "kind": "theorem",
@@ -353,7 +657,15 @@
         "section": "Partial differential equations",
         "snippet": "one geometrical result that ensures unique solvability for a large class of problems is the Lax–Milgram theorem"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCoercive.continuousLinearEquivOfBilin",
+        "module": "Mathlib.Analysis.InnerProductSpace.LaxMilgram",
+        "match_kind": "exact"
+      },
+      "note": "The Lax–Milgram theorem is in `LaxMilgram.lean`.",
+      "provenance": "ai-agent1",
+      "id": "7dbcdf1fc52e"
     },
     {
       "kind": "example",
@@ -362,7 +674,15 @@
         "section": "Partial differential equations",
         "snippet": "An example is the Poisson equation"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The weak formulation of Poisson's equation is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "ab7fdee7b315"
     },
     {
       "kind": "definition",
@@ -371,7 +691,15 @@
         "section": "Ergodic theory",
         "snippet": "An ergodic dynamical system is one for which, apart from the energy"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ergodic",
+        "module": "Mathlib.Dynamics.Ergodic.Ergodic",
+        "match_kind": "exact"
+      },
+      "note": "`Ergodic` (and `PreErgodic`) formalize ergodic measure-preserving maps.",
+      "provenance": "ai-agent1",
+      "id": "94d109c06910"
     },
     {
       "kind": "theorem",
@@ -380,7 +708,15 @@
         "section": "Ergodic theory",
         "snippet": "The von Neumann mean ergodic theorem"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.tendsto_birkhoffAverage_orthogonalProjection",
+        "module": "Mathlib.Analysis.InnerProductSpace.MeanErgodic",
+        "match_kind": "exact"
+      },
+      "note": "`MeanErgodic.lean` is dedicated to the von Neumann mean ergodic theorem on a Hilbert space.",
+      "provenance": "ai-agent1",
+      "id": "0e3f82f52b1d"
     },
     {
       "kind": "proposition",
@@ -389,7 +725,15 @@
         "section": "Ergodic theory",
         "snippet": "the long time average of an observable f is equal to its expectation value over an energy surface"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The pointwise (Birkhoff) ergodic theorem identifying time-average with expectation is not yet formalized.",
+      "provenance": "ai-agent1",
+      "id": "a9088d6ab17b"
     },
     {
       "kind": "proposition",
@@ -398,7 +742,15 @@
         "section": "Fourier analysis",
         "snippet": "form an orthogonal basis of the Hilbert space"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fourierBasis",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "exact"
+      },
+      "note": "`fourierBasis` is the Hilbert basis of L² on the circle by exponential monomials.",
+      "provenance": "ai-agent1",
+      "id": "ceb46c191308"
     },
     {
       "kind": "proposition",
@@ -407,7 +759,15 @@
         "section": "Fourier analysis",
         "snippet": "Geometrically, the best approximation is the orthogonal projection of f onto the subspace"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.orthogonalProjection",
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`orthogonalProjection` minimizes the distance to a closed subspace; specializing to Fourier partial-sum subspaces gives the L² approximation.",
+      "provenance": "ai-agent1",
+      "id": "411340eb32ff"
     },
     {
       "kind": "theorem",
@@ -416,7 +776,15 @@
         "section": "Fourier analysis",
         "snippet": "in a sense made precise by the Plancherel theorem"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SchwartzMap.integral_inner_fourier_fourier",
+        "module": "Mathlib.Analysis.Distribution.SchwartzSpace.Fourier",
+        "match_kind": "special_case"
+      },
+      "note": "Plancherel's theorem is proved for Schwartz functions and L² (see `Mathlib.Analysis.Fourier.LpSpace`).",
+      "provenance": "ai-agent1",
+      "id": "66c4209b7514"
     },
     {
       "kind": "proposition",
@@ -425,7 +793,15 @@
         "section": "Quantum mechanics",
         "snippet": "the possible states (more precisely, the pure states ) of a quantum mechanical system are represented by unit vectors"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quantum-state formalism (unit vectors modulo phase as pure states) is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "c18bacb00afe"
     },
     {
       "kind": "proposition",
@@ -434,7 +810,15 @@
         "section": "Probability theory",
         "snippet": "sometimes called the Pythagorean theorem of statistics"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.condexpL2",
+        "module": "Mathlib.MeasureTheory.Function.ConditionalExpectation.CondexpL2",
+        "match_kind": "invocation"
+      },
+      "note": "The L² conditional expectation as orthogonal projection encodes this identity, though not stated as a labeled \"Pythagorean theorem of statistics\".",
+      "provenance": "ai-agent1",
+      "id": "c63b731dd560"
     },
     {
       "kind": "definition",
@@ -443,7 +827,15 @@
         "section": "Probability theory",
         "snippet": "A martingale in a Hilbert space is a sequence"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Martingale",
+        "module": "Mathlib.Probability.Martingale.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `Martingale` is defined for Banach-space–valued processes, covering the Hilbert-space case.",
+      "provenance": "ai-agent1",
+      "id": "bb23ab763db7"
     },
     {
       "kind": "theorem",
@@ -452,7 +844,15 @@
         "section": "Probability theory",
         "snippet": "A noteworthy result is then the Itô isometry"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Stochastic integration and the Itô isometry are not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "8788cafe723e"
     },
     {
       "kind": "definition",
@@ -461,7 +861,15 @@
         "section": "Pythagorean identity",
         "snippet": "Two vectors u and v in a Hilbert space H are orthogonal when"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Orthonormal",
+        "module": "Mathlib.Analysis.InnerProductSpace.Orthonormal",
+        "match_kind": "generalization"
+      },
+      "note": "Orthogonality is expressed via `⟪u,v⟫ = 0`, the predicate underlying `Submodule.orthogonal` and `Orthonormal`.",
+      "provenance": "ai-agent1",
+      "id": "3ed46632de57"
     },
     {
       "kind": "theorem",
@@ -470,7 +878,15 @@
         "section": "Pythagorean identity",
         "snippet": "Whereas the Pythagorean identity as stated is valid in any inner product space"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "norm_add_sq_real",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Pythagorean identities are stated in several forms in `InnerProductSpace.Basic` (lines 553–592).",
+      "provenance": "ai-agent1",
+      "id": "c5ce707c9138"
     },
     {
       "kind": "theorem",
@@ -479,7 +895,15 @@
         "section": "Parallelogram identity and polarization",
         "snippet": "in every Hilbert space the following parallelogram identity holds"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "parallelogram_law_with_norm",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`parallelogram_law_with_norm` is the parallelogram identity for the inner-product norm.",
+      "provenance": "ai-agent1",
+      "id": "ae6f3209eb4b"
     },
     {
       "kind": "theorem",
@@ -488,7 +912,15 @@
         "section": "Parallelogram identity and polarization",
         "snippet": "Conversely, every Banach space in which the parallelogram identity holds is a Hilbert space"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpaceable",
+        "module": "Mathlib.Analysis.InnerProductSpace.OfNorm",
+        "match_kind": "exact"
+      },
+      "note": "`InnerProductSpace.OfNorm` constructs the inner product from a parallelogram-law norm.",
+      "provenance": "ai-agent1",
+      "id": "58c43dbbf84a"
     },
     {
       "kind": "proposition",
@@ -497,7 +929,15 @@
         "section": "Parallelogram identity and polarization",
         "snippet": "The parallelogram law implies that any Hilbert space is a uniformly convex Banach space"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.toUniformConvexSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Convex",
+        "match_kind": "exact"
+      },
+      "note": "`InnerProductSpace.Convex` derives uniform convexity from the parallelogram law.",
+      "provenance": "ai-agent1",
+      "id": "e2b47d2e9c57"
     },
     {
       "kind": "theorem",
@@ -506,7 +946,15 @@
         "section": "Best approximation",
         "snippet": "This subsection employs the Hilbert projection theorem"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_norm_eq_iInf_of_complete_convex",
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.Minimal",
+        "match_kind": "exact"
+      },
+      "note": "The projection theorem on complete convex sets is `exists_norm_eq_iInf_of_complete_convex`.",
+      "provenance": "ai-agent1",
+      "id": "438c2f2fda77"
     },
     {
       "kind": "proposition",
@@ -515,7 +963,15 @@
         "section": "Best approximation",
         "snippet": "When this result is applied to a closed subspace F of H , it can be shown that the point"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.orthogonalProjectionFn_inner_eq_zero",
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The closest-point characterization `⟪v - Pv, w⟫ = 0 ∀ w ∈ V` is `orthogonalProjectionFn_inner_eq_zero`.",
+      "provenance": "ai-agent1",
+      "id": "d7d109d87b64"
     },
     {
       "kind": "proposition",
@@ -524,7 +980,15 @@
         "section": "Best approximation",
         "snippet": "A subset S of H spans a dense vector subspace if (and only if) the vector 0 is the sole vector"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.orthogonal_eq_bot_iff",
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.Submodule",
+        "match_kind": "exact"
+      },
+      "note": "`orthogonal_eq_bot_iff` (with `orthogonal_orthogonal_eq_closure`) gives the density criterion.",
+      "provenance": "ai-agent1",
+      "id": "2f10ce116267"
     },
     {
       "kind": "definition",
@@ -533,7 +997,15 @@
         "section": "Duality",
         "snippet": "The dual space H * is the space of all continuous linear functions from the space H into the base field"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "StrongDual",
+        "module": "Mathlib.Analysis.Normed.Module.Dual",
+        "match_kind": "generalization"
+      },
+      "note": "`StrongDual 𝕜 E := E →L[𝕜] 𝕜` is the topological dual used in `InnerProductSpace.Dual`.",
+      "provenance": "ai-agent1",
+      "id": "cbdb7646f2cc"
     },
     {
       "kind": "theorem",
@@ -542,7 +1014,15 @@
         "section": "Duality",
         "snippet": "The Riesz representation theorem states that the map from H to H * defined by"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "exact"
+      },
+      "note": "`toDual` is the Fréchet–Riesz isometric isomorphism `E ≃ₗᵢ⋆[𝕜] E*`.",
+      "provenance": "ai-agent1",
+      "id": "b3640cff4c60"
     },
     {
       "kind": "proposition",
@@ -551,7 +1031,15 @@
         "section": "Duality",
         "snippet": "a Hilbert space H is reflexive"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit `IsReflexive`-style lemma for Hilbert spaces was found, although it follows from `toDual` plus the dual Riesz.",
+      "provenance": "ai-agent1",
+      "id": "8364c9be2a37"
     },
     {
       "kind": "definition",
@@ -560,7 +1048,15 @@
         "section": "Weakly convergent sequences",
         "snippet": "a sequence { x n } is weakly convergent to a vector"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "WeakSpace",
+        "module": "Mathlib.Analysis.LocallyConvex.WeakSpace",
+        "match_kind": "generalization"
+      },
+      "note": "Weak topology on a normed space exists (`WeakSpace`/`WeakBilin`), so weak convergence is expressible but not specialized to Hilbert spaces.",
+      "provenance": "ai-agent1",
+      "id": "597bd61953a8"
     },
     {
       "kind": "theorem",
@@ -569,7 +1065,15 @@
         "section": "Weakly convergent sequences",
         "snippet": "every bounded sequence in a Hilbert space admits weakly convergent subsequences"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Banach–Alaoglu/weak sequential compactness of bounded sets in Hilbert spaces was not found.",
+      "provenance": "ai-agent1",
+      "id": "71a752d7ff30"
     },
     {
       "kind": "theorem",
@@ -578,7 +1082,15 @@
         "section": "Weakly convergent sequences",
         "snippet": "If f : H → R is a convex continuous function such that"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The direct method of the calculus of variations for coercive convex functionals on Hilbert spaces is not present.",
+      "provenance": "ai-agent1",
+      "id": "41e4cd0903c8"
     },
     {
       "kind": "theorem",
@@ -587,7 +1099,15 @@
         "section": "Banach space properties",
         "snippet": "The open mapping theorem states that a continuous surjective linear transformation from one Banach space to another is an open mapping"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.isOpenMap",
+        "module": "Mathlib.Analysis.Normed.Operator.Banach",
+        "match_kind": "exact"
+      },
+      "note": "The open mapping theorem is in `Mathlib.Analysis.Normed.Operator.Banach`.",
+      "provenance": "ai-agent1",
+      "id": "2c425b4a06a3"
     },
     {
       "kind": "theorem",
@@ -596,7 +1116,15 @@
         "section": "Banach space properties",
         "snippet": "A corollary is the bounded inverse theorem"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearEquiv.ofBijective",
+        "module": "Mathlib.Analysis.Normed.Operator.Banach",
+        "match_kind": "exact"
+      },
+      "note": "A continuous bijective linear map between Banach spaces is a topological isomorphism.",
+      "provenance": "ai-agent1",
+      "id": "5151c6af510a"
     },
     {
       "kind": "theorem",
@@ -605,7 +1133,15 @@
         "section": "Banach space properties",
         "snippet": "The open mapping theorem is equivalent to the closed graph theorem"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.continuous_of_isClosed_graph",
+        "module": "Mathlib.Analysis.Normed.Operator.Banach",
+        "match_kind": "exact"
+      },
+      "note": "The closed graph theorem is in `Banach.lean`.",
+      "provenance": "ai-agent1",
+      "id": "cb0f8e493ca4"
     },
     {
       "kind": "theorem",
@@ -614,7 +1150,15 @@
         "section": "Banach space properties",
         "snippet": "The (geometrical) Hahn–Banach theorem asserts that a closed convex set can be separated from any point outside it"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "geometric_hahn_banach_closed_point",
+        "module": "Mathlib.Analysis.LocallyConvex.Separation",
+        "match_kind": "exact"
+      },
+      "note": "`Separation.lean` proves multiple geometric Hahn–Banach separation variants.",
+      "provenance": "ai-agent1",
+      "id": "55add34d6ada"
     },
     {
       "kind": "definition",
@@ -623,7 +1167,15 @@
         "section": "Bounded operators",
         "snippet": "The space of such bounded linear operators has a norm , the operator norm given by"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.opNorm",
+        "module": "Mathlib.Analysis.NormedSpace.OperatorNorm.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ContinuousLinearMap` carries the operator norm `opNorm`.",
+      "provenance": "ai-agent1",
+      "id": "d16e16772f00"
     },
     {
       "kind": "definition",
@@ -632,7 +1184,15 @@
         "section": "Bounded operators",
         "snippet": "This defines another bounded linear operator"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.adjoint",
+        "module": "Mathlib.Analysis.InnerProductSpace.Adjoint",
+        "match_kind": "exact"
+      },
+      "note": "`ContinuousLinearMap.adjoint` is the bounded adjoint as a conjugate-linear isometric equivalence.",
+      "provenance": "ai-agent1",
+      "id": "ab3735942378"
     },
     {
       "kind": "proposition",
@@ -641,7 +1201,15 @@
         "section": "Bounded operators",
         "snippet": "is a C*-algebra , which is a type of operator algebra"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.instCStarAlgebra",
+        "module": "Mathlib.Analysis.InnerProductSpace.Adjoint",
+        "match_kind": "exact"
+      },
+      "note": "`Adjoint.lean` upgrades `E →L[𝕜] E` to a C*-algebra.",
+      "provenance": "ai-agent1",
+      "id": "eeb2575a9495"
     },
     {
       "kind": "definition",
@@ -650,7 +1218,15 @@
         "section": "Bounded operators",
         "snippet": "An element A of B( H ) is called 'self-adjoint' or 'Hermitian' if"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsSelfAdjoint",
+        "module": "Mathlib.Algebra.Star.SelfAdjoint",
+        "match_kind": "exact"
+      },
+      "note": "`IsSelfAdjoint` plus `ContinuousLinearMap.IsPositive` (in `InnerProductSpace.Positive`) cover these notions.",
+      "provenance": "ai-agent1",
+      "id": "1e0d00f727f1"
     },
     {
       "kind": "proposition",
@@ -659,7 +1235,15 @@
         "section": "Bounded operators",
         "snippet": "for a positive operator A , there exists a unique non-negative square root"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CFC.sqrt",
+        "module": "Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Rpow.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`CFC.sqrt` (with `CFC.sqrt_unique`) gives the unique non-negative square root in any C*-algebra.",
+      "provenance": "ai-agent1",
+      "id": "7c3175e69594"
     },
     {
       "kind": "theorem",
@@ -668,7 +1252,15 @@
         "section": "Bounded operators",
         "snippet": "The spectral theorem gives a precise sense in which self-adjoint operators play the role of real-valued functions"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "cfc",
+        "module": "Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The continuous functional calculus gives the functional-analytic form of the spectral theorem; an explicit projection-valued spectral measure version is absent.",
+      "provenance": "ai-agent1",
+      "id": "b0f3c73929e1"
     },
     {
       "kind": "definition",
@@ -677,7 +1269,15 @@
         "section": "Bounded operators",
         "snippet": "An element U of B( H ) is called unitary if U is invertible and its inverse is given by"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "unitary",
+        "module": "Mathlib.Algebra.Star.Unitary",
+        "match_kind": "exact"
+      },
+      "note": "`unitary (E →L[𝕜] E)` is the unitary group; `LinearIsometryEquiv` provides an alternative bundling.",
+      "provenance": "ai-agent1",
+      "id": "c6ecc562ae52"
     },
     {
       "kind": "definition",
@@ -686,6 +1286,30 @@
         "section": "Bounded operators",
         "snippet": "An element of B( H ) is compact if it sends bounded sets to relatively compact sets"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompactOperator",
+        "module": "Mathlib.Analysis.Normed.Operator.Compact.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsCompactOperator` is the definition for general normed-space maps.",
+      "provenance": "ai-agent1",
+      "id": "4616d56746f0"
+    },
+    {
+      "kind": "definition",
+      "label": "Hilbert–Schmidt operator",
+      "anchor": {
+        "section": "Bounded operators",
+        "snippet": "Many integral operators are compact, and define a special class of operators known as Hilbert–Schmidt operators"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hilbert–Schmidt operators are not defined as a class in Mathlib (referenced in tensor-product identifications but no dedicated definition).",
       "provenance": "ai-agent1"
     },
     {
@@ -695,7 +1319,15 @@
         "section": "Bounded operators",
         "snippet": "Fredholm operators are bounded operators that are invertible modulo compact operators"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Fredholm alternative is in Mathlib but Fredholm operators / Fredholm index are not defined as such.",
+      "provenance": "ai-agent1",
+      "id": "dc526f40b271"
     },
     {
       "kind": "definition",
@@ -704,7 +1336,15 @@
         "section": "Unbounded operators",
         "snippet": "An unbounded operator on a Hilbert space H is a linear map"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearPMap",
+        "module": "Mathlib.LinearAlgebra.LinearPMap",
+        "match_kind": "exact"
+      },
+      "note": "`LinearPMap` (linear partial maps) models densely-defined unbounded operators.",
+      "provenance": "ai-agent1",
+      "id": "d761afb7cd91"
     },
     {
       "kind": "definition",
@@ -713,7 +1353,15 @@
         "section": "Unbounded operators",
         "snippet": "then T is called a densely defined operator"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearPMap.IsClosable",
+        "module": "Mathlib.Topology.Algebra.Module.LinearPMap",
+        "match_kind": "generalization"
+      },
+      "note": "Dense definition is expressed by `Dense (T.domain : Set E)` and used throughout `LinearPMap` API.",
+      "provenance": "ai-agent1",
+      "id": "db45d98dfc53"
     },
     {
       "kind": "definition",
@@ -722,7 +1370,15 @@
         "section": "Unbounded operators",
         "snippet": "Operators used in analysis are often required to be closed"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearPMap.IsClosable",
+        "module": "Mathlib.Topology.Algebra.Module.LinearPMap",
+        "match_kind": "exact"
+      },
+      "note": "`LinearPMap.IsClosed` and `IsClosable` formalize closed / closable operators.",
+      "provenance": "ai-agent1",
+      "id": "ff2922440cbd"
     },
     {
       "kind": "definition",
@@ -731,7 +1387,15 @@
         "section": "Unbounded operators",
         "snippet": "If T is densely defined, its adjoint"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearPMap.adjoint",
+        "module": "Mathlib.Analysis.InnerProductSpace.LinearPMap",
+        "match_kind": "exact"
+      },
+      "note": "`LinearPMap.adjoint` is the unbounded adjoint.",
+      "provenance": "ai-agent1",
+      "id": "c158d48fd945"
     },
     {
       "kind": "definition",
@@ -740,7 +1404,15 @@
         "section": "Unbounded operators",
         "snippet": "A densely defined operator is called symmetric if"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.IsSymmetric",
+        "module": "Mathlib.Analysis.InnerProductSpace.Symmetric",
+        "match_kind": "exact"
+      },
+      "note": "`LinearMap.IsSymmetric` and the `LinearPMap` self-adjointness API formalize these notions.",
+      "provenance": "ai-agent1",
+      "id": "b6b57430e49d"
     },
     {
       "kind": "example",
@@ -749,7 +1421,15 @@
         "section": "Unbounded operators",
         "snippet": "the position operator is the multiplication operator"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Position and momentum operators on L²(ℝ) are not defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "a42d51c75efb"
     },
     {
       "kind": "definition",
@@ -758,7 +1438,15 @@
         "section": "Direct sums",
         "snippet": "Two Hilbert spaces H 1 and H 2 can be combined into another Hilbert space, called the (orthogonal) direct sum"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WithLp.prod",
+        "module": "Mathlib.Analysis.InnerProductSpace.ProdL2",
+        "match_kind": "generalization"
+      },
+      "note": "Finite/infinite Hilbert direct sums are realized by `WithLp 2 (E × F)`, `PiLp 2`, or `lp G 2`.",
+      "provenance": "ai-agent1",
+      "id": "cf8221a2fcfa"
     },
     {
       "kind": "definition",
@@ -767,7 +1455,15 @@
         "section": "Direct sums",
         "snippet": "if there is a system of closed subspaces"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsHilbertSum",
+        "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
+        "match_kind": "exact"
+      },
+      "note": "`IsHilbertSum` formalizes the internal orthogonal direct sum predicate.",
+      "provenance": "ai-agent1",
+      "id": "b60491db1710"
     },
     {
       "kind": "theorem",
@@ -776,7 +1472,15 @@
         "section": "Direct sums",
         "snippet": "the Peter–Weyl theorem guarantees that any unitary representation of a compact group"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Peter–Weyl is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "ae25ff7a5c95"
     },
     {
       "kind": "definition",
@@ -785,7 +1489,15 @@
         "section": "Tensor products",
         "snippet": "The Hilbertian tensor product of"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "OrthonormalBasis.tensorProduct",
+        "module": "Mathlib.Analysis.InnerProductSpace.TensorProduct",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the algebraic tensor product with inner product via orthonormal bases, but not the completed Hilbertian tensor product in full generality.",
+      "provenance": "ai-agent1",
+      "id": "4e2de7911f20"
     },
     {
       "kind": "example",
@@ -794,7 +1506,15 @@
         "section": "Tensor products",
         "snippet": "An example is provided by the Hilbert space"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identification `L²(X)⊗L²(Y) ≃ L²(X×Y)` is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "a4104d931a05"
     },
     {
       "kind": "proposition",
@@ -803,7 +1523,15 @@
         "section": "Tensor products",
         "snippet": "This extends to a linear isometry of the Hilbertian tensor product"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hilbert–Schmidt operators are not defined; the tensor identification is absent.",
+      "provenance": "ai-agent1",
+      "id": "08a6a56b9ecc"
     },
     {
       "kind": "definition",
@@ -812,7 +1540,15 @@
         "section": "Orthonormal bases",
         "snippet": "an orthonormal basis is a family"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HilbertBasis",
+        "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
+        "match_kind": "exact"
+      },
+      "note": "`HilbertBasis` is exactly an orthonormal Hilbert basis.",
+      "provenance": "ai-agent1",
+      "id": "5ece704fd771"
     },
     {
       "kind": "definition",
@@ -821,7 +1557,15 @@
         "section": "Orthonormal bases",
         "snippet": "A system of vectors satisfying the first two conditions basis is called an orthonormal system"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Orthonormal",
+        "module": "Mathlib.Analysis.InnerProductSpace.Orthonormal",
+        "match_kind": "exact"
+      },
+      "note": "`Orthonormal 𝕜 v` is the orthonormal-system predicate.",
+      "provenance": "ai-agent1",
+      "id": "e137075b12ae"
     },
     {
       "kind": "proposition",
@@ -830,7 +1574,15 @@
         "section": "Orthonormal bases",
         "snippet": "an orthonormal basis is a Hamel basis if and only if the Hilbert space is a finite-dimensional vector space"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The equivalence \"Hilbert basis = Hamel basis iff finite-dimensional\" is not stated as a Mathlib lemma.",
+      "provenance": "ai-agent1",
+      "id": "cd082a70ddf2"
     },
     {
       "kind": "proposition",
@@ -839,7 +1591,15 @@
         "section": "Orthonormal bases",
         "snippet": "Completeness of an orthonormal system of vectors of a Hilbert space can be equivalently restated as"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Orthonormal.orthonormalBasis_of_dense_span",
+        "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
+        "match_kind": "exact"
+      },
+      "note": "The orthogonal-complement-trivial / dense-span equivalences are in `l2Space.lean` (via `HilbertBasis.mkOfOrthogonalEqBot`).",
+      "provenance": "ai-agent1",
+      "id": "a3a33727faea"
     },
     {
       "kind": "example",
@@ -848,7 +1608,15 @@
         "section": "Orthonormal bases",
         "snippet": "Examples of orthonormal bases include"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.basisFun",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "invocation"
+      },
+      "note": "Standard ONBs of `EuclideanSpace` are constructed in `PiL2.lean`.",
+      "provenance": "ai-agent1",
+      "id": "39a96e784dec"
     },
     {
       "kind": "definition",
@@ -857,7 +1625,15 @@
         "section": "Sequence spaces (2)",
         "snippet": "is the set of infinite sequences"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lp",
+        "module": "Mathlib.Analysis.Normed.Lp.lpSpace",
+        "match_kind": "exact"
+      },
+      "note": "`lp E 2` is the square-summable sequence space.",
+      "provenance": "ai-agent1",
+      "id": "7d6f7186c801"
     },
     {
       "kind": "example",
@@ -866,7 +1642,15 @@
         "section": "Sequence spaces (2)",
         "snippet": "It is usually the first example used to show that in infinite-dimensional spaces, a set that is closed and bounded is not necessarily"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Non-compactness of the ℓ² unit ball is not stated as a Mathlib lemma.",
+      "provenance": "ai-agent1",
+      "id": "cd7aae598304"
     },
     {
       "kind": "definition",
@@ -875,7 +1659,15 @@
         "section": "Sequence spaces (2)",
         "snippet": "One can generalize the space"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lp",
+        "module": "Mathlib.Analysis.Normed.Lp.lpSpace",
+        "match_kind": "generalization"
+      },
+      "note": "`lp` is parameterized by an arbitrary index type, generalizing ℓ²(B).",
+      "provenance": "ai-agent1",
+      "id": "2e0d05342b24"
     },
     {
       "kind": "theorem",
@@ -884,7 +1676,15 @@
         "section": "Bessel's inequality and Parseval's formula",
         "snippet": "Applying the preceding inequality to every finite subset J of I gives Bessel's inequality"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Orthonormal.tsum_inner_products_le",
+        "module": "Mathlib.Analysis.InnerProductSpace.Orthonormal",
+        "match_kind": "exact"
+      },
+      "note": "`Orthonormal.tsum_inner_products_le` is Bessel's inequality.",
+      "provenance": "ai-agent1",
+      "id": "a7824d49cfb9"
     },
     {
       "kind": "definition",
@@ -893,7 +1693,15 @@
         "section": "Bessel's inequality and Parseval's formula",
         "snippet": "This sum is called the Fourier expansion of x , and the individual coefficients"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HilbertBasis.repr",
+        "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
+        "match_kind": "exact"
+      },
+      "note": "`HilbertBasis.repr` and `hasSum_repr` express the abstract Fourier expansion.",
+      "provenance": "ai-agent1",
+      "id": "9a037cb92d64"
     },
     {
       "kind": "theorem",
@@ -902,7 +1710,15 @@
         "section": "Bessel's inequality and Parseval's formula",
         "snippet": "Parseval's identity then asserts that"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HilbertBasis.tsum_inner_mul_inner",
+        "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
+        "match_kind": "exact"
+      },
+      "note": "Parseval's identity is in `l2Space.lean` via `HilbertBasis.tsum_inner_mul_inner` / the isometry to `ℓ²`.",
+      "provenance": "ai-agent1",
+      "id": "9d26734ed068"
     },
     {
       "kind": "theorem",
@@ -911,7 +1727,15 @@
         "section": "Hilbert dimension",
         "snippet": "As a consequence of Zorn's lemma , every Hilbert space admits an orthonormal basis"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_hilbertBasis",
+        "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
+        "match_kind": "exact"
+      },
+      "note": "`exists_hilbertBasis` produces a Hilbert basis for any Hilbert space.",
+      "provenance": "ai-agent1",
+      "id": "4f185327e52b"
     },
     {
       "kind": "theorem",
@@ -920,7 +1744,15 @@
         "section": "Hilbert dimension",
         "snippet": "every Hilbert space is isometrically isomorphic to a sequence space"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HilbertBasis.repr",
+        "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
+        "match_kind": "exact"
+      },
+      "note": "`HilbertBasis.repr : E ≃ₗᵢ[𝕜] ℓ²(ι, 𝕜)` realizes this isomorphism.",
+      "provenance": "ai-agent1",
+      "id": "ddb2f2857a4f"
     },
     {
       "kind": "definition",
@@ -929,7 +1761,15 @@
         "section": "Separable spaces",
         "snippet": "a Hilbert space is separable provided it contains a dense countable subset"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace.SeparableSpace",
+        "module": "Mathlib.Topology.MetricSpace.Separable",
+        "match_kind": "generalization"
+      },
+      "note": "`SeparableSpace` is the generic topological notion, applicable to Hilbert spaces.",
+      "provenance": "ai-agent1",
+      "id": "d08ce02dd729"
     },
     {
       "kind": "proposition",
@@ -938,7 +1778,15 @@
         "section": "Separable spaces",
         "snippet": "All infinite-dimensional separable Hilbert spaces are therefore isometrically isomorphic to the square-summable sequence space"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classification of separable Hilbert spaces by `ℓ²(ℕ)` is not stated as a Mathlib lemma.",
+      "provenance": "ai-agent1",
+      "id": "eefe2d72a733"
     },
     {
       "kind": "definition",
@@ -947,7 +1795,15 @@
         "section": "Orthogonal complements and projections",
         "snippet": "If V is a closed subspace of H , then V ⊥ is called the orthogonal complement of V"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.orthogonal",
+        "module": "Mathlib.Analysis.InnerProductSpace.Orthogonal",
+        "match_kind": "exact"
+      },
+      "note": "`Submodule.orthogonal` (notation `Vᗮ`) is the orthogonal complement.",
+      "provenance": "ai-agent1",
+      "id": "fd884b07b8dc"
     },
     {
       "kind": "proposition",
@@ -956,7 +1812,15 @@
         "section": "Orthogonal complements and projections",
         "snippet": "every x ∈ H can then be written uniquely as"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.sup_orthogonal_of_hasOrthogonalProjection",
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.Submodule",
+        "match_kind": "exact"
+      },
+      "note": "Closed subspaces of Hilbert spaces give the orthogonal direct-sum decomposition.",
+      "provenance": "ai-agent1",
+      "id": "6641f63eb517"
     },
     {
       "kind": "definition",
@@ -965,7 +1829,15 @@
         "section": "Orthogonal complements and projections",
         "snippet": "The linear operator P V : H → H that maps x to v is called the orthogonal projection onto V"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.orthogonalProjection",
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`K.orthogonalProjection : E →L[𝕜] K` is the orthogonal projection.",
+      "provenance": "ai-agent1",
+      "id": "d839ea8e2251"
     },
     {
       "kind": "definition",
@@ -974,7 +1846,15 @@
         "section": "Orthogonal complements and projections",
         "snippet": "Projections P U and P V are called mutually orthogonal if"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "OrthogonalFamily",
+        "module": "Mathlib.Analysis.InnerProductSpace.Orthogonal",
+        "match_kind": "generalization"
+      },
+      "note": "Orthogonality between projections is captured via `OrthogonalFamily`; no dedicated `mutuallyOrthogonal` predicate on projections.",
+      "provenance": "ai-agent1",
+      "id": "843b80499e28"
     },
     {
       "kind": "theorem",
@@ -983,7 +1863,15 @@
         "section": "Orthogonal complements and projections",
         "snippet": "A Banach space of dimension higher than 2 is (isometrically) a Hilbert space if and only if, for every closed subspace V"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Kakutani-type isometric characterization of Hilbert spaces by norm-1 projections is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "e30b28bdb0c5"
     },
     {
       "kind": "theorem",
@@ -992,7 +1880,15 @@
         "section": "Orthogonal complements and projections",
         "snippet": "A Banach space X is topologically and linearly isomorphic to a Hilbert space if and only if"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Lindenstrauss–Tzafriri-type topological characterization is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "fb2b8f846b98"
     },
     {
       "kind": "proposition",
@@ -1001,7 +1897,15 @@
         "section": "Orthogonal complements and projections",
         "snippet": "the closure of a subspace can be completely characterized in terms of the orthogonal complement"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.orthogonal_orthogonal_eq_closure",
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.Submodule",
+        "match_kind": "exact"
+      },
+      "note": "`orthogonal_orthogonal_eq_closure` gives `K⊥⊥ = closure K` in a complete space.",
+      "provenance": "ai-agent1",
+      "id": "5d344c39c91b"
     },
     {
       "kind": "theorem",
@@ -1010,7 +1914,15 @@
         "type": "theorem_box",
         "value": "Theorem"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.orthogonalProjection",
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The projection theorem boxed in the article corresponds to the `orthogonalProjection` API including `exists_norm_eq_iInf_of_complete_subspace`.",
+      "provenance": "ai-agent1",
+      "id": "05164cc257ad"
     },
     {
       "kind": "definition",
@@ -1019,7 +1931,15 @@
         "section": "Spectral theory",
         "snippet": "The spectrum of an operator T , denoted σ ( T ) , is the set of complex numbers"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "spectrum",
+        "module": "Mathlib.Algebra.Algebra.Spectrum.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`spectrum 𝕜 a` is the spectrum of an element of an algebra.",
+      "provenance": "ai-agent1",
+      "id": "f58adaecf4f5"
     },
     {
       "kind": "proposition",
@@ -1028,7 +1948,15 @@
         "section": "Spectral theory",
         "snippet": "If T is self-adjoint, then the spectrum is real"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsSelfAdjoint.mem_spectrum_eq_re",
+        "module": "Mathlib.Analysis.CStarAlgebra.Spectrum",
+        "match_kind": "exact"
+      },
+      "note": "`IsSelfAdjoint.mem_spectrum_eq_re` shows spectrum of a self-adjoint element is real; boundedness follows from compactness of the spectrum in a Banach algebra.",
+      "provenance": "ai-agent1",
+      "id": "25ffc151d90a"
     },
     {
       "kind": "theorem",
@@ -1037,7 +1965,15 @@
         "section": "Spectral theory",
         "snippet": "A compact self-adjoint operator T has only countably (or finitely) many spectral values"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "LinearMap.IsSymmetric.diagonalization",
+        "module": "Mathlib.Analysis.InnerProductSpace.Spectrum",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has the finite-dimensional diagonalization of symmetric operators; the compact-operator version is not stated.",
+      "provenance": "ai-agent1",
+      "id": "804de3f23f67"
     },
     {
       "kind": "theorem",
@@ -1046,7 +1982,15 @@
         "section": "Spectral theory",
         "snippet": "The general spectral theorem for self-adjoint operators involves a kind of operator-valued Riemann–Stieltjes integral"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "cfc",
+        "module": "Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Continuous functional calculus is formalized; the resolution-of-the-identity / spectral-measure form is not.",
+      "provenance": "ai-agent1",
+      "id": "4e3c7e3f16d0"
     },
     {
       "kind": "theorem",
@@ -1055,6 +1999,30 @@
         "section": "Spectral theory",
         "snippet": "A major application of spectral methods is the spectral mapping theorem"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "cfc_map_spectrum",
+        "module": "Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has the spectral mapping theorem for the continuous functional calculus and polynomials, but not in a single \"spectral mapping theorem\" form for arbitrary self-adjoint operators.",
+      "provenance": "ai-agent1",
+      "id": "8b98fb79c7d6"
+    },
+    {
+      "kind": "definition",
+      "label": "Eigenspaces of an operator",
+      "anchor": {
+        "section": "Spectral theory",
+        "snippet": "The eigenspaces of an operator T are given by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.End.eigenspace",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Module.End.eigenspace` defines the λ-eigenspace `ker (T - λ • 1)`.",
       "provenance": "ai-agent1"
     },
     {
@@ -1064,7 +2032,15 @@
         "type": "theorem_box",
         "value": "Theorem"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The unbounded spectral theorem (resolution of identity for unbounded self-adjoint operators) is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "6c20e7031758"
     }
   ]
 }

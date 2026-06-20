@@ -46,14 +46,14 @@
         "section": "(Lead)",
         "snippet": "The corresponding form of the fundamental theorem of calculus is Stokes' theorem"
       },
-      "status": "partial",
+      "status": "not_formalized",
       "mathlib": {
-        "decl": "MeasureTheory.integral_divergence_of_hasFDerivWithinAt_off_countable",
-        "module": "Mathlib.MeasureTheory.Integral.DivergenceTheorem",
+        "decl": null,
+        "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has the divergence theorem for Henstock–Kurzweil/Bochner integrals and a Poincaré lemma for 1-forms, but no Stokes theorem stated in curl form.",
-      "provenance": "ai",
+      "note": "Mathlib has the divergence theorem on Euclidean boxes but no Stokes/Kelvin–Stokes theorem stated in curl form.",
+      "provenance": "ai-moderated",
       "id": "bcef3e8d0890"
     },
     {
@@ -69,7 +69,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No declaration named `curl` (or analog) on vector fields exists in Mathlib.",
+      "note": "No declaration named `curl` (or analog) on vector fields exists in Mathlib; a grep over `Mathlib/` returns no curl operator.",
       "provenance": "ai",
       "id": "93c665fe31e9"
     },
@@ -120,7 +120,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib does not contain a Kelvin–Stokes theorem; only the divergence theorem and a Poincaré lemma for 1-forms exist.",
+      "note": "Mathlib does not contain a Kelvin–Stokes theorem; only the divergence theorem on Euclidean boxes exists.",
       "provenance": "ai",
       "id": "7baa4e6bbeff"
     },
@@ -137,7 +137,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No surface-integral-over-a-shell definition of curl is present.",
+      "note": "No surface-integral-over-a-shell definition of curl is present in Mathlib.",
       "provenance": "ai",
       "id": "ca29f7844d7e"
     },
@@ -237,10 +237,10 @@
       "mathlib": {
         "decl": "extDeriv",
         "module": "Mathlib.Analysis.Calculus.DifferentialForm.Basic",
-        "match_kind": null
+        "match_kind": "generalization"
       },
       "note": "Mathlib formalizes the exterior derivative `extDeriv` for differential forms on normed spaces, but it is not specialized to give curl on 1-forms in ℝ³.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "9552d0e1e02f"
     },
     {
@@ -307,8 +307,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No formalization of the rotating-disk velocity field example.",
-      "provenance": "ai",
+      "note": "No formalization of the rotating-disk velocity field example; in particular, the identity vorticity = curl(velocity) = 2·(angular velocity) is not formalized.",
+      "provenance": "ai-moderated",
       "id": "7367abdfef2c"
     },
     {
@@ -457,10 +457,10 @@
       "status": "partial",
       "mathlib": {
         "decl": "ContinuousAlternatingMap",
-        "module": "Mathlib.Analysis.Calculus.DifferentialForm.Basic",
+        "module": "Mathlib.Topology.Algebra.Module.Alternating.Basic",
         "match_kind": "generalization"
       },
-      "note": "Mathlib represents differential `n`-forms as `E → E [⋀^Fin n]→L[𝕜] F`, generalizing the 3D 0/1/2/3-form classification.",
+      "note": "Mathlib represents differential `n`-forms via `ContinuousAlternatingMap` (notation `E [⋀^Fin n]→L[𝕜] F`), generalizing the 3D 0/1/2/3-form classification.",
       "provenance": "ai",
       "id": "bbb1f108aac5"
     },
@@ -599,6 +599,54 @@
       "note": "The gauge ambiguity W → W + ∇m for inverse curl is not formalized.",
       "provenance": "ai",
       "id": "45c1233f5fd1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Angular speed equals half the curl magnitude",
+      "anchor": {
+        "section": "Example 1",
+        "snippet": "the angular speed of the rotation is half the magnitude of the curl at this point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The physical interpretation ω = ½|curl F| is not formalized in Mathlib (curl is not defined).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Magnetic vector potential",
+      "anchor": {
+        "section": "Inverse",
+        "snippet": "the magnetic field, characterized by zero divergence, can be expressed as the curl of a magnetic vector potential"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Magnetic vector potential is an electromagnetism notion not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Generalized Stokes' theorem (for differential forms)",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "The vector calculus operations of grad , curl, and div are most easily generalized in the context of differential forms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not contain a general Stokes theorem for differential forms on manifolds; only the divergence theorem on Euclidean rectangles is present.",
+      "provenance": "ai"
     }
   ]
 }

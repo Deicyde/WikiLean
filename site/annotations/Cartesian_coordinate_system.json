@@ -388,11 +388,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Basis",
+        "decl": "Module.Basis",
         "module": "Mathlib.LinearAlgebra.Basis.Defs",
         "match_kind": "generalization"
       },
-      "note": "A general (non-orthonormal) Basis provides oblique coordinates, but oblique systems are not separately named.",
+      "note": "A general (non-orthonormal) Module.Basis provides oblique coordinates, but oblique systems are not separately named.",
       "provenance": "ai",
       "id": "11557c2ca201"
     },
@@ -482,6 +482,22 @@
       "id": "77fad381896a"
     },
     {
+      "kind": "theorem",
+      "label": "Pythagorean theorem (Cartesian form)",
+      "anchor": {
+        "section": "Distance between two points",
+        "snippet": "This is the Cartesian version of Pythagoras's theorem ."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.dist_sq_eq_dist_sq_add_dist_sq_iff_angle_eq_pi_div_two",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.RightAngle",
+        "match_kind": "generalization"
+      },
+      "note": "The Pythagorean theorem in Euclidean geometry is formalized; the Cartesian distance formula is its coordinate expression via EuclideanSpace.dist_eq.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Euclidean transformations",
       "anchor": {
@@ -545,7 +561,7 @@
         "module": "Mathlib.Geometry.Euclidean.Angle.Oriented.Rotation",
         "match_kind": "generalization"
       },
-      "note": "Orientation.rotation is rotation by an oriented angle in an oriented 2D inner product space, matching the cos/sin formula (cf. Complex.toMatrix_rotation).",
+      "note": "Orientation.rotation is rotation by an oriented angle in an oriented 2D inner product space, matching the cos/sin formula.",
       "provenance": "ai",
       "id": "dced95c49030"
     },
@@ -558,13 +574,29 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "reflection",
+        "decl": "Submodule.reflection",
         "module": "Mathlib.Analysis.InnerProductSpace.Projection.Reflection",
         "match_kind": "special_case"
       },
-      "note": "Reflection in a subspace specializes to axis reflections, but the coordinate formula (x,y)↦(-x,y) is not a stated lemma.",
+      "note": "Submodule.reflection in a hyperplane specializes to axis reflections, but the coordinate formula (x,y)↦(-x,y) is not a stated lemma.",
       "provenance": "ai",
       "id": "c112ac11f1b5"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reflection across line through origin at angle",
+      "anchor": {
+        "section": "Reflection",
+        "snippet": "reflection across a line through the origin making an angle"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Submodule.reflection",
+        "module": "Mathlib.Analysis.InnerProductSpace.Projection.Reflection",
+        "match_kind": "generalization"
+      },
+      "note": "Submodule.reflection in a 1-dim subspace covers this geometrically; the explicit (cos 2θ, sin 2θ; sin 2θ, -cos 2θ) coordinate formula is not stated as a lemma.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -609,11 +641,11 @@
         },
         {
           "type": "math_alttext",
-          "value": "{\\displaystyle A={\\begin{pmatrix}A_{1,1}&amp;A_{1,2}\\\\A_{2,1}&amp;A_{2,2}\\end{pmatrix}}}"
+          "value": "{\\displaystyle A={\\begin{pmatrix}A_{1,1}&A_{1,2}\\\\A_{2,1}&A_{2,2}\\end{pmatrix}}}"
         },
         {
           "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}x'&amp;=xA_{1,1}+yA_{1,1}+b_{1}\\\\y'&amp;=xA_{2,1}+yA_{2,2}+b_{2}.\\end{aligned}}}"
+          "value": "{\\displaystyle {\\begin{aligned}x'&=xA_{1,1}+yA_{1,1}+b_{1}\\\\y'&=xA_{2,1}+yA_{2,2}+b_{2}.\\end{aligned}}}"
         }
       ],
       "id": "b6d6fb5f73cd"
@@ -689,7 +721,7 @@
         "module": "Mathlib.LinearAlgebra.UnitaryGroup",
         "match_kind": "generalization"
       },
-      "note": "SO(n) is formalized as specialOrthogonalGroup (with a 2×2 characterization), but the geometric iff for rotations about a point is not stated.",
+      "note": "SO(n) is formalized as specialOrthogonalGroup, but the geometric iff for rotations about a point is not stated.",
       "provenance": "ai",
       "anchors": [
         {
@@ -756,7 +788,7 @@
         },
         {
           "type": "math_alttext",
-          "value": "{\\displaystyle A'={\\begin{pmatrix}A_{1,1}&amp;A_{1,2}&amp;b_{1}\\\\A_{2,1}&amp;A_{2,2}&amp;b_{2}\\\\0&amp;0&amp;1\\end{pmatrix}}.}"
+          "value": "{\\displaystyle A'={\\begin{pmatrix}A_{1,1}&A_{1,2}&b_{1}\\\\A_{2,1}&A_{2,2}&b_{2}\\\\0&0&1\\end{pmatrix}}.}"
         }
       ],
       "id": "191908516801"
@@ -783,7 +815,7 @@
         },
         {
           "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{pmatrix}A_{1,1}&amp;A_{2,1}&amp;b_{1}\\\\A_{1,2}&amp;A_{2,2}&amp;b_{2}\\\\0&amp;0&amp;1\\end{pmatrix}}{\\begin{pmatrix}x\\\\y\\\\1\\end{pmatrix}}={\\begin{pmatrix}x'\\\\y'\\\\1\\end{pmatrix}}.}"
+          "value": "{\\displaystyle {\\begin{pmatrix}A_{1,1}&A_{2,1}&b_{1}\\\\A_{1,2}&A_{2,2}&b_{2}\\\\0&0&1\\end{pmatrix}}{\\begin{pmatrix}x\\\\y\\\\1\\end{pmatrix}}={\\begin{pmatrix}x'\\\\y'\\\\1\\end{pmatrix}}.}"
         }
       ],
       "id": "5dba9bcbe4d7"
@@ -882,11 +914,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "positiveOrientation",
+        "decl": "Module.Oriented.positiveOrientation",
         "module": "Mathlib.LinearAlgebra.Orientation",
         "match_kind": "generalization"
       },
-      "note": "positiveOrientation is the standard/positive orientation determined by the standard basis.",
+      "note": "Module.Oriented.positiveOrientation is the standard/positive orientation determined by the standard basis.",
       "provenance": "ai",
       "id": "d36480292bdb"
     },
@@ -981,9 +1013,25 @@
         "module": "Mathlib.Data.Complex.Basic",
         "match_kind": "exact"
       },
-      "note": "Complex.equivRealProd is the equivalence ℂ ≃ ℝ × ℝ identifying z = x + iy with (x, y) (with linear/CLM versions equivRealProdLm/equivRealProdCLM).",
+      "note": "Complex.equivRealProd is the equivalence ℂ ≃ ℝ × ℝ identifying z = x + iy with (x, y).",
       "provenance": "ai",
       "id": "dd34fe418f62"
+    },
+    {
+      "kind": "definition",
+      "label": "Identification with quaternions (3D)",
+      "anchor": {
+        "section": "Representing a vector in the standard basis",
+        "snippet": "In a three-dimensional cartesian space a similar identification can be made with a subset of the quaternions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Quaternion.im",
+        "module": "Mathlib.Algebra.Quaternion",
+        "match_kind": "generalization"
+      },
+      "note": "The pure-imaginary quaternions (Quaternion.im) form the 3D subspace identified with ℝ³; multiplication restricted there gives the cross-product/scalar-product decomposition.",
+      "provenance": "ai"
     }
   ]
 }

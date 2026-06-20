@@ -1,0 +1,1033 @@
+{
+  "slug": "Divergent_series",
+  "wikipedia_title": "Divergent series",
+  "display_title": "Divergent series",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Divergent series",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a divergent series is an infinite series that is not convergent"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Summable",
+        "module": "Mathlib.Topology.Algebra.InfiniteSum.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has `Summable`/`HasSum` for convergent series; divergent series are expressed as `¬ Summable` rather than given a dedicated predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Terms of convergent series approach zero",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "If a series converges, the individual terms of the series must approach zero."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Summable.tendsto_atTop_zero",
+        "module": "Mathlib.Topology.Algebra.InfiniteSum.NatInt",
+        "match_kind": "exact"
+      },
+      "note": "`Summable.tendsto_atTop_zero` states that a summable sequence on ℕ tends to zero.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Harmonic series diverges",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A counterexample is the harmonic series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.not_summable_one_div_natCast",
+        "module": "Mathlib.Analysis.PSeries",
+        "match_kind": "exact"
+      },
+      "note": "`Real.not_summable_one_div_natCast` and the companion `Real.tendsto_sum_range_one_div_nat_succ_atTop` explicitly state divergence of the harmonic series.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Summability method",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A summability method or summation method is a partial function from the set of series to values."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SummationFilter",
+        "module": "Mathlib.Topology.Algebra.InfiniteSum.SummationFilter",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `SummationFilter` parameterizes how partial sums are taken (via a filter on finite subsets), giving infrastructure for alternative summation notions, but no general API for divergent-series summability methods is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cesàro sum of Grandi's series",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Cesàro summation assigns Grandi's divergent series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration computes the Cesàro sum of Grandi's series 1 − 1 + 1 − 1 + ⋯.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Grandi's series 1 − 1 + 1 − 1 + ⋯",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "1 − 1 + 1 − 1 + ⋯"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep finds no Mathlib statement about non-summability of (-1)^n as a divergent series example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "1 − 2 + 3 − 4 + ⋯",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "1 − 2 + 3 − 4 + ⋯"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib declaration addresses this specific divergent alternating series.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "1 − 1 + 2 − 6 + 24 − 120 + ⋯",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "1 − 1 + 2 − 6 + 24 − 120 + ⋯"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib declaration handles this alternating factorial series.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "1 − 2 + 4 − 8 + ⋯",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "1 − 2 + 4 − 8 + ⋯"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific Mathlib decl for this divergent geometric series example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "1 + 2 + 4 + 8 + ⋯",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "1 + 2 + 4 + 8 + ⋯"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated Mathlib statement for this divergent geometric series example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "1 + 1 + 1 + 1 + ⋯",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "1 + 1 + 1 + 1 + ⋯"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Finite.of_summable_const",
+        "module": "Mathlib.Topology.Algebra.InfiniteSum.Order",
+        "match_kind": "generalization"
+      },
+      "note": "`Finite.of_summable_const` implies that the constant sequence 1 over ℕ is not summable, giving the divergence of 1+1+1+⋯ as a corollary.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "1 + 2 + 3 + 4 + ⋯",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "1 + 2 + 3 + 4 + ⋯"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib decl explicitly states divergence of 1+2+3+⋯ (its zeta-regularized value is separately covered).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "1 + 4 + 9 + 16 + ⋯",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "1 + 4 + 9 + 16 + ⋯"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated statement about the sum of squares as a divergent series.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Regular summability method",
+      "anchor": {
+        "section": "Theorems on methods for summing divergent series",
+        "snippet": "A summability method M is regular if it agrees with the actual limit on all convergent series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general definition of a regular summability method appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Abelian theorem",
+      "anchor": {
+        "section": "Theorems on methods for summing divergent series",
+        "snippet": "Such a result is called an Abelian theorem for M"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific Abelian theorems (e.g. Abel's limit theorem) are formalized, but the abstract notion is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tauberian theorem",
+      "anchor": {
+        "section": "Theorems on methods for summing divergent series",
+        "snippet": "More subtle, are partial converse results, called Tauberian theorems"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep finds no Tauberian framework or theorem in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Banach limit (Hahn–Banach extension)",
+      "anchor": {
+        "section": "Theorems on methods for summing divergent series",
+        "snippet": "it follows from the Hahn–Banach theorem that it may be extended to a summation method summing any series with bounded partial sums"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has the Hahn–Banach theorem but no Banach-limit construction extending the limit functional to bounded sequences.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Regularity",
+      "anchor": {
+        "section": "Properties of summation methods",
+        "snippet": "Regularity . A summation method is regular if, whenever the sequence s converges to x"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No abstract regularity property of summation methods is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linearity",
+      "anchor": {
+        "section": "Properties of summation methods",
+        "snippet": "Linearity . A is linear if it is a linear functional on the sequences where it is defined"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No abstract linearity property of summation methods is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Stability (translativity)",
+      "anchor": {
+        "section": "Properties of summation methods",
+        "snippet": "Stability (also called translativity )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No abstract stability/translativity property of summation methods is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Finite re-indexability",
+      "anchor": {
+        "section": "Properties of summation methods",
+        "snippet": "Finite re-indexability ."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized — no general summation-method framework where this property can be stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Consistency of summation methods",
+      "anchor": {
+        "section": "Properties of summation methods",
+        "snippet": "A and B are consistent if for every sequence s to which both assign a value"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Consistency between two summation methods is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Stronger summation method",
+      "anchor": {
+        "section": "Properties of summation methods",
+        "snippet": "the one summing more series is stronger"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No comparison of summation methods by strength is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Geometric series sum under regular, linear, stable methods",
+      "anchor": {
+        "section": "Properties of summation methods",
+        "snippet": "any summation method that possesses these properties and which assigns a finite value to the geometric series must assign this value"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized; the corresponding abstract summation-method framework is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cauchy's sum of a series",
+      "anchor": {
+        "section": "Sum of a series",
+        "snippet": "Cauchy's classical definition of the sum of a series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasSum",
+        "module": "Mathlib.Topology.Algebra.InfiniteSum.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`HasSum`/`tsum` realize Cauchy's classical sum-as-limit-of-partial-sums definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Absolute convergence",
+      "anchor": {
+        "section": "Absolute convergence",
+        "snippet": "Absolute convergence defines the sum of a sequence"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Summable.norm",
+        "module": "Mathlib.Analysis.Normed.Module.FiniteDimension",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib expresses absolute convergence as `Summable (fun x => ‖f x‖)` rather than a separate predicate, with `Summable.norm`/`Summable.abs` as the canonical witnesses.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Absolute convergence iff sequence of absolute values converges",
+      "anchor": {
+        "section": "Absolute convergence",
+        "snippet": "a classical theorem says that a sequence is absolutely convergent if and only if the sequence of absolute values is convergent in the standard sense"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "summable_norm_iff",
+        "module": "Mathlib.Analysis.Normed.Module.FiniteDimension",
+        "match_kind": "exact"
+      },
+      "note": "`summable_norm_iff` (and the order-theoretic `summable_abs_iff`) give exactly this equivalence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Nørlund mean",
+      "anchor": {
+        "section": "Nørlund means",
+        "snippet": "the limit of t n as n goes to infinity is an average called the Nørlund mean"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Nørlund-mean definition appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Nørlund means are regular, linear, stable, and pairwise consistent",
+      "anchor": {
+        "section": "Nørlund means",
+        "snippet": "The Nørlund mean is regular, linear, and stable."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized — depends on absent Nørlund-mean definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cesàro sum C_k",
+      "anchor": {
+        "section": "Cesàro summation",
+        "snippet": "then the Cesàro sum C k is defined by"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Filter.Tendsto.cesaro",
+        "module": "Mathlib.Analysis.Asymptotics.SpecificAsymptotics",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has Cesàro averaging of a convergent sequence (`Filter.Tendsto.cesaro`/`cesaro_smul`) but no general Cesàro sum `C_k` definition for divergent series.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "C_h stronger than C_k for h > k",
+      "anchor": {
+        "section": "Cesàro summation",
+        "snippet": "Cesàro sums have the property that if h > k , then C h is stronger than C k"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized; higher-order Cesàro sums are not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Abelian mean",
+      "anchor": {
+        "section": "Abelian means",
+        "snippet": "Then the Abelian mean A λ is defined as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Abelian-mean construction found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Abelian means are regular and linear",
+      "anchor": {
+        "section": "Abelian means",
+        "snippet": "Abelian means are regular and linear, but not stable and not always consistent between different choices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized — depends on absent Abelian-mean definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Abel summation",
+      "anchor": {
+        "section": "Abel summation",
+        "snippet": "If λ n = n , then we obtain the method of Abel summation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.tendsto_tsum_powerSeries_nhdsWithin_stolzCone",
+        "module": "Mathlib.Analysis.Complex.AbelLimit",
+        "match_kind": "invocation"
+      },
+      "note": "Abel's limit theorem (showing Abel summation is regular on convergent series) is formalized, but Abel summation is not introduced as a stand-alone divergent-series method.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Abel sum consistent with and stronger than Cesàro",
+      "anchor": {
+        "section": "Abel summation",
+        "snippet": "Abel summation is interesting in part because it is consistent with but more powerful than Cesàro summation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Comparison between Abel and Cesàro summation as divergent-series methods is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lindelöf sum",
+      "anchor": {
+        "section": "Lindelöf summation",
+        "snippet": "Then L ( s ), the Lindelöf sum"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Lindelöf summation method in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lindelöf sum in the Mittag-Leffler star",
+      "anchor": {
+        "section": "Lindelöf summation",
+        "snippet": "If g ( z ) is analytic in a disk around zero, and hence has a Maclaurin series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized — Mittag-Leffler star and Lindelöf sum are absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sum by analytic continuation of a power series",
+      "anchor": {
+        "section": "Analytic continuation of power series",
+        "snippet": "If Σ a n x n converges for small complex x and can be analytically continued along some path"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has analytic continuation but not the construction assigning sums to divergent power series via continuation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Callet's example of path-dependent sums",
+      "anchor": {
+        "section": "Analytic continuation of power series",
+        "snippet": "One of the first examples of potentially different sums for a divergent series, using analytic continuation, was given by Callet"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Callet's example is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Divergent alternating hypergeometric series",
+      "anchor": {
+        "section": "Analytic continuation of power series",
+        "snippet": "Another example of analytic continuation is the divergent alternating series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euler (E, q) summation",
+      "anchor": {
+        "section": "Euler summation",
+        "snippet": "Euler summation is essentially an explicit form of analytic continuation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Euler (E, q) summation is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sum via analytic continuation of Dirichlet series",
+      "anchor": {
+        "section": "Analytic continuation of Dirichlet series",
+        "snippet": "This method defines the sum of a series to be the value of the analytic continuation of the Dirichlet series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "L-series infrastructure exists, but it is not packaged as a generic summability method via Dirichlet-series continuation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zeta regularized sum",
+      "anchor": {
+        "section": "Zeta function regularization",
+        "snippet": "its value at s = −1 is called the zeta regularized sum of the series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines `riemannZeta` but does not introduce the zeta-regularization summability method for arbitrary series.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Zeta regularization of 1 + 2 + 3 + ⋯ = −1/12",
+      "anchor": {
+        "section": "Zeta function regularization",
+        "snippet": "assigning a value to the divergent series 1 + 2 + 3 + 4 + ⋯"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "riemannZeta_neg_nat_eq_bernoulli",
+        "module": "Mathlib.NumberTheory.LSeries.HurwitzZetaValues",
+        "match_kind": "special_case"
+      },
+      "note": "`riemannZeta_neg_nat_eq_bernoulli` evaluates ζ(−k) in terms of Bernoulli numbers; at k=1 it gives the −1/12 value, though it is not packaged as a divergent-series regularization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "J sum (integral function mean)",
+      "anchor": {
+        "section": "Integral function means",
+        "snippet": "then the J sum of the series a 0 + ... is defined to be"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "J-sum / integral-function-mean construction is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Borel summation (weak form)",
+      "anchor": {
+        "section": "Borel summation",
+        "snippet": "In the special case when J ( x ) = e x this gives one (weak) form of Borel summation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Borel summation definition appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Valiron's method",
+      "anchor": {
+        "section": "Valiron's method",
+        "snippet": "Valiron's method is a generalization of Borel summation to certain more general integral functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Valiron's summation method is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "(dμ) sum (moment method)",
+      "anchor": {
+        "section": "Moment methods",
+        "snippet": "the ( dμ ) sum of the series is defined to be the value of the integral"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Moment-method summation is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Borel summation via dμ = e^{−x} dx",
+      "anchor": {
+        "section": "Borel summation (2)",
+        "snippet": "if dμ = e − x dx for positive x and 0 for negative x then μ n = n !"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Borel summation via the moment method is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "(B′, α) sum",
+      "anchor": {
+        "section": "Borel summation (2)",
+        "snippet": "called the (B′, α ) sum"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "(B′, α) summation method is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "BGN hyperreal summation",
+      "anchor": {
+        "section": "BGN hyperreal summation",
+        "snippet": "This summation method works by using an extension to the real numbers known as the hyperreal numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `Hyperreal` but no BGN summation method built atop it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hutton's method",
+      "anchor": {
+        "section": "Hutton's method",
+        "snippet": "In 1812 Hutton introduced a method of summing divergent series by starting with the sequence of partial sums"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hutton's averaging method for divergent series is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ingham summable",
+      "anchor": {
+        "section": "Ingham summability",
+        "snippet": "The series a 1 + ... is called Ingham summable to s"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ingham summability is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Ingham's theorem relating Cesàro and Ingham summability",
+      "anchor": {
+        "section": "Ingham summability",
+        "snippet": "Albert Ingham showed that if δ is any positive number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized — depends on absent Ingham-summability definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lambert summable",
+      "anchor": {
+        "section": "Lambert summability",
+        "snippet": "The series a 1 + ... is called Lambert summable to s"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lambert summability is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cesàro ⇒ Lambert ⇒ Abel summability",
+      "anchor": {
+        "section": "Lambert summability",
+        "snippet": "If a series is (C, k ) (Cesàro) summable for any k then it is Lambert summable to the same value"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized — depends on absent Lambert summability.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Le Roy summable",
+      "anchor": {
+        "section": "Le Roy summation",
+        "snippet": "The series a 0 + ... is called Le Roy summable to s"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Le Roy summation is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Mittag-Leffler (M) summable",
+      "anchor": {
+        "section": "Mittag-Leffler summation",
+        "snippet": "The series a 0 + ... is called Mittag-Leffler (M) summable to s"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mittag-Leffler summability is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ramanujan summation",
+      "anchor": {
+        "section": "Ramanujan summation",
+        "snippet": "Ramanujan summation is a method of assigning a value to divergent series used by Ramanujan"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ramanujan summation is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "(R, k) Riemann summable",
+      "anchor": {
+        "section": "Riemann summability",
+        "snippet": "The series a 1 + ... is called (R, k ) (or Riemann) summable to s"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Riemann (R, k) summability is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "R_2 summable",
+      "anchor": {
+        "section": "Riemann summability",
+        "snippet": "The series a 1 + ... is called R 2 summable to s"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "R_2 summability is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Riesz (R, λ, κ) sum",
+      "anchor": {
+        "section": "Riesz means",
+        "snippet": "then the Riesz (R, λ , κ ) sum of the series a 0 + ... is defined to be"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Riesz means as a summation method are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vallée-Poussin (VP) summable",
+      "anchor": {
+        "section": "Vallée-Poussin summability",
+        "snippet": "The series a 1 + ... is called VP (or Vallée-Poussin) summable to s"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Vallée-Poussin summability is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zeldovich summable",
+      "anchor": {
+        "section": "Zeldovich summability",
+        "snippet": "The series is Zeldovich summable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Zeldovich summability is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

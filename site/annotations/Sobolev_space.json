@@ -1,0 +1,633 @@
+{
+  "slug": "Sobolev_space",
+  "wikipedia_title": "Sobolev space",
+  "display_title": "Sobolev space",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Sobolev space (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a Sobolev space is a vector space of functions equipped with a norm that is a combination of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TemperedDistribution.MemSobolev",
+        "module": "Mathlib.Analysis.Distribution.Sobolev",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes Sobolev spaces only via Bessel potentials of tempered distributions on the whole space, not the general L^p-with-weak-derivatives definition described in the lead.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Weak partial derivative",
+      "anchor": {
+        "section": "Motivation",
+        "snippet": "then we call"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of weak partial derivative as an L^p function defined by integration-by-parts against test functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Weak derivative example",
+      "anchor": {
+        "section": "Motivation",
+        "snippet": "is not continuous at zero, and not differentiable at"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific example computing a weak derivative is absent because weak derivatives are not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "One-dimensional Sobolev space W^{k,p}",
+      "anchor": {
+        "section": "One-dimensional case",
+        "snippet": "the Sobolev space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib lacks the classical W^{k,p}(I) defined via weak derivatives on an interval; only the Bessel potential variant on the whole space exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sobolev norm (1D)",
+      "anchor": {
+        "section": "One-dimensional case",
+        "snippet": "the Sobolev spaces admit a natural norm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No classical W^{k,p} norm is defined because the underlying space is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalent Sobolev norm (1D)",
+      "anchor": {
+        "section": "One-dimensional case",
+        "snippet": "is equivalent to the norm above"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Equivalence of the two W^{k,p}(I) norms is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hilbert Sobolev space H^k via Fourier series",
+      "anchor": {
+        "section": "The case p = 2",
+        "snippet": "can be defined naturally in terms of Fourier series whose coefficients decay sufficiently rapidly"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TemperedDistribution.memSobolev_iff_exists_smulLeftCLM_fourier",
+        "module": "Mathlib.Analysis.Distribution.Sobolev",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib characterizes H^s = MemSobolev s 2 via the Fourier multiplier (1+‖ξ‖²)^{s/2}, the continuous (R^n) analogue of the Fourier-series characterization on the torus.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "H^k inner product",
+      "anchor": {
+        "section": "The case p = 2",
+        "snippet": "inner product is defined in terms of the"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Hilbert-space structure with the explicit ⟨u,v⟩_{H^k} = ∑ ⟨D^α u, D^α v⟩ inner product is defined on the Mathlib Sobolev space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "W^{1,1} is absolutely continuous functions",
+      "anchor": {
+        "section": "Other examples",
+        "snippet": "is the space of absolutely continuous functions on"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "AbsolutelyContinuousOnInterval exists but is never identified with a Sobolev space, since W^{1,1}(I) is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "W^{1,∞} is Lipschitz functions",
+      "anchor": {
+        "section": "Other examples",
+        "snippet": "is the space of bounded Lipschitz functions on"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Rademacher's theorem (LipschitzWith.ae_differentiableAt) gives ae differentiability of Lipschitz maps but no identification with W^{1,∞}.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "W^{k,p} is a normed algebra",
+      "anchor": {
+        "section": "Other examples",
+        "snippet": "are (normed) algebras"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No algebra structure on W^{k,p} appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sobolev space W^{k,p}(Ω) (multidimensional)",
+      "anchor": {
+        "section": "Multidimensional case",
+        "snippet": "is defined to be the set of all functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classical W^{k,p}(Ω) defined via weak derivatives on a domain Ω is not in Mathlib; only the Bessel potential variant on the whole space exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sobolev norm (multidimensional)",
+      "anchor": {
+        "section": "Multidimensional case",
+        "snippet": "There are several choices for a norm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No multidimensional W^{k,p} norm (sum of L^p norms of D^α u) is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "W^{k,p} is Banach (and separable for p<∞)",
+      "anchor": {
+        "section": "Multidimensional case",
+        "snippet": "With respect to either of these norms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Banach/separable structure of W^{k,p}(Ω) is not established because the space itself is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Meyers–Serrin theorem",
+      "anchor": {
+        "section": "Approximation by smooth functions",
+        "snippet": "by the Meyers–Serrin theorem a function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The density of C^∞ ∩ W^{k,p} in W^{k,p} (the Meyers–Serrin H=W theorem) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Singular function on n-ball",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "as can be easily checked using spherical polar coordinates"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The standard ‖x‖^{-α} example showing membership in W^{1,p} on the ball is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "ACL characterization of Sobolev functions",
+      "anchor": {
+        "section": "Absolutely continuous on lines (ACL) characterization of Sobolev functions",
+        "snippet": "the restriction to almost every line parallel to the coordinate directions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No ACL characterization of W^{1,p} appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Morrey's inequality (Hölder continuity)",
+      "anchor": {
+        "section": "Absolutely continuous on lines (ACL) characterization of Sobolev functions",
+        "snippet": "Hölder continuous of exponent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has the Gagliardo–Nirenberg–Sobolev L^p inequality but not Morrey's inequality giving Hölder continuity when p > n.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sobolev space H^k_0 (closure of compactly supported smooth functions)",
+      "anchor": {
+        "section": "Functions vanishing at the boundary",
+        "snippet": "defined to be the closure of the infinitely differentiable functions compactly supported"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "H^k_0(Ω) as the W^{k,p}-closure of C_c^∞(Ω) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Poincaré inequality",
+      "anchor": {
+        "section": "Functions vanishing at the boundary",
+        "snippet": "the Poincaré inequality states that there is a constant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Poincaré inequality bounding ‖u‖_{L^p} by ‖∇u‖_{L^p} for u ∈ W^{1,p}_0 is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Compact injection of H^1_0 into L^2",
+      "anchor": {
+        "section": "Functions vanishing at the boundary",
+        "snippet": "the injection from"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Rellich–Kondrachov-type compactness of H^1_0(Ω) ↪ L^2(Ω) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Trace theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Trace theorem — Assume Ω is bounded with"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No boundary trace operator W^{1,p}(Ω) → L^p(∂Ω) is constructed in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Characterization of trace-zero functions",
+      "anchor": {
+        "section": "Traces",
+        "snippet": "The functions u in W"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a trace map, the identification of W^{1,p}_0 as ker(trace) is also missing.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bessel potential space H^{s,p}",
+      "anchor": {
+        "section": "Bessel potential spaces",
+        "snippet": "are called Bessel potential spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TemperedDistribution.MemSobolev",
+        "module": "Mathlib.Analysis.Distribution.Sobolev",
+        "match_kind": "exact"
+      },
+      "note": "TemperedDistribution.MemSobolev is exactly the Bessel potential space: u lies in H^{s,p} iff the Fourier multiplier (1+‖ξ‖²)^{s/2} applied to u is representable by an L^p function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bessel potential space on Ω",
+      "anchor": {
+        "section": "Bessel potential spaces",
+        "snippet": "is the set of restrictions of functions from"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Restriction of H^{s,p} to a domain Ω is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence W^{k,p}=H^{k,p} on regular domains",
+      "anchor": {
+        "section": "Bessel potential spaces",
+        "snippet": "it can be shown that also"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Equivalence between classical Sobolev spaces and Bessel potential spaces is not proved because W^{k,p} is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bessel potential spaces as complex interpolation",
+      "anchor": {
+        "section": "Bessel potential spaces",
+        "snippet": "the Bessel potential spaces occur as complex interpolation spaces of Sobolev spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Complex interpolation of Sobolev/Bessel-potential spaces is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Slobodeckij seminorm",
+      "anchor": {
+        "section": "Sobolev–Slobodeckij spaces",
+        "snippet": "the Slobodeckij seminorm (roughly analogous to the Hölder seminorm) is defined by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Gagliardo/Slobodeckij seminorm ∫∫ |u(x)-u(y)|^p / |x-y|^{n+sp} is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sobolev–Slobodeckij space W^{s,p}",
+      "anchor": {
+        "section": "Sobolev–Slobodeckij spaces",
+        "snippet": "the Sobolev–Slobodeckij space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fractional Sobolev–Slobodeckij spaces are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sobolev–Slobodeckij spaces as real interpolation spaces",
+      "anchor": {
+        "section": "Sobolev–Slobodeckij spaces",
+        "snippet": "coincide with the real interpolation spaces of Sobolev spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Real interpolation identification with W^{s,p} is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bourgain–Brezis–Mironescu formula",
+      "anchor": {
+        "section": "Sobolev–Slobodeckij spaces",
+        "snippet": "can be characterized through the Bourgain-Brezis-Mironescu formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No grep hit for Bourgain/Brezis/Mironescu in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Extension operator",
+      "anchor": {
+        "section": "Extension operators",
+        "snippet": "We will call such an operator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No bounded W^{k,p}(Ω) → W^{k,p}(R^n) extension operator is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "H^s via extension operator",
+      "anchor": {
+        "section": "Case of p = 2",
+        "snippet": "Extension operators are the most natural way to define"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Definition of H^s(Ω) as the image of an extension operator is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Extension by zero of L^p function",
+      "anchor": {
+        "section": "Extension by zero",
+        "snippet": "we may define its extension by zero"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.MemLp.indicator",
+        "module": "Mathlib.MeasureTheory.Function.LpSeminorm.Indicator",
+        "match_kind": "exact"
+      },
+      "note": "MemLp.indicator shows that the indicator (extension by zero) of an L^p function on a measurable set remains in L^p, which is the content of this definition's well-posedness.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bounded extension operator on Lipschitz domains",
+      "anchor": {
+        "section": "Extension by zero",
+        "snippet": "there exists a bounded linear operator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A bounded Sobolev extension operator from W^{s,p}_0(Ω) to W^{s,p}(R^n) on Lipschitz domains is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Kernel characterization of W^{s,p}_0",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Characterization of W^{s,p}_0 as the kernel of certain trace-type maps is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Continuity of extension by zero",
+      "anchor": {
+        "section": "Extension by zero",
+        "snippet": "if and only if s is not of the form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The fractional-order condition s ∉ {k+1/p} for continuity of zero-extension into W^{s,p}(R^n) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sobolev embedding theorem",
+      "anchor": {
+        "section": "Sobolev embeddings",
+        "snippet": "The Sobolev embedding theorem states that if"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.eLpNorm_le_eLpNorm_fderiv_of_eq",
+        "module": "Mathlib.Analysis.FunctionalSpaces.SobolevInequality",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has the Gagliardo–Nirenberg–Sobolev inequality (and TemperedDistribution.MemSobolev.fourier_memL1 for the s>d/2 case), which is a special-case version of the W^{k,p} ↪ L^q embedding chain.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Rellich–Kondrachov theorem",
+      "anchor": {
+        "section": "Sobolev embeddings",
+        "snippet": "the embedding is completely continuous"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No grep hit for Rellich or Kondrachov; the compactness of the Sobolev embedding is not in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

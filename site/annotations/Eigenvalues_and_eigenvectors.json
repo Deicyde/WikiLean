@@ -69,7 +69,7 @@
         "module": "Mathlib.LinearAlgebra.Eigenspace.Matrix",
         "match_kind": "exact"
       },
-      "note": "`LinearMap.spectrum_toMatrix` and `Matrix.spectrum_toLin` show the spectra agree under `toMatrix`/`toLin`.",
+      "note": "`LinearMap.spectrum_toMatrix` shows the spectra agree under `toMatrix`/`toLin`.",
       "provenance": "ai",
       "id": "7ce8580ec1d3"
     },
@@ -239,7 +239,7 @@
         "module": "Mathlib.LinearAlgebra.Eigenspace.Charpoly",
         "match_kind": "exact"
       },
-      "note": "Eigenvalues are exactly the roots of the characteristic polynomial; equivalently `det(λI − A) = 0` via `eval_charpoly`.",
+      "note": "Eigenvalues are exactly the roots of the characteristic polynomial, equivalently `det(λI − A) = 0`.",
       "provenance": "ai",
       "id": "1aa582c83f5d"
     },
@@ -273,7 +273,7 @@
         "module": "Mathlib.LinearAlgebra.Charpoly.Basic",
         "match_kind": "exact"
       },
-      "note": "`charpoly_natDegree` gives degree `n`; `Polynomial.card_roots_le_degree` bounds the roots.",
+      "note": "`charpoly_natDegree` gives degree `n`; combined with degree bounds on root counts, this matches the at-most-n claim.",
       "provenance": "ai",
       "id": "2258deabe732"
     },
@@ -330,11 +330,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Polynomial.isRoot_conj_of_isRoot",
-        "module": "Mathlib.Analysis.Complex.Polynomial.Basic",
+        "decl": "Polynomial.aeval_conj",
+        "module": "Mathlib.Analysis.RCLike.Lemmas",
         "match_kind": "generalization"
       },
-      "note": "General fact about conjugate roots of real polynomials exists; not specialized to eigenvalues.",
+      "note": "`Polynomial.aeval_conj` shows `aeval (conj z) p = conj (aeval z p)` for real polynomials, implying conjugate pairs of non-real roots; not specialized to eigenvalues.",
       "provenance": "ai",
       "id": "f140fe9cec43"
     },
@@ -382,7 +382,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "Polynomial.rootMultiplicity",
-        "module": "Mathlib.Algebra.Polynomial.RingDivision",
+        "module": "Mathlib.Algebra.Polynomial.Div",
         "match_kind": "generalization"
       },
       "note": "`rootMultiplicity` of `charpoly` gives algebraic multiplicity but no dedicated `algebraicMultiplicity` for eigenvalues.",
@@ -419,7 +419,7 @@
         "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
         "match_kind": "invocation"
       },
-      "note": "`eigenspace` applied to `Matrix.toLin'`; e.g. `iSup_eigenspace_toLin'_diagonal_eq_top`.",
+      "note": "`eigenspace` applied to `Matrix.toLin'`; e.g. `Matrix.iSup_eigenspace_toLin'_diagonal_eq_top`.",
       "provenance": "ai",
       "id": "8f6b1cbef8f3"
     },
@@ -449,7 +449,7 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Module.finrank",
+        "decl": "Module.End.eigenspace",
         "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
         "match_kind": "generalization"
       },
@@ -534,7 +534,7 @@
         "module": "Mathlib.LinearAlgebra.Eigenspace.Semisimple",
         "match_kind": "generalization"
       },
-      "note": "For semisimple endomorphisms over an algebraically closed field the eigenspaces span; combined with `eigenspaces_iSupIndep` they form a direct sum decomposition.",
+      "note": "For semisimple endomorphisms the eigenspaces span; combined with `eigenspaces_iSupIndep` they form a direct sum decomposition.",
       "provenance": "ai",
       "id": "2c2bf355d5af"
     },
@@ -578,7 +578,7 @@
         "module": "Mathlib.LinearAlgebra.Eigenspace.Charpoly",
         "match_kind": "exact"
       },
-      "note": "Also `Matrix.det_eq_prod_roots_charpoly` for algebraically closed fields.",
+      "note": "Determinant is the product of charpoly roots when it splits.",
       "provenance": "ai",
       "anchors": [
         {
@@ -656,7 +656,7 @@
         "module": "Mathlib.Analysis.Matrix.PosDef",
         "match_kind": "exact"
       },
-      "note": "`PosSemidef.eigenvalues_nonneg` and `IsHermitian.posSemidef_iff_eigenvalues_nonneg` cover the positive case.",
+      "note": "`PosSemidef.eigenvalues_nonneg` covers the positive case.",
       "provenance": "ai",
       "id": "133eeb37e571"
     },
@@ -669,11 +669,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Unitary.spectrum_subset_circle",
+        "decl": "spectrum.norm_eq_one_of_unitary",
         "module": "Mathlib.Analysis.CStarAlgebra.Spectrum",
         "match_kind": "generalization"
       },
-      "note": "`Unitary.spectrum_subset_circle` and `spectrum.norm_eq_one_of_unitary` give |λ|=1 for unitary elements in C*-algebras, applying to unitary matrices.",
+      "note": "`spectrum.norm_eq_one_of_unitary` and `Unitary.spectrum_subset_circle` give |λ|=1 for unitary elements in C*-algebras, applying to unitary matrices.",
       "provenance": "ai",
       "id": "06ff04121a14"
     },
@@ -843,10 +843,10 @@
       "status": "partial",
       "mathlib": {
         "decl": "Module.End.genEigenspace",
-        "module": "Mathlib.LinearAlgebra.JordanChevalley",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
         "match_kind": "generalization"
       },
-      "note": "Generalized eigenspaces and `JordanChevalley` decomposition exist; full Jordan normal form and `defective` predicate are not formalized.",
+      "note": "Generalized eigenspaces exist and Jordan–Chevalley decomposition is formalized; full Jordan normal form and `defective` predicate are not.",
       "provenance": "ai",
       "id": "52f3757be9c0"
     },
@@ -937,11 +937,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Matrix.spectrum_diagonal",
+        "decl": "spectrum_diagonal",
         "module": "Mathlib.LinearAlgebra.Eigenspace.Matrix",
         "match_kind": "exact"
       },
-      "note": "`spectrum_diagonal` shows `spectrum R (diagonal d) = Set.range d`.",
+      "note": "`spectrum_diagonal` shows `spectrum R (Matrix.diagonal d) = Set.range d`.",
       "provenance": "ai",
       "anchors": [
         {
@@ -1144,7 +1144,7 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Module.finrank",
+        "decl": "Module.End.eigenspace",
         "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
         "match_kind": "generalization"
       },
@@ -1273,11 +1273,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "not_solvable_by_rad",
+        "decl": "isSolvable_gal_of_irreducible",
         "module": "Mathlib.FieldTheory.AbelRuffini",
         "match_kind": "generalization"
       },
-      "note": "Abel–Ruffini is formalized for polynomials; not specialized to eigenvalues.",
+      "note": "Abel–Ruffini (`isSolvable_gal_of_irreducible`) is formalized for polynomials; not specialized to eigenvalues.",
       "provenance": "ai",
       "id": "1ea850c3750b"
     },
@@ -1634,6 +1634,70 @@
       "note": "Image-processing application, not formalized.",
       "provenance": "ai",
       "id": "d07c3535d94e"
+    },
+    {
+      "kind": "proposition",
+      "label": "Eigenvectors of different eigenvalues are linearly independent",
+      "anchor": {
+        "section": "Eigenspaces, geometric multiplicity, and the eigenbasis",
+        "snippet": "eigenvectors of different eigenvalues are always linearly independent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.End.eigenvectors_linearIndependent",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`eigenvectors_linearIndependent` is a direct consequence of the direct-sum independence of eigenspaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "At most n distinct eigenvalues in dimension n",
+      "anchor": {
+        "section": "Eigenspaces, geometric multiplicity, and the eigenbasis",
+        "snippet": "there cannot be more than n distinct eigenvalues"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.End.instFintypeEigenvalues",
+        "module": "Mathlib.LinearAlgebra.Eigenspace.Minpoly",
+        "match_kind": "exact"
+      },
+      "note": "`instFintypeEigenvalues` makes `f.Eigenvalues` a `Fintype` for an endomorphism of a finite-dimensional module.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Eigenvalues of the inverse are reciprocals",
+      "anchor": {
+        "section": "Additional properties",
+        "snippet": "If A is invertible, then the eigenvalues of A −1 are"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "spectrum.inv_mem_iff",
+        "module": "Mathlib.Algebra.Algebra.Spectrum.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`spectrum.inv_mem_iff` shows `↑r ∈ spectrum R ↑a ↔ ↑r⁻¹ ∈ spectrum R ↑a⁻¹`, giving the reciprocal-eigenvalues fact for units.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Real symmetric matrices have real eigenvalues",
+      "anchor": {
+        "section": "Additional properties",
+        "snippet": "The same is true of any symmetric real matrix"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.IsHermitian.eigenvalues",
+        "module": "Mathlib.Analysis.Matrix.Spectrum",
+        "match_kind": "special_case"
+      },
+      "note": "A real symmetric matrix is Hermitian over ℝ; its eigenvalues are real by `IsHermitian.eigenvalues : n → ℝ`.",
+      "provenance": "ai"
     }
   ]
 }

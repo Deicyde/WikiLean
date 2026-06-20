@@ -11,7 +11,15 @@
         "section": "(Lead)",
         "snippet": "Euler's formula states that, for any real number x"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_mul_I",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "States exp(x*I) = cos x + sin x * I for complex x, which is Euler's formula (real case follows by coercion).",
+      "provenance": "ai-agent1",
+      "id": "7faf88527fc9"
     },
     {
       "kind": "definition",
@@ -20,7 +28,15 @@
         "section": "(Lead)",
         "snippet": "This complex exponential function is sometimes denoted cis x"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib uses `Complex.exp (x * I)` directly and does not define a `cis` function or notation.",
+      "provenance": "ai-agent1",
+      "id": "9d84057f2cdc"
     },
     {
       "kind": "theorem",
@@ -29,7 +45,15 @@
         "section": "(Lead)",
         "snippet": "When x = π , Euler's formula may be rewritten as"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_pi_mul_I",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "exact"
+      },
+      "note": "States exp(π * I) = -1, the standard form of Euler's identity.",
+      "provenance": "ai-agent1",
+      "id": "f862a5aafbde"
     },
     {
       "kind": "proposition",
@@ -38,7 +62,15 @@
         "section": "History",
         "snippet": "Roger Cotes presented a geometrical argument that can be interpreted"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.log_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Log",
+        "match_kind": "invocation"
+      },
+      "note": "Cotes's identity ix = ln(cos x + i sin x) is not a named lemma but follows from `Complex.log_exp` combined with `Complex.cos_add_sin_I` on the principal branch.",
+      "provenance": "ai-agent1",
+      "id": "65e9b71a4413"
     },
     {
       "kind": "proposition",
@@ -47,7 +79,15 @@
         "section": "History",
         "snippet": "Johann Bernoulli had found that"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "integral_one_div_one_add_sq",
+        "module": "Mathlib.Analysis.SpecialFunctions.Integrals.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The integral ∫ dx/(1+x²) is formalized as `arctan b - arctan a`, but Bernoulli's complex-logarithm form of the identity is not stated as a Mathlib lemma.",
+      "provenance": "ai-agent1",
+      "id": "ab493b179336"
     },
     {
       "kind": "definition",
@@ -56,7 +96,15 @@
         "section": "Differential equation definition",
         "snippet": "the unique differentiable function of a complex variable for which the derivative equals the function"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.hasDerivAt_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.ExpDeriv",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib's `Complex.exp` is defined via its Taylor series rather than as the solution of y' = y; `Complex.hasDerivAt_exp` plus `Complex.exp_zero` give the defining ODE properties but no uniqueness characterization theorem exists.",
+      "provenance": "ai-agent1",
+      "id": "449d0fa007f9"
     },
     {
       "kind": "definition",
@@ -65,7 +113,15 @@
         "section": "Power series definition",
         "snippet": "For complex z"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp",
+        "module": "Mathlib.Analysis.Complex.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.exp` is defined as the Cauchy-sequence limit of the partial sums Σ z^n/n!, exactly the power-series definition.",
+      "provenance": "ai-agent1",
+      "id": "37b566d8936b"
     },
     {
       "kind": "proposition",
@@ -74,7 +130,15 @@
         "section": "Power series definition",
         "snippet": "this power series has an infinite radius of convergence"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedSpace.expSeries_radius_eq_top",
+        "module": "Mathlib.Analysis.Normed.Algebra.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "Proves the formal multilinear series for `exp` has radius equal to ∞.",
+      "provenance": "ai-agent1",
+      "id": "0dcc334bf06a"
     },
     {
       "kind": "definition",
@@ -83,7 +147,15 @@
         "section": "Limit definition",
         "snippet": "Here, n is restricted to positive integers"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.tendsto_one_add_div_pow_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.LogBounds",
+        "match_kind": "exact"
+      },
+      "note": "States (1 + t/n)^n → exp t, the limit characterization of exp (real analogue `Real.tendsto_one_add_div_pow_exp` also present).",
+      "provenance": "ai-agent1",
+      "id": "fcd5c952b88f"
     },
     {
       "kind": "proposition",
@@ -92,6 +164,30 @@
         "section": "Using differentiation",
         "snippet": "This proof shows that the quotient of the trigonometric and exponential expressions is the constant function of one"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The conclusion is `Complex.cos_add_sin_I`, but the specific differentiation-of-quotient proof is not isolated as its own Mathlib lemma.",
+      "provenance": "ai-agent1",
+      "id": "89e728bc57f4"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponential function is never zero",
+      "anchor": {
+        "section": "Using differentiation",
+        "snippet": "the exponential function is never zero"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_ne_zero",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Analytic",
+        "match_kind": "exact"
+      },
+      "note": "States `Complex.exp z ≠ 0`, the fact cited in the differentiation proof to justify dividing by exp.",
       "provenance": "ai-agent1"
     },
     {
@@ -101,7 +197,15 @@
         "section": "Using power series",
         "snippet": "Here is a proof of Euler's formula using power-series expansions"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.hasSum_cos",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Series",
+        "match_kind": "invocation"
+      },
+      "note": "The ingredients (`Complex.hasSum_cos`, `Complex.hasSum_sin`, exp power-series definition) are formalized, but a separate power-series proof of Euler's formula is not packaged as its own theorem.",
+      "provenance": "ai-agent1",
+      "id": "fa2f550dcbc1"
     },
     {
       "kind": "proposition",
@@ -110,7 +214,15 @@
         "section": "Using polar coordinates",
         "snippet": "Another proof"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The polar-coordinates proof of Euler's formula is not formalized as a distinct Mathlib statement.",
+      "provenance": "ai-agent1",
+      "id": "931db3f178e8"
     },
     {
       "kind": "proposition",
@@ -119,7 +231,15 @@
         "section": "Interpretation of the formula",
         "snippet": "the function e iφ is a unit complex number"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.range_exp_mul_I",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Arg",
+        "match_kind": "exact"
+      },
+      "note": "Proves the range of x ↦ exp(x * I) equals the unit sphere (with `Complex.norm_exp_ofReal_mul_I` giving ‖exp(x*I)‖ = 1).",
+      "provenance": "ai-agent1",
+      "id": "4086ef9c9ba0"
     },
     {
       "kind": "proposition",
@@ -128,6 +248,30 @@
         "section": "Interpretation of the formula",
         "snippet": "Any complex number z = x + iy , and its complex conjugate"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.norm_mul_exp_arg_mul_I",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Arg",
+        "match_kind": "exact"
+      },
+      "note": "States ‖x‖ * exp(arg x * I) = x, the polar representation of any complex number.",
+      "provenance": "ai-agent1",
+      "id": "d6469a7f21ab"
+    },
+    {
+      "kind": "definition",
+      "label": "Argument of a complex number",
+      "anchor": {
+        "section": "Interpretation of the formula",
+        "snippet": "φ is the argument of z"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.arg",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Arg",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.arg z` is the principal argument in (-π, π], defined via `Real.arccos`/`Real.arcsin` and matching the `atan2(y,x)` convention described.",
       "provenance": "ai-agent1"
     },
     {
@@ -137,7 +281,15 @@
         "section": "Use of the formula to define the logarithm of complex numbers",
         "snippet": "this can be used as the definition for the complex logarithm"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.log",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Log",
+        "match_kind": "exact"
+      },
+      "note": "Defined as `Real.log ‖x‖ + arg x * I`, the principal-branch complex logarithm built from polar form.",
+      "provenance": "ai-agent1",
+      "id": "4cfb7281202c"
     },
     {
       "kind": "theorem",
@@ -146,7 +298,15 @@
         "section": "Use of the formula to define the logarithm of complex numbers",
         "snippet": "implies several trigonometric identities , as well as de Moivre's formula"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.cos_add_sin_mul_I_pow",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "States (cos z + sin z * I)^n = cos(n z) + sin(n z) * I, explicitly tagged as `De Moivre's formula`.",
+      "provenance": "ai-agent1",
+      "id": "2fa31a06b595"
     },
     {
       "kind": "proposition",
@@ -155,7 +315,15 @@
         "section": "Relationship to trigonometry",
         "snippet": "an interpretation of the sine and cosine functions as weighted sums of the exponential function"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.two_cos",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "States 2 cos x = exp(x*I) + exp(-x*I) (with companion `Complex.two_sin`), the standard exponential expressions for sin and cos.",
+      "provenance": "ai-agent1",
+      "id": "6738f39c5547"
     },
     {
       "kind": "definition",
@@ -164,6 +332,30 @@
         "section": "Relationship to trigonometry",
         "snippet": "These formulas can even serve as the definition of the trigonometric functions for complex arguments"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.cos",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.cos` and `Complex.sin` are defined in Mathlib via the exponential formulas (e.g. cos z = (exp(z*I) + exp(-z*I))/2).",
+      "provenance": "ai-agent1",
+      "id": "ca1321a17e6d"
+    },
+    {
+      "kind": "proposition",
+      "label": "cos(iy) = cosh y",
+      "anchor": {
+        "section": "Relationship to trigonometry",
+        "snippet": "For example, letting x = iy"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.cos_mul_I",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "States cos(y * I) = cosh y, with `Complex.sin_mul_I` giving sin(y * I) = sinh y * I; these are the identities relating complex trig at imaginary argument to hyperbolic functions.",
       "provenance": "ai-agent1"
     },
     {
@@ -173,7 +365,15 @@
         "section": "Relationship to trigonometry",
         "snippet": "This formula is used for recursive generation of cos nx"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.T_complex_cos",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Chebyshev.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Chebyshev polynomials evaluated at cos θ give cos(n θ) and the recursion is via the polynomial recurrence, but the specific de-Moivre-based recursion in the article isn't a separate lemma.",
+      "provenance": "ai-agent1",
+      "id": "db4ee584bb85"
     },
     {
       "kind": "theorem",
@@ -182,7 +382,15 @@
         "section": "Topological interpretation",
         "snippet": "Euler's formula states that the imaginary exponential function"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Circle.exp",
+        "module": "Mathlib.Analysis.Complex.Circle",
+        "match_kind": "exact"
+      },
+      "note": "Defines the continuous map ℝ → Circle by t ↦ exp(t*I) (a surjective group homomorphism onto S¹).",
+      "provenance": "ai-agent1",
+      "id": "458ec8f9a2dd"
     },
     {
       "kind": "proposition",
@@ -191,7 +399,15 @@
         "section": "Topological interpretation",
         "snippet": "Euler's identity says that the kernel of this map is"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_eq_one_iff",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Log",
+        "match_kind": "exact"
+      },
+      "note": "States exp x = 1 ↔ ∃ n : ℤ, x = n * (2π * I), giving the kernel as 2π ℤ I (equivalent for ℝ → Circle).",
+      "provenance": "ai-agent1",
+      "id": "3376b68d208c"
     },
     {
       "kind": "example",
@@ -200,7 +416,15 @@
         "section": "Other applications",
         "snippet": "For any point r on this sphere, and x a real number, Euler's formula applies"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Quaternion.exp_of_re_eq_zero",
+        "module": "Mathlib.Analysis.Normed.Algebra.QuaternionExponential",
+        "match_kind": "exact"
+      },
+      "note": "Gives exp of a pure-imaginary quaternion as cos‖q‖ + (sin‖q‖/‖q‖) q, the quaternionic analogue of Euler's formula.",
+      "provenance": "ai-agent1",
+      "id": "973168e12c10"
     },
     {
       "kind": "example",
@@ -209,7 +433,15 @@
         "section": "Other special cases",
         "snippet": "The special case at x = τ"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_two_pi_mul_I",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "exact"
+      },
+      "note": "States exp(2π * I) = 1, the τ = 2π specialization of Euler's formula.",
+      "provenance": "ai-agent1",
+      "id": "9692ded55fcf"
     }
   ]
 }

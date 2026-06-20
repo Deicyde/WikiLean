@@ -18,7 +18,7 @@
         "module": "Init.Prelude",
         "match_kind": "exact"
       },
-      "note": "The principle of mathematical induction on ℕ is built into Lean as Nat.rec; Mathlib's Nat.le_induction in Mathlib.Data.Nat.Init packages the usual ‘base + step’ form.",
+      "note": "The principle of mathematical induction on ℕ is built into Lean as Nat.rec; Mathlib's Nat.le_induction in Mathlib.Data.Nat.Init packages the usual 'base + step' form.",
       "provenance": "ai",
       "id": "3f460946b5d3"
     },
@@ -49,10 +49,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "WellFounded.induction",
-        "module": "Mathlib.Order.WellFounded",
+        "module": "Init.WF",
         "match_kind": "generalization"
       },
-      "note": "Structural induction is realized via Lean's auto-generated .rec principles and Mathlib's WellFounded.induction (see Mathlib/Order/WellFounded.lean).",
+      "note": "Structural induction is realized via Lean's auto-generated .rec principles and WellFounded.induction (Init.WF, re-exported by Mathlib.Order.WellFounded).",
       "provenance": "ai",
       "id": "1ba15c295327"
     },
@@ -137,7 +137,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Grep for sin patterns in Mathlib/Analysis turned up |sin x| ≤ |x| and Lipschitz bounds but no |sin (n·x)| ≤ n |sin x| statement.",
+      "note": "Loogle for the conclusion pattern and grep of Mathlib's trigonometry files turned up |sin x| ≤ |x| (Real.abs_sin_le_abs) and Lipschitz bounds but no |sin (n·x)| ≤ n |sin x| statement.",
       "provenance": "ai",
       "id": "49d95e2ea571"
     },
@@ -201,11 +201,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Prod.lex_wf",
+        "decl": "Prod.Lex.instIsWellFounded",
         "module": "Mathlib.Order.RelClasses",
         "match_kind": "generalization"
       },
-      "note": "Double induction is realized via product/lexicographic well-foundedness; Mathlib/Order/RelClasses.lean shows induction in two variables using WellFoundedLT.induction nested.",
+      "note": "Double induction is realized via product/lexicographic well-foundedness; Prod.Lex.instIsWellFounded in Mathlib/Order/RelClasses.lean gives the well-foundedness needed for nested induction on two counters.",
       "provenance": "ai",
       "id": "aebdf6f21a51"
     },
@@ -222,7 +222,7 @@
         "module": "Mathlib.Order.WellFounded",
         "match_kind": "generalization"
       },
-      "note": "Mathlib has WellFounded.induction_bot / induction_bot' (Mathlib/Order/WellFounded.lean) capturing the descent principle, but no decl named ‘infinite descent’ was found.",
+      "note": "Mathlib has WellFounded.induction_bot in Mathlib/Order/WellFounded.lean capturing the descent principle, but no decl named 'infinite descent' was found.",
       "provenance": "ai",
       "id": "c16ef9429330"
     },
@@ -321,7 +321,7 @@
         "module": "Mathlib.Data.Nat.Fib.Basic",
         "match_kind": "invocation"
       },
-      "note": "Mathlib defines Nat.fib by ordinary recursion and proves many lemmas using induction, but there is no headline example labelled ‘Fibonacci via strong induction’.",
+      "note": "Mathlib defines Nat.fib by ordinary recursion and proves many lemmas using induction, but there is no headline example labelled 'Fibonacci via strong induction'.",
       "provenance": "ai",
       "anchors": [
         {
@@ -345,7 +345,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Nat.exists_prime_and_dvd",
-        "module": "Mathlib.Data.Nat.Prime.Basic",
+        "module": "Mathlib.Data.Nat.Prime.Defs",
         "match_kind": "special_case"
       },
       "note": "The existence of a prime divisor (proved by strong induction) is Nat.exists_prime_and_dvd; the full UFD statement is in Mathlib.RingTheory.UniqueFactorizationDomain.",
@@ -392,7 +392,7 @@
         "module": "Mathlib.Data.Nat.Init",
         "match_kind": "generalization"
       },
-      "note": "Nat.decreasingInduction in Mathlib/Data/Nat/Init.lean provides downward induction, the ‘backward’ half of Cauchy's forward-backward scheme.",
+      "note": "Nat.decreasingInduction in Mathlib/Data/Nat/Init.lean provides downward induction, the 'backward' half of Cauchy's forward-backward scheme.",
       "provenance": "ai",
       "id": "16584bf3d61b"
     },
@@ -479,7 +479,7 @@
         },
         {
           "type": "math_alttext",
-          "value": "{\\displaystyle \\forall A{\\Bigl (}0\\in A\\land \\forall k\\in \\mathbb {N} {\\bigl (}k\\in A\\to (k+1)\\in A{\\bigr )}\\to \\mathbb {N} \\subseteq A{\\Bigr )}}"
+          "value": "{\\displaystyle \\forall A{\\Bigl (}0\\in A\\land \\forall k\\in \\mathbb {N} {\\bigl (}k\\in A\\to (k+1)\\in A{\\bigr )}\\to \\mathbb {N} \\subseteq A{\\Bigr )}"
         }
       ],
       "id": "e08a0e11af8d"
@@ -494,10 +494,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "WellFounded.induction",
-        "module": "Mathlib.Order.WellFounded",
+        "module": "Init.WF",
         "match_kind": "exact"
       },
-      "note": "WellFounded.induction (and Ordinal.induction in Mathlib/SetTheory/Ordinal) provide the transfinite/well-founded induction principle.",
+      "note": "WellFounded.induction (Init.WF, re-exported in Mathlib.Order.WellFounded) provides the transfinite/well-founded induction principle.",
       "provenance": "ai",
       "id": "e3c9ee03b85c"
     },
@@ -510,11 +510,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "wellFounded_iff_has_min",
+        "decl": "WellFounded.wellFounded_iff_has_min",
         "module": "Mathlib.Order.WellFounded",
         "match_kind": "generalization"
       },
-      "note": "Mathlib proves the equivalence well-founded ↔ every nonempty set has a minimum element (wellFounded_iff_has_min), implicitly the natural-number equivalence between induction and well-ordering.",
+      "note": "Mathlib proves the equivalence well-founded ↔ every nonempty set has a minimum element (WellFounded.wellFounded_iff_has_min), implicitly the natural-number equivalence between induction and well-ordering.",
       "provenance": "ai",
       "id": "648a29e456eb"
     },
@@ -534,6 +534,38 @@
       "note": "No counterexample illustrating successor-induction failure on a non-ω well-ordered set was located in Mathlib.",
       "provenance": "ai",
       "id": "5167f5c23184"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sum of first n odd integers equals n²",
+      "anchor": {
+        "section": "History",
+        "snippet": "the sum of the first n odd integers is n"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Finset.sum_range_id_mul_two",
+        "module": "Mathlib.Algebra.BigOperators.Intervals",
+        "match_kind": "generalization"
+      },
+      "note": "Maurolico's identity ∑_{k<n} (2k+1) = n² follows from Finset.sum_range_id_mul_two; no headline lemma named for this identity was located.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "AM-GM inequality (Cauchy's forward-backward proof)",
+      "anchor": {
+        "section": "Forward-backward induction",
+        "snippet": "the inequality of arithmetic and geometric means"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.geom_mean_le_arith_mean_weighted",
+        "module": "Mathlib.Analysis.MeanInequalities",
+        "match_kind": "generalization"
+      },
+      "note": "The weighted AM-GM inequality is Real.geom_mean_le_arith_mean_weighted in Mathlib.Analysis.MeanInequalities; Cauchy's specific forward-backward induction proof is not separately formalized.",
+      "provenance": "ai"
     }
   ]
 }

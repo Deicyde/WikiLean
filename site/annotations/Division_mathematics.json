@@ -32,7 +32,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Nat.div_add_mod",
-        "module": "Init.Data.Nat",
+        "module": "Init.Data.Nat.Div.Basic",
         "match_kind": "exact"
       },
       "note": "`Nat.div_add_mod` (with `Nat.mod_lt`) gives the quotient-remainder decomposition for natural numbers.",
@@ -72,6 +72,86 @@
       "note": "A pedagogical numerical example, not a theorem of Mathlib.",
       "provenance": "ai",
       "id": "fbcc2f4da66a"
+    },
+    {
+      "kind": "definition",
+      "label": "Euclidean domain",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Those in which a Euclidean division (with remainder) is defined are called Euclidean domains"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanDomain",
+        "module": "Mathlib.Algebra.EuclideanDomain.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`EuclideanDomain` is a Mathlib typeclass capturing rings equipped with a Euclidean division (quotient + remainder with a well-founded size function).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Polynomial ring as Euclidean domain",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "polynomial rings in one indeterminate"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.instEuclideanDomain",
+        "module": "Mathlib.Algebra.Polynomial.FieldDivision",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib provides a `EuclideanDomain` instance on `R[X]` (`Polynomial R`) when `R` is a field, formalizing the Euclidean-division structure on univariate polynomial rings.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Field and division ring",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Those in which a division (with a single result) by all nonzero elements is defined are called fields and division rings"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DivisionRing",
+        "module": "Mathlib.Algebra.Field.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`DivisionRing` (and its commutative variant `Field`) formalize structures in which every nonzero element has a multiplicative inverse, so division by nonzero elements is total.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Units in a ring",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "In a ring the elements by which division is always possible are called the units"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsUnit",
+        "module": "Mathlib.Algebra.Group.Units.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsUnit` (and the type `αˣ` of units) formalize the invertible elements of a monoid/ring — those by which division is unambiguously possible.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quotient group",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Another generalization of division to algebraic structures is the quotient group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuotientGroup.Quotient.group",
+        "module": "Mathlib.GroupTheory.QuotientGroup.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`QuotientGroup.Quotient.group` provides the `Group (G ⧸ N)` instance for a normal subgroup, formalizing the quotient group construction.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -225,6 +305,22 @@
       "note": "`div_eq_mul_inv` directly states the computation of `/` via multiplication by an inverse.",
       "provenance": "ai",
       "id": "a40e4d06f0cf"
+    },
+    {
+      "kind": "proposition",
+      "label": "Modular inverses for prime modulus",
+      "anchor": {
+        "section": "By computer",
+        "snippet": "In modular arithmetic (modulo a prime number) and for real numbers , nonzero numbers have a multiplicative inverse"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.instField",
+        "module": "Mathlib.Algebra.Field.ZMod",
+        "match_kind": "exact"
+      },
+      "note": "`ZMod.instField` provides a `Field` instance on `ZMod p` for prime `p`, giving multiplicative inverses for every nonzero element.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -508,7 +604,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "div_zero",
-        "module": "Mathlib.Algebra.GroupWithZero.Defs",
+        "module": "Mathlib.Algebra.GroupWithZero.Basic",
         "match_kind": "invocation"
       },
       "note": "Mathlib defines `a / 0 = 0` in any `GroupWithZero` (via `inv_zero`/`div_zero`) rather than treating it as undefined, so the Wikipedia 'undefined' statement is not literally formalized.",

@@ -58,6 +58,22 @@
     },
     {
       "kind": "theorem",
+      "label": "Cantor's diagonal argument",
+      "anchor": {
+        "section": "Naive set theory",
+        "snippet": "the more familiar proof using his diagonal argument"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.cantor_surjective",
+        "module": "Mathlib.Logic.Function.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Function.cantor_surjective` states no function `α → Set α` is surjective, the core of Cantor's diagonal argument.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
       "label": "Cantor's theorem",
       "anchor": {
         "section": "Naive set theory",
@@ -89,6 +105,86 @@
       "note": "Both `Ordinal` and `Cardinal` are fully developed, including their transfinite arithmetic.",
       "provenance": "ai",
       "id": "111c2441505a"
+    },
+    {
+      "kind": "definition",
+      "label": "Aleph numbers",
+      "anchor": {
+        "section": "Naive set theory",
+        "snippet": "His notation for the cardinal numbers was the Hebrew letter"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.aleph",
+        "module": "Mathlib.SetTheory.Cardinal.Aleph",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.aleph` enumerates the infinite cardinals indexed by ordinals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Omega ordinal",
+      "anchor": {
+        "section": "Naive set theory",
+        "snippet": "for the ordinals he employed the Greek letter"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ordinal.omega0",
+        "module": "Mathlib.SetTheory.Ordinal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Ordinal.omega0` is the first infinite ordinal ω, equal to the order type of ℕ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalence relation",
+      "anchor": {
+        "section": "Early history",
+        "snippet": "equivalence relations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Setoid",
+        "module": "Init.Core",
+        "match_kind": "exact"
+      },
+      "note": "`Setoid` (and core Lean's `Equivalence`) formalize equivalence relations as reflexive, symmetric, transitive binary relations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Partition of a set",
+      "anchor": {
+        "section": "Early history",
+        "snippet": "partitions of sets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Setoid.IsPartition",
+        "module": "Mathlib.Data.Setoid.Partition",
+        "match_kind": "exact"
+      },
+      "note": "`Setoid.IsPartition` defines a partition as a collection of pairwise disjoint nonempty sets whose union is the whole type.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Axiom of choice",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "with or without the axiom of choice"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Classical.choice",
+        "module": "Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "Lean's `Classical.choice` is the axiom of choice; Mathlib's set, cardinal, and ordinal theory use classical logic with choice throughout.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -286,7 +382,7 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Set.instEmptyCollectionSet",
+        "decl": "Set.instEmptyCollection",
         "module": "Mathlib.Data.Set.Defs",
         "match_kind": "exact"
       },
@@ -378,6 +474,22 @@
       "note": "Polish spaces (and related Borel/analytic-set machinery) are formalized, but descriptive set theory is a field rather than a single declaration.",
       "provenance": "ai",
       "id": "348996067b70"
+    },
+    {
+      "kind": "definition",
+      "label": "Borel sets",
+      "anchor": {
+        "section": "Descriptive set theory",
+        "snippet": "Many properties of Borel sets can be established in ZFC"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "borel",
+        "module": "Mathlib.MeasureTheory.Constructions.BorelSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`borel` is the smallest σ-algebra containing the open sets of a topological space, so Borel sets are its measurable sets.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -565,6 +677,54 @@
       "note": "Combinatorial set theory is a field rather than a single declaration, and its core results are largely not formalized.",
       "provenance": "ai",
       "id": "eb149f163886"
+    },
+    {
+      "kind": "definition",
+      "label": "Natural numbers",
+      "anchor": {
+        "section": "Mathematical education",
+        "snippet": "of natural numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat",
+        "module": "Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "`Nat` (notation `ℕ`) is the type of natural numbers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Integers",
+      "anchor": {
+        "section": "Mathematical education",
+        "snippet": "of integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int",
+        "module": "Init.Data.Int.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Int` (notation `ℤ`) is the type of integers, constructed from `Nat`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Real numbers",
+      "anchor": {
+        "section": "Mathematical education",
+        "snippet": "of real numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real",
+        "module": "Mathlib.Data.Real.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Real` (notation `ℝ`) is the type of real numbers, defined as a quotient of Cauchy sequences of rationals.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",

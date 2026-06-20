@@ -11,7 +11,15 @@
         "section": "(Lead)",
         "snippet": "the standard deviation is a measure of the amount of variation of the values of a variable about its (arithmetic) average"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines variance for real-valued random variables but has no standard-deviation declaration named as such.",
+      "provenance": "ai-agent1",
+      "id": "d3c0636b6d1e"
     },
     {
       "kind": "definition",
@@ -20,7 +28,15 @@
         "section": "(Lead)",
         "snippet": "is the square root of its variance"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `stdDev`/`standardDeviation` declaration exists in Mathlib; only `ProbabilityTheory.variance` is defined.",
+      "provenance": "ai-agent1",
+      "id": "19781b484b3e"
     },
     {
       "kind": "definition",
@@ -29,7 +45,15 @@
         "section": "(Lead)",
         "snippet": "the term standard deviation of the sample or sample standard deviation"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of sample standard deviation.",
+      "provenance": "ai-agent1",
+      "id": "cb14f1d49bc7"
     },
     {
       "kind": "definition",
@@ -38,7 +62,15 @@
         "section": "Relationship with standard error and statistical significance",
         "snippet": "The sample mean's standard error is the standard deviation of the set of means"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of standard error of the sample mean was found in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "159711ed5702"
     },
     {
       "kind": "example",
@@ -47,7 +79,15 @@
         "section": "Population standard deviation of grades of eight students",
         "snippet": "Suppose that the entire population of interest is eight students in a particular class"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This numerical illustration is not present in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "95f1417f0a11"
     },
     {
       "kind": "definition",
@@ -56,7 +96,15 @@
         "section": "Population standard deviation of grades of eight students",
         "snippet": "This is known as Bessel's correction"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration referring to Bessel's correction or the (n-1) divisor was found.",
+      "provenance": "ai-agent1",
+      "id": "cdf783e0da1e"
     },
     {
       "kind": "example",
@@ -65,7 +113,15 @@
         "section": "Standard deviation of average height for adult men",
         "snippet": "the average height for adult men in the United States is about 69 inches"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Real-world numerical example not present in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "972ace4eee79"
     },
     {
       "kind": "definition",
@@ -74,7 +130,15 @@
         "section": "Definition of population values",
         "snippet": "Let μ be the expected value (the average) of a random variable X with probability density function f"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "generalization"
+      },
+      "note": "Variance of a random variable is defined as `Var[X] = 𝔼[(X − 𝔼[X])²]`, but its square root (the SD) is not separately named.",
+      "provenance": "ai-agent1",
+      "id": "2407d7c2fa76"
     },
     {
       "kind": "definition",
@@ -83,7 +147,15 @@
         "section": "Definition of population values",
         "snippet": "The standard deviation of a probability distribution is the same as that of a random variable having that distribution"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `variance` is parameterised by the underlying measure, but there is no dedicated SD-of-distribution definition.",
+      "provenance": "ai-agent1",
+      "id": "0f91e4dc5f03"
     },
     {
       "kind": "proposition",
@@ -92,6 +164,30 @@
         "section": "Definition of population values",
         "snippet": "Not all random variables have a standard deviation"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.evariance_lt_top_iff_memLp",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib characterises finiteness of `evariance` via `MemLp X 2`, the analogue of variance/SD existence.",
+      "provenance": "ai-agent1",
+      "id": "7f1d7c5a94bd"
+    },
+    {
+      "kind": "example",
+      "label": "Cauchy distribution has no SD",
+      "anchor": {
+        "section": "Definition of population values",
+        "snippet": "The Cauchy distribution has neither a mean nor a standard deviation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not have a Cauchy distribution definition or a statement about non-existence of its moments.",
       "provenance": "ai-agent1"
     },
     {
@@ -101,7 +197,15 @@
         "section": "Discrete random variable",
         "snippet": "In the case where X takes random values from a finite data set"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "generalization"
+      },
+      "note": "Variance specialises to the discrete equiprobable case via a uniform measure, but no dedicated formula is provided.",
+      "provenance": "ai-agent1",
+      "id": "51f582afdf1d"
     },
     {
       "kind": "definition",
@@ -110,7 +214,15 @@
         "section": "Discrete random variable",
         "snippet": "If, instead of having equal probabilities, the values have different probabilities"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "generalization"
+      },
+      "note": "Captured implicitly by `variance` on a discrete weighted measure but no explicit weighted-sum formula.",
+      "provenance": "ai-agent1",
+      "id": "8690ddc9dbee"
     },
     {
       "kind": "definition",
@@ -119,7 +231,15 @@
         "section": "Continuous random variable",
         "snippet": "The standard deviation of a continuous real-valued random variable X with probability density function"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance_eq_integral",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "generalization"
+      },
+      "note": "Variance is expressed as an integral form `∫ (X − 𝔼[X])² dμ`, generalising the continuous-density formula.",
+      "provenance": "ai-agent1",
+      "id": "7c160227a076"
     },
     {
       "kind": "example",
@@ -128,7 +248,15 @@
         "section": "Continuous random variable",
         "snippet": "in the case of the log-normal distribution with parameters"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Log-normal distribution is not defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "8961951a176c"
     },
     {
       "kind": "definition",
@@ -137,7 +265,15 @@
         "section": "Estimation",
         "snippet": "Such a statistic is called an estimator"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formal notion of statistical estimator for SD.",
+      "provenance": "ai-agent1",
+      "id": "8de7a5d78f59"
     },
     {
       "kind": "definition",
@@ -146,7 +282,15 @@
         "section": "Uncorrected sample standard deviation",
         "snippet": "This estimator, denoted by s N , is known as the uncorrected sample standard deviation"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration corresponding to s_N exists.",
+      "provenance": "ai-agent1",
+      "id": "059d4ed5d253"
     },
     {
       "kind": "proposition",
@@ -155,7 +299,15 @@
         "section": "Uncorrected sample standard deviation",
         "snippet": "This is a consistent estimator"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The strong law of large numbers is in Mathlib (`ProbabilityTheory.strong_law_ae`) but consistency of the SD estimator is not stated.",
+      "provenance": "ai-agent1",
+      "id": "e008eccb68ac"
     },
     {
       "kind": "definition",
@@ -164,7 +316,15 @@
         "section": "Corrected sample standard deviation",
         "snippet": "yielding the corrected sample standard deviation, denoted by s"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration for the Bessel-corrected estimator s.",
+      "provenance": "ai-agent1",
+      "id": "f062770b4742"
     },
     {
       "kind": "proposition",
@@ -173,6 +333,30 @@
         "section": "Corrected sample standard deviation",
         "snippet": "An unbiased estimator for the variance is given by applying Bessel's correction"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No unbiased-estimator statement involving the (n-1) divisor is in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "385c54dc4430"
+    },
+    {
+      "kind": "proposition",
+      "label": "Jensen's inequality forces downward bias in s",
+      "anchor": {
+        "section": "Corrected sample standard deviation",
+        "snippet": "Here taking the square root introduces further downward bias, by Jensen's inequality"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_concaveOn_le",
+        "module": "Mathlib.MeasureTheory.Integral.MeanInequalities",
+        "match_kind": "generalization"
+      },
+      "note": "Jensen's inequality for concave functions is in Mathlib in several forms; the specific application to sqrt of sample variance is not.",
       "provenance": "ai-agent1"
     },
     {
@@ -182,7 +366,15 @@
         "section": "Unbiased sample standard deviation",
         "snippet": "For the normal distribution, an unbiased estimator is given by"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Correction factor c_4(n) is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "2b68872f58a9"
     },
     {
       "kind": "proposition",
@@ -191,7 +383,15 @@
         "section": "Unbiased sample standard deviation",
         "snippet": "the sampling distribution of the sample standard deviation follows a (scaled) chi distribution"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The chi and chi-square distributions are not defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "7e9a42e89709"
     },
     {
       "kind": "proposition",
@@ -200,7 +400,15 @@
         "section": "Unbiased sample standard deviation",
         "snippet": "An approximation can be given by replacing N − 1 with N − 1.5"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Numerical approximation not present in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "643d41487b03"
     },
     {
       "kind": "definition",
@@ -209,7 +417,16 @@
         "section": "Confidence interval of a sampled standard deviation",
         "snippet": "where [MATH] is the p -th quantile of the chi-square distribution"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No confidence-interval construction for sample SD is formalized.",
+      "provenance": "ai-agent1",
+      "moderation_flag": "Anchor snippet contains '[MATH]' literal; ideally should be replaced with text actually present in extracted prose (kept verbatim to honor the preserve-id rule).",
+      "id": "be4046e104d9"
     },
     {
       "kind": "proposition",
@@ -218,7 +435,15 @@
         "section": "Bounds on standard deviation",
         "snippet": "an upper bound on the standard deviation s is given by"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Although `variance_le_sq_of_bounded` bounds variance for bounded RVs, the sample-range bound on sample SD is not stated.",
+      "provenance": "ai-agent1",
+      "id": "acb000b0db9e"
     },
     {
       "kind": "proposition",
@@ -227,7 +452,15 @@
         "section": "Bounds on standard deviation",
         "snippet": "This so-called range rule is useful in sample size estimation"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Heuristic rule for sample size is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "9fa2ea46a848"
     },
     {
       "kind": "proposition",
@@ -236,7 +469,15 @@
         "section": "Identities and mathematical properties",
         "snippet": "The standard deviation is invariant under changes in location , and scales directly with the scale of the random variable"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance_add_const",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "generalization"
+      },
+      "note": "`variance_add_const` and `variance_const_mul` give the variance-level analogues; the SD-level statement is not separately formalized.",
+      "provenance": "ai-agent1",
+      "id": "85663c4656cf"
     },
     {
       "kind": "proposition",
@@ -245,7 +486,15 @@
         "section": "Identities and mathematical properties",
         "snippet": "The standard deviation of the sum of two random variables can be related to their individual standard deviations and the covariance between them"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance_add",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "generalization"
+      },
+      "note": "`variance_add` proves `Var(X+Y) = Var X + Var Y + 2 Cov(X,Y)`, the variance form of the stated SD identity.",
+      "provenance": "ai-agent1",
+      "id": "783d59dfea48"
     },
     {
       "kind": "proposition",
@@ -254,7 +503,15 @@
         "section": "Identities and mathematical properties",
         "snippet": "the standard deviation is equal to the square root of the difference between the average of the squares of the values and the square of the average value"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance_eq_sub",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "exact"
+      },
+      "note": "`variance_eq_sub` states `Var[X] = 𝔼[X²] − (𝔼[X])²` under a probability measure.",
+      "provenance": "ai-agent1",
+      "id": "410154220845"
     },
     {
       "kind": "example",
@@ -263,6 +520,30 @@
         "section": "Interpretation and application",
         "snippet": "each of the three populations {0, 0, 14, 14}, {0, 6, 8, 14} and {6, 6, 8, 8} has a mean of 7"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pedagogical example is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "35027c9fb844"
+    },
+    {
+      "kind": "definition",
+      "label": "Mean absolute deviation (alternative)",
+      "anchor": {
+        "section": "Interpretation and application",
+        "snippet": "An example is the mean absolute deviation , which might be considered a more direct measure of average distance"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `meanAbsoluteDeviation` declaration is present in Mathlib.",
       "provenance": "ai-agent1"
     },
     {
@@ -272,7 +553,15 @@
         "section": "Experiment, industrial and hypothesis testing",
         "snippet": "Particle physics conventionally uses a standard of"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Application-domain convention not present in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "d1e02d01771f"
     },
     {
       "kind": "example",
@@ -281,7 +570,15 @@
         "section": "Weather",
         "snippet": "the range of daily maximum temperatures for cities near the coast is smaller than for cities inland"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Application example not formalized.",
+      "provenance": "ai-agent1",
+      "id": "79838038f607"
     },
     {
       "kind": "example",
@@ -290,7 +587,15 @@
         "section": "Finance",
         "snippet": "assume an investor had to choose between two stocks"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Finance example not present in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "2dd213f0b41e"
     },
     {
       "kind": "proposition",
@@ -299,7 +604,15 @@
         "section": "Geometric interpretation",
         "snippet": "the distance between P and M (which is the same as the orthogonal distance between P and the line L )"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No geometric formulation of SD as distance to the diagonal is stated.",
+      "provenance": "ai-agent1",
+      "id": "baea95353e96"
     },
     {
       "kind": "theorem",
@@ -308,7 +621,15 @@
         "section": "Chebyshev's inequality",
         "snippet": "Chebyshev's inequality ensures that, for all distributions for which the standard deviation is defined"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.meas_ge_le_variance_div_sq",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "exact"
+      },
+      "note": "Chebyshev's inequality is proved as `meas_ge_le_variance_div_sq` (plus an `evariance` variant).",
+      "provenance": "ai-agent1",
+      "id": "3cc999aa03f6"
     },
     {
       "kind": "theorem",
@@ -317,7 +638,15 @@
         "section": "Rules for normally distributed data",
         "snippet": "The central limit theorem states that the distribution of an average of many independent, identically distributed random variables tends toward the famous bell-shaped normal distribution"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No central limit theorem declaration was found in Mathlib (only the strong law of large numbers).",
+      "provenance": "ai-agent1",
+      "id": "45e5eaedb4a9"
     },
     {
       "kind": "proposition",
@@ -326,7 +655,15 @@
         "section": "Rules for normally distributed data",
         "snippet": "the proportion of data values within z standard deviations of the mean is defined by"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Normal-CDF based proportion formula is not stated in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "f17c2036f2b0"
     },
     {
       "kind": "theorem",
@@ -335,7 +672,15 @@
         "section": "Rules for normally distributed data",
         "snippet": "This is known as the 68–95–99.7 rule , or the empirical rule"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Empirical rule percentages are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "3eb6944df8dd"
     },
     {
       "kind": "definition",
@@ -344,7 +689,15 @@
         "section": "Standard deviation matrix",
         "snippet": "It is the symmetric square root of the covariance matrix"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No SD-matrix (symmetric square root of covariance matrix) declaration was found.",
+      "provenance": "ai-agent1",
+      "id": "678fbf102d3e"
     },
     {
       "kind": "proposition",
@@ -353,7 +706,15 @@
         "section": "Properties",
         "snippet": "correspond to the axes of the 1 sd error ellipsoid of the multivariate normal distribution"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Error-ellipsoid characterisation is not present.",
+      "provenance": "ai-agent1",
+      "id": "0442b22cb786"
     },
     {
       "kind": "proposition",
@@ -362,7 +723,15 @@
         "section": "Properties",
         "snippet": "The standard deviation of the projection of the multivariate distribution"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement about SD of one-dimensional projection of a multivariate distribution.",
+      "provenance": "ai-agent1",
+      "id": "b9423ca39a3a"
     },
     {
       "kind": "proposition",
@@ -371,7 +740,15 @@
         "section": "Properties",
         "snippet": "The standard deviation of a slice of the multivariate distribution"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No conditional-slice SD statement was found.",
+      "provenance": "ai-agent1",
+      "id": "1aa2a34c57fe"
     },
     {
       "kind": "definition",
@@ -380,7 +757,15 @@
         "section": "Properties",
         "snippet": "This is called the Mahalanobis whitening transform"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mahalanobis/whitening transform not defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "8b383fea7aa5"
     },
     {
       "kind": "theorem",
@@ -389,7 +774,15 @@
         "section": "Relationship between standard deviation and mean",
         "snippet": "it is possible to show that σ ( r ) has a unique minimum at the mean"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The variational characterisation of the mean as minimiser of E[(X−r)²] is not separately formalized.",
+      "provenance": "ai-agent1",
+      "id": "346d3a8d4d08"
     },
     {
       "kind": "definition",
@@ -398,7 +791,15 @@
         "section": "Relationship between standard deviation and mean",
         "snippet": "Variability can also be measured by the coefficient of variation"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `coefficientOfVariation` definition exists in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "2248a67f138e"
     },
     {
       "kind": "proposition",
@@ -407,7 +808,15 @@
         "section": "Standard deviation of the mean",
         "snippet": "the standard deviation of the mean ( SDOM ) is related to the standard deviation of the distribution by"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `IndepFun.variance_sum` for the variance of an i.i.d. sum but does not state the σ/√N SDOM formula.",
+      "provenance": "ai-agent1",
+      "id": "bfe24d7d83f4"
     },
     {
       "kind": "proposition",
@@ -416,7 +825,15 @@
         "section": "Rapid calculation methods",
         "snippet": "The following two formulas can represent a running (repeatedly updated) standard deviation"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Welford-style online update formulas are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "cd7c96e61578"
     },
     {
       "kind": "proposition",
@@ -425,7 +842,16 @@
         "section": "Weighted calculation",
         "snippet": "When the values [MATH] are weighted with unequal weights"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Weighted online update formula is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "moderation_flag": "Anchor snippet contains '[MATH]' literal; preserved verbatim to honor the id but should be re-anchored on a non-[MATH] substring in future.",
+      "id": "12c77fe8fd0d"
     },
     {
       "kind": "definition",
@@ -434,6 +860,30 @@
         "section": "Standard deviation index",
         "snippet": "The standard deviation index (SDI) is used in external quality assessments"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quality-control SDI metric is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "527d0dafca1b"
+    },
+    {
+      "kind": "definition",
+      "label": "Average absolute deviation (alternative to SD)",
+      "anchor": {
+        "section": "Alternatives",
+        "snippet": "Standard deviation is algebraically simpler"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The average/mean absolute deviation is not defined in Mathlib.",
       "provenance": "ai-agent1"
     }
   ]

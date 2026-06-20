@@ -16,7 +16,7 @@
       "mathlib": {
         "decl": "ProbabilityTheory.bayesRisk",
         "module": "Mathlib.Probability.Decision.Risk.Defs",
-        "match_kind": null
+        "match_kind": "generalization"
       },
       "note": "Mathlib has a statistical decision-theory framework (estimators as kernels, risk/Bayes risk) but no definition of a hypothesis test itself.",
       "provenance": "ai",
@@ -296,6 +296,38 @@
     },
     {
       "kind": "definition",
+      "label": "Uniformly most powerful test (UMP)",
+      "anchor": {
+        "section": "Definition of terms",
+        "snippet": "Uniformly most powerful test (UMP)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Uniformly most powerful tests are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Test statistic",
+      "anchor": {
+        "section": "Definition of terms",
+        "snippet": "A statistical hypothesis test compares a test statistic ( z or t for examples) to a threshold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The general notion of a test statistic is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Steps of a frequentist hypothesis test",
       "anchor": {
         "section": "Performing a frequentist hypothesis test in practice",
@@ -322,7 +354,7 @@
       "mathlib": {
         "decl": "MeasureTheory.llr",
         "module": "Mathlib.MeasureTheory.Measure.LogLikelihoodRatio",
-        "match_kind": null
+        "match_kind": "generalization"
       },
       "note": "The likelihood ratio underlying the rule is defined (`llr`/`rnDeriv`), but the decision rule itself is not formalized.",
       "provenance": "ai",
@@ -492,11 +524,27 @@
       "mathlib": {
         "decl": "MeasureTheory.llr",
         "module": "Mathlib.MeasureTheory.Measure.LogLikelihoodRatio",
-        "match_kind": null
+        "match_kind": "generalization"
       },
       "note": "The likelihood ratio (`llr`/Radon–Nikodym derivative) is formalized, but the Neyman–Pearson optimality lemma itself is not.",
       "provenance": "ai",
       "id": "eb7488cb0834"
+    },
+    {
+      "kind": "definition",
+      "label": "Likelihood ratio",
+      "anchor": {
+        "section": "Neyman–Pearson hypothesis testing",
+        "snippet": "the ratio of their probabilities (a likelihood ratio )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.llr",
+        "module": "Mathlib.MeasureTheory.Measure.LogLikelihoodRatio",
+        "match_kind": "exact"
+      },
+      "note": "The (log-)likelihood ratio is defined in Mathlib via Radon–Nikodym derivatives.",
+      "provenance": "ai"
     },
     {
       "kind": "example",
@@ -514,6 +562,22 @@
       "note": "This three-hypothesis example is not formalized in Mathlib.",
       "provenance": "ai",
       "id": "00881aecf1b5"
+    },
+    {
+      "kind": "definition",
+      "label": "Bayes factor",
+      "anchor": {
+        "section": "Alternatives",
+        "snippet": "Two competing models/hypotheses can be compared using Bayes factors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bayes factors for model comparison are not formalized in Mathlib.",
+      "provenance": "ai"
     }
   ]
 }

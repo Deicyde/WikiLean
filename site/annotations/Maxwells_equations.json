@@ -20,16 +20,6 @@
       },
       "note": "Maxwell's equations as a physical system are not formalized in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Microscopic version in SI units",
-          "snippet": "Maxwell's microscopic equations are written as"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\nabla \\cdot \\mathbf {E} \\,\\,\\,&amp;={\\frac {\\rho }{\\varepsilon _{0}}}\\\\\\nabla \\cdot \\mathbf {B} \\,\\,\\,&amp;=0\\\\\\nabla \\times \\mathbf {E} &amp;=-{\\frac {\\partial \\mathbf {B} }{\\partial t}}\\\\\\nabla \\times \\mathbf {B} &amp;=\\mu _{0}\\left(\\mathbf {J} +\\varepsilon _{0}{\\frac {\\partial \\mathbf {E} }{\\partial t}}\\right)\\end{aligned}}}"
-        }
-      ],
       "id": "921b2725eed8"
     },
     {
@@ -336,16 +326,6 @@
       },
       "note": "Mathlib's parametric-integral lemmas give the Leibniz rule (derivative of an integral equals integral of the derivative) under domination, more general than needed here.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Integral equations",
-          "snippet": "we can bring the differentiation under the integral sign in Faraday's law"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {\\mathrm {d} }{\\mathrm {d} t}}\\iint _{\\Sigma }\\mathbf {B} \\cdot \\mathrm {d} \\mathbf {S} =\\iint _{\\Sigma }{\\frac {\\partial \\mathbf {B} }{\\partial t}}\\cdot \\mathrm {d} \\mathbf {S} \\,,}"
-        }
-      ],
       "id": "cb4e9b6f3abb"
     },
     {
@@ -363,16 +343,6 @@
       },
       "note": "This is a physical volume integral of charge density, not formalized in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Integral equations",
-          "snippet": "The total electric charge Q enclosed in Ω is the volume integral over Ω of the charge density ρ"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle Q=\\iiint _{\\Omega }\\rho \\ \\mathrm {d} V,}"
-        }
-      ],
       "id": "f0a58f1a15be"
     },
     {
@@ -390,16 +360,6 @@
       },
       "note": "Surface flux of a vector field through a surface is not formalized in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Integral equations",
-          "snippet": "The net magnetic flux Φ B is the surface integral of the magnetic field B passing through a fixed surface"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\Phi _{B}=\\iint _{\\Sigma }\\mathbf {B} \\cdot \\mathrm {d} \\mathbf {S} ,}"
-        }
-      ],
       "id": "1db72f1ffef2"
     },
     {
@@ -417,16 +377,6 @@
       },
       "note": "Surface flux of a vector field is not formalized in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Integral equations",
-          "snippet": "The net electric flux Φ E is the surface integral of the electric field E passing through Σ"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\Phi _{E}=\\iint _{\\Sigma }\\mathbf {E} \\cdot \\mathrm {d} \\mathbf {S} ,}"
-        }
-      ],
       "id": "fd866d96b138"
     },
     {
@@ -444,16 +394,6 @@
       },
       "note": "Surface integral of current density is not formalized in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Integral equations",
-          "snippet": "The net electric current I is the surface integral of the electric current density J passing through Σ"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle I=\\iint _{\\Sigma }\\mathbf {J} \\cdot \\mathrm {d} \\mathbf {S} ,}"
-        }
-      ],
       "id": "1b8517f33002"
     },
     {
@@ -482,7 +422,7 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "integral_divergence_of_hasFDerivAt_off_countable",
+        "decl": "MeasureTheory.integral_divergence_of_hasFDerivAt_off_countable",
         "module": "Mathlib.MeasureTheory.Integral.DivergenceTheorem",
         "match_kind": null
       },
@@ -499,7 +439,7 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "integral_divergence_of_hasFDerivAt_off_countable",
+        "decl": "MeasureTheory.integral_divergence_of_hasFDerivAt_off_countable",
         "module": "Mathlib.MeasureTheory.Integral.DivergenceTheorem",
         "match_kind": "special_case"
       },
@@ -522,16 +462,6 @@
       },
       "note": "Mathlib's fundamental lemma of the calculus of variations gives that a function whose integrals against all test functions vanish is a.e. zero, the underlying 'integrand vanishes' principle.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Flux and divergence",
-          "snippet": "this is satisfied if and only if the integrand is zero everywhere"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\iiint _{\\Omega }\\left(\\nabla \\cdot \\mathbf {E} -{\\frac {\\rho }{\\varepsilon _{0}}}\\right)\\,\\mathrm {d} V=0}"
-        }
-      ],
       "id": "c249a0bdaf6d"
     },
     {
@@ -560,26 +490,12 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "integral2_divergence_prod_of_hasFDerivAt",
+        "decl": "MeasureTheory.integral2_divergence_prod_of_hasFDerivAt",
         "module": "Mathlib.MeasureTheory.Integral.DivergenceTheorem",
         "match_kind": "special_case"
       },
       "note": "Mathlib proves only the planar (2D Green's theorem) special case, not the full Kelvin–Stokes theorem for surfaces in 3D.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Circulation and curl",
-          "snippet": "By the Kelvin–Stokes theorem we can rewrite the line integrals of the fields around the closed boundary curve ∂Σ"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\oint _{\\partial \\Sigma }\\mathbf {B} \\cdot \\mathrm {d} {\\boldsymbol {\\ell }}=\\iint _{\\Sigma }(\\nabla \\times \\mathbf {B} )\\cdot \\mathrm {d} \\mathbf {S} ,}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\iint _{\\Sigma }\\left(\\nabla \\times \\mathbf {B} -\\mu _{0}\\left(\\mathbf {J} +\\varepsilon _{0}{\\frac {\\partial \\mathbf {E} }{\\partial t}}\\right)\\right)\\cdot \\mathrm {d} \\mathbf {S} =0.}"
-        }
-      ],
       "id": "de940f2fb5a9"
     },
     {
@@ -614,21 +530,23 @@
       },
       "note": "The continuity equation ∂ρ/∂t + ∇·J = 0 is not formalized in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Charge conservation",
-          "snippet": "The invariance of charge can be derived as a corollary of Maxwell's equations"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle 0=\\nabla \\cdot (\\nabla \\times \\mathbf {B} )=\\nabla \\cdot \\left(\\mu _{0}\\left(\\mathbf {J} +\\varepsilon _{0}{\\frac {\\partial \\mathbf {E} }{\\partial t}}\\right)\\right)=\\mu _{0}\\left(\\nabla \\cdot \\mathbf {J} +\\varepsilon _{0}{\\frac {\\partial }{\\partial t}}\\nabla \\cdot \\mathbf {E} \\right)=\\mu _{0}\\left(\\nabla \\cdot \\mathbf {J} +{\\frac {\\partial \\rho }{\\partial t}}\\right)}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {\\partial \\rho }{\\partial t}}+\\nabla \\cdot \\mathbf {J} =0.}"
-        }
-      ],
       "id": "0330f26c132b"
+    },
+    {
+      "kind": "proposition",
+      "label": "Div–curl identity (∇·(∇×F) = 0)",
+      "anchor": {
+        "section": "Charge conservation",
+        "snippet": "The left-hand side of the Ampère–Maxwell law has zero divergence by the div–curl identity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The vector calculus identity ∇·(∇×F) = 0 is not formalized in Mathlib (no curl/divergence operators).",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -645,17 +563,23 @@
       },
       "note": "The source-free Maxwell equations are not formalized in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Vacuum equations, electromagnetic waves and speed of light",
-          "snippet": "such as in vacuum, Maxwell's equations reduce to"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\nabla \\cdot \\mathbf {E} &amp;=0,&amp;\\nabla \\times \\mathbf {E} +{\\frac {\\partial \\mathbf {B} }{\\partial t}}=0,\\\\\\nabla \\cdot \\mathbf {B} &amp;=0,&amp;\\nabla \\times \\mathbf {B} -\\mu _{0}\\varepsilon _{0}{\\frac {\\partial \\mathbf {E} }{\\partial t}}=0.\\end{aligned}}}"
-        }
-      ],
       "id": "d4568b530279"
+    },
+    {
+      "kind": "proposition",
+      "label": "Curl-of-curl identity",
+      "anchor": {
+        "section": "Vacuum equations, electromagnetic waves and speed of light",
+        "snippet": "Taking the curl (∇×) of the curl equations, and using the curl of the curl identity we obtain"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The vector calculus identity ∇×(∇×F) = ∇(∇·F) − ∇²F is not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -672,16 +596,6 @@
       },
       "note": "Mathlib contains no wave equation or d'Alembert operator.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Vacuum equations, electromagnetic waves and speed of light",
-          "snippet": "the equations above have the form of the standard wave equations"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}{\\frac {1}{c^{2}}}{\\frac {\\partial ^{2}\\mathbf {E} }{\\partial t^{2}}}-\\nabla ^{2}\\mathbf {E} =0,\\\\{\\frac {1}{c^{2}}}{\\frac {\\partial ^{2}\\mathbf {B} }{\\partial t^{2}}}-\\nabla ^{2}\\mathbf {B} =0.\\end{aligned}}}"
-        }
-      ],
       "id": "7b222ad1e7e2"
     },
     {
@@ -716,16 +630,6 @@
       },
       "note": "Phase velocity in a dielectric medium is not formalized in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Vacuum equations, electromagnetic waves and speed of light",
-          "snippet": "In materials with relative permittivity , ε r , and relative permeability , μ r"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle v_{\\text{p}}={\\frac {1}{\\sqrt {\\mu _{0}\\mu _{\\text{r}}\\varepsilon _{0}\\varepsilon _{\\text{r}}}}},}"
-        }
-      ],
       "id": "446248623a67"
     },
     {
@@ -777,16 +681,6 @@
       },
       "note": "The free/bound charge decomposition is a physics concept not in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Macroscopic formulation in terms of displacement and magnetizing fields (in matter version)",
-          "snippet": "This reflects a splitting of the total electric charge Q and current I"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}Q&amp;=Q_{\\text{f}}+Q_{\\text{b}}=\\iiint _{\\Omega }\\left(\\rho _{\\text{f}}+\\rho _{\\text{b}}\\right)\\,\\mathrm {d} V=\\iiint _{\\Omega }\\rho \\,\\mathrm {d} V,\\\\I&amp;=I_{\\text{f}}+I_{\\text{b}}=\\iint _{\\Sigma }\\left(\\mathbf {J} _{\\text{f}}+\\mathbf {J} _{\\text{b}}\\right)\\cdot \\mathrm {d} \\mathbf {S} =\\iint _{\\Sigma }\\mathbf {J} \\cdot \\mathrm {d} \\mathbf {S} .\\end{aligned}}}"
-        }
-      ],
       "id": "6f53e040eacd"
     },
     {
@@ -855,20 +749,6 @@
       },
       "note": "The displacement field D and magnetizing field H are not defined in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Auxiliary fields, polarization and magnetization",
-          "snippet": "The definitions of the auxiliary fields are"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\mathbf {D} (\\mathbf {r} ,t)&amp;=\\varepsilon _{0}\\mathbf {E} (\\mathbf {r} ,t)+\\mathbf {P} (\\mathbf {r} ,t),\\\\\\mathbf {H} (\\mathbf {r} ,t)&amp;={\\frac {1}{\\mu _{0}}}\\mathbf {B} (\\mathbf {r} ,t)-\\mathbf {M} (\\mathbf {r} ,t),\\end{aligned}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\rho _{\\text{b}}&amp;=-\\nabla \\cdot \\mathbf {P} ,\\\\\\mathbf {J} _{\\text{b}}&amp;=\\nabla \\times \\mathbf {M} +{\\frac {\\partial \\mathbf {P} }{\\partial t}}.\\end{aligned}}}"
-        }
-      ],
       "id": "14a932b282fb"
     },
     {
@@ -886,20 +766,6 @@
       },
       "note": "Bound charge/current densities ρ_b = -∇·P, J_b are not formalized in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Auxiliary fields, polarization and magnetization",
-          "snippet": "The macroscopic bound charge density ρ b and bound current density J b in terms of polarization P and magnetization M are then defined as"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\mathbf {D} (\\mathbf {r} ,t)&amp;=\\varepsilon _{0}\\mathbf {E} (\\mathbf {r} ,t)+\\mathbf {P} (\\mathbf {r} ,t),\\\\\\mathbf {H} (\\mathbf {r} ,t)&amp;={\\frac {1}{\\mu _{0}}}\\mathbf {B} (\\mathbf {r} ,t)-\\mathbf {M} (\\mathbf {r} ,t),\\end{aligned}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\rho _{\\text{b}}&amp;=-\\nabla \\cdot \\mathbf {P} ,\\\\\\mathbf {J} _{\\text{b}}&amp;=\\nabla \\times \\mathbf {M} +{\\frac {\\partial \\mathbf {P} }{\\partial t}}.\\end{aligned}}}"
-        }
-      ],
       "id": "5a42c3eb4cee"
     },
     {
@@ -917,16 +783,6 @@
       },
       "note": "The reduction of macroscopic to microscopic Maxwell equations is not formalized in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Auxiliary fields, polarization and magnetization",
-          "snippet": "use the defining relations above to eliminate D , and H"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\rho &amp;=\\rho _{\\text{b}}+\\rho _{\\text{f}},\\\\\\mathbf {J} &amp;=\\mathbf {J} _{\\text{b}}+\\mathbf {J} _{\\text{f}},\\end{aligned}}}"
-        }
-      ],
       "id": "03341fdbc73d"
     },
     {
@@ -961,16 +817,6 @@
       },
       "note": "The vacuum constitutive relations D = ε₀E, H = B/μ₀ are not in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Constitutive relations",
-          "snippet": "For materials without polarization and magnetization, the constitutive relations are"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mathbf {D} =\\varepsilon _{0}\\mathbf {E} ,\\quad \\mathbf {H} ={\\frac {1}{\\mu _{0}}}\\mathbf {B} ,}"
-        }
-      ],
       "id": "253999624060"
     },
     {
@@ -988,16 +834,6 @@
       },
       "note": "Linear constitutive relations D = εE, B = μH are not formalized in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Constitutive relations",
-          "snippet": "for linear materials the constitutive relations are"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mathbf {D} =\\varepsilon \\mathbf {E} ,\\quad \\mathbf {H} ={\\frac {1}{\\mu }}\\mathbf {B} ,}"
-        }
-      ],
       "id": "928939bf2c7f"
     },
     {
@@ -1083,16 +919,6 @@
       },
       "note": "Ohm's law J = σE is not formalized in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Constitutive relations",
-          "snippet": "included Ohm's law in the form"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mathbf {J} _{\\text{f}}=\\sigma \\mathbf {E} .}"
-        }
-      ],
       "id": "0e7844615762"
     },
     {
@@ -1145,6 +971,38 @@
       "note": "The electromagnetic 2-form and dF = 0, d⋆F = J are not formalized in Mathlib.",
       "provenance": "ai",
       "id": "8990c94d7b17"
+    },
+    {
+      "kind": "definition",
+      "label": "Minkowski metric tensor",
+      "anchor": {
+        "section": "Alternative formulations",
+        "snippet": "the metric tensor used to raise and lower indices is η αβ = diag(1, −1, −1, −1)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Minkowski metric η = diag(1,−1,−1,−1) is not defined as such in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "d'Alembert operator",
+      "anchor": {
+        "section": "Alternative formulations",
+        "snippet": "The d'Alembert operator on Minkowski space is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The d'Alembertian □ = ∂^α ∂_α is not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",

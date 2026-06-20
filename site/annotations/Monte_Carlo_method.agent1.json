@@ -11,7 +11,15 @@
         "section": "(Lead)",
         "snippet": "are a broad class of computational algorithms based on repeated random sampling"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal description of a class of computational algorithms, not a mathematical statement formalizable in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "2b6e097539d4"
     },
     {
       "kind": "definition",
@@ -20,7 +28,15 @@
         "section": "Overview",
         "snippet": "tend to follow a particular pattern"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A methodological pattern (define domain, sample, compute, aggregate), not a formal mathematical object.",
+      "provenance": "ai-agent1",
+      "id": "4139e3d8084a"
     },
     {
       "kind": "example",
@@ -29,7 +45,15 @@
         "section": "Overview",
         "snippet": "consider a quadrant (circular sector) inscribed in a unit square"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A worked numerical example; Mathlib has no formalization of this π-estimation procedure.",
+      "provenance": "ai-agent1",
+      "id": "9ad02feb05b7"
     },
     {
       "kind": "proposition",
@@ -38,7 +62,15 @@
         "section": "Applications",
         "snippet": "integrals described by the expected value of some random variable can be approximated by taking the empirical mean"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.strong_law_ae",
+        "module": "Mathlib.Probability.StrongLaw",
+        "match_kind": "generalization"
+      },
+      "note": "The strong law of large numbers states the empirical mean `n⁻¹ • ∑ X i` converges a.e. to `μ[X 0]`, exactly the convergence underlying MC integration.",
+      "provenance": "ai-agent1",
+      "id": "a2082c0c5e63"
     },
     {
       "kind": "definition",
@@ -47,7 +79,15 @@
         "section": "Applications",
         "snippet": "design a judicious Markov chain model with a prescribed stationary probability distribution"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.IsMarkovKernel",
+        "module": "Mathlib.Probability.Kernel.Defs",
+        "match_kind": null
+      },
+      "note": "Markov kernel infrastructure exists, but Mathlib has no notion of a stationary distribution of a Markov chain nor the MCMC construction.",
+      "provenance": "ai-agent1",
+      "id": "c347b8b3f233"
     },
     {
       "kind": "proposition",
@@ -56,7 +96,15 @@
         "section": "Applications",
         "snippet": "the stationary distribution is approximated by the empirical measures of the random states"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "birkhoffAverage",
+        "module": "Mathlib.Dynamics.BirkhoffSum.Average",
+        "match_kind": null
+      },
+      "note": "Birkhoff-average ergodic infrastructure is present, but the pointwise ergodic theorem and convergence of empirical measures to a stationary distribution are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "6a02d29add80"
     },
     {
       "kind": "definition",
@@ -65,7 +113,15 @@
         "section": "Simple Monte Carlo",
         "snippet": "The simple Monte Carlo method gives an estimate for"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An algorithmic estimator description, not a formalized declaration in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "00813b020f59"
     },
     {
       "kind": "example",
@@ -74,7 +130,15 @@
         "section": "Examples",
         "snippet": "Suppose we want to know how many times we should expect to throw three eight-sided dice"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A specific worked simulation example with no corresponding Mathlib formalization.",
+      "provenance": "ai-agent1",
+      "id": "cb470c67a9ec"
     },
     {
       "kind": "definition",
@@ -83,7 +147,15 @@
         "section": "General formula",
         "snippet": "be the estimated variance, sometimes called the"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": null
+      },
+      "note": "Mathlib defines the population variance `Var[X;μ]`, but not the sample/estimated variance computed from simulation outputs.",
+      "provenance": "ai-agent1",
+      "id": "fa65b79ab24d"
     },
     {
       "kind": "proposition",
@@ -92,7 +164,15 @@
         "section": "General formula",
         "snippet": "is sufficiently large when"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A heuristic stopping/sample-size criterion for simulations, not present in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "59d49e16b13c"
     },
     {
       "kind": "proposition",
@@ -101,7 +181,15 @@
         "section": "Formulae for simulations' results with bounds",
         "snippet": "An alternative formula can be used in the special case where all simulation results are bounded above and below"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An applied sample-size formula for bounded outputs (Hoeffding-style); the underlying Hoeffding inequality is not yet formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "c10586f37cba"
     },
     {
       "kind": "definition",
@@ -110,7 +198,15 @@
         "section": "Definitions",
         "snippet": "distinguishes between a simulation , a Monte Carlo method, and a Monte Carlo simulation"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Terminological distinctions, not mathematical content formalizable in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "2413a298ffb1"
     },
     {
       "kind": "definition",
@@ -119,7 +215,15 @@
         "section": "Monte Carlo and random numbers",
         "snippet": "lists the characteristics of a high-quality Monte Carlo simulation"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A list of qualitative desiderata, not a formal statement.",
+      "provenance": "ai-agent1",
+      "id": "b5e80d2fa032"
     },
     {
       "kind": "definition",
@@ -128,7 +232,15 @@
         "section": "Monte Carlo and random numbers",
         "snippet": "Methods based on their use are called quasi-Monte Carlo methods"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Low-discrepancy/quasi-Monte Carlo sequences are not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "3d2c9c24e695"
     },
     {
       "kind": "definition",
@@ -137,7 +249,15 @@
         "section": "Integration",
         "snippet": "This is called the curse of dimensionality"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal phenomenon about exponential growth of cost with dimension, not a Mathlib declaration.",
+      "provenance": "ai-agent1",
+      "id": "72ce2d6ccc39"
     },
     {
       "kind": "theorem",
@@ -146,7 +266,15 @@
         "section": "Integration",
         "snippet": "quadrupling the number of sampled points halves the error, regardless of the number of dimensions"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.tendstoInDistribution_inv_sqrt_mul_sum_sub",
+        "module": "Mathlib.Probability.CentralLimitTheorem",
+        "match_kind": null
+      },
+      "note": "The 1-dimensional central limit theorem (with its `1/√n` scaling) is formalized, but the dimension-independent O(1/√N) error-rate statement is not stated as such.",
+      "provenance": "ai-agent1",
+      "id": "24f262471447"
     },
     {
       "kind": "definition",
@@ -155,7 +283,15 @@
         "section": "Integration",
         "snippet": "known as importance sampling in statistics, involves sampling the points randomly, but more frequently where the integrand is large"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The importance sampling variance-reduction technique is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "49651861c1c0"
     },
     {
       "kind": "example",
@@ -164,7 +300,15 @@
         "section": "Simulation and optimization",
         "snippet": "In the traveling salesman problem the goal is to minimize distance traveled"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The traveling salesman optimization problem is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "99bfeafc4bbf"
     },
     {
       "kind": "definition",
@@ -173,6 +317,78 @@
         "section": "Inverse problems",
         "snippet": "Probabilistic formulation of inverse problems leads to the definition of a probability distribution in the model space"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Bayesian/probabilistic formulation of inverse problems is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "ba969cd786ab"
+    },
+    {
+      "kind": "example",
+      "label": "Buffon's needle problem",
+      "anchor": {
+        "section": "History",
+        "snippet": "An early variant of the Monte Carlo method was devised to solve the Buffon's needle problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classical Buffon's needle estimate for π (probability `2L/(πd)` of crossing) is not formalized in Mathlib.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Metropolis–Hastings algorithm",
+      "anchor": {
+        "section": "Integration",
+        "snippet": "Such methods include the Metropolis–Hastings algorithm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Metropolis–Hastings MCMC sampler and its detailed-balance correctness are not formalized in Mathlib.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Monte Carlo tree search",
+      "anchor": {
+        "section": "Artificial intelligence for games",
+        "snippet": "Monte Carlo methods have been developed into a technique called Monte-Carlo tree search"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "MCTS is a game-tree search algorithm with no Mathlib formalization.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Path tracing convergence to the rendering equation",
+      "anchor": {
+        "section": "Computer graphics",
+        "snippet": "Repeated sampling of any given pixel will eventually cause the average of the samples to converge on the correct solution of the rendering equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The rendering equation and convergence of Monte Carlo path tracing estimators to its solution are not formalized in Mathlib.",
       "provenance": "ai-agent1"
     }
   ]

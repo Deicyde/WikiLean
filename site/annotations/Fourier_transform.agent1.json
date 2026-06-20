@@ -11,7 +11,15 @@
         "section": "Definition",
         "snippet": "The Fourier transform of a Lebesgue integrable complex-valued function"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.fourierIntegral",
+        "module": "Mathlib.Analysis.Fourier.FourierTransform",
+        "match_kind": "exact"
+      },
+      "note": "`Real.fourierIntegral` (specialization of `VectorFourier.fourierIntegral` with the standard additive character `𝐞`) defines the Fourier integral exactly as in the article.",
+      "provenance": "ai-agent1",
+      "id": "4471d8abf2f8"
     },
     {
       "kind": "theorem",
@@ -20,7 +28,15 @@
         "section": "Definition",
         "snippet": "the corresponding inversion formula for functions satisfying sufficient regularity and decay properties is given by the Fourier inversion theorem"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Integrable.fourierInv_fourier_eq",
+        "module": "Mathlib.Analysis.Fourier.Inversion",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.Integrable.fourierInv_fourier_eq` and `Continuous.fourierInv_fourier_eq` give the Fourier inversion formula on finite-dimensional real inner product spaces.",
+      "provenance": "ai-agent1",
+      "id": "9924f548f253"
     },
     {
       "kind": "example",
@@ -29,7 +45,29 @@
         "section": "Definition",
         "snippet": "the Fourier transform of the delta function is the constant function"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TemperedDistribution.fourier_delta_zero",
+        "module": "Mathlib.Analysis.Distribution.TemperedDistribution",
+        "match_kind": "exact"
+      },
+      "note": "`TemperedDistribution.fourier_delta_zero` states `𝓕 (delta 0) = volume.toTemperedDistribution`, i.e. the Fourier transform of δ is the constant 1 distribution.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "the Fourier transform of the delta function is the constant function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)\\ {\\stackrel {\\mathcal {F}}{\\longleftrightarrow }}\\ {\\widehat {f}}(\\xi ).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\delta (x)\\ {\\stackrel {\\mathcal {F}}{\\longleftrightarrow }}\\ 1.}"
+        }
+      ],
+      "id": "c35b2c3a228b"
     },
     {
       "kind": "definition",
@@ -38,7 +76,15 @@
         "section": "Angular frequency ( ω )",
         "snippet": "produces this convention"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's Fourier transform uses the ordinary-frequency (2π) convention via `fourierChar`; no separate angular-frequency variant `𝓕(f)(ω) = ∫ f(x) e^{-iωx} dx` is defined.",
+      "provenance": "ai-agent1",
+      "id": "ac5f342614b6"
     },
     {
       "kind": "definition",
@@ -47,7 +93,25 @@
         "section": "Lebesgue integrable functions",
         "snippet": "is called (Lebesgue) integrable if the Lebesgue integral of its absolute value is finite"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Integrable",
+        "module": "Mathlib.MeasureTheory.Function.L1Space.Integrable",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.Integrable` defines integrability of `f` w.r.t. a measure via `HasFiniteIntegral` (finite integral of `‖f‖`).",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Lebesgue integrable functions",
+          "snippet": "is called (Lebesgue) integrable if the Lebesgue integral of its absolute value is finite"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|f\\|_{1}=\\int _{\\mathbb {R} }|f(x)|\\,dx&lt;\\infty .}"
+        }
+      ],
+      "id": "99debabd1c88"
     },
     {
       "kind": "definition",
@@ -56,7 +120,15 @@
         "section": "Lebesgue integrable functions",
         "snippet": "is the space of measurable functions for which the norm"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Lp",
+        "module": "Mathlib.MeasureTheory.Function.LpSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.Lp E p μ` (and `MeasureTheory.MemLp`) define the L^p spaces of measurable functions with finite p-seminorm.",
+      "provenance": "ai-agent1",
+      "id": "6cc48b00b91d"
     },
     {
       "kind": "proposition",
@@ -65,7 +137,15 @@
         "section": "Lebesgue integrable functions",
         "snippet": "Fourier transform is that it is a homomorphism of Banach algebras"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.fourier_mul_convolution_eq",
+        "module": "Mathlib.Analysis.Fourier.Convolution",
+        "match_kind": "invocation"
+      },
+      "note": "The ingredients exist — linearity (`fourier_add`/`fourier_smul`), L¹-norm bound (`norm_fourierIntegral_le_integral_norm`), and convolution-to-multiplication (`Real.fourier_mul_convolution_eq`) — but Mathlib does not package the L¹ Fourier transform as a Banach-algebra homomorphism.",
+      "provenance": "ai-agent1",
+      "id": "c103eb5edb40"
     },
     {
       "kind": "proposition",
@@ -74,7 +154,15 @@
         "section": "Negative frequency",
         "snippet": "has the symmetry property"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no named lemma `𝓕(f)(-ξ) = conj(𝓕(f)(ξ))` for real-valued `f` (Hermitian symmetry); grep finds no such conjugation/negation symmetry result for the Fourier integral.",
+      "provenance": "ai-agent1",
+      "id": "c911d40d6e79"
     },
     {
       "kind": "proposition",
@@ -83,7 +171,25 @@
         "section": "Fourier transform for periodic functions",
         "snippet": "the Fourier transform is a Dirac comb function whose teeth are multiplied by the Fourier series coefficients"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `DiracComb` or `fourier_periodic` identification is present in Mathlib relating Fourier coefficients to a comb-supported tempered distribution.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Fourier transform for periodic functions",
+          "snippet": "the Fourier transform is a Dirac comb function whose teeth are multiplied by the Fourier series coefficients"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\widehat {f}}(\\xi )=\\sum _{n=-\\infty }^{\\infty }c_{n}\\cdot \\delta \\left(\\xi -{\\tfrac {n}{P}}\\right),}"
+        }
+      ],
+      "id": "ccd3b1589a2f"
     },
     {
       "kind": "proposition",
@@ -92,7 +198,25 @@
         "section": "Sampling the Fourier transform",
         "snippet": "These samples can be deduced from one cycle of a periodic function"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.tsum_eq_tsum_fourier",
+        "module": "Mathlib.Analysis.Fourier.PoissonSummation",
+        "match_kind": "generalization"
+      },
+      "note": "Classical Poisson summation `∑ f(n) = ∑ 𝓕(f)(n)` is in `Real.tsum_eq_tsum_fourier`, which is the underlying identity but not phrased in terms of FT samples vs. periodization.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Sampling the Fourier transform",
+          "snippet": "These samples can be deduced from one cycle of a periodic function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f_{P}(x)\\triangleq \\sum _{n=-\\infty }^{\\infty }f(x+nP)={\\frac {1}{P}}\\sum _{k=-\\infty }^{\\infty }{\\widehat {f}}\\left({\\tfrac {k}{P}}\\right)e^{i2\\pi {\\frac {k}{P}}x},\\quad \\forall k\\in \\mathbb {Z} .}"
+        }
+      ],
+      "id": "67e92293c3d4"
     },
     {
       "kind": "proposition",
@@ -101,7 +225,29 @@
         "section": "Time scaling",
         "snippet": "leads to the time-reversal property"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.fourierInv_eq_fourier_comp_neg",
+        "module": "Mathlib.Analysis.Fourier.FourierTransform",
+        "match_kind": "special_case"
+      },
+      "note": "`Real.fourierInv_eq_fourier_comp_neg` (and `fourierInv_eq_fourier_neg`) encode `𝓕⁻¹ f (w) = 𝓕 f (-w)`, equivalent to the time-reversal property; no separate `𝓕(f∘neg) = 𝓕(f)∘neg` lemma was found.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Time scaling",
+          "snippet": "leads to the time-reversal property"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(ax)\\ \\ {\\stackrel {\\mathcal {F}}{\\Longleftrightarrow }}\\ \\ {\\frac {1}{|a|}}{\\widehat {f}}\\left({\\frac {\\xi }{a}}\\right);\\quad \\ a\\neq 0}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(-x)\\ \\ {\\stackrel {\\mathcal {F}}{\\Longleftrightarrow }}\\ \\ {\\widehat {f}}(-\\xi )}"
+        }
+      ],
+      "id": "1470ff6ff665"
     },
     {
       "kind": "proposition",
@@ -110,7 +256,15 @@
         "section": "Symmetry",
         "snippet": "there is a one-to-one mapping between the four components of a complex time function and the four components of its complex frequency transform"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemmas in Mathlib decompose the Fourier transform along the even/odd × real/imaginary parts.",
+      "provenance": "ai-agent1",
+      "id": "39504e9f055b"
     },
     {
       "kind": "proposition",
@@ -119,7 +273,25 @@
         "section": "Conjugation",
         "snippet": "is conjugate symmetric ( a.k.a. Hermitian function )"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `fourierIntegral_conj` / Hermitian-symmetry lemma for real-valued inputs exists in `Mathlib/Analysis/Fourier`.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Conjugation",
+          "snippet": "is conjugate symmetric ( a.k.a. Hermitian function )"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\widehat {f}}(-\\xi )={\\bigl (}{\\widehat {f}}(\\xi ){\\bigr )}^{*}.}"
+        }
+      ],
+      "id": "5ce92dbf0bce"
     },
     {
       "kind": "proposition",
@@ -128,7 +300,15 @@
         "section": "Zero frequency component",
         "snippet": "is the total mass or DC bias of the function"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Although the statement is immediate from `fourierIntegral_def` (since `𝐞(0)=1`), there is no dedicated `fourierIntegral_zero_eq_integral` lemma in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "73766a0664ed"
     },
     {
       "kind": "proposition",
@@ -137,7 +317,25 @@
         "section": "Uniform continuity and the Riemann–Lebesgue lemma",
         "snippet": "of any integrable function"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "VectorFourier.fourierIntegral_continuous",
+        "module": "Mathlib.Analysis.Fourier.FourierTransform",
+        "match_kind": "generalization"
+      },
+      "note": "`VectorFourier.fourierIntegral_continuous` proves continuity of `𝓕 f` for integrable `f`, but uniform continuity is not separately established.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Uniform continuity and the Riemann–Lebesgue lemma",
+          "snippet": "of any integrable function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left\\|{\\widehat {f}}\\right\\|_{\\infty }\\leq \\left\\|f\\right\\|_{1}}"
+        }
+      ],
+      "id": "6b0008d92fd8"
     },
     {
       "kind": "theorem",
@@ -146,7 +344,25 @@
         "section": "Uniform continuity and the Riemann–Lebesgue lemma",
         "snippet": "By the Riemann–Lebesgue lemma"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.zero_at_infty_fourier",
+        "module": "Mathlib.Analysis.Fourier.RiemannLebesgueLemma",
+        "match_kind": "exact"
+      },
+      "note": "`Real.zero_at_infty_fourier` and `Real.zero_at_infty_vector_fourierIntegral` state that `𝓕 f → 0` at cocompact infinity for `f ∈ L¹`.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Uniform continuity and the Riemann–Lebesgue lemma",
+          "snippet": "By the Riemann–Lebesgue lemma"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\widehat {f}}(\\xi )\\to 0{\\text{ as }}|\\xi |\\to \\infty .}"
+        }
+      ],
+      "id": "35cb599dea39"
     },
     {
       "kind": "proposition",
@@ -155,7 +371,25 @@
         "section": "Uniform continuity and the Riemann–Lebesgue lemma",
         "snippet": "the Fourier transform is injective on L 1 ( R )"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated `Real.fourierIntegral_injective` lemma was found; injectivity is only implicit in inversion-type results requiring extra hypotheses.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Uniform continuity and the Riemann–Lebesgue lemma",
+          "snippet": "the Fourier transform is injective on L 1 ( R )"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)=\\int _{-\\infty }^{\\infty }{\\widehat {f}}(\\xi )e^{i2\\pi x\\xi }\\,d\\xi }"
+        }
+      ],
+      "id": "d47e84d1b039"
     },
     {
       "kind": "theorem",
@@ -164,7 +398,25 @@
         "section": "Plancherel theorem and Parseval's theorem",
         "snippet": "the Parseval formula follows"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Lp.inner_fourier_eq",
+        "module": "Mathlib.Analysis.Fourier.LpSpace",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.Lp.inner_fourier_eq` gives the Parseval identity `⟪𝓕 f, 𝓕 g⟫ = ⟪f, g⟫` for L² functions.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Plancherel theorem and Parseval's theorem",
+          "snippet": "the Parseval formula follows"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\langle f,g\\rangle _{L^{2}}=\\int _{-\\infty }^{\\infty }f(x){\\overline {g(x)}}\\,dx=\\int _{-\\infty }^{\\infty }{\\widehat {f}}(\\xi ){\\overline {{\\widehat {g}}(\\xi )}}\\,d\\xi ,}"
+        }
+      ],
+      "id": "4bd2a36ad6ba"
     },
     {
       "kind": "theorem",
@@ -173,7 +425,25 @@
         "section": "Plancherel theorem and Parseval's theorem",
         "snippet": "The Plancherel theorem , which follows from the above, states that"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Lp.fourierTransformₗᵢ",
+        "module": "Mathlib.Analysis.Fourier.LpSpace",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.Lp.fourierTransformₗᵢ` packages the Fourier transform on L² as a `LinearIsometryEquiv` (Plancherel), with the norm identity proved as `Lp.norm_fourier_eq`.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Plancherel theorem and Parseval's theorem",
+          "snippet": "The Plancherel theorem , which follows from the above, states that"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|f\\|_{L^{2}}^{2}=\\int _{-\\infty }^{\\infty }\\left|f(x)\\right|^{2}\\,dx=\\int _{-\\infty }^{\\infty }\\left|{\\widehat {f}}(\\xi )\\right|^{2}\\,d\\xi .}"
+        }
+      ],
+      "id": "d45e7a58e9ea"
     },
     {
       "kind": "theorem",
@@ -182,7 +452,15 @@
         "section": "Convolution theorem",
         "snippet": "The Fourier transform translates between convolution and multiplication of functions"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.fourier_mul_convolution_eq",
+        "module": "Mathlib.Analysis.Fourier.Convolution",
+        "match_kind": "exact"
+      },
+      "note": "`Real.fourier_mul_convolution_eq` (and the bilinear variant `fourier_bilin_convolution_eq`) prove `𝓕 (f ⋆ g) = 𝓕 f · 𝓕 g`.",
+      "provenance": "ai-agent1",
+      "id": "f580299fb312"
     },
     {
       "kind": "theorem",
@@ -191,7 +469,29 @@
         "section": "Cross-correlation theorem",
         "snippet": "is the cross-correlation of"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no dedicated cross-correlation operator nor a `𝓕(f ⋆⋆ g) = conj(𝓕 f) · 𝓕 g` lemma.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Cross-correlation theorem",
+          "snippet": "is the cross-correlation of"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle h(x)=(f\\star g)(x)=\\int _{-\\infty }^{\\infty }{\\overline {f(y)}}g(x+y)\\,dy}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\widehat {h}}(\\xi )={\\overline {{\\widehat {f}}(\\xi )}}\\,{\\widehat {g}}(\\xi ).}"
+        }
+      ],
+      "id": "944fc5a529db"
     },
     {
       "kind": "theorem",
@@ -200,7 +500,29 @@
         "section": "Differentiation",
         "snippet": "Then the Fourier transform of the derivative is given by"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "VectorFourier.fourierIntegral_fderiv",
+        "module": "Mathlib.Analysis.Fourier.FourierTransformDeriv",
+        "match_kind": "exact"
+      },
+      "note": "`VectorFourier.fourierIntegral_fderiv` and `fourierIntegral_iteratedFDeriv` give the formula `𝓕(f') = 2πiξ · 𝓕 f` in the general vector-valued setting.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Differentiation",
+          "snippet": "Then the Fourier transform of the derivative is given by"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\widehat {f'}}(\\xi )={\\mathcal {F}}\\left\\{{\\frac {d}{dx}}f(x)\\right\\}=i2\\pi \\xi {\\widehat {f}}(\\xi ).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\widehat {f^{(n)}}}(\\xi )={\\mathcal {F}}\\left\\{{\\frac {d^{n}}{dx^{n}}}f(x)\\right\\}=(i2\\pi \\xi )^{n}{\\widehat {f}}(\\xi ).}"
+        }
+      ],
+      "id": "94ca1b65e6e6"
     },
     {
       "kind": "definition",
@@ -209,7 +531,15 @@
         "section": "Eigenfunctions",
         "snippet": "The Fourier transform is a linear transform that has eigenfunctions"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "fourier_gaussian_innerProductSpace",
+        "module": "Mathlib.Analysis.SpecialFunctions.Gaussian.FourierTransform",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves that the Gaussian is fixed by the Fourier transform (`fourier_gaussian_pi`, `fourier_gaussian_innerProductSpace`) but does not develop a general theory of FT eigenfunctions.",
+      "provenance": "ai-agent1",
+      "id": "01fa2b067499"
     },
     {
       "kind": "theorem",
@@ -218,7 +548,15 @@
         "section": "Eigenfunctions",
         "snippet": "the Hermite functions form a complete orthonormal system of eigenfunctions"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hermite polynomials exist in `Mathlib/RingTheory/Polynomial/Hermite`, but the Hermite functions as a complete orthonormal eigenbasis of the Fourier transform on L² are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "5c3ab15b812e"
     },
     {
       "kind": "theorem",
@@ -227,7 +565,25 @@
         "section": "Inversion and periodicity",
         "snippet": "the various forms of the Fourier inversion theorem"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Integrable.fourierInv_fourier_eq",
+        "module": "Mathlib.Analysis.Fourier.Inversion",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has the Fourier inversion identity, but no explicit `𝓕^4 = id` four-periodicity statement on a suitable subspace.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Inversion and periodicity",
+          "snippet": "the various forms of the Fourier inversion theorem"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}{\\mathcal {F}}^{0}&amp;=\\mathrm {id} ,\\\\{\\mathcal {F}}^{1}&amp;={\\mathcal {F}},\\\\{\\mathcal {F}}^{2}&amp;={\\mathcal {P}},\\\\{\\mathcal {F}}^{3}&amp;={\\mathcal {F}}^{-1}={\\mathcal {P}}\\circ {\\mathcal {F}}={\\mathcal {F}}\\circ {\\mathcal {P}},\\\\{\\mathcal {F}}^{4}&amp;=\\mathrm {id} \\end{aligned}}}"
+        }
+      ],
+      "id": "c5518cfe2839"
     },
     {
       "kind": "theorem",
@@ -236,7 +592,25 @@
         "section": "Connection with the Heisenberg group",
         "snippet": "According to the Stone–von Neumann theorem"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the Heisenberg group nor the Stone–von Neumann theorem appear in Mathlib.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Connection with the Heisenberg group",
+          "snippet": "According to the Stone–von Neumann theorem"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\rho \\circ j=W\\rho W^{*}.}"
+        }
+      ],
+      "id": "1bf4c1e969ff"
     },
     {
       "kind": "theorem",
@@ -245,7 +619,25 @@
         "section": "Complex domain",
         "snippet": "The Paley–Wiener theorem says that f is smooth"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Paley.?Wiener` / `PaleyWiener` returns no matches in Mathlib.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Complex domain",
+          "snippet": "The Paley–Wiener theorem says that f is smooth"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\left\\vert \\xi ^{n}{\\widehat {f}}(\\xi )\\right\\vert \\leq C_{n}e^{2\\pi a\\vert \\tau \\vert }}"
+        }
+      ],
+      "id": "a1b997905c4e"
     },
     {
       "kind": "proposition",
@@ -254,7 +646,15 @@
         "section": "Laplace transform",
         "snippet": "is related to the Laplace transform"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Laplace transform is not defined in Mathlib (no `Laplace.?[Tt]ransform` matches), so a relation to it cannot be stated.",
+      "provenance": "ai-agent1",
+      "id": "ab4e357f848b"
     },
     {
       "kind": "theorem",
@@ -263,7 +663,25 @@
         "section": "Inversion",
         "snippet": "Theorem: If f ( t ) = 0 for t < 0"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Bromwich/complex-line inversion result for causal functions is present, since the Laplace transform itself is absent from Mathlib.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Inversion",
+          "snippet": "Theorem: If f ( t ) = 0 for t < 0"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(t)=\\int _{-\\infty }^{\\infty }{\\widehat {f}}(\\sigma +i\\tau )e^{i2\\pi (\\sigma +i\\tau )t}\\,d\\sigma ,}"
+        }
+      ],
+      "id": "71523894c260"
     },
     {
       "kind": "theorem",
@@ -272,7 +690,25 @@
         "section": "Inversion",
         "snippet": "This theorem implies the Mellin inversion formula for the Laplace transformation"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "mellin_inversion",
+        "module": "Mathlib.Analysis.MellinInversion",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has `mellin_inversion` (`mellinInv_mellin_eq`) for the Mellin transform itself, but no derivation as an inversion formula for the (absent) Laplace transform.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Inversion",
+          "snippet": "This theorem implies the Mellin inversion formula for the Laplace transformation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(t)={\\frac {1}{i2\\pi }}\\int _{b-i\\infty }^{b+i\\infty }F(s)e^{st}\\,ds}"
+        }
+      ],
+      "id": "f6bae1c67f4a"
     },
     {
       "kind": "definition",
@@ -281,7 +717,25 @@
         "section": "Fourier transform on Euclidean space",
         "snippet": "The Fourier transform can be defined in any arbitrary number of dimensions"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "VectorFourier.fourierIntegral",
+        "module": "Mathlib.Analysis.Fourier.FourierTransform",
+        "match_kind": "exact"
+      },
+      "note": "`VectorFourier.fourierIntegral` defines the Fourier integral on any finite-dimensional real vector space (in particular on Rⁿ via the dot product).",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Fourier transform on Euclidean space",
+          "snippet": "The Fourier transform can be defined in any arbitrary number of dimensions"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\widehat {f}}({\\boldsymbol {\\xi }})={\\mathcal {F}}(f)({\\boldsymbol {\\xi }})=\\int _{\\mathbb {R} ^{n}}f(\\mathbf {x} )e^{-i2\\pi {\\boldsymbol {\\xi }}\\cdot \\mathbf {x} }\\,d\\mathbf {x} }"
+        }
+      ],
+      "id": "b4481759ba44"
     },
     {
       "kind": "theorem",
@@ -290,7 +744,25 @@
         "section": "Uncertainty principle",
         "snippet": "The uncertainty principle states that"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `uncertainty.?[Pp]rinciple` lemma is present in Mathlib (case-insensitive grep returned no Fourier-related results).",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Uncertainty principle",
+          "snippet": "The uncertainty principle states that"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle D_{0}(f)D_{0}({\\widehat {f}})\\geq {\\frac {1}{16\\pi ^{2}}}.}"
+        }
+      ],
+      "id": "a370fdde3dbb"
     },
     {
       "kind": "theorem",
@@ -299,7 +771,29 @@
         "section": "Uncertainty principle",
         "snippet": "A stronger uncertainty principle is the Hirschman uncertainty principle"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Hirschman` returns no matches in Mathlib.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Uncertainty principle",
+          "snippet": "A stronger uncertainty principle is the Hirschman uncertainty principle"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle H\\left(\\left|f\\right|^{2}\\right)+H\\left(\\left|{\\widehat {f}}\\right|^{2}\\right)\\geq \\log \\left({\\frac {e}{2}}\\right)}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle H(p)=-\\int _{-\\infty }^{\\infty }p(x)\\log {\\bigl (}p(x){\\bigr )}\\,dx}"
+        }
+      ],
+      "id": "314178965231"
     },
     {
       "kind": "definition",
@@ -308,7 +802,29 @@
         "section": "Sine and cosine transforms",
         "snippet": "This is called an expansion as a trigonometric integral"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No sine / cosine transform definitions are present (grep `(F|f)ourier(S|s)ine` / `(C|c)osine` returns nothing).",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Sine and cosine transforms",
+          "snippet": "This is called an expansion as a trigonometric integral"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a(\\lambda )=2\\int _{-\\infty }^{\\infty }f(t)\\cos(2\\pi \\lambda t)\\,dt}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle b(\\lambda )=2\\int _{-\\infty }^{\\infty }f(t)\\sin(2\\pi \\lambda t)\\,dt.}"
+        }
+      ],
+      "id": "4df5170df257"
     },
     {
       "kind": "proposition",
@@ -317,7 +833,15 @@
         "section": "Spherical harmonics",
         "snippet": "The solid spherical harmonics play a similar role in higher dimensions to the Hermite polynomials in dimension one"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Bochner-style Fourier-transform-of-radial-functions / spherical-harmonics decomposition.",
+      "provenance": "ai-agent1",
+      "id": "656b839425b3"
     },
     {
       "kind": "proposition",
@@ -326,7 +850,15 @@
         "section": "Spherical harmonics",
         "snippet": "This is essentially the Hankel transform"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Hankel` finds no Mathlib files; no Bessel-kernel/Hankel transform is defined.",
+      "provenance": "ai-agent1",
+      "id": "a9a4407d0326"
     },
     {
       "kind": "theorem",
@@ -335,7 +867,15 @@
         "section": "Restriction problems",
         "snippet": "the Tomas– Stein restriction theorem states that"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Tomas–Stein or general Fourier restriction theorem appears in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "797f10454b51"
     },
     {
       "kind": "theorem",
@@ -344,7 +884,15 @@
         "section": "Restriction problems",
         "snippet": "a celebrated theorem of Charles Fefferman"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Fefferman ball-multiplier result is in Mathlib (`Fefferman` only appears in a tactic file).",
+      "provenance": "ai-agent1",
+      "id": "fc6f835c686a"
     },
     {
       "kind": "definition",
@@ -353,7 +901,29 @@
         "section": "Fourier transform on function spaces",
         "snippet": "The definition of the Fourier transform naturally extends from"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Lp.fourierTransformₗᵢ",
+        "module": "Mathlib.Analysis.Fourier.LpSpace",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.Lp.fourierTransformₗᵢ` defines the Fourier transform on `Lp E F 2` by isometric extension from the Schwartz space.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Fourier transform on function spaces",
+          "snippet": "The definition of the Fourier transform naturally extends from"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)\\mapsto {\\widehat {f}}(\\xi )=\\int _{\\mathbb {R} ^{n}}f(x)e^{-i2\\pi \\xi \\cdot x}\\,dx,\\quad \\forall \\xi \\in \\mathbb {R} ^{n}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sup _{\\xi \\in \\mathbb {R} ^{n}}\\left\\vert {\\widehat {f}}(\\xi )\\right\\vert \\leq \\int _{\\mathbb {R} ^{n}}\\vert f(x)\\vert \\,dx,}"
+        }
+      ],
+      "id": "11f4616457cf"
     },
     {
       "kind": "theorem",
@@ -362,7 +932,29 @@
         "section": "Fourier transform on function spaces",
         "snippet": "is a unitary operator"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Lp.fourierTransformₗᵢ",
+        "module": "Mathlib.Analysis.Fourier.LpSpace",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.Lp.fourierTransformₗᵢ` is a `LinearIsometryEquiv`, which on a Hilbert space is exactly a unitary operator; `Lp.norm_fourier_eq` records norm preservation.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Fourier transform on function spaces",
+          "snippet": "is a unitary operator"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\int _{\\mathbb {R} ^{n}}f(x){\\mathcal {F}}g(x)\\,dx=\\int _{\\mathbb {R} ^{n}}{\\mathcal {F}}f(x)g(x)\\,dx.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\int _{\\mathbb {R} ^{n}}{\\overline {{\\mathcal {F}}f(x)}}{\\mathcal {F}}g(x)\\,dx&amp;=\\int _{\\mathbb {R} ^{n}}{\\mathcal {F}}^{-1}{\\overline {f(x)}}{\\mathcal {F}}g(x)\\,dx\\\\&amp;=\\int _{\\mathbb {R} ^{n}}{\\mathcal {F}}{\\mathcal {F}}^{-1}{\\overline {f(x)}}g(x)\\,dx=\\int _{\\mathbb {R} ^{n}}{\\overline {f(x)}}g(x)\\,dx\\end{aligned}}"
+        }
+      ],
+      "id": "a6ba7126e8b7"
     },
     {
       "kind": "theorem",
@@ -371,7 +963,15 @@
         "section": "On other L p",
         "snippet": "by the Hausdorff–Young inequality"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Hausdorff.?Young` returns no Mathlib matches.",
+      "provenance": "ai-agent1",
+      "id": "221e99d6b460"
     },
     {
       "kind": "definition",
@@ -380,6 +980,40 @@
         "section": "Tempered distributions",
         "snippet": "The Fourier transform can also be defined for tempered distributions"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TemperedDistribution.fourier_apply",
+        "module": "Mathlib.Analysis.Distribution.TemperedDistribution",
+        "match_kind": "exact"
+      },
+      "note": "The Fourier transform on `𝓢'(E, F)` is defined via `𝓕 f g = f (𝓕 g)` (see `fourier_apply`), and an instance is registered making `𝓕` available on tempered distributions.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Tempered distributions",
+          "snippet": "The Fourier transform can also be defined for tempered distributions"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathcal {F}}:C_{c}^{\\infty }(\\mathbb {R} ^{n})\\rightarrow {\\mathcal {S}}(\\mathbb {R} ^{n})\\setminus C_{c}^{\\infty }(\\mathbb {R} ^{n}).}"
+        }
+      ],
+      "id": "be8236da751c"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fourier transform is an automorphism of the Schwartz space",
+      "anchor": {
+        "section": "Tempered distributions",
+        "snippet": "The Fourier transform is an automorphism of the Schwartz space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SchwartzMap.fourierTransformCLE",
+        "module": "Mathlib.Analysis.Fourier.FourierTransform",
+        "match_kind": "exact"
+      },
+      "note": "`SchwartzMap.fourierTransformCLE` packages the Fourier transform on `𝓢(E, F)` as a continuous linear equivalence; by duality this gives an automorphism on the space of tempered distributions.",
       "provenance": "ai-agent1"
     },
     {
@@ -389,7 +1023,33 @@
         "section": "Fourier–Stieltjes transform on measurable spaces",
         "snippet": "The Fourier transform of a finite Borel measure"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.charFun",
+        "module": "Mathlib.MeasureTheory.Measure.CharacteristicFunction.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`charFun μ t = ∫ x, exp(⟪x,t⟫ * I) ∂μ` is the characteristic function / Fourier–Stieltjes transform of a finite measure (also `charFun_eq_fourierIntegral` connects it explicitly to `𝓕`).",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Fourier–Stieltjes transform on measurable spaces",
+          "snippet": "The Fourier transform of a finite Borel measure"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\widehat {\\mu }}(\\xi )=\\int _{\\mathbb {R} ^{n}}e^{-i2\\pi x\\cdot \\xi }\\,d\\mu ,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle d\\mu =f(x)\\,dx,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\widehat {\\mu }}(\\xi )={\\widehat {f}}(\\xi ),}"
+        }
+      ],
+      "id": "015f3a436134"
     },
     {
       "kind": "theorem",
@@ -398,6 +1058,30 @@
         "section": "Fourier–Stieltjes transform on measurable spaces",
         "snippet": "Bochner's theorem characterizes which functions may arise"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `Bochner` references are all to Bochner integration, not to Bochner's theorem characterizing positive-definite Fourier–Stieltjes transforms.",
+      "provenance": "ai-agent1",
+      "id": "553f2494f6e2"
+    },
+    {
+      "kind": "definition",
+      "label": "Pontryagin dual of a locally compact abelian group",
+      "anchor": {
+        "section": "Locally compact abelian groups",
+        "snippet": "the set of characters Ĝ is itself a locally compact abelian group, called the Pontryagin dual of G"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PontryaginDual",
+        "module": "Mathlib.Topology.Algebra.PontryaginDual",
+        "match_kind": "exact"
+      },
+      "note": "`PontryaginDual A` is the topological group of continuous characters `A →* Circle`; its locally compact abelian group structure is registered as instances on it.",
       "provenance": "ai-agent1"
     },
     {
@@ -407,7 +1091,25 @@
         "section": "Locally compact abelian groups",
         "snippet": "The Fourier transform may be generalized to any locally compact abelian group"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "PontryaginDual",
+        "module": "Mathlib.Topology.Algebra.PontryaginDual",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `PontryaginDual A` (continuous homs `A →* Circle`) but does not develop the Fourier transform `L¹(G) → C₀(Ĝ)` for general LCA groups; only the Euclidean and finite-abelian cases are formalized.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Locally compact abelian groups",
+          "snippet": "The Fourier transform may be generalized to any locally compact abelian group"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\widehat {f}}(\\xi )=\\int _{G}{\\overline {\\xi (x)}}f(x)\\,d\\mu \\quad {\\text{for any }}\\xi \\in {\\widehat {G}}.}"
+        }
+      ],
+      "id": "a686ba9a3c22"
     },
     {
       "kind": "proposition",
@@ -416,7 +1118,15 @@
         "section": "Gelfand transform",
         "snippet": "The Fourier transform is also a special case of the Gelfand transform"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`GelfandDuality` exists in Mathlib but no result identifies the Fourier transform with the Gelfand transform of `L¹(G)`.",
+      "provenance": "ai-agent1",
+      "id": "917c86d5f3db"
     },
     {
       "kind": "definition",
@@ -425,7 +1135,15 @@
         "section": "Compact non-abelian groups",
         "snippet": "The Fourier transform can also be defined for functions on a non-abelian group"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No operator-valued / non-abelian Fourier transform via irreducible unitary representations is formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "55354247b6aa"
     },
     {
       "kind": "theorem",
@@ -434,7 +1152,29 @@
         "section": "Compact non-abelian groups",
         "snippet": "The Peter–Weyl theorem holds"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Peter.?Weyl` / `PeterWeyl` returns no matches in Mathlib.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Compact non-abelian groups",
+          "snippet": "The Peter–Weyl theorem holds"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(g)=\\sum _{\\sigma \\in \\Sigma }d_{\\sigma }\\operatorname {tr} \\left({\\widehat {f}}(\\sigma )U_{g}^{(\\sigma )}\\right),}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\|f\\|_{2}^{2}=\\sum _{\\sigma \\in \\Sigma }d_{\\sigma }\\|{\\widehat {f}}(\\sigma )\\|_{\\mathrm {HS} }^{2},}"
+        }
+      ],
+      "id": "6fec0c98e945"
     },
     {
       "kind": "example",
@@ -443,7 +1183,15 @@
         "section": "Example",
         "snippet": "The following figures provide a visual illustration"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an informal worked illustration with no stated theorem to formalize.",
+      "provenance": "ai-agent1",
+      "id": "8d46c0192289"
     },
     {
       "kind": "example",
@@ -452,7 +1200,29 @@
         "section": "Analysis of differential equations",
         "snippet": "Perhaps the most important use of the Fourier transformation is to solve partial differential equations"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No wave-equation (or general PDE) solution via Fourier transform is formalized in Mathlib (`waveEquation` / `wave_equation` grep returns nothing).",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Analysis of differential equations",
+          "snippet": "Perhaps the most important use of the Fourier transformation is to solve partial differential equations"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {\\partial ^{2}y(x,t)}{\\partial ^{2}x}}={\\frac {\\partial y(x,t)}{\\partial t}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {\\partial ^{2}y(x,t)}{\\partial ^{2}x}}={\\frac {\\partial ^{2}y(x,t)}{\\partial ^{2}t}}.}"
+        }
+      ],
+      "id": "92ad827b8851"
     }
   ]
 }

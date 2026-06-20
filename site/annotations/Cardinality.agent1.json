@@ -227,6 +227,54 @@
     },
     {
       "kind": "definition",
+      "label": "Identity function (witness of reflexivity)",
+      "anchor": {
+        "section": "Equivalence",
+        "snippet": "the function that maps each element to itself is a bijection from"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.refl",
+        "module": "Mathlib.Logic.Equiv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv.refl α : α ≃ α` is the identity equivalence, witnessing reflexivity of equinumerosity.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Inverse of a bijection (witness of symmetry)",
+      "anchor": {
+        "section": "Equivalence",
+        "snippet": "has an inverse function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.symm",
+        "module": "Mathlib.Logic.Equiv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv.symm : (α ≃ β) → (β ≃ α)` inverts a bijection, witnessing symmetry of equinumerosity.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Composition of bijections (witness of transitivity)",
+      "anchor": {
+        "section": "Equivalence",
+        "snippet": "follows from the composition of functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.trans",
+        "module": "Mathlib.Logic.Equiv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv.trans : (α ≃ β) → (β ≃ γ) → (α ≃ γ)` composes bijections, witnessing transitivity.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
       "label": "Cardinal inequality (≤)",
       "anchor": {
         "section": "Inequality",
@@ -1212,6 +1260,22 @@
       "id": "4aeb511645bb"
     },
     {
+      "kind": "theorem",
+      "label": "Burali-Forti paradox (ordinals form a proper class)",
+      "anchor": {
+        "section": "Set of all cardinal numbers",
+        "snippet": "related to the Burali-Forti paradox"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ordinal.not_small",
+        "module": "Mathlib.SetTheory.Ordinal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The analogous statement that `Ordinal` is not small (i.e. a proper class) corresponds to the Burali-Forti paradox.",
+      "provenance": "ai-agent1"
+    },
+    {
       "kind": "definition",
       "label": "Continuum (real numbers)",
       "anchor": {
@@ -2026,38 +2090,6 @@
       "note": "Mathlib shows any two nondegenerate intervals have equal cardinality 𝔠, though Bolzano's explicit linear pairing is not named.",
       "provenance": "ai-agent1",
       "id": "a955f1ee0dc3"
-    },
-    {
-      "kind": "proposition",
-      "label": "κ · κ = κ for infinite cardinals",
-      "anchor": {
-        "section": "Cardinal arithmetic",
-        "snippet": "infinite cardinal addition and multiplication are considered to be remarkably well-behaved"
-      },
-      "status": "formalized",
-      "mathlib": {
-        "decl": "Cardinal.mul_eq_self",
-        "module": "Mathlib.SetTheory.Cardinal.Arithmetic",
-        "match_kind": "exact"
-      },
-      "note": "`Cardinal.mul_eq_self : ℵ₀ ≤ c → c * c = c` is the central well-behavedness lemma for infinite cardinal multiplication.",
-      "provenance": "ai-agent1"
-    },
-    {
-      "kind": "definition",
-      "label": "Cardinality of the continuum equals 2^ℵ₀",
-      "anchor": {
-        "section": "Uncountable sets",
-        "snippet": "called the cardinality of the continuum"
-      },
-      "status": "formalized",
-      "mathlib": {
-        "decl": "Cardinal.continuum",
-        "module": "Mathlib.SetTheory.Cardinal.Continuum",
-        "match_kind": "exact"
-      },
-      "note": "`Cardinal.continuum = 2 ^ ℵ₀` is the cardinality of ℝ and of P(ℕ).",
-      "provenance": "ai-agent1"
     }
   ]
 }

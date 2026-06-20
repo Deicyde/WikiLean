@@ -1,0 +1,585 @@
+{
+  "slug": "Generalized_Riemann_hypothesis",
+  "wikipedia_title": "Generalized Riemann hypothesis",
+  "display_title": "Generalized Riemann hypothesis",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Generalized Riemann hypothesis (GRH)",
+      "anchor": {
+        "section": "Generalized Riemann hypothesis (GRH)",
+        "snippet": "The Generalized Riemann hypothesis asserts that all nontrivial zeros of Dirichlet L -function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `RiemannHypothesis` but no analogous Prop for Dirichlet L-functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dirichlet character",
+      "anchor": {
+        "section": "Background",
+        "snippet": "A Dirichlet character"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DirichletCharacter",
+        "module": "Mathlib.NumberTheory.DirichletCharacter.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`DirichletCharacter R n` is defined as `MulChar (ZMod n) R`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dirichlet L-function",
+      "anchor": {
+        "section": "Background",
+        "snippet": "we define the corresponding Dirichlet L -function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DirichletCharacter.LFunction",
+        "module": "Mathlib.NumberTheory.LSeries.DirichletContinuation",
+        "match_kind": "exact"
+      },
+      "note": "Defined as the (analytically continued) L-series of a Dirichlet character.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convergence and analytic continuation of Dirichlet L-function",
+      "anchor": {
+        "section": "Background",
+        "snippet": "For every complex number s such that Re s > 1 this series is absolutely convergent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DirichletCharacter.LSeriesSummable_of_one_lt_re",
+        "module": "Mathlib.NumberTheory.LSeries.Dirichlet",
+        "match_kind": "exact"
+      },
+      "note": "Convergence for `re s > 1` is `LSeriesSummable_of_one_lt_re`; the analytic continuation is encoded by `DirichletCharacter.LFunction` together with `differentiable_LFunction`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Imprimitive and primitive Dirichlet character",
+      "anchor": {
+        "section": "Background",
+        "snippet": "We say that the Dirichlet character"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DirichletCharacter.IsPrimitive",
+        "module": "Mathlib.NumberTheory.DirichletCharacter.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsPrimitive χ` is defined as `conductor χ = n`; imprimitivity is the negation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Trivial zeros of Dirichlet L-function",
+      "anchor": {
+        "section": "Background",
+        "snippet": "the L-function satisfies a certain functional equation which allows us to define trivial zeros"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "DirichletCharacter.IsPrimitive.completedLFunction_one_sub",
+        "module": "Mathlib.NumberTheory.LSeries.DirichletContinuation",
+        "match_kind": "invocation"
+      },
+      "note": "The functional equation that determines the trivial zeros is formalized, but the notion of trivial zero is not packaged as a definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Nontrivial zeros of Dirichlet L-function",
+      "anchor": {
+        "section": "Background",
+        "snippet": "Any other zeros are called nontrivial zeros"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no predicate distinguishing trivial vs. nontrivial zeros of a Dirichlet L-function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Trivial character yields ordinary Riemann hypothesis",
+      "anchor": {
+        "section": "Consequences of GRH",
+        "snippet": "Taking the trivial character"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "DirichletCharacter.LFunction_modOne_eq",
+        "module": "Mathlib.NumberTheory.LSeries.DirichletContinuation",
+        "match_kind": "invocation"
+      },
+      "note": "The identification of the trivial-character L-function with `riemannZeta` is formalized, but the corresponding GRH→RH implication is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Effective Dirichlet's theorem on arithmetic progressions",
+      "anchor": {
+        "section": "Consequences of GRH",
+        "snippet": "More effective version of Dirichlet's theorem on arithmetic progressions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Only the qualitative Dirichlet theorem (`Nat.infinite_setOf_prime_and_eq_mod`) is in Mathlib; no effective bound on the least prime under GRH.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Subgroup of multiplicative group has small generators",
+      "anchor": {
+        "section": "Consequences of GRH",
+        "snippet": "Every proper subgroup of the multiplicative group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bach's GRH-conditional bound on small generators of proper subgroups of (ℤ/nℤ)* is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Miller-Rabin test runs in polynomial time",
+      "anchor": {
+        "section": "Consequences of GRH",
+        "snippet": "G. Miller showed that the Miller-Rabin test is guaranteed to run in polynomial time"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Miller-Rabin primality test or its GRH-conditional polynomial-time analysis is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "AKS primality test runs in polynomial time",
+      "anchor": {
+        "section": "Consequences of GRH",
+        "snippet": "Manindra Agrawal, Neeraj Kayal and Nitin Saxena proved unconditionally that the AKS primality test"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The AKS primality test is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Shanks–Tonelli algorithm runs in polynomial time",
+      "anchor": {
+        "section": "Consequences of GRH",
+        "snippet": "The Shanks–Tonelli algorithm is guaranteed to run in polynomial time"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Shanks–Tonelli algorithm and its GRH-conditional runtime are absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ivanyos–Karpinski–Saxena algorithm runs in polynomial time",
+      "anchor": {
+        "section": "Consequences of GRH",
+        "snippet": "The Ivanyos–Karpinski–Saxena deterministic algorithm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Ivanyos–Karpinski–Saxena factoring algorithm is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Small primitive root modulo p",
+      "anchor": {
+        "section": "Consequences of GRH",
+        "snippet": "For every prime p there exists a primitive root mod p"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Existence of primitive roots is in Mathlib, but the GRH-conditional polylog bound on their size is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Improved Pólya–Vinogradov estimate",
+      "anchor": {
+        "section": "Consequences of GRH",
+        "snippet": "Estimate of the character sum in the Pólya–Vinogradov inequality can be improved"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Pólya–Vinogradov inequality (unconditional or GRH-improved) is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Grönwall: imaginary quadratic fields with class number 1",
+      "anchor": {
+        "section": "Consequences of GRH",
+        "snippet": "Grönwall showed that the generalized Riemann hypothesis implies that Gauss's list of imaginary quadratic fields"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The conditional finiteness/listing of imaginary quadratic fields with class number 1 is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hardy–Littlewood: Chebyshev's conjecture",
+      "anchor": {
+        "section": "Consequences of GRH",
+        "snippet": "Hardy and Littlewood showed that the generalized Riemann hypothesis implies a conjecture of Chebyshev"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chebyshev's bias conjecture and its GRH-conditional proof are absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hardy–Littlewood: weak Goldbach conjecture",
+      "anchor": {
+        "section": "Consequences of GRH",
+        "snippet": "Hardy and Littlewood showed that the generalized Riemann hypothesis implies Goldbach weak conjecture"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the weak Goldbach conjecture nor its GRH-conditional version is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Chowla: first prime in arithmetic progression",
+      "anchor": {
+        "section": "Consequences of GRH",
+        "snippet": "Chowla showed that the generalized Riemann hypothesis implies that the first prime in the arithmetic progression"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chowla's GRH-conditional bound on the least prime in an arithmetic progression is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hooley: Artin's conjecture on primitive roots",
+      "anchor": {
+        "section": "Consequences of GRH",
+        "snippet": "Hooley showed that the generalized Riemann hypothesis implies Artin's conjecture on primitive roots"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Artin's primitive root conjecture is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Weinberger: Euler's idoneal numbers list complete",
+      "anchor": {
+        "section": "Consequences of GRH",
+        "snippet": "Weinberger showed that the generalized Riemann hypothesis implies that Euler's list of idoneal numbers is complete"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Euler's idoneal numbers and Weinberger's GRH-conditional theorem are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Ono–Soundararajan: Ramanujan's quadratic form",
+      "anchor": {
+        "section": "Consequences of GRH",
+        "snippet": "Ono & Soundararajan (1997) showed that the generalized Riemann hypothesis implies that Ramanujan's integral quadratic form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ramanujan's ternary form representation result conditional on GRH is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Dunn–Radziwill: Patterson's conjecture on cubic Gauss sums",
+      "anchor": {
+        "section": "Consequences of GRH",
+        "snippet": "Alexander (Alex) Dunn and Maksym Radziwill proved Patterson's conjecture on cubic Gauss sums"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Patterson's conjecture on cubic Gauss sums (and Dunn–Radziwill's conditional proof) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dedekind zeta-function",
+      "anchor": {
+        "section": "Extended Riemann hypothesis (ERH)",
+        "snippet": "The Dedekind zeta-function of K is then defined"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField.dedekindZeta",
+        "module": "Mathlib.NumberTheory.NumberField.DedekindZeta",
+        "match_kind": "exact"
+      },
+      "note": "`NumberField.dedekindZeta K s` is the Dedekind zeta-function of a number field K.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Extended Riemann hypothesis (ERH)",
+      "anchor": {
+        "section": "Extended Riemann hypothesis (ERH)",
+        "snippet": "The extended Riemann hypothesis asserts that for every number field K each nontrivial zero"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No ERH Prop on `NumberField.dedekindZeta` is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Ordinary RH follows from ERH for the rationals",
+      "anchor": {
+        "section": "Consequences of ERH",
+        "snippet": "The ordinary Riemann hypothesis follows from the extended one"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No ERH⇒RH implication is stated, since ERH itself is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "GRH equivalent to ERH for abelian extensions",
+      "anchor": {
+        "section": "Consequences of ERH",
+        "snippet": "Generalized Riemann hypothesis for Dirichlet L-functions is equivalent to ERH"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib lacks both GRH and ERH as Props, so this equivalence is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "ERH equivalent to RH for Artin L-functions",
+      "anchor": {
+        "section": "Consequences of ERH",
+        "snippet": "ERH is equivalent to Riemann Hypothesis for Artin L-functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Artin L-functions are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Effective Chebotarev density theorem under ERH",
+      "anchor": {
+        "section": "Consequences of ERH",
+        "snippet": "The ERH implies an effective version"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Chebotarev density theorem (effective or otherwise) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Weinberger: number fields with class number 1 under ERH",
+      "anchor": {
+        "section": "Consequences of ERH",
+        "snippet": "Weinberger (1973) showed that ERH implies that any number field with class number 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Weinberger's ERH-conditional class-number-1 theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Odlyzko: sharper estimates for discriminants and class numbers",
+      "anchor": {
+        "section": "Consequences of ERH",
+        "snippet": "Odlyzko (1990) discussed how the ERH can be used to give sharper estimates"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Odlyzko's ERH-conditional discriminant/class-number bounds are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Selberg class",
+      "anchor": {
+        "section": "Generalized Riemann hypothesis for Selberg class",
+        "snippet": "We say that Dirichlet series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Selberg class of L-functions is not defined in Mathlib (`Mathlib.NumberTheory.SelbergSieve` concerns the unrelated Selberg sieve).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generalized Riemann hypothesis for Selberg class",
+      "anchor": {
+        "section": "Generalized Riemann hypothesis for Selberg class",
+        "snippet": "Generalized Riemann hypothesis for Selberg class states that all nontrivial zeros"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without the Selberg class, GRH for it is not defined either.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "RH for Selberg class implies extended Riemann hypothesis",
+      "anchor": {
+        "section": "Consequences",
+        "snippet": "Artin L -functions and Dedekind zeta functions belong to Selberg class"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has neither Selberg-class membership of Dedekind/Artin L-functions nor the implication.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ramanujan L-function and the Dedekind eta function",
+      "anchor": {
+        "section": "Consequences",
+        "snippet": "One example can be Ramanujan L -function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Ramanujan tau L-function is defined in Mathlib; the Δ/η modular forms exist but not the associated L-series.",
+      "provenance": "ai"
+    }
+  ]
+}

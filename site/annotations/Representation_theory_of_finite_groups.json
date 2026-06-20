@@ -1,0 +1,1817 @@
+{
+  "slug": "Representation_theory_of_finite_groups",
+  "wikipedia_title": "Representation theory of finite groups",
+  "display_title": "Representation theory of finite groups",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Linear representation",
+      "anchor": {
+        "section": "Linear representations",
+        "snippet": "A linear representation of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation",
+        "module": "Mathlib.RepresentationTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Representation k G V` is the abbreviation `G →* V →ₗ[k] V`, exactly the linear representation in the article.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Representation space",
+      "anchor": {
+        "section": "Linear representations",
+        "snippet": "is called a representation space of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation",
+        "module": "Mathlib.RepresentationTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The carrier `V` of a `Representation k G V` is the representation space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Degree of a representation",
+      "anchor": {
+        "section": "Linear representations",
+        "snippet": "The degree of a representation is the dimension"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.finrank",
+        "module": "Mathlib.LinearAlgebra.Dimension.Free",
+        "match_kind": "invocation"
+      },
+      "note": "There is no specific `Representation.degree`, but the degree is just `Module.finrank k V` (used in `FDRep.char_one`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Trivial representation",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The trivial representation is given by"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation.trivial",
+        "module": "Mathlib.RepresentationTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Representation.trivial k G V := 1` is exactly the trivial representation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Degree-one representation as root of unity",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "A representation of degree"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated Mathlib decl characterizes degree-one representations of a finite group as roots of unity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Linear representation of degree two",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is a linear representation of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This Wikipedia example of a specific 2-dimensional representation is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Permutation representation",
+      "anchor": {
+        "section": "Permutation representation",
+        "snippet": "The permutation representation is the group homomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation.ofMulAction",
+        "module": "Mathlib.RepresentationTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Representation.ofMulAction k G H` is the permutation representation on `H →₀ k` from a `G`-action on `H`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Permutation representation example",
+      "anchor": {
+        "section": "Permutation representation",
+        "snippet": "The associated linear representation is"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Concrete example computations of permutation representations are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Left-regular representation",
+      "anchor": {
+        "section": "Left- and right-regular representation",
+        "snippet": "The left-regular representation is a special case of the permutation representation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation.leftRegular",
+        "module": "Mathlib.RepresentationTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Representation.leftRegular k G := ofMulAction k G G` is precisely the left-regular representation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Right-regular representation",
+      "anchor": {
+        "section": "Left- and right-regular representation",
+        "snippet": "The right-regular representation is defined on the same vector space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `leftRegular` but no separately named right-regular representation of an abstract finite group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Left- and right-regular are isomorphic",
+      "anchor": {
+        "section": "Left- and right-regular representation",
+        "snippet": "Both representations are isomorphic via"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No isomorphism between left and right regular representations is stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Criterion for isomorphism to left-regular",
+      "anchor": {
+        "section": "Left- and right-regular representation",
+        "snippet": "is isomorphic to the left-regular representation if and only if there exists"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Such a criterion (cyclic vector for left-regular representation) is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Left- and right-regular representation example",
+      "anchor": {
+        "section": "Left- and right-regular representation",
+        "snippet": "Then the left-regular representation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No worked-out example of regular representations for a concrete group exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Representations correspond to group-algebra modules",
+      "anchor": {
+        "section": "Representations, modules and the convolution algebra",
+        "snippet": "homomorphisms of representations are in bijective correspondence with group algebra homomorphisms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation.IntertwiningMap.equivLinearMapAsModule",
+        "module": "Mathlib.RepresentationTheory.Intertwining",
+        "match_kind": "exact"
+      },
+      "note": "`equivLinearMapAsModule` gives the linear equivalence between intertwiners of representations and `k[G]`-linear maps between their `asModule`s.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convolution algebra",
+      "anchor": {
+        "section": "Representations, modules and the convolution algebra",
+        "snippet": "is called the convolution algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MonoidAlgebra",
+        "module": "Mathlib.Algebra.MonoidAlgebra.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The group/convolution algebra `k[G]` is `MonoidAlgebra k G`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Involution on the convolution algebra",
+      "anchor": {
+        "section": "Representations, modules and the convolution algebra",
+        "snippet": "The involution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The involution `f*(s) = conj f(s⁻¹)` on the group algebra of a finite group is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fourier transform on a group",
+      "anchor": {
+        "section": "Representations, modules and the convolution algebra",
+        "snippet": "The Fourier transform"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib lacks the Fourier transform for finite (or non-abelian) groups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivariant (G-linear) map",
+      "anchor": {
+        "section": "Maps between representations",
+        "snippet": "Such a map is also called"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation.IntertwiningMap",
+        "module": "Mathlib.RepresentationTheory.Intertwining",
+        "match_kind": "exact"
+      },
+      "note": "`Representation.IntertwiningMap ρ σ` is exactly the bundled G-equivariant linear map.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Subrepresentation",
+      "anchor": {
+        "section": "Irreducible representations and Schur's lemma",
+        "snippet": "It is called subrepresentation of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subrepresentation",
+        "module": "Mathlib.RepresentationTheory.Subrepresentation",
+        "match_kind": "exact"
+      },
+      "note": "`Subrepresentation ρ` is a `G`-stable submodule of the representation space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Irreducible representation",
+      "anchor": {
+        "section": "Irreducible representations and Schur's lemma",
+        "snippet": "The representation is called an irreducible representation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation.IsIrreducible",
+        "module": "Mathlib.RepresentationTheory.Irreducible",
+        "match_kind": "exact"
+      },
+      "note": "`Representation.IsIrreducible ρ := IsSimpleOrder (Subrepresentation ρ)` formalizes irreducibility.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Schur's lemma",
+      "anchor": {
+        "section": "Irreducible representations and Schur's lemma",
+        "snippet": "Schur's lemma puts a strong constraint on maps between irreducible representations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation.IsIrreducible.bijective_or_eq_zero",
+        "module": "Mathlib.RepresentationTheory.Irreducible",
+        "match_kind": "exact"
+      },
+      "note": "An intertwining map between irreducibles is either zero or bijective; see also `FDRep.finrank_hom_simple_simple`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalent/isomorphic representations",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "are called equivalent or isomorphic"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation.Equiv",
+        "module": "Mathlib.RepresentationTheory.Intertwining",
+        "match_kind": "exact"
+      },
+      "note": "`Representation.Equiv ρ σ` is a bijective intertwining map, i.e. an isomorphism of representations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Faithful representation",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "is called faithful when"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Representation.IsFaithful`-style predicate exists in Mathlib4.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Restriction of a representation",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "the restriction of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Rep.res",
+        "module": "Mathlib.RepresentationTheory.Rep.Res",
+        "match_kind": "exact"
+      },
+      "note": "`Rep.res f M` restricts `M : Rep k G` along `f : H →* G`; underlying it is `Representation.comp`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of irreducibles equals number of conjugacy classes",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "It can be proven that the number of irreducible representations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This counting theorem (irreducibles ↔ conjugacy classes) does not appear in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Semisimple / completely reducible representation",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "A representation is called semisimple or completely reducible"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation.IsSemisimpleRepresentation",
+        "module": "Mathlib.RepresentationTheory.Semisimple",
+        "match_kind": "exact"
+      },
+      "note": "`IsSemisimpleRepresentation ρ` is `ComplementedLattice (Subrepresentation ρ)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isotypic representation",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "A representation is called isotypic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Isotypic` predicate for representations exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isotype of a representation",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "is defined as the sum of all irreducible subrepresentations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The isotype/isotypic component is not separately defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unitary representation",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "is called unitary if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no `Representation.IsUnitary` class in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unitary iff invariant inner product",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "A representation is unitary with respect to a given inner product if and only if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No such equivalence statement is in Mathlib (no unitary-representation API).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Dihedral group representation",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "be the dihedral group of order"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No concrete dihedral group representation example is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dual (contragredient) representation",
+      "anchor": {
+        "section": "The dual representation",
+        "snippet": "The dual representation or contragredient representation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation.dual",
+        "module": "Mathlib.RepresentationTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Representation.dual ρ` sends `g` to `f ↦ f ∘ ρ g⁻¹`, the contragredient action.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Direct sum of representations",
+      "anchor": {
+        "section": "Direct sum of representations",
+        "snippet": "The direct sum of these representations is a linear representation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation.directSum",
+        "module": "Mathlib.RepresentationTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Representation.directSum` constructs the direct sum representation on `⨁ i, V i`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Direct sum example",
+      "anchor": {
+        "section": "Direct sum of representations",
+        "snippet": "are the imaginary unit and the primitive cube root of unity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific example with i and the cube root of unity is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Outer tensor product of representations",
+      "anchor": {
+        "section": "Tensor product of representations",
+        "snippet": "This representation is called outer tensor product"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Representation.tprod",
+        "module": "Mathlib.RepresentationTheory.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the same-group tensor product `tprod`, but the outer tensor product for two different groups is not given its own definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Outer tensor product example",
+      "anchor": {
+        "section": "Tensor product of representations",
+        "snippet": "We reexamine the example provided for the direct sum"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This concrete example is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tensor product of two representations of same group",
+      "anchor": {
+        "section": "Tensor product of representations",
+        "snippet": "which is also called tensor product of the given representations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation.tprod",
+        "module": "Mathlib.RepresentationTheory.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Representation.tprod ρ σ` is the diagonal tensor representation on `V ⊗ W`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Irreducible representations of a direct product",
+      "anchor": {
+        "section": "Tensor product of representations",
+        "snippet": "The irreducible representations of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classification of irreducibles of `G × H` as outer tensor products is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetric square and alternating square",
+      "anchor": {
+        "section": "Symmetric and alternating square",
+        "snippet": "are called the symmetric square and the alternating square"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No symmetric/alternating square of a representation is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Maschke's theorem",
+      "anchor": {
+        "section": "Decompositions",
+        "snippet": "Then the complement"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MonoidAlgebra.Submodule.exists_isCompl",
+        "module": "Mathlib.RepresentationTheory.Maschke",
+        "match_kind": "exact"
+      },
+      "note": "Every `k[G]`-submodule has a complement (Maschke's theorem) when `|G|` is invertible in `k`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Compact group representations decompose into irreducibles",
+      "anchor": {
+        "section": "Decompositions",
+        "snippet": "Every linear representation of a compact group over a field of characteristic zero is a direct sum"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Decomposition of compact-group representations into irreducibles is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Canonical decomposition",
+      "anchor": {
+        "section": "Decompositions",
+        "snippet": "It is called the canonical decomposition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The canonical decomposition into isotypes is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Projection formula (finite groups)",
+      "anchor": {
+        "section": "Decompositions",
+        "snippet": "Definition (Projection formula)"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Representation.averageMap",
+        "module": "Mathlib.RepresentationTheory.Invariants",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has `averageMap`, projecting onto invariants; the general character-twisted projection onto isotypes is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Projection to trivial isotype",
+      "anchor": {
+        "section": "Decompositions",
+        "snippet": "This proposition enables us to determine the isotype to the trivial subrepresentation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation.isProj_averageMap",
+        "module": "Mathlib.RepresentationTheory.Invariants",
+        "match_kind": "exact"
+      },
+      "note": "`isProj_averageMap` shows the group-averaging map projects onto the invariants (the trivial isotype).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Decomposition example with symmetric group on three elements",
+      "anchor": {
+        "section": "Decompositions",
+        "snippet": "be the permutation groups in three elements"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No worked S₃ decomposition example is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Character of a representation",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "The character of a representation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FDRep.character",
+        "module": "Mathlib.RepresentationTheory.Character",
+        "match_kind": "exact"
+      },
+      "note": "`FDRep.character V g = trace (V.ρ g)`; `Representation.character` is also provided.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Character of a permutation representation",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "Characters of permutation representations are particularly easy to compute"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The fixed-point formula for permutation characters is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Character is a class function",
+      "anchor": {
+        "section": "Properties (2)",
+        "snippet": "A crucial property of characters is the formula"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FDRep.char_conj",
+        "module": "Mathlib.RepresentationTheory.Character",
+        "match_kind": "exact"
+      },
+      "note": "`FDRep.char_conj` proves `χ(hgh⁻¹) = χ(g)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Class function (informal)",
+      "anchor": {
+        "section": "Properties (2)",
+        "snippet": "are called class functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `ClassFunction` predicate/structure exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Class function (formal)",
+      "anchor": {
+        "section": "Inner product and characters",
+        "snippet": "Definition (Class functions)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no formal `ClassFunction` type in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inner product on class functions",
+      "anchor": {
+        "section": "Inner product and characters",
+        "snippet": "An inner product can be defined on the set of all class functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The pairing `⟨f,g⟩ = (1/|G|) Σ f(g) g(g)*` on class functions is not isolated as a named definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Orthonormal property of irreducible characters",
+      "anchor": {
+        "section": "Inner product and characters",
+        "snippet": "Orthonormal property"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FDRep.char_orthonormal",
+        "module": "Mathlib.RepresentationTheory.Character",
+        "match_kind": "exact"
+      },
+      "note": "`FDRep.char_orthonormal` gives orthonormality of irreducible characters over an algebraically closed field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of irreducibles equals number of conjugacy classes (via characters)",
+      "anchor": {
+        "section": "Inner product and characters",
+        "snippet": "It follows from the orthonormal property that the number of non-isomorphic irreducible representations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This corollary (cardinality of `Irr G` = number of conjugacy classes) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Multiplicity of irreducible in a decomposition equals inner product of characters",
+      "anchor": {
+        "section": "Inner product and characters",
+        "snippet": "the number of subrepresentations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Representation.card_inv_mul_sum_char_mul_char_eq_finrank",
+        "module": "Mathlib.RepresentationTheory.Character",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has `⟨χ_V,χ_W⟩ = dim Hom_G(V,W)`; the multiplicity-as-inner-product corollary follows by Schur but isn't separately stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Representations with same character are isomorphic",
+      "anchor": {
+        "section": "Inner product and characters",
+        "snippet": "Two representations with the same character are isomorphic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `char_iso` (the forward direction) but not the converse `same character → isomorphic` for semisimple representations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Irreducibility criterion via inner product of character",
+      "anchor": {
+        "section": "Inner product and characters",
+        "snippet": "Irreducibility criterion"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The criterion `⟨χ,χ⟩ = 1 ↔ irreducible` is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Irreducible occurs in regular representation with multiplicity equal to its degree",
+      "anchor": {
+        "section": "Inner product and characters",
+        "snippet": "is contained"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This statement about multiplicities in the regular representation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fourier inversion formula",
+      "anchor": {
+        "section": "Inner product and characters",
+        "snippet": "The Fourier inversion formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No group-Fourier inversion formula is in Mathlib for finite groups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Plancherel formula",
+      "anchor": {
+        "section": "Inner product and characters",
+        "snippet": "the Plancherel formula holds"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Plancherel formula for finite groups is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Abelian iff all irreducibles have degree one",
+      "anchor": {
+        "section": "Inner product and characters",
+        "snippet": "Then the following is equivalent"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Representation.IsIrreducible.finrank_eq_one_of_isMulCommutative",
+        "module": "Mathlib.RepresentationTheory.Irreducible",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has the forward direction (abelian implies dim 1) but the equivalence is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Induced representation",
+      "anchor": {
+        "section": "Definitions (2)",
+        "snippet": "is called induced by the representation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Representation.ind",
+        "module": "Mathlib.RepresentationTheory.Induced",
+        "match_kind": "exact"
+      },
+      "note": "`Representation.ind φ ρ` is the `H`-representation induced from a `G`-representation `ρ` along `φ : G →* H`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Alternative description of the induced representation",
+      "anchor": {
+        "section": "Alternative description of the induced representation",
+        "snippet": "We say that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The alternative `H`-stable decomposition characterization is not given.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Existence and uniqueness of induced representation",
+      "anchor": {
+        "section": "Properties (3)",
+        "snippet": "Uniqueness and existence of the induced representation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Rep.indResAdjunction",
+        "module": "Mathlib.RepresentationTheory.Induced",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib gives the induction–restriction adjunction (which packages the universal property), but no explicit existence/uniqueness theorem in the textbook form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Transitivity of induction",
+      "anchor": {
+        "section": "Properties (3)",
+        "snippet": "Transitivity of induction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Ind_K^G ∘ Ind_H^K ≅ Ind_H^G` lemma exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Extension lemma for induced representations",
+      "anchor": {
+        "section": "Properties (3)",
+        "snippet": "Then there exists a uniquely determined linear map"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This extension lemma for maps from `Ind ρ` is not separately stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Induction on class functions",
+      "anchor": {
+        "section": "Properties (3)",
+        "snippet": "Induction on class functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Induction of class functions is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Induced of a character is the character of the induced",
+      "anchor": {
+        "section": "Properties (3)",
+        "snippet": "is the character of the induced representation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not present: char(Ind ρ) = Ind(char ρ).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Frobenius identity for class-function induction",
+      "anchor": {
+        "section": "Properties (3)",
+        "snippet": "Lemma. If"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Frobenius identity for induced class functions in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Formula for the induced character",
+      "anchor": {
+        "section": "Properties (3)",
+        "snippet": "The induced character is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The explicit summation formula for the induced character is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Frobenius reciprocity",
+      "anchor": {
+        "section": "Frobenius reciprocity",
+        "snippet": "Frobenius reciprocity. If"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Rep.indResHomEquiv",
+        "module": "Mathlib.RepresentationTheory.Induced",
+        "match_kind": "generalization"
+      },
+      "note": "The Hom-level adjunction `Hom(Ind A, B) ≃ Hom(A, Res B)` is formalized; the character-level Frobenius reciprocity identity is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Disjoint representations",
+      "anchor": {
+        "section": "Mackey's irreducibility criterion",
+        "snippet": "are called disjoint"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Disjoint` predicate for representations is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Mackey's irreducibility criterion",
+      "anchor": {
+        "section": "Mackey's irreducibility criterion",
+        "snippet": "is irreducible if and only if the following conditions are satisfied"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mackey's criterion is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Irreducibility of induced representation from normal subgroup",
+      "anchor": {
+        "section": "Mackey's irreducibility criterion",
+        "snippet": "and not isomorphic to the conjugates"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This corollary of Mackey's criterion is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Restriction to normal subgroup is induced or isotypic",
+      "anchor": {
+        "section": "Applications to special groups",
+        "snippet": "Then one of the following statements has to be valid"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Degree divides index for abelian normal subgroup",
+      "anchor": {
+        "section": "Applications to special groups",
+        "snippet": "an abelian normal subgroup of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Itô's theorem on dim ρ | [G:A] is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Classification of irreducibles of a semidirect product",
+      "anchor": {
+        "section": "Classification of representations of a semidirect product",
+        "snippet": "Every irreducible representation of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mackey-Wigner classification for semidirect products is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Representation ring",
+      "anchor": {
+        "section": "Representation ring",
+        "snippet": "The representation ring of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The representation ring R(G) (Grothendieck group of Rep G) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Virtual representations",
+      "anchor": {
+        "section": "Representation ring",
+        "snippet": "are called virtual representations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No virtual representation class is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Virtual characters",
+      "anchor": {
+        "section": "Representation ring",
+        "snippet": "are called virtual characters"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No virtual character class exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Artin's induction theorem",
+      "anchor": {
+        "section": "Induction theorems",
+        "snippet": "Artin's induction theorem is the most elementary theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Artin's induction theorem is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Brauer's induction theorem",
+      "anchor": {
+        "section": "Induction theorems",
+        "snippet": "Brauer's induction theorem asserts that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Brauer's induction theorem is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Elementary subgroup",
+      "anchor": {
+        "section": "Induction theorems",
+        "snippet": "a group H is elementary if there is some prime"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of `p`-elementary subgroup (for Brauer's theorem) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Real representation (complexification)",
+      "anchor": {
+        "section": "Real representations",
+        "snippet": "is called real"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `IsRealRepresentation` predicate exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Real-valued character but not real representation",
+      "anchor": {
+        "section": "Real representations",
+        "snippet": "But not every representation with a real-valued character is real"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Real iff invariant nondegenerate symmetric bilinear form",
+      "anchor": {
+        "section": "Real representations",
+        "snippet": "is real if and only if there exists a nondegenerate symmetric bilinear form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Complex-conjugate factors of restricted real representation",
+      "anchor": {
+        "section": "Real representations",
+        "snippet": "there are exactly two irreducible factors which are complex conjugate representations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quaternionic representation",
+      "anchor": {
+        "section": "Real representations",
+        "snippet": "A quaternionic representation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Quaternionic` representation predicate exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Trichotomy: complex, real, quaternionic",
+      "anchor": {
+        "section": "Real representations",
+        "snippet": "is one and only one of the following"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Frobenius-Schur trichotomy is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Specht module",
+      "anchor": {
+        "section": "Symmetric groups",
+        "snippet": "is called a Specht module"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specht modules are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cuspidal representations",
+      "anchor": {
+        "section": "Finite groups of Lie type",
+        "snippet": "new building blocks, known as cuspidal representations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cuspidal representations are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Topological / compact group",
+      "anchor": {
+        "section": "Definition and properties",
+        "snippet": "A topological group is a group together with a topology"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsTopologicalGroup",
+        "module": "Mathlib.Topology.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `IsTopologicalGroup` formalizes topological groups; `CompactSpace` handles compactness.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear representation of a compact group",
+      "anchor": {
+        "section": "Definition and properties",
+        "snippet": "is a continuous group homomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContRepresentation",
+        "module": "Mathlib.RepresentationTheory.Continuous.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ContRepresentation R G V := G →* V →L[R] V` formalizes continuous (linear) representations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear representation on a Banach space",
+      "anchor": {
+        "section": "Definition and properties",
+        "snippet": "into a Banach space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContRepresentation",
+        "module": "Mathlib.RepresentationTheory.Continuous.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `ContRepresentation` works for topological modules; specializing to a Banach space is just adding the appropriate instances.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Existence and uniqueness of the Haar measure",
+      "anchor": {
+        "section": "Existence and uniqueness of the Haar measure",
+        "snippet": "there exists exactly one measure"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.isHaarMeasure_eq_of_isProbabilityMeasure",
+        "module": "Mathlib.MeasureTheory.Measure.Haar.Unique",
+        "match_kind": "exact"
+      },
+      "note": "Existence via `MeasureTheory.Measure.haarMeasure` and uniqueness via the cited lemma cover the Haar-measure theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Left-regular representation of a compact group",
+      "anchor": {
+        "section": "Existence and uniqueness of the Haar measure",
+        "snippet": "It is called left-regular representation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The unitary left-regular representation on `L²(G, dμ)` for a compact group is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Right-regular representation of a compact group",
+      "anchor": {
+        "section": "Existence and uniqueness of the Haar measure",
+        "snippet": "The right-regular representation is then the unitary representation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The unitary right-regular representation of a compact group is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dual representation of a compact group",
+      "anchor": {
+        "section": "Constructions and decompositions",
+        "snippet": "is defined by the property"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No continuous dual representation defined for compact groups in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Every irreducible representation of a compact group is finite-dimensional and unitarizable",
+      "anchor": {
+        "section": "Constructions and decompositions",
+        "snippet": "Every irreducible representation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Every representation of a compact group is a direct Hilbert sum of irreducibles",
+      "anchor": {
+        "section": "Constructions and decompositions",
+        "snippet": "Every representation of a compact group is isomorphic to a direct Hilbert sum"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Isotype / isotypic component (compact)",
+      "anchor": {
+        "section": "Constructions and decompositions",
+        "snippet": "the isotype or isotypic component"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Canonical decomposition into isotypes (compact)",
+      "anchor": {
+        "section": "Constructions and decompositions",
+        "snippet": "Canonical decomposition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Projection formula (compact group)",
+      "anchor": {
+        "section": "Projection formula",
+        "snippet": "is a projection from"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Schur's lemma (compact groups)",
+      "anchor": {
+        "section": "Characters, Schur's lemma and the inner product",
+        "snippet": "Schur's lemma is also valid for compact groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Schur's lemma for continuous/unitary representations of compact groups is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inner product on square integrable functions of a compact group",
+      "anchor": {
+        "section": "Characters, Schur's lemma and the inner product",
+        "snippet": "defines an inner product on the set of all square integrable functions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.L2.innerProductSpace",
+        "module": "Mathlib.MeasureTheory.Function.L2Space",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the standard L² inner product; the specialization to a compact group with Haar measure is not separately named.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Orthogonality of irreducible characters (compact)",
+      "anchor": {
+        "section": "Characters, Schur's lemma and the inner product",
+        "snippet": "be the characters of two non-isomorphic irreducible representations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Character orthogonality for compact groups is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Multiplicity equals inner product of characters (compact)",
+      "anchor": {
+        "section": "Characters, Schur's lemma and the inner product",
+        "snippet": "The number of subrepresentations of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Irreducibility criterion (compact)",
+      "anchor": {
+        "section": "Characters, Schur's lemma and the inner product",
+        "snippet": "Irreducibility Criterion"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Each irreducible contained in left-regular with multiplicity equal to its degree (compact)",
+      "anchor": {
+        "section": "Characters, Schur's lemma and the inner product",
+        "snippet": "is contained"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compact group is abelian iff all irreducibles have degree one",
+      "anchor": {
+        "section": "Characters, Schur's lemma and the inner product",
+        "snippet": "Then the following statements are equivalent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized for compact groups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Orthonormal property (compact)",
+      "anchor": {
+        "section": "Characters, Schur's lemma and the inner product",
+        "snippet": "Orthonormal Property"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Orthonormality of irreducible characters for compact groups is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Continuous induced representation",
+      "anchor": {
+        "section": "The induced representation (2)",
+        "snippet": "The continuous induced representation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No continuous induced representation for compact/topological groups is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Peter-Weyl theorem (matrix coefficients form orthonormal basis)",
+      "anchor": {
+        "section": "The Peter-Weyl Theorem",
+        "snippet": "We define the matrix coefficients"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Peter–Weyl theorem is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Peter-Weyl theorem (second version, natural isomorphism)",
+      "anchor": {
+        "section": "The Peter-Weyl Theorem",
+        "snippet": "The Peter-Weyl Theorem (Second version)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -1,0 +1,473 @@
+{
+  "slug": "Maximal_ideal",
+  "wikipedia_title": "Maximal ideal",
+  "display_title": "Maximal ideal",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Maximal ideal (lead)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a maximal ideal is an ideal that is maximal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.IsMaximal",
+        "module": "Mathlib.RingTheory.Ideal.Maximal",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal.IsMaximal` defines a maximal ideal as a coatom in the lattice of (left/two-sided) ideals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quotient by maximal ideal is simple/field",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the quotients of rings by maximal ideals are simple rings"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.Quotient.field",
+        "module": "Mathlib.RingTheory.Ideal.Quotient.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`Ideal.Quotient.field` constructs a `Field` structure on `R ⧸ I` when `I.IsMaximal` for commutative `R`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Maximal spectrum",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The set of maximal ideals of a unital commutative ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MaximalSpectrum",
+        "module": "Mathlib.RingTheory.Spectrum.Maximal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`MaximalSpectrum R` is the type of maximal ideals of a commutative ring `R`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Maximal one-sided ideals",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a maximal right ideal is defined analogously as being a maximal element in the poset of proper right ideals"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ideal.IsMaximal",
+        "module": "Mathlib.RingTheory.Ideal.Maximal",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib's `Ideal` models left ideals (with two-sided in commutative case); right ideals are not a separate first-class concept, so maximal right ideals are not separately formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Local ring via unique maximal right ideal",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "If R has a unique maximal right ideal, then R is known as a local ring"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsLocalRing.maximal_ideal_unique",
+        "module": "Mathlib.RingTheory.LocalRing.MaximalIdeal.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`IsLocalRing` is defined via the `a+b=1 → IsUnit a ∨ IsUnit b` condition; equivalence with a unique maximal ideal is `IsLocalRing.maximal_ideal_unique`, but only for (commutative-style) two-sided ideals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "2x2 matrices: unique two-sided but many one-sided maximal",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "in the ring of 2 by 2 square matrices over a field, the zero ideal is a maximal two-sided ideal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific Mathlib statement about maximal ideals of `Matrix (Fin 2) (Fin 2) K` was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalent conditions for maximal two-sided ideal",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "I is a maximal ideal of R if any of the following equivalent conditions hold"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ideal.isMaximal_iff",
+        "module": "Mathlib.RingTheory.Ideal.Maximal",
+        "match_kind": "special_case"
+      },
+      "note": "`Ideal.isMaximal_iff` gives one characterization (proper + every strictly larger ideal contains 1); the full list of equivalences from the article is not packaged as one decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalent conditions for maximal right ideal",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "the following conditions are equivalent to A being a maximal right ideal of R"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib lacks a dedicated right-ideal API, so this list of equivalences is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Field has only {0} as maximal ideal",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "If F is a field, then the only maximal ideal is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.bot_isMaximal",
+        "module": "Mathlib.RingTheory.Ideal.Maximal",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal.bot_isMaximal` proves `⊥` is maximal in a division (semi)ring, which together with `eq_bot_or_top` for ideals of a field captures the example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Maximal ideals of Z",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "In the ring Z of integers, the maximal ideals are the principal ideals generated by a prime number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.ideal_span_isMaximal_of_prime",
+        "module": "Mathlib.RingTheory.Ideal.Int",
+        "match_kind": "exact"
+      },
+      "note": "`Int.ideal_span_isMaximal_of_prime` shows the ideal `(p)` is maximal in ℤ when `p` is a prime number.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Nonzero primes maximal in PID",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "all nonzero prime ideals are maximal in a principal ideal domain"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PrincipalIdealRing.isMaximal_of_irreducible",
+        "module": "Mathlib.RingTheory.PrincipalIdealDomain",
+        "match_kind": "generalization"
+      },
+      "note": "`PrincipalIdealRing.isMaximal_of_irreducible` together with `Ideal.IsPrime.isMaximal` (under `DimensionLEOne`) gives the result; PIDs are zero/one-dimensional so nonzero primes are maximal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Maximal ideals of Z[x]",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Generally, the maximal ideals of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit Mathlib characterization of the maximal ideals of `ℤ[X]` was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Boolean ring: every prime is maximal",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Every prime ideal is a maximal ideal in a Boolean ring"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `BooleanRing` file has no theorem identifying prime and maximal ideals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Maximal ideals of k[x]",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The maximal ideals of the polynomial ring"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PrincipalIdealRing.isMaximal_of_irreducible",
+        "module": "Mathlib.RingTheory.PrincipalIdealDomain",
+        "match_kind": "generalization"
+      },
+      "note": "`PrincipalIdealRing.isMaximal_of_irreducible` applied to `k[X]` (which is a PID over a field) gives that ideals generated by irreducible polynomials are maximal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Weak Nullstellensatz",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "This result is known as the weak Nullstellensatz"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MvPolynomial.isMaximal_iff_eq_vanishingIdeal_singleton",
+        "module": "Mathlib.RingTheory.Nullstellensatz",
+        "match_kind": "exact"
+      },
+      "note": "`MvPolynomial.isMaximal_iff_eq_vanishingIdeal_singleton` characterizes maximal ideals of `k[x₁,…,xₙ]` over an algebraically closed field as vanishing ideals of points.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Maximal ideals of coordinate ring",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the maximal ideals of the coordinate ring"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No direct Mathlib statement was found describing maximal ideals of the coordinate ring of an affine variety.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "R/m field iff m maximal",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "k = R / m is a field if and only if m is a maximal ideal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.Quotient.maximal_ideal_iff_isField_quotient",
+        "module": "Mathlib.RingTheory.Ideal.Quotient.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal.Quotient.maximal_ideal_iff_isField_quotient` states `I.IsMaximal ↔ IsField (R ⧸ I)` for commutative `R`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Residue field",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "R / m is known as the residue field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLocalRing.ResidueField",
+        "module": "Mathlib.RingTheory.LocalRing.ResidueField.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "`IsLocalRing.ResidueField R` is defined as `R ⧸ maximalIdeal R` with a `Field` instance, covering the local-ring case of the residue field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Simple modules arise from maximal left ideals",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "If L is a maximal left ideal, then R / L is a simple left"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isSimpleModule_iff_quot_maximal",
+        "module": "Mathlib.RingTheory.SimpleModule.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`isSimpleModule_iff_quot_maximal` shows `IsSimpleModule R M ↔ ∃ I : Ideal R, I.IsMaximal ∧ Nonempty (M ≃ₗ[R] R ⧸ I)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Krull's theorem",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Krull's theorem (1929): Every nonzero unital ring has a maximal ideal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.exists_maximal",
+        "module": "Mathlib.RingTheory.Ideal.Maximal",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal.exists_maximal` proves every nontrivial (semi)ring has a maximal ideal, with `Ideal.exists_le_maximal` giving the stronger relative form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Radical ring has no maximal one-sided ideals",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "A radical ring , i.e. a ring in which the Jacobson radical is the entire ring"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib decl about radical rings (Jacobson radical = whole ring) and absence of one-sided maximal ideals was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Maximal implies prime in commutative ring",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "In a commutative ring with unity, every maximal ideal is a prime ideal"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.IsMaximal.isPrime",
+        "module": "Mathlib.RingTheory.Ideal.Maximal",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal.IsMaximal.isPrime` (with an `instance IsMaximal.isPrime'`) gives that maximal ideals of a commutative (semi)ring are prime.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zero-dimensional ring",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Commutative rings in which prime ideals are maximal are known as zero-dimensional rings"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ring.KrullDimLE",
+        "module": "Mathlib.RingTheory.KrullDimension.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Ring.KrullDimLE 0 R` expresses that the Krull dimension of `R` is at most zero, i.e., every prime ideal is maximal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Preimage under k-algebra homomorphism",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "the preimage of a maximal ideal of a finitely generated"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MvPolynomial.comp_C_integral_of_surjective_of_isJacobsonRing",
+        "module": "Mathlib.RingTheory.Jacobson.Ring",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has the Jacobson-ring machinery (`Polynomial.isMaximal_comap_C_of_isJacobsonRing`, `MvPolynomial.comp_C_integral_of_surjective_of_isJacobsonRing`) from which this preimage statement follows, but no direct lemma `(comap of maximal under finitely generated k-algebra hom is maximal)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Maximal ideal of noncommutative ring not prime",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "A maximal ideal of a noncommutative ring might not be prime in the commutative sense"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib example of a noncommutative maximal ideal failing the commutative-prime condition was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Maximal submodule",
+      "anchor": {
+        "section": "Generalization",
+        "snippet": "a maximal submodule M of A is a submodule"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsCoatom",
+        "module": "Mathlib.Order.Atoms",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib expresses 'maximal submodule' as `IsCoatom (N : Submodule R M)` using the general order-theoretic `IsCoatom`; there is no dedicated `Submodule.IsMaximal`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Maximal right ideals = maximal submodules of R_R",
+      "anchor": {
+        "section": "Generalization",
+        "snippet": "The maximal right ideals of a ring R are exactly the maximal submodules of the module"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Ideal.isMaximal_def",
+        "module": "Mathlib.RingTheory.Ideal.Maximal",
+        "match_kind": "special_case"
+      },
+      "note": "`Ideal.isMaximal_def` (`I.IsMaximal ↔ IsCoatom I`) gives this identification for left ideals (Mathlib's `Ideal R = Submodule R R`); the right-ideal version is not separately formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence of maximal submodules",
+      "anchor": {
+        "section": "Generalization",
+        "snippet": "finitely generated nonzero modules have maximal submodules, and also projective modules have maximal submodules"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.Finite.instIsCoatomicSubmodule",
+        "module": "Mathlib.RingTheory.Finiteness.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`Module.Finite.instIsCoatomicSubmodule` gives `IsCoatomic (Submodule R M)` for finitely generated `M`; the projective-module case is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Maximal sub-bimodule",
+      "anchor": {
+        "section": "Generalization",
+        "snippet": "maximal ideals can be generalized by defining a maximal sub-bimodule"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no dedicated notion of a maximal sub-bimodule.",
+      "provenance": "ai"
+    }
+  ]
+}

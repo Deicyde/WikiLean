@@ -1,0 +1,681 @@
+{
+  "slug": "Transcendental_number_theory",
+  "wikipedia_title": "Transcendental number theory",
+  "display_title": "Transcendental number theory",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Transcendental number theory",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Transcendental number theory is a branch of number theory that investigates transcendental numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Transcendental",
+        "module": "Mathlib.RingTheory.Algebraic.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has a `NumberTheory/Transcendental/` directory containing the core predicate and several results, but the field itself is not a single decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Transcendental number",
+      "anchor": {
+        "section": "Transcendence",
+        "snippet": "If no such polynomial exists then the number is called transcendental."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Transcendental",
+        "module": "Mathlib.RingTheory.Algebraic.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Transcendental R x` is defined as `¬ IsAlgebraic R x` in `Mathlib.RingTheory.Algebraic.Defs`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraic independence",
+      "anchor": {
+        "section": "Transcendence",
+        "snippet": "is called algebraically independent over a field K if there is no non-zero polynomial P in n variables"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgebraicIndependent",
+        "module": "Mathlib.RingTheory.AlgebraicIndependent.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`AlgebraicIndependent R x` states a family `x` is algebraically independent via injectivity of `MvPolynomial.aeval`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler's assertion on logarithms",
+      "anchor": {
+        "section": "Approximation by rational numbers: Liouville to Roth",
+        "snippet": "Euler asserted [ 3 ] that the number log a b was not algebraic for rational numbers a and b provided b is not of the form b = a c for some rational c"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib statement asserting transcendence of logarithms of rationals in non-trivial cases was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Liouville's transcendence criterion",
+      "anchor": {
+        "section": "Approximation by rational numbers: Liouville to Roth",
+        "snippet": "He showed that if α is an algebraic number of degree d ≥ 2 and ε is any number greater than zero"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_pos_real_of_irrational_root",
+        "module": "Mathlib.NumberTheory.Transcendental.Liouville.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `exists_pos_real_of_irrational_root` produces the Liouville inequality `1 ≤ (b+1)^d * |α − a/(b+1)| * A` underlying the criterion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Thue–Siegel–Roth theorem",
+      "anchor": {
+        "section": "Approximation by rational numbers: Liouville to Roth",
+        "snippet": "This result, known as the Thue–Siegel–Roth theorem , is ostensibly the best possible"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Roth-style theorem on Diophantine approximation of algebraic numbers found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lang's conjecture refining Roth",
+      "anchor": {
+        "section": "Approximation by rational numbers: Liouville to Roth",
+        "snippet": "Serge Lang conjectured an improvement of Roth's result"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lang's conjectured refinement of Roth is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hermite's transcendence of e",
+      "anchor": {
+        "section": "Auxiliary functions: Hermite to Baker",
+        "snippet": "Charles Hermite used auxiliary functions that approximated the functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transcendence of `Real.exp 1` is not proved in Mathlib; only the analytical part of Lindemann–Weierstrass is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lindemann's theorem on e^α",
+      "anchor": {
+        "section": "Auxiliary functions: Hermite to Baker",
+        "snippet": "in order to prove that e α is transcendental for nonzero algebraic numbers α"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transcendence of `exp α` for nonzero algebraic α is not proved; only auxiliary analytic estimates exist.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lindemann–Weierstrass theorem",
+      "anchor": {
+        "section": "Auxiliary functions: Hermite to Baker",
+        "snippet": "Karl Weierstrass developed their work yet further and eventually proved the Lindemann–Weierstrass theorem in 1885"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LindemannWeierstrass.exp_polynomial_approx",
+        "module": "Mathlib.NumberTheory.Transcendental.Lindemann.AnalyticalPart",
+        "match_kind": "invocation"
+      },
+      "note": "Only the analytical part (Jacobson's approximation lemma for `exp`) is formalized; the full Lindemann–Weierstrass theorem statement is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hilbert's seventh problem",
+      "anchor": {
+        "section": "Auxiliary functions: Hermite to Baker",
+        "snippet": "asked about the transcendence of numbers of the form a b where a and b are algebraic, a is not zero or one, and b is irrational"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hilbert's seventh problem is not formulated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gelfond–Schneider theorem",
+      "anchor": {
+        "section": "Auxiliary functions: Hermite to Baker",
+        "snippet": "This result, the Gelfond–Schneider theorem , proved the transcendence of numbers such as e π and the Gelfond–Schneider constant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `gelfond` finds no Gelfond–Schneider statement in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Baker's theorem on linear forms in logarithms",
+      "anchor": {
+        "section": "Auxiliary functions: Hermite to Baker",
+        "snippet": "Baker had proved that if α 1 , ..., α n are algebraic numbers, none of them zero or one, and β 1 , ..., β n are algebraic numbers such that 1, β 1 , ..., β n are linearly independent over the rational numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `baker` returns nothing in this area; Baker's theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cantor's uncountability of transcendentals",
+      "anchor": {
+        "section": "Other techniques: Cantor and Zilber",
+        "snippet": "the algebraic numbers could be put in one-to-one correspondence with the set of natural numbers , and thus that the set of transcendental numbers must be uncountable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebraic.countable",
+        "module": "Mathlib.Algebra.AlgebraicCard",
+        "match_kind": "exact"
+      },
+      "note": "`Algebraic.countable` shows the set of algebraic numbers is countable, equivalent to Cantor's conclusion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Schanuel's conjecture",
+      "anchor": {
+        "section": "Other techniques: Cantor and Zilber",
+        "snippet": "Stephen Schanuel conjectured that the answer is at least n , but no proof is known"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Schanuel's conjecture is not stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Zilber's pseudo-exponential structure",
+      "anchor": {
+        "section": "Other techniques: Cantor and Zilber",
+        "snippet": "Boris Zilber published a paper that used model theoretic techniques to create a structure that behaves very much like the complex numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Zilber pseudo-exponential structure appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Transcendence measure",
+      "anchor": {
+        "section": "Approaches",
+        "snippet": "Such a bound is called a transcendence measure"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transcendence measure as a function on transcendental numbers is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Mahler's classification (S, T, U)",
+      "anchor": {
+        "section": "Mahler's classification",
+        "snippet": "Kurt Mahler in 1932 partitioned the transcendental numbers into 3 classes, called S , T , and U"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mahler's S/T/U classification of transcendental numbers is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Measure of irrationality",
+      "anchor": {
+        "section": "Measure of irrationality of a real number",
+        "snippet": "is often called the measure of irrationality of a real number x"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LiouvilleWith",
+        "module": "Mathlib.NumberTheory.Transcendental.Liouville.LiouvilleWith",
+        "match_kind": "invocation"
+      },
+      "note": "`LiouvilleWith p x` formalises approximability with exponent `p`, but the irrationality measure as a supremum/scalar function is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Liouville number (via measure of irrationality)",
+      "anchor": {
+        "section": "Measure of irrationality of a real number",
+        "snippet": "A Liouville number is defined to have infinite measure of irrationality"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "forall_liouvilleWith_iff",
+        "module": "Mathlib.NumberTheory.Transcendental.Liouville.LiouvilleWith",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `Liouville` directly and shows it equals being `LiouvilleWith` every exponent, capturing the infinite-irrationality-measure characterization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Roth's theorem (measure form)",
+      "anchor": {
+        "section": "Measure of irrationality of a real number",
+        "snippet": "Roth's theorem says that irrational real algebraic numbers have measure of irrationality 1"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Roth's theorem is not in Mathlib in any form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "U number of degree n",
+      "anchor": {
+        "section": "Measure of transcendence of a complex number",
+        "snippet": "A complex number x in this case is called a U number of degree n"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mahler's U-number classes are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Measure of transcendence",
+      "anchor": {
+        "section": "Measure of transcendence of a complex number",
+        "snippet": "is often called the measure of transcendence of x"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mahler's transcendence measure ω(x,n) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "S number",
+      "anchor": {
+        "section": "Measure of transcendence of a complex number",
+        "snippet": "is finite, and x is called an S number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mahler S-numbers are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "T number",
+      "anchor": {
+        "section": "Measure of transcendence of a complex number",
+        "snippet": "are finite but unbounded, x is called a T number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mahler T-numbers are not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Algebraic iff measure of transcendence zero",
+      "anchor": {
+        "section": "Measure of transcendence of a complex number",
+        "snippet": "x is algebraic if and only if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without the transcendence measure, this characterisation is not stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "LeVeque's U-numbers of every degree",
+      "anchor": {
+        "section": "Measure of transcendence of a complex number",
+        "snippet": "William LeVeque in 1953 constructed U numbers of any desired degree"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "LeVeque's construction is absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "U numbers have measure zero",
+      "anchor": {
+        "section": "Measure of transcendence of a complex number",
+        "snippet": "The Liouville numbers and hence the U numbers are uncountable sets. They are sets of measure 0"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "volume_iUnion_setOf_liouvilleWith",
+        "module": "Mathlib.NumberTheory.Transcendental.Liouville.Measure",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib shows the set of Liouville numbers (with exponent > 2) has Lebesgue measure zero, the U₁ case; general U-numbers are not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Schmidt's existence of T numbers",
+      "anchor": {
+        "section": "Measure of transcendence of a complex number",
+        "snippet": "Wolfgang M. Schmidt in 1968 showed that examples exist"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Schmidt's existence theorem for T-numbers is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Almost all complex numbers are S numbers",
+      "anchor": {
+        "section": "Measure of transcendence of a complex number",
+        "snippet": "almost all complex numbers are S numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This metric statement about S-numbers is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Mahler: exp sends algebraics to S numbers",
+      "anchor": {
+        "section": "Measure of transcendence of a complex number",
+        "snippet": "Mahler proved that the exponential function sends all non-zero algebraic numbers to S numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This Mahler result is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Algebraically dependent (two numbers)",
+      "anchor": {
+        "section": "Measure of transcendence of a complex number",
+        "snippet": "Two numbers x , y are called algebraically dependent if there is a non-zero polynomial P in two indeterminates with integer coefficients"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicIndependent",
+        "module": "Mathlib.RingTheory.AlgebraicIndependent.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `AlgebraicIndependent R x` handles families; the dependence of a pair is its negation but no named dyadic-pair definition exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Algebraically dependent numbers share Mahler class",
+      "anchor": {
+        "section": "Measure of transcendence of a complex number",
+        "snippet": "There is a powerful theorem that two complex numbers that are algebraically dependent belong to the same Mahler class"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Statement about Mahler classes of algebraically dependent numbers is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "U*-number of degree n",
+      "anchor": {
+        "section": "Koksma's equivalent classification",
+        "snippet": "is infinite, x is called a U*-number of degree n"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Koksma's U*-class is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "S*-number",
+      "anchor": {
+        "section": "Koksma's equivalent classification",
+        "snippet": "are bounded and do not converge to 0, x is called an S*-number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Koksma's S*-class is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "A*-number",
+      "anchor": {
+        "section": "Koksma's equivalent classification",
+        "snippet": "A number x is called an A*-number if the"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Koksma's A*-class (algebraic numbers in Koksma's classification) is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "T*-number",
+      "anchor": {
+        "section": "Koksma's equivalent classification",
+        "snippet": "are all finite but unbounded, x is called a T*-number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Koksma's T*-class is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Koksma–Mahler classifications equivalent",
+      "anchor": {
+        "section": "Koksma's equivalent classification",
+        "snippet": "Koksma's and Mahler's classifications are equivalent in that they divide the transcendental numbers into the same classes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Equivalence of Koksma's and Mahler's classifications is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "n-th root of λ is a U-number of degree n",
+      "anchor": {
+        "section": "LeVeque's construction",
+        "snippet": "It can be shown that the n th root of λ (a Liouville number) is a U-number of degree n"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "LeVeque's n-th-root construction is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uncountable family of U-numbers of degree n",
+      "anchor": {
+        "section": "LeVeque's construction",
+        "snippet": "This construction can be improved to create an uncountable family of U-numbers of degree n"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Improvement to uncountably many U-numbers of degree n is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Type of an S number",
+      "anchor": {
+        "section": "Type",
+        "snippet": "is called the type"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The type of an S-number is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sprindzhuk: almost all reals are S numbers of type 1",
+      "anchor": {
+        "section": "Type",
+        "snippet": "Almost all real numbers are S numbers of type 1, which is minimal for real S numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Sprindzhuk's theorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -11,7 +11,15 @@
         "section": "Definition",
         "snippet": "π is commonly defined as the ratio of a circle 's circumference C to its diameter d"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.pi",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib defines `Real.pi` analytically (twice the smallest zero of cos), not as the circumference/diameter ratio of a geometric circle.",
+      "provenance": "ai-agent1",
+      "id": "7bcbdcaa88ac"
     },
     {
       "kind": "definition",
@@ -20,7 +28,15 @@
         "section": "Definition",
         "snippet": "An integral such as this was proposed as a definition of π by Karl Weierstrass"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "integral_sqrt_one_sub_sq",
+        "module": "Mathlib.Analysis.SpecialFunctions.Integrals.Basic",
+        "match_kind": null
+      },
+      "note": "Not used as a definition, but `∫_{-1}^{1} √(1-x²) dx = π/2` is proved as `integral_sqrt_one_sub_sq`.",
+      "provenance": "ai-agent1",
+      "id": "246504211afa"
     },
     {
       "kind": "definition",
@@ -29,7 +45,15 @@
         "section": "Definition",
         "snippet": "π is twice the smallest positive number at which the cosine function equals 0"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.pi",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "exact"
+      },
+      "note": "This is exactly how `Real.pi` is defined in Mathlib: `2 * Classical.choose exists_cos_eq_zero` on `[1,2]`.",
+      "provenance": "ai-agent1",
+      "id": "027aa9277de6"
     },
     {
       "kind": "definition",
@@ -38,7 +62,15 @@
         "section": "Definition",
         "snippet": "π can be defined using properties of the complex exponential"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.pi",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib's π is defined via real cosine rather than as the half-period of `exp`, although `Complex.exp_pi_mul_I` connects the two.",
+      "provenance": "ai-agent1",
+      "id": "5f45fa7c4463"
     },
     {
       "kind": "theorem",
@@ -47,7 +79,15 @@
         "section": "Irrationality and normality",
         "snippet": "π is an irrational number , meaning that it cannot be written as the ratio of two integers"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "irrational_pi",
+        "module": "Mathlib.Analysis.Real.Pi.Irrational",
+        "match_kind": "exact"
+      },
+      "note": "Statement and proof are in `irrational_pi : Irrational π`.",
+      "provenance": "ai-agent1",
+      "id": "cdf0a8bbf435"
     },
     {
       "kind": "proposition",
@@ -56,7 +96,15 @@
         "section": "Irrationality and normality",
         "snippet": "The conjecture that π is normal has not been proven or disproven"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An open conjecture; no normality statement for π exists in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "d1fe6260a94c"
     },
     {
       "kind": "theorem",
@@ -65,7 +113,15 @@
         "section": "Transcendence",
         "snippet": "π is also a transcendental number"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Transcendental ℤ π` or Lindemann–Weierstrass result is present in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "bce0d39f8c50"
     },
     {
       "kind": "theorem",
@@ -74,6 +130,30 @@
         "section": "Transcendence",
         "snippet": "it is not possible to \" square the circle \""
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib lacks the constructibility framework for compass-and-straightedge impossibility of squaring the circle.",
+      "provenance": "ai-agent1",
+      "id": "d7b284cb00d0"
+    },
+    {
+      "kind": "proposition",
+      "label": "Algebraic independence of π and e (Schanuel's conjecture)",
+      "anchor": {
+        "section": "Transcendence",
+        "snippet": "An unsolved problem thus far is the question of whether or not the numbers π and e are algebraically independent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Open problem; would follow from Schanuel's conjecture, which is itself not formalized.",
       "provenance": "ai-agent1"
     },
     {
@@ -83,7 +163,15 @@
         "section": "Continued fractions",
         "snippet": "π can be represented by an infinite series of nested fractions, called a simple continued fraction"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has general continued-fraction theory but no specific continued-fraction expansion of π.",
+      "provenance": "ai-agent1",
+      "id": "f6a5f2cbbb47"
     },
     {
       "kind": "proposition",
@@ -92,7 +180,15 @@
         "section": "Continued fractions",
         "snippet": "Each approximation generated in this way is a best rational approximation"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "GenContFract.of_convergents_eq_best_approximation",
+        "module": "Mathlib.Algebra.ContinuedFractions.Computation.ApproximationCorollaries",
+        "match_kind": null
+      },
+      "note": "Mathlib has the general best-rational-approximation theorem for continued fractions, not applied to π specifically.",
+      "provenance": "ai-agent1",
+      "id": "5ba3a9ed255a"
     },
     {
       "kind": "definition",
@@ -101,7 +197,15 @@
         "section": "Complex numbers and Euler's identity",
         "snippet": "Any complex number , say z , can be expressed using a pair of real numbers"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "polarCoord",
+        "module": "Mathlib.Analysis.SpecialFunctions.PolarCoord",
+        "match_kind": "exact"
+      },
+      "note": "`polarCoord` (and `Complex.arg`/`Complex.abs`) give the polar representation `z = r·exp(iθ)`.",
+      "provenance": "ai-agent1",
+      "id": "3c222c7e735b"
     },
     {
       "kind": "theorem",
@@ -110,7 +214,15 @@
         "section": "Complex numbers and Euler's identity",
         "snippet": "described by Euler's formula"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_mul_I",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.exp_mul_I : exp (θ * I) = cos θ + sin θ * I` is Euler's formula.",
+      "provenance": "ai-agent1",
+      "id": "0c241b396672"
     },
     {
       "kind": "theorem",
@@ -119,7 +231,15 @@
         "section": "Complex numbers and Euler's identity",
         "snippet": "results in Euler's identity"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_pi_mul_I",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.exp_pi_mul_I : exp (π * I) = -1` is exactly Euler's identity.",
+      "provenance": "ai-agent1",
+      "id": "a4d9bf6fa653"
     },
     {
       "kind": "proposition",
@@ -128,7 +248,15 @@
         "section": "Complex numbers and Euler's identity",
         "snippet": "and these are called the \" n th roots of unity \""
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.isPrimitiveRoot_exp",
+        "module": "Mathlib.RingTheory.RootsOfUnity.Complex",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.isPrimitiveRoot_exp` shows `exp(2πi/n)` is a primitive nth root of unity, with `rootsOfUnity` framework.",
+      "provenance": "ai-agent1",
+      "id": "29e06f85ec1f"
     },
     {
       "kind": "theorem",
@@ -137,7 +265,15 @@
         "section": "Polygon approximation era",
         "snippet": "By calculating the perimeters of these polygons, he proved that"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.pi_gt_3141592",
+        "module": "Mathlib.Analysis.Real.Pi.Bounds",
+        "match_kind": null
+      },
+      "note": "Mathlib has rigorous numeric bounds on π in `Real.Pi.Bounds` but not Archimedes' specific polygon-perimeter argument.",
+      "provenance": "ai-agent1",
+      "id": "df05695ea478"
     },
     {
       "kind": "theorem",
@@ -146,7 +282,15 @@
         "section": "Infinite series",
         "snippet": "François Viète published what is now known as Viète's formula"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Viète's infinite-product formula for 2/π is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "a417f2a0f4e1"
     },
     {
       "kind": "theorem",
@@ -155,7 +299,15 @@
         "section": "Infinite series",
         "snippet": "John Wallis published what is now known as the Wallis product"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.tendsto_prod_pi_div_two",
+        "module": "Mathlib.Analysis.Real.Pi.Wallis",
+        "match_kind": "exact"
+      },
+      "note": "`Real.tendsto_prod_pi_div_two` is exactly the Wallis product.",
+      "provenance": "ai-agent1",
+      "id": "1c3f3d474750"
     },
     {
       "kind": "theorem",
@@ -164,7 +316,15 @@
         "section": "Infinite series",
         "snippet": "discovered the Taylor series expansion for arctangent"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.tendsto_sum_pi_div_four",
+        "module": "Mathlib.Analysis.Real.Pi.Leibniz",
+        "match_kind": "exact"
+      },
+      "note": "`Real.tendsto_sum_pi_div_four` formalises arctan(1) = π/4 via the alternating odd-reciprocal series.",
+      "provenance": "ai-agent1",
+      "id": "2067f4f533eb"
     },
     {
       "kind": "theorem",
@@ -173,7 +333,15 @@
         "section": "Infinite series",
         "snippet": "John Machin used the Gregory–Leibniz series to produce an algorithm that converged much faster"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Machin's identity `π/4 = 4 arctan(1/5) − arctan(1/239)` is not present in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "0d92827c8e60"
     },
     {
       "kind": "theorem",
@@ -182,7 +350,15 @@
         "section": "Infinite series",
         "snippet": "Isaac Newton accelerated the convergence of the Gregory–Leibniz series in 1684"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Newton's accelerated arctan series for π is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "01fe28105f37"
     },
     {
       "kind": "example",
@@ -191,7 +367,15 @@
         "section": "Rate of convergence",
         "snippet": "A simple infinite series for π is the Gregory–Leibniz series"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.tendsto_sum_pi_div_four",
+        "module": "Mathlib.Analysis.Real.Pi.Leibniz",
+        "match_kind": "exact"
+      },
+      "note": "Same theorem as the named result; converges to π/4.",
+      "provenance": "ai-agent1",
+      "id": "36bdd715574c"
     },
     {
       "kind": "example",
@@ -200,7 +384,15 @@
         "section": "Rate of convergence",
         "snippet": "An infinite series for π (published by Nilakantha in the 15th century) that converges more rapidly than the Gregory–Leibniz series"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Nilakantha's particular series `3 + 4/(2·3·4) − 4/(4·5·6) + …` is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "188389c560ad"
     },
     {
       "kind": "theorem",
@@ -209,7 +401,15 @@
         "section": "Irrationality and transcendence",
         "snippet": "When Euler solved the Basel problem in 1735, finding the exact value of the sum of the reciprocal squares"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "hasSum_zeta_two",
+        "module": "Mathlib.NumberTheory.ZetaValues",
+        "match_kind": "exact"
+      },
+      "note": "`hasSum_zeta_two : HasSum (fun n => 1/n^2) (π^2/6)`.",
+      "provenance": "ai-agent1",
+      "id": "e4b2b16656f2"
     },
     {
       "kind": "theorem",
@@ -218,7 +418,15 @@
         "section": "Irrationality and transcendence",
         "snippet": "Swiss scientist Johann Heinrich Lambert in 1768 proved that π is irrational"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "irrational_pi",
+        "module": "Mathlib.Analysis.Real.Pi.Irrational",
+        "match_kind": "exact"
+      },
+      "note": "The statement is formalized as `irrational_pi`, though Mathlib's proof follows Niven rather than Lambert.",
+      "provenance": "ai-agent1",
+      "id": "2eebfe571f8e"
     },
     {
       "kind": "theorem",
@@ -227,7 +435,15 @@
         "section": "Irrationality and transcendence",
         "snippet": "French mathematician Adrien-Marie Legendre proved in 1794 that π 2 is also irrational"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `irrational_pi` but not the stronger `Irrational (π^2)`.",
+      "provenance": "ai-agent1",
+      "id": "4b179b5eac59"
     },
     {
       "kind": "theorem",
@@ -236,7 +452,15 @@
         "section": "Irrationality and transcendence",
         "snippet": "German mathematician Ferdinand von Lindemann proved that π is transcendental"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transcendence of π is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "2929e137a90e"
     },
     {
       "kind": "theorem",
@@ -245,7 +469,15 @@
         "section": "Computer era and iterative algorithms",
         "snippet": "The Gauss–Legendre iterative algorithm"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Gauss–Legendre AGM-based algorithm for π is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "2a6dd49584ec"
     },
     {
       "kind": "theorem",
@@ -254,7 +486,15 @@
         "section": "Rapidly convergent series",
         "snippet": "One of his formulae, based on modular equations"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ramanujan's rapidly convergent series for 1/π are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "016e97eb4da5"
     },
     {
       "kind": "theorem",
@@ -263,7 +503,15 @@
         "section": "Rapidly convergent series",
         "snippet": "The Chudnovsky formula developed in 1987"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "chudnovskySum",
+        "module": "Mathlib.Analysis.Real.Pi.Chudnovsky",
+        "match_kind": null
+      },
+      "note": "`chudnovskySum` defines the series but the equality with `π⁻¹` is left as a `proof_wanted`.",
+      "provenance": "ai-agent1",
+      "id": "c9a858312f5e"
     },
     {
       "kind": "proposition",
@@ -272,7 +520,15 @@
         "section": "Rapidly convergent series",
         "snippet": "Simon Plouffe used the PSLQ integer relation algorithm"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "PSLQ-discovered template formulae for π are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "c63db3157d67"
     },
     {
       "kind": "example",
@@ -281,7 +537,15 @@
         "section": "Monte Carlo methods",
         "snippet": "Buffon's needle is one such technique"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "buffon_short",
+        "module": "Archive.Wiedijk100Theorems.BuffonsNeedle",
+        "match_kind": "exact"
+      },
+      "note": "Proved in the Archive as `buffon_short`/`buffon_long`, giving the needle-crossing probability `2l/(πd)`.",
+      "provenance": "ai-agent1",
+      "id": "3bf9ec905cab"
     },
     {
       "kind": "example",
@@ -290,7 +554,15 @@
         "section": "Monte Carlo methods",
         "snippet": "Another Monte Carlo method for computing π is to draw a circle inscribed in a square"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The inscribed-circle dot-counting Monte Carlo estimator for π is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "314a9e74915d"
     },
     {
       "kind": "example",
@@ -299,7 +571,15 @@
         "section": "Monte Carlo methods",
         "snippet": "Another way to calculate π using probability is to start with a random walk"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No random-walk-based estimator for π is in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "be3838200914"
     },
     {
       "kind": "theorem",
@@ -308,7 +588,15 @@
         "section": "Spigot algorithms",
         "snippet": "the BBP digit extraction algorithm , was discovered in 1995 by Simon Plouffe"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Bailey–Borwein–Plouffe formula is not present in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "4b7575f17ab8"
     },
     {
       "kind": "proposition",
@@ -317,7 +605,15 @@
         "section": "Geometry and trigonometry",
         "snippet": "The circumference of a circle with radius r is 2 πr"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no `circumference = 2πr` lemma; a notion of arc length of a circle is not directly available.",
+      "provenance": "ai-agent1",
+      "id": "8abdcbfd87f8"
     },
     {
       "kind": "proposition",
@@ -326,7 +622,15 @@
         "section": "Geometry and trigonometry",
         "snippet": "The area of a circle with radius r is πr 2"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.volume_ball_fin_two",
+        "module": "Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls",
+        "match_kind": "exact"
+      },
+      "note": "`volume_ball_fin_two` gives `volume (ball x r) = r² · π`; `Complex.volume_ball` is the same.",
+      "provenance": "ai-agent1",
+      "id": "df0d52829101"
     },
     {
       "kind": "proposition",
@@ -335,7 +639,15 @@
         "section": "Geometry and trigonometry",
         "snippet": "The area of an ellipse with semi-major axis a and semi-minor axis b is πab"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `area(ellipse) = π a b` lemma was found.",
+      "provenance": "ai-agent1",
+      "id": "3f1d88722c91"
     },
     {
       "kind": "proposition",
@@ -344,7 +656,15 @@
         "section": "Geometry and trigonometry",
         "snippet": "The volume of a sphere with radius r is"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.volume_ball_fin_three",
+        "module": "Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls",
+        "match_kind": "exact"
+      },
+      "note": "`volume_ball_fin_three` gives `volume (ball x r) = r³ · 4π/3`.",
+      "provenance": "ai-agent1",
+      "id": "24e638e88e85"
     },
     {
       "kind": "proposition",
@@ -353,7 +673,15 @@
         "section": "Geometry and trigonometry",
         "snippet": "The surface area of a sphere with radius r is 4 πr 2"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the 2-sphere surface area `4πr²` was found.",
+      "provenance": "ai-agent1",
+      "id": "ad524f02f940"
     },
     {
       "kind": "theorem",
@@ -362,7 +690,15 @@
         "section": "Geometry and trigonometry",
         "snippet": "By Barbier's theorem , every curve of constant width has perimeter π times its width"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Barbier's theorem on curves of constant width is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "f04b65981169"
     },
     {
       "kind": "example",
@@ -371,7 +707,15 @@
         "section": "Geometry and trigonometry",
         "snippet": "an integral that specifies half the area of a circle of radius one"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "integral_sqrt_one_sub_sq",
+        "module": "Mathlib.Analysis.SpecialFunctions.Integrals.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`integral_sqrt_one_sub_sq : ∫ x in -1..1, √(1-x²) = π/2`.",
+      "provenance": "ai-agent1",
+      "id": "5c90cead6eb6"
     },
     {
       "kind": "definition",
@@ -380,7 +724,15 @@
         "section": "Unit of angle",
         "snippet": "a complete circle spans an angle of 2 π radians"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.Angle",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Angle",
+        "match_kind": null
+      },
+      "note": "`Real.Angle` is `ℝ ⧸ (2π·ℤ)`, encoding the full-turn = 2π radian convention but not a stand-alone definition lemma.",
+      "provenance": "ai-agent1",
+      "id": "694b771f5055"
     },
     {
       "kind": "proposition",
@@ -389,7 +741,15 @@
         "section": "Unit of angle",
         "snippet": "sine and cosine have period 2 π"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.sin_periodic",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Real.sin_periodic`/`Real.cos_periodic` give periodicity with period `2π`.",
+      "provenance": "ai-agent1",
+      "id": "ffee7ae44fc7"
     },
     {
       "kind": "example",
@@ -398,7 +758,15 @@
         "section": "Eigenvalues",
         "snippet": "an idealized vibrating string can be modelled as the graph of a function f on the unit interval"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The vibrating string eigenvalue / Dirichlet Laplacian problem is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "9212584aa7a5"
     },
     {
       "kind": "theorem",
@@ -407,7 +775,15 @@
         "section": "Eigenvalues",
         "snippet": "which satisfies Wirtinger's inequality"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Wirtinger's inequality (π as best Poincaré constant on `[0,1]`) is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "ae2d1d64cfd6"
     },
     {
       "kind": "theorem",
@@ -416,7 +792,15 @@
         "section": "Inequalities",
         "snippet": "the best constant in the isoperimetric inequality"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The isoperimetric inequality with the sharp `4π` constant is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "0d7b5829d229"
     },
     {
       "kind": "theorem",
@@ -425,7 +809,15 @@
         "section": "Inequalities",
         "snippet": "In two dimensions, the critical Sobolev inequality is"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The 2D critical Sobolev inequality is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "ee88c2b2cc50"
     },
     {
       "kind": "theorem",
@@ -434,7 +826,15 @@
         "section": "Inequalities",
         "snippet": "π is the greatest constant such that"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Sharp Poincaré inequality with constant π is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "598628b8fb64"
     },
     {
       "kind": "definition",
@@ -443,7 +843,15 @@
         "section": "Fourier transform and Heisenberg uncertainty principle",
         "snippet": "This is the integral transform , that takes a complex-valued integrable function f on the real line"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.fourierIntegral",
+        "module": "Mathlib.Analysis.Fourier.FourierTransform",
+        "match_kind": "exact"
+      },
+      "note": "`Real.fourierIntegral` (and the more general `VectorFourier.fourierIntegral`) defines the Fourier transform with the `e^{-2πi x ξ}` convention.",
+      "provenance": "ai-agent1",
+      "id": "a9206f4d904c"
     },
     {
       "kind": "theorem",
@@ -452,7 +860,15 @@
         "section": "Fourier transform and Heisenberg uncertainty principle",
         "snippet": "The uncertainty principle gives a sharp lower bound on the extent to which it is possible to localize a function both in space and in frequency"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the Heisenberg uncertainty principle was found.",
+      "provenance": "ai-agent1",
+      "id": "df66e1676d38"
     },
     {
       "kind": "definition",
@@ -461,7 +877,15 @@
         "section": "Gaussian integrals",
         "snippet": "The Gaussian function , which is the probability density function of the normal distribution"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.gaussianPDFReal",
+        "module": "Mathlib.Probability.Distributions.Gaussian.Real",
+        "match_kind": "exact"
+      },
+      "note": "`gaussianPDFReal μ v x = (1/√(2π v))·exp(-(x-μ)²/(2v))` is the normal density.",
+      "provenance": "ai-agent1",
+      "id": "e81eeca7d730"
     },
     {
       "kind": "theorem",
@@ -470,7 +894,15 @@
         "section": "Gaussian integrals",
         "snippet": "This follows from a change of variables in the Gaussian integral"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "integral_gaussian",
+        "module": "Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral",
+        "match_kind": "exact"
+      },
+      "note": "`integral_gaussian : ∫ x, exp(-b x²) = √(π/b)`.",
+      "provenance": "ai-agent1",
+      "id": "441712d2bb3d"
     },
     {
       "kind": "proposition",
@@ -479,7 +911,15 @@
         "section": "Gaussian integrals",
         "snippet": "π is the unique constant making the Gaussian normal distribution"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fourier_gaussian_pi",
+        "module": "Mathlib.Analysis.SpecialFunctions.Gaussian.FourierTransform",
+        "match_kind": "exact"
+      },
+      "note": "`fourier_gaussian_pi` shows the suitably normalised Gaussian equals its own Fourier transform.",
+      "provenance": "ai-agent1",
+      "id": "a58383a45d9e"
     },
     {
       "kind": "theorem",
@@ -488,7 +928,15 @@
         "section": "Topology",
         "snippet": "The constant π appears in the Gauss–Bonnet formula which relates the differential geometry of surfaces to their topology"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Gauss–Bonnet theorem is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "3947fbbc5b2d"
     },
     {
       "kind": "theorem",
@@ -497,7 +945,15 @@
         "section": "Cauchy's integral formula",
         "snippet": "A form of Cauchy's integral formula states that if a point z 0 is interior to γ"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.two_pi_I_inv_smul_circleIntegral_sub_inv_smul_of_differentiable_on_off_countable",
+        "module": "Mathlib.Analysis.Complex.CauchyIntegral",
+        "match_kind": "exact"
+      },
+      "note": "Cauchy's integral formula for a disk is `Complex.two_pi_I_inv_smul_circleIntegral_sub_inv_smul_of_differentiable_on_off_countable`.",
+      "provenance": "ai-agent1",
+      "id": "8f887c859d56"
     },
     {
       "kind": "theorem",
@@ -506,7 +962,15 @@
         "section": "Cauchy's integral formula",
         "snippet": "The general form of Cauchy's integral formula establishes the relationship"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.hasFPowerSeriesOnBall_of_differentiable_off_countable",
+        "module": "Mathlib.Analysis.Complex.CauchyIntegral",
+        "match_kind": null
+      },
+      "note": "Mathlib has the disk-version higher-derivative coefficients via `cauchyPowerSeries`, but not the general curve/winding-number form.",
+      "provenance": "ai-agent1",
+      "id": "174a1e9169c0"
     },
     {
       "kind": "theorem",
@@ -515,7 +979,15 @@
         "section": "Cauchy's integral formula",
         "snippet": "Cauchy's integral formula is a special case of the residue theorem"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general residue theorem (sum of residues weighted by winding numbers) was found in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "86b2ee3b7c9f"
     },
     {
       "kind": "example",
@@ -524,7 +996,15 @@
         "section": "Vector calculus and physics",
         "snippet": "the two-dimensional Newtonian potential , representing the potential of a point source at the origin"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Newtonian potentials in `ℝ²` are not present in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "29c7cf0eeaab"
     },
     {
       "kind": "example",
@@ -533,7 +1013,15 @@
         "section": "Vector calculus and physics",
         "snippet": "in three dimensions, the Newtonian potential is"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The 3D Newtonian potential `1/(4π r)` is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "6408f6455283"
     },
     {
       "kind": "definition",
@@ -542,7 +1030,15 @@
         "section": "Total curvature",
         "snippet": "the total curvature of a smooth plane curve is the amount it turns anticlockwise, in radians, from start to finish"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of total curvature of a plane curve was found.",
+      "provenance": "ai-agent1",
+      "id": "8c446ca12c61"
     },
     {
       "kind": "proposition",
@@ -551,7 +1047,15 @@
         "section": "Total curvature",
         "snippet": "For a closed curve, this quantity is equal to"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hopf Umlaufsatz / total curvature = 2π N statement is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "2dba0b15769b"
     },
     {
       "kind": "proposition",
@@ -560,7 +1064,15 @@
         "section": "Gamma function and Stirling's approximation",
         "snippet": "When the gamma function is evaluated at half-integers, the result contains π"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.Gamma_one_half_eq",
+        "module": "Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral",
+        "match_kind": "exact"
+      },
+      "note": "`Real.Gamma_one_half_eq : Γ(1/2) = √π`, with `Gamma_nat_add_half` for general half-integers.",
+      "provenance": "ai-agent1",
+      "id": "aeb999dd32fc"
     },
     {
       "kind": "definition",
@@ -569,7 +1081,15 @@
         "section": "Gamma function and Stirling's approximation",
         "snippet": "The gamma function is defined by its Weierstrass product development"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.Gamma",
+        "module": "Mathlib.Analysis.SpecialFunctions.Gamma.Basic",
+        "match_kind": null
+      },
+      "note": "Gamma is defined via the Euler integral (not the Weierstrass product); the Weierstrass-product formula itself is not proved.",
+      "provenance": "ai-agent1",
+      "id": "3b27e1e0b8b2"
     },
     {
       "kind": "proposition",
@@ -578,7 +1098,15 @@
         "section": "Gamma function and Stirling's approximation",
         "snippet": "The gamma function is used to calculate the volume"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.volume_ball",
+        "module": "Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls",
+        "match_kind": "exact"
+      },
+      "note": "`EuclideanSpace.volume_ball` gives `r^n · √π^n / Γ(n/2+1)`; surface area of the sphere is not separately stated.",
+      "provenance": "ai-agent1",
+      "id": "4a266a232f52"
     },
     {
       "kind": "theorem",
@@ -587,7 +1115,15 @@
         "section": "Gamma function and Stirling's approximation",
         "snippet": "which is known as Stirling's approximation"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Stirling.tendsto_stirlingSeq_sqrt_pi",
+        "module": "Mathlib.Analysis.SpecialFunctions.Stirling",
+        "match_kind": "exact"
+      },
+      "note": "`tendsto_stirlingSeq_sqrt_pi` gives `n!/(√n (n/e)^n) → √π`, i.e. Stirling's asymptotic.",
+      "provenance": "ai-agent1",
+      "id": "c2ba4cb99cba"
     },
     {
       "kind": "proposition",
@@ -596,7 +1132,15 @@
         "section": "Gamma function and Stirling's approximation",
         "snippet": "Ehrhart's volume conjecture is that this is the (optimal) upper bound on the volume of a convex body"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ehrhart's volume conjecture is an open conjecture and is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "85af4a8355d3"
     },
     {
       "kind": "theorem",
@@ -605,7 +1149,15 @@
         "section": "Number theory and Riemann zeta function",
         "snippet": "Finding a simple solution for this infinite series was a famous problem in mathematics called the Basel problem"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "hasSum_zeta_two",
+        "module": "Mathlib.NumberTheory.ZetaValues",
+        "match_kind": "exact"
+      },
+      "note": "Same as the earlier entry: `hasSum_zeta_two` formalizes ζ(2) = π²/6.",
+      "provenance": "ai-agent1",
+      "id": "50523ed5a67a"
     },
     {
       "kind": "proposition",
@@ -614,7 +1166,15 @@
         "section": "Number theory and Riemann zeta function",
         "snippet": "the probability of two random numbers being relatively prime"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The density-`6/π²` statement on coprime pairs of integers is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "376ac25d0202"
     },
     {
       "kind": "theorem",
@@ -623,7 +1183,15 @@
         "section": "Number theory and Riemann zeta function",
         "snippet": "The zeta function also satisfies Riemann's functional equation"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "completedRiemannZeta_one_sub",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": "exact"
+      },
+      "note": "`completedRiemannZeta_one_sub : Λ(1-s) = Λ(s)` (with the asymmetric `riemannZeta_one_sub` variant also available).",
+      "provenance": "ai-agent1",
+      "id": "293e361b9265"
     },
     {
       "kind": "proposition",
@@ -632,7 +1200,15 @@
         "section": "Number theory and Riemann zeta function",
         "snippet": "Furthermore, the derivative of the zeta function satisfies"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No closed-form identity for ζ'(s) of the type quoted on Wikipedia was found in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "04bdcf1e2ad7"
     },
     {
       "kind": "theorem",
@@ -641,7 +1217,15 @@
         "section": "Fourier series",
         "snippet": "It is a theorem that every character of T is one of the complex exponentials"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "AddCircle.toCircle",
+        "module": "Mathlib.Analysis.Complex.Circle",
+        "match_kind": null
+      },
+      "note": "Mathlib has `AddCircle.toCircle` and Pontryagin duality machinery, but I did not find a theorem stating that every character of `T` is one of the integer exponentials.",
+      "provenance": "ai-agent1",
+      "id": "e671eba4ee06"
     },
     {
       "kind": "definition",
@@ -650,7 +1234,15 @@
         "section": "Fourier series",
         "snippet": "A definition of the constant, due to Nicolas Bourbaki , takes π to be half the magnitude of the derivative of this isomorphism"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib uses the cosine-root definition rather than Bourbaki's derivative-of-`ℝ/ℤ`-isomorphism definition.",
+      "provenance": "ai-agent1",
+      "id": "f8e558d815bf"
     },
     {
       "kind": "definition",
@@ -659,7 +1251,15 @@
         "section": "Modular forms and theta functions",
         "snippet": "An example is the Jacobi theta function"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "jacobiTheta",
+        "module": "Mathlib.NumberTheory.ModularForms.JacobiTheta.OneVariable",
+        "match_kind": "exact"
+      },
+      "note": "`jacobiTheta` is the one-variable Jacobi theta, with the two-variable `jacobiTheta₂` also available.",
+      "provenance": "ai-agent1",
+      "id": "ab93a196c671"
     },
     {
       "kind": "proposition",
@@ -668,7 +1268,15 @@
         "section": "Modular forms and theta functions",
         "snippet": "The constant π is the unique constant making the Jacobi theta function an automorphic form"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "jacobiTheta_S_smul",
+        "module": "Mathlib.NumberTheory.ModularForms.JacobiTheta.OneVariable",
+        "match_kind": "exact"
+      },
+      "note": "`jacobiTheta_S_smul` is the modular S-transformation `θ(-1/τ) = (-iτ)^{1/2} θ(τ)`.",
+      "provenance": "ai-agent1",
+      "id": "0f00f6d77c31"
     },
     {
       "kind": "definition",
@@ -677,7 +1285,15 @@
         "section": "Cauchy distribution and potential theory",
         "snippet": "The Cauchy distribution"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.cauchyPDFReal",
+        "module": "Mathlib.Probability.Distributions.Cauchy",
+        "match_kind": "exact"
+      },
+      "note": "`cauchyPDFReal x₀ γ x = π⁻¹ γ / ((x-x₀)² + γ²)`.",
+      "provenance": "ai-agent1",
+      "id": "4f21bf5c5168"
     },
     {
       "kind": "proposition",
@@ -686,7 +1302,15 @@
         "section": "Cauchy distribution and potential theory",
         "snippet": "The Shannon entropy of the Cauchy distribution is equal to"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Shannon entropy of the Cauchy distribution is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "662f6a0aa33b"
     },
     {
       "kind": "definition",
@@ -695,7 +1319,15 @@
         "section": "Cauchy distribution and potential theory",
         "snippet": "The Hilbert transform H is the integral transform given by the Cauchy principal value of the singular integral"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hilbert transform is not defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "badf3b9c4ffa"
     },
     {
       "kind": "example",
@@ -704,7 +1336,15 @@
         "section": "In the Mandelbrot set",
         "snippet": "An occurrence of π in the fractal called the Mandelbrot set was discovered by David Boll in 1991"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Mandelbrot set itself is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "2a86352563b1"
     },
     {
       "kind": "example",
@@ -713,7 +1353,15 @@
         "section": "Describing physical phenomena",
         "snippet": "A simple formula from the field of classical mechanics gives the approximate period T of a simple pendulum"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Classical-mechanics pendulum-period formula is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "4962890e6eb9"
     },
     {
       "kind": "example",
@@ -722,7 +1370,15 @@
         "section": "Describing physical phenomena",
         "snippet": "One of the key formulae of quantum mechanics is Heisenberg's uncertainty principle"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no quantum-mechanics uncertainty formulation.",
+      "provenance": "ai-agent1",
+      "id": "00e8a2a0ffac"
     },
     {
       "kind": "example",
@@ -731,7 +1387,15 @@
         "section": "Describing physical phenomena",
         "snippet": "The inverse lifetime to lowest order in the fine-structure constant"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Particle-physics formulas like the orthopositronium lifetime are not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "91659a2f3305"
     },
     {
       "kind": "example",
@@ -740,7 +1404,15 @@
         "section": "Describing physical phenomena",
         "snippet": "the buckling formula derived by Euler, which gives the maximum axial load F"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Euler's beam-buckling formula is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "d9ab5093fd71"
     },
     {
       "kind": "example",
@@ -749,7 +1421,15 @@
         "section": "Describing physical phenomena",
         "snippet": "The field of fluid dynamics contains π in Stokes' law"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Stokes' law of fluid drag is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "ec4a68753d6e"
     }
   ]
 }

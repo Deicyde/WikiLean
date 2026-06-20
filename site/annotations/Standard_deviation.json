@@ -35,7 +35,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No `stdDev`/`standardDeviation` declaration exists in Mathlib; only `ProbabilityTheory.variance` is defined.",
+      "note": "No `stdDev`/`standardDeviation` declaration exists in Mathlib; only `ProbabilityTheory.variance` is defined (loogle for `\"stdDev\"` returned zero hits).",
       "provenance": "ai",
       "id": "19781b484b3e"
     },
@@ -88,16 +88,6 @@
       },
       "note": "This numerical illustration is not present in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Population standard deviation of grades of eight students",
-          "snippet": "Suppose that the entire population of interest is eight students in a particular class"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle 2,\\ 4,\\ 4,\\ 4,\\ 5,\\ 5,\\ 7,\\ 9.}"
-        }
-      ],
       "id": "95f1417f0a11"
     },
     {
@@ -149,20 +139,6 @@
       },
       "note": "Variance of a random variable is defined as `Var[X] = 𝔼[(X − 𝔼[X])²]`, but its square root (the SD) is not separately named.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition of population values",
-          "snippet": "Let μ be the expected value (the average) of a random variable X with probability density function f"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mu \\equiv \\operatorname {\\mathbb {E} } [X]=\\int _{-\\infty }^{+\\infty }x\\,f(x)\\,{\\mathrm {d} }x.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\sigma \\equiv {\\sqrt {\\operatorname {\\mathbb {E} } \\left[\\left(X-\\mu \\right)^{2}\\right]}}={\\sqrt {\\int _{-\\infty }^{+\\infty }\\left(x-\\mu \\right)^{2}f(x)\\ {\\mathrm {d} }x\\;}}\\ ,}"
-        }
-      ],
       "id": "2407d7c2fa76"
     },
     {
@@ -200,6 +176,22 @@
       "id": "7f1d7c5a94bd"
     },
     {
+      "kind": "example",
+      "label": "Cauchy distribution has no SD",
+      "anchor": {
+        "section": "Definition of population values",
+        "snippet": "The Cauchy distribution has neither a mean nor a standard deviation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Cauchy distribution definition (loogle for `cauchy`+`Distribution` returned zero hits) and no statement about non-existence of its moments.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "SD of a discrete random variable (equiprobable)",
       "anchor": {
@@ -231,16 +223,6 @@
       },
       "note": "Captured implicitly by `variance` on a discrete weighted measure but no explicit weighted-sum formula.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Discrete random variable",
-          "snippet": "If, instead of having equal probabilities, the values have different probabilities"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\sigma ={\\sqrt {\\sum _{i=1}^{N}p_{i}\\left(x_{i}-\\mu \\right)^{2}\\;}}\\ ,~~{\\text{ where }}~~\\mu \\equiv \\sum _{i=1}^{N}p_{i}x_{i}\\,.}"
-        }
-      ],
       "id": "8690ddc9dbee"
     },
     {
@@ -258,16 +240,6 @@
       },
       "note": "Variance is expressed as an integral form `∫ (X − 𝔼[X])² dμ`, generalising the continuous-density formula.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Continuous random variable",
-          "snippet": "The standard deviation of a continuous real-valued random variable X with probability density function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\sigma ={\\sqrt {\\int _{\\mathbf {X} }\\left(x-\\mu \\right)^{2}\\,p(x)\\,{\\mathrm {d} }x}}\\,,~~{\\text{ where }}~~\\mu \\equiv \\int _{\\mathbf {X} }x\\,p(x)\\,{\\mathrm {d} }x\\,,}"
-        }
-      ],
       "id": "7c160227a076"
     },
     {
@@ -283,18 +255,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Log-normal distribution is not defined in Mathlib.",
+      "note": "Log-normal distribution is not defined in Mathlib (loogle for `logNormal` returned zero hits).",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Continuous random variable",
-          "snippet": "in the case of the log-normal distribution with parameters"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\sqrt {\\left(e^{\\sigma ^{2}}-1\\right)\\ e^{2\\mu +\\sigma ^{2}}}}\\,.}"
-        }
-      ],
       "id": "8961951a176c"
     },
     {
@@ -329,16 +291,6 @@
       },
       "note": "No declaration corresponding to s_N exists.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Uncorrected sample standard deviation",
-          "snippet": "This estimator, denoted by s N , is known as the uncorrected sample standard deviation"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle s_{N}={\\sqrt {{\\frac {1}{N}}\\sum _{i=1}^{N}\\left(x_{i}-{\\bar {x}}\\right)^{2}}},}"
-        }
-      ],
       "id": "059d4ed5d253"
     },
     {
@@ -354,7 +306,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The strong law of large numbers is in Mathlib (`ProbabilityTheory.strong_law_ae`) but consistency of the SD estimator is not stated.",
+      "note": "The strong law of large numbers is in Mathlib but consistency of the SD estimator is not stated.",
       "provenance": "ai",
       "id": "e008eccb68ac"
     },
@@ -373,16 +325,6 @@
       },
       "note": "No declaration for the Bessel-corrected estimator s.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Corrected sample standard deviation",
-          "snippet": "yielding the corrected sample standard deviation, denoted by s"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle s={\\sqrt {{\\frac {1}{N-1}}\\sum _{i=1}^{N}\\left(x_{i}-{\\bar {x}}\\right)^{2}}}.}"
-        }
-      ],
       "id": "f062770b4742"
     },
     {
@@ -400,17 +342,23 @@
       },
       "note": "No unbiased-estimator statement involving the (n-1) divisor is in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Corrected sample standard deviation",
-          "snippet": "An unbiased estimator for the variance is given by applying Bessel's correction"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle s^{2}={\\frac {1}{N-1}}\\sum _{i=1}^{N}\\left(x_{i}-{\\bar {x}}\\right)^{2}.}"
-        }
-      ],
       "id": "385c54dc4430"
+    },
+    {
+      "kind": "proposition",
+      "label": "Jensen's inequality forces downward bias in s",
+      "anchor": {
+        "section": "Corrected sample standard deviation",
+        "snippet": "Here taking the square root introduces further downward bias, by Jensen's inequality"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ConcaveOn.le_map_integral",
+        "module": "Mathlib.Analysis.Convex.Integral",
+        "match_kind": "generalization"
+      },
+      "note": "Jensen's inequality for concave functions is formalized as `ConcaveOn.le_map_integral`; the specific application to sqrt of sample variance is not.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -427,16 +375,6 @@
       },
       "note": "Correction factor c_4(n) is not formalized in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Unbiased sample standard deviation",
-          "snippet": "For the normal distribution, an unbiased estimator is given by"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle c_{4}(N)\\,=\\,{\\sqrt {\\frac {2}{N-1}}}\\,\\,\\,{\\frac {\\Gamma {\\left({\\frac {N}{2}}\\right)}}{\\Gamma {\\left({\\frac {N-1}{2}}\\right)}}}.}"
-        }
-      ],
       "id": "2b68872f58a9"
     },
     {
@@ -452,7 +390,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The chi and chi-square distributions are not defined in Mathlib.",
+      "note": "The chi and chi-square distributions are not defined in Mathlib (loogle for `chiSquared` returned zero hits).",
       "provenance": "ai",
       "id": "7e9a42e89709"
     },
@@ -471,16 +409,6 @@
       },
       "note": "Numerical approximation not present in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Unbiased sample standard deviation",
-          "snippet": "An approximation can be given by replacing N − 1 with N − 1.5"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\hat {\\sigma }}={\\sqrt {{\\frac {1}{N-1.5}}\\sum _{i=1}^{N}\\left(x_{i}-{\\bar {x}}\\right)^{2}}},}"
-        }
-      ],
       "id": "643d41487b03"
     },
     {
@@ -497,7 +425,8 @@
         "match_kind": null
       },
       "note": "No confidence-interval construction for sample SD is formalized.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
+      "moderation_flag": "Anchor snippet contains '[MATH]' literal; ideally should be replaced with text actually present in extracted prose (kept verbatim to honor the preserve-id rule).",
       "id": "be4046e104d9"
     },
     {
@@ -507,13 +436,13 @@
         "section": "Bounds on standard deviation",
         "snippet": "an upper bound on the standard deviation s is given by"
       },
-      "status": "not_formalized",
+      "status": "partial",
       "mathlib": {
-        "decl": null,
-        "module": null,
-        "match_kind": null
+        "decl": "ProbabilityTheory.variance_le_sq_of_bounded",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "generalization"
       },
-      "note": "Although `variance_le_sq_of_bounded` bounds variance for bounded RVs, the sample-range bound on sample SD is not stated.",
+      "note": "Popoviciu's inequality `variance_le_sq_of_bounded` bounds variance by `((b-a)/2)^2` for bounded RVs, the variance analogue of the sample-range SD bound.",
       "provenance": "ai",
       "id": "acb000b0db9e"
     },
@@ -549,16 +478,6 @@
       },
       "note": "`variance_add_const` and `variance_const_mul` give the variance-level analogues; the SD-level statement is not separately formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Identities and mathematical properties",
-          "snippet": "The standard deviation is invariant under changes in location , and scales directly with the scale of the random variable"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\sigma (c)&amp;=0\\\\\\sigma (X+c)&amp;=\\sigma (X),\\\\\\sigma (cX)&amp;=|c|\\sigma (X).\\end{aligned}}}"
-        }
-      ],
       "id": "85663c4656cf"
     },
     {
@@ -611,6 +530,22 @@
       "note": "Pedagogical example is not in Mathlib.",
       "provenance": "ai",
       "id": "35027c9fb844"
+    },
+    {
+      "kind": "definition",
+      "label": "Mean absolute deviation (alternative)",
+      "anchor": {
+        "section": "Interpretation and application",
+        "snippet": "An example is the mean absolute deviation , which might be considered a more direct measure of average distance"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `meanAbsoluteDeviation` declaration is present in Mathlib (loogle returned zero hits).",
+      "provenance": "ai"
     },
     {
       "kind": "example",
@@ -710,7 +645,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No central limit theorem declaration was found in Mathlib (only the strong law of large numbers).",
+      "note": "No central limit theorem declaration was found in Mathlib (loogle for `centralLimit` returned zero hits).",
       "provenance": "ai",
       "id": "45e5eaedb4a9"
     },
@@ -863,7 +798,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No `coefficientOfVariation` definition exists in Mathlib.",
+      "note": "No `coefficientOfVariation` definition exists in Mathlib (loogle returned zero hits).",
       "provenance": "ai",
       "id": "2248a67f138e"
     },
@@ -874,13 +809,13 @@
         "section": "Standard deviation of the mean",
         "snippet": "the standard deviation of the mean ( SDOM ) is related to the standard deviation of the distribution by"
       },
-      "status": "not_formalized",
+      "status": "partial",
       "mathlib": {
-        "decl": null,
-        "module": null,
-        "match_kind": null
+        "decl": "ProbabilityTheory.IndepFun.variance_sum",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "generalization"
       },
-      "note": "Mathlib has `IndepFun.variance_sum` for the variance of an i.i.d. sum but does not state the σ/√N SDOM formula.",
+      "note": "`IndepFun.variance_sum` gives the variance of an independent sum but the σ/√N SDOM formula is not stated.",
       "provenance": "ai",
       "id": "bfe24d7d83f4"
     },
@@ -915,7 +850,8 @@
         "match_kind": null
       },
       "note": "Weighted online update formula is not in Mathlib.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
+      "moderation_flag": "Anchor snippet contains '[MATH]' literal; preserved verbatim to honor the id but should be re-anchored on a non-[MATH] substring in future.",
       "id": "12c77fe8fd0d"
     },
     {
@@ -933,17 +869,23 @@
       },
       "note": "Quality-control SDI metric is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Standard deviation index",
-          "snippet": "The standard deviation index (SDI) is used in external quality assessments"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\text{SDI}}={\\frac {{\\text{Laboratory mean}}-{\\text{Consensus group mean}}}{\\text{Consensus group standard deviation}}}.}"
-        }
-      ],
       "id": "527d0dafca1b"
+    },
+    {
+      "kind": "definition",
+      "label": "Average absolute deviation (alternative to SD)",
+      "anchor": {
+        "section": "Alternatives",
+        "snippet": "Standard deviation is algebraically simpler"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The average/mean absolute deviation is not defined in Mathlib (loogle returned zero hits).",
+      "provenance": "ai"
     }
   ]
 }

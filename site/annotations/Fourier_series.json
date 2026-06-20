@@ -20,24 +20,6 @@
       },
       "note": "Mathlib defines the n-th Fourier coefficient of a function on `AddCircle T` via `fourierCoeff`, together with the exponential monomials `fourier n`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition",
-          "snippet": "The Fourier series of a complex-valued"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\sum _{n=-\\infty }^{\\infty }c_{n}e^{i2\\pi {\\tfrac {n}{P}}x},}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle c_{n}={\\frac {1}{P}}\\int _{0}^{P}s(x)\\ e^{-i2\\pi {\\tfrac {n}{P}}x}\\,dx.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle s(x)=\\sum _{n=-\\infty }^{\\infty }c_{n}e^{i2\\pi {\\tfrac {n}{P}}x}.}"
-        }
-      ],
       "id": "0b4f9a896074"
     },
     {
@@ -72,25 +54,23 @@
       },
       "note": "No formalization of the sawtooth-function example was found in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Example",
-          "snippet": "Consider a sawtooth function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle s(x)=s(x+2\\pi k)={\\frac {x}{\\pi }},\\quad \\mathrm {for} -\\pi &lt;x&lt;\\pi ,{\\text{ and }}k\\in \\mathbb {Z} .}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}a_{0}&amp;=0.\\\\a_{n}&amp;={\\frac {1}{\\pi }}\\int _{-\\pi }^{\\pi }s(x)\\cos(nx)\\,dx=0,\\quad n\\geq 1.\\\\b_{n}&amp;={\\frac {1}{\\pi }}\\int _{-\\pi }^{\\pi }s(x)\\sin(nx)\\,dx\\\\&amp;=-{\\frac {2}{\\pi n}}\\cos(n\\pi )+{\\frac {2}{\\pi ^{2}n^{2}}}\\sin(n\\pi )\\\\&amp;={\\frac {2\\,(-1)^{n+1}}{\\pi n}},\\quad n\\geq 1.\\end{aligned}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}s(x)&amp;=a_{0}+\\sum _{n=1}^{\\infty }\\left[a_{n}\\cos \\left(nx\\right)+b_{n}\\sin \\left(nx\\right)\\right]\\\\[4pt]&amp;={\\frac {2}{\\pi }}\\sum _{n=1}^{\\infty }{\\frac {(-1)^{n+1}}{n}}\\sin(nx),\\quad \\mathrm {for} \\ (x-\\pi )\\ {\\text{is not a multiple of}}\\ 2\\pi .\\end{aligned}}}"
-        }
-      ],
       "id": "9232fb6168bd"
+    },
+    {
+      "kind": "theorem",
+      "label": "Dirichlet theorem for Fourier series (pointwise convergence)",
+      "anchor": {
+        "section": "Example",
+        "snippet": "This is a particular instance of the Dirichlet theorem for Fourier series."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dirichlet's theorem on pointwise convergence of the Fourier series at points where one-sided limits exist is not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -175,16 +155,6 @@
       },
       "note": "`hasSum_sq_fourierCoeff` (and `hasSum_sq_fourierCoeffOn`) gives Parseval's identity for L² functions on `AddCircle T`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Parseval's theorem",
-          "snippet": "periodic over an interval of length"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {1}{P}}\\int _{P}|s(x)|^{2}\\,dx=\\sum _{n=-\\infty }^{\\infty }{\\Bigl |}S[n]{\\Bigr |}^{2}.}"
-        }
-      ],
       "id": "1b0e3e96f61d"
     },
     {
@@ -219,20 +189,6 @@
       },
       "note": "No theorem in Mathlib expresses `fourierCoeff (f*g)` as the discrete convolution of `fourierCoeff f` and `fourierCoeff g` on `AddCircle T`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Convolution theorems",
-          "snippet": "discrete convolution of the"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle h_{P}(x)\\triangleq s_{P}(x)\\cdot r_{P}(x)}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle H[n]=\\{S*R\\}[n].}"
-        }
-      ],
       "id": "3ece3568eb0b"
     },
     {
@@ -248,7 +204,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has Fourier-transform convolution theorems (`Real.fourier_bilin_convolution_eq`) but no analogue for Fourier coefficients on `AddCircle T`.",
+      "note": "Mathlib has Fourier-transform convolution theorems but no analogue for Fourier coefficients on `AddCircle T`.",
       "provenance": "ai",
       "id": "f5c80da46d36"
     },
@@ -316,7 +272,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No occurrence of Peter–Weyl was found in Mathlib.",
+      "note": "No occurrence of Peter–Weyl was found in Mathlib (loogle confirms no decl name contains `PeterWeyl`).",
       "provenance": "ai",
       "id": "8888f184ca42"
     },
@@ -347,10 +303,10 @@
       "status": "partial",
       "mathlib": {
         "decl": "PontryaginDual",
-        "module": "Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality",
+        "module": "Mathlib.Topology.Algebra.PontryaginDual",
         "match_kind": "special_case"
       },
-      "note": "Mathlib handles the finite-abelian case via `PontryaginDuality`, but no general LCA-group Fourier transform is defined.",
+      "note": "Mathlib defines `PontryaginDual` and develops the finite-abelian case in `Mathlib.Analysis.Fourier.FiniteAbelian`, but no general LCA-group Fourier transform is defined.",
       "provenance": "ai",
       "id": "34150020f29e"
     },
@@ -369,16 +325,6 @@
       },
       "note": "Fourier–Stieltjes series are not defined in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Fourier-Stieltjes series",
-          "snippet": "the Fourier-Stieltjes series can be defined as the Fourier series whose coefficients are given by"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle c_{n}={\\hat {\\mu }}(n)={\\frac {1}{P}}\\int _{0}^{P}\\ e^{-i2\\pi {\\tfrac {n}{P}}x}\\,d\\mu (x),\\quad \\forall n\\in \\mathbb {Z} ,}"
-        }
-      ],
       "id": "b764d8363cd7"
     },
     {
@@ -396,16 +342,6 @@
       },
       "note": "No theorem relating Fourier–Stieltjes coefficients to BV functions via Riesz representation exists in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Fourier-Stieltjes series",
-          "snippet": "is a function of bounded variation"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle c_{n}={\\frac {1}{P}}\\int _{0}^{P}\\ e^{-i2\\pi {\\tfrac {n}{P}}x}\\,dF(x),\\quad \\forall n\\in \\mathbb {Z} ,}"
-        }
-      ],
       "id": "5bd3a99f2f7f"
     },
     {
@@ -436,20 +372,10 @@
       "mathlib": {
         "decl": "UnitAddTorus.mFourierCoeff",
         "module": "Mathlib.Analysis.Fourier.AddCircleMulti",
-        "match_kind": "generalization"
+        "match_kind": "exact"
       },
-      "note": "`AddCircleMulti` defines multivariate Fourier monomials `mFourier` and coefficients on `UnitAddTorus d`, generalizing the 2D-square case.",
-      "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Fourier series on a square",
-          "snippet": "We can also define the Fourier series for functions of two variables"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}f(x,y)&amp;=\\sum _{j,k\\in \\mathbb {Z} }c_{j,k}e^{ijx}e^{iky},\\\\[5pt]c_{j,k}&amp;={\\frac {1}{4\\pi ^{2}}}\\int _{-\\pi }^{\\pi }\\int _{-\\pi }^{\\pi }f(x,y)e^{-ijx}e^{-iky}\\,dx\\,dy.\\end{aligned}}}"
-        }
-      ],
+      "note": "Verified via decl_exists: `UnitAddTorus.mFourierCoeff` does exist in `Mathlib.Analysis.Fourier.AddCircleMulti`, giving multivariate Fourier coefficients (covers the two-variable / unit-square case).",
+      "provenance": "ai-moderated",
       "id": "7b2efd74369d"
     },
     {
@@ -465,18 +391,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No definition of a Bravais lattice was found in Mathlib.",
+      "note": "No definition of a Bravais lattice was found in Mathlib (loogle confirms no decl name contains `Bravais`).",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Fourier series of a Bravais-lattice-periodic function",
-          "snippet": "A three-dimensional Bravais lattice is defined as the set of vectors"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mathbf {R} =n_{1}\\mathbf {a} _{1}+n_{2}\\mathbf {a} _{2}+n_{3}\\mathbf {a} _{3}}"
-        }
-      ],
       "id": "612634fba63e"
     },
     {
@@ -494,44 +410,6 @@
       },
       "note": "Fourier expansions for Bravais-lattice-periodic functions are not formalized in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Fourier series of a Bravais-lattice-periodic function",
-          "snippet": "The Fourier series for"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle g(x_{1},x_{2},x_{3})=\\sum _{m_{1},m_{2},m_{3}\\in \\mathbb {Z} }\\,c(m_{1},m_{2},m_{3})\\,e^{i2\\pi \\left({\\tfrac {m_{1}}{a_{1}}}x_{1}+{\\tfrac {m_{2}}{a_{2}}}x_{2}+{\\tfrac {m_{3}}{a_{3}}}x_{3}\\right)}.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mathbf {a} _{i}\\cdot \\mathbf {b_{j}} =2\\pi \\delta _{ij},}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mathbf {Q} \\cdot \\mathbf {r} =\\left(m_{1}\\mathbf {b} _{1}+m_{2}\\mathbf {b} _{2}+m_{3}\\mathbf {b} _{3}\\right)\\cdot \\left(x_{1}{\\frac {\\mathbf {a} _{1}}{a_{1}}}+x_{2}{\\frac {\\mathbf {a} _{2}}{a_{2}}}+x_{3}{\\frac {\\mathbf {a} _{3}}{a_{3}}}\\right)=2\\pi \\left(x_{1}{\\frac {m_{1}}{a_{1}}}+x_{2}{\\frac {m_{2}}{a_{2}}}+x_{3}{\\frac {m_{3}}{a_{3}}}\\right),}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f(\\mathbf {r} )=\\sum _{\\mathbf {Q} }c(\\mathbf {Q} )\\,e^{i\\mathbf {Q} \\cdot \\mathbf {r} },}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle c(\\mathbf {Q} )={\\frac {1}{a_{3}}}\\int _{0}^{a_{3}}dx_{3}\\,{\\frac {1}{a_{2}}}\\int _{0}^{a_{2}}dx_{2}\\,{\\frac {1}{a_{1}}}\\int _{0}^{a_{1}}dx_{1}\\,f\\left(x_{1}{\\frac {\\mathbf {a} _{1}}{a_{1}}}+x_{2}{\\frac {\\mathbf {a} _{2}}{a_{2}}}+x_{3}{\\frac {\\mathbf {a} _{3}}{a_{3}}}\\right)e^{-i\\mathbf {Q} \\cdot \\mathbf {r} }.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mathbf {r} =x_{1}{\\frac {\\mathbf {a} _{1}}{a_{1}}}+x_{2}{\\frac {\\mathbf {a} _{2}}{a_{2}}}+x_{3}{\\frac {\\mathbf {a} _{3}}{a_{3}}},}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{bmatrix}x\\\\y\\\\z\\end{bmatrix}}=\\mathbf {J} {\\begin{bmatrix}x_{1}\\\\x_{2}\\\\x_{3}\\end{bmatrix}}={\\begin{bmatrix}{\\frac {\\mathbf {a} _{1}}{a_{1}}},{\\frac {\\mathbf {a} _{2}}{a_{2}}},{\\frac {\\mathbf {a} _{3}}{a_{3}}}\\end{bmatrix}}{\\begin{bmatrix}x_{1}\\\\x_{2}\\\\x_{3}\\end{bmatrix}}\\,,}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mathbf {J} ={\\begin{bmatrix}{\\dfrac {\\partial x}{\\partial x_{1}}}&amp;{\\dfrac {\\partial x}{\\partial x_{2}}}&amp;{\\dfrac {\\partial x}{\\partial x_{3}}}\\\\[12pt]{\\dfrac {\\partial y}{\\partial x_{1}}}&amp;{\\dfrac {\\partial y}{\\partial x_{2}}}&amp;{\\dfrac {\\partial y}{\\partial x_{3}}}\\\\[12pt]{\\dfrac {\\partial z}{\\partial x_{1}}}&amp;{\\dfrac {\\partial z}{\\partial x_{2}}}&amp;{\\dfrac {\\partial z}{\\partial x_{3}}}\\end{bmatrix}}\\,.}"
-        }
-      ],
       "id": "2e3c2253bc5d"
     },
     {
@@ -549,24 +427,6 @@
       },
       "note": "`fourierBasis` realizes the L² Fourier-series decomposition as a Hilbert basis indexed by ℤ.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Hilbert space",
-          "snippet": "the space of square-integrable functions"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\langle f,g\\rangle ={\\frac {1}{2\\pi }}\\int _{-\\pi }^{\\pi }f(x){\\overline {g(x)}}\\,dx.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f(x)=\\sum _{n=-\\infty }^{\\infty }c_{n}e^{inx},}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f=\\sum _{n=-\\infty }^{\\infty }\\langle f,e_{n}\\rangle \\,e_{n}.}"
-        }
-      ],
       "id": "e33cfc42c620"
     },
     {
@@ -578,35 +438,45 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "orthonormal_fourier",
+        "decl": "fourierBasis",
         "module": "Mathlib.Analysis.Fourier.AddCircle",
         "match_kind": "generalization"
       },
-      "note": "Mathlib proves orthonormality of complex exponentials (`orthonormal_fourier`) and that they form a Hilbert basis, but not the real sin/cos version explicitly.",
-      "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Hilbert space",
-          "snippet": "the sines and cosines form an orthogonal set"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\int _{-\\pi }^{\\pi }\\cos(mx)\\,\\cos(nx)\\,dx={\\frac {1}{2}}\\int _{-\\pi }^{\\pi }\\cos((n-m)x)+\\cos((n+m)x)\\,dx=\\pi \\delta _{mn},\\quad m,n\\geq 1,}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\int _{-\\pi }^{\\pi }\\sin(mx)\\,\\sin(nx)\\,dx={\\frac {1}{2}}\\int _{-\\pi }^{\\pi }\\cos((n-m)x)-\\cos((n+m)x)\\,dx=\\pi \\delta _{mn},\\quad m,n\\geq 1}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\int _{-\\pi }^{\\pi }\\cos(mx)\\,\\sin(nx)\\,dx={\\frac {1}{2}}\\int _{-\\pi }^{\\pi }\\sin((n+m)x)+\\sin((n-m)x)\\,dx=0;}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\left\\{{\\frac {1}{\\sqrt {2}}},{\\frac {\\cos x}{\\sqrt {2}}},{\\frac {\\sin x}{\\sqrt {2}}},\\dots ,{\\frac {\\cos(nx)}{\\sqrt {2}}},{\\frac {\\sin(nx)}{\\sqrt {2}}},\\dots \\right\\},}"
-        }
-      ],
+      "note": "Mathlib proves the complex-exponential Fourier basis is a Hilbert basis (orthonormality via `fourierBasis`), but the real sin/cos orthonormal basis is not packaged as a named lemma.",
+      "provenance": "ai-moderated",
       "id": "c07f083d3f4a"
+    },
+    {
+      "kind": "theorem",
+      "label": "Stone–Weierstrass theorem",
+      "anchor": {
+        "section": "Hilbert space",
+        "snippet": "The density of their span is a consequence of the Stone–Weierstrass theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.subalgebra_topologicalClosure_eq_top_of_separatesPoints",
+        "module": "Mathlib.Topology.ContinuousMap.StoneWeierstrass",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib formalizes the Stone–Weierstrass theorem for real and complex continuous-function algebras on compact Hausdorff spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fejér kernel",
+      "anchor": {
+        "section": "Hilbert space",
+        "snippet": "the Fejér kernel"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Fejér kernel and Cesàro summability of Fourier series are not formalized in Mathlib (loogle confirms no decl name contains `Fejer`).",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -618,7 +488,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "HilbertBasis.hasSum_repr",
-        "module": "Mathlib.Analysis.InnerProductSpace.L2Space",
+        "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
         "match_kind": "invocation"
       },
       "note": "The best-approximation property follows from `fourierBasis` being a Hilbert basis (orthogonal projection onto its span), but is not stated specifically for trig polynomials.",
@@ -655,7 +525,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Carleson's theorem on a.e. convergence of L² Fourier series is not present in Mathlib.",
+      "note": "Carleson's theorem on a.e. convergence of L² Fourier series is not present in Mathlib (loogle confirms no decl name contains `Carleson`).",
       "provenance": "ai",
       "id": "2aa4c91a25eb"
     },
@@ -726,6 +596,22 @@
       "note": "No explicit example of a continuous function with Fourier series diverging at 0 was found in Mathlib.",
       "provenance": "ai",
       "id": "3adbcccf08b4"
+    },
+    {
+      "kind": "theorem",
+      "label": "Uniform boundedness principle (Banach–Steinhaus)",
+      "anchor": {
+        "section": "Divergence",
+        "snippet": "The uniform boundedness principle yields a simple non-constructive proof"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "banach_steinhaus",
+        "module": "Mathlib.Analysis.Normed.Operator.BanachSteinhaus",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib formalizes the uniform boundedness principle (Banach–Steinhaus), which underlies the standard non-constructive proof of existence of continuous functions whose Fourier series diverge at a point.",
+      "provenance": "ai"
     }
   ]
 }

@@ -3,6 +3,7 @@
   "wikipedia_title": "Hyperbolic functions",
   "display_title": "Hyperbolic functions",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "definition",
@@ -11,6 +12,13 @@
         "section": "(Lead)",
         "snippet": "hyperbolic functions are analogues of the ordinary trigonometric functions"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.sinh",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib defines the hyperbolic family (`Real.sinh`/`cosh`/`tanh` and `Complex` versions) although not via the geometric framing.",
       "provenance": "ai-agent1",
       "id": "f09123b427b7"
     },
@@ -21,6 +29,13 @@
         "section": "(Lead)",
         "snippet": "the derivatives of sinh( t ) and cosh( t ) are cosh( t ) and sinh( t ) respectively"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.deriv_sinh",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp",
+        "match_kind": "exact"
+      },
+      "note": "`Real.deriv_sinh : deriv sinh = cosh` and `Real.deriv_cosh : deriv cosh = sinh` are both in DerivHyp.",
       "provenance": "ai-agent1",
       "id": "ec446089ad37"
     },
@@ -31,6 +46,13 @@
         "section": "(Lead)",
         "snippet": "hyperbolic sine"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.sinh",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "`Real.sinh` (and `Complex.sinh`) are defined in `Mathlib.Analysis.Complex.Trigonometric`.",
       "provenance": "ai-agent1",
       "id": "5668b47e6fc3"
     },
@@ -41,6 +63,13 @@
         "section": "(Lead)",
         "snippet": "hyperbolic cosine"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.cosh",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "`Real.cosh` and `Complex.cosh` are defined as `(exp z + exp (-z))/2`.",
       "provenance": "ai-agent1",
       "id": "7ee178637c3b"
     },
@@ -51,6 +80,13 @@
         "section": "(Lead)",
         "snippet": "hyperbolic tangent"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.tanh",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "`Real.tanh` and `Complex.tanh` are defined as `sinh/cosh`.",
       "provenance": "ai-agent1",
       "id": "afc315161386"
     },
@@ -61,6 +97,13 @@
         "section": "(Lead)",
         "snippet": "hyperbolic cotangent"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `coth`/`Real.coth`/`Complex.coth` declaration is present in Mathlib.",
       "provenance": "ai-agent1",
       "id": "930aebec22cf"
     },
@@ -71,6 +114,13 @@
         "section": "(Lead)",
         "snippet": "hyperbolic secant"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `sech` declaration is present in Mathlib.",
       "provenance": "ai-agent1",
       "id": "5541631431f7"
     },
@@ -81,6 +131,13 @@
         "section": "(Lead)",
         "snippet": "hyperbolic cosecant"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `csch` declaration is present in Mathlib.",
       "provenance": "ai-agent1",
       "id": "7079baef41fa"
     },
@@ -91,6 +148,13 @@
         "section": "(Lead)",
         "snippet": "The inverse hyperbolic functions are"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.arsinh",
+        "module": "Mathlib.Analysis.SpecialFunctions.Arsinh",
+        "match_kind": "special_case"
+      },
+      "note": "`Real.arsinh`, `Real.arcosh`, `Real.artanh` are defined; the other three inverses (arcoth/arsech/arcsch) are absent.",
       "provenance": "ai-agent1",
       "id": "2b7f704a5be6"
     },
@@ -101,6 +165,13 @@
         "section": "(Lead)",
         "snippet": "The magnitude of a hyperbolic angle is the area of its hyperbolic sector"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of hyperbolic angle / hyperbolic sector area in Mathlib.",
       "provenance": "ai-agent1",
       "id": "e2d8138254a6"
     },
@@ -111,6 +182,13 @@
         "section": "(Lead)",
         "snippet": "The hyperbolic sine and the hyperbolic cosine are entire functions"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.analyticOnNhd_sinh",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.analyticOnNhd_sinh`/`analyticOnNhd_cosh` (and `differentiable_sinh`/`differentiable_cosh`) state that they are entire.",
       "provenance": "ai-agent1",
       "id": "4b1239d14fa9"
     },
@@ -121,6 +199,13 @@
         "section": "(Lead)",
         "snippet": "the other hyperbolic functions are meromorphic in the whole complex plane"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.meromorphic_tanh",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Meromorphic",
+        "match_kind": "special_case"
+      },
+      "note": "Only `Complex.meromorphic_tanh` is formalized; coth/sech/csch are not even defined.",
       "provenance": "ai-agent1",
       "id": "74f72019cf48"
     },
@@ -131,6 +216,13 @@
         "section": "(Lead)",
         "snippet": "the hyperbolic functions have a transcendental value for every non-zero algebraic value of the argument"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LindemannWeierstrass.exp_polynomial_approx",
+        "module": "Mathlib.NumberTheory.Transcendental.Lindemann.AnalyticalPart",
+        "match_kind": "invocation"
+      },
+      "note": "Only the analytical part of Lindemann–Weierstrass is in Mathlib; the corollary for hyperbolic values is not stated.",
       "provenance": "ai-agent1",
       "id": "0b349a2e8f30"
     },
@@ -141,6 +233,13 @@
         "section": "Definitions",
         "snippet": "the hyperbolic functions sinh and cosh can be defined with the exponential function"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.sinh_eq",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "`Real.sinh_eq`/`Real.cosh_eq` give the exponential formulas; the Complex versions are the literal definitions.",
       "provenance": "ai-agent1",
       "id": "c88729ff97bf"
     },
@@ -151,6 +250,13 @@
         "section": "Exponential definitions",
         "snippet": "Hyperbolic sine: the odd part of the exponential function"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.sinh",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "The Mathlib definition `Complex.sinh z = (exp z - exp (-z))/2` is literally the odd part of `exp`.",
       "provenance": "ai-agent1",
       "id": "4ccf7eaf821f"
     },
@@ -161,6 +267,13 @@
         "section": "Exponential definitions",
         "snippet": "Hyperbolic cosine: the even part of the exponential function"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.cosh",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.cosh z := (exp z + exp (-z))/2` is the even part of `exp`.",
       "provenance": "ai-agent1",
       "id": "effdad0d581d"
     },
@@ -171,6 +284,13 @@
         "section": "Exponential definitions",
         "snippet": "Hyperbolic tangent:"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.tanh_eq",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "`Real.tanh_eq` gives `tanh x = (exp x - exp(-x))/(exp x + exp(-x))`.",
       "provenance": "ai-agent1",
       "id": "17d8ab9332c4"
     },
@@ -181,6 +301,13 @@
         "section": "Exponential definitions",
         "snippet": "Hyperbolic cotangent: for x ≠ 0"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No coth function or exponential identity for it is in Mathlib.",
       "provenance": "ai-agent1",
       "id": "28833fde6f96"
     },
@@ -191,6 +318,13 @@
         "section": "Exponential definitions",
         "snippet": "Hyperbolic secant:"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No sech function is defined in Mathlib.",
       "provenance": "ai-agent1",
       "id": "3896bb40d26b"
     },
@@ -201,6 +335,13 @@
         "section": "Exponential definitions",
         "snippet": "Hyperbolic cosecant: for x ≠ 0"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No csch function is defined in Mathlib.",
       "provenance": "ai-agent1",
       "id": "9d614b243536"
     },
@@ -211,6 +352,13 @@
         "section": "Differential equation definitions",
         "snippet": "The hyperbolic sine and cosine are the solution"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.hasDerivAt_sinh",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has `hasDerivAt_sinh`/`hasDerivAt_cosh` (so sinh'=cosh, cosh'=sinh) but does not characterize sinh/cosh as the unique solution of this ODE system.",
       "provenance": "ai-agent1",
       "id": "e38d5d8ae928"
     },
@@ -221,6 +369,13 @@
         "section": "Differential equation definitions",
         "snippet": "are also the unique solution of the equation"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.deriv_sinh",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp",
+        "match_kind": "invocation"
+      },
+      "note": "That sinh''=sinh and cosh''=cosh is derivable from `deriv_sinh = cosh`/`deriv_cosh = sinh`, but the uniqueness statement is not formalized.",
       "provenance": "ai-agent1",
       "id": "a6df5b406dfe"
     },
@@ -231,6 +386,13 @@
         "section": "Complex trigonometric definitions",
         "snippet": "Hyperbolic functions may also be deduced from trigonometric functions with complex arguments"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.sinh_mul_I",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.sinh_mul_I : sinh (x*I) = sin x * I` and `Complex.cosh_mul_I : cosh (x*I) = cos x` capture this relationship.",
       "provenance": "ai-agent1",
       "id": "5b088a820c4f"
     },
@@ -241,6 +403,13 @@
         "section": "Hyperbolic cosine",
         "snippet": "the area under the curve of the hyperbolic cosine (over a finite interval) is always equal to the arc length corresponding to that interval"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement about area-under-cosh equalling arc length is in Mathlib.",
       "provenance": "ai-agent1",
       "id": "79f4a8c72685"
     },
@@ -251,6 +420,13 @@
         "section": "Hyperbolic tangent",
         "snippet": "The hyperbolic tangent is the (unique) solution to the differential equation"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No ODE-uniqueness characterization of tanh is in Mathlib.",
       "provenance": "ai-agent1",
       "id": "c635c7164dbf"
     },
@@ -261,6 +437,13 @@
         "section": "Useful relations",
         "snippet": "Osborn's rule"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Osborn's rule (sign convention for converting trig identities to hyperbolic) is not formalized.",
       "provenance": "ai-agent1",
       "id": "38d84029d5e6"
     },
@@ -271,6 +454,13 @@
         "section": "Useful relations",
         "snippet": "Odd and even functions:"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.sinh_neg",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "`sinh_neg : sinh (-x) = -sinh x` and `cosh_neg : cosh (-x) = cosh x` are in Mathlib for both `Real` and `Complex`.",
       "provenance": "ai-agent1",
       "id": "8bf9e3d63d26"
     },
@@ -281,6 +471,13 @@
         "section": "Useful relations",
         "snippet": "Reciprocals:"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Since coth/sech/csch are not defined, their reciprocal identities are not formalized.",
       "provenance": "ai-agent1",
       "id": "581e5a05df10"
     },
@@ -291,6 +488,13 @@
         "section": "Useful relations",
         "snippet": "Analogous to Euler's formula"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.cosh_add_sinh",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.cosh_add_sinh : cosh x + sinh x = exp x` (and `Real` version) formalize the hyperbolic Euler analogue.",
       "provenance": "ai-agent1",
       "id": "98117c0ab933"
     },
@@ -301,6 +505,13 @@
         "section": "Useful relations",
         "snippet": "Analogous to the Pythagorean trigonometric identity"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.cosh_sq_sub_sinh_sq",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.cosh_sq_sub_sinh_sq : cosh x ^ 2 - sinh x ^ 2 = 1` (and Real version).",
       "provenance": "ai-agent1",
       "id": "b6eb7993ed32"
     },
@@ -311,6 +522,13 @@
         "section": "Sums and differences of arguments",
         "snippet": "particularly"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.sinh_add",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.sinh_add`, `cosh_add`, `sinh_sub`, `cosh_sub` are all in Mathlib for `Real` and `Complex`.",
       "provenance": "ai-agent1",
       "id": "df5b275c3ef7"
     },
@@ -321,6 +539,13 @@
         "section": "Half argument formulas",
         "snippet": "where sgn is the sign function"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Half-angle formulas for sinh/cosh in terms of the sign function are not formalized for arbitrary real arguments.",
       "provenance": "ai-agent1",
       "id": "29201ac6b365"
     },
@@ -331,6 +556,13 @@
         "section": "Half argument formulas",
         "snippet": "If x ≠ 0 then"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The half-argument formula for nonzero x is not in Mathlib.",
       "provenance": "ai-agent1",
       "id": "68a8cc9660e5"
     },
@@ -341,6 +573,13 @@
         "section": "Tangent half argument formulas",
         "snippet": "When"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No tanh half-argument formula appears in Mathlib.",
       "provenance": "ai-agent1",
       "id": "a3e85fbdf5c5"
     },
@@ -351,6 +590,13 @@
         "section": "Inequalities",
         "snippet": "The following inequality is useful in statistics"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.cosh_le_exp_half_sq",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Series",
+        "match_kind": "exact"
+      },
+      "note": "`Real.cosh_le_exp_half_sq : cosh x ≤ exp (x^2/2)` is the inequality used in statistics (e.g. Hoeffding).",
       "provenance": "ai-agent1",
       "id": "db97b1293a6f"
     },
@@ -361,6 +607,13 @@
         "section": "Second derivatives",
         "snippet": "Each of the functions sinh and cosh is equal to its second derivative"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.deriv_sinh",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp",
+        "match_kind": "invocation"
+      },
+      "note": "Follows directly from `deriv_sinh = cosh` and `deriv_cosh = sinh`, but no dedicated `sinh'' = sinh` lemma is stated.",
       "provenance": "ai-agent1",
       "id": "f9485269c656"
     },
@@ -371,6 +624,13 @@
         "section": "Second derivatives",
         "snippet": "All functions with this property are linear combinations of sinh and cosh"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general classification of solutions of f''=f as span{sinh,cosh} is formalized.",
       "provenance": "ai-agent1",
       "id": "e2683eeb065c"
     },
@@ -381,6 +641,13 @@
         "section": "Standard integrals",
         "snippet": "The following integrals can be proved using hyperbolic substitution"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Integrals of 1/√(x²±a²), etc. via hyperbolic substitution are not in Mathlib.",
       "provenance": "ai-agent1",
       "id": "a8e0d260096c"
     },
@@ -391,6 +658,13 @@
         "section": "Taylor series expressions",
         "snippet": "Since the function sinh x is odd , only odd exponents for x occur in its Taylor series"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.sinh_eq_tsum",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Series",
+        "match_kind": "exact"
+      },
+      "note": "`Real.sinh_eq_tsum`/`Complex.sinh_eq_tsum` give `sinh x = ∑ x^(2n+1)/(2n+1)!`.",
       "provenance": "ai-agent1",
       "id": "d36f109a5b99"
     },
@@ -401,6 +675,13 @@
         "section": "Taylor series expressions",
         "snippet": "Since the function cosh x is even , only even exponents for x occur in its Taylor series"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.cosh_eq_tsum",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Series",
+        "match_kind": "exact"
+      },
+      "note": "`Real.cosh_eq_tsum`/`Complex.cosh_eq_tsum` give `cosh x = ∑ x^(2n)/(2n)!`.",
       "provenance": "ai-agent1",
       "id": "4d61733380ce"
     },
@@ -411,6 +692,13 @@
         "section": "Taylor series expressions",
         "snippet": "The sum of the sinh and cosh series is the infinite series expression of the exponential function"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.sinh_add_cosh",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.sinh_add_cosh : sinh x + cosh x = exp x` (plus the tsum identities) gives this; combined with `cosh_eq_tsum`/`sinh_eq_tsum` the series-sum form follows.",
       "provenance": "ai-agent1",
       "id": "a2be5ea5045b"
     },
@@ -421,6 +709,13 @@
         "section": "Infinite products and continued fractions",
         "snippet": "The following expansions are valid in the whole complex plane"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Weierstrass-product expansions of sinh/cosh appear in Mathlib.",
       "provenance": "ai-agent1",
       "id": "ea3e907aff69"
     },
@@ -431,6 +726,13 @@
         "section": "Comparison with circular functions",
         "snippet": "The hyperbolic angle is an invariant measure with respect to the squeeze mapping"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of squeeze mappings or hyperbolic-angle invariance.",
       "provenance": "ai-agent1",
       "id": "509649c72f6b"
     },
@@ -441,6 +743,13 @@
         "section": "Comparison with circular functions",
         "snippet": "The Gudermannian function gives a direct relationship between the circular functions and the hyperbolic functions"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Gudermannian function is not defined in Mathlib.",
       "provenance": "ai-agent1",
       "id": "81e80700abd6"
     },
@@ -451,6 +760,13 @@
         "section": "Comparison with circular functions",
         "snippet": "is the catenary , the curve formed by a uniform flexible chain"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The catenary curve is not formalized in Mathlib.",
       "provenance": "ai-agent1",
       "id": "6373f5ca475c"
     },
@@ -461,6 +777,13 @@
         "section": "Relationship to the exponential function",
         "snippet": "The decomposition of the exponential function in its even and odd parts gives the identities"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.cosh_add_sinh",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.cosh_add_sinh : cosh x + sinh x = exp x` and `Complex.cosh_sub_sinh : cosh x - sinh x = exp (-x)` give the decomposition.",
       "provenance": "ai-agent1",
       "id": "b7fea8e8bd4c"
     },
@@ -471,6 +794,13 @@
         "section": "Hyperbolic functions for complex numbers",
         "snippet": "we can also extend the definitions of the hyperbolic functions to complex arguments"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.sinh",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.sinh`, `Complex.cosh`, `Complex.tanh` are defined directly on `ℂ`.",
       "provenance": "ai-agent1",
       "id": "8a4fdc94dcdd"
     },
@@ -481,6 +811,13 @@
         "section": "Hyperbolic functions for complex numbers",
         "snippet": "The functions sinh z and cosh z are then holomorphic"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.analyticOnNhd_sinh",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.analyticOnNhd_sinh`/`analyticOnNhd_cosh` (and `differentiable_sinh`/`differentiable_cosh`) state holomorphicity.",
       "provenance": "ai-agent1",
       "id": "1d2c2bb13095"
     },
@@ -491,8 +828,175 @@
         "section": "Hyperbolic functions for complex numbers",
         "snippet": "hyperbolic functions are periodic with respect to the imaginary component"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.sinh_periodic",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.sinh_periodic`/`cosh_periodic` give period `2π·I`, and `tanh_periodic` gives period `π·I`.",
       "provenance": "ai-agent1",
       "id": "59e0628334ed"
+    },
+    {
+      "kind": "proposition",
+      "label": "Addition and subtraction formulas",
+      "anchor": {
+        "section": "Addition and subtraction formulas",
+        "snippet": "Addition and subtraction formulas"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.sinh_add",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "`sinh_add`/`cosh_add`/`sinh_sub`/`cosh_sub` exist for both `Real` and `Complex`; no `tanh_add` though.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product formulas",
+      "anchor": {
+        "section": "Product formulas",
+        "snippet": "Product formulas"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Sum-to-product formulas for hyperbolic functions (sinh+sinh, cosh+cosh, etc.) are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Square formulas",
+      "anchor": {
+        "section": "Square formulas",
+        "snippet": "Square formulas"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.cosh_two_mul",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "`cosh_two_mul`, `sinh_two_mul`, `cosh_sq_sub_sinh_sq`, `sinh_sq`, `cosh_sq` capture the standard square identities.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inverse hyperbolic functions as logarithms",
+      "anchor": {
+        "section": "Inverse functions as logarithms",
+        "snippet": "Inverse functions as logarithms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.artanh_eq_half_log",
+        "module": "Mathlib.Analysis.SpecialFunctions.Artanh",
+        "match_kind": "exact"
+      },
+      "note": "`Real.arsinh`/`Real.arcosh` are defined as logarithm expressions, and `Real.artanh_eq_half_log` gives `artanh x = ½ log((1+x)/(1-x))`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Derivatives of hyperbolic functions",
+      "anchor": {
+        "section": "Derivatives",
+        "snippet": "Derivatives"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.deriv_sinh",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp",
+        "match_kind": "exact"
+      },
+      "note": "`Real.deriv_sinh`, `Real.deriv_cosh`, plus `hasDerivAt_*` for both `Real` and `Complex` cover sinh/cosh/tanh derivatives.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Standard integrals of hyperbolic functions",
+      "anchor": {
+        "section": "Standard integrals",
+        "snippet": "Standard integrals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `integral_sinh`/`integral_cosh` antiderivative lemmas are present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Taylor series convergence on complex plane (sinh)",
+      "anchor": {
+        "section": "Taylor series expressions",
+        "snippet": "This series is convergent for every complex value of x . Since the function sinh x is odd"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.hasSum_sinh",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Series",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.hasSum_sinh` states convergence of the Taylor series of sinh on all of ℂ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Taylor series convergence on complex plane (cosh)",
+      "anchor": {
+        "section": "Taylor series expressions",
+        "snippet": "This series is convergent for every complex value of x . Since the function cosh x is even"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.hasSum_cosh",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Series",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.hasSum_cosh` states convergence of the Taylor series of cosh on all of ℂ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Circular sector area equals angle when r=√2",
+      "anchor": {
+        "section": "Comparison with circular functions",
+        "snippet": "Since the area of a circular sector with radius r and angle u (in radians) is r 2 u /2 , it will be equal to u when r = √ 2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No circular-sector area formula tying angle to area in this form is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Complex exponential via sinh and cosh",
+      "anchor": {
+        "section": "Relationship to the exponential function",
+        "snippet": "this gives"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.cosh_add_sinh",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.cosh_add_sinh : cosh z + sinh z = exp z` is exactly this identity.",
+      "provenance": "ai"
     }
   ]
 }

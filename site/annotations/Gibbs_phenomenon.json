@@ -1,0 +1,233 @@
+{
+  "slug": "Gibbs_phenomenon",
+  "wikipedia_title": "Gibbs phenomenon",
+  "display_title": "Gibbs phenomenon",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Gibbs phenomenon",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the Gibbs phenomenon is the oscillatory behavior of the Fourier series of a piecewise continuously differentiable periodic function around a jump discontinuity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for 'Gibbs' in Mathlib returns only Kullback–Leibler/CondVar hits; the Gibbs phenomenon is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "9% overshoot around jump",
+      "anchor": {
+        "section": "Description",
+        "snippet": "the Fourier series shows the first overshoot in the oscillatory behavior around the jump point approaching ~ 9% of the (full) jump"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No quantitative overshoot/Wilbraham–Gibbs constant statement is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Fourier series equals midpoint at jump",
+      "anchor": {
+        "section": "Description",
+        "snippet": "the Fourier series gives the average of the function's both side limits toward the point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's Fourier theory in Analysis/Fourier/AddCircle has only L²/summable convergence, no Dirichlet-style pointwise midpoint result at jumps.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Square wave Gibbs phenomenon",
+      "anchor": {
+        "section": "Square wave example",
+        "snippet": "The three pictures on the right demonstrate the Gibbs phenomenon for a square wave"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for 'square wave' returns no Mathlib hits and there is no square-wave Fourier series example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Overshoot at general jump discontinuity",
+      "anchor": {
+        "section": "Square wave example",
+        "snippet": "at any discontinuity of a piecewise continuously differentiable function with a jump of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general-jump overshoot bound is formalized; Mathlib lacks the Gibbs phenomenon entirely.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Wilbraham–Gibbs constant",
+      "anchor": {
+        "section": "Square wave example",
+        "snippet": "is sometimes known as the Wilbraham –Gibbs constant"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for 'Wilbraham' in Mathlib returns no hits.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pointwise but not uniform convergence",
+      "anchor": {
+        "section": "Explanation",
+        "snippet": "The Gibbs phenomenon thus exhibits pointwise convergence , but not uniform convergence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Generic pointwise/uniform convergence notions exist, but no statement about the Fourier series of a jump function being pointwise-but-not-uniformly convergent is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convergence to midpoint by Dirichlet's theorem",
+      "anchor": {
+        "section": "Explanation",
+        "snippet": "the infinite sum will converge to the jump discontinuity's midpoint"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dirichlet's pointwise convergence theorem for Fourier series is absent from Mathlib (only L²/summable variants in Analysis/Fourier/AddCircle).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Smoothness controls Fourier coefficient decay",
+      "anchor": {
+        "section": "Explanation",
+        "snippet": "the smoothness of a function controls the decay rate of its Fourier coefficients"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.tendsto_integral_exp_inner_smul_cocompact",
+        "module": "Mathlib.Analysis.Fourier.RiemannLebesgueLemma",
+        "match_kind": null
+      },
+      "note": "The Riemann–Lebesgue lemma gives qualitative decay-to-zero for L¹ functions, but no quantitative `C^k ⇒ |aₙ| = O(n^{-k})` Fourier-coefficient decay statement is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Absolutely convergent Fourier coefficients impossible for discontinuous function",
+      "anchor": {
+        "section": "Explanation",
+        "snippet": "it is impossible for a discontinuous function to have absolutely convergent Fourier coefficients"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "hasSum_fourier_series_of_summable",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib shows that summable Fourier coefficients give a uniformly-convergent (hence continuous) sum in the C(AddCircle) topology, from which the contrapositive follows, but the contrapositive itself is not stated as a lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Elimination via non-negative kernels (Fejér)",
+      "anchor": {
+        "section": "Solutions",
+        "snippet": "it may be eliminated by using kernels that are never negative, such as the Fejér kernel"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Case-insensitive grep for 'Fejér'/'fejer' returns no Mathlib hits; the Fejér kernel is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Formal description of the Gibbs phenomenon",
+      "anchor": {
+        "section": "Formal mathematical description of the Gibbs phenomenon",
+        "snippet": "be a piecewise continuously differentiable function which is periodic with some period"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The precise Gibbs limit theorem (overshoot of the partial-sum sequence at a jump) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gibbs phenomenon at every discontinuity (general case)",
+      "anchor": {
+        "section": "Proof of the Gibbs phenomenon in a general case",
+        "snippet": "This proves how the Gibbs phenomenon occurs at every discontinuity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement about Gibbs overshoot at arbitrary jump discontinuities exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Square wave partial Fourier series analysis",
+      "anchor": {
+        "section": "Square wave analysis",
+        "snippet": "Next, we find the first maximum of the oscillation around the discontinuity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No worked square-wave partial-sum / first-maximum analysis is present in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

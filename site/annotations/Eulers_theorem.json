@@ -1,0 +1,105 @@
+{
+  "slug": "Eulers_theorem",
+  "wikipedia_title": "Euler's theorem",
+  "display_title": "Euler's theorem",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "theorem",
+      "label": "Euler's theorem",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "if n and a are coprime positive integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.ModEq.pow_totient",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.ModEq.pow_totient` states exactly `x ^ φ n ≡ 1 [MOD n]` under `Nat.Coprime x n`, with `ZMod.pow_totient` as an equivalent units-form statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Converse of Euler's theorem",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The converse of Euler's theorem is also true"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ZMod.isUnit_iff_coprime",
+        "module": "Mathlib.Data.ZMod.Basic",
+        "match_kind": null
+      },
+      "note": "The converse direction `a ^ φ(n) ≡ 1 [MOD n] → Coprime a n` is not stated as a named lemma; the underlying infrastructure `ZMod.isUnit_iff_coprime` makes it a one-step corollary but no exact decl exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ones digit of a large power of 7",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "consider finding the ones place decimal digit"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This numerical worked example (computing 7^222 mod 10) has no corresponding decl in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reducing exponents modulo the totient",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "when reducing a power of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.pow_totient_mod",
+        "module": "Mathlib.NumberTheory.PowModTotient",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.pow_totient_mod` states `x ^ k % n = x ^ (k % φ n) % n` whenever `1 < n` and `x.Coprime n`, exactly the exponent-reduction principle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proof",
+      "label": "Group-theoretic proof via Lagrange's theorem",
+      "anchor": {
+        "section": "Proofs",
+        "snippet": "Euler's theorem can be proven using concepts from the theory of groups"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.pow_totient",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib's proof of `ZMod.pow_totient` follows this exact group-theoretic argument via `pow_card_eq_one` on the unit group `(ZMod n)ˣ`, with `card_units_eq_totient` identifying its order as `φ n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proof",
+      "label": "Direct proof via reduced residue system",
+      "anchor": {
+        "section": "Proofs",
+        "snippet": "There is also a direct proof"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes Euler's theorem only via the group-theoretic route through `(ZMod n)ˣ`; the elementary product-permutation proof on reduced residue systems is not present.",
+      "provenance": "ai"
+    }
+  ]
+}

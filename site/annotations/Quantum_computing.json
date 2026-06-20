@@ -137,7 +137,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib's 'Hadamard' refers to the three-lines theorem and the matrix Hadamard product, not the quantum Hadamard gate.",
+      "note": "Mathlib's 'Hadamard' refers to the three-lines theorem and the matrix Hadamard (entrywise) product, not the quantum Hadamard gate.",
       "provenance": "ai",
       "id": "7297aab743aa"
     },
@@ -168,7 +168,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "TensorProduct",
-        "module": "Mathlib.LinearAlgebra.TensorProduct.Basic",
+        "module": "Mathlib.LinearAlgebra.TensorProduct.Defs",
         "match_kind": "generalization"
       },
       "note": "The tensor product of modules/vector spaces is fully formalized, generalizing the construction of multi-qubit states, though qubits themselves are absent.",
@@ -214,7 +214,7 @@
         },
         {
           "type": "math_alttext",
-          "value": "{\\displaystyle X:={\\begin{pmatrix}0&amp;1\\\\1&amp;0\\end{pmatrix}}.}"
+          "value": "{\\displaystyle X:={\\begin{pmatrix}0&1\\\\1&0\\end{pmatrix}}.}"
         }
       ],
       "id": "e21be40dc3d3"
@@ -245,7 +245,7 @@
         },
         {
           "type": "math_alttext",
-          "value": "{\\displaystyle \\operatorname {CNOT} :={\\begin{pmatrix}1&amp;0&amp;0&amp;0\\\\0&amp;1&amp;0&amp;0\\\\0&amp;0&amp;0&amp;1\\\\0&amp;0&amp;1&amp;0\\end{pmatrix}}.}"
+          "value": "{\\displaystyle \\operatorname {CNOT} :={\\begin{pmatrix}1&0&0&0\\\\0&1&0&0\\\\0&0&0&1\\\\0&0&1&0\\end{pmatrix}}.}"
         }
       ],
       "id": "2896294c91cb"
@@ -742,6 +742,118 @@
       "note": "Quantum supremacy is not a formalized concept in Mathlib.",
       "provenance": "ai",
       "id": "0ba5db13c3c4"
+    },
+    {
+      "kind": "definition",
+      "label": "Halting problem",
+      "anchor": {
+        "section": "Computability",
+        "snippet": "quantum computers cannot solve undecidable problems like the halting problem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.Partrec.Code.fixed_point",
+        "module": "Mathlib.Computability.PartrecCode",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's PartrecCode develops Kleene's recursion/fixed-point theorem and the framework underlying undecidability of the halting problem, though a named 'halting problem is undecidable' theorem is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Church–Turing thesis not disproved by quantum computers",
+      "anchor": {
+        "section": "Computability",
+        "snippet": "the existence of quantum computers does not disprove the Church–Turing thesis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Church–Turing thesis is an informal claim and is not formalized as a theorem in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Integer factorization",
+      "anchor": {
+        "section": "Complexity",
+        "snippet": "it is known that quantum computers can efficiently factor integers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.factorization",
+        "module": "Mathlib.Data.Nat.Factorization.Defs",
+        "match_kind": "related"
+      },
+      "note": "Mathlib has the mathematical notion of prime factorization (Nat.factorization, UniqueFactorizationMonoid) but no notion of computational complexity of factoring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Discrete logarithm problem",
+      "anchor": {
+        "section": "Algorithms",
+        "snippet": "the related quantum algorithms for computing discrete logarithms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define the discrete logarithm problem as a computational problem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hidden subgroup problem",
+      "anchor": {
+        "section": "Algorithms",
+        "snippet": "solving the hidden subgroup problem for abelian finite groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The hidden subgroup problem is not formalized in Mathlib, though abelian finite groups and their characters are.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quantum Fourier transform",
+      "anchor": {
+        "section": "Algorithms",
+        "snippet": "These algorithms depend on the primitive of the quantum Fourier transform"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has the classical discrete Fourier transform on finite abelian groups but not the unitary quantum Fourier transform on qubit registers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ising model",
+      "anchor": {
+        "section": "Quantum annealing",
+        "snippet": "Quantum annealing can solve Ising models and the (computationally equivalent) QUBO problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Ising model and QUBO problem are not formalized in Mathlib.",
+      "provenance": "ai"
     }
   ]
 }

@@ -176,6 +176,22 @@
       "id": "be892d94765e"
     },
     {
+      "kind": "proposition",
+      "label": "Countable additivity of disjoint events (intro)",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "the probability of a countable union of mutually exclusive events must be equal to the countable sum of the probabilities of each of these events"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.measure_iUnion",
+        "module": "Mathlib.MeasureTheory.Measure.NullMeasurable",
+        "match_kind": "exact"
+      },
+      "note": "`measure_iUnion` proves countable additivity: μ(⋃ᵢ sᵢ) = ∑ᵢ μ(sᵢ) for a pairwise-disjoint countable family of measurable sets.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Probability space (short)",
       "anchor": {
@@ -211,6 +227,54 @@
     },
     {
       "kind": "proposition",
+      "label": "σ-algebra contains the sample space",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "contains the sample space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasurableSet.univ",
+        "module": "Mathlib.MeasureTheory.MeasurableSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`MeasurableSet.univ` proves the whole space is measurable, the first σ-algebra axiom.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "σ-algebra closed under complements",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is closed under complements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasurableSet.compl",
+        "module": "Mathlib.MeasureTheory.MeasurableSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`MeasurableSet.compl` proves the complement of a measurable set is measurable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "σ-algebra closed under countable unions",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is closed under countable unions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasurableSet.iUnion",
+        "module": "Mathlib.MeasureTheory.MeasurableSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`MeasurableSet.iUnion` proves a countable union of measurable sets is measurable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
       "label": "Closed under countable intersections",
       "anchor": {
         "section": "Definition",
@@ -225,6 +289,38 @@
       "note": "`MeasurableSet.iInter` proves a countable intersection of measurable sets is measurable.",
       "provenance": "ai",
       "id": "d81a75aa9f60"
+    },
+    {
+      "kind": "proposition",
+      "label": "Countable additivity of P",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "P is countably additive"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.measure_iUnion",
+        "module": "Mathlib.MeasureTheory.Measure.NullMeasurable",
+        "match_kind": "exact"
+      },
+      "note": "σ-additivity of a probability measure is `measure_iUnion`: μ(⋃ᵢ sᵢ) = ∑ᵢ μ(sᵢ) for a pairwise-disjoint measurable family.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Total mass equals one",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "the measure of the entire sample space is equal to one"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.IsProbabilityMeasure.measure_univ",
+        "module": "Mathlib.MeasureTheory.Measure.Typeclasses.Probability",
+        "match_kind": "exact"
+      },
+      "note": "`IsProbabilityMeasure.measure_univ` is exactly the axiom `μ Set.univ = 1`.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -346,6 +442,22 @@
       "id": "83607f1e5aaa"
     },
     {
+      "kind": "proposition",
+      "label": "Carathéodory extension theorem",
+      "anchor": {
+        "section": "Non-atomic case",
+        "snippet": "For technical details see Carathéodory's extension theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.OuterMeasure.toMeasure",
+        "module": "Mathlib.MeasureTheory.Measure.MeasureSpace",
+        "match_kind": "exact"
+      },
+      "note": "Carathéodory's extension of a premeasure to a measure on the generated σ-algebra is realised via `OuterMeasure.toMeasure` and the Carathéodory measurable-set construction.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Complete probability space",
       "anchor": {
@@ -448,6 +560,22 @@
       "id": "c03e2840fcc5"
     },
     {
+      "kind": "proposition",
+      "label": "Standard probability spaces",
+      "anchor": {
+        "section": "Example 5",
+        "snippet": "They are so-called standard probability spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Standard (Lebesgue–Rokhlin) probability spaces and the 'isomorphism modulo zero' between non-atomic ones are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Random variable",
       "anchor": {
@@ -507,7 +635,7 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "MeasureTheory.borel",
+        "decl": "borel",
         "module": "Mathlib.MeasureTheory.Constructions.BorelSpace.Basic",
         "match_kind": "exact"
       },
@@ -592,6 +720,22 @@
       "note": "`IndepFun f g μ` formalizes independence of two random variables via independence of their generated σ-algebras.",
       "provenance": "ai",
       "id": "d8c7c22f7379"
+    },
+    {
+      "kind": "definition",
+      "label": "Independent σ-algebras",
+      "anchor": {
+        "section": "Independence",
+        "snippet": "they generate independent σ-algebras"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.Indep",
+        "module": "Mathlib.Probability.Independence.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ProbabilityTheory.Indep m₁ m₂ μ` formalizes independence of two sub-σ-algebras: μ(A ∩ B) = μ(A)·μ(B) for all A ∈ m₁, B ∈ m₂.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",

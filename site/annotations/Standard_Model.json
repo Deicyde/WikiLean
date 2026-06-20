@@ -171,7 +171,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Particle-physics definition with no Mathlib content.",
+      "note": "Particle-physics definition with no Mathlib content (no 'Higgs' files exist in Mathlib).",
       "provenance": "ai",
       "id": "5a55e28e0824"
     },
@@ -205,7 +205,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Quantum field theory / Lagrangian formalism is not developed in Mathlib (no 'Lagrangian' declarations).",
+      "note": "Quantum field theory / Lagrangian formalism is not developed in Mathlib (grep finds no 'Lagrangian' declarations).",
       "provenance": "ai",
       "id": "530445c19ea5"
     },
@@ -222,7 +222,7 @@
         "module": "Mathlib.LinearAlgebra.UnitaryGroup",
         "match_kind": null
       },
-      "note": "Mathlib defines the abstract groups SU(n)/U(n) via Matrix.specialUnitaryGroup and Matrix.unitaryGroup, but not the Standard Model gauge group or its action as a physical symmetry.",
+      "note": "Mathlib defines the abstract groups SU(n)/U(n) via Matrix.specialUnitaryGroup and Matrix.unitaryGroup (verified), but not the Standard Model gauge group or its action as a physical symmetry.",
       "provenance": "ai",
       "id": "5fbbaaea793a"
     },
@@ -266,7 +266,7 @@
         "module": "Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic",
         "match_kind": null
       },
-      "note": "Mathlib has a general covariant-derivative/connection structure on vector bundles, but not the specific QCD gauge covariant derivative with gluon fields and SU(3) generators.",
+      "note": "Mathlib has a general covariant-derivative/connection structure on vector bundles (verified), but not the specific QCD gauge covariant derivative with gluon fields and SU(3) generators.",
       "provenance": "ai",
       "id": "69e993aef3c6"
     },
@@ -300,7 +300,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Yang–Mills electroweak theory has no formalization in Mathlib (no Yang–Mills content).",
+      "note": "Yang–Mills electroweak theory has no formalization in Mathlib (grep finds no Yang–Mills content).",
       "provenance": "ai",
       "anchors": [
         {
@@ -327,7 +327,7 @@
         "module": "Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic",
         "match_kind": null
       },
-      "note": "Only the abstract vector-bundle covariant derivative exists; the specific electroweak SU(2)×U(1) covariant derivative is not formalized.",
+      "note": "Only the abstract vector-bundle covariant derivative exists (verified); the specific electroweak SU(2)×U(1) covariant derivative is not formalized.",
       "provenance": "ai",
       "id": "9d4cd49a83a0"
     },
@@ -540,6 +540,86 @@
       "note": "Gauge invariance of Yukawa terms and resulting fermion masses are QFT statements with no Mathlib formalization.",
       "provenance": "ai",
       "id": "8dff1e98bf38"
+    },
+    {
+      "kind": "definition",
+      "label": "Dirac equation",
+      "anchor": {
+        "section": "Historical background",
+        "snippet": "Paul Dirac introduced the Dirac equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The relativistic wave equation for spin-1/2 particles; not formalized as a PDE in Mathlib (only unrelated 'Dirac measure' hits).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dirac matrices (gamma matrices)",
+      "anchor": {
+        "section": "Quantum chromodynamics sector",
+        "snippet": "γ μ are the Dirac matrices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The four 4×4 gamma matrices satisfying the Clifford anticommutation relations; not in Mathlib by name (though Clifford algebras exist).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Gell-Mann matrices (SU(3) generators)",
+      "anchor": {
+        "section": "Quantum chromodynamics sector",
+        "snippet": "λ a are the 3 × 3 Gell-Mann matrices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The eight 3×3 traceless Hermitian matrices generating su(3); grep finds no Gell-Mann files in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pauli matrices (SU(2) generators)",
+      "anchor": {
+        "section": "Electroweak sector",
+        "snippet": "→ τ L are the Pauli matrices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The three 2×2 traceless Hermitian matrices generating su(2); not defined as a named family in core Mathlib (only unrelated 'Pauli' tactic hits).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Yang–Mills existence and mass gap problem",
+      "anchor": {
+        "section": "Challenges",
+        "snippet": "the Yang–Mills existence and mass gap problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A Clay Millennium open problem; grep finds no Yang–Mills content in Mathlib.",
+      "provenance": "ai"
     }
   ]
 }

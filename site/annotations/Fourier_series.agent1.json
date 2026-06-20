@@ -11,7 +11,15 @@
         "section": "Definition",
         "snippet": "The Fourier series of a complex-valued"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fourierCoeff",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines the n-th Fourier coefficient of a function on `AddCircle T` via `fourierCoeff`, together with the exponential monomials `fourier n`.",
+      "provenance": "ai-agent1",
+      "id": "0b4f9a896074"
     },
     {
       "kind": "definition",
@@ -20,7 +28,15 @@
         "section": "Synthesis",
         "snippet": "A Fourier series can be written in several equivalent forms"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "hasSum_fourier_series_L2",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib expresses convergence through `HasSum` of `fourierCoeff f i • fourier i` rather than naming partial sums explicitly.",
+      "provenance": "ai-agent1",
+      "id": "297e5418d82b"
     },
     {
       "kind": "example",
@@ -29,6 +45,30 @@
         "section": "Example",
         "snippet": "Consider a sawtooth function"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the sawtooth-function example was found in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "9232fb6168bd"
+    },
+    {
+      "kind": "theorem",
+      "label": "Dirichlet theorem for Fourier series (pointwise convergence)",
+      "anchor": {
+        "section": "Example",
+        "snippet": "This is a particular instance of the Dirichlet theorem for Fourier series."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dirichlet's theorem on pointwise convergence of the Fourier series at points where one-sided limits exist is not formalized in Mathlib.",
       "provenance": "ai-agent1"
     },
     {
@@ -38,7 +78,15 @@
         "section": "Amplitude-phase form",
         "snippet": "the Fourier series can also be represented as"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib uses only the complex exponential form; an amplitude-phase reformulation is not present.",
+      "provenance": "ai-agent1",
+      "id": "6be06902723e"
     },
     {
       "kind": "example",
@@ -47,7 +95,15 @@
         "section": "Other applications",
         "snippet": "Another application is to solve the Basel problem"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "hasSum_zeta_two",
+        "module": "Mathlib.NumberTheory.ZetaValues",
+        "match_kind": "exact"
+      },
+      "note": "`hasSum_zeta_two` proves ∑ 1/n² = π²/6 in Mathlib using Fourier-series machinery (`hasSum_one_div_nat_pow_mul_fourier`).",
+      "provenance": "ai-agent1",
+      "id": "4f12a6316b46"
     },
     {
       "kind": "proposition",
@@ -56,7 +112,15 @@
         "section": "Symmetry relations",
         "snippet": "The transform of a real-valued function"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "fourier_neg",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has `fourier_neg` (conjugation symmetry of monomials), but no packaged lemma on real/even/odd-part symmetries of Fourier coefficients.",
+      "provenance": "ai-agent1",
+      "id": "adf698c48451"
     },
     {
       "kind": "theorem",
@@ -65,7 +129,15 @@
         "section": "Riemann–Lebesgue lemma",
         "snippet": "is integrable"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendsto_integral_exp_smul_cocompact",
+        "module": "Mathlib.Analysis.Fourier.RiemannLebesgueLemma",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves the Riemann–Lebesgue lemma on finite-dimensional real vector spaces, which specializes to vanishing Fourier coefficients at infinity.",
+      "provenance": "ai-agent1",
+      "id": "0f952d21f935"
     },
     {
       "kind": "theorem",
@@ -74,7 +146,15 @@
         "section": "Parseval's theorem",
         "snippet": "periodic over an interval of length"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "hasSum_sq_fourierCoeff",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "exact"
+      },
+      "note": "`hasSum_sq_fourierCoeff` (and `hasSum_sq_fourierCoeffOn`) gives Parseval's identity for L² functions on `AddCircle T`.",
+      "provenance": "ai-agent1",
+      "id": "1b0e3e96f61d"
     },
     {
       "kind": "theorem",
@@ -83,7 +163,15 @@
         "section": "Plancherel's theorem",
         "snippet": "then there is a unique function"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fourierBasis",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "exact"
+      },
+      "note": "`fourierBasis` is a `HilbertBasis ℤ ℂ (Lp ℂ 2 haarAddCircle)`, giving the isometric isomorphism with ℓ²(ℤ,ℂ).",
+      "provenance": "ai-agent1",
+      "id": "01584669e5e2"
     },
     {
       "kind": "theorem",
@@ -92,7 +180,15 @@
         "section": "Convolution theorems",
         "snippet": "discrete convolution of the"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem in Mathlib expresses `fourierCoeff (f*g)` as the discrete convolution of `fourierCoeff f` and `fourierCoeff g` on `AddCircle T`.",
+      "provenance": "ai-agent1",
+      "id": "3ece3568eb0b"
     },
     {
       "kind": "theorem",
@@ -101,7 +197,15 @@
         "section": "Convolution theorems",
         "snippet": "periodic convolution"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Fourier-transform convolution theorems (`Real.fourier_bilin_convolution_eq`) but no analogue for Fourier coefficients on `AddCircle T`.",
+      "provenance": "ai-agent1",
+      "id": "f5c80da46d36"
     },
     {
       "kind": "theorem",
@@ -110,7 +214,15 @@
         "section": "Convolution theorems",
         "snippet": "doubly infinite sequence"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "fourierBasis",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "invocation"
+      },
+      "note": "Surjectivity of `fourierBasis.repr` onto ℓ²(ℤ,ℂ) gives the L² characterization implicitly but is not stated as a standalone theorem.",
+      "provenance": "ai-agent1",
+      "id": "02290ab6aea4"
     },
     {
       "kind": "proposition",
@@ -119,7 +231,15 @@
         "section": "Derivative property",
         "snippet": "times differentiable"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `fourier_deriv` for the Fourier transform, but no derivative formula for `fourierCoeff` on `AddCircle T`.",
+      "provenance": "ai-agent1",
+      "id": "9715edd66d00"
     },
     {
       "kind": "definition",
@@ -128,7 +248,15 @@
         "section": "Compact groups",
         "snippet": "one can produce Fourier series on any compact group"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib develops Fourier series only on `AddCircle T` and finite abelian groups, not on general compact groups.",
+      "provenance": "ai-agent1",
+      "id": "33f9b5a249ef"
     },
     {
       "kind": "theorem",
@@ -137,7 +265,15 @@
         "section": "Compact groups",
         "snippet": "Peter–Weyl theorem"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No occurrence of Peter–Weyl was found in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "8888f184ca42"
     },
     {
       "kind": "definition",
@@ -146,7 +282,15 @@
         "section": "Riemannian manifolds",
         "snippet": "the natural generalization is to use the eigensolutions of the Laplace–Beltrami operator"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Laplace–Beltrami / spherical-harmonics Fourier-expansion framework is present in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "ba654886731f"
     },
     {
       "kind": "definition",
@@ -155,7 +299,15 @@
         "section": "Locally compact Abelian groups",
         "snippet": "straightforward generalization to Locally Compact Abelian"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "PontryaginDual",
+        "module": "Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib handles the finite-abelian case via `PontryaginDuality`, but no general LCA-group Fourier transform is defined.",
+      "provenance": "ai-agent1",
+      "id": "34150020f29e"
     },
     {
       "kind": "definition",
@@ -164,7 +316,15 @@
         "section": "Fourier-Stieltjes series",
         "snippet": "the Fourier-Stieltjes series can be defined as the Fourier series whose coefficients are given by"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fourier–Stieltjes series are not defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "b764d8363cd7"
     },
     {
       "kind": "proposition",
@@ -173,7 +333,15 @@
         "section": "Fourier-Stieltjes series",
         "snippet": "is a function of bounded variation"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem relating Fourier–Stieltjes coefficients to BV functions via Riesz representation exists in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "5bd3a99f2f7f"
     },
     {
       "kind": "definition",
@@ -182,7 +350,15 @@
         "section": "Fourier-Stieltjes series",
         "snippet": "the series is sometimes described as a Fourier-Schwartz series"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has tempered-distribution Fourier transforms but not a `AddCircle`-distribution Fourier-series framework.",
+      "provenance": "ai-agent1",
+      "id": "f2f70cd17fdf"
     },
     {
       "kind": "definition",
@@ -191,7 +367,15 @@
         "section": "Fourier series on a square",
         "snippet": "We can also define the Fourier series for functions of two variables"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Moderated: the previously cited `UnitAddTorus.mFourierCoeff` in `Mathlib.Analysis.Fourier.AddCircleMulti` could not be verified as a real Mathlib declaration; downgraded to not_formalized pending confirmation of a multivariate Fourier-series module.",
+      "provenance": "ai-agent1",
+      "id": "7b2efd74369d"
     },
     {
       "kind": "definition",
@@ -200,7 +384,15 @@
         "section": "Fourier series of a Bravais-lattice-periodic function",
         "snippet": "A three-dimensional Bravais lattice is defined as the set of vectors"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of a Bravais lattice was found in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "612634fba63e"
     },
     {
       "kind": "definition",
@@ -209,7 +401,15 @@
         "section": "Fourier series of a Bravais-lattice-periodic function",
         "snippet": "The Fourier series for"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fourier expansions for Bravais-lattice-periodic functions are not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "2e3c2253bc5d"
     },
     {
       "kind": "definition",
@@ -218,7 +418,15 @@
         "section": "Hilbert space",
         "snippet": "the space of square-integrable functions"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fourierBasis",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "exact"
+      },
+      "note": "`fourierBasis` realizes the L² Fourier-series decomposition as a Hilbert basis indexed by ℤ.",
+      "provenance": "ai-agent1",
+      "id": "e33cfc42c620"
     },
     {
       "kind": "proposition",
@@ -227,6 +435,46 @@
         "section": "Hilbert space",
         "snippet": "the sines and cosines form an orthogonal set"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "fourierBasis",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves the complex-exponential Fourier basis is a Hilbert basis (orthonormality via `fourierBasis`), but the real sin/cos orthonormal basis is not packaged as a named lemma. Moderated to use the verified `fourierBasis` reference.",
+      "provenance": "ai-agent1",
+      "id": "c07f083d3f4a"
+    },
+    {
+      "kind": "theorem",
+      "label": "Stone–Weierstrass theorem",
+      "anchor": {
+        "section": "Hilbert space",
+        "snippet": "The density of their span is a consequence of the Stone–Weierstrass theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.subalgebra_topologicalClosure_eq_top_of_separatesPoints",
+        "module": "Mathlib.Topology.ContinuousMap.StoneWeierstrass",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib formalizes the Stone–Weierstrass theorem for real and complex continuous-function algebras on compact Hausdorff spaces.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Fejér kernel",
+      "anchor": {
+        "section": "Hilbert space",
+        "snippet": "the Fejér kernel"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Fejér kernel and Cesàro summability of Fourier series are not formalized in Mathlib.",
       "provenance": "ai-agent1"
     },
     {
@@ -236,7 +484,15 @@
         "type": "theorem_box",
         "value": "Theorem"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "HilbertBasis.hasSum_repr",
+        "module": "Mathlib.Analysis.InnerProductSpace.L2Space",
+        "match_kind": "invocation"
+      },
+      "note": "The best-approximation property follows from `fourierBasis` being a Hilbert basis (orthogonal projection onto its span), but is not stated specifically for trig polynomials.",
+      "provenance": "ai-agent1",
+      "id": "ca0f90ade0f8"
     },
     {
       "kind": "proposition",
@@ -245,7 +501,15 @@
         "section": "Convergence theorems",
         "snippet": "absolutely summable"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "hasSum_fourier_series_of_summable",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves uniform convergence under summability of Fourier coefficients but does not derive this directly from a C¹ hypothesis.",
+      "provenance": "ai-agent1",
+      "id": "4e180e7af292"
     },
     {
       "kind": "theorem",
@@ -254,7 +518,15 @@
         "section": "Convergence theorems",
         "snippet": "Carleson's theorem"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Carleson's theorem on a.e. convergence of L² Fourier series is not present in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "2aa4c91a25eb"
     },
     {
       "kind": "theorem",
@@ -263,7 +535,15 @@
         "type": "theorem_box",
         "value": "Theorem"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "hasSum_fourier_series_L2",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "exact"
+      },
+      "note": "`hasSum_fourier_series_L2` proves convergence of the Fourier series to f in the L²-norm on `AddCircle T`.",
+      "provenance": "ai-agent1",
+      "id": "0e63134f1ae1"
     },
     {
       "kind": "theorem",
@@ -272,7 +552,15 @@
         "type": "theorem_box",
         "value": "Theorem"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "hasSum_fourier_series_of_summable",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "exact"
+      },
+      "note": "`hasSum_fourier_series_of_summable` gives uniform convergence of the Fourier series whenever the coefficient sequence is summable.",
+      "provenance": "ai-agent1",
+      "id": "b29a18e9c6e4"
     },
     {
       "kind": "example",
@@ -281,7 +569,15 @@
         "section": "Divergence",
         "snippet": "Andrey Kolmogorov published an article"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Kolmogorov's construction of an L¹ function with everywhere-divergent Fourier series is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "859d25ba9019"
     },
     {
       "kind": "example",
@@ -290,6 +586,30 @@
         "section": "Divergence",
         "snippet": "It is possible to give explicit examples of a continuous function whose Fourier series diverges at 0"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit example of a continuous function with Fourier series diverging at 0 was found in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "3adbcccf08b4"
+    },
+    {
+      "kind": "theorem",
+      "label": "Uniform boundedness principle (Banach–Steinhaus)",
+      "anchor": {
+        "section": "Divergence",
+        "snippet": "The uniform boundedness principle yields a simple non-constructive proof"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "banach_steinhaus",
+        "module": "Mathlib.Analysis.NormedSpace.BanachSteinhaus",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib formalizes the uniform boundedness principle (Banach–Steinhaus), which underlies the standard non-constructive proof of existence of continuous functions whose Fourier series diverge at a point.",
       "provenance": "ai-agent1"
     }
   ]

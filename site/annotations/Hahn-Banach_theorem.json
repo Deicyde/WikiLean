@@ -1,0 +1,809 @@
+{
+  "slug": "Hahn-Banach_theorem",
+  "wikipedia_title": "Hahn–Banach theorem",
+  "display_title": "Hahn–Banach theorem",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "theorem",
+      "label": "Functional problem (general)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem [ 3 ] (The functional problem)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_extension_of_le_sublinear",
+        "module": "Mathlib.Analysis.Convex.Cone.Extension",
+        "match_kind": "exact"
+      },
+      "note": "This is the standard Hahn–Banach extension formalized as `exists_extension_of_le_sublinear`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vector problem",
+      "anchor": {
+        "section": "History",
+        "snippet": "of bounded linear functionals on a normed space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Historical naming of a problem statement, not a Mathlib definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Functional problem",
+      "anchor": {
+        "section": "History",
+        "snippet": "of vectors in a normed space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Historical naming of a problem statement, not a Mathlib definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dominated (above) by a function",
+      "anchor": {
+        "section": "Hahn–Banach theorem",
+        "snippet": "is said to be dominated (above) by a function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Used inline as `∀ x, f x ≤ p x` throughout Mathlib but no dedicated `Dominated` predicate exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Characterization of convex functions with f(0) = 0",
+      "anchor": {
+        "section": "Hahn–Banach theorem",
+        "snippet": "and all non-negative real"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No characterization of convex functions vanishing at 0 via the sublinearity-style inequality is recorded in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every sublinear function is convex",
+      "anchor": {
+        "section": "Hahn–Banach theorem",
+        "snippet": "Every sublinear function is a convex function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Seminorm.convexOn",
+        "module": "Mathlib.Analysis.Seminorm",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib lacks an `IsSublinear` predicate but proves `Seminorm.convexOn`, the seminorm special case of the same fact.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sublinear is seminorm iff balanced",
+      "anchor": {
+        "section": "Hahn–Banach theorem",
+        "snippet": "A sublinear function is a seminorm if and only if it is a balanced function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no general sublinear-function class so this iff is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Real sublinear is seminorm iff symmetric",
+      "anchor": {
+        "section": "Hahn–Banach theorem",
+        "snippet": "On a real vector space (although not on a complex vector space)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Same — without a sublinear-function class this real-case characterization is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Identity function as sublinear non-seminorm",
+      "anchor": {
+        "section": "Hahn–Banach theorem",
+        "snippet": "is an example of a sublinear function that is not a seminorm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No such illustrative example is recorded in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hahn–Banach dominated extension theorem (real)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Hahn–Banach dominated extension theorem "
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_extension_of_le_sublinear",
+        "module": "Mathlib.Analysis.Convex.Cone.Extension",
+        "match_kind": "exact"
+      },
+      "note": "The real sublinear-dominated extension is exactly `exists_extension_of_le_sublinear`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dominated complex-valued functional",
+      "anchor": {
+        "section": "For complex or real vector spaces",
+        "snippet": "A complex-valued functional"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated definition of complex-dominated functional; used inline as `∀ x, ‖f x‖ ≤ p x`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hahn–Banach dominated extension (succinct form)",
+      "anchor": {
+        "section": "For complex or real vector spaces",
+        "snippet": "every dominated linear functional defined on a vector subspace"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Dual.exists_extension_of_le_seminorm",
+        "module": "Mathlib.Analysis.LocallyConvex.HahnBanach",
+        "match_kind": "exact"
+      },
+      "note": "Stated for `RCLike` fields as `Module.Dual.exists_extension_of_le_seminorm`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linear functional determined by its real part",
+      "anchor": {
+        "section": "For complex or real vector spaces",
+        "snippet": "is completely determined by its real part"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Dual.extendRCLikeₗ",
+        "module": "Mathlib.Analysis.RCLike.Extend",
+        "match_kind": "exact"
+      },
+      "note": "Encoded as the linear equivalence `Module.Dual.extendRCLikeₗ : Dual ℝ F ≃ₗ[ℝ] Dual 𝕜 F`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linear functional dominated by seminorm iff real part is",
+      "anchor": {
+        "section": "For complex or real vector spaces",
+        "snippet": "a linear functional is dominated by a seminorm"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.Dual.norm_extendRCLike_le_seminorm",
+        "module": "Mathlib.Analysis.Normed.Module.RCLike.Extend",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has the (⇒) direction `Module.Dual.norm_extendRCLike_le_seminorm` from a real-part bound to a full-norm bound, not an explicit iff.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuity equivalent to continuity of real part",
+      "anchor": {
+        "section": "For complex or real vector spaces",
+        "snippet": "is continuous if and only if this is true of its real part"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "StrongDual.extendRCLikeₗ",
+        "module": "Mathlib.Analysis.RCLike.Extend",
+        "match_kind": "special_case"
+      },
+      "note": "Captured implicitly by `StrongDual.extendRCLikeₗ`, a linear equivalence between continuous real-linear and 𝕜-linear duals; no standalone iff lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hahn–Banach theorem (seminorm version)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Hahn–Banach theorem [ 3 ] [ 9 ] — Suppos"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Dual.exists_extension_of_le_seminorm",
+        "module": "Mathlib.Analysis.LocallyConvex.HahnBanach",
+        "match_kind": "exact"
+      },
+      "note": "Exactly `Module.Dual.exists_extension_of_le_seminorm` for fields satisfying `IsRCLikeNormedField`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "One-dimensional dominated extension lemma",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Lemma [ 6 ] ( One"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The one-dimensional step is inlined inside the Zorn argument of `RieszExtension.step`/`exists_extension_of_le_sublinear` and not exposed as a separate lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Norm-preserving linear extension",
+      "anchor": {
+        "section": "Continuous extension theorem",
+        "snippet": "is said to be norm-preserving"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No standalone definition; the property `‖g‖ = ‖f‖` is used inline in `exists_extension_norm_eq`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Field is injective in locally convex category",
+      "anchor": {
+        "section": "Continuous extension theorem",
+        "snippet": "is an injective object in the category of locally convex vector spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The category of locally convex spaces and its injective objects are not set up in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hahn–Banach continuous extension theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Hahn–Banach continuous extension theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "StrongDual.exists_extension",
+        "module": "Mathlib.Analysis.LocallyConvex.HahnBanach",
+        "match_kind": "exact"
+      },
+      "note": "Exactly `StrongDual.exists_extension` for polynormable spaces over `IsRCLikeNormedField`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Norm-preserving Hahn–Banach continuous extension theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Norm-preserving Hahn–Banach continuous e"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_extension_norm_eq",
+        "module": "Mathlib.Analysis.Normed.Module.HahnBanach",
+        "match_kind": "exact"
+      },
+      "note": "`exists_extension_norm_eq` provides the norm-preserving extension on normed spaces over `RCLike`-like fields.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Norm-preserving iff dominated by seminorm of |f|",
+      "anchor": {
+        "section": "Proof of the continuous extension theorem",
+        "snippet": "is norm-preserving if and only if the extension is dominated by the seminorm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This intermediate equivalence is not isolated as a Mathlib lemma; the proof of `exists_extension_norm_eq` uses the (⇐) direction directly.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Continuous extension characterization on non-locally-convex TVS",
+      "anchor": {
+        "section": "Non-locally convex spaces",
+        "snippet": "if and only if there exists some continuous seminorm"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.Dual.exists_continuous_extension_of_le_seminorm",
+        "module": "Mathlib.Analysis.LocallyConvex.HahnBanach",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has the existence direction via a continuous seminorm bound but not the iff for general (non-locally-convex) TVS.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Separation of convex sets (locally convex TVS)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem [ 19 ]"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "geometric_hahn_banach_compact_closed",
+        "module": "Mathlib.Analysis.LocallyConvex.Separation",
+        "match_kind": "exact"
+      },
+      "note": "Strict separation in a locally convex space is `geometric_hahn_banach_compact_closed` (compact/closed) with companion `geometric_hahn_banach_open` variants.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hahn–Banach separation theorem (open / compact-closed)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem [ 3 ] [ 21 ]"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "geometric_hahn_banach_open",
+        "module": "Mathlib.Analysis.LocallyConvex.Separation",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib has both `geometric_hahn_banach_open` and `geometric_hahn_banach_compact_closed` covering the two cases.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Mazur's theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem (Mazur) [ 23 ]"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mazur's theorem on weak closure of convex sets does not appear in Mathlib (only Gelfand–Mazur and Mazur–Ulam exist).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Separation of a subspace and an open convex set",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Corollary [ 24 ] (Separation of a subspace and an open convex set)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated subspace/open-convex separation corollary is stated, though it would follow from `geometric_hahn_banach_open`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Functionals detect the boundary of a convex set",
+      "anchor": {
+        "section": "Supporting hyperplanes",
+        "snippet": "geometric Hahn–Banach implies that functionals can detect the boundary of a set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No supporting-hyperplane-style boundary detection lemma found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Smooth normed space",
+      "anchor": {
+        "section": "Supporting hyperplanes",
+        "snippet": "Call a normed space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of a (point-) smooth normed space (unique supporting functional) is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Köthe: smoothness iff Gateaux differentiability of norm",
+      "anchor": {
+        "section": "Supporting hyperplanes",
+        "snippet": "Köthe showed in 1983 that a normed space is smooth at a point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Köthe's smoothness/Gateaux-differentiability characterization is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Separation by continuous linear functional from balanced neighborhood",
+      "anchor": {
+        "section": "Balanced or disked neighborhoods",
+        "snippet": "be a convex balanced neighborhood of the origin in a locally convex topological vector space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "separate_convex_open_set",
+        "module": "Mathlib.Analysis.LocallyConvex.Separation",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `separate_convex_open_set` separates a point from a convex open neighborhood of 0, generalizing the balanced-neighborhood case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linear subspaces characterized by continuous functionals",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "linear subspaces are characterized by functionals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No standalone statement that closed subspaces equal the intersection of zero-sets of continuous functionals appears in Mathlib (only `iInter_halfSpaces_eq` for closed convex sets).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Natural injection into double dual is isometric",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "the natural injection"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedSpace.inclusionInDoubleDualLi",
+        "module": "Mathlib.Analysis.Normed.Module.DoubleDual",
+        "match_kind": "exact"
+      },
+      "note": "`NormedSpace.inclusionInDoubleDualLi` packages the canonical map into the bidual as a linear isometry.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Characterization of reflexive Banach spaces via separation",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem [ 26 ]"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of reflexive Banach space, so this characterization is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closed TVS-isomorphic-to-K^I subspace is complemented",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Proposition"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Submodule.ClosedComplemented.of_finiteDimensional",
+        "module": "Mathlib.Analysis.LocallyConvex.HahnBanach",
+        "match_kind": "special_case"
+      },
+      "note": "Only the finite-dimensional special case (`K^n`) is in Mathlib via `Submodule.ClosedComplemented.of_finiteDimensional`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Extension via absorbing disk (template)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem [ 3 ]"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general absorbing-disk template extension theorem is recorded in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hahn–Banach theorem for seminorms",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Hahn–Banach theorem for seminorms [ 27 ]"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Dual.exists_extension_of_le_seminorm",
+        "module": "Mathlib.Analysis.LocallyConvex.HahnBanach",
+        "match_kind": "exact"
+      },
+      "note": "`Module.Dual.exists_extension_of_le_seminorm` is the seminorm-bounded extension.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hahn–Banach sandwich theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Hahn–Banach sandwich theorem [ 3 ] — Let"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The sandwich form (concave ≤ linear ≤ sublinear) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Andenaes maximal dominated extension theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem [ 3 ] (Andenaes, 1970)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Andenaes' maximal extension theorem is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Vector-valued Hahn–Banach theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Vector–valued Hahn–Banach theorem [ 3 ] "
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.exist_extension_of_finiteDimensional_range",
+        "module": "Mathlib.Analysis.LocallyConvex.HahnBanach",
+        "match_kind": "special_case"
+      },
+      "note": "Only the finite-dimensional-codomain special case is in Mathlib via `ContinuousLinearMap.exist_extension_of_finiteDimensional_range`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Commutative set of maps and G-invariant function",
+      "anchor": {
+        "section": "Invariant Hahn–Banach",
+        "snippet": "is commutative (with respect to function composition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `G`-invariant sublinear/functional definition tied to an invariant Hahn–Banach setup is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Invariant Hahn–Banach theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "An invariant Hahn–Banach theorem [ 29 ] "
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The invariant Hahn–Banach theorem (under a commuting family) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Mazur–Orlicz theorem",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Mazur–Orlicz theorem [ 3 ] — Let [MATH] "
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mazur–Orlicz is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Extension principle for scalar functions",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem ( The extension principle [ 30 ] )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This generic scalar extension principle is not recorded in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Extension property and HBEP",
+      "anchor": {
+        "section": "Converse",
+        "snippet": "has the extension property if any continuous linear functional"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hahn–Banach extension property as a named definition is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Kalton's converse to Hahn–Banach",
+      "anchor": {
+        "section": "Converse",
+        "snippet": "every complete metrizable TVS with the Hahn–Banach extension property is locally convex"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Kalton's converse is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Separation property of a subspace",
+      "anchor": {
+        "section": "Converse",
+        "snippet": "has the separation property if for every element of X"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No subspace-level separation property definition is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hahn–Banach equivalent to probability charge existence",
+      "anchor": {
+        "section": "Relation to axiom of choice and other theorems",
+        "snippet": "On every Boolean algebra B there exists a"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Boolean-algebra probability charge equivalence to Hahn–Banach is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hahn–Banach implies a non-Lebesgue measurable set exists",
+      "anchor": {
+        "section": "Relation to axiom of choice and other theorems",
+        "snippet": "the Hahn–Banach theorem suffices to derive the existence of a non-Lebesgue measurable set"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This metamathematical implication is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hahn–Banach implies Banach–Tarski paradox",
+      "anchor": {
+        "section": "Relation to axiom of choice and other theorems",
+        "snippet": "the Hahn–Banach theorem implies the Banach–Tarski paradox"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Banach–Tarski paradox itself is not in Mathlib, hence neither is this implication.",
+      "provenance": "ai"
+    }
+  ]
+}

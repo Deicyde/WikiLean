@@ -18,7 +18,7 @@
         "module": "Mathlib.Data.Nat.Prime.Defs",
         "match_kind": "exact"
       },
-      "note": "`Nat.Prime` is defined as a natural number ≥ 2 not expressible as a product of smaller naturals.",
+      "note": "`Nat.Prime` is the standard predicate for natural-number primality.",
       "provenance": "ai",
       "id": "7cc1f7e0846e"
     },
@@ -49,10 +49,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Nat.prime_two",
-        "module": "Mathlib.Data.Nat.Prime.Basic",
+        "module": "Mathlib.Data.Nat.Prime.Defs",
         "match_kind": "exact"
       },
-      "note": "Concrete primality facts like `Nat.prime_two`, `Nat.prime_three`, `Nat.prime_five` are present and `norm_num`'s `Prime` extension decides such examples.",
+      "note": "Concrete primality facts like `Nat.prime_two` are available and `norm_num` decides such examples.",
       "provenance": "ai",
       "id": "0a82dfb49983"
     },
@@ -69,7 +69,7 @@
         "module": "Mathlib.RingTheory.UniqueFactorizationDomain.Basic",
         "match_kind": "generalization"
       },
-      "note": "Existence and uniqueness of the prime factorization of naturals are formalized via `Nat.factors` and `UniqueFactorizationMonoid.factors_unique`.",
+      "note": "Existence/uniqueness of prime factorization is formalized via `UniqueFactorizationMonoid.factors_unique` and `Nat.primeFactorsList_unique`.",
       "provenance": "ai",
       "id": "285b05bb6477"
     },
@@ -86,7 +86,7 @@
         "module": "Mathlib.Data.Nat.Prime.Defs",
         "match_kind": "exact"
       },
-      "note": "`Nat.Prime` is the standard predicate, equivalent to `Irreducible` on ℕ.",
+      "note": "`Nat.Prime` is defined as irreducibility of a natural number ≥ 2.",
       "provenance": "ai",
       "id": "67e701f1c7d4"
     },
@@ -103,7 +103,7 @@
         "module": "Mathlib.Data.Nat.Prime.Defs",
         "match_kind": "generalization"
       },
-      "note": "Mathlib's `Nat.Prime` is defined via irreducibility, and the divisor-count characterization is implicit (e.g., `Nat.divisors_prime_pow`/`Nat.Prime.divisors`-style lemmas) rather than the literal definition.",
+      "note": "Mathlib defines `Nat.Prime` via irreducibility, not directly via the two-divisors characterization, though related lemmas about `Nat.divisors` are available.",
       "provenance": "ai",
       "id": "e53aed2545de"
     },
@@ -117,10 +117,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Nat.prime_two",
-        "module": "Mathlib.Data.Nat.Prime.Basic",
+        "module": "Mathlib.Data.Nat.Prime.Defs",
         "match_kind": "exact"
       },
-      "note": "`Nat.prime_two`, `Nat.prime_three`, `Nat.prime_five` and decidability of `Nat.Prime` (via `norm_num`) cover these examples.",
+      "note": "`Nat.prime_two`, `Nat.prime_three`, `Nat.prime_five` plus decidability of `Nat.Prime` via `norm_num` cover these examples.",
       "provenance": "ai",
       "id": "ae94c8eac82f"
     },
@@ -134,7 +134,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "Nat.primesBelow",
-        "module": "Mathlib.Data.Nat.PrimeFin",
+        "module": "Mathlib.NumberTheory.PrimeCounting",
         "match_kind": "invocation"
       },
       "note": "`Nat.primesBelow 100` computes the finite set of primes below 100, but the explicit enumeration of the first 25 primes is not a named theorem.",
@@ -154,7 +154,7 @@
         "module": "Mathlib.Data.Nat.Prime.Basic",
         "match_kind": "exact"
       },
-      "note": "`Nat.Prime.eq_two_or_odd'` proves that every prime equals 2 or is odd.",
+      "note": "`Nat.Prime.eq_two_or_odd'` proves every prime equals 2 or is odd.",
       "provenance": "ai",
       "id": "1ae8e4b81da2"
     },
@@ -171,7 +171,7 @@
         "module": "Mathlib.NumberTheory.Wilson",
         "match_kind": "exact"
       },
-      "note": "Wilson's theorem (`Nat.prime_iff_fac_equiv_neg_one`) characterizes primes via `(n-1)! ≡ -1 (mod n)`.",
+      "note": "Wilson's theorem characterizes primes by `(n-1)! ≡ -1 (mod n)`.",
       "provenance": "ai",
       "id": "f66b83bc5264"
     },
@@ -222,7 +222,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Goldbach's conjecture on sums of two primes is not stated in Mathlib (only Goldbach's coprimality theorem for Fermat numbers appears).",
+      "note": "Goldbach's conjecture on sums of two primes is not stated in Mathlib.",
       "provenance": "ai",
       "id": "bfe75818f02f"
     },
@@ -239,7 +239,7 @@
         "module": "Mathlib.NumberTheory.Bertrand",
         "match_kind": "exact"
       },
-      "note": "Bertrand's postulate is proved in `Mathlib.NumberTheory.Bertrand`.",
+      "note": "Bertrand's postulate is proved as `Nat.bertrand` in `Mathlib.NumberTheory.Bertrand`.",
       "provenance": "ai",
       "id": "e916d47d486a"
     },
@@ -252,11 +252,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Nat.Chebyshev.eventually_primeCounting_le",
+        "decl": "Chebyshev.eventually_primeCounting_le",
         "module": "Mathlib.NumberTheory.Chebyshev",
         "match_kind": "special_case"
       },
-      "note": "The full PNT is not yet in Mathlib; only Chebyshev-type asymptotic bounds on π and the related ψ/θ functions are formalized.",
+      "note": "Only Chebyshev-type upper bounds on π and related ψ/θ asymptotics are in Mathlib; the full PNT is not yet formalized.",
       "provenance": "ai",
       "id": "6059ec173e5c"
     },
@@ -269,11 +269,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Nat.setOf_prime_and_eq_mod_infinite",
+        "decl": "Nat.infinite_setOf_prime_and_eq_mod",
         "module": "Mathlib.NumberTheory.LSeries.PrimesInAP",
         "match_kind": "exact"
       },
-      "note": "Dirichlet's theorem on primes in arithmetic progressions is proved in `Mathlib.NumberTheory.LSeries.PrimesInAP`.",
+      "note": "Dirichlet's theorem on primes in arithmetic progressions is `Nat.infinite_setOf_prime_and_eq_mod`.",
       "provenance": "ai",
       "id": "89de87ad2056"
     },
@@ -324,7 +324,7 @@
         "module": "Mathlib.Data.Nat.Factorization.Defs",
         "match_kind": "exact"
       },
-      "note": "`Nat.factorization` gives a number's prime factorization as a finsupp; `Nat.primeFactorsList` provides the list of prime factors.",
+      "note": "`Nat.factorization` gives a number's prime factorization as a finsupp; `Nat.primeFactorsList` returns the list of prime factors.",
       "provenance": "ai",
       "id": "6c3ee5999b49"
     },
@@ -338,10 +338,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Nat.primeFactors",
-        "module": "Mathlib.Data.Nat.Factorization.Defs",
+        "module": "Mathlib.Data.Nat.PrimeFin",
         "match_kind": "exact"
       },
-      "note": "`Nat.primeFactors` and `Nat.primeFactorsList` give the set/list of prime factors of a natural number.",
+      "note": "`Nat.primeFactors` (as a `Finset`) and `Nat.primeFactorsList` give the prime factors of a natural number.",
       "provenance": "ai",
       "id": "292b86349ece"
     },
@@ -358,7 +358,7 @@
         "module": "Mathlib.RingTheory.UniqueFactorizationDomain.Basic",
         "match_kind": "generalization"
       },
-      "note": "Existence/uniqueness of prime factorization in ℕ follows from `UniqueFactorizationMonoid` infrastructure; Mathlib explicitly proves `Nat.primeFactorsList_unique` etc.",
+      "note": "Existence/uniqueness of prime factorization in ℕ is provided via the `UniqueFactorizationMonoid` infrastructure.",
       "provenance": "ai",
       "id": "216cdb288f8a"
     },
@@ -372,7 +372,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Nat.Prime.dvd_mul",
-        "module": "Mathlib.Data.Nat.Prime.Basic",
+        "module": "Mathlib.Data.Nat.Prime.Defs",
         "match_kind": "exact"
       },
       "note": "Euclid's lemma is `Nat.Prime.dvd_mul` (and `Prime.dvd_or_dvd` in general commutative monoids).",
@@ -409,7 +409,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Euclid numbers (primorial + 1) are not named in Mathlib, though `Nat.primorial` exists.",
+      "note": "Euclid numbers (primorial + 1) have no dedicated definition in Mathlib, though `Nat.primorial` exists.",
       "provenance": "ai",
       "id": "74abb7b5c11f"
     },
@@ -698,7 +698,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The asymptotic statement π(n) ~ n/log n is not yet formalized in Mathlib; only Chebyshev-type bounds appear.",
+      "note": "The asymptotic π(n) ~ n/log n is not yet formalized in Mathlib; only Chebyshev-type bounds appear.",
       "provenance": "ai",
       "id": "90e613e16574"
     },
@@ -715,7 +715,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The offset logarithmic integral and its asymptotic for π(n) are not in Mathlib.",
+      "note": "The offset logarithmic integral Li(n) and its asymptotic for π(n) are not in Mathlib.",
       "provenance": "ai",
       "id": "651ca849017e"
     },
@@ -726,14 +726,14 @@
         "section": "Arithmetic progressions",
         "snippet": "An arithmetic progression is a finite or infinite sequence of numbers such that consecutive numbers in the sequence all have the same difference"
       },
-      "status": "partial",
+      "status": "not_formalized",
       "mathlib": {
-        "decl": "Finset.image",
+        "decl": null,
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has no dedicated `ArithmeticProgression` type; APs are encoded via `fun n ↦ a + n • d` ad hoc (e.g., in `Combinatorics.Additive.AP`).",
-      "provenance": "ai",
+      "note": "Mathlib has no dedicated `ArithmeticProgression` type; APs are encoded ad hoc as `fun n ↦ a + n • d`.",
+      "provenance": "ai-moderated",
       "id": "e1954b75240c"
     },
     {
@@ -745,11 +745,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Nat.setOf_prime_and_eq_mod_infinite",
+        "decl": "Nat.infinite_setOf_prime_and_eq_mod",
         "module": "Mathlib.NumberTheory.LSeries.PrimesInAP",
         "match_kind": "exact"
       },
-      "note": "Dirichlet's theorem on infinitely many primes in arithmetic progressions is in `Mathlib.NumberTheory.LSeries.PrimesInAP`.",
+      "note": "Dirichlet's theorem on infinitely many primes in arithmetic progressions is `Nat.infinite_setOf_prime_and_eq_mod`.",
       "provenance": "ai",
       "id": "fa02a424363e"
     },
@@ -885,7 +885,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "ZMod",
-        "module": "Mathlib.Data.ZMod.Basic",
+        "module": "Mathlib.Data.ZMod.Defs",
         "match_kind": "exact"
       },
       "note": "`ZMod n` is the standard formalization of modular arithmetic.",
@@ -905,7 +905,7 @@
         "module": "Mathlib.Algebra.Field.ZMod",
         "match_kind": "exact"
       },
-      "note": "`ZMod p` is given a `Field` instance when `p` is prime.",
+      "note": "`ZMod p` carries a `Field` instance when `p` is prime.",
       "provenance": "ai",
       "id": "0f578e9f016c"
     },
@@ -970,12 +970,44 @@
       "status": "formalized",
       "mathlib": {
         "decl": "padicValNat",
-        "module": "Mathlib.NumberTheory.Padics.PadicVal.Defs",
+        "module": "Mathlib.Data.Nat.MaxPowDiv",
         "match_kind": "exact"
       },
       "note": "`padicValNat p n` and `padicValRat` formalize the p-adic order/valuation.",
       "provenance": "ai",
       "id": "126bd30ea42f"
+    },
+    {
+      "kind": "definition",
+      "label": "p-adic absolute value",
+      "anchor": {
+        "section": "p -adic numbers",
+        "snippet": "the distance between two rational numbers can be measured by their"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "padicNorm",
+        "module": "Mathlib.NumberTheory.Padics.PadicNorm",
+        "match_kind": "exact"
+      },
+      "note": "`padicNorm p q = p ^ (-padicValRat p q)` is Mathlib's p-adic absolute value on ℚ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "p-adic numbers (completion of ℚ)",
+      "anchor": {
+        "section": "p -adic numbers",
+        "snippet": "can be extended to a different complete field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Padic",
+        "module": "Mathlib.NumberTheory.Padics.PadicNumbers",
+        "match_kind": "exact"
+      },
+      "note": "`Padic p` is the completion of ℚ at the p-adic absolute value, formalized as a complete field.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -990,7 +1022,7 @@
         "module": "Mathlib.NumberTheory.Ostrowski",
         "match_kind": "exact"
       },
-      "note": "Ostrowski's theorem for ℚ is proved in `Mathlib.NumberTheory.Ostrowski`.",
+      "note": "Ostrowski's theorem for ℚ is `Rat.AbsoluteValue.equiv_real_or_padic`.",
       "provenance": "ai",
       "id": "846816e49575"
     },
@@ -1126,9 +1158,41 @@
         "module": "Mathlib.RingTheory.Spectrum.Prime.Defs",
         "match_kind": "exact"
       },
-      "note": "`PrimeSpectrum R` is defined as the type of prime ideals of `R`.",
+      "note": "`PrimeSpectrum R` is the type of prime ideals of `R`.",
       "provenance": "ai",
       "id": "02df4412a4de"
+    },
+    {
+      "kind": "theorem",
+      "label": "Quadratic reciprocity",
+      "anchor": {
+        "section": "Prime ideals",
+        "snippet": "can be used in proving quadratic reciprocity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "legendreSym.quadratic_reciprocity",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.QuadraticReciprocity",
+        "match_kind": "exact"
+      },
+      "note": "The Law of Quadratic Reciprocity is proved as `legendreSym.quadratic_reciprocity`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Regular primes",
+      "anchor": {
+        "section": "Prime ideals",
+        "snippet": "Kummer 's introduction of regular primes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Regular primes (in the Kummer sense, connected with class numbers of cyclotomic fields) are not defined in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -1211,7 +1275,7 @@
         "module": "Mathlib.Data.Nat.Prime.Defs",
         "match_kind": "invocation"
       },
-      "note": "`Nat.minFac` finds the smallest prime factor by trial division; this serves as Mathlib's primality algorithm but `trial division` is not named.",
+      "note": "`Nat.minFac` finds the smallest prime factor via trial division, but `trial division` itself is not a named algorithm.",
       "provenance": "ai",
       "id": "2ff400e8ebff"
     },
@@ -1290,14 +1354,14 @@
         "section": "Primality testing versus primality proving",
         "snippet": "A composite number that passes such a test is called a pseudoprime"
       },
-      "status": "formalized",
+      "status": "partial",
       "mathlib": {
         "decl": "Nat.FermatPsp",
         "module": "Mathlib.NumberTheory.FermatPsp",
-        "match_kind": "exact"
+        "match_kind": "special_case"
       },
-      "note": "`Nat.FermatPsp` formalizes Fermat pseudoprimes.",
-      "provenance": "ai",
+      "note": "Mathlib formalizes `Nat.FermatPsp` (Fermat pseudoprimes), a special case of the general pseudoprime notion; no generic `Pseudoprime` predicate parameterized by a test exists.",
+      "provenance": "ai-moderated",
       "id": "d5c2c980a907"
     },
     {
@@ -1432,7 +1496,7 @@
         "module": "Mathlib.NumberTheory.Fermat",
         "match_kind": "invocation"
       },
-      "note": "`Nat.fermatNumber` is defined but there is no dedicated `FermatPrime` predicate; one can write `(Nat.fermatNumber n).Prime`.",
+      "note": "`Nat.fermatNumber` is defined but there is no dedicated `FermatPrime` predicate; one writes `(Nat.fermatNumber n).Prime`.",
       "provenance": "ai",
       "id": "cd67b57107b4"
     },

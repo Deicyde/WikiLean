@@ -1,0 +1,809 @@
+{
+  "slug": "Orientability",
+  "wikipedia_title": "Orientability",
+  "display_title": "Orientability",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Orientability (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "orientability is a property of some topological spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of orientability for general topological spaces; only linear-algebraic `Orientation` of a module exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orientation of a space",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a choice between them is an orientation of the space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Orientation",
+        "module": "Mathlib.LinearAlgebra.Orientation",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib's `Orientation R M ι` formalizes the vector-space analogue (a ray in the alternating-form space), not orientation of a general topological space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Non-orientable space",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A space is non-orientable if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No topological notion of non-orientability exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Möbius strip is non-orientable",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A Möbius strip is an example of a non-orientable space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define the Möbius strip as a topological object.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orientable surface in Euclidean space",
+      "anchor": {
+        "section": "Orientable surfaces",
+        "snippet": "is orientable if a chiral two-dimensional figure"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of orientable embedded surface in Euclidean space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orientable abstract surface",
+      "anchor": {
+        "section": "Orientable surfaces",
+        "snippet": "An abstract surface (i.e., a two-dimensional manifold ) is orientable if a consistent concept of clockwise rotation can be defined"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define orientability for abstract 2-manifolds.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence with no Möbius subset",
+      "anchor": {
+        "section": "Orientable surfaces",
+        "snippet": "This turns out to be equivalent to the question of whether the surface contains no subset that is homeomorphic to the Möbius strip"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not present; requires both the Möbius strip and surface orientability, neither of which are formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orientation and oriented surface",
+      "anchor": {
+        "section": "Orientable surfaces",
+        "snippet": "a consistent choice of \"clockwise\" (as opposed to counter-clockwise) is called an orientation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.Oriented",
+        "module": "Mathlib.LinearAlgebra.Orientation",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib's `Module.Oriented` records a chosen orientation on a module, the linear-algebra analogue of the surface notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Two orientations on an orientable surface",
+      "anchor": {
+        "section": "Orientable surfaces",
+        "snippet": "an orientable surface admits exactly two orientations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Orientation.eq_or_eq_neg",
+        "module": "Mathlib.LinearAlgebra.Orientation",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves the vector-space analogue (two orientations on a finite-dim space), not the surface statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Orientable and non-orientable surface examples",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Spheres , planes , and tori are orientable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not have orientability of sphere/plane/torus as manifolds.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Embedding obstructions",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The real projective plane and Klein bottle cannot be embedded"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Klein bottle and ℝP² and their (non-)embeddability are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Two-sided vs orientable",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the property of being orientable is not equivalent to being two-sided"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Two-sidedness of an embedded submanifold is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Triangulation of a surface",
+      "anchor": {
+        "section": "Orientation by triangulation",
+        "snippet": "Any surface has a triangulation : a decomposition into triangles"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no triangulation theory for topological surfaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Triangulation determines orientation",
+      "anchor": {
+        "section": "Orientation by triangulation",
+        "snippet": "when glued together, neighboring edges are pointing in the opposite direction, then this determines an orientation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized — no triangulations and no surface orientations in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Generalization to n-manifolds via triangulation",
+      "anchor": {
+        "section": "Orientation by triangulation",
+        "snippet": "This approach generalizes to any"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized — Mathlib lacks both PL/triangulated manifolds and manifold orientability.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Orientability via first homology",
+      "anchor": {
+        "section": "Orientability and homology",
+        "snippet": "is orientable if and only if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Singular homology of surfaces is present, but no manifold orientability hence no such characterization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orientability of a manifold (overview)",
+      "anchor": {
+        "section": "Orientability of manifolds",
+        "snippet": "There are several possible definitions of what it means for M to be orientable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's manifold library does not define orientability.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence of definitions",
+      "anchor": {
+        "section": "Orientability of manifolds",
+        "snippet": "then M is orientable under one definition if and only if it is orientable under the others"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized — no manifold orientability definitions exist to compare.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orientation preserving transition function",
+      "anchor": {
+        "section": "Orientability of differentiable manifolds",
+        "snippet": "When the Jacobian determinant is positive, the transition function is said to be orientation preserving"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define orientation-preserving transition maps between charts.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Oriented atlas and orientability (differentiable)",
+      "anchor": {
+        "section": "Orientability of differentiable manifolds",
+        "snippet": "An oriented atlas on"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No oriented-atlas structure exists in Mathlib's manifold framework.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orientation as maximal oriented atlas",
+      "anchor": {
+        "section": "Orientability of differentiable manifolds",
+        "snippet": "an orientation of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not present — Mathlib lacks the maximal-atlas formulation of manifold orientation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orientability via tangent bundle structure group",
+      "anchor": {
+        "section": "Orientability of differentiable manifolds",
+        "snippet": "is orientable if and only if the structure group of the tangent bundle can be reduced in this way"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's vector bundles do not carry structure-group reduction machinery for orientability.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Volume form",
+      "anchor": {
+        "section": "Orientability of differentiable manifolds",
+        "snippet": "A volume form is a nowhere vanishing section"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Orientation.volumeForm",
+        "module": "Mathlib.Analysis.InnerProductSpace.Orientation",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib defines a volume form on an oriented real inner product space, not as a section on a manifold.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Volume form equivalent to orientability",
+      "anchor": {
+        "section": "Orientability of differentiable manifolds",
+        "snippet": "The existence of a volume form is therefore equivalent to orientability of the manifold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Manifold orientability is not defined, so the equivalence is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Right-handed basis",
+      "anchor": {
+        "section": "Orientability of differentiable manifolds",
+        "snippet": "then the basis is said to be right-handed"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.Basis.orientation",
+        "module": "Mathlib.LinearAlgebra.Orientation",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes the orientation determined by a basis (i.e. whether it represents the positive orientation), the abstract version of right-handedness.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orientation preserving sends right-handed to right-handed",
+      "anchor": {
+        "section": "Orientability of differentiable manifolds",
+        "snippet": "A transition function is orientation preserving if and only if it sends right-handed bases to right-handed bases"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.Basis.orientation_comp_linearEquiv_eq_iff_det_pos",
+        "module": "Mathlib.LinearAlgebra.Orientation",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib characterizes linear equivs preserving a basis-induced orientation by positivity of det, the linear-algebra version of this statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Local orientation",
+      "anchor": {
+        "section": "Homology and the orientability of general manifolds",
+        "snippet": "A local orientation of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib lacks local-homology generators serving as local orientations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Excision identification of local homology",
+      "anchor": {
+        "section": "Homology and the orientability of general manifolds",
+        "snippet": "By the excision theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Excision is not yet stated for singular homology in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Local homology is Z",
+      "anchor": {
+        "section": "Homology and the orientability of general manifolds",
+        "snippet": "A computation with the long exact sequence in relative homology shows that the above homology group is isomorphic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Local-homology computations for manifolds are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orientation preserving on topological manifold",
+      "anchor": {
+        "section": "Homology and the orientability of general manifolds",
+        "snippet": "On a topological manifold, a transition function is orientation preserving if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Topological orientation-preservation via local homology is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Oriented atlas / orientability (topological)",
+      "anchor": {
+        "section": "Homology and the orientability of general manifolds",
+        "snippet": "An oriented atlas is one for which all transition functions are orientation preserving"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No oriented-atlas notion for topological manifolds exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Orientation determines local orientations",
+      "anchor": {
+        "section": "Homology and the orientability of general manifolds",
+        "snippet": "an orientation of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized — relies on local-orientation framework absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Homological characterization of orientability",
+      "anchor": {
+        "section": "Homology and the orientability of general manifolds",
+        "snippet": "Assuming that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized — top-dimensional homology of manifolds is not yet developed in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Stiefel–Whitney characterization of orientability",
+      "anchor": {
+        "section": "Orientation and cohomology",
+        "snippet": "is orientable if and only if the first Stiefel–Whitney class"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Stiefel–Whitney classes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cohomology parametrizes orientations",
+      "anchor": {
+        "section": "Orientation and cohomology",
+        "snippet": "parametrizes the choices of orientations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized — manifold cohomology with ℤ/2 coefficients indexing orientations is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orientation double cover",
+      "anchor": {
+        "section": "The orientation double cover",
+        "snippet": "The manifold"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no orientation double cover construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Structure of the orientation double cover",
+      "anchor": {
+        "section": "The orientation double cover",
+        "snippet": "If [MATH] is non-orientable, however, then"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No orientation double cover exists in Mathlib to describe.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orientation of a manifold with boundary",
+      "anchor": {
+        "section": "Manifolds with boundary",
+        "snippet": "an orientation of [MATH] is defined to be an orientation of its interior"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Manifolds-with-boundary orientation is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Induced orientation on boundary",
+      "anchor": {
+        "section": "Manifolds with boundary",
+        "snippet": "Such an orientation induces an orientation of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No induced boundary orientation is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Boundary orientation (smooth case)",
+      "anchor": {
+        "section": "Manifolds with boundary",
+        "snippet": "The orientation of [MATH] is defined by the condition that a basis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The outward-normal-first boundary orientation rule is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orientable double cover",
+      "anchor": {
+        "section": "Orientable double cover",
+        "snippet": "This covering space is called the orientable double cover"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no orientable double cover construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Connectedness criterion for double cover",
+      "anchor": {
+        "section": "Orientable double cover",
+        "snippet": "is connected if and only if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized — the orientable double cover is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Construction via orientation-preserving loops",
+      "anchor": {
+        "section": "Orientable double cover",
+        "snippet": "Another way to construct this cover is to divide the loops based at a basepoint"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized — no orientation-preserving loop subgroup of π₁ in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orientable vector bundle",
+      "anchor": {
+        "section": "Orientation of vector bundles",
+        "snippet": "is called orientable when the structure group may be reduced"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Orientability is not yet defined for Mathlib's vector bundles.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orientability of smooth manifold via tangent bundle",
+      "anchor": {
+        "section": "Orientation of vector bundles",
+        "snippet": "a smooth manifold is defined to be orientable if its tangent bundle is orientable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither tangent-bundle orientability nor smooth-manifold orientability is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Tangent bundle is always orientable",
+      "anchor": {
+        "section": "Orientation of vector bundles",
+        "snippet": "the tangent bundle is always orientable, even over nonorientable manifolds"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized — depends on vector-bundle orientability, which is absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Space and time orientability",
+      "anchor": {
+        "section": "Lorentzian geometry",
+        "snippet": "there are two kinds of orientability: space orientability and time orientability"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Lorentzian geometry or notions of space/time orientability.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Time-orientability characterization",
+      "anchor": {
+        "section": "Lorentzian geometry",
+        "snippet": "a spacetime is time-orientable if and only if any two observers can agree"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No spacetime/observer formalism exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Space and time orientation characters",
+      "anchor": {
+        "section": "Lorentzian geometry",
+        "snippet": "the pseudo-orthogonal group [MATH] has a pair of characters"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no pseudo-orthogonal group O(p,q) with its characters.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Space orientation as section",
+      "anchor": {
+        "section": "Lorentzian geometry",
+        "snippet": "A space-orientation of a pseudo-Riemannian manifold is identified with a section"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pseudo-Riemannian manifolds and their orientation bundles are not in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

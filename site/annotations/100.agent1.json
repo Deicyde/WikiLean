@@ -11,7 +11,15 @@
         "section": "(Lead)",
         "snippet": "is the natural number following 99 and preceding 101"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat",
+        "module": "Mathlib.Data.Nat.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "The natural number 100 is trivially expressible as the term `(100 : ℕ)` in Mathlib's `Nat` type.",
+      "provenance": "ai-agent1",
+      "id": "f320d88099a6"
     },
     {
       "kind": "proposition",
@@ -20,7 +28,15 @@
         "section": "In mathematics",
         "snippet": "100 is the square of 10"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": "invocation"
+      },
+      "note": "The equality `100 = 10^2` holds by `decide`/`rfl` in Mathlib, though no named lemma states this concrete fact.",
+      "provenance": "ai-agent1",
+      "id": "a20b2720176b"
     },
     {
       "kind": "definition",
@@ -29,7 +45,15 @@
         "section": "In mathematics",
         "snippet": "is the basis of percentages"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no definition of percentages tying to the number 100.",
+      "provenance": "ai-agent1",
+      "id": "a92f4bada979"
     },
     {
       "kind": "proposition",
@@ -38,7 +62,15 @@
         "section": "In mathematics",
         "snippet": "is a Harshad number in decimal"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Harshad` in Mathlib returns no results.",
+      "provenance": "ai-agent1",
+      "id": "5cf9ecef50d9"
     },
     {
       "kind": "proposition",
@@ -47,7 +79,15 @@
         "section": "In mathematics",
         "snippet": "is the sum of the first nine prime numbers"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.nth",
+        "module": "Mathlib.Data.Nat.Prime.Nth",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has `Nat.nth Nat.Prime` enumerating primes but no specific statement that the first nine primes sum to 100.",
+      "provenance": "ai-agent1",
+      "id": "8e18abeacc8a"
     },
     {
       "kind": "proposition",
@@ -56,7 +96,15 @@
         "section": "In mathematics",
         "snippet": "also divisible by the number of primes below it"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.primeCounting",
+        "module": "Mathlib.NumberTheory.PrimeCounting",
+        "match_kind": "generalization"
+      },
+      "note": "`Nat.primeCounting` is defined but the specific divisibility fact π(100) ∣ 100 is not stated.",
+      "provenance": "ai-agent1",
+      "id": "6364d85b52e2"
     },
     {
       "kind": "proposition",
@@ -65,7 +113,15 @@
         "section": "In mathematics",
         "snippet": "cannot be expressed as the difference between any integer and the total of coprimes below it"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `noncototient` in Mathlib returns no results.",
+      "provenance": "ai-agent1",
+      "id": "de676d98b4a2"
     },
     {
       "kind": "proposition",
@@ -74,7 +130,15 @@
         "section": "In mathematics",
         "snippet": "has a reduced totient of 20, and an Euler totient of 40"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.totient",
+        "module": "Mathlib.Data.Nat.Totient",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `Nat.totient` and `ArithmeticFunction.carmichael` (reduced totient) but the values at 100 are not explicit lemmas.",
+      "provenance": "ai-agent1",
+      "id": "4b729ecf279c"
     },
     {
       "kind": "proposition",
@@ -83,7 +147,15 @@
         "section": "In mathematics",
         "snippet": "A totient value of 100 is obtained from four numbers"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.totient",
+        "module": "Mathlib.Data.Nat.Totient",
+        "match_kind": "generalization"
+      },
+      "note": "The totient function is defined but the specific preimage of 100 is not characterized.",
+      "provenance": "ai-agent1",
+      "id": "fbbf1431e0b5"
     },
     {
       "kind": "proposition",
@@ -92,7 +164,15 @@
         "section": "In mathematics",
         "snippet": "can be expressed as a sum of some of its divisors, making it a semiperfect number"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `semiperfect` in Mathlib returns no results.",
+      "provenance": "ai-agent1",
+      "id": "0e5fa4544037"
     },
     {
       "kind": "proposition",
@@ -101,7 +181,15 @@
         "section": "In mathematics",
         "snippet": "The geometric mean of its nine divisors is"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.divisors",
+        "module": "Mathlib.NumberTheory.Divisors",
+        "match_kind": "generalization"
+      },
+      "note": "`Nat.divisors` is defined but Mathlib has no lemma about the geometric mean of divisors specifically.",
+      "provenance": "ai-agent1",
+      "id": "e592fe698442"
     },
     {
       "kind": "theorem",
@@ -110,6 +198,30 @@
         "section": "In mathematics",
         "snippet": "is the sum of the cubes of the first four positive integers"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `sum_cubes`/Nicomachus theorem lemma was found in Mathlib via grep.",
+      "provenance": "ai-agent1",
+      "id": "8a010aeef955"
+    },
+    {
+      "kind": "proposition",
+      "label": "Square of sum of first four positive integers",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "equals the square of the sum of the first four positive integers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Nicomachus identity (∑k)² = ∑k³ at n=4 yields 100 = (1+2+3+4)². No specific Mathlib lemma states this instance.",
       "provenance": "ai-agent1"
     },
     {
@@ -119,15 +231,63 @@
         "section": "In mathematics",
         "snippet": "thus 100 is the seventh Leyland number"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Leyland` in Mathlib returns no results.",
+      "provenance": "ai-agent1",
+      "id": "f5bf619e11be"
+    },
+    {
+      "kind": "proposition",
+      "label": "Leyland decomposition of 100",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "100 = 2 6 + 6 2"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": "invocation"
+      },
+      "note": "The arithmetic identity 100 = 2^6 + 6^2 is decidable in Mathlib (provable by `decide`/`norm_num`), though no named lemma states it.",
       "provenance": "ai-agent1"
     },
     {
       "kind": "proposition",
-      "label": "Erdős–Woods and 18-gonal number",
+      "label": "100 is the seventeenth Erdős–Woods number",
       "anchor": {
         "section": "In mathematics",
-        "snippet": "is also the seventeenth Erdős–Woods number, and the fourth"
+        "snippet": "is also the seventeenth Erdős–Woods number"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Erdős–Woods numbers are not defined in Mathlib (no matches via grep).",
+      "provenance": "ai-agent1",
+      "id": "ffdff60a3ba2"
+    },
+    {
+      "kind": "proposition",
+      "label": "100 is the fourth 18-gonal number",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "the fourth 18- gonal number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Polygonal numbers (specifically 18-gonal numbers) are not defined in Mathlib by name.",
       "provenance": "ai-agent1"
     },
     {
@@ -137,7 +297,15 @@
         "section": "In mathematics",
         "snippet": "It is the 10th star number"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for star number / starNumber in Mathlib returns no results.",
+      "provenance": "ai-agent1",
+      "id": "8ca9923b487f"
     }
   ]
 }

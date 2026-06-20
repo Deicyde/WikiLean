@@ -18,7 +18,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has Gaussian, Cauchy, Gamma and Beta distributions but no Student's t-distribution.",
+      "note": "No Student's t-distribution declaration is present in Mathlib (no StudentT/tDistribution under Mathlib/Probability/Distributions).",
       "provenance": "ai",
       "id": "77f264fe7787"
     },
@@ -35,7 +35,7 @@
         "module": "Mathlib.Probability.Distributions.Cauchy",
         "match_kind": null
       },
-      "note": "Both endpoint distributions (Cauchy and Gaussian) are formalized, but the limiting relationship of the t-distribution to them is not.",
+      "note": "Cauchy and Gaussian endpoint distributions are defined, but the limiting relationship to the (undefined) t-distribution is not formalized.",
       "provenance": "ai",
       "id": "68e14c7266f6"
     },
@@ -52,7 +52,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No location-scale t-distribution or compound-distribution-as-t result exists in Mathlib.",
+      "note": "Mathlib has no location-scale t-distribution or normal/inverse-gamma compound result.",
       "provenance": "ai",
       "id": "9d82edbf1a4a"
     },
@@ -69,22 +69,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "There is no t-distribution PDF in Mathlib (only Cauchy/Gaussian/Beta/Gamma PDFs).",
+      "note": "No t-distribution PDF appears in Mathlib (only Cauchy/Gaussian/Beta/Gamma PDFs).",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Probability density function",
-          "snippet": "Student's t distribution has the probability density function (PDF) given by"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f(t)={\\frac {\\Gamma {\\left({\\frac {\\nu +1}{2}}\\right)}}{{\\sqrt {\\pi \\nu }}\\,\\Gamma {\\left({\\frac {\\nu }{2}}\\right)}}}\\left(1+{\\frac {t^{2}}{\\nu }}\\right)^{-(\\nu +1)/2},}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f(t)={\\frac {1}{{\\sqrt {\\nu }}\\,\\mathrm {B} {\\left({\\frac {1}{2}},{\\frac {\\nu }{2}}\\right)}}}\\left(1+{\\frac {t^{2}}{\\nu }}\\right)^{-(\\nu +1)/2},}"
-        }
-      ],
       "id": "b19af0767db7"
     },
     {
@@ -100,7 +86,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No t-distribution PDF or symmetry result is present in Mathlib.",
+      "note": "No t-distribution PDF (or its symmetry) is formalized in Mathlib.",
       "provenance": "ai",
       "id": "ffcbab120f63"
     },
@@ -117,7 +103,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The convergence of the t-distribution to the normal is not formalized since the t-distribution is undefined in Mathlib.",
+      "note": "Convergence of t to normal is not formalized; the t-distribution itself is absent from Mathlib.",
       "provenance": "ai",
       "id": "00e1c421c5d0"
     },
@@ -134,7 +120,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has the complete Beta function (Complex.betaIntegral) but no regularized incomplete beta function nor the t-distribution CDF.",
+      "note": "Mathlib has the complete Beta integral but no regularized incomplete beta function nor a t-distribution CDF.",
       "provenance": "ai",
       "id": "ed88bdfed12b"
     },
@@ -151,7 +137,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "An ordinary hypergeometric function exists in Mathlib, but the t-distribution CDF formula is not formalized.",
+      "note": "An ordinary hypergeometric function exists in Mathlib but no t-distribution CDF formula in terms of it.",
       "provenance": "ai",
       "id": "02fff9fbe6b9"
     },
@@ -168,7 +154,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No t-distribution or its moments are defined in Mathlib.",
+      "note": "Neither the t-distribution nor its raw moments are defined in Mathlib.",
       "provenance": "ai",
       "id": "debc8c434880"
     },
@@ -185,7 +171,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No statement about non-existence of high-order t-distribution moments is in Mathlib.",
+      "note": "No statement about non-existence of high-order t-distribution moments is present in Mathlib.",
       "provenance": "ai",
       "id": "c137c5ba0783"
     },
@@ -202,7 +188,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Real.Gamma exists but no even-order t-distribution moment simplification is formalized.",
+      "note": "Real.Gamma is formalized but no even-order t-distribution moment simplification exists in Mathlib.",
       "provenance": "ai",
       "id": "4ab7eb7f5b0f"
     },
@@ -236,7 +222,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The ratio-of-normal-to-chi construction defining the t-distribution is not in Mathlib (chi-squared distribution is absent).",
+      "note": "The ratio-of-normal-to-chi construction is absent; Mathlib lacks the chi-squared distribution.",
       "provenance": "ai",
       "id": "22712cb6fe84"
     },
@@ -253,18 +239,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No noncentral t-distribution exists in Mathlib.",
+      "note": "No noncentral t-distribution is defined in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "As the distribution of a test statistic",
-          "snippet": "This random variable has a noncentral t -distribution with noncentrality parameter μ ."
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle (Z+\\mu ){\\sqrt {\\frac {\\nu }{V}}}.}"
-        }
-      ],
       "id": "c6a958851dec"
     },
     {
@@ -297,7 +273,7 @@
         "module": "Mathlib.Probability.Distributions.Gaussian.HasGaussianLaw.Basic",
         "match_kind": null
       },
-      "note": "Mathlib proves sums and scalar multiples of Gaussian variables are Gaussian, but the standardized sample mean being exactly N(0,1) is not assembled.",
+      "note": "Mathlib proves sums and scalar multiples of Gaussian variables are Gaussian (HasGaussianLaw.sum/smul), but the standardized sample mean as exactly N(0,1) is not assembled.",
       "provenance": "ai",
       "id": "9035cf1d4822"
     },
@@ -331,7 +307,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No formalization of the parameter-independence (pivotal) property of the t-statistic is in Mathlib.",
+      "note": "No pivotal-quantity parameter-independence result for the t-statistic is in Mathlib.",
       "provenance": "ai",
       "id": "988761b74b03"
     },
@@ -365,7 +341,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has no notion of pivotal quantities or the t-statistic.",
+      "note": "Mathlib has no notion of pivotal quantity or the t-statistic.",
       "provenance": "ai",
       "id": "9fd2263e8ec3"
     },
@@ -382,26 +358,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No location-scale t-distribution or MLE-statistic distribution result is in Mathlib.",
+      "note": "No location-scale t-distribution or MLE-based statistic distribution result is in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Sampling distribution of t-statistic",
-          "snippet": "This is distributed according to the location-scale t distribution:"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\ s_{\\mathsf {ML}}^{2}={\\frac {\\ 1\\ }{n}}\\ \\sum _{i=1}^{n}(x_{i}-{\\bar {x}})^{2}\\ }"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\ t_{\\mathsf {ML}}={\\frac {{\\bar {x}}-\\mu }{\\sqrt {s_{\\mathsf {ML}}^{2}/n\\ }}}={\\sqrt {{\\frac {n}{n-1}}\\ }}\\ t~.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle t_{\\mathsf {ML}}\\sim \\operatorname {\\ell st} (0,\\ \\tau ^{2}=n/(n-1),\\ n-1)~.}"
-        }
-      ],
       "id": "b85e9a7aa6a4"
     },
     {
@@ -417,7 +375,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The inverse-gamma distribution and the normal/inverse-gamma compounding yielding t are not in Mathlib.",
+      "note": "Neither the inverse-gamma distribution nor the normal/inverse-gamma compounding result is in Mathlib.",
       "provenance": "ai",
       "id": "51c47ddcc231"
     },
@@ -434,7 +392,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The scaled-inverse-chi-squared distribution and this compounding result are absent from Mathlib.",
+      "note": "Mathlib has no scaled-inverse-chi-squared distribution or this compounding equivalence.",
       "provenance": "ai",
       "id": "4e011d61768f"
     },
@@ -451,7 +409,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has no maximum-entropy characterization machinery nor the t-distribution.",
+      "note": "Mathlib has no maximum-entropy characterization for the t-distribution.",
       "provenance": "ai",
       "id": "cf79281a39f9"
     },
@@ -485,7 +443,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No noncentral t-distribution exists in Mathlib.",
+      "note": "No noncentral t-distribution is defined in Mathlib.",
       "provenance": "ai",
       "id": "5836b216f4b8"
     },
@@ -502,18 +460,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No discrete Student's t-distribution exists in Mathlib.",
+      "note": "No discrete Student's t-distribution is defined in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "In general",
-          "snippet": "The discrete Student's t distribution is defined by its probability mass function at r being proportional to:"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\prod _{j=1}^{k}{\\frac {1}{(r+j+a)^{2}+b^{2}}}\\quad \\quad r=\\ldots ,-1,0,1,\\ldots ~.}"
-        }
-      ],
       "id": "008c8d732ccf"
     },
     {
@@ -529,7 +477,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The chi-squared distribution and this ratio-sampling characterization are not in Mathlib.",
+      "note": "The chi-squared distribution and this ratio-sampling characterization are absent from Mathlib.",
       "provenance": "ai",
       "id": "a6240cccec2c"
     },
@@ -580,26 +528,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The three-parameter location-scale t-distribution is not in Mathlib.",
+      "note": "The three-parameter location-scale t-distribution is absent from Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Location-scale transformation",
-          "snippet": "Student's t distribution generalizes to the three parameter location-scale t distribution"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\ T\\sim t_{\\nu }\\ }"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\ X=\\mu +\\tau \\ T\\ }"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle X\\sim \\operatorname {\\ell st} (\\mu ,\\ \\tau ^{2},\\ \\nu )~.}"
-        }
-      ],
       "id": "04c9e361e4a7"
     },
     {
@@ -632,7 +562,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The normal limit of the location-scale t-distribution is not formalized in Mathlib.",
+      "note": "The normal limit of the location-scale t-distribution is not formalized.",
       "provenance": "ai",
       "id": "c01824b71e04"
     },
@@ -649,7 +579,7 @@
         "module": "Mathlib.Probability.Distributions.Cauchy",
         "match_kind": null
       },
-      "note": "The Cauchy distribution is formalized, but its identification with the ν=1 location-scale t-distribution is not (the t-distribution is undefined).",
+      "note": "Cauchy is formalized but its identification with the ν=1 location-scale t-distribution is not (t-distribution undefined).",
       "provenance": "ai",
       "id": "2858ee9036d6"
     },
@@ -768,7 +698,7 @@
         "module": "Mathlib.Probability.Distributions.Gaussian.IsGaussianProcess.Def",
         "match_kind": null
       },
-      "note": "The analogous Gaussian process is formalized, but the Student's t process is not (the t-distribution is undefined).",
+      "note": "The analogous IsGaussianProcess is formalized, but no Student's t process exists in Mathlib.",
       "provenance": "ai",
       "id": "588f4f389146"
     },

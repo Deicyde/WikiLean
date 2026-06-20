@@ -245,6 +245,38 @@
     },
     {
       "kind": "definition",
+      "label": "Gaussian integers (Gauss)",
+      "anchor": {
+        "section": "Complex numbers",
+        "snippet": "Gauss studied complex numbers of the form a + bi , where a and b are integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GaussianInt",
+        "module": "Mathlib.NumberTheory.Zsqrtd.GaussianInt",
+        "match_kind": "exact"
+      },
+      "provenance": "ai",
+      "note": "`GaussianInt := Zsqrtd (-1)`; the ring ℤ[i]."
+    },
+    {
+      "kind": "definition",
+      "label": "Roots of unity / cyclotomic fields",
+      "anchor": {
+        "section": "Complex numbers",
+        "snippet": "Other such classes (called cyclotomic fields ) of complex numbers derive from the roots of unity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CyclotomicField",
+        "module": "Mathlib.NumberTheory.Cyclotomic.Basic",
+        "match_kind": "exact"
+      },
+      "provenance": "ai",
+      "note": "`CyclotomicField n K` is the splitting field of `X^n - 1`; `rootsOfUnity` collects the roots."
+    },
+    {
+      "kind": "definition",
       "label": "Prime number (historical)",
       "anchor": {
         "section": "Prime numbers",
@@ -253,7 +285,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Nat.Prime",
-        "module": "Mathlib.Data.Nat.Prime.Basic",
+        "module": "Mathlib.Data.Nat.Prime.Defs",
         "match_kind": "exact"
       },
       "note": "`Nat.Prime` matches Euclid's definition.",
@@ -276,6 +308,22 @@
       "note": "Also available as `Nat.infinite_setOf_prime`.",
       "provenance": "ai",
       "id": "447471608fb5"
+    },
+    {
+      "kind": "definition",
+      "label": "Euclidean algorithm (gcd)",
+      "anchor": {
+        "section": "Prime numbers",
+        "snippet": "presented the Euclidean algorithm for finding the greatest common divisor of two numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.gcd",
+        "module": "Init.Data.Nat.Gcd",
+        "match_kind": "exact"
+      },
+      "provenance": "ai",
+      "note": "`Nat.gcd` is defined by Euclidean recursion; correctness lemmas like `Nat.gcd_dvd_left` are in Mathlib."
     },
     {
       "kind": "theorem",
@@ -304,10 +352,10 @@
       "status": "partial",
       "mathlib": {
         "decl": "Nat.primeCounting",
-        "module": "Mathlib.NumberTheory.Chebyshev",
+        "module": "Mathlib.NumberTheory.PrimeCounting",
         "match_kind": null
       },
-      "note": "Chebyshev-style bounds are formalized but the full PNT asymptotic π(x) ~ x/log x is not in Mathlib.",
+      "note": "The prime-counting function `π(x)` is defined and Chebyshev-style bounds exist, but the full PNT asymptotic π(x) ~ x/log x is not in Mathlib.",
       "provenance": "ai",
       "id": "49a5c53fb798"
     },
@@ -457,7 +505,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Int.instCommRing",
-        "module": "Mathlib.Data.Int.Defs",
+        "module": "Mathlib.Algebra.Ring.Int.Defs",
         "match_kind": "exact"
       },
       "note": "There is a `CommRing Int` instance (in fact `LinearOrderedCommRing`).",
@@ -474,7 +522,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Rat",
-        "module": "Init.Data.Rat",
+        "module": "Init.Data.Rat.Basic",
         "match_kind": "exact"
       },
       "note": "`Rat` carries `num : ℤ` and `den : ℕ` with `den ≠ 0`.",
@@ -507,11 +555,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Rat.mk_pnat",
-        "module": "Mathlib.Data.Rat.Defs",
+        "decl": "mkRat",
+        "module": "Init.Data.Rat.Basic",
         "match_kind": null
       },
-      "note": "Mathlib normalizes rationals so equal fractions yield the same `Rat`, but no specific example lemma exists.",
+      "note": "The smart constructor `mkRat` normalizes by gcd so different fractions reduce to the same `Rat`; no specific example lemma is stated.",
       "provenance": "ai",
       "id": "22126c13035a"
     },
@@ -644,7 +692,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Real.instConditionallyCompleteLinearOrder",
-        "module": "Mathlib.Data.Real.Archimedean",
+        "module": "Mathlib.Algebra.Order.Archimedean.Real.Basic",
         "match_kind": "exact"
       },
       "note": "`ConditionallyCompleteLinearOrder ℝ` provides the LUB property via `csSup`.",
@@ -738,10 +786,27 @@
     },
     {
       "kind": "definition",
-      "label": "Imaginary / Gaussian integer",
+      "label": "Purely imaginary number",
       "anchor": {
         "section": "Complex numbers (2)",
         "snippet": "If the real part of a complex number is 0, then the number is called an imaginary number"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.re",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": null
+      },
+      "note": "No dedicated `IsPurelyImaginary` predicate in Mathlib; expressed as `z.re = 0`.",
+      "provenance": "ai-moderated",
+      "id": "83952d68b179"
+    },
+    {
+      "kind": "definition",
+      "label": "Gaussian integer",
+      "anchor": {
+        "section": "Complex numbers (2)",
+        "snippet": "If the real and imaginary parts of a complex number are both integers, then the number is called a Gaussian integer"
       },
       "status": "formalized",
       "mathlib": {
@@ -749,9 +814,8 @@
         "module": "Mathlib.NumberTheory.Zsqrtd.GaussianInt",
         "match_kind": "exact"
       },
-      "note": "Gaussian integers are `Zsqrtd (-1)`; purely imaginary numbers correspond to `Complex.re = 0`.",
-      "provenance": "ai",
-      "id": "83952d68b179"
+      "note": "`GaussianInt := Zsqrtd (-1)` is the ring ℤ[i].",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -848,7 +912,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Nat.Prime",
-        "module": "Mathlib.Data.Nat.Prime.Basic",
+        "module": "Mathlib.Data.Nat.Prime.Defs",
         "match_kind": "exact"
       },
       "note": "Standard definition.",
@@ -888,6 +952,54 @@
       "note": "Naturals form a `UniqueFactorizationMonoid`.",
       "provenance": "ai",
       "id": "47df917bada1"
+    },
+    {
+      "kind": "definition",
+      "label": "Bernoulli numbers",
+      "anchor": {
+        "section": "Other classes of integers",
+        "snippet": "Examples of such sets of integers are Bernoulli numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "bernoulli",
+        "module": "Mathlib.NumberTheory.Bernoulli",
+        "match_kind": "exact"
+      },
+      "provenance": "ai",
+      "note": "`bernoulli n` (and `bernoulli'`) are defined via the exponential generating function."
+    },
+    {
+      "kind": "definition",
+      "label": "Fibonacci numbers",
+      "anchor": {
+        "section": "Other classes of integers",
+        "snippet": "Fibonacci numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.fib",
+        "module": "Mathlib.Data.Nat.Fib.Basic",
+        "match_kind": "exact"
+      },
+      "provenance": "ai",
+      "note": "`Nat.fib n` is the n-th Fibonacci number with the standard recurrence."
+    },
+    {
+      "kind": "definition",
+      "label": "Perfect numbers",
+      "anchor": {
+        "section": "Other classes of integers",
+        "snippet": "perfect numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Perfect",
+        "module": "Mathlib.NumberTheory.Divisors",
+        "match_kind": "exact"
+      },
+      "provenance": "ai",
+      "note": "`Nat.Perfect n` holds when `∑ proper divisors of n = n`."
     },
     {
       "kind": "definition",
@@ -950,7 +1062,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "IsIntegral",
-        "module": "Mathlib.RingTheory.IntegralClosure.IsIntegral.Basic",
+        "module": "Mathlib.RingTheory.IntegralClosure.IsIntegral.Defs",
         "match_kind": "exact"
       },
       "note": "`IsIntegral ℤ x` is precisely the algebraic-integer condition; `NumberField.RingOfIntegers` collects them.",
@@ -1191,9 +1303,25 @@
         "module": "Mathlib.SetTheory.Ordinal.Basic",
         "match_kind": "exact"
       },
-      "note": "Both `Ordinal` and `Cardinal` (Mathlib.SetTheory.Cardinal.Basic) are formalized.",
+      "note": "Both `Ordinal` and `Cardinal` (Mathlib.SetTheory.Cardinal.Defs) are formalized.",
       "provenance": "ai",
       "id": "25f1d6bed54e"
+    },
+    {
+      "kind": "definition",
+      "label": "Cardinal number",
+      "anchor": {
+        "section": "Transfinite numbers",
+        "snippet": "the cardinal numbers . The former gives the ordering of the set, while the latter gives its size"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "provenance": "ai",
+      "note": "`Cardinal` is the quotient of `Type u` by `Equiv`; `Cardinal.mk` gives a set's size."
     },
     {
       "kind": "definition",
@@ -1225,8 +1353,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Neither superreal nor surreal numbers are defined in Mathlib.",
-      "provenance": "ai",
+      "note": "Neither superreal nor surreal numbers are currently in Mathlib (no `Surreal` or `SetTheory/Surreal` files exist).",
+      "provenance": "ai-moderated",
       "id": "dd67f4bda95e"
     }
   ]

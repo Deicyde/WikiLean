@@ -49,10 +49,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "CategoryTheory.Aut",
-        "module": "Mathlib.CategoryTheory.Iso",
+        "module": "Mathlib.CategoryTheory.Endomorphism",
         "match_kind": "exact"
       },
-      "note": "Automorphisms appear generally as `Aut X := X ≅ X` in category theory, and as `Equiv.Perm`, `MulAut`, `RingAut`, etc. for specific structures.",
+      "note": "Automorphisms appear generally as `Aut X := X ≅ X` in `Mathlib.CategoryTheory.Endomorphism`, and as `Equiv.Perm`, `MulAut`, `RingAut`, etc. for specific structures.",
       "provenance": "ai",
       "id": "79e931317e1a"
     },
@@ -185,10 +185,10 @@
       "status": "partial",
       "mathlib": {
         "decl": "Real.expOrderIso",
-        "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "module": "Mathlib.Analysis.SpecialFunctions.Exp",
         "match_kind": "special_case"
       },
-      "note": "`Real.expOrderIso` packages exp/log as an order isomorphism ℝ ≃o ℝ>0, but a bundled `MulEquiv` between the additive reals and multiplicative positive reals via exp/log is not directly present.",
+      "note": "`Real.expOrderIso` packages exp as an order isomorphism ℝ ≃o ℝ>0, but a bundled `MulEquiv`/`AddEquiv` between the additive reals and multiplicative positive reals via exp/log is not directly present.",
       "provenance": "ai",
       "id": "f3b00c3fd702"
     },
@@ -293,6 +293,86 @@
       "note": "Self-relations are handled as `RelIso r r` / `OrderIso α α`; no dedicated `RelAut` type exists, though `OrderAut`-style usages appear via these specializations.",
       "provenance": "ai",
       "id": "6a31946fc90a"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear isomorphism",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "Linear isomorphisms between vector spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearEquiv",
+        "module": "Mathlib.Algebra.Module.Equiv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`LinearEquiv` (notation `≃ₗ`) is the bundled type of invertible linear maps between modules/vector spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Group isomorphism",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "Group isomorphisms between groups"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulEquiv",
+        "module": "Mathlib.Algebra.Group.Equiv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`MulEquiv` (notation `≃*`) is the bundled multiplicative-structure-preserving equivalence; the additive analog is `AddEquiv`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ring isomorphism",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "Ring isomorphisms between rings"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RingEquiv",
+        "module": "Mathlib.Algebra.Ring.Equiv",
+        "match_kind": "exact"
+      },
+      "note": "`RingEquiv` (notation `≃+*`) bundles an equivalence preserving both addition and multiplication.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Field isomorphism as ring isomorphism",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "Field isomorphisms are the same as ring isomorphism between fields"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RingEquiv",
+        "module": "Mathlib.Algebra.Ring.Equiv",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has no separate `FieldEquiv`; field isomorphisms are simply `RingEquiv` between field-typed objects.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Automorphisms form a group",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "Just as the automorphisms of an algebraic structure form a group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Aut.instGroup",
+        "module": "Mathlib.CategoryTheory.Endomorphism",
+        "match_kind": "exact"
+      },
+      "note": "The `Group (Aut X)` instance lives in `Mathlib.CategoryTheory.Endomorphism`; concrete analogs include `Equiv.Perm` (with `Equiv.Perm.permGroup`), `MulAut`, `RingAut`, etc.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -474,7 +554,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Cardinal.eq",
-        "module": "Mathlib.SetTheory.Cardinal.Basic",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
         "match_kind": "exact"
       },
       "note": "`Cardinal` is defined as the quotient of types by equipotence, and `Cardinal.eq` exactly says two types have the same cardinal iff there is a bijection.",
@@ -491,7 +571,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "LinearEquiv.ofFinrankEq",
-        "module": "Mathlib.LinearAlgebra.FiniteDimensional.Lemmas",
+        "module": "Mathlib.LinearAlgebra.Dimension.Free",
         "match_kind": "exact"
       },
       "note": "`LinearEquiv.ofFinrankEq` (and `nonempty_linearEquiv_of_finrank_eq`) shows finite-dimensional vector spaces are linearly isomorphic iff their `finrank` agrees.",
@@ -545,7 +625,7 @@
         "module": "Mathlib.SetTheory.Ordinal.Basic",
         "match_kind": "exact"
       },
-      "note": "`Ordinal` is defined as the quotient of `WellOrder` by order-isomorphism via `Ordinal.isEquivalent`.",
+      "note": "`Ordinal` is defined as the quotient of `WellOrder` by order-isomorphism.",
       "provenance": "ai",
       "id": "aa49d4f759dc"
     },
@@ -576,7 +656,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "FundamentalGroup",
-        "module": "Mathlib.AlgebraicTopology.FundamentalGroupoid.Basic",
+        "module": "Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup",
         "match_kind": "invocation"
       },
       "note": "`FundamentalGroup` is defined for a pointed space and the fundamental groupoid yields isomorphisms between fundamental groups at different basepoints in a path-connected space, though the explicit base-change isomorphism statement isn't a single named lemma.",
@@ -626,11 +706,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Rat.castRingHom",
-        "module": "Mathlib.Algebra.Algebra.Rat",
+        "decl": "RingHom.ext_rat",
+        "module": "Mathlib.Data.Rat.Cast.Defs",
         "match_kind": "special_case"
       },
-      "note": "Mathlib has unique ring homomorphisms from ℚ into any characteristic-zero field via `Rat.castRingHom` and `RingHom.ext_rat`, capturing ℚ's initial-object property among characteristic-zero fields, but a stand-alone universal-property uniqueness theorem isn't packaged.",
+      "note": "`RingHom.ext_rat` gives uniqueness of ring homomorphisms out of ℚ, capturing ℚ's initial-object property among characteristic-zero fields, but a stand-alone universal-property uniqueness theorem packaging the field iso isn't present.",
       "provenance": "ai",
       "id": "1a8f6c3b7eba"
     }

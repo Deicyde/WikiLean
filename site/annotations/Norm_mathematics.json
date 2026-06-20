@@ -1,0 +1,793 @@
+{
+  "slug": "Norm_mathematics",
+  "wikipedia_title": "Norm (mathematics)",
+  "display_title": "Norm (mathematics)",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Norm (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a norm is a function from a real or complex vector space to the non-negative real numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Norm",
+        "module": "Mathlib.Analysis.Normed.Group.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `Norm` typeclass attaches a norm function `‖·‖` to a type, generalizing the real/complex vector-space case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Seminorm (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A seminorm satisfies the first two properties of a norm but may be zero for vectors other than the origin."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Seminorm",
+        "module": "Mathlib.Analysis.Seminorm",
+        "match_kind": "exact"
+      },
+      "note": "`Seminorm 𝕜 E` bundles a function satisfying absolute homogeneity and subadditivity without requiring positive-definiteness.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Normed vector space",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A vector space with a specified norm is called a normed vector space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedSpace",
+        "module": "Mathlib.Analysis.Normed.Module.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`NormedSpace 𝕜 E` extends a `NormedAddCommGroup` with a compatible scalar action, matching the Wikipedia definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Seminormed vector space",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a vector space with a seminorm is called a seminormed vector space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SeminormedAddCommGroup",
+        "module": "Mathlib.Analysis.Normed.Group.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Combined with `NormedSpace 𝕜 E` over a seminormed group, this furnishes the seminormed-vector-space structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pseudonorm",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The term pseudonorm has been used for several related meanings."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no declaration named `Pseudonorm` and the ambiguous informal meanings collapse into `Seminorm`/`AddGroupSeminorm` rather than a separate notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Norm (formal)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "a norm on"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedAddCommGroup",
+        "module": "Mathlib.Analysis.Normed.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`NormedAddCommGroup` packages positive-definiteness, absolute homogeneity (via the integer/scalar action), and the triangle inequality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Seminorm (formal)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "A seminorm on"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Seminorm",
+        "module": "Mathlib.Analysis.Seminorm",
+        "match_kind": "exact"
+      },
+      "note": "`Seminorm 𝕜 E` is the bundled seminorm exactly as described.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-negativity of seminorms",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Properties (1.) and (2.) imply that if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "norm_nonneg",
+        "module": "Mathlib.Analysis.Normed.Group.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`norm_nonneg` proves `0 ≤ ‖x‖` from the seminorm axioms (also available as `Seminorm.nonneg` via its `convexOn`/structure API).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Norm notation",
+      "anchor": {
+        "section": "Notation",
+        "snippet": "the norm of a vector"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Norm.norm",
+        "module": "Mathlib.Analysis.Normed.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib provides the `‖·‖` notation through the `Norm` typeclass field `Norm.norm`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Every vector space admits a norm",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Every (real or complex) vector space admits a norm"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Equiv.normedAddCommGroup",
+        "module": "Mathlib.Analysis.Normed.Module.TransferInstance",
+        "match_kind": null
+      },
+      "note": "Mathlib can transport a norm across a linear equivalence (e.g. with a basis), but the abstract `Every vector space admits a norm` existence theorem itself is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Absolute-value norm",
+      "anchor": {
+        "section": "Absolute-value norm",
+        "snippet": "The absolute value"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.norm_eq_abs",
+        "module": "Mathlib.Analysis.Normed.Group.Real",
+        "match_kind": "exact"
+      },
+      "note": "`Real.norm_eq_abs` identifies the norm on `ℝ` with the absolute value, formalizing the one-dimensional absolute-value norm.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Norms on 1D space equivalent to absolute value",
+      "anchor": {
+        "section": "Absolute-value norm",
+        "snippet": "Any norm"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousLinearEquiv.ofFinrankEq",
+        "module": "Mathlib.Topology.Algebra.Module.FiniteDimension",
+        "match_kind": null
+      },
+      "note": "Subsumed by the general finite-dimensional norm-equivalence theorem, but not stated as a dedicated 1-D corollary.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euclidean norm",
+      "anchor": {
+        "section": "Euclidean norm",
+        "snippet": "the intuitive notion of length of the vector"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.norm_eq",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "exact"
+      },
+      "note": "`EuclideanSpace.norm_eq` gives `‖x‖ = sqrt (∑ i, ‖x i‖^2)`, formalizing the Euclidean norm on `ℝⁿ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Coordinate-free Euclidean norm",
+      "anchor": {
+        "section": "Euclidean norm",
+        "snippet": "the Euclidean norm can be written in a coordinate-free way"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "inner_self_eq_norm_mul_norm",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`inner_self_eq_norm_mul_norm` expresses `⟨x,x⟩ = ‖x‖ * ‖x‖`, the coordinate-free Euclidean formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Euclidean norm of complex numbers",
+      "anchor": {
+        "section": "Euclidean norm of complex numbers",
+        "snippet": "The Euclidean norm of a complex number is the absolute value"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.isAbsoluteValueNorm",
+        "module": "Mathlib.Analysis.Complex.Norm",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's norm on `ℂ` is the standard modulus and `Complex.isAbsoluteValueNorm` records that it is an absolute value.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Four Euclidean Hurwitz algebras",
+      "anchor": {
+        "section": "Quaternions and octonions",
+        "snippet": "There are exactly four Euclidean Hurwitz algebras over the real numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `Quaternion` and an `Octonion`-related WIP but no formalization of Hurwitz's classification theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Canonical norm on quaternions",
+      "anchor": {
+        "section": "Quaternions and octonions",
+        "snippet": "The canonical norm on"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Quaternion.normSq",
+        "module": "Mathlib.Algebra.Quaternion",
+        "match_kind": "exact"
+      },
+      "note": "`Quaternion.normSq` plus the `NormedRing` instance (see `Quaternion.normSq_eq_norm_mul_self` in `Mathlib.Analysis.Quaternion`) furnish the canonical quaternion norm.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Norm on finite-dimensional complex space",
+      "anchor": {
+        "section": "Finite-dimensional complex normed spaces",
+        "snippet": "the most common norm is"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.norm_eq",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "special_case"
+      },
+      "note": "Specialising `EuclideanSpace 𝕜 (Fin n)` to `𝕜 = ℂ` gives the standard Hermitian norm on `ℂⁿ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Norm as square root of inner product",
+      "anchor": {
+        "section": "Finite-dimensional complex normed spaces",
+        "snippet": "the norm can be expressed as the square root of the inner product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "inner_self_eq_norm_sq",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`inner_self_eq_norm_sq` (and `inner_self_eq_norm_mul_norm`) say `⟨x,x⟩ = ‖x‖²`, so `‖x‖ = sqrt ⟨x,x⟩`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Taxicab / Manhattan norm",
+      "anchor": {
+        "section": "Taxicab norm or Manhattan norm",
+        "snippet": "The name relates to the distance a taxi has to drive"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PiLp.norm_eq_of_L1",
+        "module": "Mathlib.Analysis.Normed.Lp.PiLp",
+        "match_kind": "exact"
+      },
+      "note": "`PiLp.norm_eq_of_L1` gives `‖x‖ = ∑ i, ‖x i‖`, the L¹/taxicab norm on finite products.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "p-norm",
+      "anchor": {
+        "section": "p -norm",
+        "snippet": "Let"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PiLp.norm_eq_sum",
+        "module": "Mathlib.Analysis.Normed.Lp.PiLp",
+        "match_kind": "exact"
+      },
+      "note": "`PiLp.norm_eq_sum` gives `‖x‖ = (∑ ‖x i‖^p)^(1/p)` for `0 < p`, the finite-dimensional p-norm.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "p=2 induced by inner product",
+      "anchor": {
+        "section": "p -norm",
+        "snippet": "the [MATH] -norm is even induced by a canonical inner product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.norm_eq",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "exact"
+      },
+      "note": "`EuclideanSpace` is `PiLp 2` with the inner-product structure; `EuclideanSpace.norm_eq` shows the resulting norm equals the L² norm.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "p<1 not a norm",
+      "anchor": {
+        "section": "p -norm",
+        "snippet": "the resulting function does not define a norm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines `PiLp p` for all `p` but does not state that the p<1 expression fails the triangle inequality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Partial derivative of p-norm",
+      "anchor": {
+        "section": "p -norm",
+        "snippet": "The partial derivative of the"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Searches for explicit partial-derivative formulas of the p-norm in `PiLp`/`MeanInequalities` returned no relevant lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Maximum / infinity norm",
+      "anchor": {
+        "section": "Maximum norm (special case of: infinity norm, uniform norm, or supremum norm)",
+        "snippet": "If"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PiLp.norm_eq_ciSup",
+        "module": "Mathlib.Analysis.Normed.Lp.PiLp",
+        "match_kind": "exact"
+      },
+      "note": "`PiLp.norm_eq_ciSup` gives `‖f‖ = ⨆ i, ‖f i‖` on `PiLp ⊤`, formalizing the maximum/sup norm.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Energy norm",
+      "anchor": {
+        "section": "Energy norm",
+        "snippet": "The energy norm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has inner products but no dedicated `EnergyNorm` construction `‖x‖_A = √⟨Ax,x⟩` for a positive operator.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Energy norm bounds via spectrum",
+      "anchor": {
+        "section": "Energy norm",
+        "snippet": "the value of the norm is dependent on the spectrum"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of energy-norm spectral bounds was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zero norm / F-norm",
+      "anchor": {
+        "section": "Zero norm",
+        "snippet": "the zero norm induces a complete metric topology"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define an F-norm class capturing the discrete-metric `zero norm`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hamming distance from zero",
+      "anchor": {
+        "section": "Hamming distance of a vector from zero",
+        "snippet": "the discrete distance defines the Hamming distance"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PiLp.norm_eq_card",
+        "module": "Mathlib.Analysis.Normed.Lp.PiLp",
+        "match_kind": null
+      },
+      "note": "`PiLp.norm_eq_card` says the `PiLp 0` 'norm' counts the nonzero coordinates, matching Hamming distance from zero, though `Hamming` is not directly cross-referenced.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Zero norm (Donoho)",
+      "anchor": {
+        "section": "Hamming distance of a vector from zero",
+        "snippet": "the zero \"norm\" of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PiLp.norm_eq_card",
+        "module": "Mathlib.Analysis.Normed.Lp.PiLp",
+        "match_kind": null
+      },
+      "note": "Same `PiLp 0` formula as Hamming distance from zero; Mathlib offers it as the `PiLp 0` norm rather than under Donoho's name.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Infinite-dimensional p-norms",
+      "anchor": {
+        "section": "Infinite dimensions",
+        "snippet": "The generalization of the above norms to an infinite number of components"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lp",
+        "module": "Mathlib.Analysis.Normed.Lp.lpSpace",
+        "match_kind": "exact"
+      },
+      "note": "`lp E p` (with its `Norm`) formalizes the ℓᵖ spaces of infinite sequences with finite p-norm.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inner product induces a norm",
+      "anchor": {
+        "section": "Infinite dimensions",
+        "snippet": "Any inner product induces in a natural way the norm"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.Core.toNormedAddCommGroup",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib upgrades an `InnerProductSpace.Core` to a `NormedAddCommGroup`, exhibiting the induced norm `‖x‖ = √⟨x,x⟩`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Composite norm example",
+      "anchor": {
+        "section": "Composite norms",
+        "snippet": "Other norms on"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The specific composite-norm examples on ℝⁿ from the article are not stated as named lemmas in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Norm pulled back by linear map",
+      "anchor": {
+        "section": "Composite norms",
+        "snippet": "For any norm and any injective linear transformation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Seminorm.comp",
+        "module": "Mathlib.Analysis.Seminorm",
+        "match_kind": null
+      },
+      "note": "`Seminorm.comp` pulls back a seminorm along a linear map; `Equiv.normedAddCommGroup` transports a norm across an equivalence — together covering the construction without a single dedicated 'pullback norm' decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Minkowski functional norm",
+      "anchor": {
+        "section": "Composite norms",
+        "snippet": "the Minkowski functional of a centrally-symmetric convex body"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "gaugeSeminorm",
+        "module": "Mathlib.Analysis.Convex.Gauge",
+        "match_kind": "exact"
+      },
+      "note": "`gaugeSeminorm` packages the Minkowski functional of an absorbing, balanced, convex set as a `Seminorm`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Galois-theoretic norm",
+      "anchor": {
+        "section": "In abstract algebra",
+        "snippet": "the Galois-theoretic norm of an element"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra.norm",
+        "module": "Mathlib.RingTheory.Norm.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Algebra.norm` is the determinant-of-left-multiplication norm form for algebra extensions, the algebraic norm referenced in the article.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Composition algebra",
+      "anchor": {
+        "section": "Composition algebras",
+        "snippet": "A composition algebra"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `CompositionAlgebra` class exists in Mathlib (`decl_exists` reports false).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Composition algebra homomorphism property",
+      "anchor": {
+        "section": "Composition algebras",
+        "snippet": "The characteristic feature of composition algebras is the homomorphism property"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without `CompositionAlgebra` Mathlib has no statement of `N(xy) = N(x)N(y)` in that generality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reverse triangle inequality",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "the reverse triangle inequality holds"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "abs_norm_sub_norm_le",
+        "module": "Mathlib.Analysis.Normed.Group.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`abs_norm_sub_norm_le` proves `|‖a‖ - ‖b‖| ≤ ‖a - b‖` (companion `norm_sub_norm_le` for the one-sided form).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Norm equals norm of transpose",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "the norm of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Operator norm equals norm of adjoint is in Mathlib for Hilbert-space adjoints, but the article's matrix-transpose statement of `‖A‖ = ‖Aᵀ‖` for the spectral norm is not isolated as a single decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hölder's inequality",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "we have Hölder's inequality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NNReal.inner_le_Lp_mul_Lq",
+        "module": "Mathlib.Analysis.MeanInequalities",
+        "match_kind": "exact"
+      },
+      "note": "`NNReal.inner_le_Lp_mul_Lq` (with ENNReal/MeasureTheory variants like `MeasureTheory.MemLp.smul`) formalizes Hölder for finite sums and Lᵖ functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cauchy–Schwarz inequality",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "A special case of this is the Cauchy–Schwarz inequality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "norm_inner_le_norm",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`norm_inner_le_norm` is the Cauchy–Schwarz inequality `‖⟨x,y⟩‖ ≤ ‖x‖ * ‖y‖`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every norm is a convex function",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "every norm is a convex function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "convexOn_norm",
+        "module": "Mathlib.Analysis.Normed.Module.Convex",
+        "match_kind": "exact"
+      },
+      "note": "`convexOn_norm` (and `Seminorm.convexOn`) state that the norm function is convex.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convergence in norm",
+      "anchor": {
+        "section": "Equivalence",
+        "snippet": "A sequence of vectors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendsto_iff_norm_sub_tendsto_zero",
+        "module": "Mathlib.Analysis.Normed.Group.Continuity",
+        "match_kind": "exact"
+      },
+      "note": "`tendsto_iff_norm_sub_tendsto_zero` characterizes convergence in a normed group via `‖xₙ - x‖ → 0`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalent norms",
+      "anchor": {
+        "section": "Equivalence",
+        "snippet": "are called equivalent if they induce the same topology"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib speaks of two norm structures inducing the same topology / uniform structure but lacks a dedicated `EquivNorm` predicate; the notion appears informally inside finite-dimensional lemmas.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Finite-dimensional norms all equivalent",
+      "anchor": {
+        "section": "Equivalence",
+        "snippet": "If the vector space is a finite-dimensional real or complex one, all norms are equivalent."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousLinearEquiv.ofFinrankEq",
+        "module": "Mathlib.Topology.Algebra.Module.FiniteDimension",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves every finite-dimensional `𝕜`-normed space is complete and any two finite-dim norm topologies coincide (via `LinearMap.continuous_of_finiteDimensional` and `ContinuousLinearEquiv.ofFinrankEq`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Gauge of absolutely convex absorbing set",
+      "anchor": {
+        "section": "Classification of seminorms: absolutely convex absorbing sets",
+        "snippet": "To each such subset corresponds a seminorm"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "gaugeSeminorm",
+        "module": "Mathlib.Analysis.Convex.Gauge",
+        "match_kind": "exact"
+      },
+      "note": "`gauge` and `gaugeSeminorm` formalize the Minkowski-functional/seminorm of a balanced convex absorbing set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Local basis of absolutely convex sets",
+      "anchor": {
+        "section": "Classification of seminorms: absolutely convex absorbing sets",
+        "snippet": "Any locally convex topological vector space has a local basis consisting of absolutely convex sets."
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LocallyConvexSpace.convex_basis",
+        "module": "Mathlib.Topology.Algebra.Module.LocallyConvex",
+        "match_kind": null
+      },
+      "note": "Mathlib gives a convex neighborhood basis at every point, with related `absConvexHull`/`balanced` API, but no single decl asserting an *absolutely* convex local basis.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Kolmogorov normability criterion",
+      "anchor": {
+        "section": "Classification of seminorms: absolutely convex absorbing sets",
+        "snippet": "any locally convex and locally bounded topological vector space is normable"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `PolynormableSpace` and locally-convex/bornology infrastructure but no statement of Kolmogorov's normability theorem.",
+      "provenance": "ai"
+    }
+  ]
+}

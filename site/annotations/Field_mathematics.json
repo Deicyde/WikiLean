@@ -35,7 +35,7 @@
         "module": "Mathlib.Algebra.Field.Defs",
         "match_kind": "exact"
       },
-      "note": "Same `Field` class captures the informal description.",
+      "note": "The same `Field` class captures the informal description.",
       "provenance": "ai",
       "id": "6fa4572df04c"
     },
@@ -100,10 +100,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Rat.instField",
-        "module": "Mathlib.Data.Rat.Defs",
+        "module": "Mathlib.Algebra.Field.Rat",
         "match_kind": "exact"
       },
-      "note": "Mathlib provides a `Field` instance on `ℚ`.",
+      "note": "Mathlib provides a `Field` instance on `ℚ` via `Rat.instField`.",
       "provenance": "ai",
       "id": "d4cf8d136ce1"
     },
@@ -218,11 +218,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "DivisionRing.toGroupWithZero",
+        "decl": "DivisionSemiring.toGroupWithZero",
         "module": "Mathlib.Algebra.Field.Defs",
         "match_kind": "invocation"
       },
-      "note": "Via `DivisionRing → GroupWithZero` (and commutativity from `Field`), nonzero elements form a commutative group; `Units K` packages this group.",
+      "note": "Via `DivisionSemiring.toGroupWithZero` (and commutativity from `Field`), nonzero elements form a commutative group; `Units K` packages this group.",
       "provenance": "ai",
       "id": "21a2a9258ae8"
     },
@@ -293,6 +293,22 @@
       "note": "`frobenius : R →+* R` is defined as a ring homomorphism in characteristic p.",
       "provenance": "ai",
       "id": "2a659b6df073"
+    },
+    {
+      "kind": "proposition",
+      "label": "Freshman's dream in characteristic p",
+      "anchor": {
+        "section": "Characteristic",
+        "snippet": "( a + b ) p = a p + b p"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "add_pow_char",
+        "module": "Mathlib.Algebra.CharP.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "`add_pow_char` proves `(a + b)^p = a^p + b^p` in a commutative (semi)ring of prime characteristic `p`.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -386,13 +402,13 @@
         "section": "Finite fields",
         "snippet": "Finite fields (also called Galois fields ) are fields with finitely many elements"
       },
-      "status": "formalized",
+      "status": "partial",
       "mathlib": {
-        "decl": "FiniteField",
+        "decl": "FiniteField.card'",
         "module": "Mathlib.FieldTheory.Finite.Basic",
-        "match_kind": "exact"
+        "match_kind": "invocation"
       },
-      "note": "Finite fields are formalized as `[Field K] [Fintype K]` with the `FiniteField` namespace collecting results.",
+      "note": "There is no dedicated `FiniteField` typeclass; finite fields are encoded as `[Field K] [Fintype K]` and the `FiniteField` namespace collects results.",
       "provenance": "ai",
       "id": "c354883ffd5a"
     },
@@ -482,6 +498,22 @@
       "id": "49573c581437"
     },
     {
+      "kind": "proposition",
+      "label": "Fields are commutative rings with only ideals (0) and R",
+      "anchor": {
+        "section": "Constructing fields from rings",
+        "snippet": "fields are the commutative rings with precisely two distinct ideals"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.IsMaximal.isField",
+        "module": "Mathlib.RingTheory.Ideal.Quotient.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The equivalence between fields and commutative rings with exactly two ideals is captured via `Ideal.isField_iff_isMaximal` / `Ideal.IsMaximal` characterizations; the `(0)` maximal-ideal characterization gives this.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Field of fractions",
       "anchor": {
@@ -514,6 +546,22 @@
       "note": "`IsFractionRing.toField` (and the `Field` instance on `FractionRing R` for an integral domain `R`) formalizes this.",
       "provenance": "ai",
       "id": "da260817b7af"
+    },
+    {
+      "kind": "definition",
+      "label": "Field of formal Laurent series",
+      "anchor": {
+        "section": "Field of fractions",
+        "snippet": "The field F (( x )) of formal Laurent series"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LaurentSeries",
+        "module": "Mathlib.RingTheory.LaurentSeries",
+        "match_kind": "exact"
+      },
+      "note": "`LaurentSeries R` is defined and shown to be the field of fractions of `PowerSeries R` when `R` is a field.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -575,11 +623,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "IntermediateField.instSup",
+        "decl": "IntermediateField.sup_def",
         "module": "Mathlib.FieldTheory.IntermediateField.Adjoin.Defs",
         "match_kind": "exact"
       },
-      "note": "The compositum is realized as the `⊔` (sup) of intermediate fields (and similarly via `Subfield.closure`).",
+      "note": "The compositum is realized as the `⊔` (sup) of intermediate fields, with `IntermediateField.sup_def` showing it equals `adjoin F (E ∪ E')`.",
       "provenance": "ai",
       "id": "e34b818151de"
     },
@@ -593,7 +641,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Algebra",
-        "module": "Mathlib.Algebra.Algebra.Basic",
+        "module": "Mathlib.Algebra.Algebra.Defs",
         "match_kind": "generalization"
       },
       "note": "Field extensions are encoded as `[Field E] [Field F] [Algebra E F]`; there is no dedicated `FieldExtension` class.",
@@ -613,7 +661,7 @@
         "module": "Mathlib.LinearAlgebra.Dimension.Finrank",
         "match_kind": "exact"
       },
-      "note": "The degree `[F : E]` is `Module.finrank E F`; infinite-rank case is `Module.rank`.",
+      "note": "The degree `[F : E]` is `Module.finrank E F`; the infinite-rank case is `Module.rank`.",
       "provenance": "ai",
       "id": "701720d8c162"
     },
@@ -678,10 +726,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Algebra.IsAlgebraic.of_finite",
-        "module": "Mathlib.RingTheory.Algebraic.Basic",
+        "module": "Mathlib.RingTheory.Algebraic.Integral",
         "match_kind": "exact"
       },
-      "note": "`Algebra.IsAlgebraic.of_finite` derives `IsAlgebraic` from a finite-dimensional extension.",
+      "note": "`Algebra.IsAlgebraic.of_finite` is an instance deriving `IsAlgebraic` from a finite-dimensional extension.",
       "provenance": "ai",
       "id": "7d771ecf0a99"
     },
@@ -817,7 +865,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No general Artin–Schreier theorem on the degree of [F̄ : F] = 2 forcing F to be real closed appears in Mathlib (only the special case `Real.nonempty_algEquiv_or` for ℝ).",
+      "note": "No general Artin–Schreier theorem on the degree of [F̄ : F] = 2 forcing F to be real closed appears in Mathlib (only the special case for ℝ).",
       "provenance": "ai",
       "id": "7a46961b860c"
     },
@@ -837,6 +885,22 @@
       "note": "Existence is `AlgebraicClosure k` (with `Field` and `IsAlgClosure` instances); uniqueness up to isomorphism is `IsAlgClosure.equivOfAlgebraic`.",
       "provenance": "ai",
       "id": "a61fb9cd9700"
+    },
+    {
+      "kind": "definition",
+      "label": "Field of Puiseux series",
+      "anchor": {
+        "section": "Closure operations",
+        "snippet": "the algebraic closure of the field F (( t )) of Laurent series is the field of Puiseux series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `PuiseuxSeries` declaration exists in Mathlib (only `LaurentSeries` is defined).",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -919,7 +983,7 @@
         "module": "Mathlib.Algebra.Order.CompleteField",
         "match_kind": "exact"
       },
-      "note": "Scoped instance derives `Archimedean` from `ConditionallyCompleteLinearOrderedField`.",
+      "note": "A scoped instance derives `Archimedean` from `ConditionallyCompleteLinearOrderedField`.",
       "provenance": "ai",
       "id": "be41f67b0b39"
     },
@@ -936,9 +1000,25 @@
         "module": "Mathlib.Algebra.Order.CompleteField",
         "match_kind": "exact"
       },
-      "note": "`inducedOrderRingIso`/`uniqueOrderRingIso` give a canonical (unique) order-ring isomorphism between any two conditionally complete linearly ordered fields.",
+      "note": "`inducedOrderRingIso` gives a canonical (unique) order-ring isomorphism between any two conditionally complete linearly ordered fields.",
       "provenance": "ai",
       "id": "dd08577029d5"
+    },
+    {
+      "kind": "example",
+      "label": "Hyperreal numbers",
+      "anchor": {
+        "section": "Ordered fields",
+        "snippet": "The hyperreals R * form an ordered field that is not Archimedean"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Hyperreal",
+        "module": "Mathlib.Analysis.Real.Hyperreal",
+        "match_kind": "exact"
+      },
+      "note": "`Hyperreal` is defined in Mathlib as an ultrapower of ℝ giving a non-Archimedean ordered field.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -956,6 +1036,22 @@
       "note": "Topological fields are formalized via `IsTopologicalDivisionRing` (and `IsTopologicalRing` plus continuous inversion).",
       "provenance": "ai",
       "id": "07345597fb03"
+    },
+    {
+      "kind": "example",
+      "label": "Field of p-adic numbers",
+      "anchor": {
+        "section": "Topological fields",
+        "snippet": "The field Q p is used in number theory and p -adic analysis"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Padic",
+        "module": "Mathlib.NumberTheory.Padics.PadicNumbers",
+        "match_kind": "exact"
+      },
+      "note": "`Padic p` (notation `ℚ_[p]`) is defined as the completion of ℚ with respect to the p-adic absolute value.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -987,7 +1083,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No Ax–Kochen theorem appears in Mathlib (grep for `AxKochen` finds nothing).",
+      "note": "No Ax–Kochen theorem appears in Mathlib.",
       "provenance": "ai",
       "id": "3db788950797"
     },
@@ -1055,7 +1151,7 @@
         "module": "Mathlib.Algebra.Algebra.Equiv",
         "match_kind": "exact"
       },
-      "note": "`Gal(F/E)` is realized as `F ≃ₐ[E] F` (notation `Gal(F/K)` is used throughout `FieldTheory/Galois`).",
+      "note": "`Gal(F/E)` is realized as `F ≃ₐ[E] F` (the `Gal(F/K)` notation is used throughout `FieldTheory/Galois`).",
       "provenance": "ai",
       "id": "393122c75c3e"
     },
@@ -1069,7 +1165,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "IsGalois.intermediateFieldEquivSubgroup",
-        "module": "Mathlib.FieldTheory.Galois.IsGaloisGroup",
+        "module": "Mathlib.FieldTheory.Galois.Basic",
         "match_kind": "exact"
       },
       "note": "`IsGalois.intermediateFieldEquivSubgroup` gives the explicit order isomorphism between intermediate fields and subgroups.",
@@ -1083,13 +1179,13 @@
         "section": "Galois theory",
         "snippet": "this fact is known as the Abel–Ruffini theorem"
       },
-      "status": "formalized",
+      "status": "partial",
       "mathlib": {
-        "decl": "not_solvable_by_rad",
+        "decl": "isSolvable_gal_of_irreducible",
         "module": "Mathlib.FieldTheory.AbelRuffini",
-        "match_kind": "exact"
+        "match_kind": "generalization"
       },
-      "note": "`Mathlib/FieldTheory/AbelRuffini.lean` formalizes the Abel–Ruffini theorem.",
+      "note": "`Mathlib/FieldTheory/AbelRuffini.lean` formalizes only one direction (solvable-by-rad implies solvable Galois group); the existence of a non-solvable quintic lives in `Archive/Wiedijk100Theorems/AbelRuffini.lean`.",
       "provenance": "ai",
       "id": "4722f4eb193b"
     },
@@ -1137,7 +1233,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "FirstOrder.Language.ElementarilyEquivalent",
-        "module": "Mathlib.ModelTheory.ElementaryMaps",
+        "module": "Mathlib.ModelTheory.Semantics",
         "match_kind": "generalization"
       },
       "note": "Elementary equivalence is defined for general first-order structures and applied to fields in `Mathlib/ModelTheory/Algebra/Field`.",
@@ -1151,13 +1247,13 @@
         "section": "Model theory of fields",
         "snippet": "The Lefschetz principle states that C is elementarily equivalent to any algebraically closed field F of characteristic zero"
       },
-      "status": "partial",
+      "status": "formalized",
       "mathlib": {
-        "decl": "FirstOrder.Field.isComplete_ACF₀",
+        "decl": "FirstOrder.Field.ACF_zero_realize_iff_infinite_ACF_prime_realize",
         "module": "Mathlib.ModelTheory.Algebra.Field.IsAlgClosed",
-        "match_kind": "generalization"
+        "match_kind": "exact"
       },
-      "note": "Completeness of the theory ACF₀ is in Mathlib (`Mathlib/ModelTheory/Algebra/Field/IsAlgClosed.lean`); the explicit Lefschetz statement comparing ℂ to other ACF₀ models is not isolated as a named theorem.",
+      "note": "The Lefschetz principle is formalized as `FirstOrder.Field.ACF_zero_realize_iff_infinite_ACF_prime_realize`, with completeness of ACF₀ from `FirstOrder.Field.ACF_isComplete`.",
       "provenance": "ai",
       "id": "4a8532794688"
     },
@@ -1170,11 +1266,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "FirstOrder.Language.Ultraproduct",
+        "decl": "FirstOrder.Language.Ultraproduct.sentence_realize",
         "module": "Mathlib.ModelTheory.Ultraproducts",
         "match_kind": "exact"
       },
-      "note": "Łoś's theorem is formalized in `Mathlib/ModelTheory/Ultraproducts.lean`.",
+      "note": "Łoś's theorem is formalized as `FirstOrder.Language.Ultraproduct.sentence_realize` in `Mathlib/ModelTheory/Ultraproducts.lean`.",
       "provenance": "ai",
       "id": "45d18f19acbb"
     },
@@ -1211,6 +1307,38 @@
       "note": "No identification of `Gal(F_q)` with `Ẑ` (profinite integers / Prüfer group) appears in Mathlib.",
       "provenance": "ai",
       "id": "7a3f5896fb2f"
+    },
+    {
+      "kind": "theorem",
+      "label": "Galois group of finite extension of finite field",
+      "anchor": {
+        "section": "Absolute Galois group",
+        "snippet": "Gal( F q n / F q ) = Z / n Z"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FiniteField.card_algEquiv_extension",
+        "module": "Mathlib.FieldTheory.Finite.Extension",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves `Fintype.card Gal(Extension k p n / k) = n` and gives an `IsCyclic` instance generated by the Frobenius, but does not package the explicit `Gal ≃* ZMod n` isomorphism as a single decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Brauer group of a field",
+      "anchor": {
+        "section": "Absolute Galois group",
+        "snippet": "the Brauer group , which is classically defined as the group of central simple F -algebras"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BrauerGroup",
+        "module": "Mathlib.Algebra.BrauerGroup.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `BrauerGroup` in `Mathlib/Algebra/BrauerGroup/Defs.lean` via equivalence classes of central simple algebras.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -1273,12 +1401,28 @@
       "status": "formalized",
       "mathlib": {
         "decl": "div_mul_cancel₀",
-        "module": "Mathlib.Algebra.GroupWithZero.Basic",
+        "module": "Mathlib.Algebra.GroupWithZero.Units.Basic",
         "match_kind": "invocation"
       },
       "note": "Solvability and uniqueness of `a*x = b` for `a ≠ 0` follows from `GroupWithZero`/field lemmas like `eq_div_iff`, `div_mul_cancel₀`.",
       "provenance": "ai",
       "id": "17443ecb8754"
+    },
+    {
+      "kind": "theorem",
+      "label": "Every vector space has a basis",
+      "anchor": {
+        "section": "Linear algebra and commutative algebra",
+        "snippet": "the proof that any vector space has a basis"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.Basis.ofVectorSpace",
+        "module": "Mathlib.LinearAlgebra.Basis.VectorSpace",
+        "match_kind": "exact"
+      },
+      "note": "`Module.Basis.ofVectorSpace` constructs a basis for any vector space over a division ring (using choice).",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -1290,7 +1434,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "RatFunc",
-        "module": "Mathlib.FieldTheory.RatFunc.Basic",
+        "module": "Mathlib.FieldTheory.RatFunc.Defs",
         "match_kind": "special_case"
       },
       "note": "Mathlib has `RatFunc K` (the field of rational functions in one variable); the general geometric notion is covered by `Scheme.functionField`.",
@@ -1378,7 +1522,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No Hasse–Minkowski theorem appears in Mathlib (grep finds no matches).",
+      "note": "No Hasse–Minkowski theorem appears in Mathlib.",
       "provenance": "ai",
       "id": "ab23d23abf3d"
     },
@@ -1395,7 +1539,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Kronecker–Weber is not in Mathlib (no `KroneckerWeber` decl).",
+      "note": "Kronecker–Weber is not in Mathlib.",
       "provenance": "ai",
       "id": "857e4bd4c4a7"
     },
@@ -1432,6 +1576,22 @@
       "note": "`class DivisionRing` is a ring with multiplicative inverses for nonzero elements.",
       "provenance": "ai",
       "id": "ce5b31357597"
+    },
+    {
+      "kind": "example",
+      "label": "Quaternions",
+      "anchor": {
+        "section": "Division rings",
+        "snippet": "the quaternions H (in which multiplication is non-commutative)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Quaternion",
+        "module": "Mathlib.Algebra.Quaternion",
+        "match_kind": "exact"
+      },
+      "note": "`Quaternion R` is defined in Mathlib; over ℝ it is the standard non-commutative division ring ℍ.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",

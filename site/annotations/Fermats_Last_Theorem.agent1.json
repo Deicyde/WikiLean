@@ -11,7 +11,15 @@
         "section": "(Lead)",
         "snippet": "states that there are no positive integers"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FermatLastTheorem",
+        "module": "Mathlib.NumberTheory.FLT.Basic",
+        "match_kind": "exact"
+      },
+      "note": "FermatLastTheorem is defined as the statement that aⁿ+bⁿ=cⁿ has no nontrivial natural solution for n≥3 (statement only; the full proof is not in Mathlib).",
+      "provenance": "ai-agent1",
+      "id": "c825b5727fa0"
     },
     {
       "kind": "proposition",
@@ -20,7 +28,15 @@
         "section": "(Lead)",
         "snippet": "have been known since antiquity to have infinitely many solutions"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "not_fermatLastTheoremFor_two",
+        "module": "Mathlib.NumberTheory.FLT.Basic",
+        "match_kind": null
+      },
+      "note": "not_fermatLastTheoremFor_one/two exhibit nontrivial solutions for n=1,2 but Mathlib does not state their infinitude.",
+      "provenance": "ai-agent1",
+      "id": "54286405c538"
     },
     {
       "kind": "proposition",
@@ -29,7 +45,15 @@
         "section": "Pythagorean origins",
         "snippet": "has an infinite number of positive integer solutions for"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "PythagoreanTriple.classification",
+        "module": "Mathlib.NumberTheory.PythagoreanTriples",
+        "match_kind": null
+      },
+      "note": "Mathlib classifies all Pythagorean triples via a parametrization but never states the solution set is infinite.",
+      "provenance": "ai-agent1",
+      "id": "52ec1de48bc3"
     },
     {
       "kind": "theorem",
@@ -38,7 +62,15 @@
         "section": "Pythagorean origins",
         "snippet": "had no solutions in positive integers if"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FermatLastTheorem",
+        "module": "Mathlib.NumberTheory.FLT.Basic",
+        "match_kind": "exact"
+      },
+      "note": "This is exactly the FermatLastTheorem statement (no nontrivial solutions for n≥3).",
+      "provenance": "ai-agent1",
+      "id": "c3533a77eef5"
     },
     {
       "kind": "proposition",
@@ -47,7 +79,15 @@
         "section": "Subsequent developments and solution",
         "snippet": "is sufficient to establish that if the theorem is false for some exponent"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FermatLastTheorem.of_odd_primes",
+        "module": "Mathlib.NumberTheory.FLT.Four",
+        "match_kind": "exact"
+      },
+      "note": "FermatLastTheorem.of_odd_primes (with FermatLastTheoremWith.mono) formalizes that proving FLT for n=4 and odd primes suffices.",
+      "provenance": "ai-agent1",
+      "id": "6f990f1abb42"
     },
     {
       "kind": "definition",
@@ -56,7 +96,15 @@
         "section": "Equivalent statements of the theorem",
         "snippet": "is zero a trivial solution"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "FermatLastTheoremWith",
+        "module": "Mathlib.NumberTheory.FLT.Basic",
+        "match_kind": null
+      },
+      "note": "FermatLastTheoremWith encodes non-triviality via the hypotheses a≠0,b≠0,c≠0 but there is no standalone 'trivial solution' definition.",
+      "provenance": "ai-agent1",
+      "id": "55d5749704bc"
     },
     {
       "kind": "theorem",
@@ -65,7 +113,15 @@
         "section": "Equivalent statements of the theorem",
         "snippet": "are all positive whole numbers"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FermatLastTheorem",
+        "module": "Mathlib.NumberTheory.FLT.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The original positive-integer formulation matches FermatLastTheorem.",
+      "provenance": "ai-agent1",
+      "id": "2853150be70e"
     },
     {
       "kind": "theorem",
@@ -74,7 +130,15 @@
         "section": "Equivalent statements of the theorem",
         "snippet": "Equivalent statement 1"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fermatLastTheoremFor_iff_int",
+        "module": "Mathlib.NumberTheory.FLT.Basic",
+        "match_kind": "exact"
+      },
+      "note": "fermatLastTheoremFor_iff_int proves the natural-number FLT is equivalent to FermatLastTheoremWith ℤ.",
+      "provenance": "ai-agent1",
+      "id": "4aae2bc2df8f"
     },
     {
       "kind": "theorem",
@@ -83,7 +147,15 @@
         "section": "Equivalent statements of the theorem",
         "snippet": "Equivalent statement 2"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fermatLastTheoremFor_iff_rat",
+        "module": "Mathlib.NumberTheory.FLT.Basic",
+        "match_kind": "exact"
+      },
+      "note": "fermatLastTheoremFor_iff_rat proves the FLT statement is equivalent to FermatLastTheoremWith ℚ.",
+      "provenance": "ai-agent1",
+      "id": "b767dd87848e"
     },
     {
       "kind": "theorem",
@@ -92,7 +164,15 @@
         "section": "Equivalent statements of the theorem",
         "snippet": "Equivalent statement 3"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "fermatLastTheoremFor_iff_rat",
+        "module": "Mathlib.NumberTheory.FLT.Basic",
+        "match_kind": null
+      },
+      "note": "The rational equivalence captures the same content, but Mathlib has no explicit Fermat-curve (xⁿ+yⁿ=1 rational points) formulation.",
+      "provenance": "ai-agent1",
+      "id": "737294ba741e"
     },
     {
       "kind": "theorem",
@@ -101,7 +181,15 @@
         "section": "Equivalent statements of the theorem",
         "snippet": "Equivalent statement 4"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Frey-curve/elliptic-curve reformulation of FLT is not present in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "2e4741d192fa"
     },
     {
       "kind": "theorem",
@@ -110,7 +198,15 @@
         "section": "Pythagorean triples",
         "snippet": "This is now known as the Pythagorean theorem"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves the Pythagorean theorem in the general inner-product-space form (and an affine/Euclidean version).",
+      "provenance": "ai-agent1",
+      "id": "21d710d971e5"
     },
     {
       "kind": "definition",
@@ -119,7 +215,15 @@
         "section": "Pythagorean triples",
         "snippet": "the definition of a Pythagorean triple is a set of three integers"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PythagoreanTriple",
+        "module": "Mathlib.NumberTheory.PythagoreanTriples",
+        "match_kind": "exact"
+      },
+      "note": "PythagoreanTriple x y z is defined as x*x+y*y=z*z over ℤ.",
+      "provenance": "ai-agent1",
+      "id": "c0ee6c87765f"
     },
     {
       "kind": "proposition",
@@ -128,7 +232,15 @@
         "section": "Pythagorean triples",
         "snippet": "There are infinitely many such triples"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "PythagoreanTriple.classification",
+        "module": "Mathlib.NumberTheory.PythagoreanTriples",
+        "match_kind": null
+      },
+      "note": "The classification gives a parametrization of all triples but the infinitude of the triple set is not stated as a theorem.",
+      "provenance": "ai-agent1",
+      "id": "6ac86b746573"
     },
     {
       "kind": "example",
@@ -137,7 +249,15 @@
         "section": "Pythagorean triples",
         "snippet": "Examples include (3, 4, 5) and (5, 12, 13)"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration asserts specific example triples such as (3,4,5) or (5,12,13).",
+      "provenance": "ai-agent1",
+      "id": "48ad271935d1"
     },
     {
       "kind": "definition",
@@ -146,7 +266,15 @@
         "section": "Diophantine equations",
         "snippet": "is an example of a Diophantine equation"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Dioph",
+        "module": "Mathlib.NumberTheory.Dioph",
+        "match_kind": null
+      },
+      "note": "Mathlib defines Diophantine sets (Dioph) for Hilbert's tenth problem, but not a general 'Diophantine equation' object.",
+      "provenance": "ai-agent1",
+      "id": "e75adb82d0f5"
     },
     {
       "kind": "example",
@@ -155,7 +283,15 @@
         "section": "Diophantine equations",
         "snippet": "A typical Diophantine problem is to find two integers"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This illustrative problem is not formalized as a declaration.",
+      "provenance": "ai-agent1",
+      "id": "0334a56321d9"
     },
     {
       "kind": "proposition",
@@ -164,7 +300,15 @@
         "section": "Diophantine equations",
         "snippet": "are given by the Pythagorean triples"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PythagoreanTriple.classification",
+        "module": "Mathlib.NumberTheory.PythagoreanTriples",
+        "match_kind": "exact"
+      },
+      "note": "PythagoreanTriple.classification gives the explicit parametric form of all integer solutions of x²+y²=z².",
+      "provenance": "ai-agent1",
+      "id": "3927078c3eb3"
     },
     {
       "kind": "example",
@@ -173,7 +317,15 @@
         "section": "Diophantine equations",
         "snippet": "may be found using the Euclidean algorithm"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Int.gcd_eq_gcd_ab",
+        "module": "Mathlib.Data.Int.GCD",
+        "match_kind": null
+      },
+      "note": "Bézout's identity Int.gcd_eq_gcd_ab underlies solving linear Diophantine equations, but no general solver/example is stated.",
+      "provenance": "ai-agent1",
+      "id": "74fb1b7a731e"
     },
     {
       "kind": "proposition",
@@ -182,7 +334,15 @@
         "section": "Diophantine equations",
         "snippet": "it is known that there are infinitely many positive integers"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This existence-of-infinitely-many result for coprime exponents is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "c3af74d5023f"
     },
     {
       "kind": "example",
@@ -191,7 +351,15 @@
         "section": "Fermat's conjecture",
         "snippet": "asks how a given square number is split into two other squares"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This historical Diophantus problem is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "9fc0fcf53c86"
     },
     {
       "kind": "example",
@@ -200,7 +368,15 @@
         "section": "Fermat's conjecture",
         "snippet": "Diophantus shows how to solve this sum-of-squares problem"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Diophantus's specific sum-of-squares construction is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "ad78eaf58a27"
     },
     {
       "kind": "theorem",
@@ -209,7 +385,15 @@
         "section": "Fermat's conjecture",
         "snippet": "It is impossible to separate a cube into two cubes"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FermatLastTheorem",
+        "module": "Mathlib.NumberTheory.FLT.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Fermat's prose statement is exactly FermatLastTheorem.",
+      "provenance": "ai-agent1",
+      "id": "ff60f1fd42a3"
     },
     {
       "kind": "theorem",
@@ -218,7 +402,15 @@
         "section": "Exponent = 4",
         "snippet": "the area of a right triangle with integer sides can never equal the square of an integer"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fermat's right-triangle theorem (congruent-number style) is not present; only the related Fermat42 infrastructure exists.",
+      "provenance": "ai-agent1",
+      "id": "321e49b8db7e"
     },
     {
       "kind": "theorem",
@@ -227,7 +419,15 @@
         "section": "Exponent = 4",
         "snippet": "has no primitive solutions in integers"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fermatLastTheoremFour",
+        "module": "Mathlib.NumberTheory.FLT.Four",
+        "match_kind": "exact"
+      },
+      "note": "fermatLastTheoremFour proves FermatLastTheoremFor 4.",
+      "provenance": "ai-agent1",
+      "id": "8d4122cd1664"
     },
     {
       "kind": "proposition",
@@ -236,7 +436,15 @@
         "section": "Other exponents",
         "snippet": "has no positive integer solutions ( a , b , c ) when n is an odd prime number"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FermatLastTheorem.of_odd_primes",
+        "module": "Mathlib.NumberTheory.FLT.Four",
+        "match_kind": "exact"
+      },
+      "note": "FermatLastTheorem.of_odd_primes proves FLT follows from the odd-prime cases.",
+      "provenance": "ai-agent1",
+      "id": "6e85303752bb"
     },
     {
       "kind": "theorem",
@@ -245,7 +453,15 @@
         "section": "Other exponents",
         "snippet": "Leonhard Euler gave a proof of p = 3"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fermatLastTheoremThree",
+        "module": "Mathlib.NumberTheory.FLT.Three",
+        "match_kind": "exact"
+      },
+      "note": "fermatLastTheoremThree proves FermatLastTheoremFor 3.",
+      "provenance": "ai-agent1",
+      "id": "061994bc916e"
     },
     {
       "kind": "theorem",
@@ -254,7 +470,15 @@
         "section": "Other exponents",
         "snippet": "The case p = 5 was proved"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No proof of FermatLastTheoremFor 5 exists in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "5fc3922d5eea"
     },
     {
       "kind": "theorem",
@@ -263,7 +487,15 @@
         "section": "Other exponents",
         "snippet": "The case p = 7 was proved"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No proof of FermatLastTheoremFor 7 exists in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "288de75b1646"
     },
     {
       "kind": "theorem",
@@ -272,7 +504,15 @@
         "section": "Other exponents",
         "snippet": "was also proved for the exponents n = 6, 10, and 14"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "FermatLastTheoremFor.mono",
+        "module": "Mathlib.NumberTheory.FLT.Basic",
+        "match_kind": null
+      },
+      "note": "FermatLastTheoremFor.mono with fermatLastTheoremThree yields n=6 (3∣6), but cases n=10,14 are unavailable since p=5,7 are not proved.",
+      "provenance": "ai-agent1",
+      "id": "14a6fb381bc9"
     },
     {
       "kind": "definition",
@@ -281,7 +521,15 @@
         "section": "Sophie Germain",
         "snippet": "she defined a set of auxiliary primes"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Sophie Germain's auxiliary primes are not defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "9ed4152f1c19"
     },
     {
       "kind": "proposition",
@@ -290,7 +538,15 @@
         "section": "Sophie Germain",
         "snippet": "then θ must divide the product xyz"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This step of Sophie Germain's argument is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "0a3c680ae010"
     },
     {
       "kind": "theorem",
@@ -299,7 +555,15 @@
         "section": "Sophie Germain",
         "snippet": "she proved Sophie Germain's theorem"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Only Sophie Germain's algebraic identity is in Mathlib; her FLT theorem (first case) is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "ec4e0fd4f4fd"
     },
     {
       "kind": "definition",
@@ -308,7 +572,15 @@
         "section": "Sophie Germain",
         "snippet": "are called Sophie Germain primes"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no definition of Sophie Germain primes in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "2101a23b4a4f"
     },
     {
       "kind": "theorem",
@@ -317,7 +589,15 @@
         "section": "Sophie Germain",
         "snippet": "which was proved by Guy Terjanian in 1977"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Terjanian's first-case result for exponent 2p is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "0f3b1f5ec751"
     },
     {
       "kind": "theorem",
@@ -326,7 +606,15 @@
         "section": "Sophie Germain",
         "snippet": "the first case of Fermat's Last Theorem holds for infinitely many odd primes"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This first-case result is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "d6fa24325215"
     },
     {
       "kind": "theorem",
@@ -335,7 +623,15 @@
         "section": "Ernst Kummer and the theory of ideals",
         "snippet": "Kummer proved both cases of Fermat's Last Theorem for all regular prime numbers"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither regular primes nor Kummer's FLT theorem are formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "3369432d7e25"
     },
     {
       "kind": "example",
@@ -344,7 +640,15 @@
         "section": "Ernst Kummer and the theory of ideals",
         "snippet": "the only irregular primes below 270 are"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Irregular primes are not defined and this enumeration is not present.",
+      "provenance": "ai-agent1",
+      "id": "6982256c7d09"
     },
     {
       "kind": "theorem",
@@ -353,7 +657,15 @@
         "section": "Mordell conjecture",
         "snippet": "Fermat's equation has at most a finite number of nontrivial primitive integer solutions"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Faltings' theorem / the Mordell conjecture is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "e322c0e1ba25"
     },
     {
       "kind": "theorem",
@@ -362,7 +674,15 @@
         "section": "Computational studies",
         "snippet": "to prove Fermat's Last Theorem for all primes up to 2521"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This computational verification range is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "9178c4f0041f"
     },
     {
       "kind": "theorem",
@@ -371,7 +691,15 @@
         "section": "Computational studies",
         "snippet": "had extended this to all primes less than 125,000"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This computational verification range is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "b9e0389e285b"
     },
     {
       "kind": "theorem",
@@ -380,7 +708,15 @@
         "section": "Computational studies",
         "snippet": "had been proved for all primes less than four million"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This computational verification range is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "094ec5584c66"
     },
     {
       "kind": "theorem",
@@ -389,7 +725,15 @@
         "section": "Taniyama–Shimura–Weil conjecture",
         "snippet": "states that every elliptic curve is modular"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The modularity (Taniyama–Shimura–Weil) theorem is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "d36307e2effd"
     },
     {
       "kind": "proposition",
@@ -398,7 +742,15 @@
         "section": "Ribet's theorem for Frey curves",
         "snippet": "would have such unusual properties that it was unlikely to be modular"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Frey curve and its (non-)modularity are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "a813e5caade7"
     },
     {
       "kind": "theorem",
@@ -407,7 +759,15 @@
         "section": "Ribet's theorem for Frey curves",
         "snippet": "could be used to create a semistable elliptic curve that could not be modular"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ribet's theorem (epsilon conjecture) is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "dc6f36251807"
     },
     {
       "kind": "theorem",
@@ -416,7 +776,15 @@
         "section": "Wiles's general proof",
         "snippet": "established the modularity theorem for semistable elliptic curves"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Wiles's modularity result for semistable elliptic curves is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "5cd4fee81267"
     },
     {
       "kind": "theorem",
@@ -425,7 +793,15 @@
         "section": "Subsequent developments",
         "snippet": "no cube can be written as a sum of two coprime n th powers"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This consequence about cubes as sums of coprime powers is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "97e552c1de1a"
     },
     {
       "kind": "definition",
@@ -434,7 +810,15 @@
         "section": "Relationship to other problems and generalizations",
         "snippet": "considers solutions to the Fermat equation"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "FermatLastTheoremWith",
+        "module": "Mathlib.NumberTheory.FLT.Basic",
+        "match_kind": null
+      },
+      "note": "The Fermat equation aⁿ+bⁿ=cⁿ appears inside FermatLastTheoremWith but is not a standalone definition.",
+      "provenance": "ai-agent1",
+      "id": "16035349778a"
     },
     {
       "kind": "definition",
@@ -443,7 +827,15 @@
         "section": "Generalized Fermat equation",
         "snippet": "considering positive integer solutions a , b , c , m , n , k satisfying"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The generalized Fermat equation aᵐ+bⁿ=cᵏ is not defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "24b8ada99fa8"
     },
     {
       "kind": "theorem",
@@ -452,7 +844,15 @@
         "section": "Generalized Fermat equation",
         "snippet": "states that there are no solutions to the generalized Fermat equation"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Beal conjecture is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "ba5c3f5011d0"
     },
     {
       "kind": "theorem",
@@ -461,7 +861,15 @@
         "section": "Generalized Fermat equation",
         "snippet": "has only finitely many solutions"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Fermat–Catalan conjecture is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "cbec1f3655ec"
     },
     {
       "kind": "proposition",
@@ -470,7 +878,15 @@
         "section": "Inverse Fermat equation",
         "snippet": "all solutions are given by"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The inverse Fermat equation and its solutions are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "21d934300899"
     },
     {
       "kind": "theorem",
@@ -479,7 +895,15 @@
         "section": "Rational exponents",
         "snippet": "there are integer solutions if and only if 6 divides m"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This rational-exponent result is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "75331f495fe2"
     },
     {
       "kind": "proposition",
@@ -488,7 +912,15 @@
         "section": "n = −1",
         "snippet": "to the optic equation"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The optic equation 1/a+1/b=1/c and its solution set are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "ac523f656c4a"
     },
     {
       "kind": "proposition",
@@ -497,7 +929,15 @@
         "section": "n = −2",
         "snippet": "also has an infinitude of solutions"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The n=−2 case and its infinitude of solutions are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "ac2b5ded6783"
     },
     {
       "kind": "example",
@@ -506,7 +946,15 @@
         "section": "n = −2",
         "snippet": "are the integer legs of a right triangle"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This geometric interpretation is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "a5b44ad0220f"
     },
     {
       "kind": "proposition",
@@ -515,7 +963,15 @@
         "section": "n < −2",
         "snippet": "There are no solutions in integers"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The nonexistence result for exponents n<−2 is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "05539a7e0af0"
     },
     {
       "kind": "theorem",
@@ -524,7 +980,15 @@
         "section": "abc conjecture",
         "snippet": "then the radical d of abc is usually not much smaller than c"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.abc",
+        "module": "Mathlib.NumberTheory.FLT.MasonStothers",
+        "match_kind": null
+      },
+      "note": "Mathlib has the polynomial analogue (Mason–Stothers, Polynomial.abc) but not the integer abc conjecture itself.",
+      "provenance": "ai-agent1",
+      "id": "b286d43ab1ef"
     },
     {
       "kind": "proposition",
@@ -533,7 +997,15 @@
         "section": "abc conjecture",
         "snippet": "implies Fermat's last theorem for n that are sufficiently large"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The implication abc ⇒ FLT for large n is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "acbcdcf26620"
     },
     {
       "kind": "example",
@@ -542,7 +1014,15 @@
         "section": "In popular culture",
         "snippet": "which appears to be a counterexample to Fermat's Last Theorem"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This pop-culture near-counterexample is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "215ddfb453d0"
     }
   ]
 }

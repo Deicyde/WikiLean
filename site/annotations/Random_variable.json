@@ -86,7 +86,7 @@
         "module": "Mathlib.Probability.ProbabilityMassFunction.Basic",
         "match_kind": "generalization"
       },
-      "note": "Discrete distributions are captured by `PMF`, but `Mathlib` has no class `IsDiscreteRandomVariable`.",
+      "note": "Discrete distributions are captured by `PMF`, but Mathlib has no class `IsDiscreteRandomVariable`.",
       "provenance": "ai",
       "id": "d4e7d36f5303"
     },
@@ -171,7 +171,7 @@
         "module": "Mathlib.MeasureTheory.Measure.Map",
         "match_kind": "exact"
       },
-      "note": "The law of `X` is `Measure.map X ℙ`, and `ProbabilityTheory.HasLaw` packages this.",
+      "note": "The law of `X` is `Measure.map X ℙ`, packaged also via `ProbabilityTheory.HasLaw`.",
       "provenance": "ai",
       "id": "f90672f5ec1d"
     },
@@ -529,7 +529,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "MeasureTheory.integral_image_eq_integral_abs_deriv_smul",
-        "module": "Mathlib.MeasureTheory.Function.Jacobian",
+        "module": "Mathlib.MeasureTheory.Function.JacobianOneDim",
         "match_kind": "generalization"
       },
       "note": "Change-of-variables / Jacobian formulas exist but no named pdf-transformation result for `g(X)`.",
@@ -596,11 +596,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "MeasureTheory.pdf.IsExponential",
+        "decl": "ProbabilityTheory.exponentialPDF",
         "module": "Mathlib.Probability.Distributions.Exponential",
         "match_kind": "invocation"
       },
-      "note": "Exponential distribution is defined, but this specific transformation example is not formalized.",
+      "note": "Exponential distribution is defined via `exponentialPDF`, but this specific transformation example is not formalized.",
       "provenance": "ai",
       "id": "88dec761ac15"
     },
@@ -716,7 +716,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Filter.EventuallyEq",
-        "module": "Mathlib.Order.Filter.Basic",
+        "module": "Mathlib.Order.Filter.Defs",
         "match_kind": "exact"
       },
       "note": "Written `X =ᵐ[μ] Y`, i.e. `Filter.EventuallyEq (ae μ) X Y`.",
@@ -739,6 +739,150 @@
       "note": "Pointwise equality of `Ω → E` functions is just `Eq` (or `funext`).",
       "provenance": "ai",
       "id": "8fa10a288e0a"
+    },
+    {
+      "kind": "definition",
+      "label": "Probability mass function",
+      "anchor": {
+        "section": "Discrete random variable",
+        "snippet": "the probability mass function (PMF)"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PMF",
+        "module": "Mathlib.Probability.ProbabilityMassFunction.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`PMF α` is the type of probability mass functions on a countable type `α`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Pushforward measure (law of a random variable)",
+      "anchor": {
+        "section": "Distribution functions",
+        "snippet": "to \"push-forward\" the measure"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.map",
+        "module": "Mathlib.MeasureTheory.Measure.Map",
+        "match_kind": "exact"
+      },
+      "note": "The pushforward of `ℙ` by `X` is `Measure.map X ℙ`, i.e. the distribution / law of `X`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Probability density function",
+      "anchor": {
+        "section": "Distribution functions",
+        "snippet": "and sometimes also using a probability density function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.pdf",
+        "module": "Mathlib.Probability.Density",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.pdf X ℙ μ` is the density of the law of `X` w.r.t. a reference measure `μ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Radon–Nikodym derivative",
+      "anchor": {
+        "section": "Distribution functions",
+        "snippet": "the Radon–Nikodym derivative of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.rnDeriv",
+        "module": "Mathlib.MeasureTheory.Measure.Decomposition.Lebesgue",
+        "match_kind": "exact"
+      },
+      "note": "`Measure.rnDeriv ν μ` is the Radon–Nikodym derivative of `ν` with respect to `μ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Variance and standard deviation",
+      "anchor": {
+        "section": "Moments",
+        "snippet": "answered by the variance and standard deviation of a random variable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.variance",
+        "module": "Mathlib.Probability.Moments.Variance",
+        "match_kind": "exact"
+      },
+      "note": "`ProbabilityTheory.variance X μ = μ[(X - μ[X])^2]`; standard deviation is its square root.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Moment generating function",
+      "anchor": {
+        "section": "Equality in distribution",
+        "snippet": "the moment generating function exists only for distributions that have a defined Laplace transform"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.mgf",
+        "module": "Mathlib.Probability.Moments.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ProbabilityTheory.mgf X μ t = μ[fun ω => Real.exp (t * X ω)]`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Law of large numbers",
+      "anchor": {
+        "section": "Convergence",
+        "snippet": "for instance the law of large numbers and the central limit theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.strong_law_ae",
+        "module": "Mathlib.Probability.StrongLaw",
+        "match_kind": "exact"
+      },
+      "note": "Strong law of large numbers for iid integrable random variables.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Central limit theorem",
+      "anchor": {
+        "section": "Convergence",
+        "snippet": "and the central limit theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classical CLT is not yet present as a named theorem in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convergence of random variables",
+      "anchor": {
+        "section": "Convergence",
+        "snippet": "There are various senses in which a sequence"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.TendstoInMeasure",
+        "module": "Mathlib.MeasureTheory.Function.ConvergenceInMeasure",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has convergence in measure, a.e. convergence, and Lᵖ convergence; convergence in distribution is partial.",
+      "provenance": "ai"
     }
   ]
 }

@@ -33,20 +33,10 @@
       "mathlib": {
         "decl": "PythagoreanTriple",
         "module": "Mathlib.NumberTheory.PythagoreanTriples",
-        "match_kind": "exact"
+        "match_kind": "special_case"
       },
-      "note": "The equation a²+b²=c² is captured by the definition `PythagoreanTriple x y z : x*x + y*y = z*z`.",
-      "provenance": "ai",
-      "anchors": [
-        {
-          "section": "(Lead)",
-          "snippet": "sometimes called the Pythagorean equation"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle a^{2}+b^{2}=c^{2}.}"
-        }
-      ],
+      "note": "The equation a²+b²=c² is captured by `PythagoreanTriple x y z : x*x + y*y = z*z`; Mathlib's predicate is the integer-restricted special case of the real-side equation.",
+      "provenance": "ai-moderated",
       "id": "972c235fc458"
     },
     {
@@ -81,20 +71,6 @@
       },
       "note": "No formalization of this specific geometric dissection argument in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Algebraic proofs",
-          "snippet": "proved algebraically using four copies of the same triangle arranged symmetrically around a square with side c"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle (b+a)^{2}=c^{2}+4{\\frac {ab}{2}}=c^{2}+2ab,}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle c^{2}=(b+a)^{2}-2ab=b^{2}+2ab+a^{2}-2ab=a^{2}+b^{2}.}"
-        }
-      ],
       "id": "b05f5126884d"
     },
     {
@@ -112,16 +88,6 @@
       },
       "note": "No formalization of this specific dissection proof in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Algebraic proofs",
-          "snippet": "A similar proof uses four copies of a right triangle"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle (b-a)^{2}+4{\\frac {ab}{2}}=(b-a)^{2}+2ab=b^{2}-2ab+a^{2}+2ab=a^{2}+b^{2}.}"
-        }
-      ],
       "id": "4a9f5baf22dc"
     },
     {
@@ -140,6 +106,22 @@
       "note": "The Pythagorean theorem in Mathlib is proved via inner products, not via a similar-triangles argument.",
       "provenance": "ai",
       "id": "1b675e5f5858"
+    },
+    {
+      "kind": "proposition",
+      "label": "Triangle postulate (angle sum)",
+      "anchor": {
+        "section": "Proof using similar triangles",
+        "snippet": "The sum of the angles in a triangle is two right angles"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.angle_add_angle_add_angle_eq_pi",
+        "module": "Mathlib.Geometry.Euclidean.Triangle",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `angle_add_angle_add_angle_eq_pi` states that the three angles of a non-degenerate triangle sum to π.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -241,16 +223,6 @@
       },
       "note": "No formalization of Garfield's trapezoid proof in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Other algebraic proofs",
-          "snippet": "A related proof by U.S. president James A. Garfield"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\tfrac {1}{2}}(b+a)^{2}.}"
-        }
-      ],
       "id": "290e04607fd6"
     },
     {
@@ -353,16 +325,6 @@
       },
       "note": "Dijkstra's sign-based formulation is not present as a named lemma.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Converse",
-          "snippet": "Edsger W. Dijkstra has stated this proposition about acute, right, and obtuse triangles"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\operatorname {sgn} (\\alpha +\\beta -\\gamma )=\\operatorname {sgn} (a^{2}+b^{2}-c^{2}),}"
-        }
-      ],
       "id": "217d3a30080c"
     },
     {
@@ -431,16 +393,6 @@
       },
       "note": "The `classification` theorem characterizes all Pythagorean triples in terms of (k,m,n) parameters.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Pythagorean triples",
-          "snippet": "Euclid's formula is the most well-known"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle a=m^{2}-n^{2},\\quad b=2mn,\\quad c=m^{2}+n^{2}}"
-        }
-      ],
       "id": "d81026aee88e"
     },
     {
@@ -458,32 +410,6 @@
       },
       "note": "No formalization of the reciprocal identity 1/a² + 1/b² = 1/h² in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Inverse Pythagorean theorem",
-          "snippet": "the inverse Pythagorean theorem relates the two legs"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle a^{2}+b^{2}=c^{2}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {1}{a^{2}}}+{\\frac {1}{b^{2}}}={\\frac {1}{d^{2}}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {1}{(xz)^{2}}}+{\\frac {1}{(yz)^{2}}}={\\frac {1}{(xy)^{2}}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {1}{20^{2}}}+{\\frac {1}{15^{2}}}={\\frac {1}{12^{2}}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {1}{p}}+{\\frac {1}{q}}={\\frac {1}{r}}}"
-        }
-      ],
       "id": "8cef2d064d0b"
     },
     {
@@ -513,29 +439,11 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Complex.normSq_apply",
-        "module": "Mathlib.Analysis.SpecialFunctions.PolarCoord",
+        "module": "Mathlib.Data.Complex.Basic",
         "match_kind": "exact"
       },
-      "note": "Complex.normSq z = z.re^2 + z.im^2, and `Complex.norm_def` / `‖z‖` give the modulus √(re²+im²).",
+      "note": "`Complex.normSq z = z.re^2 + z.im^2`, and the norm `‖z‖` is the square root, giving the modulus formula.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Complex numbers",
-          "snippet": "the absolute value or modulus is given by"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle z=x+iy,}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle r=|z|={\\textstyle {\\sqrt {x^{2}+y^{2}}}}.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle r^{2}=x^{2}+y^{2}.}"
-        }
-      ],
       "id": "d9456a8278a4"
     },
     {
@@ -548,25 +456,11 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Complex.dist_eq",
-        "module": "Mathlib.Analysis.SpecialFunctions.Complex.CircleMap",
+        "module": "Mathlib.Analysis.Complex.Norm",
         "match_kind": "exact"
       },
       "note": "`Complex.dist_eq : dist z w = ‖z - w‖`, with the modulus formula above giving the Pythagorean-type expression.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Complex numbers",
-          "snippet": "This can be generalised to find the distance between two points"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle |z_{1}-z_{2}|={\\sqrt {(x_{1}-x_{2})^{2}+(y_{1}-y_{2})^{2}}},}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle |z_{1}-z_{2}|^{2}=(x_{1}-x_{2})^{2}+(y_{1}-y_{2})^{2}.}"
-        }
-      ],
       "id": "9ab6489c1c71"
     },
     {
@@ -582,7 +476,7 @@
         "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
         "match_kind": "special_case"
       },
-      "note": "The 2D case is the n=2 instance of the n-dimensional EuclideanSpace.dist_eq formula.",
+      "note": "The 2D case is the n=2 instance of the n-dimensional `EuclideanSpace.dist_eq` formula.",
       "provenance": "ai",
       "id": "78d77957a06e"
     },
@@ -647,21 +541,11 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Real.sin_sq_add_cos_sq",
-        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
         "match_kind": "exact"
       },
       "note": "`sin x ^ 2 + cos x ^ 2 = 1` is provided for both ℝ and ℂ.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Pythagorean trigonometric identity",
-          "snippet": "the fundamental Pythagorean trigonometric identity"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\cos }^{2}\\theta +{\\sin }^{2}\\theta ={\\frac {a^{2}+b^{2}}{c^{2}}}=1,}"
-        }
-      ],
       "id": "33e1c497e4d7"
     },
     {
@@ -679,16 +563,6 @@
       },
       "note": "Mathlib has ‖a × b‖ = ‖a‖‖b‖ sin θ and `cos_angle_mul_norm_mul_norm` for the dot-product side; the identity ‖a‖²‖b‖² = ⟪a,b⟫² + ‖a×b‖² follows but isn't stated separately.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Relation to the cross product",
-          "snippet": "The Pythagorean theorem relates the cross product and dot product"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\|\\mathbf {a} \\times \\mathbf {b} \\|^{2}+(\\mathbf {a} \\cdot \\mathbf {b} )^{2}=\\|\\mathbf {a} \\|^{2}\\|\\mathbf {b} \\|^{2}.}"
-        }
-      ],
       "id": "33034e81ae5a"
     },
     {
@@ -740,16 +614,6 @@
       },
       "note": "`law_cos` (aliasing `dist_sq_eq_dist_sq_add_dist_sq_sub_two_mul_dist_mul_dist_mul_cos_angle`) is the standard law of cosines.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Law of cosines",
-          "snippet": "a special case of the more general theorem relating the lengths of sides in any triangle"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle a^{2}+b^{2}-2ab\\cos {\\theta }=c^{2}}"
-        }
-      ],
       "id": "48e51b784377"
     },
     {
@@ -767,16 +631,6 @@
       },
       "note": "Thābit's generalization is not formalized in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Arbitrary triangle",
-          "snippet": "Thābit ibn Qurra stated that the sides of the three triangles were related as"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle a^{2}+b^{2}=c(r+s).}"
-        }
-      ],
       "id": "1bd229146962"
     },
     {
@@ -826,18 +680,8 @@
         "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
         "match_kind": "special_case"
       },
-      "note": "Follows directly from EuclideanSpace.dist_sq_eq in ℝ³, but no specific cuboid-diagonal lemma is named.",
+      "note": "Follows directly from `EuclideanSpace.dist_sq_eq` in ℝ³, but no specific cuboid-diagonal lemma is named.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Solid geometry",
-          "snippet": "The length of face diagonal AC is found from Pythagoras's theorem"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\overline {AC}}^{\\,2}={\\overline {AB}}^{\\,2}+{\\overline {BC}}^{\\,2},}"
-        }
-      ],
       "id": "e2c707229356"
     },
     {
@@ -889,20 +733,6 @@
       },
       "note": "`‖x + y‖² = ‖x‖² + ‖y‖²` when ⟪x,y⟫ = 0 in any inner product space.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Inner product spaces",
-          "snippet": "In an inner-product space, the Pythagorean theorem states that for any two orthogonal vectors"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\left\\|\\mathbf {v} +\\mathbf {w} \\right\\|^{2}=\\left\\|\\mathbf {v} \\right\\|^{2}+\\left\\|\\mathbf {w} \\right\\|^{2}.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\left\\|\\mathbf {v} +\\mathbf {w} \\right\\|^{2}&amp;=\\langle \\mathbf {v+w} ,\\ \\mathbf {v+w} \\rangle \\\\[3mu]&amp;=\\langle \\mathbf {v} ,\\,\\mathbf {v} \\rangle +\\langle \\mathbf {w} ,\\,\\mathbf {w} \\rangle +\\langle \\mathbf {v,\\,w} \\rangle +\\langle \\mathbf {w,\\,v} \\rangle \\\\[3mu]&amp;=\\left\\|\\mathbf {v} \\right\\|^{2}+\\left\\|\\mathbf {w} \\right\\|^{2},\\end{aligned}}}"
-        }
-      ],
       "id": "67f4d862629b"
     },
     {
@@ -920,16 +750,6 @@
       },
       "note": "`‖x + y‖² + ‖x - y‖² = 2(‖x‖² + ‖y‖²)` is `parallelogram_law_with_norm`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Inner product spaces",
-          "snippet": "the parallelogram law"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle 2\\|\\mathbf {v} \\|^{2}+2\\|\\mathbf {w} \\|^{2}=\\|\\mathbf {v+w} \\|^{2}+\\|\\mathbf {v-w} \\|^{2},}"
-        }
-      ],
       "id": "d6646db9856d"
     },
     {
@@ -947,16 +767,6 @@
       },
       "note": "`‖∑ V i (l i)‖² = ∑ ‖l i‖²` for an orthogonal family generalizes the n-vector case.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Inner product spaces",
-          "snippet": "The Pythagorean identity can be extended to sums of more than two orthogonal vectors"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\biggl \\|}\\sum _{k=1}^{n}\\mathbf {v} _{k}{\\biggr \\|}^{2}=\\sum _{k=1}^{n}\\|\\mathbf {v} _{k}\\|^{2}}"
-        }
-      ],
       "id": "14b3a01f8eaa"
     },
     {
@@ -1025,16 +835,6 @@
       },
       "note": "The spherical Pythagorean formula cos(c/R) = cos(a/R)cos(b/R) is not in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Spherical geometry",
-          "snippet": "For any right triangle on a sphere of radius R"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\cos {\\frac {c}{R}}=\\cos {\\frac {a}{R}}\\,\\cos {\\frac {b}{R}}.}"
-        }
-      ],
       "id": "d175b8f63a15"
     },
     {
@@ -1052,16 +852,6 @@
       },
       "note": "The spherical law of cosines is not formalized in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Spherical geometry",
-          "snippet": "the spherical law of cosines that applies to all spherical triangles"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\cos {\\frac {c}{R}}=\\cos {\\frac {a}{R}}\\,\\cos {\\frac {b}{R}}+\\sin {\\frac {a}{R}}\\,\\sin {\\frac {b}{R}}\\,\\cos {\\gamma }.}"
-        }
-      ],
       "id": "419ecc509391"
     },
     {
@@ -1079,16 +869,6 @@
       },
       "note": "The hyperbolic Pythagorean theorem cosh(c) = cosh(a) cosh(b) is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Hyperbolic geometry",
-          "snippet": "In a hyperbolic space with uniform Gaussian curvature"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\cosh {\\frac {c}{R}}=\\cosh {\\frac {a}{R}}\\,\\cosh {\\frac {b}{R}}}"
-        }
-      ],
       "id": "542754e845ff"
     },
     {
@@ -1106,16 +886,6 @@
       },
       "note": "The hyperbolic law of cosines is not formalized in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Hyperbolic geometry",
-          "snippet": "the hyperbolic law of cosines that applies to all hyperbolic triangles"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\cosh {\\frac {c}{R}}=\\cosh {\\frac {a}{R}}\\,\\cosh {\\frac {b}{R}}-\\sinh {\\frac {a}{R}}\\,\\sinh {\\frac {b}{R}}\\,\\cos \\gamma ,}"
-        }
-      ],
       "id": "0e3d1d72a396"
     },
     {
@@ -1133,16 +903,6 @@
       },
       "note": "The small-triangle asymptotic correction is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Very small triangles",
-          "snippet": "For any uniform curvature K (positive, zero, or negative), in very small right triangles"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle c^{2}=a^{2}+b^{2}-{\\frac {K}{3}}a^{2}b^{2}-{\\frac {K^{2}}{45}}a^{2}b^{2}(a^{2}+b^{2})-{\\frac {2K^{3}}{945}}a^{2}b^{2}(a^{2}-b^{2})^{2}+O(K^{4}c^{10}).}"
-        }
-      ],
       "id": "9b25b8703e16"
     },
     {
@@ -1154,22 +914,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "RiemannianBundle",
+        "decl": "Bundle.RiemannianMetric",
         "module": "Mathlib.Topology.VectorBundle.Riemannian",
         "match_kind": "generalization"
       },
-      "note": "A Riemannian metric is formalized as an inner product on each fiber of a vector bundle via `RiemannianBundle` / `IsRiemannianManifold`.",
+      "note": "A Riemannian metric is formalized as a family of inner products on the fibers of a vector bundle via `Bundle.RiemannianMetric` (with `Bundle.RiemannianBundle` for typeclass inference).",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Differential geometry",
-          "snippet": "which is called the metric tensor"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle ds^{2}=dr^{2}+r^{2}d\\theta ^{2}.}"
-        }
-      ],
       "id": "fc85ea5ecbeb"
     }
   ]

@@ -20,43 +20,23 @@
       },
       "note": "`MetricSpace` is the standard class extending `PseudoMetricSpace` with the indiscernibles axiom.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition",
-          "snippet": "Formally, a metric space is an ordered pair"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d\\,\\colon M\\times M\\to \\mathbb {R} }"
-        }
-      ],
       "id": "a87c2baa0cba"
     },
     {
       "kind": "definition",
-      "label": "Identity of indiscernibles axiom",
+      "label": "Distance from a point to itself is zero",
       "anchor": {
         "section": "Definition",
         "snippet": "The distance from a point to itself is zero"
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "eq_of_dist_eq_zero",
-        "module": "Mathlib.Topology.MetricSpace.Defs",
+        "decl": "dist_self",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
         "match_kind": "exact"
       },
-      "note": "The field/theorem `eq_of_dist_eq_zero` and `dist_eq_zero` give exactly this axiom (combined with `dist_self`).",
-      "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition",
-          "snippet": "The distance from a point to itself is zero"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d(x,x)=0}"
-        }
-      ],
+      "note": "`dist_self : dist x x = 0` is exactly this axiom.",
+      "provenance": "ai-moderated",
       "id": "ed668fd3b419"
     },
     {
@@ -74,16 +54,6 @@
       },
       "note": "`dist_pos : 0 < dist x y ↔ x ≠ y` directly states positivity for distinct points.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition",
-          "snippet": "(Positivity) The distance between two distinct points is always positive"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\text{If }}x\\neq y{\\text{, then }}d(x,y)&gt;0}"
-        }
-      ],
       "id": "4d007cf87e1e"
     },
     {
@@ -101,16 +71,6 @@
       },
       "note": "`dist_comm` is the symmetry axiom of (pseudo)metric spaces.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition",
-          "snippet": "the distance from x to y is always the same as the distance from y to x"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d(x,y)=d(y,x)}"
-        }
-      ],
       "id": "9d3c68ab3a6e"
     },
     {
@@ -128,17 +88,23 @@
       },
       "note": "`dist_triangle x y z : dist x z ≤ dist x y + dist y z` is the standard triangle inequality.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition",
-          "snippet": "The triangle inequality holds"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d(x,z)\\leq d(x,y)+d(y,z)}"
-        }
-      ],
       "id": "d2646e3667c8"
+    },
+    {
+      "kind": "example",
+      "label": "Hamming distance",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the Hamming distance , which measures the number of characters that need to be changed"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "hammingDist",
+        "module": "Mathlib.InformationTheory.Hamming",
+        "match_kind": "exact"
+      },
+      "note": "`hammingDist x y` counts positions where finite tuples differ.",
+      "provenance": "ai"
     },
     {
       "kind": "example",
@@ -170,18 +136,8 @@
         "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
         "match_kind": "exact"
       },
-      "note": "`EuclideanSpace 𝕜 n := PiLp 2 (n → 𝕜)` with `dist x y = √(∑ i, dist (x i) (y i) ^ 2)` formalizes the Euclidean distance.",
+      "note": "`EuclideanSpace 𝕜 n` with `dist x y = √(∑ i, dist (x i) (y i) ^ 2)` formalizes the Euclidean distance.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Metrics on Euclidean spaces",
-          "snippet": "The Euclidean distance familiar from school mathematics"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d_{2}((x_{1},y_{1}),(x_{2},y_{2}))={\\sqrt {(x_{2}-x_{1})^{2}+(y_{2}-y_{1})^{2}}}.}"
-        }
-      ],
       "id": "e116daef0ec8"
     },
     {
@@ -193,22 +149,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "PiLp.prod_dist_eq_of_L1",
+        "decl": "WithLp.prod_dist_eq_of_L1",
         "module": "Mathlib.Analysis.Normed.Lp.ProdLp",
         "match_kind": "special_case"
       },
-      "note": "`WithLp 1 (α × β)` and `PiLp 1` give the L¹/Manhattan distance via `prod_dist_eq_of_L1` and its `PiLp` analogues.",
+      "note": "`WithLp 1 (α × β)` carries the L¹/Manhattan distance with `WithLp.prod_dist_eq_of_L1 : dist x y = dist x.fst y.fst + dist x.snd y.snd`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Metrics on Euclidean spaces",
-          "snippet": "The taxicab or Manhattan distance is defined by"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d_{1}((x_{1},y_{1}),(x_{2},y_{2}))=|x_{2}-x_{1}|+|y_{2}-y_{1}|}"
-        }
-      ],
       "id": "81939607b1d8"
     },
     {
@@ -226,16 +172,6 @@
       },
       "note": "`PiLp ⊤` / `WithLp ⊤` provides the sup (Chebyshev/L∞) metric on finite products.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Metrics on Euclidean spaces",
-          "snippet": "or Chebyshev distance is defined by"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d_{\\infty }((x_{1},y_{1}),(x_{2},y_{2}))=\\max\\{|x_{2}-x_{1}|,|y_{2}-y_{1}|\\}.}"
-        }
-      ],
       "id": "761b1b285cb4"
     },
     {
@@ -251,22 +187,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has individual `PiLp.norm_eq_*` and `Pi.norm_def` lemmas relating L^p norms, but no single statement quantifying the equivalence as in the article.",
+      "note": "Mathlib has individual `PiLp.norm_eq_*` lemmas relating L^p norms but no single statement quantifying the Lᵖ equivalence as in the article.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Metrics on Euclidean spaces",
-          "snippet": "This observation can be quantified with the formula"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d_{\\infty }(p,q)\\leq d_{2}(p,q)\\leq d_{1}(p,q)\\leq 2d_{\\infty }(p,q),}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d_{\\alpha }((x_{1},y_{1}),(x_{2},y_{2}))=\\left(\\vert x_{2}-x_{1}\\vert ^{\\alpha }+\\vert y_{2}-y_{1}\\vert ^{\\alpha }\\right)^{1/\\alpha }.}"
-        }
-      ],
       "id": "52377bac7858"
     },
     {
@@ -282,18 +204,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has `DiscreteTopology` and `DiscreteTopology.of_forall_le_dist`, but no canonical `MetricSpace` instance defining the 0/1 discrete metric on an arbitrary type.",
+      "note": "Mathlib has `DiscreteTopology` but no canonical `MetricSpace` instance providing the 0/1 discrete metric on an arbitrary type.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Metrics on Euclidean spaces",
-          "snippet": "In this discrete metric , all distinct points are 1 unit apart"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d(p,q)={\\begin{cases}0,&amp;{\\text{if }}p=q,\\\\1,&amp;{\\text{otherwise.}}\\end{cases}}}"
-        }
-      ],
       "id": "84b723d003c8"
     },
     {
@@ -309,18 +221,8 @@
         "module": "Mathlib.Topology.MetricSpace.Basic",
         "match_kind": "exact"
       },
-      "note": "`MetricSpace.induced` (and `Subtype.metricSpace`) pulls back a metric along an injection, giving the induced subspace metric.",
+      "note": "`MetricSpace.induced` pulls back a metric along an injection, giving the induced subspace metric.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Subspaces",
-          "snippet": "the induced metric on A is a function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d_{A}(x,y)=d(x,y).}"
-        }
-      ],
       "id": "b956c2633d72"
     },
     {
@@ -338,16 +240,6 @@
       },
       "note": "`Metric.ball x ε` is defined as `{y | dist y x < ε}`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "The topology of a metric space",
-          "snippet": "the open ball of radius r around x is defined to be the set of points that are strictly less than distance r from x"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle B_{r}(x)=\\{y\\in M:d(x,y)&lt;r\\}.}"
-        }
-      ],
       "id": "bf5d737bc3f8"
     },
     {
@@ -365,16 +257,6 @@
       },
       "note": "`Metric.mem_nhds_iff : s ∈ 𝓝 x ↔ ∃ ε > 0, ball x ε ⊆ s` characterizes metric neighborhoods.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "The topology of a metric space",
-          "snippet": "is a neighborhood of x (informally, it contains all points \"close enough\" to x )"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle B_{r}(x)=\\{y\\in M:d(x,y)&lt;r\\}.}"
-        }
-      ],
       "id": "06ae0d4402b7"
     },
     {
@@ -424,7 +306,7 @@
         "module": "Mathlib.Topology.Metrizable.Basic",
         "match_kind": "exact"
       },
-      "note": "`MetrizableSpace` (and `PseudoMetrizableSpace`) classes encode metrizability of a topological space.",
+      "note": "`MetrizableSpace` encodes metrizability of a topological space.",
       "provenance": "ai",
       "id": "e78719d21751"
     },
@@ -458,7 +340,7 @@
         "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
         "match_kind": "exact"
       },
-      "note": "Convergence is characterized via `Metric.tendsto_atTop` / `Metric.tendsto_nhds` (ε–N form).",
+      "note": "Convergence is characterized via `Metric.tendsto_atTop` in ε–N form.",
       "provenance": "ai",
       "id": "7eada1accc86"
     },
@@ -472,7 +354,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Filter.Tendsto",
-        "module": "Mathlib.Order.Filter.Tendsto",
+        "module": "Mathlib.Order.Filter.Defs",
         "match_kind": "exact"
       },
       "note": "`Tendsto u atTop (𝓝 x)` is the standard topological notion of sequential convergence.",
@@ -509,7 +391,7 @@
         "module": "Mathlib.Topology.UniformSpace.Cauchy",
         "match_kind": "exact"
       },
-      "note": "`Tendsto.cauchySeq` (referenced as `tendsto_const_nhds.cauchySeq` etc.) shows convergent sequences are Cauchy.",
+      "note": "`Filter.Tendsto.cauchySeq` shows a convergent sequence is Cauchy.",
       "provenance": "ai",
       "id": "fce8f50633a5"
     },
@@ -540,12 +422,28 @@
       "status": "formalized",
       "mathlib": {
         "decl": "UniformSpace.Completion",
-        "module": "Mathlib.Topology.MetricSpace.Completion",
+        "module": "Mathlib.Topology.UniformSpace.Completion",
         "match_kind": "exact"
       },
       "note": "`UniformSpace.Completion` is defined for uniform spaces and inherits a `MetricSpace` instance for metric inputs.",
       "provenance": "ai",
       "id": "6588adbaf4ee"
+    },
+    {
+      "kind": "example",
+      "label": "p-adic numbers as completion of the rationals",
+      "anchor": {
+        "section": "Completeness",
+        "snippet": "the p -adic numbers are defined as the completion of the rationals under a different metric"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Padic",
+        "module": "Mathlib.NumberTheory.Padics.PadicNumbers",
+        "match_kind": "exact"
+      },
+      "note": "`Padic p` is constructed in Mathlib as the Cauchy-sequence completion of ℚ under the p-adic metric.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -560,7 +458,7 @@
         "module": "Mathlib.Topology.Bornology.Basic",
         "match_kind": "exact"
       },
-      "note": "`Bornology.IsBounded` together with `Metric.isBounded_iff_subset_closedBall` characterizes bounded sets in metric spaces.",
+      "note": "`Bornology.IsBounded` with `Metric.isBounded_iff_subset_closedBall` characterizes bounded sets in metric spaces.",
       "provenance": "ai",
       "id": "e0a98643ab18"
     },
@@ -624,11 +522,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Metric.isCompact_iff_totallyBounded_isComplete",
-        "module": "Mathlib.Topology.MetricSpace.Cauchy",
+        "decl": "isCompact_iff_totallyBounded_isComplete",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
         "match_kind": "exact"
       },
-      "note": "`isCompact_iff_totallyBounded_isComplete` and `Metric.isSeqCompact_iff_isCompact` give the standard equivalences.",
+      "note": "`isCompact_iff_totallyBounded_isComplete` gives the standard equivalence; sequential-compactness equivalences also exist for metric spaces.",
       "provenance": "ai",
       "id": "8f6e0a82266d"
     },
@@ -645,7 +543,7 @@
         "module": "Mathlib.Topology.Order.Compact",
         "match_kind": "exact"
       },
-      "note": "`isCompact_Icc` shows closed intervals in linearly-ordered topological spaces are compact.",
+      "note": "`isCompact_Icc` (exported from `CompactIccSpace`) shows closed intervals in linearly-ordered topological spaces are compact.",
       "provenance": "ai",
       "id": "184c7c1f8f46"
     },
@@ -662,7 +560,7 @@
         "module": "Mathlib.Topology.UniformSpace.Compact",
         "match_kind": "exact"
       },
-      "note": "`lebesgue_number_lemma` (and `lebesgue_number_lemma_of_metric`) state exactly this result.",
+      "note": "`lebesgue_number_lemma` states exactly this result.",
       "provenance": "ai",
       "id": "cccbee0ab432"
     },
@@ -681,16 +579,6 @@
       },
       "note": "`Isometry f` is defined as `∀ x y, edist (f x) (f y) = edist x y`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Isometries",
-          "snippet": "is distance-preserving"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d_{2}(f(x),f(y))=d_{1}(x,y).}"
-        }
-      ],
       "id": "43906c6b74d4"
     },
     {
@@ -706,18 +594,8 @@
         "module": "Mathlib.Topology.MetricSpace.Isometry",
         "match_kind": "exact"
       },
-      "note": "`Isometry.injective` directly proves this (on emetric spaces).",
+      "note": "`Isometry.injective` directly proves this on emetric spaces.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Isometries",
-          "snippet": "It follows from the metric space axioms that a distance-preserving function is injective"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f(x,y)=(x+y,x-y).}"
-        }
-      ],
       "id": "a7fb2e8aac0e"
     },
     {
@@ -733,18 +611,8 @@
         "module": "Mathlib.Topology.MetricSpace.Isometry",
         "match_kind": "exact"
       },
-      "note": "`IsometryEquiv` (denoted `α ≃ᵢ β`) is the bundled bijective isometry.",
+      "note": "`IsometryEquiv` (`α ≃ᵢ β`) is the bundled bijective isometry.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Isometries",
-          "snippet": "A bijective distance-preserving function is called an isometry"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f(x,y)=(x+y,x-y).}"
-        }
-      ],
       "id": "2ec20186ae6b"
     },
     {
@@ -760,7 +628,7 @@
         "module": "Mathlib.Topology.MetricSpace.Isometry",
         "match_kind": "exact"
       },
-      "note": "The existence of an `IsometryEquiv` between spaces is Mathlib's way of saying they are isometric.",
+      "note": "Existence of an `IsometryEquiv` between spaces is Mathlib's way of saying they are isometric.",
       "provenance": "ai",
       "id": "2a3fcbcde46b"
     },
@@ -847,16 +715,6 @@
       },
       "note": "`UniformContinuous` is defined on uniform spaces; `Metric.uniformContinuous_iff` gives the ε–δ form.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Uniformly continuous maps",
-          "snippet": "is uniformly continuous if for every real number ε > 0 there exists δ > 0"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d_{2}(f(x),f(y))&lt;\\varepsilon .}"
-        }
-      ],
       "id": "da24d2c8178c"
     },
     {
@@ -906,18 +764,8 @@
         "module": "Mathlib.Topology.EMetricSpace.Lipschitz",
         "match_kind": "exact"
       },
-      "note": "`LipschitzWith K f` and `lipschitzWith_iff_dist_le_mul` formalize Lipschitz maps.",
+      "note": "`LipschitzWith K f` (with `lipschitzWith_iff_dist_le_mul`) formalizes Lipschitz maps.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Lipschitz maps and contractions",
-          "snippet": "A Lipschitz map is one that stretches distances by at most a bounded factor"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d_{2}(f(x),f(y))\\leq Kd_{1}(x,y)\\quad {\\text{for all}}\\quad x,y\\in M_{1}.}"
-        }
-      ],
       "id": "84e3b76a4051"
     },
     {
@@ -933,18 +781,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has `eVariationOn`/`BoundedVariationOn`, but I found no statement equating finite length with admitting a Lipschitz reparametrization.",
+      "note": "Mathlib has `eVariationOn`/`BoundedVariationOn`, but no statement equating finite length with admitting a Lipschitz reparametrization.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Lipschitz maps and contractions",
-          "snippet": "a curve in a metric space is rectifiable (has finite length) if and only if it has a Lipschitz reparametrization"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d_{2}(f(x),f(y))\\leq Kd_{1}(x,y)\\quad {\\text{for all}}\\quad x,y\\in M_{1}.}"
-        }
-      ],
       "id": "d70a87e68481"
     },
     {
@@ -960,7 +798,7 @@
         "module": "Mathlib.Topology.EMetricSpace.Lipschitz",
         "match_kind": "special_case"
       },
-      "note": "Nonexpanding maps are `LipschitzWith 1 f` (no dedicated `NonexpandingMap` notion exists).",
+      "note": "Nonexpanding maps are `LipschitzWith 1 f`; no dedicated `NonexpandingMap` notion exists.",
       "provenance": "ai",
       "id": "4d3098d99cf3"
     },
@@ -979,16 +817,6 @@
       },
       "note": "`ContractingWith K f := K < 1 ∧ LipschitzWith K f`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Lipschitz maps and contractions",
-          "snippet": "A K -Lipschitz map for K < 1 is called a contraction"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d(f(x),f(y))&lt;d(x,y)\\quad {\\mbox{for all}}\\quad x\\neq y\\in M_{1}.}"
-        }
-      ],
       "id": "bf31aa1a3fa0"
     },
     {
@@ -1006,16 +834,6 @@
       },
       "note": "`ContractingWith.exists_fixedPoint` together with `fixedPoint_unique` formalize Banach's fixed-point theorem.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Lipschitz maps and contractions",
-          "snippet": "The Banach fixed-point theorem states that if M is a complete metric space"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d(f(x),f(y))&lt;d(x,y)\\quad {\\mbox{for all}}\\quad x\\neq y\\in M_{1}.}"
-        }
-      ],
       "id": "1f62862b0d3c"
     },
     {
@@ -1031,18 +849,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Grep for `QuasiIsometry`/`quasiIsometry` returns no matches in Mathlib.",
+      "note": "Grep for `QuasiIsometry` returns no matches in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Quasi-isometries",
-          "snippet": "is a quasi-isometric embedding if there exist constants A ≥ 1 and B ≥ 0"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {1}{A}}d_{2}(f(x),f(y))-B\\leq d_{1}(x,y)\\leq Ad_{2}(f(x),f(y))+B\\quad {\\text{ for all }}\\quad x,y\\in M_{1}.}"
-        }
-      ],
       "id": "f81c9019484c"
     },
     {
@@ -1060,16 +868,6 @@
       },
       "note": "No `QuasiIsometry` definition exists in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Quasi-isometries",
-          "snippet": "It is a quasi-isometry if in addition it is quasi-surjective"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {1}{A}}d_{2}(f(x),f(y))-B\\leq d_{1}(x,y)\\leq Ad_{2}(f(x),f(y))+B\\quad {\\text{ for all }}\\quad x,y\\in M_{1}.}"
-        }
-      ],
       "id": "9b99efd589c8"
     },
     {
@@ -1085,7 +883,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No file mentions Švarc–Milnor; the prerequisite quasi-isometry notion is also absent.",
+      "note": "No file mentions Švarc–Milnor; the prerequisite quasi-isometry notion is absent.",
       "provenance": "ai",
       "id": "f709a09a6c54"
     },
@@ -1136,7 +934,7 @@
         "module": "Mathlib.Topology.EMetricSpace.Lipschitz",
         "match_kind": "invocation"
       },
-      "note": "Mathlib expresses bilipschitz equivalence via `LipschitzWith` on both directions, but there is no dedicated bundled `Bilipschitz` structure.",
+      "note": "Mathlib expresses bilipschitz equivalence via `LipschitzWith` on both directions; no dedicated bundled `Bilipschitz` structure.",
       "provenance": "ai",
       "id": "0dba681bec51"
     },
@@ -1167,21 +965,11 @@
       "status": "formalized",
       "mathlib": {
         "decl": "dist_eq_norm",
-        "module": "Mathlib.Analysis.Normed.Group.Defs",
+        "module": "Mathlib.Analysis.Normed.Group.Basic",
         "match_kind": "exact"
       },
       "note": "`dist_eq_norm : dist x y = ‖x - y‖` together with the `SeminormedAddCommGroup` metric formalize this.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Normed vector spaces",
-          "snippet": "Any normed vector space can be equipped with a metric in which the distance between two vectors x and y is given by"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d(x,y):=\\lVert x-y\\rVert .}"
-        }
-      ],
       "id": "c6baa2d346ff"
     },
     {
@@ -1197,9 +985,25 @@
         "module": null,
         "match_kind": null
       },
-      "note": "I found no Mathlib statement constructing a norm from a translation-invariant, homogeneous metric on a vector space.",
+      "note": "No Mathlib statement constructs a norm from a translation-invariant, homogeneous metric on a vector space.",
       "provenance": "ai",
       "id": "3604c7e6f7ea"
+    },
+    {
+      "kind": "theorem",
+      "label": "Kuratowski embedding",
+      "anchor": {
+        "section": "Normed vector spaces",
+        "snippet": "the Kuratowski embedding allows one to see any metric space as a subspace of a normed vector space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "kuratowskiEmbedding",
+        "module": "Mathlib.Topology.MetricSpace.Kuratowski",
+        "match_kind": "exact"
+      },
+      "note": "`kuratowskiEmbedding` isometrically embeds any separable metric space into `ℓ∞(ℕ, ℝ)`.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -1227,11 +1031,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "LinearMap.continuous_of_bound",
+        "decl": "continuous_of_linear_of_bound",
         "module": "Mathlib.Analysis.Normed.Operator.ContinuousLinearMap",
         "match_kind": "exact"
       },
-      "note": "`continuous_of_linear_of_bound` and `ContinuousLinearMap.lipschitz` together formalize that a linear map is continuous iff Lipschitz.",
+      "note": "`continuous_of_linear_of_bound` together with `ContinuousLinearMap.lipschitz` formalize that a linear map is continuous iff Lipschitz.",
       "provenance": "ai",
       "id": "fac4f2e0d436"
     },
@@ -1245,21 +1049,11 @@
       "status": "partial",
       "mathlib": {
         "decl": "eVariationOn",
-        "module": "Mathlib.Analysis.BoundedVariation",
+        "module": "Mathlib.Topology.EMetricSpace.BoundedVariation",
         "match_kind": "generalization"
       },
       "note": "Mathlib uses `eVariationOn` (and `Path`) for length-style notions; there is no single `Curve.length` definition matching the article verbatim.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Length spaces",
-          "snippet": "A curve in a metric space ( M , d ) is a continuous function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle L(\\gamma )=\\sup _{0=x_{0}&lt;x_{1}&lt;\\cdots &lt;x_{n}=T}\\left\\{\\sum _{k=1}^{n}d(\\gamma (x_{k-1}),\\gamma (x_{k}))\\right\\}.}"
-        }
-      ],
       "id": "a2b9b048fe8b"
     },
     {
@@ -1272,21 +1066,11 @@
       "status": "partial",
       "mathlib": {
         "decl": "BoundedVariationOn",
-        "module": "Mathlib.Analysis.BoundedVariation",
+        "module": "Mathlib.Topology.EMetricSpace.BoundedVariation",
         "match_kind": "generalization"
       },
       "note": "`BoundedVariationOn` captures finite-length curves but no `Rectifiable` name appears.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Length spaces",
-          "snippet": "a curve of finite length is called rectifiable"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle L(\\gamma )=\\sup _{0=x_{0}&lt;x_{1}&lt;\\cdots &lt;x_{n}=T}\\left\\{\\sum _{k=1}^{n}d(\\gamma (x_{k-1}),\\gamma (x_{k}))\\right\\}.}"
-        }
-      ],
       "id": "a85bb65d4818"
     },
     {
@@ -1302,18 +1086,8 @@
         "module": "Mathlib.Geometry.Manifold.Riemannian.Basic",
         "match_kind": null
       },
-      "note": "Riemannian-manifold geodesics appear in Mathlib (e.g. `PathELength`), but no general metric-space `Geodesic` definition exists.",
+      "note": "Riemannian-manifold geodesics appear in Mathlib, but no general metric-space `Geodesic` definition exists.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Length spaces",
-          "snippet": "After reparametrization by arc length"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle L(\\gamma )=\\sup _{0=x_{0}&lt;x_{1}&lt;\\cdots &lt;x_{n}=T}\\left\\{\\sum _{k=1}^{n}d(\\gamma (x_{k-1}),\\gamma (x_{k}))\\right\\}.}"
-        }
-      ],
       "id": "31b417f3247c"
     },
     {
@@ -1329,7 +1103,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No `GeodesicSpace`/`geodesic_space` class found in Mathlib.",
+      "note": "No `GeodesicSpace` class found in Mathlib.",
       "provenance": "ai",
       "id": "737c29270f63"
     },
@@ -1411,21 +1185,11 @@
       "status": "formalized",
       "mathlib": {
         "decl": "IsManifold",
-        "module": "Mathlib.Geometry.Manifold.Riemannian.Basic",
-        "match_kind": "exact"
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": "invocation"
       },
-      "note": "Mathlib's `Mathlib.Geometry.Manifold.Riemannian` develops Riemannian manifolds with a Riemannian metric and `PathELength` for path length.",
+      "note": "Mathlib's `Mathlib.Geometry.Manifold.Riemannian` develops Riemannian manifolds (built on `IsManifold`) with a Riemannian metric and `PathELength` for path length.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Riemannian manifolds",
-          "snippet": "A Riemannian manifold is a space equipped with a Riemannian metric tensor"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle L(\\gamma )=\\int _{0}^{T}|{\\dot {\\gamma }}(t)|dt.}"
-        }
-      ],
       "id": "cb66d77c1e2a"
     },
     {
@@ -1509,7 +1273,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Grep finds no `wordMetric`/`word_metric` and no Cayley-graph metric construction in Mathlib.",
+      "note": "No `wordMetric` and no Cayley-graph metric construction in Mathlib.",
       "provenance": "ai",
       "id": "c238cf6888f1"
     },
@@ -1545,16 +1309,6 @@
       },
       "note": "`BoundedContinuousFunction` (`α →ᵇ β`) carries the sup metric `dist f g = ⨆ x, dist (f x) (g x)`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Distances between mathematical objects",
-          "snippet": "This metric is called the uniform metric or supremum metric"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d(f,g)=\\sup _{x\\in X}d(f(x),g(x)).}"
-        }
-      ],
       "id": "df681d385546"
     },
     {
@@ -1572,17 +1326,23 @@
       },
       "note": "`instance instCompleteSpace [CompleteSpace β] : CompleteSpace (α →ᵇ β)` formalizes this.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Distances between mathematical objects",
-          "snippet": "If M is complete, then this function space is complete as well"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d(f,g)=\\sup _{x\\in X}d(f(x),g(x)).}"
-        }
-      ],
       "id": "c349834d4231"
+    },
+    {
+      "kind": "example",
+      "label": "Levenshtein distance",
+      "anchor": {
+        "section": "Distances between mathematical objects",
+        "snippet": "while the Levenshtein distance measures the minimal number of deletions, insertions, and substitutions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Levenshtein`/edit-distance file exists in Mathlib (grep for `levenshtein`/`EditDistance` returns no matches).",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -1599,20 +1359,6 @@
       },
       "note": "`Metric.infDist` (and `Metric.infEDist`) define the distance from a point to a set.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Hausdorff and Gromov–Hausdorff distance",
-          "snippet": "The distance from S to a point x of M is, informally, the distance from x to the closest point of S"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d(x,S)=\\inf\\{d(x,s):s\\in S\\}.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d(x,S)\\leq d(x,y)+d(y,S),}"
-        }
-      ],
       "id": "ccf16b38c8c6"
     },
     {
@@ -1630,20 +1376,6 @@
       },
       "note": "Combined with `infEDist_eq_zero_iff_mem_closure`, gives `infDist x s = 0 ↔ x ∈ closure s`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Hausdorff and Gromov–Hausdorff distance",
-          "snippet": "if and only if x belongs to the closure of S"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d(x,S)=\\inf\\{d(x,s):s\\in S\\}.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d(x,S)\\leq d(x,y)+d(y,S),}"
-        }
-      ],
       "id": "4f02fa066a13"
     },
     {
@@ -1659,22 +1391,8 @@
         "module": "Mathlib.Topology.MetricSpace.HausdorffDistance",
         "match_kind": "exact"
       },
-      "note": "`continuous_infDist_pt` and `uniformContinuous_infDist_pt` show `x ↦ infDist x s` is (uniformly) continuous.",
+      "note": "`continuous_infDist_pt` shows `x ↦ infDist x s` is continuous.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Hausdorff and Gromov–Hausdorff distance",
-          "snippet": "and therefore the map"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d(x,S)=\\inf\\{d(x,s):s\\in S\\}.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d(x,S)\\leq d(x,y)+d(y,S),}"
-        }
-      ],
       "id": "bf5942ad5938"
     },
     {
@@ -1690,22 +1408,8 @@
         "module": "Mathlib.Topology.Separation.CompletelyRegular",
         "match_kind": "invocation"
       },
-      "note": "`CompletelyRegularSpace` exists, and metric spaces being T3.5 follows from being `NormalSpace`, but I did not find an explicit `instance CompletelyRegularSpace` for metric spaces.",
+      "note": "`CompletelyRegularSpace` exists, and metric spaces being T3.5 follows from being normal, but no explicit `instance CompletelyRegularSpace` for metric spaces was found.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Hausdorff and Gromov–Hausdorff distance",
-          "snippet": "Incidentally, this shows that metric spaces are completely regular"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d(x,S)=\\inf\\{d(x,s):s\\in S\\}.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d(x,S)\\leq d(x,y)+d(y,S),}"
-        }
-      ],
       "id": "f2618b6f243a"
     },
     {
@@ -1723,16 +1427,6 @@
       },
       "note": "`Metric.hausdorffEDist` (and `Metric.hausdorffDist`) define the Hausdorff distance between subsets.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Hausdorff and Gromov–Hausdorff distance",
-          "snippet": "Given two subsets S and T of M , their Hausdorff distance is"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d_{H}(S,T)=\\max\\{\\sup\\{d(s,T):s\\in S\\},\\sup\\{d(t,S):t\\in T\\}\\}.}"
-        }
-      ],
       "id": "e65f89f9e977"
     },
     {
@@ -1744,22 +1438,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Metric.NonemptyCompacts.metricSpace",
+        "decl": "NonemptyCompacts.instMetricSpace",
         "module": "Mathlib.Topology.MetricSpace.Closeds",
         "match_kind": "exact"
       },
-      "note": "Mathlib endows `NonemptyCompacts` (and `Closeds`) with a metric/emetric via `hausdorffEDist`.",
+      "note": "`NonemptyCompacts.instMetricSpace` endows nonempty compact subsets with the Hausdorff metric.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Hausdorff and Gromov–Hausdorff distance",
-          "snippet": "Thus the Hausdorff distance defines a metric on the set of compact subsets of M"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d_{H}(S,T)=\\max\\{\\sup\\{d(s,T):s\\in S\\},\\sup\\{d(t,S):t\\in T\\}\\}.}"
-        }
-      ],
       "id": "0cedd3e46c10"
     },
     {
@@ -1792,7 +1476,7 @@
         "module": "Mathlib.Topology.MetricSpace.Snowflaking",
         "match_kind": "special_case"
       },
-      "note": "`Mathlib.Topology.MetricSpace.Snowflaking` handles the power-of-d snowflake; the general concave-f version is not stated.",
+      "note": "`Snowflaking` formalizes the power-of-d snowflake; the general concave-f version is not stated.",
       "provenance": "ai",
       "id": "1b57c218abe6"
     },
@@ -1809,7 +1493,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Grep finds no tight-span / injective-hull construction in Mathlib.",
+      "note": "No tight-span / injective-hull construction in Mathlib.",
       "provenance": "ai",
       "id": "52730a1a481c"
     },
@@ -1862,16 +1546,6 @@
       },
       "note": "`Prod.metricSpaceMax` puts the sup product metric on `α × β`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Product metric spaces",
-          "snippet": "the product metric is defined by"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d_{\\times }{\\bigl (}(x_{1},\\ldots ,x_{n}),(y_{1},\\ldots ,y_{n}){\\bigr )}=N{\\bigl (}d_{1}(x_{1},y_{1}),\\ldots ,d_{n}(x_{n},y_{n}){\\bigr )},}"
-        }
-      ],
       "id": "8ce67cf7c1ad"
     },
     {
@@ -1883,22 +1557,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "PiNat",
+        "decl": "PiCountable.metricSpace",
         "module": "Mathlib.Topology.MetricSpace.PiNat",
         "match_kind": "exact"
       },
-      "note": "`Mathlib.Topology.MetricSpace.PiNat` constructs a metric on countable products `∀ n, E n` generating the product topology.",
+      "note": "`PiCountable.metricSpace` constructs a (non-instance) metric on countable products `∀ i, F i` of metric spaces.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Product metric spaces",
-          "snippet": "a metric on the topological product of countably many metric spaces can be obtained"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d(x,y)=\\sum _{i=1}^{\\infty }{\\frac {1}{2^{i}}}{\\frac {d_{i}(x_{i},y_{i})}{1+d_{i}(x_{i},y_{i})}}.}"
-        }
-      ],
       "id": "59fc886a3aff"
     },
     {
@@ -1914,7 +1578,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "I found no explicit non-metrizability result for uncountable products in Mathlib.",
+      "note": "No explicit non-metrizability result for uncountable products in Mathlib.",
       "provenance": "ai",
       "id": "f5c79dcd0b5b"
     },
@@ -1927,22 +1591,12 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Metric.gluingSpace",
+        "decl": null,
         "module": "Mathlib.Topology.MetricSpace.Gluing",
-        "match_kind": "special_case"
+        "match_kind": null
       },
-      "note": "Mathlib's `Gluing.lean` constructs quotient (pseudo)metric spaces in the gluing context but no general `Quotient.pseudoMetric` of a setoid.",
+      "note": "`Mathlib.Topology.MetricSpace.Gluing` constructs quotient (pseudo)metric spaces in the gluing context, but no general `Quotient.pseudoMetric` of a setoid is defined.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Quotient metric spaces",
-          "snippet": "then we can endow the quotient set"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d'([x],[y])=\\inf\\{d(p_{1},q_{1})+d(p_{2},q_{2})+\\dotsb +d(p_{n},q_{n})\\},}"
-        }
-      ],
       "id": "c6452752cd44"
     },
     {
@@ -2009,7 +1663,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "I found no general lemma in Mathlib converting an `EMetricSpace` to a topologically equivalent `MetricSpace`.",
+      "note": "No general lemma in Mathlib converts an `EMetricSpace` to a topologically equivalent `MetricSpace`.",
       "provenance": "ai",
       "id": "9b761a713d04"
     },
@@ -2062,16 +1716,6 @@
       },
       "note": "No quasimetric infrastructure in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Quasimetrics",
-          "snippet": "A quasimetric on the reals can be defined by setting"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d(x,y)={\\begin{cases}x-y&amp;{\\text{if }}x\\geq y,\\\\1&amp;{\\text{otherwise.}}\\end{cases}}}"
-        }
-      ],
       "id": "19677bcc0e25"
     },
     {

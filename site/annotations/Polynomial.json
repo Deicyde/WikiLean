@@ -54,16 +54,6 @@
       },
       "note": "`Polynomial.eval` substitutes a ring element for the indeterminate.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Notation and terminology",
-          "snippet": "denotes, by convention, the result of substituting"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle a\\mapsto P(a),}"
-        }
-      ],
       "id": "e15664577f64"
     },
     {
@@ -81,16 +71,6 @@
       },
       "note": "`Polynomial.comp_X : p.comp X = p` states that substituting the indeterminate returns the polynomial unchanged.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Notation and terminology",
-          "snippet": "does not change anything"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle P(x)=P,}"
-        }
-      ],
       "id": "f61dba747e74"
     },
     {
@@ -142,16 +122,6 @@
       },
       "note": "`Polynomial.as_sum_range` writes `p = ∑ i in range (natDegree+1), monomial i (coeff p i)`, the standard form.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition",
-          "snippet": "A polynomial in a single indeterminate x can always be written"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle a_{n}x^{n}+a_{n-1}x^{n-1}+\\dotsb +a_{2}x^{2}+a_{1}x+a_{0},}"
-        }
-      ],
       "id": "550bca60f32d"
     },
     {
@@ -169,16 +139,6 @@
       },
       "note": "`Polynomial.leadingCoeff` is the coefficient of the highest-degree term.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition",
-          "snippet": "The leading coefficient of such a polynomial is"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle a_{n}x^{n}+a_{n-1}x^{n-1}+\\dotsb +a_{2}x^{2}+a_{1}x+a_{0},}"
-        }
-      ],
       "id": "a1b93755976f"
     },
     {
@@ -196,16 +156,6 @@
       },
       "note": "`Polynomial.as_sum_support` expresses `p` as a finite sum of monomials over its (finite) support.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition",
-          "snippet": "a polynomial can either be zero or can be written as the sum of a finite number of non-zero terms"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\sum _{k=0}^{n}a_{k}x^{k}}"
-        }
-      ],
       "id": "f03be1326ce4"
     },
     {
@@ -234,12 +184,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Polynomial.constantCoeff",
-        "module": "Mathlib.Algebra.Polynomial.Coeff",
+        "decl": "Polynomial.C",
+        "module": "Mathlib.Algebra.Polynomial.Basic",
         "match_kind": "exact"
       },
-      "note": "`Polynomial.constantCoeff` is the constant term and `Polynomial.C` embeds constant polynomials.",
-      "provenance": "ai",
+      "note": "`Polynomial.C` embeds the coefficient ring as constant polynomials; the constant term of `p` is `p.coeff 0`.",
+      "provenance": "ai-moderated",
       "id": "d3cb483d420f"
     },
     {
@@ -257,16 +207,6 @@
       },
       "note": "A worked numeric example instantiating the general `Polynomial.degree_monomial`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Classification",
-          "snippet": "is a term. The coefficient is"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle -5x^{2}y}"
-        }
-      ],
       "id": "005c8a0193a8"
     },
     {
@@ -284,16 +224,6 @@
       },
       "note": "A specific example illustrating that finite sums of monomials are polynomials, covered by `as_sum_support`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Classification",
-          "snippet": "Forming a sum of several terms produces a polynomial."
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\underbrace {_{\\,}3x^{2}} _{\\begin{smallmatrix}\\mathrm {term} \\\\\\mathrm {1} \\end{smallmatrix}}\\underbrace {-_{\\,}5x} _{\\begin{smallmatrix}\\mathrm {term} \\\\\\mathrm {2} \\end{smallmatrix}}\\underbrace {+_{\\,}4} _{\\begin{smallmatrix}\\mathrm {term} \\\\\\mathrm {3} \\end{smallmatrix}}.}"
-        }
-      ],
       "id": "cd1603710ae3"
     },
     {
@@ -430,32 +360,6 @@
       },
       "note": "`R[X]` has an additive structure with `coeff_add` giving coefficientwise addition.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Addition and subtraction",
-          "snippet": "Polynomials can be added using the associative law of addition"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle P=3x^{2}-2x+5xy-2}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle Q=-3x^{2}+3x+4y^{2}+8}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle P+Q=3x^{2}-2x+5xy-2-3x^{2}+3x+4y^{2}+8}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle P+Q=(3x^{2}-3x^{2})+(-2x+3x)+5xy+4y^{2}+(8-2)}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle P+Q=x+5xy+4y^{2}+6.}"
-        }
-      ],
       "id": "038d5db3791d"
     },
     {
@@ -473,32 +377,6 @@
       },
       "note": "`Polynomial.coeff_mul` gives the Cauchy-product formula for polynomial multiplication.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Multiplication",
-          "snippet": "Polynomials can also be multiplied."
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\color {Red}P\\,&amp;\\color {Red}{=2x+3y+5}\\\\\\color {Blue}Q\\,&amp;{\\color {Blue}{=2x+5y+xy+1}},\\end{aligned}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{array}{rccrcrcrcr}{\\color {Red}{P}}{\\color {Blue}{Q}}&amp;{=}&amp;&amp;({\\color {Red}{2x}}\\cdot {\\color {Blue}{2x}})&amp;+&amp;({\\color {Red}{2x}}\\cdot {\\color {Blue}{5y}})&amp;+&amp;({\\color {Red}{2x}}\\cdot {\\color {Blue}{xy}})&amp;+&amp;({\\color {Red}{2x}}\\cdot {\\color {Blue}{1}})\\\\&amp;&amp;+&amp;({\\color {Red}{3y}}\\cdot {\\color {Blue}{2x}})&amp;+&amp;({\\color {Red}{3y}}\\cdot {\\color {Blue}{5y}})&amp;+&amp;({\\color {Red}{3y}}\\cdot {\\color {Blue}{xy}})&amp;+&amp;({\\color {Red}{3y}}\\cdot {\\color {Blue}{1}})\\\\&amp;&amp;+&amp;({\\color {Red}{5}}\\cdot {\\color {Blue}{2x}})&amp;+&amp;({\\color {Red}{5}}\\cdot {\\color {Blue}{5y}})&amp;+&amp;({\\color {Red}{5}}\\cdot {\\color {Blue}{xy}})&amp;+&amp;({\\color {Red}{5}}\\cdot {\\color {Blue}{1}})\\end{array}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{array}{rccrcrcrcr}PQ&amp;=&amp;&amp;4x^{2}&amp;+&amp;10xy&amp;+&amp;2x^{2}y&amp;+&amp;2x\\\\&amp;&amp;+&amp;6xy&amp;+&amp;15y^{2}&amp;+&amp;3xy^{2}&amp;+&amp;3y\\\\&amp;&amp;+&amp;10x&amp;+&amp;25y&amp;+&amp;5xy&amp;+&amp;5.\\end{array}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{array}{rcccrcrcrcr}PQ&amp;=&amp;&amp;4x^{2}&amp;+&amp;(10xy+6xy+5xy)&amp;+&amp;2x^{2}y&amp;+&amp;(2x+10x)\\\\&amp;&amp;+&amp;15y^{2}&amp;+&amp;3xy^{2}&amp;+&amp;(3y+25y)&amp;+&amp;5\\end{array}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle PQ=4x^{2}+21xy+2x^{2}y+12x+15y^{2}+3xy^{2}+28y+5.}"
-        }
-      ],
       "id": "b6d1661cbccd"
     },
     {
@@ -516,16 +394,6 @@
       },
       "note": "`Polynomial.comp p q` substitutes `q` for the variable of `p`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Composition",
-          "snippet": "is obtained by substituting each copy of the variable of the first polynomial by the second polynomial"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle (f\\circ g)(x)=f(g(x))=(3x+2)^{2}+2(3x+2).}"
-        }
-      ],
       "id": "af526ad8bd01"
     },
     {
@@ -594,24 +462,6 @@
       },
       "note": "`D[X]` is a `UniqueFactorizationMonoid`, giving factorization into irreducibles times a unit.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Factoring",
-          "snippet": "also have a factored form in which the polynomial is written as a product of irreducible polynomials and a constant"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle 5x^{3}-5}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle 5(x-1)\\left(x^{2}+x+1\\right)}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle 5(x-1)\\left(x+{\\frac {1+i{\\sqrt {3}}}{2}}\\right)\\left(x+{\\frac {1-i{\\sqrt {3}}}{2}}\\right)}"
-        }
-      ],
       "id": "24321a1122d9"
     },
     {
@@ -629,24 +479,6 @@
       },
       "note": "`Polynomial.derivative` is the formal derivative, shown to agree with the analytic derivative.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Calculus",
-          "snippet": "The derivative of the polynomial"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle P=a_{n}x^{n}+a_{n-1}x^{n-1}+\\dots +a_{2}x^{2}+a_{1}x+a_{0}=\\sum _{i=0}^{n}a_{i}x^{i}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle na_{n}x^{n-1}+(n-1)a_{n-1}x^{n-2}+\\dots +2a_{2}x+a_{1}=\\sum _{i=1}^{n}ia_{i}x^{i-1}.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {a_{n}x^{n+1}}{n+1}}+{\\frac {a_{n-1}x^{n}}{n}}+\\dots +{\\frac {a_{2}x^{3}}{3}}+{\\frac {a_{1}x^{2}}{2}}+a_{0}x+c=c+\\sum _{i=0}^{n}{\\frac {a_{i}x^{i+1}}{i+1}}}"
-        }
-      ],
       "id": "8150ffd4c151"
     },
     {
@@ -664,24 +496,6 @@
       },
       "note": "No formal polynomial antiderivative/indefinite-integral operation is defined in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Calculus",
-          "snippet": "the general antiderivative (or indefinite integral)"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle P=a_{n}x^{n}+a_{n-1}x^{n-1}+\\dots +a_{2}x^{2}+a_{1}x+a_{0}=\\sum _{i=0}^{n}a_{i}x^{i}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle na_{n}x^{n-1}+(n-1)a_{n-1}x^{n-2}+\\dots +2a_{2}x+a_{1}=\\sum _{i=1}^{n}ia_{i}x^{i-1}.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {a_{n}x^{n+1}}{n+1}}+{\\frac {a_{n-1}x^{n}}{n}}+\\dots +{\\frac {a_{2}x^{3}}{3}}+{\\frac {a_{1}x^{2}}{2}}+a_{0}x+c=c+\\sum _{i=0}^{n}{\\frac {a_{i}x^{i+1}}{i+1}}}"
-        }
-      ],
       "id": "1fba3a5e7be4"
     },
     {
@@ -716,16 +530,6 @@
       },
       "note": "The polynomial function is `fun x => p.eval x` via `Polynomial.eval`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Polynomial functions",
-          "snippet": "A polynomial function is a function defined by evaluating a polynomial."
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle a_{n}x^{n}+a_{n-1}x^{n-1}+\\cdots +a_{2}x^{2}+a_{1}x+a_{0}}"
-        }
-      ],
       "id": "6d622ea2389c"
     },
     {
@@ -743,20 +547,6 @@
       },
       "note": "A specific example of evaluating a univariate polynomial, an instance of `Polynomial.eval`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Polynomial functions",
-          "snippet": "is a polynomial function of one variable"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f(x)=x^{3}-x,}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f(x,y)=2x^{3}+4x^{2}y+xy^{5}+y^{2}-7.}"
-        }
-      ],
       "id": "d50d763cf349"
     },
     {
@@ -808,16 +598,6 @@
       },
       "note": "`Polynomial.recOnHorner` provides the Horner-form recursion structure, but Mathlib has no Horner evaluation algorithm proper.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Polynomial functions",
-          "snippet": "using Horner's method"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle (((((a_{n}x+a_{n-1})x+a_{n-2})x+\\dotsb +a_{3})x+a_{2})x+a_{1})x+a_{0}.}"
-        }
-      ],
       "id": "9b8695610d07"
     },
     {
@@ -954,20 +734,6 @@
       },
       "note": "Solutions of `P = 0` are captured by `Polynomial.IsRoot`/`roots`, though the equation as an object is not separately defined.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Equations",
-          "snippet": "A polynomial equation , also called an algebraic equation , is an equation of the form"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle a_{n}x^{n}+a_{n-1}x^{n-1}+\\dotsb +a_{2}x^{2}+a_{1}x+a_{0}=0.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle 3x^{2}+4x-5=0}"
-        }
-      ],
       "id": "ded7cd07f453"
     },
     {
@@ -1133,7 +899,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "MvPolynomial.eval",
-        "module": "Mathlib.Algebra.MvPolynomial.Basic",
+        "module": "Mathlib.Algebra.MvPolynomial.Eval",
         "match_kind": null
       },
       "note": "Vanishing sets are definable via `MvPolynomial.eval`, but no dedicated affine-variety zero-set definition exists for points.",
@@ -1235,25 +1001,11 @@
       "status": "partial",
       "mathlib": {
         "decl": "matPolyEquiv",
-        "module": "Mathlib.LinearAlgebra.Matrix.Charpoly.Basic",
+        "module": "Mathlib.RingTheory.MatrixPolynomialAlgebra",
         "match_kind": "generalization"
       },
       "note": "`matPolyEquiv` identifies matrices of polynomials with polynomials having matrix coefficients; evaluation at a matrix is `Polynomial.aeval`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Matrix polynomials",
-          "snippet": "A matrix polynomial is a polynomial with square matrices as variables."
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle P(x)=\\sum _{i=0}^{n}{a_{i}x^{i}}=a_{0}+a_{1}x+a_{2}x^{2}+\\cdots +a_{n}x^{n},}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle P(A)=\\sum _{i=0}^{n}{a_{i}A^{i}}=a_{0}I+a_{1}A+a_{2}A^{2}+\\cdots +a_{n}A^{n},}"
-        }
-      ],
       "id": "0d2a63899084"
     },
     {
@@ -1390,16 +1142,6 @@
       },
       "note": "`MvPolynomial.finSuccEquiv` gives `MvPolynomial (Fin (n+1)) R ≃ₐ (MvPolynomial (Fin n) R)[X]`, the iterated reduction.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Polynomial ring",
-          "snippet": "most of the theory of the multivariate case can be reduced to an iterated univariate case"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle R[x_{1},\\ldots ,x_{n}]=\\left(R[x_{1},\\ldots ,x_{n-1}]\\right)[x_{n}].}"
-        }
-      ],
       "id": "f003ae24d8e6"
     },
     {
@@ -1468,16 +1210,6 @@
       },
       "note": "`Polynomial.instEuclideanDomain` makes `F[X]` a `EuclideanDomain` for a field `F`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Divisibility",
-          "snippet": "shows that the ring F [ x ] is a Euclidean domain"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f=q\\,g+r}"
-        }
-      ],
       "id": "07c8f4a8f51a"
     },
     {
@@ -1499,6 +1231,22 @@
     },
     {
       "kind": "theorem",
+      "label": "Eisenstein's criterion",
+      "anchor": {
+        "section": "Divisibility",
+        "snippet": "Eisenstein's criterion can also be used in some cases to determine irreducibility."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.IsEisensteinAt.irreducible",
+        "module": "Mathlib.RingTheory.Polynomial.Eisenstein.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Polynomial.IsEisensteinAt.irreducible` gives Eisenstein's criterion: an Eisenstein polynomial is irreducible.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
       "label": "Unique base representation",
       "anchor": {
         "section": "Positional notation",
@@ -1513,6 +1261,22 @@
       "note": "`Nat.ofDigits_digits` gives the base-`b` representation (with `digits_inj_iff`/`digits_lt_base` for uniqueness and bounds).",
       "provenance": "ai",
       "id": "37907e3930e7"
+    },
+    {
+      "kind": "definition",
+      "label": "Polynomial interpolation (Lagrange)",
+      "anchor": {
+        "section": "Interpolation and approximation",
+        "snippet": "Practical methods of approximation include polynomial interpolation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Lagrange.interpolate",
+        "module": "Mathlib.LinearAlgebra.Lagrange",
+        "match_kind": "exact"
+      },
+      "note": "`Lagrange.interpolate` constructs the unique polynomial of bounded degree passing through given points.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",

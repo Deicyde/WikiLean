@@ -11,7 +11,15 @@
         "section": "(Lead)",
         "snippet": "Entropy is a thermodynamic state variable that quantifies the probabilistic distribution of accessible microstates in a system."
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Thermodynamic entropy as a physical state variable is not formalized in Mathlib; only information-theoretic and topological-dynamical entropies (e.g. `Real.negMulLog`, `coverEntropy`) exist.",
+      "provenance": "ai-agent1",
+      "id": "a17c30bdba29"
     },
     {
       "kind": "theorem",
@@ -20,7 +28,15 @@
         "section": "(Lead)",
         "snippet": "the entropy of an isolated system left to spontaneous evolution cannot decrease with time"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No thermodynamic framework exists in Mathlib, so the second law has no formalization.",
+      "provenance": "ai-agent1",
+      "id": "65847b237403"
     },
     {
       "kind": "definition",
@@ -29,7 +45,15 @@
         "section": "(Lead)",
         "snippet": "defined it as the quotient of an infinitesimal amount of heat to the instantaneous temperature"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Clausius' dS = δQ/T definition has no thermodynamic counterpart in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "813dedc445fb"
     },
     {
       "kind": "definition",
@@ -38,7 +62,15 @@
         "section": "(Lead)",
         "snippet": "explained entropy as the measure of the number of possible microscopic arrangements or states of individual atoms and molecules of a system that comply with the macroscopic condition of the system"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Statistical-mechanics entropy concept is not present in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "b093a2d09667"
     },
     {
       "kind": "definition",
@@ -47,7 +79,15 @@
         "section": "History",
         "snippet": "defined entropy as proportional to the natural logarithm of the number of microstates such a gas could occupy"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.negMulLog",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.NegMulLog",
+        "match_kind": "special_case"
+      },
+      "note": "S = k log W is the uniform-distribution special case of Shannon entropy, whose building block `Real.negMulLog` is in Mathlib; the physics constant and microstate counting are not.",
+      "provenance": "ai-agent1",
+      "id": "7ec8ce7b382f"
     },
     {
       "kind": "definition",
@@ -56,7 +96,15 @@
         "section": "State variables and functions of state",
         "snippet": "State variables depend only on the equilibrium condition, not on the path evolution to that state."
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No thermodynamic state-space machinery in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "e0529078830f"
     },
     {
       "kind": "proposition",
@@ -65,7 +113,15 @@
         "section": "State variables and functions of state",
         "snippet": "the change or line integral of any state function, such as entropy, over this reversible cycle is zero"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "While Mathlib has line integrals of exact differentials, the thermodynamic interpretation is not present.",
+      "provenance": "ai-agent1",
+      "id": "0958252859ad"
     },
     {
       "kind": "definition",
@@ -74,7 +130,25 @@
         "section": "Reversible process",
         "snippet": "The entropy change [MATH] of a system can be well-defined as a small portion of heat"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Reversible-process entropy change is a thermodynamic notion absent from Mathlib.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Reversible process",
+          "snippet": "The entropy change [MATH] of a system can be well-defined as a small portion of heat"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathrm {d} S={\\frac {\\delta Q_{\\mathsf {rev}}}{T}}}"
+        }
+      ],
+      "id": "c6008ad44e60"
     },
     {
       "kind": "proposition",
@@ -83,7 +157,15 @@
         "section": "Reversible process",
         "snippet": "an irreversible process increases the total entropy of the system and surroundings"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Thermodynamic irreversibility is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "7291b25cd32c"
     },
     {
       "kind": "example",
@@ -92,7 +174,25 @@
         "section": "Carnot cycle",
         "snippet": "In a Carnot cycle, the heat [MATH] is transferred from a hot reservoir to a working gas at the constant temperature"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Carnot cycle has no formalization in Mathlib.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Carnot cycle",
+          "snippet": "In a Carnot cycle, the heat [MATH] is transferred from a hot reservoir to a working gas at the constant temperature"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle W={\\frac {T_{\\mathsf {H}}-T_{\\mathsf {C}}}{T_{\\mathsf {H}}}}\\cdot Q_{\\mathsf {H}}=\\left(1-{\\frac {T_{\\mathsf {C}}}{T_{\\mathsf {H}}}}\\right)Q_{\\mathsf {H}}}"
+        }
+      ],
+      "id": "ed5ee3b093cb"
     },
     {
       "kind": "theorem",
@@ -101,7 +201,25 @@
         "section": "Carnot cycle",
         "snippet": "a heat engine with two thermal reservoirs can produce a work [MATH] if and only if there is a temperature difference between reservoirs"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Carnot's theorem on heat engines is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Carnot cycle",
+          "snippet": "a heat engine with two thermal reservoirs can produce a work [MATH] if and only if there is a temperature difference between reservoirs"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle W={\\frac {T_{\\mathsf {H}}-T_{\\mathsf {C}}}{T_{\\mathsf {H}}}}\\cdot Q_{\\mathsf {H}}=\\left(1-{\\frac {T_{\\mathsf {C}}}{T_{\\mathsf {H}}}}\\right)Q_{\\mathsf {H}}}"
+        }
+      ],
+      "id": "be074e3020a8"
     },
     {
       "kind": "definition",
@@ -110,7 +228,25 @@
         "section": "Carnot cycle",
         "snippet": "there exists a state function [MATH] with a change of [MATH] . It is called an internal energy"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Internal energy as a thermodynamic state function is not formalized.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Carnot cycle",
+          "snippet": "there exists a state function [MATH] with a change of [MATH] . It is called an internal energy"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle W-Q_{\\Sigma }=W-\\left\\vert Q_{\\mathsf {H}}\\right\\vert +\\left\\vert Q_{\\mathsf {C}}\\right\\vert =W-Q_{\\mathsf {H}}-Q_{\\mathsf {C}}=0}"
+        }
+      ],
+      "id": "9494f1a46a21"
     },
     {
       "kind": "definition",
@@ -119,7 +255,25 @@
         "section": "Carnot cycle",
         "snippet": "this equality implies existence of a state function [MATH] with a change of [MATH] and which is conserved over an entire cycle. Clausius called this state function entropy"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Clausius derivation of entropy as a state function is not present in Mathlib.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Carnot cycle",
+          "snippet": "this equality implies existence of a state function [MATH] with a change of [MATH] and which is conserved over an entire cycle. Clausius called this state function entropy"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {\\left\\vert Q_{\\mathsf {H}}\\right\\vert }{T_{\\mathsf {H}}}}-{\\frac {\\left\\vert Q_{\\mathsf {C}}\\right\\vert }{T_{\\mathsf {C}}}}={\\frac {Q_{\\mathsf {H}}}{T_{\\mathsf {H}}}}+{\\frac {Q_{\\mathsf {C}}}{T_{\\mathsf {C}}}}=0}"
+        }
+      ],
+      "id": "7d478ecee107"
     },
     {
       "kind": "proposition",
@@ -128,7 +282,25 @@
         "section": "Carnot cycle",
         "snippet": "the total change of entropy in both thermal reservoirs over Carnot cycle is zero"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Carnot-cycle reservoir entropy result in Mathlib.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Carnot cycle",
+          "snippet": "the total change of entropy in both thermal reservoirs over Carnot cycle is zero"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle -{\\frac {Q_{\\mathsf {H}}}{T_{\\mathsf {H}}}}-{\\frac {Q_{\\mathsf {C}}}{T_{\\mathsf {C}}}}=\\Delta S_{\\mathsf {r,H}}+\\Delta S_{\\mathsf {r,C}}=0}"
+        }
+      ],
+      "id": "6ca88aaebb55"
     },
     {
       "kind": "proposition",
@@ -137,7 +309,33 @@
         "section": "Carnot cycle",
         "snippet": "its work output is capped by Carnot efficiency"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Carnot efficiency upper bound is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Carnot cycle",
+          "snippet": "its work output is capped by Carnot efficiency"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle W&lt;\\left(1-{\\frac {T_{\\mathsf {C}}}{T_{\\mathsf {H}}}}\\right)Q_{\\mathsf {H}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {Q_{\\mathsf {H}}}{T_{\\mathsf {H}}}}+{\\frac {Q_{\\mathsf {C}}}{T_{\\mathsf {C}}}}&lt;0}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Delta S_{\\mathsf {r,H}}+\\Delta S_{\\mathsf {r,C}}&gt;0}"
+        }
+      ],
+      "id": "a004148073d6"
     },
     {
       "kind": "theorem",
@@ -146,7 +344,29 @@
         "section": "Classical thermodynamics",
         "snippet": "According to the Clausius equality , for a reversible cyclic thermodynamic process"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Clausius equality ∮ δQ_rev/T = 0 is not formalized.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Classical thermodynamics",
+          "snippet": "According to the Clausius equality , for a reversible cyclic thermodynamic process"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\oint {\\frac {\\delta Q_{\\mathsf {rev}}}{T}}=0}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathrm {d} S={\\frac {\\delta Q_{\\mathsf {rev}}}{T}}}"
+        }
+      ],
+      "id": "48426d03adc5"
     },
     {
       "kind": "definition",
@@ -155,7 +375,29 @@
         "section": "Classical thermodynamics",
         "snippet": "the line integral [MATH] is path-independent . Thus we can define a state function [MATH] , called entropy"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Defining entropy via path-independent line integrals of δQ/T is absent from Mathlib.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Classical thermodynamics",
+          "snippet": "the line integral [MATH] is path-independent . Thus we can define a state function [MATH] , called entropy"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\oint {\\frac {\\delta Q_{\\mathsf {rev}}}{T}}=0}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathrm {d} S={\\frac {\\delta Q_{\\mathsf {rev}}}{T}}}"
+        }
+      ],
+      "id": "57f1d5fbb577"
     },
     {
       "kind": "theorem",
@@ -164,7 +406,15 @@
         "section": "Classical thermodynamics",
         "snippet": "perfect crystals at the absolute zero have an entropy"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Third law of thermodynamics is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "03ad99506c23"
     },
     {
       "kind": "definition",
@@ -173,7 +423,25 @@
         "section": "Statistical mechanics",
         "snippet": "entropy is a logarithmic measure for the system with a number of states, each with a probability"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.negMulLog",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.NegMulLog",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib provides `Real.negMulLog` (the `-p log p` summand) underlying Shannon/Gibbs entropy, but no general definition `S = -k Σ pᵢ log pᵢ` over a probability distribution exists.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Statistical mechanics",
+          "snippet": "entropy is a logarithmic measure for the system with a number of states, each with a probability"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle S=-k_{\\mathsf {B}}\\sum _{i}{p_{i}\\ln {p_{i}}}}"
+        }
+      ],
+      "id": "20941c8ee54b"
     },
     {
       "kind": "definition",
@@ -182,7 +450,29 @@
         "section": "Statistical mechanics",
         "snippet": "the summation is replaced by an integral over all possible states, or equivalently we can consider the expected value of the logarithm of the probability that a microstate is occupied"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Differential/continuous entropy ∫ p log p is not defined in Mathlib (only the `negMulLog` integrand).",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Statistical mechanics",
+          "snippet": "the summation is replaced by an integral over all possible states, or equivalently we can consider the expected value of the logarithm of the probability that a microstate is occupied"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle S=-k_{\\mathsf {B}}\\left\\langle \\ln {p}\\right\\rangle }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle S=-k_{\\mathsf {B}}\\ \\mathrm {tr} {\\left({\\hat {\\rho }}\\times \\ln {\\hat {\\rho }}\\right)}}"
+        }
+      ],
+      "id": "0a63b63a6c1f"
     },
     {
       "kind": "definition",
@@ -191,7 +481,29 @@
         "section": "Statistical mechanics",
         "snippet": "where [MATH] is a density matrix , [MATH] is a trace operator and [MATH] is a matrix logarithm"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `VonNeumannAlgebra` but no von Neumann entropy `-Tr(ρ log ρ)`.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Statistical mechanics",
+          "snippet": "where [MATH] is a density matrix , [MATH] is a trace operator and [MATH] is a matrix logarithm"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle S=-k_{\\mathsf {B}}\\left\\langle \\ln {p}\\right\\rangle }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle S=-k_{\\mathsf {B}}\\ \\mathrm {tr} {\\left({\\hat {\\rho }}\\times \\ln {\\hat {\\rho }}\\right)}}"
+        }
+      ],
+      "id": "7d6973028429"
     },
     {
       "kind": "definition",
@@ -200,7 +512,25 @@
         "section": "Statistical mechanics",
         "snippet": "among system microstates of the same energy (i.e., degenerate microstates ) each microstate is assumed to be populated with equal probability"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Statistical-mechanics postulates are not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Statistical mechanics",
+          "snippet": "among system microstates of the same energy (i.e., degenerate microstates ) each microstate is assumed to be populated with equal probability"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle S=k_{\\mathsf {B}}\\ln {\\Omega }}"
+        }
+      ],
+      "id": "63511fa4e9c0"
     },
     {
       "kind": "definition",
@@ -209,7 +539,25 @@
         "section": "Statistical mechanics",
         "snippet": "such a system is one with a fixed volume, number of molecules, and internal energy, called a microcanonical ensemble"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ensembles of statistical mechanics are not in Mathlib.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Statistical mechanics",
+          "snippet": "such a system is one with a fixed volume, number of molecules, and internal energy, called a microcanonical ensemble"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle S=k_{\\mathsf {B}}\\ln {\\Omega }}"
+        }
+      ],
+      "id": "ac625b63d587"
     },
     {
       "kind": "example",
@@ -218,7 +566,15 @@
         "section": "Entropy of a system",
         "snippet": "for a glass of ice water in air at room temperature"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Physical illustration with no formalization.",
+      "provenance": "ai-agent1",
+      "id": "f4932adbd7dc"
     },
     {
       "kind": "proposition",
@@ -227,7 +583,15 @@
         "section": "Entropy of a system",
         "snippet": "For isolated systems , entropy never decreases."
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Restatement of the second law; not formalized.",
+      "provenance": "ai-agent1",
+      "id": "83c3df4938b0"
     },
     {
       "kind": "example",
@@ -236,7 +600,15 @@
         "section": "Entropy of a system",
         "snippet": "the entropy of mixing , occurs when two or more different substances are mixed"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Entropy of mixing has no Mathlib formalization.",
+      "provenance": "ai-agent1",
+      "id": "144feabf9486"
     },
     {
       "kind": "theorem",
@@ -245,7 +617,29 @@
         "section": "Equivalence of definitions",
         "snippet": "Proofs of equivalence between the entropy in statistical mechanics"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Equivalence proof requires both Gibbs and thermodynamic entropies; neither is in Mathlib.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Equivalence of definitions",
+          "snippet": "Proofs of equivalence between the entropy in statistical mechanics"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle S=-k_{\\mathsf {B}}\\sum _{i}{p_{i}\\ln {p_{i}}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathrm {d} S={\\frac {\\delta Q_{\\mathsf {rev}}}{T}}}"
+        }
+      ],
+      "id": "7ba7dc0b34f7"
     },
     {
       "kind": "theorem",
@@ -254,7 +648,15 @@
         "section": "Equivalence of definitions",
         "snippet": "the definitions of entropy in statistical mechanics is the only entropy that is equivalent to the classical thermodynamics entropy under the following postulates"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Uniqueness/characterization theorem is absent from Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "1eb35ec5af6e"
     },
     {
       "kind": "theorem",
@@ -263,7 +665,15 @@
         "section": "Second law of thermodynamics",
         "snippet": "The second law of thermodynamics requires that, in general, the total entropy of any system does not decrease other than by increasing the entropy of some other system."
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Second law is a physical principle not present in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "a2c8da04dc22"
     },
     {
       "kind": "example",
@@ -272,7 +682,15 @@
         "section": "Second law of thermodynamics",
         "snippet": "An air conditioner , for example, may cool the air in a room"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Physical illustration with no formalization.",
+      "provenance": "ai-agent1",
+      "id": "bf55233c401a"
     },
     {
       "kind": "proposition",
@@ -281,7 +699,15 @@
         "section": "Second law of thermodynamics",
         "snippet": "an energy [MATH] is not available to do useful work"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gouy–Stodola / unavailable energy result has no Mathlib formalization.",
+      "provenance": "ai-agent1",
+      "id": "2a32443c996c"
     },
     {
       "kind": "proposition",
@@ -290,7 +716,15 @@
         "section": "Second law of thermodynamics",
         "snippet": "there may apply a principle of maximum time rate of entropy production"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Non-equilibrium MEPP is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "53b890abdfbf"
     },
     {
       "kind": "definition",
@@ -299,7 +733,25 @@
         "section": "The fundamental thermodynamic relation",
         "snippet": "This relation is known as the fundamental thermodynamic relation ."
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "dU = T dS − p dV is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "The fundamental thermodynamic relation",
+          "snippet": "This relation is known as the fundamental thermodynamic relation ."
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathrm {d} U=T\\ \\mathrm {d} S-p\\ \\mathrm {d} V}"
+        }
+      ],
+      "id": "ad1c59f07eed"
     },
     {
       "kind": "definition",
@@ -308,7 +760,29 @@
         "section": "Entropy in chemical thermodynamics",
         "snippet": "this expression becomes the equation of Gibbs free energy change"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gibbs free energy ΔG = ΔH − TΔS is absent from Mathlib.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Entropy in chemical thermodynamics",
+          "snippet": "this expression becomes the equation of Gibbs free energy change"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Delta S_{\\mathsf {universe}}=\\Delta S_{\\mathsf {surroundings}}+\\Delta S_{\\mathsf {system}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Delta G=\\Delta H-T\\ \\Delta S}"
+        }
+      ],
+      "id": "6c50793f4a41"
     },
     {
       "kind": "proposition",
@@ -317,7 +791,15 @@
         "section": "Entropy in chemical thermodynamics",
         "snippet": "The spontaneity of a chemical or physical process is governed by the Gibbs free energy change"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chemistry spontaneity criterion is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "0dc9c9b8b1a0"
     },
     {
       "kind": "definition",
@@ -326,7 +808,25 @@
         "section": "Entropy balance equation for open systems",
         "snippet": "with respect to the rate of change with time [MATH] of the extensive quantity entropy [MATH] , the entropy balance equation is"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Open-system entropy balance is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Entropy balance equation for open systems",
+          "snippet": "with respect to the rate of change with time [MATH] of the extensive quantity entropy [MATH] , the entropy balance equation is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {\\mathrm {d} S}{\\mathrm {d} t}}=\\sum _{k=1}^{K}{{\\dot {M}}_{k}{\\hat {S}}_{k}+{\\frac {\\dot {Q}}{T}}+{\\dot {S}}_{\\mathsf {gen}}}}"
+        }
+      ],
+      "id": "62ec377d283f"
     },
     {
       "kind": "proposition",
@@ -335,7 +835,25 @@
         "section": "Entropy balance equation for open systems",
         "snippet": "the open system version of the second law is more appropriately described as the \"entropy generation equation\""
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Entropy generation equation not formalized.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Entropy balance equation for open systems",
+          "snippet": "the open system version of the second law is more appropriately described as the \"entropy generation equation\""
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\dot {S}}_{\\mathsf {gen}}\\geq 0}"
+        }
+      ],
+      "id": "fcd97c1ff79f"
     },
     {
       "kind": "proposition",
@@ -344,7 +862,25 @@
         "section": "Isothermal expansion or compression of an ideal gas",
         "snippet": "For the expansion (or compression) of an ideal gas from an initial volume"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ideal gas isothermal entropy formula ΔS = nR ln(V₂/V₁) is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Isothermal expansion or compression of an ideal gas",
+          "snippet": "For the expansion (or compression) of an ideal gas from an initial volume"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Delta S=nR\\ln {\\frac {V}{V_{0}}}=-nR\\ln {\\frac {P}{P_{0}}}}"
+        }
+      ],
+      "id": "e9e47b7da64d"
     },
     {
       "kind": "proposition",
@@ -353,7 +889,15 @@
         "section": "Cooling and heating",
         "snippet": "For pure heating or cooling of any system (gas, liquid or solid) at constant pressure from an initial temperature"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Constant-pressure entropy change ΔS = Cp ln(T₂/T₁) is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "d866b7493b07"
     },
     {
       "kind": "proposition",
@@ -362,7 +906,25 @@
         "section": "Cooling and heating",
         "snippet": "Similarly at constant volume, the entropy change is"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Constant-volume entropy formula is not formalized.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Cooling and heating",
+          "snippet": "Similarly at constant volume, the entropy change is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Delta S=nC_{\\mathrm {V} }\\ln {\\frac {T}{T_{0}}}}"
+        }
+      ],
+      "id": "2b159b22dadd"
     },
     {
       "kind": "proposition",
@@ -371,7 +933,29 @@
         "section": "Cooling and heating",
         "snippet": "For an ideal gas, the total entropy change is"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Combined T,V entropy change formula for ideal gas absent.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Cooling and heating",
+          "snippet": "For an ideal gas, the total entropy change is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Delta S=nC_{\\mathrm {V} }\\ln {\\frac {T}{T_{0}}}+nR\\ln {\\frac {V}{V_{0}}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Delta S=nC_{\\mathrm {P} }\\ln {\\frac {T}{T_{0}}}-nR\\ln {\\frac {P}{P_{0}}}}"
+        }
+      ],
+      "id": "64f95f4d2a7f"
     },
     {
       "kind": "definition",
@@ -380,7 +964,29 @@
         "section": "Phase transitions",
         "snippet": "For fusion (i.e., melting ) of a solid to a liquid at the melting point [MATH] , the entropy of fusion is"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Entropy of fusion ΔS = ΔH_fus/T_m is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Phase transitions",
+          "snippet": "For fusion (i.e., melting ) of a solid to a liquid at the melting point [MATH] , the entropy of fusion is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Delta S_{\\mathsf {fus}}={\\frac {\\Delta H_{\\mathsf {fus}}}{T_{\\mathsf {m}}}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Delta S_{\\mathsf {vap}}={\\frac {\\Delta H_{\\mathsf {vap}}}{T_{\\mathsf {b}}}}}"
+        }
+      ],
+      "id": "c2b89ac635e2"
     },
     {
       "kind": "definition",
@@ -389,7 +995,29 @@
         "section": "Phase transitions",
         "snippet": "for vaporisation of a liquid to a gas at the boiling point [MATH] , the entropy of vaporisation is"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Entropy of vaporisation is not formalized.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Phase transitions",
+          "snippet": "for vaporisation of a liquid to a gas at the boiling point [MATH] , the entropy of vaporisation is"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Delta S_{\\mathsf {fus}}={\\frac {\\Delta H_{\\mathsf {fus}}}{T_{\\mathsf {m}}}}.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\Delta S_{\\mathsf {vap}}={\\frac {\\Delta H_{\\mathsf {vap}}}{T_{\\mathsf {b}}}}}"
+        }
+      ],
+      "id": "3dfc72f6e79a"
     },
     {
       "kind": "definition",
@@ -398,7 +1026,15 @@
         "section": "Order and disorder",
         "snippet": "the measure of the total amount of \"disorder\" and \"order\" in the system are each given by"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Landsberg's disorder/order measures are not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "4822cccad01b"
     },
     {
       "kind": "definition",
@@ -407,7 +1043,15 @@
         "section": "Entropy and adiabatic accessibility",
         "snippet": "A definition of entropy based entirely on the relation of adiabatic accessibility between equilibrium states was given by E. H. Lieb and J. Yngvason in 1999."
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lieb–Yngvason axiomatic entropy is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "d389ee16f8ce"
     },
     {
       "kind": "theorem",
@@ -416,7 +1060,15 @@
         "section": "Entropy and adiabatic accessibility",
         "snippet": "entropy is uniquely determined, apart from a choice of unit and an additive constant for each chemical element, by the following properties"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lieb–Yngvason uniqueness theorem is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "676432e64aec"
     },
     {
       "kind": "definition",
@@ -425,6 +1077,40 @@
         "section": "Entropy in quantum mechanics",
         "snippet": "the concept of entropy was developed by John von Neumann and is generally referred to as"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quantum/von Neumann entropy is not defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Entropy in quantum mechanics",
+          "snippet": "the concept of entropy was developed by John von Neumann and is generally referred to as"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle S=-k_{\\mathsf {B}}\\ \\mathrm {tr} {\\left({\\hat {\\rho }}\\times \\ln {\\hat {\\rho }}\\right)}}"
+        }
+      ],
+      "id": "ed9d45ea646d"
+    },
+    {
+      "kind": "proposition",
+      "label": "Classical limit of von Neumann entropy",
+      "anchor": {
+        "section": "Entropy in quantum mechanics",
+        "snippet": "in the classical limit , when the phases between the basis states are purely random, this expression is equivalent to the familiar classical definition of entropy for states with classical probabilities"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Correspondence-principle reduction of von Neumann entropy to the classical Gibbs form is not formalized in Mathlib.",
       "provenance": "ai-agent1"
     },
     {
@@ -434,7 +1120,25 @@
         "section": "Information theory",
         "snippet": "The definition of information entropy is expressed in terms of a discrete set of probabilities"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.negMulLog",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.NegMulLog",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has the summand `Real.negMulLog` and the q-ary/binary cases `Real.qaryEntropy`, `Real.binEntropy`, but not the general Shannon entropy `H(X) = Σ negMulLog pᵢ` over a distribution.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Information theory",
+          "snippet": "The definition of information entropy is expressed in terms of a discrete set of probabilities"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle H(X)=-\\sum _{i=1}^{n}{p(x_{i})\\log {p(x_{i})}}}"
+        }
+      ],
+      "id": "c14ddf5a908f"
     },
     {
       "kind": "proposition",
@@ -443,7 +1147,29 @@
         "section": "Information theory",
         "snippet": "which is the Boltzmann entropy formula"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Derivation of S = k log W as the uniform-distribution case of Shannon entropy is not formalized.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Information theory",
+          "snippet": "which is the Boltzmann entropy formula"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle H=-\\sum _{i=1}^{W}{p_{i}\\ln {p_{i}}}=\\ln {W}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle H=k\\ln {W}}"
+        }
+      ],
+      "id": "1570b7026c5b"
     },
     {
       "kind": "definition",
@@ -452,7 +1178,25 @@
         "section": "Measurement",
         "snippet": "The measurement, known as entropymetry"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Experimental/calorimetric procedure, not formalizable in Mathlib.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Measurement",
+          "snippet": "The measurement, known as entropymetry"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle T:={\\left({\\frac {\\partial U}{\\partial S}}\\right)}_{V,N}\\ \\Rightarrow \\ \\cdots \\ \\Rightarrow \\ \\mathrm {d} S={\\frac {\\mathrm {d} Q}{T}}}"
+        }
+      ],
+      "id": "49e1536d8907"
     },
     {
       "kind": "example",
@@ -461,7 +1205,15 @@
         "section": "Biology",
         "snippet": "where cave spiders choose to lay their eggs can be explained through entropy minimisation"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Biological application with no mathematical formalization.",
+      "provenance": "ai-agent1",
+      "id": "8ae3908218df"
     },
     {
       "kind": "proposition",
@@ -470,7 +1222,15 @@
         "section": "Cosmology",
         "snippet": "The entropy of a black hole is proportional to the surface area of the black hole's event horizon"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bekenstein–Hawking entropy S = kA/(4ℓ_P²) is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "0bbb91dc4cd6"
     },
     {
       "kind": "theorem",
@@ -479,7 +1239,15 @@
         "section": "Cosmology",
         "snippet": "Jacob Bekenstein and Stephen Hawking have shown that black holes have the maximum possible entropy of any object of equal size."
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Maximality of black-hole entropy is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "c7857468f3eb"
     }
   ]
 }

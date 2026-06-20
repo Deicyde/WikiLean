@@ -63,14 +63,14 @@
         "section": "(Lead)",
         "snippet": "a line integral is defined for functions of two or more variables, and the interval of integration is replaced by a curve connecting two points in space"
       },
-      "status": "formalized",
+      "status": "not_formalized",
       "mathlib": {
-        "decl": "curveIntegral",
-        "module": "Mathlib.MeasureTheory.Integral.CurveIntegral.Basic",
-        "match_kind": "exact"
+        "decl": null,
+        "module": null,
+        "match_kind": null
       },
-      "note": "`curveIntegral ω γ` integrates a 1-form along a path `γ`.",
-      "provenance": "ai",
+      "note": "No general line integral over a curve is defined in Mathlib (no `curveIntegral` decl exists); only `intervalIntegral` over an interval and `circleIntegral` for circles.",
+      "provenance": "ai-moderated",
       "id": "4ab2c3ff01e4"
     },
     {
@@ -219,7 +219,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "BoxIntegral.Prepartition.distortion",
-        "module": "Mathlib.Analysis.BoxIntegral.Partition.SubboxInduction",
+        "module": "Mathlib.Analysis.BoxIntegral.Partition.Basic",
         "match_kind": null
       },
       "note": "Mathlib's BoxIntegral uses `distortion` and `isSubordinate` rather than a scalar mesh.",
@@ -564,16 +564,6 @@
       },
       "note": "Mathlib's measure-theoretic integrability does not imply boundedness, so this Riemann-specific fact is not stated.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Inequalities",
-          "snippet": "An integrable function f on [ a , b ] , is necessarily bounded on that interval"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle m(b-a)\\leq \\int _{a}^{b}f(x)\\,dx\\leq M(b-a).}"
-        }
-      ],
       "id": "4c48510183a6"
     },
     {
@@ -591,20 +581,6 @@
       },
       "note": "Monotonicity of the interval integral; the global form is `MeasureTheory.integral_mono`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Inequalities",
-          "snippet": "If f ( x ) ≤ g ( x ) for each x in [ a , b ] then each of the upper and lower sums of f is bounded above by the upper and lower sums, respectively, of g"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\int _{a}^{b}f(x)\\,dx\\leq \\int _{a}^{b}g(x)\\,dx.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\int _{a}^{b}f(x)\\,dx&lt;\\int _{a}^{b}g(x)\\,dx.}"
-        }
-      ],
       "id": "ac6559cc75c6"
     },
     {
@@ -622,16 +598,6 @@
       },
       "note": "Monotonicity of `setIntegral` under set inclusion for a.e. non-negative integrands.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Inequalities",
-          "snippet": "If [ c , d ] is a subinterval of [ a , b ] and f ( x ) is non-negative for all x , then"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\int _{c}^{d}f(x)\\,dx\\leq \\int _{a}^{b}f(x)\\,dx.}"
-        }
-      ],
       "id": "d3b5f525baba"
     },
     {
@@ -649,24 +615,6 @@
       },
       "note": "`|∫ x in a..b, f x| ≤ ∫ x in a..b, |f x|`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Inequalities",
-          "snippet": "If f is Riemann-integrable on [ a , b ] then the same is true for | f |"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle (fg)(x)=f(x)g(x),\\;f^{2}(x)=(f(x))^{2},\\;|f|(x)=|f(x)|.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\left|\\int _{a}^{b}f(x)\\,dx\\right|\\leq \\int _{a}^{b}|f(x)|\\,dx.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\left(\\int _{a}^{b}(fg)(x)\\,dx\\right)^{2}\\leq \\left(\\int _{a}^{b}f(x)^{2}\\,dx\\right)\\left(\\int _{a}^{b}g(x)^{2}\\,dx\\right).}"
-        }
-      ],
       "id": "aeb50527cf46"
     },
     {
@@ -678,30 +626,12 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "MeasureTheory.lintegral_mul_le_Lp_mul_Lq",
+        "decl": "ENNReal.lintegral_mul_le_Lp_mul_Lq",
         "module": "Mathlib.MeasureTheory.Integral.MeanInequalities",
         "match_kind": "special_case"
       },
       "note": "Cauchy–Schwarz for integrals is the `p = q = 2` case of Hölder; no dedicated `integral`-form lemma.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Inequalities",
-          "snippet": "This inequality, known as the Cauchy–Schwarz inequality , plays a prominent role in Hilbert space theory"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle (fg)(x)=f(x)g(x),\\;f^{2}(x)=(f(x))^{2},\\;|f|(x)=|f(x)|.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\left|\\int _{a}^{b}f(x)\\,dx\\right|\\leq \\int _{a}^{b}|f(x)|\\,dx.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\left(\\int _{a}^{b}(fg)(x)\\,dx\\right)^{2}\\leq \\left(\\int _{a}^{b}f(x)^{2}\\,dx\\right)\\left(\\int _{a}^{b}g(x)^{2}\\,dx\\right).}"
-        }
-      ],
       "id": "4bbdc27d794b"
     },
     {
@@ -713,22 +643,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "MeasureTheory.lintegral_mul_le_Lp_mul_Lq",
+        "decl": "ENNReal.lintegral_mul_le_Lp_mul_Lq",
         "module": "Mathlib.MeasureTheory.Integral.MeanInequalities",
         "match_kind": "exact"
       },
       "note": "Hölder's inequality for `lintegral` with conjugate exponents `p, q`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Inequalities",
-          "snippet": "Then the functions | f | p and | g | q are also integrable and the following Hölder's inequality holds"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\left|\\int f(x)g(x)\\,dx\\right|\\leq \\left(\\int \\left|f(x)\\right|^{p}\\,dx\\right)^{1/p}\\left(\\int \\left|g(x)\\right|^{q}\\,dx\\right)^{1/q}.}"
-        }
-      ],
       "id": "fe228be3c798"
     },
     {
@@ -740,22 +660,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "MeasureTheory.lintegral_Lp_add_le",
+        "decl": "ENNReal.lintegral_Lp_add_le",
         "module": "Mathlib.MeasureTheory.Integral.MeanInequalities",
         "match_kind": "exact"
       },
       "note": "Minkowski's inequality for the `ℒp` seminorm of `f + g`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Inequalities",
-          "snippet": "Then | f | p , | g | p and | f + g | p are also Riemann-integrable and the following Minkowski inequality holds"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\left(\\int \\left|f(x)+g(x)\\right|^{p}\\,dx\\right)^{1/p}\\leq \\left(\\int \\left|f(x)\\right|^{p}\\,dx\\right)^{1/p}+\\left(\\int \\left|g(x)\\right|^{p}\\,dx\\right)^{1/p}.}"
-        }
-      ],
       "id": "2c12f7057d7a"
     },
     {
@@ -774,6 +684,22 @@
       "note": "`∫ x in a..b, f x = -∫ x in b..a, f x` is built into `intervalIntegral`.",
       "provenance": "ai",
       "id": "7216ccc774fc"
+    },
+    {
+      "kind": "proposition",
+      "label": "Integral over a degenerate interval is zero",
+      "anchor": {
+        "section": "Conventions",
+        "snippet": "the second says that an integral taken over a degenerate interval, or a point , should be zero"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "intervalIntegral.integral_same",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`intervalIntegral.integral_same : ∫ x in a..a, f x ∂μ = 0`.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -918,14 +844,14 @@
         "section": "Line integrals and surface integrals",
         "snippet": "A line integral (sometimes called a path integral ) is an integral where the function to be integrated is evaluated along a curve"
       },
-      "status": "formalized",
+      "status": "not_formalized",
       "mathlib": {
-        "decl": "curveIntegral",
-        "module": "Mathlib.MeasureTheory.Integral.CurveIntegral.Basic",
-        "match_kind": "exact"
+        "decl": null,
+        "module": null,
+        "match_kind": null
       },
-      "note": "`curveIntegral ω γ` integrates a 1-form along a path.",
-      "provenance": "ai",
+      "note": "No general line integral over a curve is defined in Mathlib; only `intervalIntegral` (over an interval) and `circleIntegral` (over a circle) exist.",
+      "provenance": "ai-moderated",
       "id": "97b49efd2d0d"
     },
     {
@@ -1009,8 +935,8 @@
         "module": "Mathlib.MeasureTheory.Integral.CircleIntegral",
         "match_kind": "special_case"
       },
-      "note": "Mathlib formalizes `circleIntegral` (and `curveIntegral`); a generic complex contour integral is not separately defined.",
-      "provenance": "ai",
+      "note": "Mathlib formalizes `circleIntegral`; a generic complex contour integral is not separately defined.",
+      "provenance": "ai-moderated",
       "id": "0512b1b3f624"
     },
     {
@@ -1023,11 +949,11 @@
       "status": "partial",
       "mathlib": {
         "decl": "ContinuousAlternatingMap",
-        "module": "Mathlib.Analysis.Calculus.DifferentialForm.Basic",
+        "module": "Mathlib.Topology.Algebra.Module.Alternating.Basic",
         "match_kind": null
       },
-      "note": "Differential 1-forms are represented as fields `E → E [⋀^Fin 1]→L[𝕜] F`; no dedicated `OneForm` abbreviation.",
-      "provenance": "ai",
+      "note": "Differential 1-forms are represented as fields valued in `E [⋀^Fin 1]→L[𝕜] F`; no dedicated `OneForm` abbreviation.",
+      "provenance": "ai-moderated",
       "id": "c899c8639f86"
     },
     {
@@ -1040,11 +966,11 @@
       "status": "partial",
       "mathlib": {
         "decl": "ContinuousAlternatingMap",
-        "module": "Mathlib.Analysis.Calculus.DifferentialForm.Basic",
+        "module": "Mathlib.Topology.Algebra.Module.Alternating.Basic",
         "match_kind": null
       },
-      "note": "2-forms are encoded as `E → E [⋀^Fin 2]→L[𝕜] F`; no dedicated `TwoForm` definition.",
-      "provenance": "ai",
+      "note": "2-forms are encoded as fields valued in `E [⋀^Fin 2]→L[𝕜] F`; no dedicated `TwoForm` definition.",
+      "provenance": "ai-moderated",
       "id": "7a73cff86e61"
     },
     {
@@ -1091,7 +1017,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "MeasureTheory.HasPDF",
-        "module": "Mathlib.Probability.Density.Basic",
+        "module": "Mathlib.Probability.Density",
         "match_kind": null
       },
       "note": "`HasPDF` characterises densities, but `∫ pdf = 1` is not stated as a single named lemma.",
@@ -1113,16 +1039,6 @@
       },
       "note": "No disc-integration formula for volumes of revolution exists in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Applications",
-          "snippet": "The volume of a three-dimensional object such as a disc or washer can be computed by disc integration using the equation for the volume of a cylinder"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\pi \\int _{a}^{b}f^{2}(x)\\,dx.}"
-        }
-      ],
       "id": "b46624e1ebd2"
     },
     {
@@ -1140,16 +1056,6 @@
       },
       "note": "A physics example, not stated as a Mathlib lemma.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Applications",
-          "snippet": "in rectilinear motion , the displacement of an object over the time interval"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\pi \\int _{a}^{b}f^{2}(x)\\,dx.}"
-        }
-      ],
       "id": "60b0900647d1"
     },
     {
@@ -1193,14 +1099,14 @@
         "section": "Numerical",
         "snippet": "the trapezoidal rule , replaces the rectangles used in a Riemann sum with trapezoids"
       },
-      "status": "formalized",
+      "status": "not_formalized",
       "mathlib": {
-        "decl": "trapezoidal_integral",
-        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.TrapezoidalRule",
-        "match_kind": "exact"
+        "decl": null,
+        "module": null,
+        "match_kind": null
       },
-      "note": "`trapezoidal_integral f N a b` defines the composite trapezoidal approximation.",
-      "provenance": "ai",
+      "note": "No dedicated trapezoidal-rule definition exists in Mathlib (no `trapezoidal_integral` decl).",
+      "provenance": "ai-moderated",
       "id": "493548a5f16c"
     },
     {

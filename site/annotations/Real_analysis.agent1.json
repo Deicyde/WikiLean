@@ -11,7 +11,15 @@
         "section": "Construction of the real numbers",
         "snippet": "The real number system is the unique complete ordered field"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ConditionallyCompleteLinearOrderedField",
+        "module": "Mathlib.Algebra.Order.CompleteField",
+        "match_kind": "exact"
+      },
+      "note": "ℝ is a conditionally complete linearly ordered field, and CompleteField.lean proves any such field is uniquely isomorphic to ℝ.",
+      "provenance": "ai-agent1",
+      "id": "df2ab778c4a6"
     },
     {
       "kind": "definition",
@@ -20,6 +28,62 @@
         "section": "Order properties of the real numbers",
         "snippet": "has a least upper bound that is also a real number"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isLUB_csSup",
+        "module": "Mathlib.Order.ConditionallyCompleteLattice.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Every nonempty bounded-above set has a least upper bound sSup via isLUB_csSup, which ℝ satisfies as a conditionally complete lattice.",
+      "provenance": "ai-agent1",
+      "id": "26d33bd41891"
+    },
+    {
+      "kind": "theorem",
+      "label": "Monotone convergence theorem",
+      "anchor": {
+        "section": "Order properties of the real numbers",
+        "snippet": "the monotone convergence theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendsto_atTop_ciSup",
+        "module": "Mathlib.Topology.Order.MonotoneConvergence",
+        "match_kind": "exact"
+      },
+      "note": "tendsto_atTop_ciSup proves a monotone sequence bounded above converges to its supremum.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Intermediate value theorem",
+      "anchor": {
+        "section": "Order properties of the real numbers",
+        "snippet": "the intermediate value theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "intermediate_value_Icc",
+        "module": "Mathlib.Topology.Algebra.Order.IntermediateValue",
+        "match_kind": "exact"
+      },
+      "note": "intermediate_value_Icc states the IVT for continuous functions on a closed interval.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Mean value theorem",
+      "anchor": {
+        "section": "Order properties of the real numbers",
+        "snippet": "the mean value theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_hasDerivAt_eq_slope",
+        "module": "Mathlib.Analysis.Calculus.MeanValue",
+        "match_kind": "exact"
+      },
+      "note": "exists_hasDerivAt_eq_slope is the mean value theorem for real-valued differentiable functions.",
       "provenance": "ai-agent1"
     },
     {
@@ -29,7 +93,15 @@
         "section": "Topological properties of the real numbers",
         "snippet": "the real numbers become the prototypical example of a metric space"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.metricSpace",
+        "module": "Mathlib.Topology.MetricSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "ℝ carries the metric space instance Real.metricSpace with distance |x − y|.",
+      "provenance": "ai-agent1",
+      "id": "a5d847c183dd"
     },
     {
       "kind": "proposition",
@@ -38,7 +110,15 @@
         "section": "Topological properties of the real numbers",
         "snippet": "turns out to be identical to the standard topology induced by order"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "The `instance : OrderTopology ℝ` establishes that the order topology coincides with ℝ's metric-induced topology.",
+      "provenance": "ai-agent1",
+      "id": "144a7732bcbd"
     },
     {
       "kind": "definition",
@@ -47,7 +127,15 @@
         "section": "Sequences",
         "snippet": "A sequence is a function whose domain is a countable"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no dedicated `Sequence` type; sequences are modeled directly as functions `ℕ → α`.",
+      "provenance": "ai-agent1",
+      "id": "ddf91be244aa"
     },
     {
       "kind": "definition",
@@ -56,7 +144,33 @@
         "section": "Sequences",
         "snippet": "a real-valued sequence , here indexed by the natural numbers, is a map"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A real-valued sequence is just a function `ℕ → ℝ`, with no separate named definition in Mathlib.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Sequences",
+          "snippet": "a real-valued sequence , here indexed by the natural numbers, is a map"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (a_{n})=(a_{n})_{n\\in \\mathbb {N} }=(a_{1},a_{2},a_{3},\\dots ).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a_{1}\\leq a_{2}\\leq a_{3}\\leq \\cdots }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a_{1}\\geq a_{2}\\geq a_{3}\\geq \\cdots }"
+        }
+      ],
+      "id": "09624e970ff1"
     },
     {
       "kind": "definition",
@@ -65,7 +179,33 @@
         "section": "Sequences",
         "snippet": "is said to be convergent ; otherwise it is divergent"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.Tendsto",
+        "module": "Mathlib.Order.Filter.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Convergence is `Tendsto u atTop (𝓝 L)` and divergence its negation, via the general filter Tendsto.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Sequences",
+          "snippet": "is said to be convergent ; otherwise it is divergent"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (a_{n})=(a_{n})_{n\\in \\mathbb {N} }=(a_{1},a_{2},a_{3},\\dots ).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a_{1}\\leq a_{2}\\leq a_{3}\\leq \\cdots }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a_{1}\\geq a_{2}\\geq a_{3}\\geq \\cdots }"
+        }
+      ],
+      "id": "14a0efe0fb05"
     },
     {
       "kind": "definition",
@@ -74,7 +214,33 @@
         "section": "Sequences",
         "snippet": "is bounded if there exists"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Bornology.IsBounded",
+        "module": "Mathlib.Topology.Bornology.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "A bounded sequence is one whose range satisfies `Bornology.IsBounded (Set.range u)`.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Sequences",
+          "snippet": "is bounded if there exists"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (a_{n})=(a_{n})_{n\\in \\mathbb {N} }=(a_{1},a_{2},a_{3},\\dots ).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a_{1}\\leq a_{2}\\leq a_{3}\\leq \\cdots }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a_{1}\\geq a_{2}\\geq a_{3}\\geq \\cdots }"
+        }
+      ],
+      "id": "553003b1f1b5"
     },
     {
       "kind": "definition",
@@ -83,7 +249,33 @@
         "section": "Sequences",
         "snippet": "is monotonically increasing or decreasing if"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Monotone",
+        "module": "Mathlib.Order.Monotone.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Monotone/Antitone capture monotonically increasing/decreasing sequences exactly.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Sequences",
+          "snippet": "is monotonically increasing or decreasing if"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (a_{n})=(a_{n})_{n\\in \\mathbb {N} }=(a_{1},a_{2},a_{3},\\dots ).}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a_{1}\\leq a_{2}\\leq a_{3}\\leq \\cdots }"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle a_{1}\\geq a_{2}\\geq a_{3}\\geq \\cdots }"
+        }
+      ],
+      "id": "bf9c1e5893a4"
     },
     {
       "kind": "definition",
@@ -92,7 +284,15 @@
         "section": "Sequences",
         "snippet": "is a subsequence of"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "StrictMono",
+        "module": "Mathlib.Order.Monotone.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Subsequences are modeled as `u ∘ φ` for a strictly monotone extraction `φ : ℕ → ℕ`, with no standalone `Subsequence` definition.",
+      "provenance": "ai-agent1",
+      "id": "45c31f07f9e2"
     },
     {
       "kind": "definition",
@@ -101,7 +301,29 @@
         "section": "Limits and convergence",
         "snippet": "be a real-valued function defined on"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.Tendsto",
+        "module": "Mathlib.Order.Filter.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Function limits are `Tendsto`, with the ε-δ form available as Metric.tendsto_nhdsWithin_nhds.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Limits and convergence",
+          "snippet": "be a real-valued function defined on"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f(x)\\to L\\ \\ {\\text{as}}\\ \\ x\\to x_{0},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{x\\to x_{0}}f(x)=L.}"
+        }
+      ],
+      "id": "73d48a59f6e3"
     },
     {
       "kind": "definition",
@@ -110,7 +332,15 @@
         "section": "Limits and convergence",
         "snippet": "converges to"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.Tendsto",
+        "module": "Mathlib.Order.Filter.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Sequence convergence is `Tendsto u atTop (𝓝 L)`, with the ε-N form Metric.tendsto_atTop.",
+      "provenance": "ai-agent1",
+      "id": "c05fce179e98"
     },
     {
       "kind": "definition",
@@ -119,7 +349,15 @@
         "section": "Limits and convergence",
         "snippet": "increases without bound"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Filter.Tendsto",
+        "module": "Mathlib.Order.Filter.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Limits as the argument increases without bound are Tendsto along the filter `Filter.atTop`.",
+      "provenance": "ai-agent1",
+      "id": "94750542a9d0"
     },
     {
       "kind": "definition",
@@ -128,7 +366,15 @@
         "section": "Limits and convergence",
         "snippet": "is a Cauchy sequence if"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CauchySeq",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "exact"
+      },
+      "note": "CauchySeq is the Mathlib definition of a Cauchy sequence, with the ε-form Metric.cauchySeq_iff.",
+      "provenance": "ai-agent1",
+      "id": "97d553f9a22f"
     },
     {
       "kind": "proposition",
@@ -137,7 +383,15 @@
         "section": "Limits and convergence",
         "snippet": "a real-valued sequence is Cauchy if and only if it is convergent"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.instCompleteSpace",
+        "module": "Mathlib.Topology.UniformSpace.Real",
+        "match_kind": "exact"
+      },
+      "note": "ℝ is a CompleteSpace, so by cauchySeq_tendsto_of_complete a real sequence converges iff it is Cauchy.",
+      "provenance": "ai-agent1",
+      "id": "b3a987660837"
     },
     {
       "kind": "proposition",
@@ -146,7 +400,15 @@
         "section": "Limits and convergence",
         "snippet": "the sequence is bounded if and only if it is convergent"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendsto_atTop_ciSup",
+        "module": "Mathlib.Topology.Order.MonotoneConvergence",
+        "match_kind": "generalization"
+      },
+      "note": "tendsto_atTop_ciSup shows a monotone sequence bounded above converges (to its supremum), the substantive direction of the equivalence.",
+      "provenance": "ai-agent1",
+      "id": "a6479ca39aeb"
     },
     {
       "kind": "definition",
@@ -155,7 +417,15 @@
         "section": "Uniform and pointwise convergence for sequences of functions",
         "snippet": "pointwise convergence of functions"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendsto_pi_nhds",
+        "module": "Mathlib.Topology.Constructions",
+        "match_kind": "generalization"
+      },
+      "note": "Pointwise convergence is convergence in the product topology, characterized by tendsto_pi_nhds (`∀ x, Tendsto (F · x) p (𝓝 (f x))`).",
+      "provenance": "ai-agent1",
+      "id": "950db8db5b6f"
     },
     {
       "kind": "definition",
@@ -164,6 +434,30 @@
         "section": "Uniform and pointwise convergence for sequences of functions",
         "snippet": "Uniform convergence requires members of the family of functions"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TendstoUniformly",
+        "module": "Mathlib.Topology.UniformSpace.UniformConvergence",
+        "match_kind": "exact"
+      },
+      "note": "TendstoUniformly (and TendstoUniformlyOn) is the Mathlib definition of uniform convergence.",
+      "provenance": "ai-agent1",
+      "id": "0078b4b49a7a"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniform limit of continuous functions is continuous",
+      "anchor": {
+        "section": "Uniform and pointwise convergence for sequences of functions",
+        "snippet": "is guaranteed to converge to a continuous limiting function if the convergence is uniform"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TendstoUniformly.continuous",
+        "module": "Mathlib.Topology.UniformSpace.UniformConvergence",
+        "match_kind": "exact"
+      },
+      "note": "TendstoUniformly.continuous shows the uniform limit of continuous functions is continuous.",
       "provenance": "ai-agent1"
     },
     {
@@ -173,7 +467,15 @@
         "section": "Compactness",
         "snippet": "the Cantor ternary set"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The middle-thirds Cantor ternary set as a compact subset of ℝ is not defined in Mathlib (only abstract Cantor schemes/perfect sets are).",
+      "provenance": "ai-agent1",
+      "id": "068a8017db43"
     },
     {
       "kind": "definition",
@@ -182,7 +484,15 @@
         "section": "Compactness",
         "snippet": "is compact if it is closed and bounded"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.isCompact_iff_isClosed_bounded",
+        "module": "Mathlib.Topology.MetricSpace.Bounded",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines compactness via filters but proves it equals closed-and-bounded for proper metric spaces in isCompact_iff_isClosed_bounded.",
+      "provenance": "ai-agent1",
+      "id": "026a6c13951b"
     },
     {
       "kind": "theorem",
@@ -191,7 +501,15 @@
         "section": "Compactness",
         "snippet": "is known as the Heine-Borel theorem"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.isCompact_iff_isClosed_bounded",
+        "module": "Mathlib.Topology.MetricSpace.Bounded",
+        "match_kind": "exact"
+      },
+      "note": "isCompact_iff_isClosed_bounded states the Heine–Borel equivalence of compactness with closed-and-bounded in proper spaces such as ℝⁿ.",
+      "provenance": "ai-agent1",
+      "id": "0e72629fed34"
     },
     {
       "kind": "definition",
@@ -200,7 +518,15 @@
         "section": "Compactness",
         "snippet": "has a convergent subsequence"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsSeqCompact",
+        "module": "Mathlib.Topology.Defs.Sequences",
+        "match_kind": "exact"
+      },
+      "note": "IsSeqCompact captures sequential compactness, with equivalence to compactness via isCompact_iff_isSeqCompact.",
+      "provenance": "ai-agent1",
+      "id": "eff2d042205d"
     },
     {
       "kind": "definition",
@@ -209,7 +535,15 @@
         "section": "Compactness",
         "snippet": "has a finite subcover"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "isCompact_iff_finite_subcover",
+        "module": "Mathlib.Topology.Compactness.Compact",
+        "match_kind": "exact"
+      },
+      "note": "isCompact_iff_finite_subcover gives the open-cover/finite-subcover characterization of IsCompact.",
+      "provenance": "ai-agent1",
+      "id": "3f2c5421884b"
     },
     {
       "kind": "proposition",
@@ -218,7 +552,15 @@
         "section": "Compactness",
         "snippet": "any Cauchy sequence in a compact metric space is convergent"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompact.isComplete",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "exact"
+      },
+      "note": "IsCompact.isComplete shows compact sets are complete, so cauchySeq_tendsto_of_isComplete gives convergence of Cauchy sequences there.",
+      "provenance": "ai-agent1",
+      "id": "ab1c1c6d3f9d"
     },
     {
       "kind": "proposition",
@@ -227,7 +569,15 @@
         "section": "Compactness",
         "snippet": "the image of a compact metric space under a continuous map is also compact"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompact.image",
+        "module": "Mathlib.Topology.Compactness.Compact",
+        "match_kind": "exact"
+      },
+      "note": "IsCompact.image proves the continuous image of a compact set is compact.",
+      "provenance": "ai-agent1",
+      "id": "71f5b71a0b30"
     },
     {
       "kind": "definition",
@@ -236,7 +586,15 @@
         "section": "Continuity",
         "snippet": "is a non-degenerate interval, we say that"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousOn",
+        "module": "Mathlib.Topology.Defs.Filter",
+        "match_kind": "generalization"
+      },
+      "note": "Continuity on a domain is ContinuousOn, defined via ContinuousWithinAt limits at each point.",
+      "provenance": "ai-agent1",
+      "id": "5fe3f1d3c22e"
     },
     {
       "kind": "definition",
@@ -245,7 +603,15 @@
         "section": "Continuity",
         "snippet": "is an arbitrary subset of"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousOn",
+        "module": "Mathlib.Topology.Defs.Filter",
+        "match_kind": "generalization"
+      },
+      "note": "ContinuousOn captures continuity on an arbitrary subset, with the ε-δ form given by Metric.continuousOn_iff.",
+      "provenance": "ai-agent1",
+      "id": "a52d5944b59b"
     },
     {
       "kind": "definition",
@@ -254,7 +620,15 @@
         "section": "Continuity",
         "snippet": "are topological spaces, we say that"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Continuous",
+        "module": "Mathlib.Topology.Defs.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Continuous is the topological definition (preimages of opens are open).",
+      "provenance": "ai-agent1",
+      "id": "08bff1353f85"
     },
     {
       "kind": "definition",
@@ -263,7 +637,15 @@
         "section": "Uniform continuity",
         "snippet": "is a subset of the real numbers , we say a function"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UniformContinuous",
+        "module": "Mathlib.Topology.UniformSpace.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "UniformContinuous (and UniformContinuousOn) define uniform continuity, with the ε-δ form Metric.uniformContinuous_iff.",
+      "provenance": "ai-agent1",
+      "id": "b53ed7890bdd"
     },
     {
       "kind": "proposition",
@@ -272,7 +654,15 @@
         "section": "Uniform continuity",
         "snippet": "all continuous functions are uniformly continuous"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompactSpace.uniformContinuous_of_continuous",
+        "module": "Mathlib.Topology.UniformSpace.HeineCantor",
+        "match_kind": "exact"
+      },
+      "note": "This is the Heine–Cantor theorem, formalized as CompactSpace.uniformContinuous_of_continuous.",
+      "provenance": "ai-agent1",
+      "id": "20ff1fac51b3"
     },
     {
       "kind": "example",
@@ -281,7 +671,15 @@
         "section": "Uniform continuity",
         "snippet": "that is continuous but not uniformly continuous"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No named Mathlib declaration exhibits a specific continuous-but-not-uniformly-continuous function as a counterexample.",
+      "provenance": "ai-agent1",
+      "id": "fea622271ccb"
     },
     {
       "kind": "definition",
@@ -290,7 +688,15 @@
         "section": "Absolute continuity",
         "snippet": "is said to be absolutely continuous on"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AbsolutelyContinuousOnInterval",
+        "module": "Mathlib.MeasureTheory.Function.AbsolutelyContinuous",
+        "match_kind": "exact"
+      },
+      "note": "AbsolutelyContinuousOnInterval formalizes absolute continuity of a function on an interval, with the ε-δ form in absolutelyContinuousOnInterval_iff.",
+      "provenance": "ai-agent1",
+      "id": "965ccf380227"
     },
     {
       "kind": "proposition",
@@ -299,7 +705,15 @@
         "section": "Absolute continuity",
         "snippet": "Absolutely continuous functions are continuous"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AbsolutelyContinuousOnInterval.uniformContinuousOn",
+        "module": "Mathlib.MeasureTheory.Function.AbsolutelyContinuous",
+        "match_kind": "generalization"
+      },
+      "note": "AbsolutelyContinuousOnInterval.uniformContinuousOn proves absolutely continuous functions are uniformly (hence) continuous.",
+      "provenance": "ai-agent1",
+      "id": "7a0c89b42844"
     },
     {
       "kind": "definition",
@@ -308,7 +722,15 @@
         "section": "Differentiation",
         "snippet": "is differentiable at"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasDerivAt",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Basic",
+        "match_kind": "exact"
+      },
+      "note": "HasDerivAt/DifferentiableAt/deriv formalize the derivative and differentiability at a point.",
+      "provenance": "ai-agent1",
+      "id": "331a31d5c551"
     },
     {
       "kind": "proposition",
@@ -317,6 +739,30 @@
         "section": "Differentiation",
         "snippet": "if it is differentiable there"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DifferentiableAt.continuousAt",
+        "module": "Mathlib.Analysis.Calculus.FDeriv.Basic",
+        "match_kind": "exact"
+      },
+      "note": "DifferentiableAt.continuousAt (and HasDerivAt.continuousAt) prove differentiability implies continuity.",
+      "provenance": "ai-agent1",
+      "id": "50ad87513e89"
+    },
+    {
+      "kind": "example",
+      "label": "Weierstrass nowhere differentiable continuous function",
+      "anchor": {
+        "section": "Differentiation",
+        "snippet": "Weierstrass's nowhere differentiable continuous function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has not yet formalized a named version of Weierstrass's nowhere-differentiable continuous function.",
       "provenance": "ai-agent1"
     },
     {
@@ -326,7 +772,15 @@
         "section": "Differentiation",
         "snippet": "One can classify functions by their differentiability class"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContDiff",
+        "module": "Mathlib.Analysis.Calculus.ContDiff.Defs",
+        "match_kind": "exact"
+      },
+      "note": "ContDiff 𝕜 n f classifies functions by differentiability class Cᵏ for n : ℕ.",
+      "provenance": "ai-agent1",
+      "id": "4c4506380cb2"
     },
     {
       "kind": "definition",
@@ -335,7 +789,15 @@
         "section": "Differentiation",
         "snippet": "are known as the smooth functions"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContDiff",
+        "module": "Mathlib.Analysis.Calculus.ContDiff.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Smooth (C^∞) functions are `ContDiff 𝕜 ∞ f`, the infinity case of the differentiability-class predicate.",
+      "provenance": "ai-agent1",
+      "id": "b5c283c3f4a5"
     },
     {
       "kind": "definition",
@@ -344,7 +806,15 @@
         "section": "Differentiation",
         "snippet": "consists of all analytic functions"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AnalyticOn",
+        "module": "Mathlib.Analysis.Analytic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "AnalyticOn (equivalently `ContDiff 𝕜 ω` via ContDiffOn.analyticOn) is the class C^ω of analytic functions.",
+      "provenance": "ai-agent1",
+      "id": "f19a5b5c5266"
     },
     {
       "kind": "definition",
@@ -353,7 +823,15 @@
         "section": "Series",
         "snippet": "we can define an associated series as the formal mathematical object"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "HasSum",
+        "module": "Mathlib.Topology.Algebra.InfiniteSum.Defs",
+        "match_kind": null
+      },
+      "note": "Mathlib has no formal 'series' object; series convergence is handled via HasSum/tsum (unordered sums) or limits of Finset partial sums.",
+      "provenance": "ai-agent1",
+      "id": "ae67a69972d0"
     },
     {
       "kind": "definition",
@@ -362,7 +840,15 @@
         "section": "Series",
         "snippet": "The partial sums of a series"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": "invocation"
+      },
+      "note": "Partial sums are written directly as `∑ i ∈ Finset.range n, a i` with no dedicated named definition.",
+      "provenance": "ai-agent1",
+      "id": "b5bda41be1ba"
     },
     {
       "kind": "definition",
@@ -371,6 +857,30 @@
         "section": "Series",
         "snippet": "is said to be convergent if the sequence consisting of its partial sums"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Summable",
+        "module": "Mathlib.Topology.Algebra.InfiniteSum.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Summable/HasSum capture convergence of a series, though as an unordered sum rather than via the ordered partial-sum sequence.",
+      "provenance": "ai-agent1",
+      "id": "b0363a103392"
+    },
+    {
+      "kind": "theorem",
+      "label": "Riemann rearrangement theorem",
+      "anchor": {
+        "section": "Series",
+        "snippet": "the Riemann rearrangement theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has lemmas on rearrangements of conditionally convergent series but no single named Riemann rearrangement theorem.",
       "provenance": "ai-agent1"
     },
     {
@@ -380,7 +890,15 @@
         "section": "Series",
         "snippet": "An example of a convergent series is a geometric series"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "hasSum_geometric_of_lt_one",
+        "module": "Mathlib.Analysis.SpecificLimits.Basic",
+        "match_kind": "exact"
+      },
+      "note": "hasSum_geometric_of_lt_one (and tsum_geometric_of_lt_one) gives convergence and value of the geometric series.",
+      "provenance": "ai-agent1",
+      "id": "349afca5ecb7"
     },
     {
       "kind": "example",
@@ -389,7 +907,15 @@
         "section": "Series",
         "snippet": "the harmonic series has been known since the Middle Ages to be a divergent series"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.not_summable_one_div_natCast",
+        "module": "Mathlib.Analysis.PSeries",
+        "match_kind": "exact"
+      },
+      "note": "not_summable_one_div_natCast proves the harmonic series ∑ 1/n is not summable (diverges).",
+      "provenance": "ai-agent1",
+      "id": "d8698c02f57d"
     },
     {
       "kind": "definition",
@@ -398,7 +924,15 @@
         "section": "Series",
         "snippet": "is said to converge absolutely if"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Absolute convergence is expressed as `Summable (fun n => ‖a n‖)` with no dedicated predicate of its own.",
+      "provenance": "ai-agent1",
+      "id": "e6a1069c80e3"
     },
     {
       "kind": "proposition",
@@ -407,7 +941,15 @@
         "section": "Series",
         "snippet": "absolute convergence of a series implies its convergence"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Summable.of_norm",
+        "module": "Mathlib.Analysis.Normed.Group.InfiniteSum",
+        "match_kind": "exact"
+      },
+      "note": "Summable.of_norm proves that summability of the norms implies summability of the series.",
+      "provenance": "ai-agent1",
+      "id": "4fa1ee495088"
     },
     {
       "kind": "example",
@@ -416,7 +958,15 @@
         "section": "Series",
         "snippet": "an example of a series that converges non-absolutely is"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Antitone.tendsto_alternating_series_of_tendsto_zero",
+        "module": "Mathlib.Analysis.SpecificLimits.Normed",
+        "match_kind": null
+      },
+      "note": "The alternating series test (Antitone.tendsto_alternating_series_of_tendsto_zero) plus harmonic divergence gives conditionally convergent series, but no single decl states the example.",
+      "provenance": "ai-agent1",
+      "id": "675743d8afef"
     },
     {
       "kind": "definition",
@@ -425,7 +975,15 @@
         "section": "Taylor series",
         "snippet": "The Taylor series of a real or complex-valued function"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "taylorWithinEval",
+        "module": "Mathlib.Analysis.Calculus.Taylor",
+        "match_kind": "generalization"
+      },
+      "note": "taylorWithin/taylorWithinEval formalize Taylor polynomials/series of a function on a set.",
+      "provenance": "ai-agent1",
+      "id": "24111a2fa31f"
     },
     {
       "kind": "definition",
@@ -434,6 +992,30 @@
         "section": "Taylor series",
         "snippet": "the series is also called a Maclaurin series"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "taylorWithinEval",
+        "module": "Mathlib.Analysis.Calculus.Taylor",
+        "match_kind": "special_case"
+      },
+      "note": "A Maclaurin series is the special case of taylorWithinEval expanded at the base point 0, with no separate definition.",
+      "provenance": "ai-agent1",
+      "id": "1ce83ad75161"
+    },
+    {
+      "kind": "definition",
+      "label": "Radius of convergence",
+      "anchor": {
+        "section": "Taylor series",
+        "snippet": "the largest such R for which convergence is guaranteed is called the radius of convergence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FormalMultilinearSeries.radius",
+        "module": "Mathlib.Analysis.Analytic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "FormalMultilinearSeries.radius gives the radius of convergence of a formal power series.",
       "provenance": "ai-agent1"
     },
     {
@@ -443,7 +1025,15 @@
         "section": "Taylor series",
         "snippet": "then the function is analytic"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AnalyticAt",
+        "module": "Mathlib.Analysis.Analytic.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "AnalyticAt means the function is locally the sum of a convergent power series, i.e. equals its Taylor series near the point.",
+      "provenance": "ai-agent1",
+      "id": "5d6e1e2a5bb2"
     },
     {
       "kind": "definition",
@@ -452,7 +1042,15 @@
         "section": "Fourier series",
         "snippet": "Fourier series decomposes periodic functions or periodic signals into the sum"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "fourierCoeff",
+        "module": "Mathlib.Analysis.Fourier.AddCircle",
+        "match_kind": "generalization"
+      },
+      "note": "fourierCoeff/fourierBasis formalize Fourier coefficients and the Fourier series expansion of functions on the additive circle.",
+      "provenance": "ai-agent1",
+      "id": "52191017896e"
     },
     {
       "kind": "definition",
@@ -461,7 +1059,15 @@
         "section": "Riemann integration",
         "snippet": "is a finite sequence"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BoxIntegral.TaggedPrepartition",
+        "module": "Mathlib.Analysis.BoxIntegral.Partition.Tagged",
+        "match_kind": "generalization"
+      },
+      "note": "BoxIntegral.TaggedPrepartition formalizes tagged partitions (with IsPartition for full partitions) in the box-integral framework.",
+      "provenance": "ai-agent1",
+      "id": "5b24b7b91202"
     },
     {
       "kind": "definition",
@@ -470,7 +1076,15 @@
         "section": "Riemann integration",
         "snippet": "we define the Riemann sum of"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BoxIntegral.integralSum",
+        "module": "Mathlib.Analysis.BoxIntegral.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "BoxIntegral.integralSum is the Riemann sum of f over a tagged partition.",
+      "provenance": "ai-agent1",
+      "id": "88babfce7561"
     },
     {
       "kind": "definition",
@@ -479,7 +1093,15 @@
         "section": "Riemann integration",
         "snippet": "The mesh of such a tagged partition is the width of the largest sub-interval"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's BoxIntegral controls partitions with gauge functions and distortion rather than defining the mesh/norm of a partition.",
+      "provenance": "ai-agent1",
+      "id": "c868629946ac"
     },
     {
       "kind": "definition",
@@ -488,7 +1110,15 @@
         "section": "Riemann integration",
         "snippet": "We say that the Riemann integral of"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BoxIntegral.integral",
+        "module": "Mathlib.Analysis.BoxIntegral.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "BoxIntegral.integral with IntegrationParams.Riemann is the Riemann integral as a limit of Riemann sums.",
+      "provenance": "ai-agent1",
+      "id": "0cfc6a22b7a5"
     },
     {
       "kind": "definition",
@@ -497,7 +1127,15 @@
         "section": "Riemann integration",
         "snippet": "A function is Darboux integrable if the upper and lower Darboux sums"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no upper/lower Darboux sum integral (Darboux.lean concerns the intermediate value property of derivatives, not integration).",
+      "provenance": "ai-agent1",
+      "id": "771580d923d0"
     },
     {
       "kind": "proposition",
@@ -506,7 +1144,15 @@
         "section": "Riemann integration",
         "snippet": "a function is Darboux integrable if and only if it is Riemann integrable"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "With no Darboux integral defined, the equivalence of Darboux and Riemann integrability is absent from Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "cf15c28309df"
     },
     {
       "kind": "theorem",
@@ -515,6 +1161,30 @@
         "section": "Riemann integration",
         "snippet": "integration and differentiation are inverse operations in a certain sense"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "intervalIntegral.integral_eq_sub_of_hasDerivAt",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus",
+        "match_kind": "exact"
+      },
+      "note": "integral_eq_sub_of_hasDerivAt is the (second) fundamental theorem of calculus, ∫ f' = f b − f a.",
+      "provenance": "ai-agent1",
+      "id": "2a663ae1e2ad"
+    },
+    {
+      "kind": "definition",
+      "label": "Lebesgue integral",
+      "anchor": {
+        "section": "Lebesgue integration and measure",
+        "snippet": "Lebesgue integration is a mathematical construction that extends the integral"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "MeasureTheory.integral is the (Bochner) Lebesgue integral, defined for a wide class of measurable functions on a measure space.",
       "provenance": "ai-agent1"
     },
     {
@@ -524,7 +1194,15 @@
         "section": "Lebesgue integration and measure",
         "snippet": "an abstraction of length, area, or volume"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure",
+        "module": "Mathlib.MeasureTheory.Measure.MeasureSpaceDef",
+        "match_kind": "exact"
+      },
+      "note": "MeasureTheory.Measure formalizes measures as countably additive functions extending an outer measure.",
+      "provenance": "ai-agent1",
+      "id": "af5774819995"
     },
     {
       "kind": "definition",
@@ -533,7 +1211,15 @@
         "section": "Distributions",
         "snippet": "are objects that generalize functions"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Distribution",
+        "module": "Mathlib.Analysis.Distribution.Distribution",
+        "match_kind": "exact"
+      },
+      "note": "Distribution (continuous linear functionals on compactly supported test functions) and TemperedDistribution formalize generalized functions.",
+      "provenance": "ai-agent1",
+      "id": "23047b3379d8"
     },
     {
       "kind": "proposition",
@@ -542,6 +1228,382 @@
         "section": "Distributions",
         "snippet": "any locally integrable function has a distributional derivative"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TemperedDistribution.derivCLM",
+        "module": "Mathlib.Analysis.Distribution.TemperedDistribution",
+        "match_kind": null
+      },
+      "note": "Distributions always have derivatives (derivCLM) and suitable functions embed via toTemperedDistribution, but the exact statement for arbitrary locally integrable functions is not a single declaration.",
+      "provenance": "ai-agent1",
+      "id": "fcb3fb13c265"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bolzano–Weierstrass theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "the Bolzano–Weierstrass and Heine–Borel theorems"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendsto_subseq_of_bounded",
+        "module": "Mathlib.Topology.MetricSpace.Bounded",
+        "match_kind": "generalization"
+      },
+      "note": "Every bounded sequence in ℝⁿ has a convergent subsequence; in Mathlib this comes from sequential compactness of closed bounded sets in proper metric spaces.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Baire category theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "the Baire category theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dense_iInter_of_isOpen",
+        "module": "Mathlib.Topology.Baire.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "BaireSpace instance on complete metric / locally compact Hausdorff spaces, with the countable-intersection-of-dense-opens statement dense_iInter_of_isOpen.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "L'Hôpital's rule",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "the L'Hopital's rule"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasDerivAt.lhopital_zero_nhds",
+        "module": "Mathlib.Analysis.Calculus.LHopital",
+        "match_kind": "exact"
+      },
+      "note": "HasDerivAt.lhopital_zero_nhds (and atTop variants) formalize L'Hôpital's rule.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Taylor's theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "Taylor's theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "taylor_mean_remainder_lagrange",
+        "module": "Mathlib.Analysis.Calculus.Taylor",
+        "match_kind": "exact"
+      },
+      "note": "taylor_mean_remainder_lagrange (and Cauchy form) give Taylor's theorem with the explicit remainder.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Dini's theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "Dini's theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dini's theorem (monotone pointwise convergence to a continuous limit on a compact set is uniform) does not appear to have a single named declaration in Mathlib.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Arzelà–Ascoli theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "the Arzelà-Ascoli theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BoundedContinuousFunction.arzela_ascoli",
+        "module": "Mathlib.Topology.ContinuousMap.Compact",
+        "match_kind": "exact"
+      },
+      "note": "BoundedContinuousFunction.arzela_ascoli formalizes the Arzelà–Ascoli compactness criterion for equicontinuous families of continuous functions.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Stone–Weierstrass theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "the Stone-Weierstrass theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.subalgebra_topologicalClosure_eq_top_of_separatesPoints",
+        "module": "Mathlib.Topology.ContinuousMap.StoneWeierstrass",
+        "match_kind": "exact"
+      },
+      "note": "ContinuousMap.subalgebra_topologicalClosure_eq_top_of_separatesPoints is the Stone–Weierstrass theorem (real form), with polynomial special case polynomialFunctions_closure_eq_top.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Banach fixed-point theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "the Banach fixed-point theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContractingWith.exists_fixedPoint",
+        "module": "Mathlib.Dynamics.FixedPoints.Topology",
+        "match_kind": "exact"
+      },
+      "note": "ContractingWith.fixedPoint / exists_fixedPoint give the Banach contraction mapping theorem on complete metric spaces.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Inverse function theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "the inverse and implicit function theorems"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasStrictFDerivAt.localInverse",
+        "module": "Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv",
+        "match_kind": "exact"
+      },
+      "note": "HasStrictFDerivAt.localInverse / to_localHomeomorph formalizes the inverse function theorem in Banach spaces.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Implicit function theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "the inverse and implicit function theorems"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasStrictFDerivAt.implicitFunction",
+        "module": "Mathlib.Analysis.Calculus.Implicit",
+        "match_kind": "exact"
+      },
+      "note": "HasStrictFDerivAt.implicitFunction states the implicit function theorem in Banach spaces.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Stokes' theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "Stokes' theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_divergence_of_hasFDerivWithinAt_off_countable",
+        "module": "Mathlib.MeasureTheory.Integral.DivergenceTheorem",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the divergence theorem (a form of Stokes) but no general Stokes' theorem on manifolds yet.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Egorov's theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "Egorov's theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Egorov.tendstoUniformlyOn_diff_subset_of_lt",
+        "module": "Mathlib.MeasureTheory.Function.Egorov",
+        "match_kind": "exact"
+      },
+      "note": "MeasureTheory.Egorov: a.e.-convergent measurable functions converge uniformly off a small-measure set.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lusin's theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "Lusin's theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lusin's theorem (measurable functions agree with continuous functions off small-measure sets) is not yet a named declaration in Mathlib.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fatou's lemma",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "Fatou's lemma"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.lintegral_liminf_le",
+        "module": "Mathlib.MeasureTheory.Integral.Lebesgue",
+        "match_kind": "exact"
+      },
+      "note": "MeasureTheory.lintegral_liminf_le states Fatou's lemma for the Lebesgue (lower-integral) version.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Monotone convergence theorem (Lebesgue)",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "the monotone and dominated convergence theorems"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.lintegral_iSup",
+        "module": "Mathlib.MeasureTheory.Integral.Lebesgue",
+        "match_kind": "exact"
+      },
+      "note": "MeasureTheory.lintegral_iSup is the monotone convergence theorem for the Lebesgue integral.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Dominated convergence theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "the monotone and dominated convergence theorems"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.tendsto_integral_of_dominated_convergence",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "match_kind": "exact"
+      },
+      "note": "MeasureTheory.tendsto_integral_of_dominated_convergence is the Lebesgue/Bochner dominated convergence theorem.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fubini's theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "Fubini's theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_prod",
+        "module": "Mathlib.MeasureTheory.Integral.Prod",
+        "match_kind": "exact"
+      },
+      "note": "MeasureTheory.integral_prod is Fubini's theorem for product integrals.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Radon–Nikodym theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "the Radon-Nikodym theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.absolutelyContinuous_iff_withDensity_rnDeriv_eq",
+        "module": "Mathlib.MeasureTheory.Decomposition.RadonNikodym",
+        "match_kind": "exact"
+      },
+      "note": "rnDeriv / Measure.withDensity_rnDeriv_eq give the Radon–Nikodym derivative and theorem for σ-finite measures.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lebesgue differentiation theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "the Lebesgue differentiation theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.MeasureTheory.Covering.Differentiation",
+        "match_kind": null
+      },
+      "note": "Mathlib has Vitali-family differentiation lemmas (tendsto_ae limits of averages over shrinking balls) but no single named 'Lebesgue differentiation theorem'.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hahn–Banach theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "the Hahn-Banach theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_extension_norm_eq",
+        "module": "Mathlib.Analysis.NormedSpace.HahnBanach.Extension",
+        "match_kind": "exact"
+      },
+      "note": "exists_extension_norm_eq formalizes the analytic Hahn–Banach extension theorem on normed spaces.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Banach–Alaoglu theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "the Banach-Alaoglu theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeakDual.isCompact_polar",
+        "module": "Mathlib.Analysis.NormedSpace.WeakDual",
+        "match_kind": "exact"
+      },
+      "note": "WeakDual.isCompact_polar / isCompact_closedBall give the Banach–Alaoglu theorem on weak-* compactness of the closed unit ball of the dual.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Riesz representation theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "the Riesz representation theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "generalization"
+      },
+      "note": "InnerProductSpace.toDual is the Riesz representation theorem for Hilbert spaces; rieszContent gives the measure-theoretic Riesz–Markov–Kakutani form.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Plancherel theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "the Plancherel theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "fourierIntegral_l2",
+        "module": "Mathlib.Analysis.Fourier.PlancherelFourier",
+        "match_kind": null
+      },
+      "note": "Mathlib has partial Plancherel/Fourier-isometry results for L² over the circle and ℝⁿ but no single fully general Plancherel theorem declaration.",
       "provenance": "ai-agent1"
     }
   ]

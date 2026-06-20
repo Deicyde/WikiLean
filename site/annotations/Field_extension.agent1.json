@@ -11,7 +11,15 @@
         "section": "(Lead)",
         "snippet": "a field extension is a pair of fields"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra",
+        "module": "Mathlib.Algebra.Algebra.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Field extensions K ⊆ L are encoded as `Algebra K L` with both as fields; the `Algebra` class generalizes to commutative semirings.",
+      "provenance": "ai-agent1",
+      "id": "e985bfc215f2"
     },
     {
       "kind": "example",
@@ -20,7 +28,15 @@
         "section": "(Lead)",
         "snippet": "the complex numbers are an extension field of the real numbers"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.instAlgebra",
+        "module": "Mathlib.Data.Complex.Module",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib provides the ℝ-algebra (hence field extension) structure on ℂ.",
+      "provenance": "ai-agent1",
+      "id": "638aee34b1a8"
     },
     {
       "kind": "definition",
@@ -29,7 +45,15 @@
         "section": "Subfield",
         "snippet": "is a subset"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subfield",
+        "module": "Mathlib.Algebra.Field.Subfield.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Subfield K` is a structure extending `Subring K` for a `DivisionRing K`.",
+      "provenance": "ai-agent1",
+      "id": "337ae093fadd"
     },
     {
       "kind": "proposition",
@@ -38,7 +62,15 @@
         "section": "Subfield",
         "snippet": "the latter definition implies"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SubfieldClass",
+        "module": "Mathlib.Algebra.Field.Subfield.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`SubfieldClass` requires containing 0 and 1 (inherited via `SubringClass`), so the zero element is shared by definition.",
+      "provenance": "ai-agent1",
+      "id": "a6c7d8792776"
     },
     {
       "kind": "example",
@@ -47,7 +79,15 @@
         "section": "Subfield",
         "snippet": "the field of rational numbers is a subfield of the real numbers"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Rat.instAlgebraReal",
+        "module": "Mathlib.Data.Real.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib gives ℚ as a subfield/subring of ℝ via the canonical (injective) algebraMap.",
+      "provenance": "ai-agent1",
+      "id": "60f151a817a6"
     },
     {
       "kind": "proposition",
@@ -56,7 +96,15 @@
         "section": "Subfield",
         "snippet": "The characteristic of a subfield is the same as the characteristic of the larger field"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "charP_of_injective_ringHom",
+        "module": "Mathlib.Algebra.CharP.Algebra",
+        "match_kind": "generalization"
+      },
+      "note": "Injective ring homs transport `CharP`, so any subfield inherits the ambient field's characteristic.",
+      "provenance": "ai-agent1",
+      "id": "4686bd6c6421"
     },
     {
       "kind": "definition",
@@ -65,7 +113,15 @@
         "section": "Extension field",
         "snippet": "is an extension field or simply extension of"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra",
+        "module": "Mathlib.Algebra.Algebra.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Same `Algebra K L` encoding used throughout Mathlib for field extensions.",
+      "provenance": "ai-agent1",
+      "id": "552bfc5d1021"
     },
     {
       "kind": "definition",
@@ -74,7 +130,15 @@
         "section": "Extension field",
         "snippet": "is said to be an intermediate field"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IntermediateField",
+        "module": "Mathlib.FieldTheory.IntermediateField.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IntermediateField K L` is a subfield of L containing the image of K.",
+      "provenance": "ai-agent1",
+      "id": "02a89f12e1a6"
     },
     {
       "kind": "definition",
@@ -83,7 +147,15 @@
         "section": "Extension field",
         "snippet": "The dimension of this vector space is called the degree of the extension"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.finrank",
+        "module": "Mathlib.LinearAlgebra.Dimension.Free",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib uses `Module.finrank K L` (or `Module.rank`) for the degree [L:K].",
+      "provenance": "ai-agent1",
+      "id": "f3b963f72cdf"
     },
     {
       "kind": "definition",
@@ -92,16 +164,32 @@
         "section": "Extension field",
         "snippet": "The degree of an extension is 1 if and only if the two fields are equal"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FiniteDimensional",
+        "module": "Mathlib.LinearAlgebra.FiniteDimensional.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Finite extensions are `FiniteDimensional K L`; specific degrees (1,2,3) are captured via `Module.finrank = n` predicates.",
+      "provenance": "ai-agent1",
+      "id": "ef30e1ae7f39"
     },
     {
       "kind": "theorem",
       "label": "Multiplicativity of degree",
       "anchor": {
         "section": "Extension field",
-        "snippet": "the extension"
+        "snippet": "is finite if and only if both"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Module.finrank_mul_finrank",
+        "module": "Mathlib.LinearAlgebra.Dimension.Free",
+        "match_kind": "exact"
+      },
+      "note": "States `finrank F K * finrank K A = finrank F A`, the tower law. (Anchor tightened from generic 'the extension' for uniqueness.)",
+      "provenance": "ai-agent1",
+      "id": "04ab052c29f6"
     },
     {
       "kind": "definition",
@@ -110,7 +198,15 @@
         "section": "Extension field",
         "snippet": "there is a smallest subfield of"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IntermediateField.adjoin",
+        "module": "Mathlib.FieldTheory.IntermediateField.Adjoin.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IntermediateField.adjoin F S` is the smallest intermediate field containing S.",
+      "provenance": "ai-agent1",
+      "id": "51cfac4d03af"
     },
     {
       "kind": "definition",
@@ -119,7 +215,15 @@
         "section": "Extension field",
         "snippet": "often said to result from the adjunction of"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IntermediateField.adjoin",
+        "module": "Mathlib.FieldTheory.IntermediateField.Adjoin.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Adjunction K(S) is exactly `IntermediateField.adjoin K S` with notation `F⟮x⟯` for the simple case.",
+      "provenance": "ai-agent1",
+      "id": "da7ebd2ebd43"
     },
     {
       "kind": "theorem",
@@ -128,7 +232,15 @@
         "section": "Extension field",
         "snippet": "In characteristic 0, every finite extension is a simple extension"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Field.exists_primitive_element",
+        "module": "Mathlib.FieldTheory.PrimitiveElement",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves the stronger statement for finite separable extensions (which covers char 0).",
+      "provenance": "ai-agent1",
+      "id": "2c05b4008091"
     },
     {
       "kind": "proposition",
@@ -137,7 +249,15 @@
         "section": "Extension field",
         "snippet": "If a simple extension"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "RatFunc",
+        "module": "Mathlib.FieldTheory.RatFunc.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "`RatFunc K` formalizes the field of rational fractions, but I did not find a packaged isomorphism `F⟮x⟯ ≃ RatFunc F` when x is transcendental.",
+      "provenance": "ai-agent1",
+      "id": "80ba989ed3bd"
     },
     {
       "kind": "definition",
@@ -146,7 +266,15 @@
         "section": "Caveats",
         "snippet": "one abstractly defines a field extension as an injective ring homomorphism between two fields"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra",
+        "module": "Mathlib.Algebra.Algebra.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `Algebra K L` between fields gives a (necessarily injective) ring hom `algebraMap K L`.",
+      "provenance": "ai-agent1",
+      "id": "bdf5de3a2bd3"
     },
     {
       "kind": "proposition",
@@ -155,7 +283,15 @@
         "section": "Caveats",
         "snippet": "Every ring homomorphism between fields is injective"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RingHom.injective",
+        "module": "Mathlib.Algebra.Field.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`RingHom.injective` shows any ring hom from a division ring (incl. fields) into a nontrivial ring is injective.",
+      "provenance": "ai-agent1",
+      "id": "02965871ad17"
     },
     {
       "kind": "example",
@@ -164,7 +300,15 @@
         "section": "Examples",
         "snippet": "The field of complex numbers"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.instAlgebra",
+        "module": "Mathlib.Data.Complex.Module",
+        "match_kind": "exact"
+      },
+      "note": "ℂ/ℝ/ℚ tower is fully populated via existing `Algebra` and `IsScalarTower` instances.",
+      "provenance": "ai-agent1",
+      "id": "f6b5a15fa63a"
     },
     {
       "kind": "example",
@@ -173,7 +317,15 @@
         "section": "Examples",
         "snippet": "is an extension field of"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Zsqrtd",
+        "module": "Mathlib.NumberTheory.Zsqrtd.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Quadratic extensions like ℚ(√d) are realized via `Zsqrtd` and number-field machinery, with general adjoin available.",
+      "provenance": "ai-agent1",
+      "id": "f1e5afc8ccee"
     },
     {
       "kind": "example",
@@ -182,7 +334,15 @@
         "section": "Examples",
         "snippet": "is an extension field of both"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "IntermediateField.adjoin",
+        "module": "Mathlib.FieldTheory.IntermediateField.Adjoin.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "Such specific compositums like ℚ(√2,√3) can be constructed via `adjoin` but I found no named instance for this concrete degree-4 example.",
+      "provenance": "ai-agent1",
+      "id": "bae3c7e0de1d"
     },
     {
       "kind": "example",
@@ -191,7 +351,15 @@
         "section": "Examples",
         "snippet": "Finite extensions of"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NumberField",
+        "module": "Mathlib.NumberTheory.NumberField.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Number fields are `NumberField`; p-adic completions are `Padic` in `Mathlib.NumberTheory.Padics.PadicNumbers`.",
+      "provenance": "ai-agent1",
+      "id": "0bd0ec80f30a"
     },
     {
       "kind": "example",
@@ -200,7 +368,15 @@
         "section": "Examples",
         "snippet": "It is common to construct an extension field of a given field"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AdjoinRoot",
+        "module": "Mathlib.RingTheory.AdjoinRoot",
+        "match_kind": "exact"
+      },
+      "note": "`AdjoinRoot f := K[X] ⧸ (f)` realizes the standard quotient-by-irreducible construction.",
+      "provenance": "ai-agent1",
+      "id": "0842ceb4ed69"
     },
     {
       "kind": "example",
@@ -209,7 +385,15 @@
         "section": "Examples",
         "snippet": "one can construct a splitting field of any polynomial"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.SplittingField",
+        "module": "Mathlib.FieldTheory.SplittingField.Construction",
+        "match_kind": "exact"
+      },
+      "note": "`SplittingField f` is the constructed splitting field; `IsSplittingField` axiomatizes it.",
+      "provenance": "ai-agent1",
+      "id": "a58c0e040c47"
     },
     {
       "kind": "example",
@@ -218,7 +402,15 @@
         "section": "Examples",
         "snippet": "there is a unique (up to isomorphism) finite field"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GaloisField",
+        "module": "Mathlib.FieldTheory.Finite.GaloisField",
+        "match_kind": "exact"
+      },
+      "note": "`GaloisField p n` is the field of p^n elements, and `algEquivGaloisField` gives uniqueness up to iso.",
+      "provenance": "ai-agent1",
+      "id": "c955f011bccf"
     },
     {
       "kind": "example",
@@ -227,7 +419,15 @@
         "section": "Examples",
         "snippet": "we can consider the field"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RatFunc",
+        "module": "Mathlib.FieldTheory.RatFunc.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`RatFunc K` is the field of rational functions over K.",
+      "provenance": "ai-agent1",
+      "id": "ed16736238dc"
     },
     {
       "kind": "example",
@@ -236,7 +436,15 @@
         "section": "Examples",
         "snippet": "the set of all meromorphic functions defined on M is a field"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib decl packages the meromorphic functions on a Riemann surface as a field.",
+      "provenance": "ai-agent1",
+      "id": "989ab8f97898"
     },
     {
       "kind": "definition",
@@ -245,7 +453,15 @@
         "section": "Algebraic extension",
         "snippet": "is algebraic over K if it is a root of a nonzero polynomial with coefficients in K"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsAlgebraic",
+        "module": "Mathlib.RingTheory.Algebraic.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsAlgebraic` predicate plus `minpoly` (Mathlib.FieldTheory.Minpoly.Basic) provide both notions.",
+      "provenance": "ai-agent1",
+      "id": "e5629822c744"
     },
     {
       "kind": "theorem",
@@ -254,7 +470,15 @@
         "section": "Algebraic extension",
         "snippet": "An element s of L is algebraic over K if and only if the simple extension"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IntermediateField.adjoin.finiteDimensional",
+        "module": "Mathlib.FieldTheory.IntermediateField.Adjoin.Algebra",
+        "match_kind": "exact"
+      },
+      "note": "Algebraicity of x is equivalent to `FiniteDimensional K K⟮x⟯` via this and related lemmas.",
+      "provenance": "ai-agent1",
+      "id": "5939d7ebfbbe"
     },
     {
       "kind": "theorem",
@@ -263,7 +487,15 @@
         "section": "Algebraic extension",
         "snippet": "The set of the elements of L that are algebraic over K form a subextension"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "algebraicClosure",
+        "module": "Mathlib.FieldTheory.AlgebraicClosure",
+        "match_kind": "exact"
+      },
+      "note": "`algebraicClosure F E` is the intermediate field of elements of E algebraic over F.",
+      "provenance": "ai-agent1",
+      "id": "3d208be5f47a"
     },
     {
       "kind": "definition",
@@ -272,7 +504,15 @@
         "section": "Algebraic extension",
         "snippet": "is an extension such that every element of L is algebraic over K"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra.IsAlgebraic",
+        "module": "Mathlib.RingTheory.Algebraic.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Typeclass `Algebra.IsAlgebraic K L` asserts every element of L is algebraic over K.",
+      "provenance": "ai-agent1",
+      "id": "10cba2145c3d"
     },
     {
       "kind": "proposition",
@@ -281,6 +521,30 @@
         "section": "Algebraic extension",
         "snippet": "A simple extension is algebraic if and only if it is finite"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IntermediateField.adjoin.finiteDimensional",
+        "module": "Mathlib.FieldTheory.IntermediateField.Adjoin.Algebra",
+        "match_kind": "exact"
+      },
+      "note": "Combined with `adjoin_simple_eq_top_iff_of_isAlgebraic` this gives the simple-algebraic ⇔ finite equivalence.",
+      "provenance": "ai-agent1",
+      "id": "6e72a4a87a5b"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every finite extension is algebraic",
+      "anchor": {
+        "section": "Algebraic extension",
+        "snippet": "every finite extension is algebraic"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra.IsAlgebraic.of_finite",
+        "module": "Mathlib.RingTheory.Algebraic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Algebra.IsAlgebraic.of_finite` (or the instance derived from `FiniteDimensional`) gives that every finite extension is algebraic.",
       "provenance": "ai-agent1"
     },
     {
@@ -290,7 +554,15 @@
         "section": "Algebraic extension",
         "snippet": "Every field K has an algebraic closure"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgebraicClosure",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure",
+        "match_kind": "exact"
+      },
+      "note": "`AlgebraicClosure k` exists with instances `IsAlgClosed` and `IsAlgClosure`.",
+      "provenance": "ai-agent1",
+      "id": "56dbdc79d70e"
     },
     {
       "kind": "definition",
@@ -299,7 +571,15 @@
         "section": "Transcendental extension",
         "snippet": "is called algebraically independent over K if no non-trivial polynomial relation"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgebraicIndependent",
+        "module": "Mathlib.RingTheory.AlgebraicIndependent.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`AlgebraicIndependent`, `IsTranscendenceBasis` and `Algebra.trdeg` (via `IsTranscendenceBasis.lift_cardinalMk_eq`) cover all three notions.",
+      "provenance": "ai-agent1",
+      "id": "8c7bc9bae6ca"
     },
     {
       "kind": "definition",
@@ -308,7 +588,15 @@
         "section": "Transcendental extension",
         "snippet": "is said to be purely transcendental if and only if there exists a transcendence basis"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `IsPurelyTranscendental` predicate was found in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "68f0b8ae0f5d"
     },
     {
       "kind": "example",
@@ -317,7 +605,15 @@
         "section": "Transcendental extension",
         "snippet": "For example, consider the extension"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "MvRatFunc",
+        "module": "Mathlib.FieldTheory.MvRatFunc.Rank",
+        "match_kind": "invocation"
+      },
+      "note": "Multivariate rational function fields exist (`MvRatFunc`), but the concept of \"purely transcendental example\" is not packaged as a named lemma.",
+      "provenance": "ai-agent1",
+      "id": "df939ad7b3a3"
     },
     {
       "kind": "proposition",
@@ -326,7 +622,15 @@
         "section": "Transcendental extension",
         "snippet": "Purely transcendental extensions of an algebraically closed field occur as function fields of rational varieties"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Rational varieties and their function fields are not formalized in Mathlib at this level.",
+      "provenance": "ai-agent1",
+      "id": "5c004b395a8c"
     },
     {
       "kind": "definition",
@@ -335,6 +639,30 @@
         "section": "Normal, separable and Galois extensions",
         "snippet": "is called normal if every irreducible polynomial in K"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Normal",
+        "module": "Mathlib.FieldTheory.Normal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Normal F K` extends `Algebra.IsAlgebraic` with `Splits ((minpoly F x).map ...)` for all x.",
+      "provenance": "ai-agent1",
+      "id": "6e6c61174bb4"
+    },
+    {
+      "kind": "definition",
+      "label": "Normal closure",
+      "anchor": {
+        "section": "Normal, separable and Galois extensions",
+        "snippet": "admits a normal closure"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "normalClosure",
+        "module": "Mathlib.FieldTheory.NormalClosure",
+        "match_kind": "exact"
+      },
+      "note": "`normalClosure K L M` is the minimal normal intermediate field of `M/K` containing the image of L.",
       "provenance": "ai-agent1"
     },
     {
@@ -344,7 +672,15 @@
         "section": "Normal, separable and Galois extensions",
         "snippet": "is called separable if the minimal polynomial of every element of L over K is separable"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra.IsSeparable",
+        "module": "Mathlib.FieldTheory.Separable",
+        "match_kind": "exact"
+      },
+      "note": "`Algebra.IsSeparable` and `IsGalois` (Mathlib.FieldTheory.Galois.Basic) formalize separability and the Galois property.",
+      "provenance": "ai-agent1",
+      "id": "51418bd294ac"
     },
     {
       "kind": "theorem",
@@ -353,7 +689,15 @@
         "section": "Normal, separable and Galois extensions",
         "snippet": "A consequence of the primitive element theorem states that every finite separable extension has a primitive element"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Field.exists_primitive_element",
+        "module": "Mathlib.FieldTheory.PrimitiveElement",
+        "match_kind": "exact"
+      },
+      "note": "Exact statement of the primitive element theorem for finite separable extensions.",
+      "provenance": "ai-agent1",
+      "id": "f8e1037b0cb1"
     },
     {
       "kind": "definition",
@@ -362,7 +706,15 @@
         "section": "Normal, separable and Galois extensions",
         "snippet": "we can consider its automorphism group"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsGalois",
+        "module": "Mathlib.FieldTheory.Galois.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The Galois group `L ≃ₐ[K] L` and `IsGalois` are formalized; \"abelian extension\" isn't a named predicate but is expressible via `IsCommutative` on the Galois group.",
+      "provenance": "ai-agent1",
+      "id": "2e674cc2702e"
     },
     {
       "kind": "theorem",
@@ -371,7 +723,15 @@
         "section": "Normal, separable and Galois extensions",
         "snippet": "there is a bijection between the intermediate fields and the subgroups of the Galois group"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsGalois.intermediateFieldEquivSubgroup",
+        "module": "Mathlib.FieldTheory.Galois.IsGaloisGroup",
+        "match_kind": "exact"
+      },
+      "note": "Bijection between intermediate fields and subgroups, with `IntermediateFieldEquivClosedSubgroup` in the infinite case.",
+      "provenance": "ai-agent1",
+      "id": "2bdfda6ffd05"
     },
     {
       "kind": "definition",
@@ -380,6 +740,46 @@
         "section": "Generalizations",
         "snippet": "A closer non-commutative analog are central simple algebras"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra.IsCentral",
+        "module": "Mathlib.Algebra.Central.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Algebra.IsCentral` plus `IsSimpleRing` express the central simple algebra notion; used in `Mathlib.Algebra.BrauerGroup.Defs`.",
+      "provenance": "ai-agent1",
+      "id": "884f8a189160"
+    },
+    {
+      "kind": "example",
+      "label": "Quaternions as CSA over reals",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "the quaternions are a central simple algebra over the reals"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Quaternion",
+        "module": "Mathlib.Algebra.Quaternion",
+        "match_kind": "exact"
+      },
+      "note": "`Quaternion ℝ` (i.e. ℍ) is constructed; central simple structure follows via `Algebra.IsCentral` and `IsSimpleRing` instances.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Brauer equivalence / Brauer group",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "Brauer equivalent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BrauerGroup",
+        "module": "Mathlib.Algebra.BrauerGroup.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`BrauerGroup k` packages CSAs over k modulo Brauer equivalence.",
       "provenance": "ai-agent1"
     },
     {
@@ -389,7 +789,15 @@
         "section": "Extension of scalars",
         "snippet": "given a real vector space, one can produce a complex vector space via complexification"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TensorProduct.instAlgebra",
+        "module": "Mathlib.RingTheory.TensorProduct.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes extension of scalars/base change as `TensorProduct R S M` with full algebra structure; complexification is the special case S = ℂ.",
+      "provenance": "ai-agent1",
+      "id": "a16cfdf526fd"
     }
   ]
 }

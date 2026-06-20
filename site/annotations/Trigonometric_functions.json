@@ -35,7 +35,7 @@
         "module": "Mathlib.Analysis.Complex.Trigonometric",
         "match_kind": "generalization"
       },
-      "note": "Mathlib has `Real.sin`, `Real.cos`, `Real.tan` and `Complex.cot` (see `Mathlib.Analysis.SpecialFunctions.Trigonometric.Cotangent`) but does not appear to define standalone `sec`/`csc` functions.",
+      "note": "Mathlib has `Real.sin`, `Real.cos`, `Real.tan` and `Complex.cot` but does not appear to define standalone `sec`/`csc` functions.",
       "provenance": "ai",
       "id": "b5d803b81648"
     },
@@ -100,7 +100,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "Circle.exp",
-        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Circle",
+        "module": "Mathlib.Analysis.Complex.Circle",
         "match_kind": "generalization"
       },
       "note": "Mathlib has the unit-circle map `Circle.exp` (with `exp_mul_I = cos + sin·I`) but does not take the unit-circle coordinates as the definition of `sin`/`cos`.",
@@ -122,17 +122,23 @@
       },
       "note": "Proved as `Real.sin_sq_add_cos_sq` (and `Complex.sin_sq_add_cos_sq`).",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Unit-circle definitions",
-          "snippet": "this definition of cosine and sine also satisfies the Pythagorean identity"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\cos ^{2}\\theta +\\sin ^{2}\\theta =1.}"
-        }
-      ],
       "id": "65cf1b5bac8f"
+    },
+    {
+      "kind": "definition",
+      "label": "Tangent, cotangent, secant, cosecant in terms of sine and cosine",
+      "anchor": {
+        "section": "Unit-circle definitions",
+        "snippet": "these definitions can readily be shown to coincide with the definitions of tangent, cotangent, secant and cosecant in terms of sine and cosine"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.tan_eq_sin_div_cos",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `Real.tan x = sin x / cos x` and proves `Real.tan_eq_sin_div_cos`; cotangent is `cos/sin` via `Complex.cot`.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -285,16 +291,6 @@
       },
       "note": "Mathlib does not characterise sin/cos as solutions of an IVP; they are defined via the exponential.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition by differential equations",
-          "snippet": "can be defined as the unique solution to the initial value problem"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {d}{dx}}\\sin x=\\cos x,\\ {\\frac {d}{dx}}\\cos x=-\\sin x,\\ \\sin(0)=0,\\ \\cos(0)=1.}"
-        }
-      ],
       "id": "3bcd33e723f4"
     },
     {
@@ -307,21 +303,11 @@
       "status": "partial",
       "mathlib": {
         "decl": "Complex.hasDerivAt_sin",
-        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv",
         "match_kind": "invocation"
       },
       "note": "First and second derivatives of sin/cos are formalized (`hasDerivAt_sin`, `deriv_cos = -sin`) so y'' = -y is immediate but I found no explicit ODE statement.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition by differential equations",
-          "snippet": "both sine and cosine are solutions of the same ordinary differential equation"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle y''+y=0\\,.}"
-        }
-      ],
       "id": "71c5e59d6c3f"
     },
     {
@@ -356,20 +342,6 @@
       },
       "note": "`hasDerivAt_tan : HasDerivAt tan (1 / cos x ^ 2) x` is proven, giving `tan' = 1 + tan²` up to algebra, but no ODE statement is recorded.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition by differential equations",
-          "snippet": "so the tangent function satisfies the ordinary differential equation"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {d}{dx}}\\tan x={\\frac {\\cos ^{2}x+\\sin ^{2}x}{\\cos ^{2}x}}=1+\\tan ^{2}x\\,,}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle y'=1+y^{2}\\,.}"
-        }
-      ],
       "id": "307ce058fa95"
     },
     {
@@ -387,16 +359,6 @@
       },
       "note": "`Real.sin_eq_tsum`, `Real.cos_eq_tsum`, and `Complex.{sin,cos}_eq_tsum` express the standard power series.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Power series expansion",
-          "snippet": "The basic trigonometric functions can be defined by the following power series expansions"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\sin x&amp;=x-{\\frac {x^{3}}{3!}}+{\\frac {x^{5}}{5!}}-{\\frac {x^{7}}{7!}}+\\cdots &amp;&amp;=\\sum _{n=0}^{\\infty }(-1)^{n}{\\frac {x^{2n+1}}{(2n+1)!}}\\\\\\cos x&amp;=1-{\\frac {x^{2}}{2!}}+{\\frac {x^{4}}{4!}}-{\\frac {x^{6}}{6!}}+\\cdots &amp;&amp;=\\sum _{n=0}^{\\infty }(-1)^{n}{\\frac {x^{2n}}{(2n)!}}\\end{aligned}}}"
-        }
-      ],
       "id": "48f867f83ea2"
     },
     {
@@ -409,21 +371,11 @@
       "status": "partial",
       "mathlib": {
         "decl": "Complex.differentiable_sin",
-        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv",
         "match_kind": "invocation"
       },
       "note": "`Complex.differentiable_sin`/`differentiable_cos` show entirety, but I found no explicit `formalPowerSeries.radius = ⊤` statement.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Power series expansion",
-          "snippet": "The radius of convergence of these series is infinite"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\sin x&amp;=x-{\\frac {x^{3}}{3!}}+{\\frac {x^{5}}{5!}}-{\\frac {x^{7}}{7!}}+\\cdots &amp;&amp;=\\sum _{n=0}^{\\infty }(-1)^{n}{\\frac {x^{2n+1}}{(2n+1)!}}\\\\\\cos x&amp;=1-{\\frac {x^{2}}{2!}}+{\\frac {x^{4}}{4!}}-{\\frac {x^{6}}{6!}}+\\cdots &amp;&amp;=\\sum _{n=0}^{\\infty }(-1)^{n}{\\frac {x^{2n}}{(2n)!}}\\end{aligned}}}"
-        }
-      ],
       "id": "0c1f8d3d6689"
     },
     {
@@ -484,44 +436,14 @@
         "section": "Partial fraction expansion",
         "snippet": "There is a series representation as partial fraction expansion where just translated reciprocal functions are summed up"
       },
-      "status": "formalized",
+      "status": "partial",
       "mathlib": {
-        "decl": "Complex.pi_mul_cot_pi_q_exp",
+        "decl": "iteratedDerivWithin_cot_pi_mul_eq_mul_tsum_div_pow",
         "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Cotangent",
-        "match_kind": "exact"
+        "match_kind": "generalization"
       },
-      "note": "The Mittag-Leffler expansion `π·cot(πz) = 1/z + Σ (1/(z−n) + 1/(z+n))` is the goal of `Trigonometric/Cotangent.lean`.",
+      "note": "Mathlib gives the iterated-derivative series expansion of `π cot(πz)` on the upper half plane and `pi_mul_cot_pi_q_exp` (q-expansion), but not the standard Mittag-Leffler form `π cot πx = 1/x + 2x Σ 1/(x²−n²)` over all of ℂ.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Partial fraction expansion",
-          "snippet": "There is a series representation as partial fraction expansion where just translated reciprocal functions are summed up"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\pi \\cot \\pi x=\\lim _{N\\to \\infty }\\sum _{n=-N}^{N}{\\frac {1}{x+n}}.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\pi \\cot \\pi x={\\frac {1}{x}}+2x\\sum _{n=1}^{\\infty }{\\frac {1}{x^{2}-n^{2}}}.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\pi \\csc \\pi x=\\sum _{n=-\\infty }^{\\infty }{\\frac {(-1)^{n}}{x+n}}={\\frac {1}{x}}+2x\\sum _{n=1}^{\\infty }{\\frac {(-1)^{n}}{x^{2}-n^{2}}},}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\pi ^{2}\\csc ^{2}\\pi x=\\sum _{n=-\\infty }^{\\infty }{\\frac {1}{(x+n)^{2}}},}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\pi \\sec \\pi x=\\sum _{n=0}^{\\infty }(-1)^{n}{\\frac {(2n+1)}{(n+{\\tfrac {1}{2}})^{2}-x^{2}}},}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\pi \\tan \\pi x=2x\\sum _{n=0}^{\\infty }{\\frac {1}{(n+{\\tfrac {1}{2}})^{2}-x^{2}}}.}"
-        }
-      ],
       "id": "d7de99068910"
     },
     {
@@ -539,20 +461,6 @@
       },
       "note": "`Complex.tendsto_euler_sin_prod` and `Real.tendsto_euler_sin_prod` prove `sin(πz) = πz·∏(1 − z²/n²)`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Infinite product expansion",
-          "snippet": "The following infinite product for the sine is due to Leonhard Euler"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\sin z=z\\prod _{n=1}^{\\infty }\\left(1-{\\frac {z^{2}}{n^{2}\\pi ^{2}}}\\right),\\quad z\\in \\mathbb {C} .}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\cos z=\\prod _{n=1}^{\\infty }\\left(1-{\\frac {z^{2}}{(n-1/2)^{2}\\pi ^{2}}}\\right),\\quad z\\in \\mathbb {C} .}"
-        }
-      ],
       "id": "6ebc5972abe8"
     },
     {
@@ -570,16 +478,6 @@
       },
       "note": "`Complex.exp_mul_I : exp (x * I) = cos x + sin x * I`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Euler's formula and the exponential function",
-          "snippet": "Euler's formula relates sine and cosine to the exponential function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle e^{ix}=\\cos x+i\\sin x.}"
-        }
-      ],
       "id": "fab5b342f782"
     },
     {
@@ -597,16 +495,6 @@
       },
       "note": "The `Complex.sin` and `Complex.cos` definitions themselves are `(exp(−zI) − exp(zI))·I/2` and `(exp(zI) + exp(−zI))/2`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Euler's formula and the exponential function",
-          "snippet": "Solving this linear system in sine and cosine, one can express them in terms of the exponential function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\sin x&amp;={\\frac {e^{ix}-e^{-ix}}{2i}}\\\\[5pt]\\cos x&amp;={\\frac {e^{ix}+e^{-ix}}{2}}.\\end{aligned}}}"
-        }
-      ],
       "id": "090cee674182"
     },
     {
@@ -624,16 +512,6 @@
       },
       "note": "No definition of sin/cos via abstract topological-group homomorphism characterizations is present.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Euler's formula and the exponential function",
-          "snippet": "Euler's formula can also be used to define the basic trigonometric function directly"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle e:\\mathbb {R} /\\mathbb {Z} \\to U.}"
-        }
-      ],
       "id": "5e16e91d0b6f"
     },
     {
@@ -651,20 +529,6 @@
       },
       "note": "`integral_one_div_one_add_sq` gives `∫ 1/(1+x²) = arctan b − arctan a`, but arctan is defined via inverse of tan rather than as this integral.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition via integration",
-          "snippet": "Another way to define the trigonometric functions in analysis is using integration"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\theta (t)=\\int _{0}^{t}{\\frac {d\\tau }{1+\\tau ^{2}}}=\\arctan t}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {1}{2}}\\pi =\\int _{0}^{\\infty }{\\frac {d\\tau }{1+\\tau ^{2}}}}"
-        }
-      ],
       "id": "47a7a541c776"
     },
     {
@@ -682,16 +546,6 @@
       },
       "note": "Mathlib does not build sin/cos by inverting an integral relation.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition via integration",
-          "snippet": "the trigonometric functions are defined by inverting the relation"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\tan \\theta =t,\\quad \\cos \\theta =(1+t^{2})^{-1/2},\\quad \\sin \\theta =t(1+t^{2})^{-1/2}}"
-        }
-      ],
       "id": "8645ef4f3eac"
     },
     {
@@ -709,32 +563,6 @@
       },
       "note": "Addition formulae exist in Mathlib but not as derivations from an integral characterization.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition via integration",
-          "snippet": "one may first establish the addition formulae"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\arctan s+\\arctan t=\\arctan {\\frac {s+t}{1-st}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\arctan s+\\arctan t=\\int _{-s}^{t}{\\frac {d\\tau }{1+\\tau ^{2}}}=\\int _{0}^{\\frac {s+t}{1-st}}{\\frac {d\\tau }{1+\\tau ^{2}}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\arctan t+{\\frac {\\pi }{2}}=\\arctan(-1/t),\\quad t\\in (-\\infty ,0).}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\sin \\left(\\theta +{\\frac {\\pi }{2}}\\right)={\\frac {-1}{t{\\sqrt {1+(-1/t)^{2}}}}}={\\frac {-1}{\\sqrt {1+t^{2}}}}=-\\cos(\\theta )}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\cos \\left(\\theta +{\\frac {\\pi }{2}}\\right)={\\frac {1}{\\sqrt {1+(-1/t)^{2}}}}={\\frac {t}{\\sqrt {1+t^{2}}}}=\\sin(\\theta ).}"
-        }
-      ],
       "id": "fe433f780115"
     },
     {
@@ -752,20 +580,6 @@
       },
       "note": "No uniqueness theorem characterizing sin/cos by their functional equations was found.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definitions using functional equations",
-          "snippet": "the sine and the cosine form the unique pair of continuous functions that satisfy the difference formula"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\cos(x-y)=\\cos x\\cos y+\\sin x\\sin y\\,}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle 0&lt;x\\cos x&lt;\\sin x&lt;x\\quad {\\text{ for }}\\quad 0&lt;x&lt;1.}"
-        }
-      ],
       "id": "f893c3f16166"
     },
     {
@@ -783,16 +597,6 @@
       },
       "note": "`Complex.sin_eq` and `Complex.cos_eq` express `sin z`/`cos z` in terms of real `sin`, `cos`, `sinh`, `cosh` of the real and imaginary parts.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "In the complex plane",
-          "snippet": "can be expressed in terms of real sines, cosines, and hyperbolic functions as follows"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\sin z&amp;=\\sin x\\cosh y+i\\cos x\\sinh y\\\\[5pt]\\cos z&amp;=\\cos x\\cosh y-i\\sin x\\sinh y\\end{aligned}}}"
-        }
-      ],
       "id": "ace67e3849bc"
     },
     {
@@ -810,16 +614,6 @@
       },
       "note": "Periodicity with period `2π` is formalized via `sin_periodic`/`cos_periodic` but minimality of the period is not stated explicitly.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Periodicity and asymptotes",
-          "snippet": "The sine and cosine functions are periodic , with period"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\sin(z+2\\pi )=\\sin(z),\\quad \\cos(z+2\\pi )=\\cos(z).}"
-        }
-      ],
       "id": "fe30ac4d2443"
     },
     {
@@ -837,20 +631,6 @@
       },
       "note": "`Real.sin_eq_zero_iff` characterises sin zeros as integer multiples of π, and `cos_eq_zero_iff` similarly for cos; simplicity not explicitly stated.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Periodicity and asymptotes",
-          "snippet": "All of the zeros are simple zeros"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\pi \\mathbb {Z} =\\left\\{\\dots ,-2\\pi ,-\\pi ,0,\\pi ,2\\pi ,\\dots \\right\\}\\subset \\mathbb {C} .}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {\\pi }{2}}+\\pi \\mathbb {Z} =\\left\\{\\dots ,-{\\frac {3\\pi }{2}},-{\\frac {\\pi }{2}},{\\frac {\\pi }{2}},{\\frac {3\\pi }{2}},\\dots \\right\\}\\subset \\mathbb {C} .}"
-        }
-      ],
       "id": "0a7a296e9435"
     },
     {
@@ -868,16 +648,6 @@
       },
       "note": "Zeros of tan at integer multiples of π are formalized (`tan_int_mul_pi`) and meromorphicity captures poles, but a unified zeros-and-poles statement isn't given.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Periodicity and asymptotes",
-          "snippet": "The tangent function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\lim _{x\\to {\\frac {\\pi }{2}}^{-}}\\tan(x)=+\\infty ,\\quad \\lim _{x\\to {\\frac {\\pi }{2}}^{+}}\\tan(x)=-\\infty .}"
-        }
-      ],
       "id": "2fc9ab2f8cb8"
     },
     {
@@ -890,21 +660,11 @@
       "status": "partial",
       "mathlib": {
         "decl": "Complex.cot",
-        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Cotangent",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
         "match_kind": "invocation"
       },
       "note": "`Complex.cot` is defined and meromorphic, but I found no explicit characterisation of its zeros and poles.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Periodicity and asymptotes",
-          "snippet": "The cotangent function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\lim _{x\\to 0^{-}}\\cot(x)=-\\infty ,\\quad \\lim _{x\\to 0^{+}}\\cot(x)=+\\infty .}"
-        }
-      ],
       "id": "fce96ef6b2f5"
     },
     {
@@ -922,16 +682,6 @@
       },
       "note": "`cos_neg`, `sin_neg`, and `tan_neg` formalise even/odd parities of cos/sin/tan.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Parity",
-          "snippet": "The cosine and the secant are even functions ; the other trigonometric functions are odd functions"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\sin(-x)&amp;=-\\sin x\\\\\\cos(-x)&amp;=\\cos x\\\\\\tan(-x)&amp;=-\\tan x\\\\\\cot(-x)&amp;=-\\cot x\\\\\\csc(-x)&amp;=-\\csc x\\\\\\sec(-x)&amp;=\\sec x.\\end{aligned}}}"
-        }
-      ],
       "id": "0eb65f35f736"
     },
     {
@@ -949,16 +699,6 @@
       },
       "note": "`sin_periodic`, `cos_periodic` (period `2π`) and `tan_periodic` (period `π`) are all formalised.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Periods",
-          "snippet": "All trigonometric functions are periodic functions of period 2"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{array}{lrl}\\sin(x+&amp;2k\\pi )&amp;=\\sin x\\\\\\cos(x+&amp;2k\\pi )&amp;=\\cos x\\\\\\tan(x+&amp;k\\pi )&amp;=\\tan x\\\\\\cot(x+&amp;k\\pi )&amp;=\\cot x\\\\\\csc(x+&amp;2k\\pi )&amp;=\\csc x\\\\\\sec(x+&amp;2k\\pi )&amp;=\\sec x.\\end{array}}}"
-        }
-      ],
       "id": "340459e07679"
     },
     {
@@ -976,28 +716,6 @@
       },
       "note": "`Real.sin_sq_add_cos_sq : sin x ^ 2 + cos x ^ 2 = 1`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Pythagorean identity",
-          "snippet": "The Pythagorean identity, is the expression of the Pythagorean theorem in terms of trigonometric functions"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\sin ^{2}x+\\cos ^{2}x=1\\,.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\tan ^{2}x+1=\\sec ^{2}x}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle 1+\\cot ^{2}x=\\csc ^{2}x}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\sec ^{2}x+\\csc ^{2}x=\\sec ^{2}x\\csc ^{2}x\\,.}"
-        }
-      ],
       "id": "95da68537935"
     },
     {
@@ -1049,20 +767,6 @@
       },
       "note": "The half-angle formulas for sin/cos in terms of `tan(x/2)` are formalised both for ℂ and ℝ.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Sum and difference formulas",
-          "snippet": "this is the tangent half-angle substitution , which reduces the computation of integrals and antiderivatives of trigonometric functions to that of rational fractions"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\sin \\theta &amp;={\\frac {2t}{1+t^{2}}},\\\\[5mu]\\cos \\theta &amp;={\\frac {1-t^{2}}{1+t^{2}}},\\\\[5mu]\\tan \\theta &amp;={\\frac {2t}{1-t^{2}}}.\\end{aligned}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle d\\theta ={\\frac {2}{1+t^{2}}}\\,dt,}"
-        }
-      ],
       "id": "6da52494d785"
     },
     {
@@ -1095,7 +799,7 @@
         "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Inverse",
         "match_kind": "exact"
       },
-      "note": "`Real.arcsin`, `Real.arccos`, and `Real.arctan` (in `Trigonometric/Arctan.lean`) are defined as restricted inverses.",
+      "note": "`Real.arcsin`, `Real.arccos`, and `Real.arctan` are defined as restricted inverses.",
       "provenance": "ai",
       "id": "dcc273525b4d"
     },
@@ -1114,20 +818,6 @@
       },
       "note": "`sin_angle_div_norm_eq_sin_angle_div_norm` (vector form) and `sin_angle_div_dist_eq_sin_angle_div_dist` (point form) prove the law of sines.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Law of sines",
-          "snippet": "The law of sines states that for an arbitrary triangle with sides"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {\\sin A}{a}}={\\frac {\\sin B}{b}}={\\frac {\\sin C}{c}}={\\frac {2\\Delta }{abc}},}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {a}{\\sin A}}={\\frac {b}{\\sin B}}={\\frac {c}{\\sin C}}=2R,}"
-        }
-      ],
       "id": "8741492db3e4"
     },
     {
@@ -1145,20 +835,6 @@
       },
       "note": "Both vector-angle and angle-at-point forms of the law of cosines are proved in `Geometry/Euclidean/Triangle.lean`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Law of cosines",
-          "snippet": "The law of cosines (also known as the cosine formula or cosine rule) is a generalization of the Pythagorean theorem"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle c^{2}=a^{2}+b^{2}-2ab\\cos C,}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\cos C={\\frac {a^{2}+b^{2}-c^{2}}{2ab}}.}"
-        }
-      ],
       "id": "30e546ab00d1"
     },
     {
@@ -1176,16 +852,6 @@
       },
       "note": "I found no law-of-tangents statement in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Law of tangents",
-          "snippet": "The law of tangents says that"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {\\tan {\\frac {A-B}{2}}}{\\tan {\\frac {A+B}{2}}}}={\\frac {a-b}{a+b}}}"
-        }
-      ],
       "id": "a24830f25312"
     },
     {
@@ -1203,20 +869,6 @@
       },
       "note": "I found no law-of-cotangents statement in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Law of cotangents",
-          "snippet": "The law of cotangents says that"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\cot {\\frac {A}{2}}={\\frac {s-a}{r}}.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {\\cot {\\dfrac {A}{2}}}{s-a}}={\\frac {\\cot {\\dfrac {B}{2}}}{s-b}}={\\frac {\\cot {\\dfrac {C}{2}}}{s-c}}={\\frac {1}{r}}.}"
-        }
-      ],
       "id": "e1c4e4cdc611"
     },
     {
@@ -1249,18 +901,8 @@
         "module": "Mathlib.Analysis.Fourier.AddCircle",
         "match_kind": "generalization"
       },
-      "note": "Fourier coefficients/series for L²-functions on `AddCircle` are formalised (`Mathlib.Analysis.Fourier.AddCircle`), but no general convergence-of-Fourier-series theorem for arbitrary periodic functions is identified.",
+      "note": "Fourier coefficients/series for L²-functions on `AddCircle` are formalised, but no general convergence-of-Fourier-series theorem for arbitrary periodic functions is identified.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Periodic functions",
-          "snippet": "a periodic function f ( x ) can be expressed as a sum of sine waves or cosine waves in a Fourier series"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f(t)=\\sum _{k=1}^{\\infty }c_{k}\\varphi _{k}(t).}"
-        }
-      ],
       "id": "278548e4a247"
     },
     {
@@ -1278,16 +920,6 @@
       },
       "note": "No square-wave Fourier-series example was found in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Periodic functions",
-          "snippet": "the square wave can be written as the Fourier series"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f_{\\text{square}}(t)={\\frac {4}{\\pi }}\\sum _{k=1}^{\\infty }{\\sin {\\big (}(2k-1)t{\\big )} \\over 2k-1}.}"
-        }
-      ],
       "id": "37cc674f196b"
     },
     {

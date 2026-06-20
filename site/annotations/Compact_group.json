@@ -1,0 +1,473 @@
+{
+  "slug": "Compact_group",
+  "wikipedia_title": "Compact group",
+  "display_title": "Compact group",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Compact group",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a compact ( topological ) group is a topological group whose topology realizes it as a compact topological space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsTopologicalGroup",
+        "module": "Mathlib.Topology.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib expresses a compact (topological) group idiomatically as the conjunction of typeclasses `[IsTopologicalGroup G]` and `[CompactSpace G]` (e.g. in `Mathlib.Topology.Algebra.Category.ProfiniteGrp.Basic`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Basic examples of compact Lie groups",
+      "anchor": {
+        "section": "Compact Lie groups",
+        "snippet": "Basic examples of compact Lie groups include"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.specialUnitaryGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib defines `unitaryGroup`/`specialUnitaryGroup` but does not assemble the Wikipedia list (U(1), SU(n), SO(n), Sp(n), Spin(n)) as compact Lie group examples — e.g. SO(n) and Spin(n) have no dedicated definitions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Classification theorem of compact Lie groups",
+      "anchor": {
+        "section": "Compact Lie groups",
+        "snippet": "The classification theorem of compact Lie groups states that up to finite extensions and finite covers this exhausts the list of examples"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No classification theorem for compact Lie groups is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Identity component of a compact Lie group",
+      "anchor": {
+        "section": "Classification",
+        "snippet": "Any compact Lie group G has an identity component"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subgroup.connectedComponentOfOne",
+        "module": "Mathlib.Topology.Algebra.Group.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Subgroup.connectedComponentOfOne` defines the identity component as a subgroup of any topological group, subsuming the compact Lie case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Structure of connected compact Lie groups",
+      "anchor": {
+        "section": "Classification",
+        "snippet": "Every connected compact Lie group is the quotient by a finite central subgroup of a product of a simply connected compact Lie group and a torus"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No structure theorem for connected compact Lie groups is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Decomposition of simply connected compact Lie groups",
+      "anchor": {
+        "section": "Classification",
+        "snippet": "every compact, connected, simply-connected Lie group K is a product of finitely many compact, connected, simply-connected simple Lie groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no decomposition theorem for simply-connected compact Lie groups into simple factors.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Correspondence with complex semisimple Lie algebras",
+      "anchor": {
+        "section": "Classification",
+        "snippet": "The classification of compact, simply connected Lie groups is the same as the classification of complex semisimple Lie algebras"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No correspondence between compact simply-connected Lie groups and complex semisimple Lie algebras is established in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Maximal torus",
+      "anchor": {
+        "section": "Maximal tori and root systems",
+        "snippet": "a maximal torus , that is a subgroup T of K that is isomorphic to a product of several copies of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Loogle reports no `maximalTorus` declaration in Mathlib; the notion of a maximal torus of a compact Lie group is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Torus theorem",
+      "anchor": {
+        "section": "Maximal tori and root systems",
+        "snippet": "A basic result is the torus theorem which states that every element of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The torus theorem (every element of a compact connected Lie group lies in some maximal torus) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "p-adic integers and profinite groups",
+      "anchor": {
+        "section": "Further examples",
+        "snippet": "any profinite group is a compact group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProfiniteGrp",
+        "module": "Mathlib.Topology.Algebra.Category.ProfiniteGrp.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ProfiniteGrp` is defined as compact + totally disconnected topological groups, and `PadicInt.compactSpace` (Mathlib.NumberTheory.Padics.ProperSpace) gives the p-adic integers as a compact group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Pontryagin duality examples",
+      "anchor": {
+        "section": "Further examples",
+        "snippet": "Pontryagin duality provides a large supply of examples of compact commutative groups"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PontryaginDual",
+        "module": "Mathlib.Topology.Algebra.PontryaginDual",
+        "match_kind": "exact"
+      },
+      "note": "`PontryaginDual` is defined in `Mathlib.Topology.Algebra.PontryaginDual` as continuous homomorphisms into the circle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Existence of Haar measure on compact groups",
+      "anchor": {
+        "section": "Haar measure",
+        "snippet": "Compact groups all carry a Haar measure"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.haarMeasure",
+        "module": "Mathlib.MeasureTheory.Measure.Haar.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`MeasureTheory.Measure.haarMeasure` constructs the Haar measure on any locally compact Hausdorff group, of which compact groups are a special case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Peter–Weyl decomposition of L^2(G)",
+      "anchor": {
+        "section": "Haar measure",
+        "snippet": "the Peter–Weyl theorem provides a decomposition of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep finds no `PeterWeyl` declaration in Mathlib; the Peter–Weyl theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cartan's theorem (closed subgroup)",
+      "anchor": {
+        "section": "Representation theory",
+        "snippet": "Cartan's theorem states that Im(ρ) must itself be a Lie subgroup in the unitary group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cartan's closed-subgroup theorem (a closed subgroup of a Lie group is a Lie subgroup) is not formalized in Mathlib's manifold/Lie group infrastructure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Irreducible representations of a torus are one-dimensional",
+      "anchor": {
+        "section": "Representation theory of T",
+        "snippet": "Schur's lemma tells us that each irreducible representation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not have a result identifying irreducible continuous representations of a torus with one-dimensional characters.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Analytically integral element",
+      "anchor": {
+        "section": "Representation theory of T",
+        "snippet": "is called an analytically integral element"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no definition of an analytically integral element of the Lie algebra of a torus.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Irreducible representations of U(1)",
+      "anchor": {
+        "section": "Representation theory of T",
+        "snippet": "Suppose, for example, T is just the group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classification of irreducible representations of U(1) as z ↦ zⁿ is not stated in Mathlib (no dedicated `Circle` representation theory).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Weight of a representation",
+      "anchor": {
+        "section": "Representation theory of K",
+        "snippet": "occurs at least once in the decomposition of the restriction of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.Algebra.Lie.Weights.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib's `Mathlib/Algebra/Lie/Weights/` develops weight theory for Lie modules, but not weights of a representation of a compact Lie group obtained by restricting to a maximal torus.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dominant integral element",
+      "anchor": {
+        "section": "Representation theory of K",
+        "snippet": "we say that an integral element"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of dominant integral element relative to a choice of positive roots is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Theorem of the highest weight",
+      "anchor": {
+        "section": "Representation theory of K",
+        "snippet": "The irreducible finite-dimensional representations of K are then classified by a theorem of the highest weight"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Loogle finds no `highest_weight` declaration; the highest weight classification theorem is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Character of a representation",
+      "anchor": {
+        "section": "The Weyl character formula",
+        "snippet": "we define the character of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FDRep.character",
+        "module": "Mathlib.RepresentationTheory.Character",
+        "match_kind": "special_case"
+      },
+      "note": "`FDRep.character` defines the character g ↦ tr(ρ g) for finite-dimensional representations, but only the (discrete) group case — not the continuous compact-group setting.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Character is a class function",
+      "anchor": {
+        "section": "The Weyl character formula",
+        "snippet": "This function is easily seen to be a class function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FDRep.char_conj",
+        "module": "Mathlib.RepresentationTheory.Character",
+        "match_kind": "special_case"
+      },
+      "note": "`FDRep.char_conj` proves `V.character (h * g * h⁻¹) = V.character g`, capturing the class-function property in the discrete-group setting.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Characters form an orthonormal basis",
+      "anchor": {
+        "section": "The Weyl character formula",
+        "snippet": "the characters form an orthonormal basis for the set of square-integrable class functions in K"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FDRep.char_orthonormal",
+        "module": "Mathlib.RepresentationTheory.Character",
+        "match_kind": "special_case"
+      },
+      "note": "`FDRep.char_orthonormal` proves orthogonality of characters for irreducible representations of a finite group; the L²(K) statement for compact groups is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Weyl character formula",
+      "anchor": {
+        "section": "The Weyl character formula",
+        "snippet": "the Weyl character formula , which gives an explicit formula for the character"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Loogle finds no Weyl character formula declaration; Mathlib's `Weyl`-named decls are about Weyl groups of root systems, not characters.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Representations of SU(2)",
+      "anchor": {
+        "section": "The SU(2) case",
+        "snippet": "We now consider the case of the compact group SU(2)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `Matrix.specialUnitaryGroup` but no developed representation theory of SU(2) (symmetric power representations, etc.).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Weyl character formula for SU(2)",
+      "anchor": {
+        "section": "The SU(2) case",
+        "snippet": "the Weyl character formula says, in this case"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The explicit SU(2) Weyl character formula is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Weyl's proof of the character formula",
+      "anchor": {
+        "section": "An outline of the proof",
+        "snippet": "The first major step in the argument is to prove the Weyl character formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of Weyl's analytic proof of the character formula exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Tannaka–Krein duality",
+      "anchor": {
+        "section": "Duality",
+        "snippet": "The topic of recovering a compact group from its representation theory is the subject of the Tannaka–Krein duality"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TannakaDuality.FiniteGroup.equiv",
+        "module": "Mathlib.RepresentationTheory.Tannaka",
+        "match_kind": "special_case"
+      },
+      "note": "`TannakaDuality.FiniteGroup.equiv` proves Tannaka duality for finite groups (G ≃* Aut(forget k G)); the compact-group Tannaka–Krein theorem is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Weyl's unitarian trick",
+      "anchor": {
+        "section": "From compact to non-compact groups",
+        "snippet": "The influence of the compact group theory on non-compact groups was formulated by Weyl in his unitarian trick"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Loogle finds no `unitarian` declaration; Weyl's unitarian trick is not formalized in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

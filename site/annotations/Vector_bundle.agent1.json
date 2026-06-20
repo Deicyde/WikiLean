@@ -11,7 +11,15 @@
         "section": "(Lead)",
         "snippet": "a vector bundle is a topological construction that makes precise the idea of a family of vector spaces parameterized by another space"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "VectorBundle",
+        "module": "Mathlib.Topology.VectorBundle.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`VectorBundle R F E` is the class of a fiberwise-linear locally trivial bundle, the exact notion.",
+      "provenance": "ai-agent1",
+      "id": "736e15a18bb5"
     },
     {
       "kind": "example",
@@ -20,7 +28,15 @@
         "section": "(Lead)",
         "snippet": "Such vector bundles are said to be trivial"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Bundle.Trivial.vectorBundle",
+        "module": "Mathlib.Topology.VectorBundle.Constructions",
+        "match_kind": "exact"
+      },
+      "note": "`Bundle.Trivial B F` with its `vectorBundle` instance is the constant/trivial vector bundle.",
+      "provenance": "ai-agent1",
+      "id": "341d16e38ffc"
     },
     {
       "kind": "example",
@@ -29,7 +45,15 @@
         "section": "(Lead)",
         "snippet": "class of examples are the tangent bundles of smooth (or differentiable) manifolds"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tangentBundleCore",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.Tangent",
+        "match_kind": "exact"
+      },
+      "note": "`tangentBundleCore I M` builds the tangent bundle `TangentBundle I M` as a smooth vector bundle.",
+      "provenance": "ai-agent1",
+      "id": "bd69606cbb62"
     },
     {
       "kind": "definition",
@@ -38,7 +62,15 @@
         "section": "(Lead)",
         "snippet": "a manifold is said to be parallelizable if, and only if, its tangent bundle is trivial"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of parallelizability (trivial tangent bundle) exists in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "91a39f8a6b25"
     },
     {
       "kind": "definition",
@@ -47,7 +79,15 @@
         "section": "(Lead)",
         "snippet": "Vector bundles are almost always required to be locally trivial"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FiberBundle",
+        "module": "Mathlib.Topology.FiberBundle.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The `FiberBundle` class encodes local triviality via a trivialization atlas with a trivialization at each base point.",
+      "provenance": "ai-agent1",
+      "id": "1993f9067033"
     },
     {
       "kind": "definition",
@@ -56,7 +96,15 @@
         "section": "Definition and first consequences",
         "snippet": "A real vector bundle consists of"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "VectorBundle",
+        "module": "Mathlib.Topology.VectorBundle.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "A real vector bundle is `VectorBundle ℝ F E`, the instantiation of the general field-parametrized class at `ℝ`.",
+      "provenance": "ai-agent1",
+      "id": "feb72bc08e41"
     },
     {
       "kind": "definition",
@@ -65,7 +113,15 @@
         "section": "Definition and first consequences",
         "snippet": "is called a local trivialization of the vector bundle"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Bundle.Trivialization",
+        "module": "Mathlib.Topology.FiberBundle.Trivialization",
+        "match_kind": "exact"
+      },
+      "note": "`Bundle.Trivialization F (π F E)` is exactly a local trivialization (with `IsLinear` for the vector-bundle case).",
+      "provenance": "ai-agent1",
+      "id": "9a88cba8040e"
     },
     {
       "kind": "definition",
@@ -74,7 +130,15 @@
         "section": "Definition and first consequences",
         "snippet": "is called the rank of the vector bundle"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "VectorBundle.finrank_eq",
+        "module": "Mathlib.Topology.VectorBundle.FiniteDimensional",
+        "match_kind": null
+      },
+      "note": "There is no named `rank`, but `VectorBundle.finrank_eq` proves every fiber has the constant rank `finrank R F`.",
+      "provenance": "ai-agent1",
+      "id": "4a927d1ed5fa"
     },
     {
       "kind": "definition",
@@ -83,7 +147,15 @@
         "section": "Definition and first consequences",
         "snippet": "Vector bundles of rank 1 are called line bundles"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated line-bundle or plane-bundle definition (rank-1/rank-2 bundles) exists in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "c83122ec072d"
     },
     {
       "kind": "definition",
@@ -92,7 +164,15 @@
         "section": "Definition and first consequences",
         "snippet": "is called the trivial bundle of rank"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Bundle.Trivial",
+        "module": "Mathlib.Topology.FiberBundle.Constructions",
+        "match_kind": "generalization"
+      },
+      "note": "`Bundle.Trivial B F` generalizes the rank-`k` trivial bundle (take `F = Fin k → R`).",
+      "provenance": "ai-agent1",
+      "id": "281b4ad7bf4c"
     },
     {
       "kind": "definition",
@@ -101,7 +181,15 @@
         "section": "Transition functions",
         "snippet": "These are called the transition functions"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "VectorBundleCore.coordChange",
+        "module": "Mathlib.Topology.VectorBundle.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Transition functions appear as `coordChange` fields of `FiberBundleCore`/`VectorBundleCore` and as `Trivialization.coordChangeL`.",
+      "provenance": "ai-agent1",
+      "id": "a9b927a08e55"
     },
     {
       "kind": "proposition",
@@ -110,7 +198,15 @@
         "section": "Transition functions",
         "snippet": "The set of transition functions forms a Čech cocycle in the sense that"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FiberBundleCore.coordChange_comp",
+        "module": "Mathlib.Topology.FiberBundle.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`FiberBundleCore.coordChange_comp` is exactly the cocycle identity `coordChange j k ∘ coordChange i j = coordChange i k`.",
+      "provenance": "ai-agent1",
+      "id": "e6ddc3296fca"
     },
     {
       "kind": "theorem",
@@ -119,7 +215,15 @@
         "section": "Transition functions",
         "snippet": "Conversely, given a fiber bundle"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FiberBundleCore.fiberBundle",
+        "module": "Mathlib.Topology.FiberBundle.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`FiberBundleCore` (with `VectorBundleCore.toVectorBundle`) reconstructs a bundle from cocycle transition data, the construction theorem.",
+      "provenance": "ai-agent1",
+      "id": "f85e5c55da3f"
     },
     {
       "kind": "definition",
@@ -128,7 +232,15 @@
         "section": "Subbundles",
         "snippet": "a subbundle is simply a topological subspace"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of a subbundle of a vector bundle.",
+      "provenance": "ai-agent1",
+      "id": "500e9fcdb171"
     },
     {
       "kind": "proposition",
@@ -137,6 +249,30 @@
         "section": "Subbundles",
         "snippet": "A subbundle of a trivial bundle need not be trivial"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No subbundle theory exists, so this statement about subbundles of trivial bundles is absent.",
+      "provenance": "ai-agent1",
+      "id": "1aa2119ad270"
+    },
+    {
+      "kind": "example",
+      "label": "Möbius band as non-trivial line bundle",
+      "anchor": {
+        "section": "Subbundles",
+        "snippet": "the Möbius band , a non-trivial line bundle over the circle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Möbius band as a non-trivial real line bundle over the circle is not constructed as a vector bundle in Mathlib.",
       "provenance": "ai-agent1"
     },
     {
@@ -146,7 +282,15 @@
         "section": "Vector bundle morphisms",
         "snippet": "A morphism from the vector bundle"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no structure for a morphism between two vector bundles in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "0b9ceeeeb04d"
     },
     {
       "kind": "definition",
@@ -155,7 +299,15 @@
         "section": "Vector bundle morphisms",
         "snippet": "The class of all vector bundles together with bundle morphisms forms a category"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `CategoryTheory` instance for vector bundles is defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "c0d9eeaae2f2"
     },
     {
       "kind": "definition",
@@ -164,7 +316,15 @@
         "section": "Vector bundle morphisms",
         "snippet": "is called a (vector) bundle isomorphism"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Bundle.Trivialization",
+        "module": "Mathlib.Topology.FiberBundle.Trivialization",
+        "match_kind": null
+      },
+      "note": "Trivializations (fiberwise-linear isos to the trivial bundle) are formalized, but a general bundle isomorphism between two arbitrary bundles is not.",
+      "provenance": "ai-agent1",
+      "id": "3aebe5f6a245"
     },
     {
       "kind": "definition",
@@ -173,7 +333,15 @@
         "section": "Vector bundle morphisms",
         "snippet": "We can also consider the category of all vector bundles over a fixed base space"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No category of vector bundles over a fixed base is defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "69cf4976e385"
     },
     {
       "kind": "proposition",
@@ -182,7 +350,15 @@
         "section": "Vector bundle morphisms",
         "snippet": "can also be viewed as a vector bundle morphism over"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a bundle-morphism notion this equivalence (covering map vs. pullback morphism) is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "d13129e769c3"
     },
     {
       "kind": "definition",
@@ -191,6 +367,30 @@
         "section": "Sections and locally free sheaves",
         "snippet": "we can consider sections of π on U"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContMDiffSection",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection",
+        "match_kind": null
+      },
+      "note": "`ContMDiffSection` formalizes smooth global sections; general continuous sections over an open set are not a dedicated type.",
+      "provenance": "ai-agent1",
+      "id": "32ad0bc7b99d"
+    },
+    {
+      "kind": "example",
+      "label": "Section of tangent bundle is a vector field",
+      "anchor": {
+        "section": "Sections and locally free sheaves",
+        "snippet": "a section of the tangent bundle of a differential manifold is the same as a vector field on that manifold"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContMDiffSection",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection",
+        "match_kind": "special_case"
+      },
+      "note": "A smooth vector field on `M` is precisely a `ContMDiffSection` of `TangentSpace I` over `M`.",
       "provenance": "ai-agent1"
     },
     {
@@ -200,7 +400,15 @@
         "section": "Sections and locally free sheaves",
         "snippet": "always contains at least one element, namely the zero section"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Bundle.zeroSection",
+        "module": "Mathlib.Topology.VectorBundle.Basic",
+        "match_kind": null
+      },
+      "note": "`Bundle.zeroSection` is formalized, but the sheaf of sections of a vector bundle is not constructed.",
+      "provenance": "ai-agent1",
+      "id": "5b80ef2796f5"
     },
     {
       "kind": "proposition",
@@ -209,7 +417,15 @@
         "section": "Sections and locally free sheaves",
         "snippet": "is a module over the ring of continuous real-valued functions on"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContMDiffSection",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection",
+        "match_kind": null
+      },
+      "note": "Smooth sections form a module over the field and `smul_section` shows scaling by functions stays smooth, but no explicit module structure over the function ring is built.",
+      "provenance": "ai-agent1",
+      "id": "9f3d1098f04d"
     },
     {
       "kind": "proposition",
@@ -218,7 +434,15 @@
         "section": "Sections and locally free sheaves",
         "snippet": "arises in this fashion from a vector bundle: only the locally free ones do"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No link between topological vector bundles and locally free sheaves of their sections is formalized.",
+      "provenance": "ai-agent1",
+      "id": "ce3c9be5f824"
     },
     {
       "kind": "theorem",
@@ -227,7 +451,15 @@
         "section": "Sections and locally free sheaves",
         "snippet": "the category of real vector bundles on X is equivalent to the category of locally free and finitely generated sheaves"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This category equivalence between real vector bundles and locally free f.g. sheaves is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "3e3eb7b751c4"
     },
     {
       "kind": "proposition",
@@ -236,7 +468,15 @@
         "section": "Sections and locally free sheaves",
         "snippet": "A rank n vector bundle is trivial if and only if it has n linearly independent global sections"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsLocalFrameOn",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.LocalFrame",
+        "match_kind": null
+      },
+      "note": "Local frames (`IsLocalFrameOn`) are formalized as related infrastructure, but the trivial-iff-global-frame criterion is not proved.",
+      "provenance": "ai-agent1",
+      "id": "74ef46050c94"
     },
     {
       "kind": "definition",
@@ -245,7 +485,15 @@
         "section": "Operations on vector bundles",
         "snippet": "called the dual bundle"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dual vector bundle construction exists in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "d4bc9c9d8529"
     },
     {
       "kind": "definition",
@@ -254,7 +502,15 @@
         "section": "Operations on vector bundles",
         "snippet": "The Whitney sum (named for Hassler Whitney ) or direct sum bundle"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "VectorBundle.prod",
+        "module": "Mathlib.Topology.VectorBundle.Constructions",
+        "match_kind": "exact"
+      },
+      "note": "`VectorBundle.prod` gives the fiberwise direct sum `E₁ ×ᵇ E₂`, i.e. the Whitney sum.",
+      "provenance": "ai-agent1",
+      "id": "b4b99fb900b0"
     },
     {
       "kind": "definition",
@@ -263,7 +519,15 @@
         "section": "Operations on vector bundles",
         "snippet": "is defined in a similar way, using fiberwise tensor product of vector spaces"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No fiberwise tensor-product bundle construction exists in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "4e04606c526b"
     },
     {
       "kind": "definition",
@@ -272,7 +536,15 @@
         "section": "Operations on vector bundles",
         "snippet": "is a vector bundle whose fiber at x is the space of linear maps"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Bundle.ContinuousLinearMap.vectorBundle",
+        "module": "Mathlib.Topology.VectorBundle.Hom",
+        "match_kind": "exact"
+      },
+      "note": "`Bundle.ContinuousLinearMap.vectorBundle` is the bundle whose fiber is `E₁ x →SL[σ] E₂ x`, the Hom-bundle.",
+      "provenance": "ai-agent1",
+      "id": "832e80591660"
     },
     {
       "kind": "example",
@@ -281,7 +553,15 @@
         "section": "Operations on vector bundles",
         "snippet": "one can construct an eigenbundle"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No eigenbundle construction (fiberwise eigenspaces of a bundle endomorphism) exists in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "ae7f4305fe7f"
     },
     {
       "kind": "proposition",
@@ -290,7 +570,15 @@
         "section": "Operations on vector bundles",
         "snippet": "There is a canonical vector bundle isomorphism"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the dual nor the tensor-product bundle exists, so this canonical isomorphism is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "b190eb02a379"
     },
     {
       "kind": "definition",
@@ -299,7 +587,15 @@
         "section": "Operations on vector bundles",
         "snippet": "An operation of a different nature is the pullback bundle construction"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "VectorBundle.pullback",
+        "module": "Mathlib.Topology.VectorBundle.Constructions",
+        "match_kind": "exact"
+      },
+      "note": "`VectorBundle.pullback` gives the vector-bundle structure on the pullback `f *ᵖ E`.",
+      "provenance": "ai-agent1",
+      "id": "33b68fab2659"
     },
     {
       "kind": "proposition",
@@ -308,7 +604,15 @@
         "section": "Operations on vector bundles",
         "snippet": "Any vector bundle E over X is a direct summand of a trivial bundle"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The theorem that a bundle over a compact base embeds as a summand of a trivial bundle is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "7cde22156bfc"
     },
     {
       "kind": "definition",
@@ -317,7 +621,15 @@
         "section": "Additional structures and generalizations",
         "snippet": "vector bundles may be equipped with a vector bundle metric"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RiemannianBundle",
+        "module": "Mathlib.Topology.VectorBundle.Riemannian",
+        "match_kind": "special_case"
+      },
+      "note": "`RiemannianBundle`/`IsContinuousRiemannianBundle` equip a real vector bundle with a continuous fiberwise inner product, i.e. a bundle metric.",
+      "provenance": "ai-agent1",
+      "id": "2b8c87bdf57b"
     },
     {
       "kind": "definition",
@@ -326,7 +638,15 @@
         "section": "Additional structures and generalizations",
         "snippet": "A vector bundle with a complex structure corresponds to a complex vector bundle"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "VectorBundle",
+        "module": "Mathlib.Topology.VectorBundle.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "A complex vector bundle is `VectorBundle ℂ F E`; the correspondence with real bundles carrying a complex structure is not separately formalized.",
+      "provenance": "ai-agent1",
+      "id": "049ee2f9549d"
     },
     {
       "kind": "definition",
@@ -335,7 +655,15 @@
         "section": "Additional structures and generalizations",
         "snippet": "the fiber F is taken to be a Banach space then a Banach bundle is obtained"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "VectorBundle",
+        "module": "Mathlib.Topology.VectorBundle.Basic",
+        "match_kind": null
+      },
+      "note": "`VectorBundle` already allows the model fiber to be any normed space, subsuming Banach fibers, but no named Banach-bundle notion exists.",
+      "provenance": "ai-agent1",
+      "id": "8744b50d232f"
     },
     {
       "kind": "proposition",
@@ -344,7 +672,15 @@
         "section": "Additional structures and generalizations",
         "snippet": "Vector bundles are special fiber bundles"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "VectorBundle",
+        "module": "Mathlib.Topology.VectorBundle.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`VectorBundle R F E` is defined as a mixin requiring `[FiberBundle F E]`, so every vector bundle is by design a fiber bundle.",
+      "provenance": "ai-agent1",
+      "id": "f5292ee9c4d5"
     },
     {
       "kind": "definition",
@@ -353,7 +689,15 @@
         "section": "Smooth vector bundles",
         "snippet": "is smooth , if E and M are smooth manifolds"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContMDiffVectorBundle",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ContMDiffVectorBundle n F E IB` is the class of `C^n` (in particular smooth) vector bundles.",
+      "provenance": "ai-agent1",
+      "id": "b10ba66318e8"
     },
     {
       "kind": "proposition",
@@ -362,7 +706,15 @@
         "section": "Smooth vector bundles",
         "snippet": "A smooth vector bundle can be characterized by the fact that it admits transition functions"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContMDiffVectorBundle",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ContMDiffVectorBundle` is defined precisely as having `C^n` transition functions (the `contMDiffOn_coordChange` condition).",
+      "provenance": "ai-agent1",
+      "id": "6618e5990253"
     },
     {
       "kind": "definition",
@@ -371,7 +723,15 @@
         "section": "Smooth vector bundles",
         "snippet": "then the vector bundle is a C r vector bundle"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContMDiffVectorBundle",
+        "module": "Mathlib.Geometry.Manifold.VectorBundle.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`ContMDiffVectorBundle` with smoothness index in `ℕ∞ω` covers `C^r` and analytic (`ω`) bundles, but holomorphic and algebraic bundles are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "c5098ba70b48"
     },
     {
       "kind": "proposition",
@@ -380,7 +740,15 @@
         "section": "Smooth vector bundles",
         "snippet": "can be naturally identified with the fibre E x itself"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identification of the vertical tangent space of `E` with the fiber `Eₓ` is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "d89c9307e9a6"
     },
     {
       "kind": "definition",
@@ -389,7 +757,15 @@
         "section": "Smooth vector bundles",
         "snippet": "known as the canonical vector field"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The canonical (Euler/Liouville) vector field on a vector bundle is not defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "e29ef66de195"
     },
     {
       "kind": "theorem",
@@ -398,7 +774,15 @@
         "section": "Smooth vector bundles",
         "snippet": "characterizes completely the smooth vector bundle structure in the following manner"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem characterizing the vector-bundle structure via the canonical vector field exists in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "2a07204dd97d"
     },
     {
       "kind": "proposition",
@@ -407,7 +791,15 @@
         "section": "Smooth vector bundles",
         "snippet": "has a natural secondary vector bundle structure"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The secondary vector-bundle structure on the tangent bundle `TE` is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "d9a7e8528cf2"
     },
     {
       "kind": "definition",
@@ -416,7 +808,15 @@
         "section": "K-theory",
         "snippet": "is defined as the abelian group generated by isomorphism classes"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Topological K-theory (the Grothendieck group of vector bundles) is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "6ad97c328bfc"
     },
     {
       "kind": "theorem",
@@ -425,7 +825,15 @@
         "section": "K-theory",
         "snippet": "The famous periodicity theorem of Raoul Bott asserts that the K-theory of any space"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bott periodicity is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "c57f4f35f9e7"
     },
     {
       "kind": "theorem",
@@ -434,7 +842,15 @@
         "section": "K-theory",
         "snippet": "one considers the K-theory groups consisting of coherent sheaves on a scheme"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Algebraic K-theory of coherent sheaves/bundles on schemes is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "91e97f0941a2"
     }
   ]
 }

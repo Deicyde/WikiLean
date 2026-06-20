@@ -117,7 +117,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "ImplicitFunctionData",
-        "module": "Mathlib.Analysis.Calculus.ImplicitFunction.ProdDomain",
+        "module": "Mathlib.Analysis.Calculus.Implicit",
         "match_kind": "invocation"
       },
       "note": "The implicit function theorem yields single-valued local solutions of implicit equations (`ImplicitFunctionData`), but genuinely multi-valued functions are not formalized as such.",
@@ -508,7 +508,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "ExistsUnique",
-        "module": null,
+        "module": "Mathlib.Logic.ExistsUnique",
         "match_kind": null
       },
       "note": "The 'unique value satisfying a relation' relates to `ExistsUnique` and choice operators, but Russell's definite-description (iota) operator is not formalized as such.",
@@ -525,7 +525,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Classical.epsilon",
-        "module": null,
+        "module": "Init.Classical",
         "match_kind": "exact"
       },
       "note": "Hilbert's ε-operator is Lean's core `Classical.epsilon` (built on indefinite description), used throughout Mathlib (e.g. Mathlib.ModelTheory.Skolem).",
@@ -548,6 +548,38 @@
       "note": "The class of effectively calculable functions is formalized as the partial recursive / computable functions (`Partrec`, `Computable`).",
       "provenance": "ai",
       "id": "5db4d950a27b"
+    },
+    {
+      "kind": "definition",
+      "label": "μ-recursive functions",
+      "anchor": {
+        "section": "Formalist's function: David Hilbert's axiomatization of mathematics (1904–1927)",
+        "snippet": "Stephen Kleene 's μ-recursive functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Partrec",
+        "module": "Mathlib.Computability.Partrec",
+        "match_kind": "exact"
+      },
+      "note": "Kleene's μ-recursive (partial recursive) functions on the naturals are formalized as `Nat.Partrec`, defined inductively with zero, successor, projections, composition, primitive recursion, and the μ (unbounded search) operator.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Turing machines",
+      "anchor": {
+        "section": "Formalist's function: David Hilbert's axiomatization of mathematics (1904–1927)",
+        "snippet": "utterly-mechanical \"computing machines\""
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Turing.TM0.Machine",
+        "module": "Mathlib.Computability.TuringMachine.PostTuringMachine",
+        "match_kind": "exact"
+      },
+      "note": "Turing machines are formalized in `Mathlib.Computability.TuringMachine` (e.g. `Turing.TM0.Machine`), with the equivalence to partial recursive functions proved via `Turing.TM2`/`PartrecToTM2`.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -575,11 +607,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "halting_problem",
+        "decl": "ComputablePred.halting_problem",
         "module": "Mathlib.Computability.Halting",
         "match_kind": "special_case"
       },
-      "note": "The unsolvability of the Entscheidungsproblem is captured by the formalized non-computability of the halting problem (`halting_problem`), together with Rice's theorem.",
+      "note": "The unsolvability of the Entscheidungsproblem is captured by the formalized non-computability of the halting problem (`ComputablePred.halting_problem`), together with Rice's theorem.",
       "provenance": "ai",
       "id": "d6825e95ff2c"
     },
@@ -644,7 +676,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "Prod",
-        "module": null,
+        "module": "Init.Prelude",
         "match_kind": null
       },
       "note": "An ordered couple 'with sense' is the ordered pair, realized as the core type `Prod`; Russell's specific set-theoretic construction is not used.",
@@ -718,6 +750,22 @@
       "note": "A function's graph as a set of pairs is `PFun.graph`/`Set.graphOn`, but Mathlib's functions are primitive rather than literally sets of pairs.",
       "provenance": "ai",
       "id": "8882222206ce"
+    },
+    {
+      "kind": "definition",
+      "label": "Cartesian product E × F",
+      "anchor": {
+        "section": "Bourbaki 1939",
+        "snippet": "a certain subset of the cartesian product E × F"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Prod",
+        "module": "Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "The cartesian product of two sets is the core type `Prod` (notation `α × β`); on `Set`s the corresponding operation is `Set.prod` (notation `s ×ˢ t`).",
+      "provenance": "ai"
     },
     {
       "kind": "definition",

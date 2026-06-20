@@ -134,7 +134,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "pow_succ",
-        "module": "Mathlib.Algebra.GroupPower.Basic",
+        "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "invocation"
       },
       "note": "The recurrence `aₙ = r · aₙ₋₁` corresponds to `pow_succ : r ^ (n+1) = r ^ n * r`, but it is not stated as a property of geometric sequences.",
@@ -168,7 +168,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "pow_pos",
-        "module": "Mathlib.Algebra.Order.Ring.Lemmas",
+        "module": "Mathlib.Algebra.Order.GroupWithZero.Basic",
         "match_kind": "invocation"
       },
       "note": "Sign preservation under multiplication by a positive ratio follows from `pow_pos`/`mul_pos`, but is not stated for geometric progressions.",
@@ -270,7 +270,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "norm_pow",
-        "module": "Mathlib.Analysis.Normed.Field.Basic",
+        "module": "Mathlib.Analysis.Normed.Ring.Basic",
         "match_kind": "invocation"
       },
       "note": "`norm_pow` gives `‖r^n‖ = ‖r‖^n`, so when `‖r‖ = 1` the magnitude is constant, but no theorem in Mathlib packages this exact statement.",
@@ -403,14 +403,14 @@
         "section": "Product",
         "snippet": "the sum of an arithmetic sequence is the number of terms times the arithmetic mean of the first and last individual terms"
       },
-      "status": "not_formalized",
+      "status": "partial",
       "mathlib": {
-        "decl": null,
-        "module": null,
-        "match_kind": null
+        "decl": "Finset.sum_range_id",
+        "module": "Mathlib.Algebra.BigOperators.Intervals",
+        "match_kind": "generalization"
       },
-      "note": "Mathlib does not contain the analogy between the geometric product and the arithmetic sum stated in terms of means.",
-      "provenance": "ai",
+      "note": "The arithmetic-sum identity used here (sum equals count times average of endpoints) is captured in Mathlib via `Finset.sum_range_id` and related arithmetic-sum lemmas, but the explicit analogy with the geometric product is not stated.",
+      "provenance": "ai-moderated",
       "id": "c276c5e0dd7b"
     },
     {
@@ -429,6 +429,38 @@
       "note": "The arithmetic-sum step `∑ k ∈ range n, k = n(n-1)/2` is `Finset.sum_range_id`, but the overall product-formula proof is not formalized.",
       "provenance": "ai",
       "id": "6edb116e446a"
+    },
+    {
+      "kind": "definition",
+      "label": "General form a·r^n",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "where r is the common ratio and a is the initial value"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no named definition packaging the geometric-sequence function `n ↦ a · r^n`; the term is just written inline using `HPow.hPow` and `HMul.hMul`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponential vs linear growth",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Geometric progressions show exponential growth or exponential decline, as opposed to arithmetic progressions showing linear growth or linear decline"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize the qualitative comparison between exponential and linear growth rates of geometric vs arithmetic progressions.",
+      "provenance": "ai"
     }
   ]
 }

@@ -11,7 +11,15 @@
         "section": "(Lead)",
         "snippet": "may be thought of as repeated addition"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.nsmul_eq_mul",
+        "module": "Mathlib.Algebra.Group.Nat.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Repeated addition is `nsmul` and `Nat.nsmul_eq_mul : m • n = m * n` identifies it with multiplication on ℕ.",
+      "provenance": "ai-agent1",
+      "id": "047e117534ff"
     },
     {
       "kind": "proposition",
@@ -20,7 +28,15 @@
         "section": "(Lead)",
         "snippet": "which states in this case that adding 3 copies of 4"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mul_comm",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`mul_comm : a * b = b * a` is the commutativity asserted (adding 3 copies of 4 equals 4 copies of 3).",
+      "provenance": "ai-agent1",
+      "id": "632d1e0b0d58"
     },
     {
       "kind": "example",
@@ -29,7 +45,15 @@
         "section": "(Lead)",
         "snippet": "visualized as counting objects arranged in a rectangle"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal pedagogical visualization, not a mathematical statement to formalize.",
+      "provenance": "ai-agent1",
+      "id": "3afda45df0a4"
     },
     {
       "kind": "definition",
@@ -38,7 +62,15 @@
         "section": "(Lead)",
         "snippet": "is a new type of measurement"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dimensional analysis of physical measurements is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "f7ec105ab0e3"
     },
     {
       "kind": "proposition",
@@ -47,7 +79,15 @@
         "section": "(Lead)",
         "snippet": "The inverse operation of multiplication is considered division"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "div_eq_mul_inv",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`div_eq_mul_inv : a / b = a * b⁻¹` defines division as the inverse operation of multiplication.",
+      "provenance": "ai-agent1",
+      "id": "dddc312743b9"
     },
     {
       "kind": "definition",
@@ -56,7 +96,15 @@
         "section": "Notation",
         "snippet": "are generally called the factors"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Naming terminology for the operands has no formal counterpart.",
+      "provenance": "ai-agent1",
+      "id": "5c55ee45df9c"
     },
     {
       "kind": "definition",
@@ -65,7 +113,15 @@
         "section": "Notation",
         "snippet": "the product is a multiple of the other"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dvd_mul_right",
+        "module": "Mathlib.Algebra.Divisibility.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`dvd_mul_right : a ∣ a * b` states a product is a multiple of each factor.",
+      "provenance": "ai-agent1",
+      "id": "e2f3cabeac13"
     },
     {
       "kind": "definition",
@@ -74,7 +130,15 @@
         "section": "Product of two natural numbers",
         "snippet": "The product of two natural numbers"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.nsmul_eq_mul",
+        "module": "Mathlib.Algebra.Group.Nat.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Multiplication on ℕ is the standard `*` (CommMonoid/CommSemiring), defined as iterated addition via `nsmul`.",
+      "provenance": "ai-agent1",
+      "id": "800bd4fe0182"
     },
     {
       "kind": "definition",
@@ -83,7 +147,15 @@
         "section": "Product of two integers",
         "snippet": "The product of zero and another integer is always zero"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "zero_mul",
+        "module": "Mathlib.Algebra.GroupWithZero.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`zero_mul : 0 * a = 0` (and `mul_zero`) hold in any `MulZeroClass`, including ℤ.",
+      "provenance": "ai-agent1",
+      "id": "57c4c25e6f76"
     },
     {
       "kind": "proposition",
@@ -92,7 +164,15 @@
         "section": "Product of two integers",
         "snippet": "is determined by the product of their positive amounts"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "neg_mul_neg",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`neg_mul`, `mul_neg`, and `neg_mul_neg : -a * -b = a * b` encode the rule of signs in any ring.",
+      "provenance": "ai-agent1",
+      "id": "3c8e4372ebb3"
     },
     {
       "kind": "definition",
@@ -101,7 +181,25 @@
         "section": "Product of two fractions",
         "snippet": "by multiplying their numerators and denominators"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Rat.mul_eq_mkRat",
+        "module": "Mathlib.Data.Rat.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Rat.mul_eq_mkRat : q * r = mkRat (q.num * r.num) (q.den * r.den)` multiplies numerators and denominators.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Product of two fractions",
+          "snippet": "by multiplying their numerators and denominators"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {z}{n}}\\cdot {\\frac {z'}{n'}}={\\frac {z\\cdot z'}{n\\cdot n'}},}"
+        }
+      ],
+      "id": "72f178dd2d5c"
     },
     {
       "kind": "definition",
@@ -110,7 +208,15 @@
         "section": "Product of two real numbers",
         "snippet": "is the least upper bound of the term-by-term products"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.instMul",
+        "module": "Mathlib.Data.Real.Basic",
+        "match_kind": null
+      },
+      "note": "Real multiplication exists but is built via Cauchy sequences (`Real.mul`), not the Dedekind/least-upper-bound construction described.",
+      "provenance": "ai-agent1",
+      "id": "5a6b2145bd70"
     },
     {
       "kind": "definition",
@@ -119,6 +225,30 @@
         "section": "Product of two complex numbers",
         "snippet": "Two complex numbers can be multiplied by the distributive law"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.mul_re",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.mul_re`/`Complex.mul_im` give the distributive-law product on ℂ.",
+      "provenance": "ai-agent1",
+      "id": "ae6d7ba2061a"
+    },
+    {
+      "kind": "proposition",
+      "label": "Imaginary unit squared",
+      "anchor": {
+        "section": "Product of two complex numbers",
+        "snippet": "the distributive law and the fact that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.I_sq",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.I_sq : Complex.I ^ 2 = -1` encodes the i² = −1 identity used in deriving the product formula.",
       "provenance": "ai-agent1"
     },
     {
@@ -128,7 +258,15 @@
         "section": "Product of two complex numbers",
         "snippet": "the magnitudes are multiplied and the arguments are added"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.arg_mul_coe_angle",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Arg",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.arg_mul_coe_angle` adds arguments and `norm_mul` multiplies magnitudes under complex multiplication.",
+      "provenance": "ai-agent1",
+      "id": "a6d149766c38"
     },
     {
       "kind": "proposition",
@@ -137,7 +275,15 @@
         "section": "Product of two quaternions",
         "snippet": "are in general different"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Quaternion",
+        "module": "Mathlib.Algebra.Quaternion",
+        "match_kind": null
+      },
+      "note": "Quaternions and their (noncommutative) ring multiplication are formalized, but no explicit lemma states `p*q ≠ q*p`.",
+      "provenance": "ai-agent1",
+      "id": "25c0cd086c3e"
     },
     {
       "kind": "example",
@@ -146,7 +292,15 @@
         "section": "Computation",
         "snippet": "long multiplication"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The schoolbook long-multiplication algorithm is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "c0cb100e01b1"
     },
     {
       "kind": "example",
@@ -155,7 +309,15 @@
         "section": "Egyptians",
         "snippet": "to find the product of 13 and 21"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Egyptian doubling/peasant multiplication is not formalized as an algorithm in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "00d51d7a1981"
     },
     {
       "kind": "example",
@@ -164,7 +326,15 @@
         "section": "Grid method",
         "snippet": "An example of multiplying 34 by 13"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The grid (box) multiplication method is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "54180675a652"
     },
     {
       "kind": "proposition",
@@ -173,7 +343,15 @@
         "section": "Computer algorithms",
         "snippet": "requires n 2 digit multiplications"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bit/digit complexity of multiplication algorithms is outside Mathlib's scope.",
+      "provenance": "ai-agent1",
+      "id": "5273a15bffb5"
     },
     {
       "kind": "theorem",
@@ -182,7 +360,15 @@
         "section": "Computer algorithms",
         "snippet": "an integer multiplication algorithm with a complexity of"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The O(n log n) integer-multiplication result is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "7500f3f8ac2b"
     },
     {
       "kind": "proposition",
@@ -191,7 +377,15 @@
         "section": "Products of measurements",
         "snippet": "but quantities of different types can be multiplied or divided"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Multiplying physical quantities of differing dimensions is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "d966c7c99220"
     },
     {
       "kind": "example",
@@ -200,7 +394,15 @@
         "section": "Products of measurements",
         "snippet": "multiplying speed by time gives distance"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dimensional physics example with no formal counterpart.",
+      "provenance": "ai-agent1",
+      "id": "589632e89d7b"
     },
     {
       "kind": "definition",
@@ -209,7 +411,15 @@
         "section": "Capital pi notation",
         "snippet": "can be written with the product symbol"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.prod",
+        "module": "Mathlib.Algebra.BigOperators.Group.Finset.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Finset.prod` is the ∏ product notation over a finite index set.",
+      "provenance": "ai-agent1",
+      "id": "b9550ef1d575"
     },
     {
       "kind": "definition",
@@ -218,7 +428,15 @@
         "section": "Capital pi notation",
         "snippet": "More generally, the notation is defined as"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.prod",
+        "module": "Mathlib.Algebra.BigOperators.Group.Finset.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Finset.prod s f` generalizes the indexed product over arbitrary finite index sets.",
+      "provenance": "ai-agent1",
+      "id": "3045e47d040d"
     },
     {
       "kind": "definition",
@@ -227,7 +445,15 @@
         "section": "Capital pi notation",
         "snippet": "the product is an empty product whose value is 1"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.prod_empty",
+        "module": "Mathlib.Algebra.BigOperators.Group.Finset.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Finset.prod_empty : ∏ x ∈ ∅, f x = 1` is the empty-product convention.",
+      "provenance": "ai-agent1",
+      "id": "615d41f8349d"
     },
     {
       "kind": "proposition",
@@ -236,7 +462,15 @@
         "section": "Properties of capital pi notation",
         "snippet": "a product of n factors is equivalent to exponentiation"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.prod_const",
+        "module": "Mathlib.Algebra.BigOperators.Group.Finset.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Finset.prod_const : ∏ _x ∈ s, b = b ^ #s` equates a product of identical factors with a power.",
+      "provenance": "ai-agent1",
+      "id": "d56878155e1b"
     },
     {
       "kind": "proposition",
@@ -245,7 +479,15 @@
         "section": "Properties of capital pi notation",
         "snippet": "Associativity and commutativity of multiplication imply"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.prod_mul_distrib",
+        "module": "Mathlib.Algebra.BigOperators.Group.Finset.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Order-independence is baked into `Finset.prod` (CommMonoid), and `prod_mul_distrib` reflects regrouping of factors.",
+      "provenance": "ai-agent1",
+      "id": "0be1698f94c1"
     },
     {
       "kind": "definition",
@@ -254,7 +496,15 @@
         "section": "Infinite products",
         "snippet": "is defined as the limit of the product of the first n factors"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tprod",
+        "module": "Mathlib.Topology.Algebra.InfiniteSum.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`tprod` (∏') and `HasProd` define the infinite product as a limit of partial products.",
+      "provenance": "ai-agent1",
+      "id": "e7268968cd6e"
     },
     {
       "kind": "definition",
@@ -263,7 +513,15 @@
         "section": "Exponentiation",
         "snippet": "the resulting operation is known as exponentiation"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "pow_succ",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Monoid.npow` with `pow_succ : a ^ (n+1) = a ^ n * a` defines exponentiation as repeated multiplication.",
+      "provenance": "ai-agent1",
+      "id": "3af8cbb2651f"
     },
     {
       "kind": "proposition",
@@ -272,7 +530,15 @@
         "section": "Properties",
         "snippet": "The order in which two numbers are multiplied does not matter"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mul_comm",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`mul_comm : a * b = b * a` in a `CommMonoid`/`CommMagma`.",
+      "provenance": "ai-agent1",
+      "id": "0db5ae38aac4"
     },
     {
       "kind": "proposition",
@@ -281,7 +547,15 @@
         "section": "Properties",
         "snippet": "are invariant with respect to the order of operations"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mul_assoc",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`mul_assoc : a * b * c = a * (b * c)` in a `Semigroup`.",
+      "provenance": "ai-agent1",
+      "id": "67c68ec11145"
     },
     {
       "kind": "proposition",
@@ -290,7 +564,15 @@
         "section": "Properties",
         "snippet": "Holds with respect to multiplication over addition"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "left_distrib",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`left_distrib`/`right_distrib` (a.k.a. `mul_add`/`add_mul`) give distributivity over addition.",
+      "provenance": "ai-agent1",
+      "id": "44ec9795d3ac"
     },
     {
       "kind": "proposition",
@@ -299,7 +581,15 @@
         "section": "Properties",
         "snippet": "The multiplicative identity is 1"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "one_mul",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`one_mul : 1 * a = a` and `mul_one` in a `Monoid` make 1 the multiplicative identity.",
+      "provenance": "ai-agent1",
+      "id": "805467b337b8"
     },
     {
       "kind": "proposition",
@@ -308,7 +598,15 @@
         "section": "Properties",
         "snippet": "Any number multiplied by 0 is 0"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mul_zero",
+        "module": "Mathlib.Algebra.GroupWithZero.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`mul_zero : a * 0 = 0` and `zero_mul` in a `MulZeroClass`.",
+      "provenance": "ai-agent1",
+      "id": "72e40d9315ca"
     },
     {
       "kind": "proposition",
@@ -317,7 +615,15 @@
         "section": "Properties",
         "snippet": "is equal to the additive inverse of that number"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "neg_one_mul",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`neg_one_mul : -1 * a = -a` (and `mul_neg_one`).",
+      "provenance": "ai-agent1",
+      "id": "e136e2bea485"
     },
     {
       "kind": "proposition",
@@ -326,7 +632,15 @@
         "section": "Properties",
         "snippet": "−1 times −1 is 1"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "neg_mul_neg",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "`neg_mul_neg : -a * -b = a * b` gives (−1)(−1)=1 with a=b=1.",
+      "provenance": "ai-agent1",
+      "id": "5c3f322d6f69"
     },
     {
       "kind": "proposition",
@@ -335,7 +649,15 @@
         "section": "Properties",
         "snippet": "has a multiplicative inverse"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "inv_mul_cancel",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`inv_mul_cancel : a⁻¹ * a = 1` in a `Group`; for fields nonzero elements have inverses (`mul_inv_cancel₀`).",
+      "provenance": "ai-agent1",
+      "id": "6e8a2d122ddf"
     },
     {
       "kind": "proposition",
@@ -344,7 +666,15 @@
         "section": "Properties",
         "snippet": "Multiplication by a positive number preserves the order"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mul_lt_mul_of_pos_left",
+        "module": "Mathlib.Algebra.Order.GroupWithZero.Unbundled.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`mul_lt_mul_of_pos_left : b < c → 0 < a → a*b < a*c` (and the ≤ version) preserve order under a positive factor.",
+      "provenance": "ai-agent1",
+      "id": "84041eb3b635"
     },
     {
       "kind": "proposition",
@@ -353,7 +683,15 @@
         "section": "Properties",
         "snippet": "Multiplication by a negative number reverses the order"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mul_lt_mul_left_of_neg",
+        "module": "Mathlib.Algebra.Order.Ring.Unbundled.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`mul_lt_mul_left_of_neg` and `mul_le_mul_of_nonpos_left` reverse the order under a negative factor.",
+      "provenance": "ai-agent1",
+      "id": "a3c1a4e25536"
     },
     {
       "kind": "proposition",
@@ -362,7 +700,15 @@
         "section": "Properties",
         "snippet": "do not have an ordering that is compatible with both addition and multiplication"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem states ℂ admits no compatible order; the obstruction (squares are nonneg in a `LinearOrderedRing`) exists but ℂ-specific non-orderability is not declared.",
+      "provenance": "ai-agent1",
+      "id": "81ced86b6d08"
     },
     {
       "kind": "proposition",
@@ -371,7 +717,15 @@
         "section": "Properties",
         "snippet": "is not, in general, commutative for matrices and quaternions"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.instMul",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": null
+      },
+      "note": "Matrix (and quaternion) multiplication is formalized as a noncommutative `Mul`/`Ring`, but no lemma explicitly asserts noncommutativity.",
+      "provenance": "ai-agent1",
+      "id": "797ea06ead5e"
     },
     {
       "kind": "theorem",
@@ -380,7 +734,15 @@
         "section": "Properties",
         "snippet": "Hurwitz's theorem shows that for the hypercomplex numbers of dimension 8 or greater"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hurwitz's classification of normed division algebras (only dim 1,2,4,8) is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "1574e9a62523"
     },
     {
       "kind": "definition",
@@ -389,7 +751,15 @@
         "section": "Axioms",
         "snippet": "Peano arithmetic has two axioms for multiplication"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.nsmul_eq_mul",
+        "module": "Mathlib.Algebra.Group.Nat.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "ℕ multiplication satisfies the Peano recursion (a·0=0 via `mul_zero`, a·S(b)=a·b+a) underlying Mathlib's `CommMonoid ℕ` instance.",
+      "provenance": "ai-agent1",
+      "id": "c26cedd09d8b"
     },
     {
       "kind": "proposition",
@@ -398,7 +768,15 @@
         "section": "Axioms",
         "snippet": "is a multiplicative identity because"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "one_mul",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`one_mul`/`mul_one` establish 1 as the multiplicative identity.",
+      "provenance": "ai-agent1",
+      "id": "444b72b97e7e"
     },
     {
       "kind": "definition",
@@ -407,7 +785,15 @@
         "section": "Axioms",
         "snippet": "The multiplication axiom for integers defined this way is"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Int.instCommRing",
+        "module": "Mathlib.Algebra.Ring.Int.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Integer multiplication is formalized via the `CommRing ℤ` instance.",
+      "provenance": "ai-agent1",
+      "id": "dda5a90831df"
     },
     {
       "kind": "proposition",
@@ -416,7 +802,15 @@
         "section": "Axioms",
         "snippet": "The rule that −1 × −1 = 1 can then be deduced from"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "neg_mul_neg",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "`neg_mul_neg` (proved from ring/distributivity axioms) yields (−1)(−1)=1.",
+      "provenance": "ai-agent1",
+      "id": "c7ef8627e5f1"
     },
     {
       "kind": "definition",
@@ -425,7 +819,15 @@
         "section": "Multiplication with set theory",
         "snippet": "can be defined with set theory using cardinal numbers"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.mul_def",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Cardinal.mul_def : #α * #β = #(α × β)` defines multiplication of cardinals via the Cartesian product.",
+      "provenance": "ai-agent1",
+      "id": "4dc54193dca4"
     },
     {
       "kind": "definition",
@@ -434,7 +836,15 @@
         "section": "Multiplication in group theory",
         "snippet": "These axioms are closure, associativity, and the inclusion of an identity element and inverses"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Group",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The `Group` class bundles associativity, identity, and inverses (closure is total by the `Mul` operation).",
+      "provenance": "ai-agent1",
+      "id": "c8b51a8b9359"
     },
     {
       "kind": "example",
@@ -443,7 +853,15 @@
         "section": "Multiplication in group theory",
         "snippet": "A simple example is the set of non-zero rational numbers"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Rat.instField",
+        "module": "Mathlib.Algebra.Field.Rat",
+        "match_kind": "special_case"
+      },
+      "note": "`Field ℚ` makes the nonzero rationals (its units ℚˣ, a `Group` via `Units.instGroup`) a multiplicative group.",
+      "provenance": "ai-agent1",
+      "id": "574ad6f3fd59"
     },
     {
       "kind": "example",
@@ -452,7 +870,15 @@
         "section": "Multiplication in group theory",
         "snippet": "the set of invertible square matrices of a given dimension"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.GeneralLinearGroup",
+        "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.GeneralLinearGroup` (GL n R) is the group of invertible matrices under multiplication.",
+      "provenance": "ai-agent1",
+      "id": "c5d0fa1f7ca9"
     },
     {
       "kind": "proposition",
@@ -461,7 +887,15 @@
         "section": "Multiplication in group theory",
         "snippet": "the integers under multiplication do not form a group"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "ℤ is a `CommMonoid` (not a `Group`) under multiplication, but no theorem explicitly proves it fails the group axioms.",
+      "provenance": "ai-agent1",
+      "id": "a7894968925b"
     },
     {
       "kind": "definition",
@@ -470,7 +904,15 @@
         "section": "Multiplication of different kinds of numbers",
         "snippet": "is the sum of N copies of M when N and M are positive whole numbers"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.nsmul_eq_mul",
+        "module": "Mathlib.Algebra.Group.Nat.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.nsmul_eq_mul : m • n = m * n` realizes the product as N repeated additions.",
+      "provenance": "ai-agent1",
+      "id": "beb020df7cf4"
     },
     {
       "kind": "definition",
@@ -479,7 +921,15 @@
         "section": "Multiplication of different kinds of numbers",
         "snippet": "is by multiplying the numerators and denominators, respectively"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Rat.mul_eq_mkRat",
+        "module": "Mathlib.Data.Rat.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Rat.mul_eq_mkRat` defines fraction multiplication via numerator and denominator products.",
+      "provenance": "ai-agent1",
+      "id": "7910a6ea8c91"
     },
     {
       "kind": "definition",
@@ -488,7 +938,15 @@
         "section": "Multiplication of different kinds of numbers",
         "snippet": "can be defined in terms of sequences of rational numbers"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real",
+        "module": "Mathlib.Data.Real.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Real` is constructed as `ofCauchy` (Cauchy sequences of rationals), with multiplication induced term-wise.",
+      "provenance": "ai-agent1",
+      "id": "ee6c94370e85"
     },
     {
       "kind": "definition",
@@ -497,7 +955,15 @@
         "section": "Multiplication of different kinds of numbers",
         "snippet": "as ordered pairs of real numbers"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`structure Complex` is a pair of reals (re, im) with multiplication given by `mul_re`/`mul_im`.",
+      "provenance": "ai-agent1",
+      "id": "47aa0141a5c4"
     },
     {
       "kind": "definition",
@@ -506,7 +972,15 @@
         "section": "Multiplication of different kinds of numbers",
         "snippet": "binary operation in a ring"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ring",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The `Ring` class equips a type with multiplication as one of its two binary operations.",
+      "provenance": "ai-agent1",
+      "id": "7ce2086d4f02"
     },
     {
       "kind": "definition",
@@ -515,7 +989,15 @@
         "section": "Multiplication of different kinds of numbers",
         "snippet": "is the same as multiplication by an inverse"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "div_eq_mul_inv",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`div_eq_mul_inv : a / b = a * b⁻¹` defines division as multiplication by the inverse.",
+      "provenance": "ai-agent1",
+      "id": "26fca41d3fb8"
     }
   ]
 }

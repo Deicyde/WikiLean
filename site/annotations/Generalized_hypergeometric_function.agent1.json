@@ -11,7 +11,15 @@
         "section": "(Lead)",
         "snippet": "a generalized hypergeometric series is a power series in which the ratio of successive coefficients indexed by n is a rational function of n"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ordinaryHypergeometricSeries",
+        "module": "Mathlib.Analysis.SpecialFunctions.OrdinaryHypergeometric",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib only has the ₂F₁ case (`ordinaryHypergeometricSeries`); the general pFq series is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "b172bff54c34"
     },
     {
       "kind": "definition",
@@ -20,7 +28,15 @@
         "section": "(Lead)",
         "snippet": "The series, if convergent, defines a generalized hypergeometric function"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ordinaryHypergeometric",
+        "module": "Mathlib.Analysis.SpecialFunctions.OrdinaryHypergeometric",
+        "match_kind": "special_case"
+      },
+      "note": "Only the ₂F₁ instance `ordinaryHypergeometric` is defined; general pFq is absent.",
+      "provenance": "ai-agent1",
+      "id": "d721eef7a8f2"
     },
     {
       "kind": "definition",
@@ -29,7 +45,15 @@
         "section": "Notation",
         "snippet": "A hypergeometric series is formally defined as a power series"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ordinaryHypergeometricSeries",
+        "module": "Mathlib.Analysis.SpecialFunctions.OrdinaryHypergeometric",
+        "match_kind": "special_case"
+      },
+      "note": "Only the ₂F₁ formal series is in Mathlib via `ordinaryHypergeometricSeries`.",
+      "provenance": "ai-agent1",
+      "id": "1f1d2578b3ed"
     },
     {
       "kind": "example",
@@ -38,7 +62,15 @@
         "section": "Notation",
         "snippet": "For example, in the case of the series for the exponential function"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedSpace.exp_eq_tsum",
+        "module": "Mathlib.Analysis.Normed.Algebra.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "`exp_eq_tsum` gives the standard `∑ xⁿ/n!` expansion.",
+      "provenance": "ai-agent1",
+      "id": "ad3b3770efdb"
     },
     {
       "kind": "definition",
@@ -47,6 +79,30 @@
         "section": "Notation",
         "snippet": "Using the rising factorial or Pochhammer symbol"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ascPochhammer",
+        "module": "Mathlib.RingTheory.Polynomial.Pochhammer",
+        "match_kind": "exact"
+      },
+      "note": "`ascPochhammer S n = X(X+1)…(X+n-1)` is the rising factorial / Pochhammer symbol.",
+      "provenance": "ai-agent1",
+      "id": "6ef2170b683f"
+    },
+    {
+      "kind": "definition",
+      "label": "Gamma function",
+      "anchor": {
+        "section": "Notation",
+        "snippet": "represents the gamma function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.Gamma",
+        "module": "Mathlib.Analysis.SpecialFunctions.Gamma.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The gamma function is formalized as `Real.Gamma` and `Complex.Gamma`.",
       "provenance": "ai-agent1"
     },
     {
@@ -56,7 +112,15 @@
         "section": "Terminology",
         "snippet": "Such a function, and its analytic continuations , is called the hypergeometric function"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ordinaryHypergeometric",
+        "module": "Mathlib.Analysis.SpecialFunctions.OrdinaryHypergeometric",
+        "match_kind": "special_case"
+      },
+      "note": "Only the ₂F₁ analytic function is defined; no analytic continuation theory or general pFq.",
+      "provenance": "ai-agent1",
+      "id": "e37e22bd18b4"
     },
     {
       "kind": "example",
@@ -65,7 +129,15 @@
         "section": "Terminology",
         "snippet": "for example the incomplete gamma function has the asymptotic expansion"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No incomplete gamma function or its asymptotic expansion in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "cf07022b8b16"
     },
     {
       "kind": "definition",
@@ -74,7 +146,15 @@
         "section": "Terminology",
         "snippet": "is called the bilateral hypergeometric series"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No bilateral hypergeometric series in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "d76a280a0d54"
     },
     {
       "kind": "proposition",
@@ -83,7 +163,15 @@
         "section": "Convergence conditions",
         "snippet": "If any a j is a non-positive integer (0, −1, −2, etc.) then the series only has a finite number of terms and is, in fact, a polynomial of degree"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ordinaryHypergeometricSeries_eq_zero_of_neg_nat",
+        "module": "Mathlib.Analysis.SpecialFunctions.OrdinaryHypergeometric",
+        "match_kind": "special_case"
+      },
+      "note": "Proven for ₂F₁ (`ordinaryHypergeometricSeries_eq_zero_of_neg_nat`); no general pFq version.",
+      "provenance": "ai-agent1",
+      "id": "3a7a9aee4909"
     },
     {
       "kind": "proposition",
@@ -92,7 +180,15 @@
         "section": "Convergence conditions",
         "snippet": "If any b k is a non-positive integer (excepting the previous case with b k < a j ) then the denominators become 0 and the series is undefined"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's ₂F₁ assigns junk values via inverse-of-zero, so the undefinedness statement is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "47432e7012ba"
     },
     {
       "kind": "proposition",
@@ -101,7 +197,15 @@
         "section": "Convergence conditions",
         "snippet": "If p < q + 1 then the ratio of coefficients tends to zero. This implies that the series converges for any finite value of z and thus defines an entire function of z"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "General pFq is not defined in Mathlib, so the entire-function statement is absent.",
+      "provenance": "ai-agent1",
+      "id": "8365ea35f15b"
     },
     {
       "kind": "proposition",
@@ -110,7 +214,15 @@
         "section": "Convergence conditions",
         "snippet": "If p = q + 1 then the ratio of coefficients tends to one. This implies that the series converges for"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ordinaryHypergeometricSeries_radius_eq_one",
+        "module": "Mathlib.Analysis.SpecialFunctions.OrdinaryHypergeometric",
+        "match_kind": "special_case"
+      },
+      "note": "Radius-1 statement is proved only for ₂F₁ (the p=q+1=2 case) via `ordinaryHypergeometricSeries_radius_eq_one`.",
+      "provenance": "ai-agent1",
+      "id": "f58fe7978197"
     },
     {
       "kind": "proposition",
@@ -119,7 +231,15 @@
         "section": "Convergence conditions",
         "snippet": "If p > q + 1 then the ratio of coefficients grows without bound. This implies that, besides z = 0, the series diverges"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of divergence in the p > q+1 regime.",
+      "provenance": "ai-agent1",
+      "id": "b09b2ce474d3"
     },
     {
       "kind": "proposition",
@@ -128,7 +248,15 @@
         "section": "Convergence conditions",
         "snippet": "It can be shown that the series converges absolutely at z = 1 if"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No boundary convergence result for hypergeometric series at z=1 in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "c1db581c086b"
     },
     {
       "kind": "proposition",
@@ -137,7 +265,15 @@
         "section": "Convergence conditions",
         "snippet": "then the following convergence result holds Quigley et al. (2013)"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quigley's convergence criterion is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "9f00eb60d2f4"
     },
     {
       "kind": "proposition",
@@ -146,7 +282,15 @@
         "section": "Basic properties",
         "snippet": "the order of the parameters a j , or the order of the parameters b k can be changed without changing the value of the function"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ordinaryHypergeometricSeries_symm",
+        "module": "Mathlib.Analysis.SpecialFunctions.OrdinaryHypergeometric",
+        "match_kind": "special_case"
+      },
+      "note": "Only the a↔b swap for ₂F₁ is proved (`ordinaryHypergeometricSeries_symm`); general Sₚ × Sq symmetry isn't stated.",
+      "provenance": "ai-agent1",
+      "id": "07dd8fc1efe2"
     },
     {
       "kind": "proposition",
@@ -155,7 +299,15 @@
         "section": "Basic properties",
         "snippet": "This cancelling is a special case of a reduction formula that may be applied whenever a parameter on the top row differs from one on the bottom row by a non-negative integer"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No reduction formula for pFq with cancelling parameters in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "69056d711c8e"
     },
     {
       "kind": "theorem",
@@ -164,7 +316,15 @@
         "section": "Euler's integral transform",
         "snippet": "The following basic identity is very useful as it relates the higher-order hypergeometric functions in terms of integrals over the lower order ones"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Euler's integral representation for hypergeometric functions is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "7fe12e349327"
     },
     {
       "kind": "proposition",
@@ -173,7 +333,15 @@
         "section": "Differentiation",
         "snippet": "The generalized hypergeometric function satisfies"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Derivative formulas for pFq (or even ₂F₁) are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "76437567082c"
     },
     {
       "kind": "proposition",
@@ -182,7 +350,15 @@
         "section": "Differentiation",
         "snippet": "Combining these gives a differential equation satisfied by"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The pFq ODE is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "f5a49eb34f69"
     },
     {
       "kind": "definition",
@@ -191,7 +367,15 @@
         "section": "Contiguous function and related identities",
         "snippet": "A function obtained by adding ±1 to exactly one of the parameters"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Contiguous-function terminology is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "e4840d96a124"
     },
     {
       "kind": "proposition",
@@ -200,6 +384,30 @@
         "section": "Contiguous function and related identities",
         "snippet": "Since the space has dimension 2, any three of these"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The contiguous-relation linear dependence is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "d042d6d6ae8e"
+    },
+    {
+      "kind": "definition",
+      "label": "Gauss's continued fraction",
+      "anchor": {
+        "section": "Contiguous function and related identities",
+        "snippet": "can be used to generate continued fraction expressions known as Gauss's continued fraction"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gauss's continued fraction for hypergeometric functions is not formalized.",
       "provenance": "ai-agent1"
     },
     {
@@ -209,7 +417,15 @@
         "section": "Saalschütz's theorem",
         "snippet": "Saalschütz's theorem"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Saalschütz's summation theorem is absent from Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "a82c60c603c4"
     },
     {
       "kind": "theorem",
@@ -218,7 +434,15 @@
         "section": "Dixon's identity",
         "snippet": "Dixon's identity , [ 8 ] first proved by Dixon (1902) , gives the sum of a well-poised"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dixon's identity is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "db157329103c"
     },
     {
       "kind": "theorem",
@@ -227,7 +451,15 @@
         "section": "Dougall's formula",
         "snippet": "Dougall's formula ( Dougall 1907 ) gives the sum of a very well-poised series that is terminating and 2-balanced"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dougall's very-well-poised summation is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "fef8f105db1c"
     },
     {
       "kind": "theorem",
@@ -236,7 +468,15 @@
         "section": "Generalization of Kummer's transformations and identities for 2 F 2",
         "snippet": "Identity 1."
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No ₂F₂ Kummer identities in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "282371a5e924"
     },
     {
       "kind": "theorem",
@@ -245,7 +485,15 @@
         "section": "Generalization of Kummer's transformations and identities for 2 F 2",
         "snippet": "which links Bessel functions to 2 F 2 ; this reduces to Kummer's second formula for"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bessel functions and this Kummer ₂F₂ identity are not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "424fb920afa1"
     },
     {
       "kind": "theorem",
@@ -254,7 +502,15 @@
         "section": "Generalization of Kummer's transformations and identities for 2 F 2",
         "snippet": "Identity 3."
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Identity 3 for ₂F₂ is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "96241e0cd01e"
     },
     {
       "kind": "theorem",
@@ -263,7 +519,15 @@
         "section": "Generalization of Kummer's transformations and identities for 2 F 2",
         "snippet": "which is a finite sum if b-d is a non-negative integer"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Identity 4 for ₂F₂ is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "33e67b5110de"
     },
     {
       "kind": "theorem",
@@ -272,7 +536,15 @@
         "section": "Kummer's relation",
         "snippet": "Kummer's relation is"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Kummer's transformation for ₂F₁ is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "6bd07f655de9"
     },
     {
       "kind": "theorem",
@@ -281,7 +553,15 @@
         "section": "Clausen's formula",
         "snippet": "was used by de Branges to prove the Bieberbach conjecture"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Clausen's product formula is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "37be85f956a2"
     },
     {
       "kind": "example",
@@ -290,7 +570,15 @@
         "section": "The series 0 F 0",
         "snippet": "As noted earlier"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "NormedSpace.exp_eq_tsum",
+        "module": "Mathlib.Analysis.Normed.Algebra.Exponential",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has `exp_eq_tsum` for the exp series itself, but it is not packaged as a 0F0 special case.",
+      "provenance": "ai-agent1",
+      "id": "4375349becae"
     },
     {
       "kind": "definition",
@@ -299,7 +587,15 @@
         "section": "The series 0 F 1",
         "snippet": "are called confluent hypergeometric limit functions and are closely related to Bessel functions"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No ₀F₁ or Bessel functions in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "e9af934446dc"
     },
     {
       "kind": "proposition",
@@ -308,7 +604,15 @@
         "section": "The series 0 F 1",
         "snippet": "The differential equation for this function is"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "ODE for ₀F₁ is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "8bb9ba4f4283"
     },
     {
       "kind": "example",
@@ -317,7 +621,15 @@
         "section": "The series 1 F 0",
         "snippet": "An important case is:"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The ₁F₀ binomial-series identity is not formalized as a hypergeometric statement.",
+      "provenance": "ai-agent1",
+      "id": "abb50dccdb32"
     },
     {
       "kind": "example",
@@ -326,7 +638,15 @@
         "section": "The series 1 F 0",
         "snippet": "is the geometric series with ratio z and coefficient 1"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "tsum_geometric_of_norm_lt_one",
+        "module": "Mathlib.Analysis.SpecificLimits.Normed",
+        "match_kind": "special_case"
+      },
+      "note": "The geometric series sum `∑ξⁿ = (1-ξ)⁻¹` is formalized but not identified as ₁F₀.",
+      "provenance": "ai-agent1",
+      "id": "aaaa36e3a6d4"
     },
     {
       "kind": "definition",
@@ -335,7 +655,15 @@
         "section": "The series 1 F 1",
         "snippet": "are called confluent hypergeometric functions of the first kind"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Kummer's confluent ₁F₁ is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "19c40af358a1"
     },
     {
       "kind": "proposition",
@@ -344,6 +672,30 @@
         "section": "The series 1 F 1",
         "snippet": "Up to constant factors, these are the Laguerre polynomials"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Laguerre polynomials are not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "035197924ae5"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hermite polynomials from 1F1",
+      "anchor": {
+        "section": "The series 1 F 1",
+        "snippet": "This implies Hermite polynomials can be expressed in terms of 1 F 1 as well"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.hermite",
+        "module": "Mathlib.RingTheory.Polynomial.Hermite.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Hermite polynomials exist in Mathlib (`Polynomial.hermite`), but the ₁F₁ representation is not formalized.",
       "provenance": "ai-agent1"
     },
     {
@@ -353,7 +705,15 @@
         "section": "The series 1 F 2",
         "snippet": "is the antiderivative of the cardinal sine"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither cardinal sine integral nor its ₁F₂ representation is formalized.",
+      "provenance": "ai-agent1",
+      "id": "2ef6d918e86d"
     },
     {
       "kind": "example",
@@ -362,7 +722,15 @@
         "section": "The series 1 F 2",
         "snippet": "The Lommel function is"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lommel functions are not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "aad8b3071702"
     },
     {
       "kind": "definition",
@@ -371,7 +739,15 @@
         "section": "The series 2 F 0",
         "snippet": "The confluent hypergeometric function of the second kind can be written as:"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The confluent ₂F₀ (Tricomi function) is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "25630800eb4a"
     },
     {
       "kind": "definition",
@@ -380,7 +756,15 @@
         "section": "The series 2 F 1",
         "snippet": "These are sometimes called Gauss's hypergeometric functions , classical standard hypergeometric or often simply hypergeometric functions"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ordinaryHypergeometric",
+        "module": "Mathlib.Analysis.SpecialFunctions.OrdinaryHypergeometric",
+        "match_kind": "exact"
+      },
+      "note": "`ordinaryHypergeometric` (notation `₂F₁`) is Gauss's classical hypergeometric function.",
+      "provenance": "ai-agent1",
+      "id": "1bff1409f433"
     },
     {
       "kind": "proposition",
@@ -389,7 +773,15 @@
         "section": "The series 2 F 1",
         "snippet": "It is known as the hypergeometric differential equation"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Gauss ODE for ₂F₁ is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "9b6317852cd1"
     },
     {
       "kind": "proposition",
@@ -398,6 +790,30 @@
         "section": "The series 2 F 1",
         "snippet": "Up to constant factors and scaling, these are the Jacobi polynomials"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Jacobi polynomials are not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "f676257e4c52"
+    },
+    {
+      "kind": "proposition",
+      "label": "Legendre and Chebyshev polynomials from 2F1",
+      "anchor": {
+        "section": "The series 2 F 1",
+        "snippet": "This includes Legendre polynomials and Chebyshev polynomials"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.Chebyshev.T",
+        "module": "Mathlib.RingTheory.Polynomial.Chebyshev",
+        "match_kind": "invocation"
+      },
+      "note": "Chebyshev polynomials (`Polynomial.Chebyshev.T`, `U`) exist in Mathlib; Legendre polynomials and the ₂F₁ representations are not formalized.",
       "provenance": "ai-agent1"
     },
     {
@@ -407,7 +823,15 @@
         "section": "The series 2 F 1",
         "snippet": "A wide range of integrals of elementary functions can be expressed using the hypergeometric function"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No ₂F₁ representations of elementary integrals are formalized.",
+      "provenance": "ai-agent1",
+      "id": "207323c7c6ac"
     },
     {
       "kind": "example",
@@ -416,7 +840,15 @@
         "section": "The series 2 F 2",
         "snippet": "As such, the exponential integral can be written as:"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No exponential integral in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "05502c783f6d"
     },
     {
       "kind": "example",
@@ -425,7 +857,15 @@
         "section": "The series 3 F 0",
         "snippet": "The Mott polynomials can be written as:"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mott polynomials are not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "01aff64a8dee"
     },
     {
       "kind": "example",
@@ -434,7 +874,15 @@
         "section": "The series 3 F 2",
         "snippet": "is the dilogarithm"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dilogarithm in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "1fc31341836b"
     },
     {
       "kind": "example",
@@ -443,7 +891,15 @@
         "section": "The series 3 F 2",
         "snippet": "is the unsigned Stirling number of the first kind"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Unsigned Stirling numbers of the first kind and the ₃F₂ representation are not formalized in Mathlib under a verified name; flagging the prior `Nat.stirlingFirst` reference as unverified.",
+      "provenance": "ai-agent1",
+      "id": "8112746bba3a"
     },
     {
       "kind": "example",
@@ -452,7 +908,15 @@
         "section": "The series 3 F 2",
         "snippet": "is a Hahn polynomial"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hahn polynomials are not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "20a8ca08cb15"
     },
     {
       "kind": "example",
@@ -461,7 +925,15 @@
         "section": "The series 4 F 3",
         "snippet": "is a Wilson polynomial"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Wilson polynomials are not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "c8a6d571cb30"
     },
     {
       "kind": "example",
@@ -470,7 +942,15 @@
         "section": "The series 4 F 3",
         "snippet": "The Bring radical can be written as:"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bring radical is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "1acd88429f15"
     },
     {
       "kind": "example",
@@ -479,7 +959,15 @@
         "section": "The series 4 F 3",
         "snippet": "The partition function"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The 2D Ising partition function is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "b939fe89197c"
     },
     {
       "kind": "example",
@@ -488,7 +976,15 @@
         "section": "The series q+1 F q",
         "snippet": "are the Polylogarithm"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Polylogarithms are not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "961991f0d31d"
     },
     {
       "kind": "proposition",
@@ -497,6 +993,30 @@
         "section": "The series q+1 F q",
         "snippet": "the roots of the polynomial x n − x +t can be expressed as a sum of at most"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of trinomial-root formulas via hypergeometric series.",
+      "provenance": "ai-agent1",
+      "id": "6e4193a3959a"
+    },
+    {
+      "kind": "definition",
+      "label": "Meijer G-function",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "The generalized hypergeometric function is linked to the Meijer G-function and the MacRobert E-function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Meijer G-function and MacRobert E-function are not in Mathlib.",
       "provenance": "ai-agent1"
     },
     {
@@ -506,7 +1026,15 @@
         "section": "Generalizations",
         "snippet": "A generalization, the q-series analogues, called the basic hypergeometric series , were given by Eduard Heine in the late nineteenth century"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Basic (q-)hypergeometric series are not in Mathlib (listed as TODO in `Pochhammer.lean`).",
+      "provenance": "ai-agent1",
+      "id": "7f84baa7c6f5"
     },
     {
       "kind": "definition",
@@ -515,7 +1043,15 @@
         "section": "Generalizations",
         "snippet": "Another generalization, the elliptic hypergeometric series , are those series where the ratio of terms is an elliptic function"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Elliptic hypergeometric series are not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "600415eaf89e"
     },
     {
       "kind": "definition",
@@ -524,7 +1060,15 @@
         "section": "Generalizations",
         "snippet": "Bilateral hypergeometric series are a generalization of hypergeometric functions where one sums over all integers, not just the positive ones"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No bilateral hypergeometric series in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "1f53b54bf366"
     },
     {
       "kind": "definition",
@@ -533,7 +1077,15 @@
         "section": "Generalizations",
         "snippet": "Fox–Wright functions are a generalization of generalized hypergeometric functions where the Pochhammer symbols in the series expression are generalised to gamma functions of linear expressions in the index n"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fox–Wright functions are not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "5591aecadb67"
     }
   ]
 }

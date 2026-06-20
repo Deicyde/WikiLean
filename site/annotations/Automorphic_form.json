@@ -1,0 +1,153 @@
+{
+  "slug": "Automorphic_form",
+  "wikipedia_title": "Automorphic form",
+  "display_title": "Automorphic form",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Automorphic form (factor of automorphy)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "is termed an automorphic form if the following holds"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SlashInvariantForm",
+        "module": "Mathlib.NumberTheory.ModularForms.SlashInvariantForms",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes only the modular-forms special case (SL(2,ℝ) acting on ℍ with the weight-k slash action `(cz+d)^k`) via `SlashInvariantForm`, not the general factor-of-automorphy definition on an arbitrary group/space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Factor of automorphy",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The factor of automorphy for the automorphic form"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SlashAction",
+        "module": "Mathlib.NumberTheory.ModularForms.SlashActions",
+        "match_kind": "special_case"
+      },
+      "note": "Only the specific weight-k cocycle `(cz+d)^k` for GL(2,ℝ) on ℍ is formalized, as the `SlashAction` typeclass; there is no general factor-of-automorphy / 1-cocycle abstraction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Automorphic function",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "An automorphic function is an automorphic form for which"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SlashInvariantForm",
+        "module": "Mathlib.NumberTheory.ModularForms.SlashInvariantForms",
+        "match_kind": "special_case"
+      },
+      "note": "Closest match is a weight-0 `SlashInvariantForm` (a function on ℍ invariant under a subgroup of GL(2,ℝ)); the general notion of an automorphic function with trivial factor of automorphy on arbitrary groups is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Automorphic form (three conditions)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "subject to three kinds of conditions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The general Lie-group definition imposing discrete-subgroup invariance, moderate growth, and K-finiteness/Z(g)-finiteness is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Eisenstein series as automorphic form",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "which is a prototypical modular form"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "eisensteinSeriesMF",
+        "module": "Mathlib.NumberTheory.ModularForms.EisensteinSeries.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`eisensteinSeriesMF` packages the weight-k Eisenstein series as a `ModularForm` for congruence subgroups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Generalized Dirichlet L-functions",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Specific generalizations of Dirichlet L-functions as class field-theoretic objects"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has ordinary Dirichlet `LFunction` (Mathlib.NumberTheory.LSeries.DirichletContinuation) but not the class-field-theoretic generalizations (Hecke/Größencharacter L-functions) referenced here.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Harmonic analytic functor on Galois groups",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Generally any harmonic analytic object as a functor over Galois groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib formalization of harmonic-analytic functors on Galois groups in the Langlands sense.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Automorphic representation",
+      "anchor": {
+        "section": "Automorphic representations",
+        "snippet": "an automorphic representation is a representation that is an infinite tensor product of representations of p-adic groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Automorphic representations of adelic groups (restricted tensor products of local representations) are not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Poincaré's automorphic function",
+      "anchor": {
+        "section": "Poincaré on discovery and his work on automorphic functions",
+        "snippet": "an automorphic function is one which is analytic in its domain and is invariant under a discrete infinite group of linear fractional transformations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SlashInvariantForm",
+        "module": "Mathlib.NumberTheory.ModularForms.SlashInvariantForms",
+        "match_kind": "special_case"
+      },
+      "note": "A weight-0 holomorphic `SlashInvariantForm` for a discrete subgroup of SL(2,ℝ) realises Poincaré's notion, but Mathlib does not define automorphic functions for arbitrary discrete Möbius/Fuchsian groups in general.",
+      "provenance": "ai"
+    }
+  ]
+}

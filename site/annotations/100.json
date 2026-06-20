@@ -15,10 +15,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Nat",
-        "module": "Mathlib.Data.Nat.Defs",
+        "module": "Init.Prelude",
         "match_kind": "generalization"
       },
-      "note": "The natural number 100 is trivially expressible as the term `(100 : ℕ)` in Mathlib's `Nat` type.",
+      "note": "The natural number 100 is the term `(100 : ℕ)` in the core `Nat` inductive type.",
       "provenance": "ai",
       "id": "f320d88099a6"
     },
@@ -35,7 +35,7 @@
         "module": null,
         "match_kind": "invocation"
       },
-      "note": "The equality `100 = 10^2` holds by `decide`/`rfl` in Mathlib, though no named lemma states this concrete fact.",
+      "note": "The equality `100 = 10^2` is decidable in Mathlib via `decide`/`rfl`, but no named lemma states this concrete fact.",
       "provenance": "ai",
       "id": "a20b2720176b"
     },
@@ -52,7 +52,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has no definition of percentages tying to the number 100.",
+      "note": "Mathlib has no definition of percentages tied to the number 100.",
       "provenance": "ai",
       "id": "a92f4bada979"
     },
@@ -83,7 +83,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "Nat.nth",
-        "module": "Mathlib.Data.Nat.Prime.Nth",
+        "module": "Mathlib.Data.Nat.Nth",
         "match_kind": "generalization"
       },
       "note": "Mathlib has `Nat.nth Nat.Prime` enumerating primes but no specific statement that the first nine primes sum to 100.",
@@ -137,7 +137,7 @@
         "module": "Mathlib.Data.Nat.Totient",
         "match_kind": "generalization"
       },
-      "note": "Mathlib defines `Nat.totient` and `ArithmeticFunction.carmichael` (reduced totient) but the values at 100 are not explicit lemmas.",
+      "note": "Mathlib defines `Nat.totient` and `ArithmeticFunction.carmichael` (reduced totient) but the values at 100 are not stated as explicit lemmas.",
       "provenance": "ai",
       "id": "4b729ecf279c"
     },
@@ -205,9 +205,25 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No `sum_cubes`/Nicomachus theorem lemma was found in Mathlib via grep.",
+      "note": "No `sum_cubes`/Nicomachus theorem lemma was found in Mathlib via grep or loogle.",
       "provenance": "ai",
       "id": "8a010aeef955"
+    },
+    {
+      "kind": "proposition",
+      "label": "Square of sum of first four positive integers",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "equals the square of the sum of the first four positive integers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Nicomachus identity (∑k)² = ∑k³ at n=4 yields 100 = (1+2+3+4)², but no specific Mathlib lemma states this instance.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -228,10 +244,26 @@
     },
     {
       "kind": "proposition",
-      "label": "Erdős–Woods and 18-gonal number",
+      "label": "Leyland decomposition of 100",
       "anchor": {
         "section": "In mathematics",
-        "snippet": "is also the seventeenth Erdős–Woods number, and the fourth"
+        "snippet": "100 = 2 6 + 6 2"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": "invocation"
+      },
+      "note": "The arithmetic identity 100 = 2^6 + 6^2 is provable in Mathlib by `decide`/`norm_num`, but no named lemma states it.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "100 is the seventeenth Erdős–Woods number",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "is also the seventeenth Erdős–Woods number"
       },
       "status": "not_formalized",
       "mathlib": {
@@ -239,9 +271,25 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Neither Erdős–Woods numbers nor polygonal/18-gonal numbers appear in Mathlib by grep.",
-      "provenance": "ai",
+      "note": "Erdős–Woods numbers are not defined in Mathlib (no matches via grep).",
+      "provenance": "ai-moderated",
       "id": "ffdff60a3ba2"
+    },
+    {
+      "kind": "proposition",
+      "label": "100 is the fourth 18-gonal number",
+      "anchor": {
+        "section": "In mathematics",
+        "snippet": "the fourth 18- gonal number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Polygonal numbers (in particular 18-gonal numbers) are not defined in Mathlib (grep/loogle for `polygonal` returned no hits).",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -256,7 +304,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Grep for star number / starNumber in Mathlib returns no results.",
+      "note": "Grep for `starNumber`/`star_number` in Mathlib returns no results.",
       "provenance": "ai",
       "id": "8ca9923b487f"
     }

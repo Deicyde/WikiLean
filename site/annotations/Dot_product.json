@@ -32,10 +32,10 @@
       "status": "partial",
       "mathlib": {
         "decl": "Matrix.vec3_dotProduct",
-        "module": "Mathlib.Data.Matrix.Mul",
+        "module": "Mathlib.LinearAlgebra.Matrix.Notation",
         "match_kind": "special_case"
       },
-      "note": "The 3D case isn't a standalone declaration but follows by `vec3_dotProduct`/`Matrix.dotProduct` on `Fin 3 → R`.",
+      "note": "`Matrix.vec3_dotProduct` unfolds the dot product on `Fin 3 → R` to the explicit three-term sum.",
       "provenance": "ai",
       "id": "012aab46d255"
     },
@@ -52,7 +52,7 @@
         "module": "Mathlib.Data.Matrix.Mul",
         "match_kind": "invocation"
       },
-      "note": "Mathlib expresses this via `Matrix.mul_apply`/`mulVec`/`vecMul` which unfold to `dotProduct`, but there is no dedicated row-times-column identity for dot product.",
+      "note": "`Matrix.mul_apply` defines `(A * B) i j = ∑ k, A i k * B k j`, so a 1×n by n×1 product unfolds to `dotProduct`, but no dedicated row-times-column identity is named.",
       "provenance": "ai",
       "id": "92d7761ab6f4"
     },
@@ -99,13 +99,29 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "inner_eq_zero_iff",
-        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "decl": "Submodule.mem_orthogonal_singleton_iff_inner_right",
+        "module": "Mathlib.Analysis.InnerProductSpace.Orthogonal",
         "match_kind": "special_case"
       },
-      "note": "The perpendicular case is captured by `inner_eq_zero_iff`/`orthogonal`; the codirectional/antidirectional cases are not stated as such but are direct consequences.",
+      "note": "The perpendicular case is captured via `Submodule.mem_orthogonal_singleton_iff_inner_right`/`inner_eq_zero_symm`; the codirectional/antidirectional cases are not stated as such but follow from `cos_angle_mul_norm_mul_norm`.",
       "provenance": "ai",
       "id": "91835e3c9c57"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euclidean length from self dot product",
+      "anchor": {
+        "section": "Geometric definition",
+        "snippet": "This implies that the dot product of a vector"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "real_inner_self_eq_norm_mul_norm",
+        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`real_inner_self_eq_norm_mul_norm` gives `⟪x, x⟫_ℝ = ‖x‖ * ‖x‖`, i.e. `‖x‖ = √(x · x)`.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -116,11 +132,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "orthogonalProjection",
+        "decl": "Submodule.orthogonalProjectionOnto",
         "module": "Mathlib.Analysis.InnerProductSpace.Projection.Basic",
         "match_kind": "generalization"
       },
-      "note": "Mathlib has `orthogonalProjection` (the vector projection) but no named scalar projection `‖a‖ cos θ`.",
+      "note": "Mathlib has `Submodule.orthogonalProjectionOnto` (the vector projection) but no named scalar projection `‖a‖ cos θ`.",
       "provenance": "ai",
       "id": "8347d9e506d3"
     },
@@ -154,7 +170,7 @@
         "module": "Mathlib.Data.Matrix.Mul",
         "match_kind": "exact"
       },
-      "note": "`add_dotProduct`, `dotProduct_add`, `smul_dotProduct`, `dotProduct_smul` (and corresponding inner-product lemmas) give bilinearity.",
+      "note": "`Matrix.add_dotProduct`, `dotProduct_add`, `smul_dotProduct`, `dotProduct_smul` (and corresponding inner-product lemmas) give bilinearity.",
       "provenance": "ai",
       "id": "c8c94f0ada2f"
     },
@@ -188,7 +204,7 @@
         "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
         "match_kind": "exact"
       },
-      "note": "`EuclideanSpace.basisFun` is an `OrthonormalBasis` and `EuclideanSpace.inner_single_left` evaluates the Kronecker-delta inner product.",
+      "note": "`EuclideanSpace.basisFun` is the standard `OrthonormalBasis` and `EuclideanSpace.inner_single_left` evaluates the Kronecker-delta inner product.",
       "provenance": "ai",
       "id": "3d3e1f92fc60"
     },
@@ -228,6 +244,22 @@
     },
     {
       "kind": "proposition",
+      "label": "Commutativity of the real dot product",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The commutative property can also be easily proven with the algebraic definition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.dotProduct_comm",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.dotProduct_comm` proves `v ⬝ᵥ w = w ⬝ᵥ v` over commutative magmas; the inner-product version is `real_inner_comm`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
       "label": "Associativity with scalar multiplication",
       "anchor": {
         "section": "Properties",
@@ -239,7 +271,7 @@
         "module": "Mathlib.Data.Matrix.Mul",
         "match_kind": "exact"
       },
-      "note": "`smul_dotProduct` and `dotProduct_smul` give `(c • v) ⬝ᵥ w = c • (v ⬝ᵥ w)`.",
+      "note": "`Matrix.smul_dotProduct` and `Matrix.dotProduct_smul` give `(c • v) ⬝ᵥ w = c • (v ⬝ᵥ w)`.",
       "provenance": "ai",
       "id": "6175746c1f03"
     },
@@ -252,11 +284,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "inner_eq_zero_iff",
-        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "decl": "Submodule.mem_orthogonal_singleton_iff_inner_right",
+        "module": "Mathlib.Analysis.InnerProductSpace.Orthogonal",
         "match_kind": "exact"
       },
-      "note": "`inner_eq_zero_iff`/`Submodule.orthogonal` characterize orthogonality of vectors via vanishing inner product.",
+      "note": "`Submodule.mem_orthogonal_singleton_iff_inner_right` characterizes orthogonality of vectors via vanishing inner product.",
       "provenance": "ai",
       "id": "5b6a82b58730"
     },
@@ -273,7 +305,7 @@
         "module": "Mathlib.Data.Matrix.Mul",
         "match_kind": "invocation"
       },
-      "note": "`exists_ne_zero_dotProduct_eq_zero` shows nonzero vectors with zero dot product exist, witnessing the failure of cancellation.",
+      "note": "`Matrix.exists_ne_zero_dotProduct_eq_zero` shows nonzero vectors with zero dot product exist, witnessing the failure of cancellation.",
       "provenance": "ai",
       "id": "10210add0410"
     },
@@ -324,7 +356,7 @@
         "module": "Mathlib.LinearAlgebra.CrossProduct",
         "match_kind": "exact"
       },
-      "note": "`triple_product_eq_det` states `u ⬝ᵥ v ⨯₃ w = det ![u, v, w]`, defining and identifying the scalar triple product.",
+      "note": "`triple_product_eq_det` states `u ⬝ᵥ v ×₃ w = det ![u, v, w]`, identifying the scalar triple product with a determinant.",
       "provenance": "ai",
       "id": "5e3f292b80eb"
     },
@@ -341,7 +373,7 @@
         "module": "Mathlib.LinearAlgebra.CrossProduct",
         "match_kind": "generalization"
       },
-      "note": "`cross_cross` gives the Lie-bracket form of the vector triple product, but the BAC-CAB identity `u × (v × w) = (u·w) v − (u·v) w` is not stated explicitly.",
+      "note": "`cross_cross` gives the Jacobi/Lie-bracket form of the triple cross product, but the BAC-CAB identity `u × (v × w) = (u·w) v − (u·v) w` is not stated explicitly.",
       "provenance": "ai",
       "id": "f5964847063c"
     },
@@ -409,7 +441,7 @@
         "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
         "match_kind": "exact"
       },
-      "note": "The complex Hermitian dot product is the inner product on `EuclideanSpace ℂ ι`, identified with `y ⬝ᵥ star x`.",
+      "note": "The complex Hermitian dot product is the inner product on `EuclideanSpace ℂ ι`, identified by `EuclideanSpace.inner_eq_star_dotProduct` with `y ⬝ᵥ star x`.",
       "provenance": "ai",
       "id": "b5e2049d93e8"
     },
@@ -460,7 +492,7 @@
         "module": "Mathlib.Analysis.InnerProductSpace.Defs",
         "match_kind": "exact"
       },
-      "note": "`norm_sq_eq_re_inner` is part of the `InnerProductSpace` definition: `‖x‖^2 = re ⟪x, x⟫`.",
+      "note": "`InnerProductSpace.norm_sq_eq_re_inner` is part of the `InnerProductSpace` definition: `‖x‖^2 = re ⟪x, x⟫`.",
       "provenance": "ai",
       "id": "c4bc419d0417"
     },
@@ -558,11 +590,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Matrix.PosSemidef.toInnerProductSpace",
+        "decl": "Matrix.toInnerProductSpace",
         "module": "Mathlib.Analysis.Matrix.PosDef",
         "match_kind": "generalization"
       },
-      "note": "Function-space weighted inner products can be obtained via `MeasureTheory.L2` with `μ.withDensity w`; the finite-dimensional weighted form is `Matrix.toInnerProductSpace`, but no dedicated weighted-function-space decl exists.",
+      "note": "Function-space weighted inner products can be built from `MeasureTheory.L2` with `μ.withDensity w`; the finite-dimensional weighted form is `Matrix.toInnerProductSpace`, but no dedicated weighted-function-space decl exists.",
       "provenance": "ai",
       "id": "2bbb0df48ae8"
     },
@@ -579,7 +611,7 @@
         "module": "Mathlib.Analysis.Matrix.Normed",
         "match_kind": "invocation"
       },
-      "note": "The Frobenius norm/inner product structure exists via `Matrix.frobeniusSeminormedAddCommGroup` (PiLp 2 on entries), but Mathlib lacks a directly named `frobeniusInner` declaration.",
+      "note": "The Frobenius norm/inner-product structure exists via `Matrix.frobeniusSeminormedAddCommGroup` (PiLp 2 on entries), but Mathlib lacks a directly named `frobeniusInner` declaration.",
       "provenance": "ai",
       "id": "bdccc4c5097a"
     },

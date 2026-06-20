@@ -11,7 +11,15 @@
         "section": "(Lead)",
         "snippet": "When n is a positive integer , exponentiation corresponds to repeated multiplication of the base"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Monoid.npow",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Monoid.npow` is the canonical inductive definition of iterated multiplication on a monoid.",
+      "provenance": "ai-agent1",
+      "id": "b8fc6a52cb1b"
     },
     {
       "kind": "proposition",
@@ -20,7 +28,15 @@
         "section": "(Lead)",
         "snippet": "the multiplication rule"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "pow_add",
+        "module": "Mathlib.Algebra.GroupPower.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`pow_add` proves `a^(m+n) = a^m * a^n` in any monoid.",
+      "provenance": "ai-agent1",
+      "id": "d0795ace5313"
     },
     {
       "kind": "definition",
@@ -29,7 +45,15 @@
         "section": "(Lead)",
         "snippet": "Exponentiation can also be extended to powers that are not positive integers"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "zpowRec",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Integer powers via `zpowRec`/`DivInvMonoid.zpow`, and rational/real extensions via `Real.rpow`.",
+      "provenance": "ai-agent1",
+      "id": "649819e3e1bf"
     },
     {
       "kind": "definition",
@@ -38,7 +62,15 @@
         "section": "(Lead)",
         "snippet": "The definition of exponentiation can be extended in a natural way"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.rpow",
+        "module": "Mathlib.Analysis.SpecialFunctions.Pow.Real",
+        "match_kind": "exact"
+      },
+      "note": "`Real.rpow` defines exponentiation for real exponents.",
+      "provenance": "ai-agent1",
+      "id": "07ac2815df1b"
     },
     {
       "kind": "theorem",
@@ -47,7 +79,15 @@
         "section": "History",
         "snippet": "Archimedes proved the law of exponents"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "pow_add",
+        "module": "Mathlib.Algebra.GroupPower.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the general `pow_add` law; the Archimedes historical specialization to powers of ten is not stated separately.",
+      "provenance": "ai-agent1",
+      "id": "cae51c3b8666"
     },
     {
       "kind": "definition",
@@ -56,7 +96,15 @@
         "section": "Terminology",
         "snippet": "is called \"the square of b \" or \" b squared\""
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "sq",
+        "module": "Mathlib.Algebra.GroupPower.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`sq a = a * a = a^2` is defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "e1e3aa6e882b"
     },
     {
       "kind": "definition",
@@ -65,7 +113,15 @@
         "section": "Terminology",
         "snippet": "is called \"the cube of b \" or \" b cubed\""
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no dedicated `cube` decl; one uses `a^3` directly.",
+      "provenance": "ai-agent1",
+      "id": "09ec9b6ab322"
     },
     {
       "kind": "example",
@@ -74,7 +130,15 @@
         "section": "Terminology",
         "snippet": "The base 3 appears 5 times in the multiplication"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific numeric example; no dedicated lemma.",
+      "provenance": "ai-agent1",
+      "id": "7e7eb9322fce"
     },
     {
       "kind": "definition",
@@ -83,7 +147,15 @@
         "section": "Positive exponents",
         "snippet": "The definition of the exponentiation as an iterated multiplication can be formalized by using induction"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Monoid.npow",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Monoid.npow_zero` and `Monoid.npow_succ` provide the inductive base and step.",
+      "provenance": "ai-agent1",
+      "id": "65bede8935e2"
     },
     {
       "kind": "proposition",
@@ -92,7 +164,15 @@
         "section": "Positive exponents",
         "snippet": "The associativity of multiplication implies that for any positive integers m and n"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "pow_add",
+        "module": "Mathlib.Algebra.GroupPower.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`pow_add` formalizes `a^(m+n) = a^m * a^n` from monoid associativity.",
+      "provenance": "ai-agent1",
+      "id": "8345eea4058f"
     },
     {
       "kind": "definition",
@@ -101,7 +181,15 @@
         "section": "Zero exponent",
         "snippet": "a (nonzero) number raised to the 0 power is 1"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "pow_zero",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`pow_zero a : a^0 = 1` is proved in any monoid.",
+      "provenance": "ai-agent1",
+      "id": "934153e2d621"
     },
     {
       "kind": "example",
@@ -110,7 +198,15 @@
         "section": "Zero exponent",
         "snippet": "The case of 0 0 is controversial"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "pow_zero",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib follows the convention `0^0 = 1` via `pow_zero`.",
+      "provenance": "ai-agent1",
+      "id": "822eb083404a"
     },
     {
       "kind": "definition",
@@ -119,7 +215,15 @@
         "section": "Negative exponents",
         "snippet": "Exponentiation with negative exponents is defined by the following identity"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "zpow_neg",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`zpow_neg` gives `a^(-n) = (a^n)⁻¹`.",
+      "provenance": "ai-agent1",
+      "id": "3e2b607a0268"
     },
     {
       "kind": "proposition",
@@ -128,7 +232,15 @@
         "section": "Negative exponents",
         "snippet": "The same definition applies to invertible elements in a multiplicative monoid"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DivInvMonoid.zpow",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`DivInvMonoid.zpow` defines integer powers for invertible elements.",
+      "provenance": "ai-agent1",
+      "id": "2a6bf781248e"
     },
     {
       "kind": "proposition",
@@ -137,7 +249,15 @@
         "section": "Identities and properties",
         "snippet": "often called exponent rules , hold for all integer exponents"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "zpow_add",
+        "module": "Mathlib.Algebra.Group.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`zpow_add`, `zpow_mul`, `mul_zpow` cover the integer exponent rules.",
+      "provenance": "ai-agent1",
+      "id": "d63201b761e4"
     },
     {
       "kind": "proposition",
@@ -146,7 +266,15 @@
         "section": "Identities and properties",
         "snippet": "exponentiation is not commutative"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not state non-commutativity/associativity of `^` as theorems.",
+      "provenance": "ai-agent1",
+      "id": "09a4c370b189"
     },
     {
       "kind": "theorem",
@@ -155,7 +283,15 @@
         "section": "Powers of a sum",
         "snippet": "The powers of a sum can normally be computed from the powers of the summands by the binomial formula"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Commute.add_pow",
+        "module": "Mathlib.Data.Nat.Choose.Sum",
+        "match_kind": "exact"
+      },
+      "note": "`Commute.add_pow` is the binomial theorem for commuting elements.",
+      "provenance": "ai-agent1",
+      "id": "d1c495424383"
     },
     {
       "kind": "proposition",
@@ -164,7 +300,15 @@
         "section": "Combinatorial interpretation",
         "snippet": "the value of n m is the number of functions from a set of m elements to a set of n elements"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fintype.card_fun",
+        "module": "Mathlib.Data.Fintype.BigOperators",
+        "match_kind": "exact"
+      },
+      "note": "`Fintype.card_fun` gives `card (α → β) = card β ^ card α`.",
+      "provenance": "ai-agent1",
+      "id": "f58aeaffd9d0"
     },
     {
       "kind": "example",
@@ -173,7 +317,15 @@
         "section": "Powers of ten",
         "snippet": "integer powers of 10 are written as the digit 1 followed or preceded by a number of zeroes"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Notational observation; no Mathlib lemma states it.",
+      "provenance": "ai-agent1",
+      "id": "db34444ffbfa"
     },
     {
       "kind": "proposition",
@@ -182,7 +334,15 @@
         "section": "Powers of two",
         "snippet": "a set with n members has a power set"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Fintype.card_finset",
+        "module": "Mathlib.Data.Fintype.Powerset",
+        "match_kind": "exact"
+      },
+      "note": "`Fintype.card_finset` proves `card (Finset α) = 2 ^ card α`.",
+      "provenance": "ai-agent1",
+      "id": "89498e87e427"
     },
     {
       "kind": "proposition",
@@ -191,7 +351,15 @@
         "section": "Powers of one",
         "snippet": "Every power of one equals"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "one_pow",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`one_pow n : (1:M)^n = 1`.",
+      "provenance": "ai-agent1",
+      "id": "01037387a9fd"
     },
     {
       "kind": "proposition",
@@ -200,7 +368,15 @@
         "section": "Powers of zero",
         "snippet": "For a positive exponent n > 0 , the n th power of zero is zero"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "zero_pow",
+        "module": "Mathlib.Algebra.GroupWithZero.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`zero_pow` proves `(0:M₀)^n = 0` for `n ≠ 0`.",
+      "provenance": "ai-agent1",
+      "id": "e211c5552de5"
     },
     {
       "kind": "proposition",
@@ -209,7 +385,15 @@
         "section": "Powers of negative one",
         "snippet": "Since a negative number times another negative is positive"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "neg_one_pow_eq_pow_mod_two",
+        "module": "Mathlib.Algebra.GroupPower.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`neg_one_pow_eq_pow_mod_two` captures the alternation; related `Odd.neg_one_pow` etc.",
+      "provenance": "ai-agent1",
+      "id": "d0fd6a7cd129"
     },
     {
       "kind": "proposition",
@@ -218,7 +402,15 @@
         "section": "Large exponents",
         "snippet": "The limit of a sequence of powers of a number greater than one diverges"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendsto_pow_atTop_atTop_of_one_lt",
+        "module": "Mathlib.Analysis.SpecificLimits.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`tendsto_pow_atTop_atTop_of_one_lt` proves `b^n → ∞` when `1 < b`.",
+      "provenance": "ai-agent1",
+      "id": "29da9acf8274"
     },
     {
       "kind": "proposition",
@@ -227,7 +419,15 @@
         "section": "Large exponents",
         "snippet": "Powers of a number with absolute value less than one tend to zero"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendsto_pow_atTop_nhds_zero_of_lt_one",
+        "module": "Mathlib.Analysis.SpecificLimits.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`tendsto_pow_atTop_nhds_zero_of_lt_one` proves the limit-to-zero result.",
+      "provenance": "ai-agent1",
+      "id": "7702d8a424af"
     },
     {
       "kind": "proposition",
@@ -236,7 +436,15 @@
         "section": "Large exponents",
         "snippet": "alternate between positive and negative as n alternates between even and odd"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated non-convergence lemma for `b<-1` in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "0dcae5e47f31"
     },
     {
       "kind": "definition",
@@ -245,7 +453,15 @@
         "section": "Power functions",
         "snippet": "are sometimes called power functions"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The terminology `power function` has no dedicated Mathlib decl.",
+      "provenance": "ai-agent1",
+      "id": "3c4827f1b026"
     },
     {
       "kind": "definition",
@@ -254,7 +470,15 @@
         "section": "Power functions",
         "snippet": "two primary families exist"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `evenPowerFunction`/`oddPowerFunction` family is defined.",
+      "provenance": "ai-agent1",
+      "id": "89bd5c3f059d"
     },
     {
       "kind": "definition",
@@ -263,7 +487,15 @@
         "section": "Rational exponents",
         "snippet": "denotes the unique nonnegative real n th root of x"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.rpow",
+        "module": "Mathlib.Analysis.SpecialFunctions.Pow.Real",
+        "match_kind": "invocation"
+      },
+      "note": "Nth roots are realized as `x ^ (1/n : ℝ)` using `Real.rpow`.",
+      "provenance": "ai-agent1",
+      "id": "7e1cc4582dfe"
     },
     {
       "kind": "definition",
@@ -272,7 +504,15 @@
         "section": "Rational exponents",
         "snippet": "If x is a positive real number, and"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.rpow",
+        "module": "Mathlib.Analysis.SpecialFunctions.Pow.Real",
+        "match_kind": "generalization"
+      },
+      "note": "`Real.rpow` covers rational (and real) exponents on positive reals.",
+      "provenance": "ai-agent1",
+      "id": "3c9fccf97951"
     },
     {
       "kind": "definition",
@@ -281,7 +521,15 @@
         "section": "Rational exponents",
         "snippet": "If r is a positive rational number"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.zero_rpow",
+        "module": "Mathlib.Analysis.SpecialFunctions.Pow.Real",
+        "match_kind": "exact"
+      },
+      "note": "`Real.zero_rpow` proves `(0:ℝ)^r = 0` for `r ≠ 0`.",
+      "provenance": "ai-agent1",
+      "id": "ccf4f3c5ba15"
     },
     {
       "kind": "example",
@@ -290,7 +538,15 @@
         "section": "Rational exponents",
         "snippet": "a negative real number has a real n th root"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific paradox example; no dedicated theorem.",
+      "provenance": "ai-agent1",
+      "id": "1bef9a52d0ad"
     },
     {
       "kind": "definition",
@@ -299,7 +555,15 @@
         "section": "Real exponents",
         "snippet": "exponentiation to real powers can be defined in two equivalent ways"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.rpow_def_of_pos",
+        "module": "Mathlib.Analysis.SpecialFunctions.Pow.Real",
+        "match_kind": "exact"
+      },
+      "note": "`Real.rpow_def_of_pos` gives `x^y = exp (log x * y)` for `x > 0`.",
+      "provenance": "ai-agent1",
+      "id": "1ff827177f32"
     },
     {
       "kind": "proposition",
@@ -308,7 +572,15 @@
         "section": "Real exponents",
         "snippet": "exponentiation to a real power of a negative real number is much more difficult to define consistently"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.rpow_def_of_neg",
+        "module": "Mathlib.Analysis.SpecialFunctions.Pow.Real",
+        "match_kind": "special_case"
+      },
+      "note": "`Real.rpow_def_of_neg` gives a specific principal-value formula for `x < 0` but does not develop the multivalued discussion.",
+      "provenance": "ai-agent1",
+      "id": "2dd8e4958762"
     },
     {
       "kind": "definition",
@@ -317,7 +589,15 @@
         "section": "Limits of rational exponents",
         "snippet": "exponentiation of a positive real number b with an arbitrary real exponent x can be defined by continuity"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.rpow",
+        "module": "Mathlib.Analysis.SpecialFunctions.Pow.Real",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `Real.rpow` via `exp ∘ log` rather than as a limit of rational approximations, though continuity is proved.",
+      "provenance": "ai-agent1",
+      "id": "4b6e5be81529"
     },
     {
       "kind": "example",
@@ -326,7 +606,15 @@
         "section": "Limits of rational exponents",
         "snippet": "the non-terminating decimal representation"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Particular example; no dedicated lemma.",
+      "provenance": "ai-agent1",
+      "id": "a6f44c698395"
     },
     {
       "kind": "definition",
@@ -335,7 +623,15 @@
         "section": "Exponential function",
         "snippet": "There are many equivalent ways to define the exponential function"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.exp",
+        "module": "Mathlib.Data.Complex.Exponential",
+        "match_kind": "generalization"
+      },
+      "note": "`Real.exp` is defined via the power series; the `(1+x/n)^n` limit form is not the primary definition in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "c1eb40e25a6c"
     },
     {
       "kind": "proposition",
@@ -344,7 +640,15 @@
         "section": "Exponential function",
         "snippet": "the exponential identity (or multiplication rule)"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.exp_add",
+        "module": "Mathlib.Data.Complex.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "`Real.exp_add` proves `exp (x+y) = exp x * exp y`.",
+      "provenance": "ai-agent1",
+      "id": "a1b60836b59e"
     },
     {
       "kind": "definition",
@@ -353,7 +657,15 @@
         "section": "Exponential function",
         "snippet": "Euler's number can be defined as"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.exp_one",
+        "module": "Mathlib.Data.Complex.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib uses `Real.exp 1` for Euler's number; `Real.exp_one_pos` etc.",
+      "provenance": "ai-agent1",
+      "id": "c7fea11fa08c"
     },
     {
       "kind": "definition",
@@ -362,7 +674,15 @@
         "section": "Exponential function",
         "snippet": "The limit that defines the exponential function converges for every complex value of x"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp",
+        "module": "Mathlib.Data.Complex.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.exp` is the complex exponential.",
+      "provenance": "ai-agent1",
+      "id": "1e59c51c893c"
     },
     {
       "kind": "definition",
@@ -371,7 +691,15 @@
         "section": "Powers via logarithms",
         "snippet": "the natural logarithm ln( x ) is the inverse of the exponential function"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.rpow_def_of_pos",
+        "module": "Mathlib.Analysis.SpecialFunctions.Pow.Real",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `x^y = exp (log x * y)` for positive `x` via `Real.rpow_def_of_pos`.",
+      "provenance": "ai-agent1",
+      "id": "b52c9176a90e"
     },
     {
       "kind": "definition",
@@ -380,7 +708,15 @@
         "section": "Complex exponents with a positive real base",
         "snippet": "exponentiation with base b and complex exponent z is defined by means of the exponential function"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.cpow_def_of_ne_zero",
+        "module": "Mathlib.Analysis.SpecialFunctions.Pow.Complex",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.cpow_def_of_ne_zero` realises `b^z = exp (log b * z)`.",
+      "provenance": "ai-agent1",
+      "id": "d0db1984ceb5"
     },
     {
       "kind": "theorem",
@@ -389,7 +725,15 @@
         "section": "Complex exponents with a positive real base",
         "snippet": "Euler's formula"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_mul_I",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Circle",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.exp_mul_I` is Euler's formula `exp (x*I) = cos x + sin x * I`.",
+      "provenance": "ai-agent1",
+      "id": "f32376a5aeb9"
     },
     {
       "kind": "definition",
@@ -398,7 +742,15 @@
         "section": "n th roots of a complex number",
         "snippet": "Every nonzero complex number z may be written in polar form"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.abs_mul_exp_arg_mul_I",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Circle",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.abs_mul_exp_arg_mul_I` writes `z = ‖z‖ * exp(arg z * I)`.",
+      "provenance": "ai-agent1",
+      "id": "650e2688c4d3"
     },
     {
       "kind": "proposition",
@@ -407,7 +759,15 @@
         "section": "n th roots of a complex number",
         "snippet": "the polar form of an n th root of a complex number can be obtained by taking the n th root of the absolute value and dividing its argument by n"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.nthRoots",
+        "module": "Mathlib.RingTheory.Polynomial.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has nth-root theory and `Complex.cpow` but no single decl in polar form.",
+      "provenance": "ai-agent1",
+      "id": "83e88beba778"
     },
     {
       "kind": "proposition",
@@ -416,7 +776,15 @@
         "section": "n th roots of a complex number",
         "snippet": "provides the n n th roots of the complex number"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.card_nthRoots",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Circle",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.card_nthRoots` (and `Polynomial.card_nthRoots`) give the n distinct roots.",
+      "provenance": "ai-agent1",
+      "id": "f278491112b6"
     },
     {
       "kind": "definition",
@@ -425,7 +793,15 @@
         "section": "n th roots of a complex number",
         "snippet": "It is usual to choose one of the n n th roots as the principal root"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.cpow",
+        "module": "Mathlib.Analysis.SpecialFunctions.Pow.Complex",
+        "match_kind": "invocation"
+      },
+      "note": "Principal root is `z ^ (1/n : ℂ)` via `Complex.cpow`; no `principalNthRoot` decl.",
+      "provenance": "ai-agent1",
+      "id": "29b0f5b00a47"
     },
     {
       "kind": "proposition",
@@ -434,7 +810,15 @@
         "section": "n th roots of a complex number",
         "snippet": "it is not possible to define a n th root function that is continuous in the whole complex plane"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated obstruction lemma; related discontinuity of `Complex.log` at 0 is known.",
+      "provenance": "ai-agent1",
+      "id": "a8e38b259330"
     },
     {
       "kind": "definition",
@@ -443,7 +827,15 @@
         "section": "Roots of unity",
         "snippet": "The n th roots of unity are the"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "rootsOfUnity",
+        "module": "Mathlib.RingTheory.RootsOfUnity.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`rootsOfUnity n M` defines the subgroup of nth roots of unity.",
+      "provenance": "ai-agent1",
+      "id": "2caf8b581ece"
     },
     {
       "kind": "definition",
@@ -452,7 +844,15 @@
         "section": "Roots of unity",
         "snippet": "are called primitive n th roots of unity"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsPrimitiveRoot",
+        "module": "Mathlib.RingTheory.RootsOfUnity.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsPrimitiveRoot ζ n` formalises primitive nth roots of unity.",
+      "provenance": "ai-agent1",
+      "id": "74ae646f4462"
     },
     {
       "kind": "proposition",
@@ -461,7 +861,15 @@
         "section": "Roots of unity",
         "snippet": "The n th roots of unity allow expressing all n th roots of a complex number"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsPrimitiveRoot.nthRoots_eq",
+        "module": "Mathlib.RingTheory.RootsOfUnity.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib relates nth roots to primitive roots, e.g. via `IsPrimitiveRoot.nthRoots_eq`.",
+      "provenance": "ai-agent1",
+      "id": "27bdda34c05a"
     },
     {
       "kind": "proposition",
@@ -470,7 +878,15 @@
         "section": "Roots of unity",
         "snippet": "the n th roots of unity lie on the unit circle"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Complex.isPrimitiveRoot_exp",
+        "module": "Mathlib.RingTheory.RootsOfUnity.Complex",
+        "match_kind": "invocation"
+      },
+      "note": "Roots of unity arise as `exp (2π i k / n)` via `Complex.isPrimitiveRoot_exp`; no specific 'regular polygon' lemma.",
+      "provenance": "ai-agent1",
+      "id": "c7711f9e9334"
     },
     {
       "kind": "definition",
@@ -479,7 +895,15 @@
         "section": "Roots of unity",
         "snippet": "it is called the principal primitive n th root of unity"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.isPrimitiveRoot_exp",
+        "module": "Mathlib.RingTheory.RootsOfUnity.Complex",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.isPrimitiveRoot_exp` shows `exp (2π i / n)` is a primitive root.",
+      "provenance": "ai-agent1",
+      "id": "275d1c1108a4"
     },
     {
       "kind": "definition",
@@ -488,7 +912,15 @@
         "section": "Complex exponentiation",
         "snippet": "the complex logarithm is used to define complex exponentiation"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.cpow_def",
+        "module": "Mathlib.Analysis.SpecialFunctions.Pow.Complex",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.cpow_def` defines `z^w = exp (log z * w)` (with special cases).",
+      "provenance": "ai-agent1",
+      "id": "da942a675d82"
     },
     {
       "kind": "definition",
@@ -497,7 +929,15 @@
         "section": "Principal value",
         "snippet": "The principal value of the complex logarithm is the unique continuous function"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.log",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Log",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.log` is Mathlib's principal-value complex logarithm.",
+      "provenance": "ai-agent1",
+      "id": "c35c6e77c76f"
     },
     {
       "kind": "definition",
@@ -506,7 +946,15 @@
         "section": "Principal value",
         "snippet": "is defined as"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.cpow",
+        "module": "Mathlib.Analysis.SpecialFunctions.Pow.Complex",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.cpow` is the principal-branch complex exponentiation.",
+      "provenance": "ai-agent1",
+      "id": "04b6affc266e"
     },
     {
       "kind": "proposition",
@@ -515,7 +963,15 @@
         "section": "Multivalued function",
         "snippet": "If"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib uses principal values; no multivalued branch enumeration.",
+      "provenance": "ai-agent1",
+      "id": "93a7085406d1"
     },
     {
       "kind": "proposition",
@@ -524,7 +980,15 @@
         "section": "Multivalued function",
         "snippet": "If"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No multivalued count lemma in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "a13de209f360"
     },
     {
       "kind": "proposition",
@@ -533,7 +997,15 @@
         "section": "Computation",
         "snippet": "The canonical form"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated 'canonical form' decomposition lemma.",
+      "provenance": "ai-agent1",
+      "id": "f8b36e19ad91"
     },
     {
       "kind": "example",
@@ -542,7 +1014,15 @@
         "section": "Computation",
         "snippet": "The polar form of i is"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific numerical example; not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "0c4f8e6abf41"
     },
     {
       "kind": "example",
@@ -551,7 +1031,15 @@
         "section": "Computation",
         "snippet": "the polar form of −2 is"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific numerical example; not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "a3e28737f8ee"
     },
     {
       "kind": "proposition",
@@ -560,7 +1048,15 @@
         "section": "Failure of power and logarithm identities",
         "snippet": "The identity log( b x ) = x ⋅ log b holds whenever b is a positive real number"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No 'failure' counterexample lemma in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "5e32e3e4bae0"
     },
     {
       "kind": "proposition",
@@ -569,7 +1065,15 @@
         "section": "Failure of power and logarithm identities",
         "snippet": "The identities ( bc ) x = b x c x and ( b / c ) x = b x / c x are valid"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Conditional cpow identities exist but the failure statement is not formalised.",
+      "provenance": "ai-agent1",
+      "id": "e1127501188f"
     },
     {
       "kind": "example",
@@ -578,7 +1082,15 @@
         "section": "Failure of power and logarithm identities",
         "snippet": "The identity ( e x ) y = e xy holds for real numbers x and y"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Clausen's paradox is not stated as a Mathlib lemma.",
+      "provenance": "ai-agent1",
+      "id": "d5a8f23a6c09"
     },
     {
       "kind": "proposition",
@@ -587,7 +1099,15 @@
         "section": "Irrationality and transcendence",
         "snippet": "If b is a positive real algebraic number , and x is a rational number, then b x is an algebraic number"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsAlgebraic.pow",
+        "module": "Mathlib.RingTheory.Algebraic.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`IsAlgebraic.pow` covers integer powers; the rational exponent case via nth roots is not given a single Mathlib lemma.",
+      "provenance": "ai-agent1",
+      "id": "131a33a7d52a"
     },
     {
       "kind": "theorem",
@@ -596,7 +1116,15 @@
         "section": "Irrationality and transcendence",
         "snippet": "Gelfond–Schneider theorem asserts that all values of b x are transcendental"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gelfond–Schneider is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "861e60503c08"
     },
     {
       "kind": "definition",
@@ -605,7 +1133,15 @@
         "section": "Integer powers in algebra",
         "snippet": "An algebraic structure consisting of a set together with an associative operation denoted multiplicatively"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Monoid.npow",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Monoid.npow` is monoid exponentiation.",
+      "provenance": "ai-agent1",
+      "id": "63e93d132c8f"
     },
     {
       "kind": "definition",
@@ -614,7 +1150,15 @@
         "section": "Integer powers in algebra",
         "snippet": "If n is a negative integer"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DivInvMonoid.zpow",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`DivInvMonoid.zpow` extends to negative integer exponents.",
+      "provenance": "ai-agent1",
+      "id": "ed7436404a32"
     },
     {
       "kind": "proposition",
@@ -623,7 +1167,15 @@
         "section": "Integer powers in algebra",
         "snippet": "Exponentiation with integer exponents obeys the following laws"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "zpow_add",
+        "module": "Mathlib.Algebra.Group.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Integer exponent laws are `zpow_add`, `zpow_mul`, `mul_zpow`, etc.",
+      "provenance": "ai-agent1",
+      "id": "d8b49b1bf4d2"
     },
     {
       "kind": "definition",
@@ -632,7 +1184,15 @@
         "section": "In a group",
         "snippet": "A multiplicative group is a set with as associative operation denoted as multiplication"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Group",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Group` is the standard Mathlib typeclass.",
+      "provenance": "ai-agent1",
+      "id": "6fb87de1c533"
     },
     {
       "kind": "proposition",
@@ -641,7 +1201,15 @@
         "section": "In a group",
         "snippet": "The set of all powers of an element of a group form a subgroup"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subgroup.zpowers",
+        "module": "Mathlib.Algebra.Group.Subgroup.ZPowers.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Subgroup.zpowers x` is the subgroup of integer powers of `x`.",
+      "provenance": "ai-agent1",
+      "id": "ecc4c1d516ec"
     },
     {
       "kind": "definition",
@@ -650,7 +1218,15 @@
         "section": "In a group",
         "snippet": "the cyclic group generated by x"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "orderOf",
+        "module": "Mathlib.GroupTheory.OrderOfElement",
+        "match_kind": "exact"
+      },
+      "note": "`Subgroup.zpowers x` is the cyclic subgroup; `orderOf x` its order.",
+      "provenance": "ai-agent1",
+      "id": "e0fae451354f"
     },
     {
       "kind": "proposition",
@@ -659,7 +1235,15 @@
         "section": "In a group",
         "snippet": "the order of an element in a finite group is always a divisor of the number of elements of the group"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "orderOf_dvd_card",
+        "module": "Mathlib.GroupTheory.OrderOfElement",
+        "match_kind": "exact"
+      },
+      "note": "`orderOf_dvd_card` proves `orderOf x ∣ Fintype.card G`.",
+      "provenance": "ai-agent1",
+      "id": "121e491b3ee5"
     },
     {
       "kind": "definition",
@@ -668,7 +1252,15 @@
         "section": "In a group",
         "snippet": "Superscript notation is also used for conjugation"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Commute.conj_pow",
+        "module": "Mathlib.Algebra.Group.Semiconj.Units",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has `conj_pow` lemmas but no `x^y` conjugation notation.",
+      "provenance": "ai-agent1",
+      "id": "0b9804e7e594"
     },
     {
       "kind": "definition",
@@ -677,7 +1269,15 @@
         "section": "In a ring",
         "snippet": "Such an element is said to be nilpotent"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsNilpotent",
+        "module": "Mathlib.RingTheory.Nilpotent.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsNilpotent` is Mathlib's nilpotency predicate.",
+      "provenance": "ai-agent1",
+      "id": "6d73a6b20198"
     },
     {
       "kind": "definition",
@@ -686,7 +1286,15 @@
         "section": "In a ring",
         "snippet": "the nilpotent elements form an ideal , called the nilradical of the ring"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "nilradical",
+        "module": "Mathlib.RingTheory.Nilpotent.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "`nilradical R` is the ideal of nilpotent elements.",
+      "provenance": "ai-agent1",
+      "id": "e04315eda29a"
     },
     {
       "kind": "definition",
@@ -695,7 +1303,15 @@
         "section": "In a ring",
         "snippet": "the commutative ring is said to be reduced"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsReduced",
+        "module": "Mathlib.RingTheory.Nilpotent.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsReduced R` formalises reduced rings.",
+      "provenance": "ai-agent1",
+      "id": "f0d32b658105"
     },
     {
       "kind": "definition",
@@ -704,7 +1320,15 @@
         "section": "In a ring",
         "snippet": "the set of the elements of R that have a power in I is an ideal, called the radical of I"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.radical",
+        "module": "Mathlib.RingTheory.Ideal.Operations",
+        "match_kind": "exact"
+      },
+      "note": "`Ideal.radical I` is the radical of an ideal.",
+      "provenance": "ai-agent1",
+      "id": "255a863b42c4"
     },
     {
       "kind": "theorem",
@@ -713,7 +1337,15 @@
         "section": "In a ring",
         "snippet": "an ideal is radical if and only if it is the set of all polynomials that are zero on an affine algebraic set"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MvPolynomial.vanishingIdeal_zeroLocus_eq_radical",
+        "module": "Mathlib.RingTheory.Nullstellensatz",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `Nullstellensatz` file proves the radical version.",
+      "provenance": "ai-agent1",
+      "id": "3a98c008d8ed"
     },
     {
       "kind": "definition",
@@ -722,7 +1354,15 @@
         "section": "Matrices and linear operators",
         "snippet": "the product of A with itself n times is called the matrix power"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.pow_eq",
+        "module": "Mathlib.LinearAlgebra.Matrix.ZPow",
+        "match_kind": "exact"
+      },
+      "note": "Square matrices form a monoid, so `A^n` is given by `Monoid.npow`; `Matrix.zpow` for integer exponents.",
+      "provenance": "ai-agent1",
+      "id": "7ea7c89cd85c"
     },
     {
       "kind": "example",
@@ -731,7 +1371,15 @@
         "section": "Matrices and linear operators",
         "snippet": "Matrix powers appear often in the context of discrete dynamical systems"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Illustrative example; no dedicated Mathlib decl.",
+      "provenance": "ai-agent1",
+      "id": "fc5215f2cc65"
     },
     {
       "kind": "definition",
@@ -740,7 +1388,15 @@
         "section": "Matrices and linear operators",
         "snippet": "The n th power of the differentiation operator is the n th derivative"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "iteratedDeriv",
+        "module": "Mathlib.Analysis.Calculus.IteratedDeriv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`iteratedDeriv n` is the nth iterate of the derivative operator.",
+      "provenance": "ai-agent1",
+      "id": "812519840561"
     },
     {
       "kind": "definition",
@@ -749,7 +1405,15 @@
         "section": "Finite fields",
         "snippet": "A field is an algebraic structure in which multiplication, addition, subtraction, and division are defined"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Field",
+        "module": "Mathlib.Algebra.Field.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Field` is the standard Mathlib typeclass.",
+      "provenance": "ai-agent1",
+      "id": "663863b85ba8"
     },
     {
       "kind": "definition",
@@ -758,7 +1422,15 @@
         "section": "Finite fields",
         "snippet": "A finite field is a field with a finite number of elements"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GaloisField",
+        "module": "Mathlib.FieldTheory.Finite.GaloisField",
+        "match_kind": "exact"
+      },
+      "note": "Finite fields are realised as `Field` with `Finite`; `GaloisField p n` is the canonical construction.",
+      "provenance": "ai-agent1",
+      "id": "1c7b933b7c9d"
     },
     {
       "kind": "definition",
@@ -767,7 +1439,15 @@
         "section": "Finite fields",
         "snippet": "A primitive element in"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "FiniteField.isCyclic",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib proves the unit group is cyclic, implying a primitive element exists; no `primitiveElement` decl specific to finite fields.",
+      "provenance": "ai-agent1",
+      "id": "ebe7f86da493"
     },
     {
       "kind": "proposition",
@@ -776,7 +1456,15 @@
         "section": "Finite fields",
         "snippet": "the freshman's dream identity"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "add_pow_char",
+        "module": "Mathlib.Algebra.CharP.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "`add_pow_char` proves `(x+y)^p = x^p + y^p` in characteristic p.",
+      "provenance": "ai-agent1",
+      "id": "c895bd5e8c5d"
     },
     {
       "kind": "definition",
@@ -785,7 +1473,15 @@
         "section": "Finite fields",
         "snippet": "is linear over"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "frobenius",
+        "module": "Mathlib.Algebra.CharP.Frobenius",
+        "match_kind": "exact"
+      },
+      "note": "`frobenius R p` is the Frobenius ring homomorphism.",
+      "provenance": "ai-agent1",
+      "id": "8ab3b2424c8d"
     },
     {
       "kind": "proposition",
@@ -794,7 +1490,15 @@
         "section": "Finite fields",
         "snippet": "the Galois group of"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "GaloisField",
+        "module": "Mathlib.FieldTheory.Finite.GaloisField",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib's `GaloisField` and Frobenius theory cover the structure but no single 'Gal = ⟨Frob⟩' decl was found.",
+      "provenance": "ai-agent1",
+      "id": "da5709b90598"
     },
     {
       "kind": "example",
@@ -803,7 +1507,15 @@
         "section": "Finite fields",
         "snippet": "The Diffie–Hellman key exchange is an application of exponentiation in finite fields"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cryptographic application; not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "eaf786b54934"
     },
     {
       "kind": "definition",
@@ -812,7 +1524,15 @@
         "section": "Powers of sets",
         "snippet": "The Cartesian product of two sets S and T is the set of the ordered pairs"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.prod",
+        "module": "Mathlib.Data.Set.Prod",
+        "match_kind": "exact"
+      },
+      "note": "`Set.prod` is the Cartesian product of sets.",
+      "provenance": "ai-agent1",
+      "id": "73324a9e370c"
     },
     {
       "kind": "definition",
@@ -821,7 +1541,15 @@
         "section": "Powers of sets",
         "snippet": "This allows defining the n th power"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Set.pi",
+        "module": "Mathlib.Data.Set.Prod",
+        "match_kind": "generalization"
+      },
+      "note": "Iterated Cartesian power is realised via `Fin n → S` or `Set.pi`, but there is no `Set.npow` decl.",
+      "provenance": "ai-agent1",
+      "id": "d8d72d0faa80"
     },
     {
       "kind": "definition",
@@ -830,7 +1558,15 @@
         "section": "Sets as exponents",
         "snippet": "the set of all functions from T to S is denoted"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Pi",
+        "module": "Mathlib.Init.Data.Pi",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib uses `T → S` (the Pi type) for function sets; cardinal exponentiation `#S ^ #T` matches by `Cardinal.power_def`.",
+      "provenance": "ai-agent1",
+      "id": "f04130b2e79b"
     },
     {
       "kind": "proposition",
@@ -839,7 +1575,15 @@
         "section": "Sets as exponents",
         "snippet": "This exponential notation is justified by the following canonical isomorphisms"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.curry",
+        "module": "Mathlib.Logic.Equiv.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv.curry` gives `(α × β → γ) ≃ (α → β → γ)`.",
+      "provenance": "ai-agent1",
+      "id": "89f1b147c81e"
     },
     {
       "kind": "definition",
@@ -848,7 +1592,15 @@
         "section": "Sets as exponents",
         "snippet": "denotes the power set of S"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.powerset",
+        "module": "Mathlib.Data.Set.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Set.powerset` and `Finset.powerset` realise `2^S`; cardinality via `Fintype.card_finset`.",
+      "provenance": "ai-agent1",
+      "id": "ae8144f3eaf6"
     },
     {
       "kind": "proposition",
@@ -857,7 +1609,15 @@
         "section": "Sets as exponents",
         "snippet": "This fits in with the exponentiation of cardinal numbers"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.power_def",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Cardinal.power_def` gives `#α ^ #β = #(β → α)`.",
+      "provenance": "ai-agent1",
+      "id": "407d38b8e371"
     },
     {
       "kind": "proposition",
@@ -866,7 +1626,15 @@
         "section": "In category theory",
         "snippet": "the functor \"exponentiation to the power T \" is a right adjoint to the functor \"direct product with T \""
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.exp.adjunction",
+        "module": "Mathlib.CategoryTheory.Closed.Cartesian",
+        "match_kind": "exact"
+      },
+      "note": "`CategoryTheory.exp.adjunction` is the prod ⊣ exp adjunction in Cartesian closed categories.",
+      "provenance": "ai-agent1",
+      "id": "6e223ae980ee"
     },
     {
       "kind": "definition",
@@ -875,7 +1643,15 @@
         "section": "In category theory",
         "snippet": "A category is called a Cartesian closed category"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.CartesianClosed",
+        "module": "Mathlib.CategoryTheory.Closed.Cartesian",
+        "match_kind": "exact"
+      },
+      "note": "`CartesianClosed` is Mathlib's typeclass for CCCs.",
+      "provenance": "ai-agent1",
+      "id": "ab285dea869e"
     },
     {
       "kind": "definition",
@@ -884,7 +1660,15 @@
         "section": "Repeated exponentiation",
         "snippet": "this operation is sometimes called hyper-4 or tetration"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "hyperoperation",
+        "module": "Mathlib.Data.Nat.Hyperoperation",
+        "match_kind": "exact"
+      },
+      "note": "`hyperoperation` defines the hyperoperation hierarchy with tetration at level 4.",
+      "provenance": "ai-agent1",
+      "id": "6f5e23b65631"
     },
     {
       "kind": "example",
@@ -893,7 +1677,15 @@
         "section": "Repeated exponentiation",
         "snippet": "Evaluated at (3, 3)"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific numerical evaluation example; not a Mathlib lemma.",
+      "provenance": "ai-agent1",
+      "id": "980feef191b5"
     },
     {
       "kind": "proposition",
@@ -902,7 +1694,15 @@
         "section": "Limits of powers",
         "snippet": "f has a limit at all accumulation points of D"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.continuousAt_rpow",
+        "module": "Mathlib.Analysis.SpecialFunctions.Pow.Continuity",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has continuity of `rpow` and various limit lemmas but no single 'limit existence on D' decl.",
+      "provenance": "ai-agent1",
+      "id": "6a4916316f68"
     },
     {
       "kind": "proposition",
@@ -911,7 +1711,15 @@
         "section": "Limits of powers",
         "snippet": "Under this definition by continuity, we obtain"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific boundary-value table is not packaged as a Mathlib lemma.",
+      "provenance": "ai-agent1",
+      "id": "e60897d8a7d4"
     },
     {
       "kind": "definition",
@@ -920,7 +1728,15 @@
         "section": "Iterated functions",
         "snippet": "Function composition is a binary operation that is defined on functions"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.comp",
+        "module": "Mathlib.Init.Function",
+        "match_kind": "exact"
+      },
+      "note": "`Function.comp` is composition; `∘` notation.",
+      "provenance": "ai-agent1",
+      "id": "e40a1132197c"
     },
     {
       "kind": "definition",
@@ -929,7 +1745,15 @@
         "section": "Iterated functions",
         "snippet": "this defines the n th power of the function under composition"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.iterate",
+        "module": "Mathlib.Logic.Function.Iterate",
+        "match_kind": "exact"
+      },
+      "note": "`Function.iterate f n` is the nth iterate `f^[n]`.",
+      "provenance": "ai-agent1",
+      "id": "88b65ca95d59"
     },
     {
       "kind": "definition",
@@ -938,6 +1762,126 @@
         "section": "Iterated functions",
         "snippet": "denotes always the inverse function"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Function.invFun",
+        "module": "Mathlib.Logic.Function.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Function.invFun` / `Equiv.symm` formalise the inverse-function notation.",
+      "provenance": "ai-agent1",
+      "id": "60a8795030a0"
+    },
+    {
+      "kind": "theorem",
+      "label": "Exponentiation by squaring",
+      "anchor": {
+        "section": "Efficient computation with integer exponents",
+        "snippet": "the number of multiplication operations required to compute b n can be reduced"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Monoid.npowRec",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's binary-power computation appears via `Monoid.npow` and instances using fast exponentiation; no dedicated `pow_by_squaring` theorem.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Right-associativity of serial exponentiation",
+      "anchor": {
+        "section": "Identities and properties",
+        "snippet": "the conventional order of operations for serial exponentiation in superscript notation is top-down"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Notational convention; not a Mathlib lemma.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Special limit defining e^x",
+      "anchor": {
+        "section": "Large exponents",
+        "snippet": "If the exponentiated number varies while tending to 1 as the exponent tends to infinity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.tendsto_one_plus_div_pow_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.Exp",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves `(1 + x/n)^n → exp x` as `n → ∞`.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Polar form product rule",
+      "anchor": {
+        "section": "n th roots of a complex number",
+        "snippet": "The polar form of the product of two complex numbers is obtained by multiplying the absolute values and adding the arguments"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.arg_mul",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Circle",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.arg_mul` and `map_mul` for `Complex.abs` give the polar product rule.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cyclic group of order n from element of order n",
+      "anchor": {
+        "section": "In a group",
+        "snippet": "If the order of x is n , then"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subgroup.zpowers_eq_zpowers",
+        "module": "Mathlib.GroupTheory.OrderOfElement",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib relates `orderOf x = n` to the finite cyclic subgroup generated by `x`.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of primitive elements is φ(q-1)",
+      "anchor": {
+        "section": "Finite fields",
+        "snippet": "There are"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.totient",
+        "module": "Mathlib.NumberTheory.ArithmeticFunction",
+        "match_kind": "invocation"
+      },
+      "note": "Count of generators of a cyclic group of order n is `Nat.totient n`; specialization to finite fields is via cyclicity of the unit group.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Currying isomorphism for direct sums vs products",
+      "anchor": {
+        "section": "Sets as exponents",
+        "snippet": "where"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.sumArrowEquivProdArrow",
+        "module": "Mathlib.Logic.Equiv.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv.sumArrowEquivProdArrow` gives `(α ⊕ β → γ) ≃ (α → γ) × (β → γ)`.",
       "provenance": "ai-agent1"
     }
   ]

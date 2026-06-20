@@ -1,0 +1,457 @@
+{
+  "slug": "Rational_function",
+  "wikipedia_title": "Rational function",
+  "display_title": "Rational function",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Rational function (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a rational function is any function that can be defined by a rational fraction"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RatFunc",
+        "module": "Mathlib.FieldTheory.RatFunc.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`RatFunc K` is Mathlib's `K(X)`, the field of rational fractions over a commutative ring/field K.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Field of rational functions",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The set of rational functions over a field K is a field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RatFunc.instField",
+        "module": "Mathlib.FieldTheory.RatFunc.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The `Field K⟮X⟯` instance over a domain is provided as `RatFunc.instField`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rational function",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "is called a rational function if it can be written in the form"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RatFunc.mk",
+        "module": "Mathlib.FieldTheory.RatFunc.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`RatFunc.mk p q` constructs the rational function p/q from polynomials p,q.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Domain of a rational function",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "The domain of"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "RatFunc.eval",
+        "module": "Mathlib.FieldTheory.RatFunc.AsPolynomial",
+        "match_kind": null
+      },
+      "note": "`RatFunc.eval` evaluates a rational function but its lemmas only require `denom ≠ 0`; the precise notion of domain-of-definition is not packaged as a definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equivalence of rational fractions",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "one can define a rational fraction as an equivalence class of fractions of polynomials"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RatFunc",
+        "module": "Mathlib.FieldTheory.RatFunc.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`RatFunc K` is literally a wrapper over `FractionRing K[X]`, the equivalence-class construction.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Proper rational function",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "A proper rational function is a rational function in which the degree of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No predicate for `deg num < deg denom` (proper rational function) is defined in Mathlib's RatFunc API.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complex rational function",
+      "anchor": {
+        "section": "Complex rational functions",
+        "snippet": "is the ratio of two polynomials with complex coefficients"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RatFunc",
+        "module": "Mathlib.FieldTheory.RatFunc.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Specializing `RatFunc K` to `K = ℂ` gives complex rational functions; there is no separately named declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Extension to the Riemann sphere",
+      "anchor": {
+        "section": "Complex rational functions",
+        "snippet": "Every rational function can be naturally extended to a function whose domain and range are the whole Riemann sphere"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Riemann sphere or canonical extension of rational functions to `OnePoint ℂ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Möbius transformation",
+      "anchor": {
+        "section": "Complex rational functions",
+        "snippet": "A complex rational function with degree one is a Möbius transformation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "OnePoint.instGLAction",
+        "module": "Mathlib.Topology.Compactification.OnePoint.ProjectiveLine",
+        "match_kind": null
+      },
+      "note": "The `GL(2,K)` action on `OnePoint K` is given by Möbius transformations, but no standalone `Mobius` declaration is defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Rational functions are meromorphic",
+      "anchor": {
+        "section": "Complex rational functions",
+        "snippet": "Rational functions are representative examples of meromorphic functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines `MeromorphicOn` and meromorphic order but does not link `RatFunc ℂ` to meromorphicity by a dedicated lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Degree of a rational function",
+      "anchor": {
+        "section": "Degree",
+        "snippet": "the degree of a rational function is the maximum of the degrees of its constituent polynomials"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "RatFunc.finrank_eq_max_natDegree",
+        "module": "Mathlib.FieldTheory.RatFunc.IntermediateField",
+        "match_kind": null
+      },
+      "note": "The quantity `max f.num.natDegree f.denom.natDegree` appears as the RHS of `finrank_eq_max_natDegree` but is not exposed as a named `degree` function on `RatFunc`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Degree of the graph of a rational function",
+      "anchor": {
+        "section": "Degree",
+        "snippet": "The degree of the graph of a rational function is not the degree as defined above"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of the degree of the graph (closure-in-product) of a rational function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Asymptotic degree",
+      "anchor": {
+        "section": "Degree",
+        "snippet": "the degree of a rational function is the difference between the degrees of the numerator and the denominator"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RatFunc.intDegree",
+        "module": "Mathlib.FieldTheory.RatFunc.Degree",
+        "match_kind": "exact"
+      },
+      "note": "`RatFunc.intDegree x = natDegree x.num - natDegree x.denom : ℤ` is exactly the asymptotic/difference degree.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Biquadratic function",
+      "anchor": {
+        "section": "Degree",
+        "snippet": "a rational function of degree two (that is, the ratio of two polynomials of degree at most two) is often called a biquadratic function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No biquadratic-function definition exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Rational function undefined at a point",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The rational function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific worked examples of rational functions undefined at a point are not formalized as named declarations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Real but not complex-defined",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is defined for all real numbers , but not for all complex numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This particular example (e.g. `1/(x²+1)`) is not a named Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Constant function as rational",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "A constant function such as"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RatFunc.algebraMap_eq_C",
+        "module": "Mathlib.FieldTheory.RatFunc.AsPolynomial",
+        "match_kind": "exact"
+      },
+      "note": "The algebra map `K → K⟮X⟯` equals `C`, embedding constants as rational functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Polynomials as rational functions",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Every polynomial function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RatFunc.coePolynomial",
+        "module": "Mathlib.FieldTheory.RatFunc.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`RatFunc.coePolynomial` (and `algebraMap K[X] K⟮X⟯`) embeds polynomials into the rational function field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Laurent polynomials as rational functions",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Every Laurent polynomial can be written as a rational function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No canonical algebra map / coercion `LaurentPolynomial R → RatFunc R` is provided in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Removable singularity",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "is equal to 1 for all x except 0, where there is a removable singularity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The worked example `x/x` with a removable singularity at 0 is not a named declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closure under sum, product, quotient",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The sum, product, or quotient (excepting division by the zero polynomial) of two rational functions is itself a rational function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RatFunc.instField",
+        "module": "Mathlib.FieldTheory.RatFunc.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The `Field K⟮X⟯` instance gives closure of `RatFunc K` under `+`, `*`, and `/` (with nonzero denominator).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Taylor coefficients satisfy linear recurrence",
+      "anchor": {
+        "section": "Taylor series",
+        "snippet": "The coefficients of a Taylor series of any rational function satisfy a linear recurrence relation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `LinearRecurrence` and `RatFunc` but does not connect Taylor/power-series coefficients of a rational function to a linear recurrence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linear recurrences determine rational functions",
+      "anchor": {
+        "section": "Taylor series",
+        "snippet": "any sequence that satisfies a linear recurrence determines a rational function when used as the coefficients of a Taylor series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The converse direction—linearly recurrent sequence yields a rational generating function—is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rational expression over a field",
+      "anchor": {
+        "section": "Abstract algebra",
+        "snippet": "a rational expression (also known as a rational fraction or, in algebraic geometry , a rational function ) is any element of the field of fractions of the polynomial ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RatFunc",
+        "module": "Mathlib.FieldTheory.RatFunc.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`RatFunc K` is defined to be `FractionRing K[X]` (wrapped), the field of fractions of the polynomial ring.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Unique lowest-terms representation",
+      "anchor": {
+        "section": "Abstract algebra",
+        "snippet": "there is a unique representation for any rational expression"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RatFunc.numDenom",
+        "module": "Mathlib.FieldTheory.RatFunc.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`RatFunc.numDenom` (together with `RatFunc.isCoprime_num_denom`) produces the canonical coprime/monic-denominator representative.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Field of rational expressions",
+      "anchor": {
+        "section": "Abstract algebra",
+        "snippet": "The field of rational expressions is denoted"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RatFunc.instField",
+        "module": "Mathlib.FieldTheory.RatFunc.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`K⟮X⟯ = RatFunc K` with `RatFunc.instField` is Mathlib's field of rational expressions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rational expressions in several indeterminates",
+      "anchor": {
+        "section": "Notion of a rational function on an algebraic variety",
+        "snippet": "rational expressions can also be generalized to"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MvRatFunc.rank_eq_max_lift",
+        "module": "Mathlib.FieldTheory.MvRatFunc.Rank",
+        "match_kind": null
+      },
+      "note": "Mathlib uses `FractionRing (MvPolynomial σ F)` (the `MvRatFunc` namespace) as the multivariate rational function field but does not provide a dedicated `MvRatFunc` definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Function field of an algebraic variety",
+      "anchor": {
+        "section": "Notion of a rational function on an algebraic variety",
+        "snippet": "the function field of an algebraic variety"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.Scheme.functionField",
+        "module": "Mathlib.AlgebraicGeometry.FunctionField",
+        "match_kind": "generalization"
+      },
+      "note": "`Scheme.functionField X` is the stalk at the generic point of an irreducible scheme, a field when `X` is integral.",
+      "provenance": "ai"
+    }
+  ]
+}

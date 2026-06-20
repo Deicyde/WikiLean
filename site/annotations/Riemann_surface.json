@@ -16,7 +16,7 @@
       "mathlib": {
         "decl": "IsManifold",
         "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
-        "match_kind": null
+        "match_kind": "generalization"
       },
       "note": "Mathlib has general complex manifolds via IsManifold over a ℂ-model, but no defined object 'Riemann surface' with the connected one-complex-dimensional restriction.",
       "provenance": "ai",
@@ -57,6 +57,22 @@
       "id": "959fcafd1dae"
     },
     {
+      "kind": "example",
+      "label": "Surfaces admitting / not admitting complex structures",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the sphere and torus admit complex structures but the Möbius strip"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib facts on which of S², T², Möbius strip, Klein bottle, ℝP² admit a complex (Riemann surface) structure.",
+      "provenance": "ai"
+    },
+    {
       "kind": "theorem",
       "label": "Compact Riemann surface is a complex algebraic curve",
       "anchor": {
@@ -84,7 +100,7 @@
       "mathlib": {
         "decl": "IsManifold",
         "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
-        "match_kind": null
+        "match_kind": "generalization"
       },
       "note": "Complex manifolds are modeled by IsManifold over a ℂ-model-with-corners, but the one-complex-dimensional 'Riemann surface' is not a defined notion.",
       "provenance": "ai",
@@ -118,7 +134,7 @@
       "mathlib": {
         "decl": "DifferentiableAt.conformalAt",
         "module": "Mathlib.Analysis.Complex.Conformal",
-        "match_kind": null
+        "match_kind": "special_case"
       },
       "note": "Mathlib proves a holomorphic map with nonvanishing derivative is conformal at a point, but not the manifold-level statement that a complex structure induces a conformal structure.",
       "provenance": "ai",
@@ -135,7 +151,7 @@
       "mathlib": {
         "decl": "instIsManifoldModelSpace",
         "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
-        "match_kind": null
+        "match_kind": "generalization"
       },
       "note": "ℂ carries the model-space complex manifold structure via instIsManifoldModelSpace, though it is not labeled a Riemann surface.",
       "provenance": "ai",
@@ -150,11 +166,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "TopologicalSpace.Opens.instIsManifold",
+        "decl": "TopologicalSpace.Opens.instIsManifoldSubtypeMem",
         "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
-        "match_kind": null
+        "match_kind": "generalization"
       },
-      "note": "Open subsets of a manifold (hence of ℂ) inherit a manifold structure, but not framed as Riemann surfaces.",
+      "note": "Open subsets of a manifold (hence of ℂ) inherit a manifold structure via Opens.instIsManifoldSubtypeMem, but not framed as Riemann surfaces.",
       "provenance": "ai",
       "id": "05b5d8d2a01d"
     },
@@ -167,11 +183,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "TopologicalSpace.Opens.instIsManifold",
+        "decl": "TopologicalSpace.Opens.instIsManifoldSubtypeMem",
         "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
-        "match_kind": null
+        "match_kind": "generalization"
       },
-      "note": "Mathlib's instance gives that any open subset (Opens M) of a manifold is again a manifold, generalizing the Riemann-surface case.",
+      "note": "Mathlib's Opens.instIsManifoldSubtypeMem gives that any open subset of a manifold is again a manifold, generalizing the Riemann-surface case.",
       "provenance": "ai",
       "id": "0b4918638420"
     },
@@ -191,6 +207,22 @@
       "note": "Mathlib has the one-point compactification/projective line topologically but no complex-manifold (Riemann sphere) structure on it.",
       "provenance": "ai",
       "id": "5387b6874c1f"
+    },
+    {
+      "kind": "example",
+      "label": "Riemann sphere as projective line",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The Riemann sphere has another description, as the projective line"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Projectivization",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the projective line ℙ¹(ℂ) as a set via Projectivization, but does not equip it with the Riemann sphere complex-manifold structure.",
+      "provenance": "ai"
     },
     {
       "kind": "example",
@@ -254,7 +286,7 @@
       "mathlib": {
         "decl": "WeierstrassCurve.IsElliptic",
         "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Weierstrass",
-        "match_kind": null
+        "match_kind": "generalization"
       },
       "note": "Mathlib defines elliptic curves algebraically as Weierstrass curves (IsElliptic), but does not formalize the analytic-curve to algebraic-curve identification.",
       "provenance": "ai",
@@ -287,8 +319,8 @@
       "status": "partial",
       "mathlib": {
         "decl": "MDifferentiable",
-        "module": "Mathlib.Geometry.Manifold.MFDeriv.Basic",
-        "match_kind": null
+        "module": "Mathlib.Geometry.Manifold.MFDeriv.Defs",
+        "match_kind": "generalization"
       },
       "note": "Holomorphic maps between complex manifolds are captured by MDifferentiable over ℂ, but not specialized/named for Riemann surfaces.",
       "provenance": "ai",
@@ -322,7 +354,7 @@
       "mathlib": {
         "decl": "Diffeomorph",
         "module": "Mathlib.Geometry.Manifold.Diffeomorph",
-        "match_kind": null
+        "match_kind": "generalization"
       },
       "note": "Mathlib has Diffeomorph (differentiable equivalences of manifolds), which over ℂ gives biholomorphisms, but no dedicated biholomorphism/conformal-equivalence definition.",
       "provenance": "ai",
@@ -344,6 +376,22 @@
       "note": "Mathlib has linear-algebra orientations but no notion of orientability of a manifold, so this statement is not formalized.",
       "provenance": "ai",
       "id": "afcd63e9b64c"
+    },
+    {
+      "kind": "proposition",
+      "label": "Jacobian determinant of complex multiplication is |a|²",
+      "anchor": {
+        "section": "Orientability",
+        "snippet": "the real determinant of multiplication by a complex number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Could not locate a Mathlib lemma stating the real determinant of multiplication by a complex scalar equals |a|² (the cited Complex.det_conformalLinearMap does not exist).",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -449,6 +497,22 @@
     },
     {
       "kind": "theorem",
+      "label": "Kodaira embedding for compact Riemann surfaces",
+      "anchor": {
+        "section": "Algebraicity",
+        "snippet": "This follows from the Kodaira embedding theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Kodaira embedding theorem and positive line bundles on complex curves are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
       "label": "Compact Riemann surface is a projective variety",
       "anchor": {
         "section": "Analytic vs. algebraic",
@@ -492,7 +556,7 @@
       "mathlib": {
         "decl": "PeriodPair.derivWeierstrassP_sq",
         "module": "Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass",
-        "match_kind": null
+        "match_kind": "special_case"
       },
       "note": "Mathlib defines the Weierstrass ℘-function on a period lattice and proves ℘'² = 4℘³ − g₂℘ − g₃, but does not assemble the torus into an elliptic-curve Riemann surface.",
       "provenance": "ai",
@@ -601,6 +665,22 @@
       "id": "e0b2d287fec8"
     },
     {
+      "kind": "definition",
+      "label": "Teichmüller space and moduli (parabolic)",
+      "anchor": {
+        "section": "Parabolic Riemann surfaces",
+        "snippet": "gives the Teichmüller space of \"marked\" Riemann surfaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Teichmüller space, the mapping class group action, and the resulting modular curve are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
       "kind": "proposition",
       "label": "Hyperbolic surface as quotient by Fuchsian group",
       "anchor": {
@@ -679,7 +759,7 @@
       "mathlib": {
         "decl": "Differentiable.apply_eq_apply_of_bounded",
         "module": "Mathlib.Analysis.Complex.Liouville",
-        "match_kind": null
+        "match_kind": "special_case"
       },
       "note": "Liouville's theorem (bounded entire functions are constant) is formalized, but Little Picard's theorem and the manifold framing are not.",
       "provenance": "ai",
@@ -735,6 +815,22 @@
       "note": "Ramified covering structure of non-constant holomorphic maps is not formalized.",
       "provenance": "ai",
       "id": "6dc1fdde1416"
+    },
+    {
+      "kind": "theorem",
+      "label": "Riemann–Hurwitz formula",
+      "anchor": {
+        "section": "Ramified covering spaces",
+        "snippet": "constrained by the Riemann–Hurwitz formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Riemann–Hurwitz formula relating Euler characteristics of a ramified cover is not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "example",
@@ -839,6 +935,22 @@
       "id": "53b484156fbe"
     },
     {
+      "kind": "proposition",
+      "label": "Simple group of order 168 is second-smallest non-abelian simple",
+      "anchor": {
+        "section": "Isometries of Riemann surfaces",
+        "snippet": "the unique simple group of order 168, which is the second-smallest non-abelian simple group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Uniqueness/identification of PSL(2,7) ≅ GL(3,2) as the simple group of order 168 is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
       "kind": "example",
       "label": "Genus 4 Bring's surface",
       "anchor": {
@@ -922,6 +1034,38 @@
       "note": "The differing classifications of the unit disk are not formalized.",
       "provenance": "ai",
       "id": "f1f7cfda7972"
+    },
+    {
+      "kind": "theorem",
+      "label": "Riemann–Roch theorem (listed)",
+      "anchor": {
+        "section": "Theorems regarding Riemann surfaces",
+        "snippet": "Riemann–Roch theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Riemann–Roch theorem for compact Riemann surfaces is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Identity theorem for Riemann surfaces (listed)",
+      "anchor": {
+        "section": "Theorems regarding Riemann surfaces",
+        "snippet": "Identity theorem for Riemann surfaces"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AnalyticOnNhd.eqOn_of_preconnected_of_eventuallyEq",
+        "module": "Mathlib.Analysis.Analytic.Uniqueness",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the identity theorem for analytic functions on a connected open subset, but not stated at the level of Riemann surfaces.",
+      "provenance": "ai"
     }
   ]
 }

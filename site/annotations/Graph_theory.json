@@ -33,9 +33,9 @@
       "mathlib": {
         "decl": "SimpleGraph",
         "module": "Mathlib.Combinatorics.SimpleGraph.Basic",
-        "match_kind": null
+        "match_kind": "exact"
       },
-      "note": "Undirected graphs are formalized as SimpleGraph (simple) and Graph (general multigraph in Mathlib.Combinatorics.Graph.Basic).",
+      "note": "Undirected simple graphs are formalized as SimpleGraph; general multigraphs as Graph in Mathlib.Combinatorics.Graph.Basic.",
       "provenance": "ai",
       "id": "4f2378b011ef"
     },
@@ -52,7 +52,7 @@
         "module": "Mathlib.Combinatorics.Quiver.Basic",
         "match_kind": "generalization"
       },
-      "note": "Quiver formalizes directed graphs (as a directed multigraph, generalizing simple digraphs).",
+      "note": "Quiver formalizes directed (multi)graphs, generalizing simple digraphs.",
       "provenance": "ai",
       "id": "7f720204ad7d"
     },
@@ -86,7 +86,7 @@
         "module": "Mathlib.Combinatorics.Graph.Basic",
         "match_kind": "exact"
       },
-      "note": "Graph α β models multigraphs with vertex/edge sets and incidence data allowing parallel edges and loops.",
+      "note": "Graph α β models multigraphs with parallel edges and loops via incidence data.",
       "provenance": "ai",
       "id": "130fe0299f11"
     },
@@ -106,6 +106,38 @@
       "note": "No edge-weighted graph structure is defined in Mathlib.",
       "provenance": "ai",
       "id": "07f542ba9738"
+    },
+    {
+      "kind": "definition",
+      "label": "Seven Bridges of Königsberg",
+      "anchor": {
+        "section": "History",
+        "snippet": "Solutio Problematis ad Geometriam Situs Pertinentis on the Seven Bridges of Königsberg"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Königsberg bridge problem and Eulerian path/circuit theory are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler's polyhedron formula",
+      "anchor": {
+        "section": "History",
+        "snippet": "Euler's characteristic relating the number of edges, vertices, and faces of a convex polyhedron"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Euler's formula V − E + F = 2 for convex polyhedra is not formalized as a graph-theoretic statement in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -236,10 +268,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "SimpleGraph.Coloring",
-        "module": "Mathlib.Combinatorics.SimpleGraph.Coloring.VertexColoring",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Coloring.Vertex",
         "match_kind": "exact"
       },
-      "note": "Proper vertex colorings are formalized as SimpleGraph.Coloring with Colorable and chromaticNumber.",
+      "note": "Proper vertex colorings are formalized as SimpleGraph.Coloring with associated Colorable and chromaticNumber.",
       "provenance": "ai",
       "id": "4643bb1fdce2"
     },
@@ -256,9 +288,25 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The four-color theorem is not formalized in Mathlib (it requires planarity).",
+      "note": "The four-color theorem is not formalized in Mathlib (no planarity).",
       "provenance": "ai",
       "id": "c71be2aa0255"
+    },
+    {
+      "kind": "theorem",
+      "label": "Five-color theorem",
+      "anchor": {
+        "section": "Topological graph theory",
+        "snippet": "This theorem is stronger than five-color theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The five-color theorem (every planar graph is 5-colorable) is not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -307,7 +355,7 @@
         "module": "Mathlib.Combinatorics.SimpleGraph.LapMatrix",
         "match_kind": null
       },
-      "note": "Adjacency/Laplacian matrices and some spectral results (positive semidefiniteness, connected-component kernel dimension) are formalized, but not a general spectral theory.",
+      "note": "Adjacency/Laplacian matrices and some spectral results exist, but not a general spectral theory.",
       "provenance": "ai",
       "id": "51b6f2ea6871"
     },
@@ -375,7 +423,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The Tutte polynomial is absent (the file Tutte.lean concerns Tutte's matching theorem, not the polynomial).",
+      "note": "The Tutte polynomial is absent from Mathlib (the existing Tutte material concerns Tutte's matching theorem).",
       "provenance": "ai",
       "id": "0ae150459db7"
     },
@@ -446,6 +494,22 @@
       "note": "Euclidean (geometrically embedded weighted) graphs are not defined in Mathlib.",
       "provenance": "ai",
       "id": "0e8ca3e8acf6"
+    },
+    {
+      "kind": "definition",
+      "label": "Hadwiger–Nelson problem",
+      "anchor": {
+        "section": "Geometric graph theory",
+        "snippet": "Hadwiger–Nelson problem on asking for the minimum number of coloring plane such that no two points at a unit distance from each other have the same color"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The chromatic number of the plane (Hadwiger–Nelson) is not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -545,7 +609,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Unit disk graphs are not defined (Mathlib's UnitDistance graphs are a different family).",
+      "note": "Unit disk graphs are not defined in Mathlib (UnitDistance graphs are a different family).",
       "provenance": "ai",
       "id": "80e97e4010ec"
     },
@@ -681,7 +745,7 @@
         "module": "Mathlib.Combinatorics.SimpleGraph.Extremal.Turan",
         "match_kind": "exact"
       },
-      "note": "Turán's theorem is formalized in full as an isomorphism characterization of extremal Kr+1-free graphs.",
+      "note": "Turán's theorem is formalized as an isomorphism characterization of extremal Kr+1-free graphs.",
       "provenance": "ai",
       "id": "3ec185ee2226"
     },
@@ -737,6 +801,22 @@
       "id": "5140a3de2bfc"
     },
     {
+      "kind": "definition",
+      "label": "Graph homomorphism",
+      "anchor": {
+        "section": "Extremal graph theory",
+        "snippet": "a function between the vertex sets of two graphs that maps adjacent vertices to adjacent vertices"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.Hom",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Maps",
+        "match_kind": "exact"
+      },
+      "note": "Graph homomorphisms are formalized as SimpleGraph.Hom, preserving adjacency.",
+      "provenance": "ai"
+    },
+    {
       "kind": "theorem",
       "label": "Szemerédi's regularity lemma",
       "anchor": {
@@ -745,11 +825,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "SimpleGraph.szemeredi_regularity",
+        "decl": "szemeredi_regularity",
         "module": "Mathlib.Combinatorics.SimpleGraph.Regularity.Lemma",
         "match_kind": "exact"
       },
-      "note": "Szemerédi's regularity lemma is formalized as szemeredi_regularity giving an ε-uniform equipartition.",
+      "note": "Szemerédi's regularity lemma is formalized as szemeredi_regularity giving an ε-uniform equipartition of bounded size.",
       "provenance": "ai",
       "id": "9d1ddc4ac479"
     },
@@ -817,7 +897,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Uniform spanning trees (and spanning trees as a counted object) are not formalized in Mathlib.",
+      "note": "Uniform spanning trees are not formalized in Mathlib.",
       "provenance": "ai",
       "id": "3ba17df2bb3a"
     },
@@ -1106,7 +1186,7 @@
         "module": "Mathlib.Combinatorics.SimpleGraph.LapMatrix",
         "match_kind": "exact"
       },
-      "note": "The Laplacian is formalized as SimpleGraph.lapMatrix = degMatrix - adjMatrix.",
+      "note": "The Laplacian is formalized as SimpleGraph.lapMatrix = degMatrix − adjMatrix.",
       "provenance": "ai",
       "id": "2ef0353d06c3"
     },
@@ -1332,6 +1412,70 @@
       "id": "30be5f11a4e1"
     },
     {
+      "kind": "theorem",
+      "label": "Erdős–Faber–Lovász conjecture",
+      "anchor": {
+        "section": "Graph coloring",
+        "snippet": "Erdős–Faber–Lovász conjecture"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Erdős–Faber–Lovász conjecture is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Total coloring conjecture",
+      "anchor": {
+        "section": "Graph coloring",
+        "snippet": "Total coloring conjecture , also called Behzad 's conjecture (unsolved)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Total colorings and Behzad's conjecture are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "List coloring conjecture",
+      "anchor": {
+        "section": "Graph coloring",
+        "snippet": "List coloring conjecture (unsolved)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "List colorings and the list coloring conjecture are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hadwiger conjecture",
+      "anchor": {
+        "section": "Graph coloring",
+        "snippet": "Hadwiger conjecture (graph theory) (unsolved)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hadwiger conjecture relating chromatic number to clique minors is not in Mathlib (no minors).",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Graph unification",
       "anchor": {
@@ -1347,6 +1491,70 @@
       "note": "Graph subsumption/unification (from term-graph logic) is not formalized in Mathlib.",
       "provenance": "ai",
       "id": "b6790c1fad87"
+    },
+    {
+      "kind": "definition",
+      "label": "Hamiltonian path problem",
+      "anchor": {
+        "section": "Route problems",
+        "snippet": "Hamiltonian path problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hamiltonian paths/cycles and the decision problem are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Minimum spanning tree",
+      "anchor": {
+        "section": "Route problems",
+        "snippet": "Minimum spanning tree"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Spanning trees and the minimum spanning tree problem are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Shortest path problem",
+      "anchor": {
+        "section": "Route problems",
+        "snippet": "Shortest path problem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SimpleGraph.dist",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Metric",
+        "match_kind": null
+      },
+      "note": "Graph distance SimpleGraph.dist exists for unweighted graphs, but no shortest-path algorithm or weighted version is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Traveling salesman problem",
+      "anchor": {
+        "section": "Route problems",
+        "snippet": "Traveling salesman problem (NP-hard)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The TSP is not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",

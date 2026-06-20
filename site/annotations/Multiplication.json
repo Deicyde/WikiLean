@@ -238,6 +238,22 @@
     },
     {
       "kind": "proposition",
+      "label": "Imaginary unit squared",
+      "anchor": {
+        "section": "Product of two complex numbers",
+        "snippet": "the distributive law and the fact that"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.I_sq",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.I_sq : Complex.I ^ 2 = -1` encodes the i² = −1 identity used in deriving the product formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
       "label": "Geometric meaning of complex multiplication",
       "anchor": {
         "section": "Product of two complex numbers",
@@ -654,7 +670,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "mul_lt_mul_of_pos_left",
-        "module": "Mathlib.Algebra.Order.GroupWithZero.Unbundled.Defs",
+        "module": "Mathlib.Algebra.Order.GroupWithZero.Defs",
         "match_kind": "exact"
       },
       "note": "`mul_lt_mul_of_pos_left : b < c → 0 < a → a*b < a*c` (and the ≤ version) preserve order under a positive factor.",
@@ -704,7 +720,7 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Matrix.instMul",
+        "decl": "Matrix.instMulOfFintypeOfAddCommMonoid",
         "module": "Mathlib.Data.Matrix.Mul",
         "match_kind": null
       },

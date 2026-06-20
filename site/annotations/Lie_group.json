@@ -54,16 +54,6 @@
       },
       "note": "`Matrix.GeneralLinearGroup n R` (notation `GL n R`) defines the group of invertible matrices for any `n` and ring `R`, of which GL(2,ℝ) is an instance.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "First examples",
-          "snippet": "The 2×2 real invertible matrices form a group under multiplication, called general linear group of degree 2"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\operatorname {GL} (2,\\mathbb {R} )=\\left\\{A={\\begin{pmatrix}a&amp;b\\\\c&amp;d\\end{pmatrix}}:\\det A=ad-bc\\neq 0\\right\\}.}"
-        }
-      ],
       "id": "23b7dd17b9bd"
     },
     {
@@ -79,18 +69,8 @@
         "module": "Mathlib.LinearAlgebra.UnitaryGroup",
         "match_kind": "generalization"
       },
-      "note": "`Matrix.specialOrthogonalGroup n R` is defined, with a specialization `mem_specialOrthogonalGroup_fin_two_iff` for SO(2).",
+      "note": "`Matrix.specialOrthogonalGroup n R` is defined, with a specialization `Matrix.mem_specialOrthogonalGroup_fin_two_iff` for SO(2).",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "First examples",
-          "snippet": "The rotation matrices form a subgroup"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\operatorname {SO} (2,\\mathbb {R} )=\\left\\{{\\begin{pmatrix}\\cos \\varphi &amp;-\\sin \\varphi \\\\\\sin \\varphi &amp;\\cos \\varphi \\end{pmatrix}}:\\varphi \\in \\mathbb {R} \\ /\\ 2\\pi \\mathbb {Z} \\right\\}.}"
-        }
-      ],
       "id": "5f9145aaafff"
     },
     {
@@ -108,16 +88,6 @@
       },
       "note": "No `AffineGroup` definition was found in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "First examples",
-          "snippet": "The affine group of one dimension is a two-dimensional matrix Lie group"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle A=\\left({\\begin{array}{cc}a&amp;b\\\\0&amp;1\\end{array}}\\right),\\quad a&gt;0,\\,b\\in \\mathbb {R} .}"
-        }
-      ],
       "id": "f5b84e22c644"
     },
     {
@@ -589,10 +559,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "NormedSpace.exp",
-        "module": "Mathlib.Analysis.Normed.Algebra.MatrixExponential",
+        "module": "Mathlib.Analysis.Normed.Algebra.Exponential",
         "match_kind": "invocation"
       },
-      "note": "The matrix exponential is `NormedSpace.exp` applied to matrices, with dedicated lemmas like `Matrix.exp_add_of_commute`.",
+      "note": "The matrix exponential is `NormedSpace.exp` applied to matrices, with dedicated lemmas like `Matrix.exp_add_of_commute` in `Mathlib.Analysis.Normed.Algebra.MatrixExponential`.",
       "provenance": "ai",
       "id": "099fc3616837"
     },
@@ -816,6 +786,102 @@
       "note": "The statement that every Lie group is parallelizable (trivial tangent bundle) is not formalized.",
       "provenance": "ai",
       "id": "ef3d3da9d7e7"
+    },
+    {
+      "kind": "proposition",
+      "label": "Universal cover of a connected Lie group is a Lie group",
+      "anchor": {
+        "section": "Constructions",
+        "snippet": "The universal cover of a connected Lie group is a Lie group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the universal cover of a Lie group equipped with a compatible Lie group structure was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quotient of a Lie group by a closed normal subgroup is a Lie group",
+      "anchor": {
+        "section": "Constructions",
+        "snippet": "The quotient of a Lie group by a closed normal subgroup is a Lie group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the Lie group structure on the quotient by a closed normal subgroup was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lie bracket of GL(n,C) is the matrix commutator",
+      "anchor": {
+        "section": "The Lie algebra associated with a Lie group",
+        "snippet": "The Lie algebra of the general linear group GL( n , C ) of invertible matrices is the vector space M( n , C ) of square matrices with the Lie bracket given by [ A , B ] = AB − BA"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieRing.ofAssociativeRing",
+        "module": "Mathlib.Algebra.Lie.OfAssociative",
+        "match_kind": "generalization"
+      },
+      "note": "Square matrices inherit the commutator Lie bracket via `LieRing.ofAssociativeRing` applied to the matrix associative ring (see `Mathlib.Algebra.Lie.Matrix`, where the instance is enabled).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "SO(3) is not simply connected",
+      "anchor": {
+        "section": "Simply connected Lie groups",
+        "snippet": "The rotation group SO(3) , on the other hand, is not simply connected"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The non-simply-connectedness of SO(3) (π₁(SO(3)) ≅ ℤ/2) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Identity component is an open normal subgroup with discrete quotient",
+      "anchor": {
+        "section": "Classification",
+        "snippet": "The identity component of any Lie group is an open normal subgroup , and the quotient group is a discrete group"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Subgroup.connectedComponentOfOne",
+        "module": "Mathlib.Topology.Algebra.Group.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the identity component of a topological group as an open normal subgroup in general; the Lie-specific statement about discreteness of the quotient follows but is not stated as a Lie group result.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Diffeomorphism group acts transitively on a Lie group",
+      "anchor": {
+        "section": "Classification",
+        "snippet": "The diffeomorphism group of a Lie group acts transitively on the Lie group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transitivity of the diffeomorphism group action on a Lie group is not formalized.",
+      "provenance": "ai"
     }
   ]
 }

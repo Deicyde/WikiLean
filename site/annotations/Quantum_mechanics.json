@@ -35,7 +35,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No Heisenberg uncertainty relation exists in Mathlib (a grep for 'uncertainty' returns nothing).",
+      "note": "No Heisenberg uncertainty relation appears in Mathlib.",
       "provenance": "ai",
       "id": "059886c2a444"
     },
@@ -151,10 +151,10 @@
       "status": "partial",
       "mathlib": {
         "decl": "InnerProductSpace",
-        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
-        "match_kind": null
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "generalization"
       },
-      "note": "Mathlib has complex inner product spaces (and completeness for Hilbert spaces) but not the quantum 'state vector' notion specifically.",
+      "note": "Mathlib has complex inner product spaces (and Hilbert-space completeness) but not the quantum 'state vector' notion per se.",
       "provenance": "ai",
       "id": "4914e8144485"
     },
@@ -169,9 +169,9 @@
       "mathlib": {
         "decl": "IsSelfAdjoint",
         "module": "Mathlib.Algebra.Star.SelfAdjoint",
-        "match_kind": null
+        "match_kind": "generalization"
       },
-      "note": "Mathlib formalizes self-adjoint/Hermitian operators (IsSelfAdjoint, LinearMap.IsSymmetric) but not their physical role as observables.",
+      "note": "Self-adjoint/Hermitian operators are formalized (IsSelfAdjoint, LinearMap.IsSymmetric) but not labelled as observables.",
       "provenance": "ai",
       "id": "bf9623d89fd2"
     },
@@ -186,9 +186,9 @@
       "mathlib": {
         "decl": "Module.End.HasEigenvector",
         "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
-        "match_kind": null
+        "match_kind": "generalization"
       },
-      "note": "Eigenvectors/eigenvalues of operators are fully formalized; 'eigenstate' is the physics application of this.",
+      "note": "Eigenvectors/eigenvalues of operators are fully formalized; 'eigenstate' is the physics application.",
       "provenance": "ai",
       "id": "6a7108d1504e"
     },
@@ -205,7 +205,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Superposition is interpreted as a linear combination in a vector space; there is no specific Mathlib decl for it.",
+      "note": "Superposition is a linear combination in a vector space; there is no specific Mathlib decl for the QM notion.",
       "provenance": "ai",
       "id": "29618ef7e65e"
     },
@@ -281,9 +281,9 @@
       "mathlib": {
         "decl": "unitary",
         "module": "Mathlib.Algebra.Star.Unitary",
-        "match_kind": null
+        "match_kind": "generalization"
       },
-      "note": "Unitary elements/groups are formalized, but the time-evolution operator and Stone's theorem are not present.",
+      "note": "Unitary elements/groups are formalized, but the time-evolution operator e^{-iHt/ℏ} and Stone's theorem are not.",
       "provenance": "ai",
       "anchors": [
         {
@@ -386,7 +386,7 @@
       "mathlib": {
         "decl": "LieRing.of_associative_ring_bracket",
         "module": "Mathlib.Algebra.Lie.OfAssociative",
-        "match_kind": null
+        "match_kind": "generalization"
       },
       "note": "Mathlib has the ring commutator ⁅a,b⁆ = a*b - b*a but not the specific canonical commutation relation [x,p]=iℏ.",
       "provenance": "ai",
@@ -433,9 +433,9 @@
       "mathlib": {
         "decl": "norm_inner_le_norm",
         "module": "Mathlib.Analysis.InnerProductSpace.Basic",
-        "match_kind": null
+        "match_kind": "generalization"
       },
-      "note": "The Cauchy–Schwarz inequality underlying the Robertson uncertainty relation is in Mathlib, but the uncertainty principle itself is not formalized.",
+      "note": "Cauchy–Schwarz (the underlying Robertson uncertainty ingredient) is in Mathlib, but the uncertainty principle itself is not formalized.",
       "provenance": "ai",
       "anchors": [
         {
@@ -480,9 +480,9 @@
       "mathlib": {
         "decl": "norm_inner_le_norm",
         "module": "Mathlib.Analysis.InnerProductSpace.Basic",
-        "match_kind": null
+        "match_kind": "generalization"
       },
-      "note": "Cauchy–Schwarz (the key ingredient) is formalized, but the Robertson–Schrödinger relation for self-adjoint operators is not.",
+      "note": "Cauchy–Schwarz is formalized, but the Robertson–Schrödinger relation for self-adjoint operators is not.",
       "provenance": "ai",
       "anchors": [
         {
@@ -527,7 +527,7 @@
       "mathlib": {
         "decl": "VectorFourier.fourierIntegral",
         "module": "Mathlib.Analysis.Fourier.FourierTransform",
-        "match_kind": null
+        "match_kind": "generalization"
       },
       "note": "The Fourier transform is fully formalized, but its identification with the position/momentum operator pair is not.",
       "provenance": "ai",
@@ -543,10 +543,10 @@
       "status": "partial",
       "mathlib": {
         "decl": "TensorProduct",
-        "module": "Mathlib.LinearAlgebra.TensorProduct.Basic",
-        "match_kind": null
+        "module": "Mathlib.LinearAlgebra.TensorProduct.Defs",
+        "match_kind": "generalization"
       },
-      "note": "Mathlib has the algebraic tensor product of modules but not the completed Hilbert-space tensor product used for composite quantum systems.",
+      "note": "Mathlib has the algebraic tensor product of modules but not the completed Hilbert-space tensor product needed for composite quantum systems.",
       "provenance": "ai",
       "anchors": [
         {
@@ -578,10 +578,10 @@
       "status": "partial",
       "mathlib": {
         "decl": "TensorProduct.tmul",
-        "module": "Mathlib.LinearAlgebra.TensorProduct.Basic",
-        "match_kind": null
+        "module": "Mathlib.LinearAlgebra.TensorProduct.Defs",
+        "match_kind": "generalization"
       },
-      "note": "Pure tensors (⊗ₜ) formalize the algebraic product state, but the quantum composite-state interpretation is not present.",
+      "note": "Pure tensors (⊗ₜ) realize the algebraic product state, but the QM composite-state interpretation is not present.",
       "provenance": "ai",
       "anchors": [
         {
@@ -651,7 +651,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Density matrices and partial trace are not formalized in Mathlib (no matches found).",
+      "note": "Density matrices and partial trace are not formalized in Mathlib.",
       "provenance": "ai",
       "id": "0589d702b56b"
     },
@@ -770,7 +770,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has no Noether's theorem (all 'Noether' hits are Noetherian rings/spaces).",
+      "note": "Mathlib has no Noether's theorem (all 'Noether' hits refer to Noetherian rings/spaces).",
       "provenance": "ai",
       "id": "aa95c42d5b9f"
     },
@@ -849,7 +849,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib formalizes Gaussian functions/measures but not the QM Gaussian wave packet as a state.",
+      "note": "Mathlib has Gaussian functions/measures but not the QM Gaussian wave packet as a state.",
       "provenance": "ai",
       "anchors": [
         {
@@ -1059,7 +1059,7 @@
       "mathlib": {
         "decl": "Polynomial.hermite",
         "module": "Mathlib.RingTheory.Polynomial.Hermite.Basic",
-        "match_kind": null
+        "match_kind": "generalization"
       },
       "note": "Hermite polynomials (and their Gaussian-weight relations) are formalized, but the oscillator eigenstates and energy levels E_n=ℏω(n+½) are not.",
       "provenance": "ai",
@@ -1086,6 +1086,22 @@
         }
       ],
       "id": "245246bdc496"
+    },
+    {
+      "kind": "definition",
+      "label": "Hermite polynomials (Rodrigues formula)",
+      "anchor": {
+        "section": "Harmonic oscillator",
+        "snippet": "and the corresponding energy levels are"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Polynomial.hermite",
+        "module": "Mathlib.RingTheory.Polynomial.Hermite.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes Hermite polynomials (probabilists' convention) and the analogous Rodrigues-type identity hermite_eq_deriv_gaussian; the physicists' form with weight e^{-x²} is not directly stated.",
+      "provenance": "ai"
     },
     {
       "kind": "example",
@@ -1160,7 +1176,7 @@
         },
         {
           "type": "math_alttext",
-          "value": "{\\displaystyle BPB\\psi _{l}=ie^{i\\Delta \\Phi /2}{\\begin{pmatrix}-\\sin(\\Delta \\Phi /2)\\\\\\cos(\\Delta \\Phi /2)\\end{pmatrix}},}"
+          "value": "{\\displaystyle BPB\\psi _{l}=ie^{i\\Delta \\Phi /2}{\\begin{pmatrix}-\\sin(\\Delta \\Phi /2)\\\\\\cos(\\Delta \\Phi /2)\\end{pmatrix}},"
         },
         {
           "type": "math_alttext",
@@ -1330,11 +1346,59 @@
       "mathlib": {
         "decl": "MeasureTheory.MemLp",
         "module": "Mathlib.MeasureTheory.Function.LpSeminorm.Defs",
-        "match_kind": null
+        "match_kind": "generalization"
       },
       "note": "Square-integrability (L²/MemLp) is fully formalized, but the specific claim that momentum eigenstates fail it is not stated in Mathlib.",
       "provenance": "ai",
       "id": "0e847e7c2487"
+    },
+    {
+      "kind": "definition",
+      "label": "Complex projective space of states",
+      "anchor": {
+        "section": "Mathematical formulation",
+        "snippet": "the possible states are points in the projective space of a Hilbert space, usually called the complex projective space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Projectivization",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The projectivization of a vector space is formalized in Mathlib, but its role as the space of pure quantum states is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "L² space for position/momentum",
+      "anchor": {
+        "section": "Mathematical formulation",
+        "snippet": "for describing position and momentum the Hilbert space is the space of complex square-integrable functions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Lp",
+        "module": "Mathlib.MeasureTheory.Function.LpSpace.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes L²(ℝ) as a Hilbert space; its use as the position/momentum state space is the QM application.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dirac delta as position eigenstate",
+      "anchor": {
+        "section": "Explanatory notes",
+        "snippet": "a position eigenstate would be a Dirac delta distribution , not square-integrable and technically not a function at all"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.dirac",
+        "module": "Mathlib.MeasureTheory.Measure.Dirac",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the Dirac measure (and distribution machinery elsewhere); the QM interpretation as a position eigenstate is not formalized.",
+      "provenance": "ai"
     }
   ]
 }

@@ -346,6 +346,22 @@
       "id": "49974a67a842"
     },
     {
+      "kind": "definition",
+      "label": "Quotient Lie algebra",
+      "anchor": {
+        "section": "Subalgebras, ideals and homomorphisms",
+        "snippet": "the quotient Lie algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieSubmodule.Quotient.lieQuotientLieAlgebra",
+        "module": "Mathlib.Algebra.Lie.Quotient",
+        "match_kind": "exact"
+      },
+      "note": "Quotient of a Lie algebra by an ideal is constructed as `L ⧸ I` with its Lie algebra structure.",
+      "provenance": "ai"
+    },
+    {
       "kind": "theorem",
       "label": "First isomorphism theorem for Lie algebras",
       "anchor": {
@@ -456,7 +472,7 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "instLieRing",
+        "decl": "LieAlgebra.Prod.instLieRing",
         "module": "Mathlib.Algebra.Lie.Prod",
         "match_kind": "exact"
       },
@@ -525,7 +541,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "VectorField.lieBracket",
-        "module": "Mathlib.Geometry.Manifold.VectorField.LieBracket",
+        "module": "Mathlib.Analysis.Calculus.VectorField",
         "match_kind": "special_case"
       },
       "note": "The Lie bracket of vector fields is defined, but not bundled into a `LieAlgebra` instance on the space of vector fields.",
@@ -899,7 +915,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "VectorField.lieBracket",
-        "module": "Mathlib.Geometry.Manifold.VectorField.LieBracket",
+        "module": "Mathlib.Analysis.Calculus.VectorField",
         "match_kind": "special_case"
       },
       "note": "The bracket of vector fields exists but is not packaged as a `LieAlgebra` instance.",
@@ -1324,7 +1340,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "killingForm",
-        "module": "Mathlib.Algebra.Lie.Killing",
+        "module": "Mathlib.Algebra.Lie.TraceForm",
         "match_kind": "exact"
       },
       "note": "`killingForm R L` is the trace form of the adjoint representation.",
@@ -1347,6 +1363,22 @@
       "note": "Trivial radical ⟹ nondegenerate Killing form, and `IsKilling.instSemisimple` gives the converse.",
       "provenance": "ai",
       "id": "3ebe931b942d"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cartan's criterion for solvability",
+      "anchor": {
+        "section": "Cartan's criterion",
+        "snippet": "is solvable if and only if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The solvability half of Cartan's criterion (Killing form vanishes on [L,L]) is not formalized.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -1551,6 +1583,22 @@
       "note": "`LieRing`/`LieAlgebra R L` are defined exactly over a general commutative ring R.",
       "provenance": "ai",
       "id": "463944475cf7"
+    },
+    {
+      "kind": "definition",
+      "label": "Lazard correspondence",
+      "anchor": {
+        "section": "Lie ring",
+        "snippet": "Lie rings are used in the study of finite p-groups (for a prime number p ) through the Lazard correspondence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Lazard correspondence between finite p-groups and Lie rings is not formalized.",
+      "provenance": "ai"
     },
     {
       "kind": "example",
