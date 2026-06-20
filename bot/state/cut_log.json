@@ -70,5 +70,122 @@
    "suggested_decl": "",
    "fix_hint": ""
   }
+ },
+ {
+  "qid": "Q1211071",
+  "file": "Mathlib/Data/Setoid/Partition.lean",
+  "verdicts": {
+   "Deicyde": "approve",
+   "jcommelin": "(note)",
+   "faenuccio": "revise"
+  },
+  "reason": "objection (reject/revise)",
+  "notes": [
+   {
+    "login": "Deicyde",
+    "status": "approve",
+    "text": "Do we also want to tag `Quotient` or `Quot`? Those are technically in Core, not Mathlib, but are the true type-theoretic foundations of equiv classes."
+   },
+   {
+    "login": "jcommelin",
+    "status": "(note)",
+    "text": "I think this is fine. But we could add another `attribute` command below this def, that tags those."
+   },
+   {
+    "login": "faenuccio",
+    "status": "revise",
+    "text": "I am not really convinced about this. The \"true\" equivalent of the set of equivalence classes using DTT is that of Setoids, I think, and having sets-of-sets here is a way around the fact that our basic objects are types and not sets."
+   }
+  ],
+  "decl": "Setoid.classes",
+  "triage": {
+   "decision": "cut",
+   "reason": "Reviewers split on whether equivalence classes in DTT correspond to Setoid (faenuccio) or Quot/Quotient (Deicyde) rather than Setoid.classes, with no consensus on a single correct retarget.",
+   "suggested_decl": "",
+   "suggested_qid": "",
+   "fix_hint": ""
+  }
+ },
+ {
+  "qid": "Q822139",
+  "file": "Mathlib/MeasureTheory/Measure/CharacteristicFunction/Basic.lean",
+  "verdicts": {
+   "Deicyde": "approve",
+   "faenuccio": "revise"
+  },
+  "reason": "objection (reject/revise)",
+  "notes": [
+   {
+    "login": "faenuccio",
+    "status": "revise",
+    "text": "Not sure: the wikimedia thing is much more specialised than the Mathlib thing, and it's intricate to pass from one to another."
+   }
+  ],
+  "decl": "charFun",
+  "triage": {
+   "decision": "cut",
+   "reason": "Reviewer flags a generality mismatch (Wikidata concept narrower than Mathlib's general `charFun`) but points at no concrete alternative decl or QID \u2014 Q822139 is the canonical characteristic-function concept and `charFun` is its Mathlib formalization, so there is nothing concrete to retarget.",
+   "suggested_decl": "",
+   "suggested_qid": "",
+   "fix_hint": ""
+  }
+ },
+ {
+  "qid": "Q1154787",
+  "file": "Mathlib/NumberTheory/ModularForms/JacobiTheta/TwoVariable.lean",
+  "verdicts": {
+   "Deicyde": "approve",
+   "faenuccio": "revise"
+  },
+  "reason": "objection (reject/revise)",
+  "notes": [
+   {
+    "login": "Deicyde",
+    "status": "approve",
+    "text": "We should also tag `NumberTheory.ModularForms.JacobiTheta.OneVariable` for the one variable version."
+   },
+   {
+    "login": "faenuccio",
+    "status": "revise",
+    "text": "This time wikipedia is much more general than Mathlib."
+   }
+  ],
+  "decl": "jacobiTheta\u2082",
+  "triage": {
+   "decision": "cut",
+   "reason": "No Wikidata QID exists for \u03b8\u2082 specifically \u2014 Q1154787 is the umbrella theta-function concept and the next-narrower Q17098064 still covers the whole \u03b8\u2081\u2013\u03b8\u2084 family, so no requeue can resolve faenuccio's 'Wikipedia is more general than Mathlib' objection.",
+   "suggested_decl": "",
+   "suggested_qid": "",
+   "fix_hint": ""
+  }
+ },
+ {
+  "qid": "Q690935",
+  "file": "Mathlib/Order/SaddlePoint.lean",
+  "verdicts": {
+   "Deicyde": "approve",
+   "faenuccio": "revise"
+  },
+  "reason": "objection (reject/revise)",
+  "notes": [
+   {
+    "login": "Deicyde",
+    "status": "approve",
+    "text": "Generalization of the Wikipedia definition."
+   },
+   {
+    "login": "faenuccio",
+    "status": "revise",
+    "text": "True, but given the ubiquitous use of order theory in Mathlib, I would avoid connecting it to something that is inherently \"C^2\"."
+   }
+  ],
+  "decl": "IsSaddlePointOn",
+  "triage": {
+   "decision": "cut",
+   "reason": "Reviewer faenuccio objects to connecting an order-theoretic Mathlib definition to a Wikidata concept rooted in C\u00b2 analysis, and no more-specific order-theoretic QID for saddle points exists.",
+   "suggested_decl": "",
+   "suggested_qid": "",
+   "fix_hint": ""
+  }
  }
 ]
