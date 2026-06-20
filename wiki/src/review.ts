@@ -933,7 +933,10 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
       }
       const tag = tagByQid.get(qid);
       if (!tag) {
-        results.push({ qid, posted: false, error: "tag not present in this PR" });
+        // A stored decision for a tag that's since been TRIMMED from the PR (a
+        // recycled/rejected tag). Not an error — nothing to post. Skip it so it
+        // doesn't inflate the "failed" count with stale, unactionable noise.
+        results.push({ qid, posted: false, skipped: "not in this PR (trimmed)" });
         continue;
       }
       // "changed from" should reflect MY own prior status when I've reviewed
@@ -955,7 +958,7 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
         results.push({ qid, posted: true });
         if (status && status !== prior) changed++;
       } else {
-        results.push({ qid, posted: false, error: `GitHub ${r.status}: ${(await r.text()).slice(0, 120)}` });
+        results.push({ qid, posted: false, error: `GitHub ${r.status}: ${(await r.text()).slice(0, 300)}` });
       }
     }
     const posted = results.filter((x) => x.posted).length;
@@ -1710,11 +1713,22 @@ async function submitToGitHub(){
     res.filter(x=>x.posted).forEach(x=>{ delete STATE[x.qid]; }); save();
     const skipped = res.filter(x=>x.skipped).length;
     const errs = res.filter(x=>x.error);
+    // leanprover-community restricts third-party OAuth Apps, so every in-app post
+    // 403s identically and unactionably. Collapse those into ONE nudge to Copy
+    // review (which pastes as YOU in the browser — not subject to the OAuth-App
+    // policy), instead of listing the same wall of text per tag.
+    const ORG = /appear to have the correct authorization|OAuth App access restrictions|organization has enabled/;
+    const blocked = errs.filter(e=>ORG.test(e.error||""));
+    const other = errs.filter(e=>!ORG.test(e.error||""));
     const parts = ["Posted "+j.posted+" comment"+(j.posted===1?"":"s")+
       (j.changed?(" ("+j.changed+" status change"+(j.changed===1?"":"s")+")"):"")];
-    if(skipped) parts.push(skipped+" unchanged");
-    if(errs.length) parts.push(errs.length+" failed — "+errs.map(e=>e.qid+": "+e.error).join("; "));
-    const msg = parts.join(" · ");
+    if(skipped) parts.push(skipped+" skipped (not in this PR)");
+    if(other.length) parts.push(other.length+" failed — "+other.map(e=>e.qid+": "+e.error).join("; "));
+    let msg = parts.join(" · ");
+    if(blocked.length){
+      msg += " · ⚠️ "+blocked.length+" couldn’t post: GitHub blocks the WikiLean review app for the "
+        + "leanprover-community org. Click “📋 Copy review” and paste it as a PR comment — it posts as you.";
+    }
     if(j.posted>0){
       note.innerHTML = "✓ "+msg+' — see <a href="'+prUrl()+'" target="_blank" rel="noopener">the PR ↗</a>. Reloading…';
       loadPR();
