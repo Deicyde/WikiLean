@@ -50,6 +50,40 @@ def module_to_file(module):
     return module.replace(".", "/") + ".lean" if module else None
 
 
+STATE = ROOT / "bot" / "state"
+
+
+def seen_qids():
+    """Every QID already put in front of reviewers, so it is NOT 'unreviewed':
+    proposed in any past batch (batch*_approved.json), carried in the correction
+    queue (recycle_queue.json — both the original and the corrected QID), or cut
+    (cut_log.json). Merged tags are handled separately via tagged_in_master.txt.
+    Without this the pool re-surfaces concepts reviewers already judged."""
+    s = set()
+    for f in STATE.glob("batch*_approved.json"):
+        try:
+            s |= {t["qid"] for t in json.loads(f.read_text()).get("tags", [])}
+        except Exception:
+            pass
+    rq = STATE / "recycle_queue.json"
+    if rq.exists():
+        try:
+            for e in json.loads(rq.read_text()):
+                s.add(e["qid"])
+                sq = e.get("triage", {}).get("suggested_qid")
+                if sq:
+                    s.add(sq)
+        except Exception:
+            pass
+    cl = STATE / "cut_log.json"
+    if cl.exists():
+        try:
+            s |= {e["qid"] for e in json.loads(cl.read_text())}
+        except Exception:
+            pass
+    return s
+
+
 def load_catalog():
     cat = {}
     for f in CATALOG:
@@ -77,7 +111,7 @@ def load_catalog():
 
 def candidates(n=25, exclude=(), require_high=True, p31_filter=True):
     cat = load_catalog()
-    excl = set(exclude)
+    excl = set(exclude) | seen_qids()           # never re-surface already-reviewed concepts
     if TAGGED.exists():
         excl |= {l.strip() for l in TAGGED.read_text().splitlines() if l.strip().startswith("Q")}
     order = list(json.loads(MOST_USED.read_text()).keys())
