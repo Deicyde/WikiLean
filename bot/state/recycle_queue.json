@@ -1,198 +1,96 @@
 [
  {
-  "qid": "Q120812",
-  "file": "Mathlib/Algebra/Order/AbsoluteValue/Basic.lean",
+  "qid": "Q125977",
+  "file": "Mathlib/Algebra/Module/Defs.lean",
   "verdicts": {
-   "Deicyde": "revise",
-   "jcommelin": "reject"
+   "Deicyde": "approve",
+   "faenuccio": "revise"
   },
-  "reason": "maintainer rejected/revised",
+  "reason": "objection (reject/revise)",
   "notes": [
    {
     "login": "Deicyde",
-    "status": "revise",
-    "text": "I think we may want to use `Mathlib.Algebra.Order.Group.Unbundled.Abs` instead."
+    "status": "approve",
+    "text": "It isn't a perfect match, but since `[Module V]` is the canonical way to write \"vector space\" in Mathlib I think this tag is worth adding."
    },
    {
-    "login": "jcommelin",
-    "status": "reject",
-    "text": "Yes, indeed. We want the `abs` that is being used in the `toFun` field here."
+    "login": "faenuccio",
+    "status": "revise",
+    "text": "I think we should rather point to https://en.wikipedia.org/wiki/Module_(mathematics)"
    }
   ],
+  "decl": "Module",
   "triage": {
    "decision": "requeue",
-   "reason": "Reviewers concretely point at the `abs` function used in the `toFun` field — a fixable retargeting rather than a missing concept.",
-   "suggested_decl": "abs",
-   "fix_hint": "Tag the `abs` function in Mathlib.Algebra.Order.Group.Unbundled.Abs (the one used as `toFun` for the absolute value structure) instead of the structure in AbsoluteValue/Basic.lean."
+   "reason": "Reviewer faenuccio identifies the concrete fix: Mathlib's `Module` formalizes Module (mathematics), not vector space (Q125977 is strictly narrower), so retarget the QID while keeping the declaration.",
+   "suggested_decl": "Module",
+   "suggested_qid": "Q1206110",
+   "fix_hint": "Retarget QID from Q125977 (vector space) to the Wikidata item for Module (mathematics) — Mathlib's `Module` is over a semiring, strictly more general than a vector space.",
+   "decl_exists": true,
+   "qid_exists": true
+  }
+ },
+ {
+  "qid": "Q187235",
+  "file": "Mathlib/NumberTheory/LSeries/RiemannZeta.lean",
+  "verdicts": {
+   "Deicyde": "approve",
+   "faenuccio": "reject"
+  },
+  "reason": "objection (reject/revise)",
+  "notes": [
+   {
+    "login": "faenuccio",
+    "status": "reject",
+    "text": "This should rather point to https://leanprover-community.github.io/mathlib4_docs/Mathlib/NumberTheory/LSeries/RiemannZeta.html#riemannZeta"
+   }
+  ],
+  "decl": "completedRiemannZeta",
+  "triage": {
+   "decision": "requeue",
+   "reason": "Reviewer points to the concrete fix: tag riemannZeta (the Riemann zeta function itself) instead of completedRiemannZeta (the completed/symmetrized version).",
+   "suggested_decl": "riemannZeta",
+   "suggested_qid": "",
+   "fix_hint": "Retag Q187235 (Riemann zeta function) onto `riemannZeta` in Mathlib/NumberTheory/LSeries/RiemannZeta.lean; `completedRiemannZeta` is the completed variant and should get its own (different) QID if any.",
+   "decl_exists": true
+  }
+ },
+ {
+  "qid": "Q756747",
+  "file": "Mathlib/RingTheory/RootsOfUnity/Basic.lean",
+  "verdicts": {
+   "Deicyde": "approve",
+   "faenuccio": "revise"
+  },
+  "reason": "objection (reject/revise)",
+  "notes": [
+   {
+    "login": "faenuccio",
+    "status": "revise",
+    "text": "The wikipedia article is completely focused on complex ones, so I would add this tag to https://leanprover-community.github.io/mathlib4_docs/Mathlib/RingTheory/RootsOfUnity/Complex.html#Complex.mem_rootsOfUnity or any of its friends."
+   }
+  ],
+  "decl": "rootsOfUnity",
+  "triage": {
+   "decision": "requeue",
+   "reason": "Reviewer points to a concrete retargeting: the Wikipedia article focuses on complex roots of unity, so tag the complex-specific declaration instead.",
+   "suggested_decl": "Complex.mem_rootsOfUnity",
+   "suggested_qid": "",
+   "fix_hint": "Move the @[wikidata Q756747] tag from rootsOfUnity to Complex.mem_rootsOfUnity (or a sibling in Mathlib/RingTheory/RootsOfUnity/Complex.lean) since the Wikipedia article is complex-specific.",
+   "decl_exists": true
   }
  },
  {
   "qid": "Q752718",
   "file": "Mathlib/Analysis/Asymptotics/Defs.lean",
-  "verdicts": {
-   "Deicyde": "reject"
-  },
-  "reason": "objection (reject/revise)",
-  "notes": [
-   {
-    "login": "Deicyde",
-    "status": "reject",
-    "text": "I don't think this is the appropriate Wikidata tag. Asymptotic Analysis is a field of math, we want the entry specifically for \"Big O\""
-   }
-  ],
+  "decl": null,
+  "from_corrections": true,
   "triage": {
    "decision": "requeue",
-   "reason": "Reviewer points at a concrete retargeting: Q752718 is 'asymptotic analysis' (the field), but the file defines Big O notation which has its own Wikidata entry (Q484847).",
-   "suggested_decl": "Asymptotics.IsBigO",
-   "fix_hint": "Retag with Q484847 (Big O notation) on Asymptotics.IsBigO in Mathlib/Analysis/Asymptotics/Defs.lean instead of Q752718 (asymptotic analysis). [corrections.jsonl: use Q269878 (big O notation)]",
-   "suggested_qid": "Q269878"
-  }
- },
- {
-  "qid": "Q598870",
-  "file": "Mathlib/Analysis/Calculus/LagrangeMultipliers.lean",
-  "verdicts": {
-   "Deicyde": "revise",
-   "jcommelin": "reject"
-  },
-  "reason": "maintainer rejected/revised",
-  "notes": [
-   {
-    "login": "Deicyde",
-    "status": "revise",
-    "text": "Do we want to instead tag this with Q598870 \"Lagrange Multiplier on a Banach Space\" instead? Or maybe we want both tags? There are also several other equivalent formulations of Lagrange multipliers in Mathlib/Analysis/Calculus/LagrangeMultipliers, I'm not sure this is the most \"canonical\" one. See also: https://en.wikipedia.org/wiki/Lagrange_multipliers_on_Banach_spaces"
-   },
-   {
-    "login": "jcommelin",
-    "status": "reject",
-    "text": "I'm not enough of an expert in this area to properly review these, but I indeed think this is not a match."
-   }
-  ],
-  "triage": {
-   "decision": "requeue",
-   "reason": "Reviewer explicitly identifies Q598870 as the correct Wikidata target (Lagrange Multiplier on a Banach Space) matching the Banach-space formulation in this file, and asks to retarget to the most canonical declaration in LagrangeMultipliers.lean.",
-   "suggested_decl": "IsLocalExtrOn.exists_linear_map_of_hasStrictFDerivAt",
-   "fix_hint": "Retarget the @[wikidata] tag to the canonical Banach-space Lagrange multiplier theorem in Mathlib/Analysis/Calculus/LagrangeMultipliers.lean (e.g. IsLocalExtrOn.exists_linear_map_of_hasStrictFDerivAt) using QID Q598870."
-  }
- },
- {
-  "qid": "Q638328",
-  "file": "Mathlib/Dynamics/Flow.lean",
-  "verdicts": {
-   "Deicyde": "approve",
-   "jcommelin": "revise"
-  },
-  "reason": "maintainer rejected/revised",
-  "notes": [
-   {
-    "login": "Deicyde",
-    "status": "approve",
-    "text": "The Wikipedia article gives multiple definitions for dynamical system (for example, Ergodic system) but `Flow` is basically equivalent to the first def is gives in the \"Formal Definition\" section."
-   },
-   {
-    "login": "jcommelin",
-    "status": "revise",
-    "text": "Is there also a QID for \"flow\" specifically? Because then that would be more appropriate."
-   }
-  ],
-  "triage": {
-   "decision": "requeue",
-   "reason": "jcommelin explicitly suggests retargeting to a Wikidata QID for 'flow' specifically (Q1058361), which is a cleanly fixable concept-level retargeting rather than an ambiguous mapping.",
-   "suggested_decl": "Flow",
-   "fix_hint": "Replace QID Q638328 (dynamical system) with Q1058361 (flow) on the existing `Flow` structure in Mathlib/Dynamics/Flow.lean."
-  }
- },
- {
-  "qid": "Q37105",
-  "file": "Mathlib/LinearAlgebra/AffineSpace/AffineMap.lean",
-  "verdicts": {
-   "Deicyde": "revise",
-   "jcommelin": "reject"
-  },
-  "reason": "maintainer rejected/revised",
-  "notes": [
-   {
-    "login": "Deicyde",
-    "status": "revise",
-    "text": "Should we prefer to tag `AffineSubspace` since a line is technically a 1-dim affine subspace (e.g. the image of a `lineMap`)?"
-   },
-   {
-    "login": "jcommelin",
-    "status": "reject",
-    "text": "Yes, that probably is the best fit."
-   }
-  ],
-  "triage": {
-   "decision": "requeue",
-   "reason": "Both reviewers agree the concept (a line) maps better to `AffineSubspace` as a 1-dim affine subspace rather than `AffineMap`.",
-   "suggested_decl": "AffineSubspace",
-   "fix_hint": "Retarget Q37105 from AffineMap to AffineSubspace (Mathlib/LinearAlgebra/AffineSpace/AffineSubspace.lean); note a line is a 1-dim affine subspace (image of `AffineMap.lineMap`)."
-  }
- },
- {
-  "qid": "Q1755512",
-  "file": "Mathlib/LinearAlgebra/Dual/Defs.lean",
-  "verdicts": {
-   "Deicyde": "reject"
-  },
-  "reason": "objection (reject/revise)",
-  "notes": [
-   {
-    "login": "Deicyde",
-    "status": "reject",
-    "text": "Duality is a more general concept. We should instead tag `Dual` with Q752487 (Dual Space)"
-   }
-  ],
-  "triage": {
-   "decision": "requeue",
-   "reason": "Reviewer points at a concrete retargeting: tag the `Dual` space declaration with Q752487 (Dual space) instead of the broader duality concept Q1755512.",
-   "suggested_decl": "Module.Dual",
-   "fix_hint": "Replace @[wikidata Q1755512] with @[wikidata Q752487] on `Module.Dual` in Mathlib/LinearAlgebra/Dual/Defs.lean — Q752487 is the precise 'dual space' concept matching the declaration. [corrections.jsonl: use Q752487 (Dual Space)]",
-   "suggested_qid": "Q752487"
-  }
- },
- {
-  "qid": "Q753445",
-  "file": "Mathlib/MeasureTheory/Integral/IntervalIntegral/TrapezoidalRule.lean",
-  "verdicts": {
-   "Deicyde": "reject"
-  },
-  "reason": "objection (reject/revise)",
-  "notes": [
-   {
-    "login": "Deicyde",
-    "status": "reject",
-    "text": "Numerical integration is a more general concept. We should instead tag `trapezoidal_integral` with Q833293 (trapezoidal rule)"
-   }
-  ],
-  "triage": {
-   "decision": "requeue",
-   "reason": "Reviewer points to a concrete retargeting: tag `trapezoidal_integral` with the trapezoidal-rule QID Q833293 instead of the general numerical-integration QID.",
-   "suggested_decl": "trapezoidal_integral",
-   "fix_hint": "Replace Q753445 with Q833293 (trapezoidal rule) on the `trapezoidal_integral` declaration in Mathlib/MeasureTheory/Integral/IntervalIntegral/TrapezoidalRule.lean. [corrections.jsonl: use Q833293 (trapezoidal rule)]",
-   "suggested_qid": "Q833293"
-  }
- },
- {
-  "qid": "Q910404",
-  "file": "Mathlib/Probability/Combinatorics/BinomialRandomGraph/Defs.lean",
-  "verdicts": {
-   "Deicyde": "reject"
-  },
-  "reason": "objection (reject/revise)",
-  "notes": [
-   {
-    "login": "Deicyde",
-    "status": "reject",
-    "text": "\"Random graph\" is too broad. We should instead tag with Q605807 (Erdős–Rényi model) since this is the `G(V,p)` model described by `binomialRandom`. See: https://en.wikipedia.org/wiki/Erd%C5%91s%E2%80%93R%C3%A9nyi_model"
-   }
-  ],
-  "triage": {
-   "decision": "requeue",
-   "reason": "Reviewer identifies a concrete, more precise QID (Q605807 Erdős–Rényi model) for the same `binomialRandom` declaration — a clean retargeting, not an ambiguity.",
-   "suggested_decl": "binomialRandom",
-   "fix_hint": "Replace QID Q910404 with Q605807 (Erdős–Rényi model) on the existing `binomialRandom` declaration in Mathlib/Probability/Combinatorics/BinomialRandomGraph/Defs.lean. [corrections.jsonl: use Q605807 (Erdős–Rényi model)]",
-   "suggested_qid": "Q605807"
+   "reason": "reviewer named a more specific QID (Q269878)",
+   "suggested_qid": "Q269878",
+   "suggested_decl": null,
+   "fix_hint": "I don't think this is the appropriate Wikidata tag. Asymptotic Analysis is a field of math, we want the entry specifically for \"Big O\""
   }
  },
  {
@@ -206,6 +104,45 @@
    "suggested_qid": "Q189569",
    "suggested_decl": "Basis",
    "fix_hint": "This does not cover polar/spherical/hyperbolic coordinate systems as discussed in the Wikipedia article. \"Coordinate system\" is a much more general concept. Instead, we should tag `Basis` with Q189569"
+  }
+ },
+ {
+  "qid": "Q1755512",
+  "file": "Mathlib/LinearAlgebra/Dual/Defs.lean",
+  "decl": "Dual",
+  "from_corrections": true,
+  "triage": {
+   "decision": "requeue",
+   "reason": "reviewer named a more specific QID (Q752487)",
+   "suggested_qid": "Q752487",
+   "suggested_decl": "Dual",
+   "fix_hint": "Duality is a more general concept. We should instead tag `Dual` with Q752487 (Dual Space)"
+  }
+ },
+ {
+  "qid": "Q753445",
+  "file": "Mathlib/MeasureTheory/Integral/IntervalIntegral/TrapezoidalRule.lean",
+  "decl": "trapezoidal_integral",
+  "from_corrections": true,
+  "triage": {
+   "decision": "requeue",
+   "reason": "reviewer named a more specific QID (Q833293)",
+   "suggested_qid": "Q833293",
+   "suggested_decl": "trapezoidal_integral",
+   "fix_hint": "Numerical integration is a more general concept. We should instead tag `trapezoidal_integral` with Q833293 (trapezoidal rule)"
+  }
+ },
+ {
+  "qid": "Q910404",
+  "file": "Mathlib/Probability/Combinatorics/BinomialRandomGraph/Defs.lean",
+  "decl": null,
+  "from_corrections": true,
+  "triage": {
+   "decision": "requeue",
+   "reason": "reviewer named a more specific QID (Q605807)",
+   "suggested_qid": "Q605807",
+   "suggested_decl": null,
+   "fix_hint": "\"Random graph\" is too broad. We should instead tag with Q605807 (Erdős–Rényi model) since this is the `G(V,p)` model described by `binomialRandom`. See: https://en.wikipedia.org/wiki/Erd%C5%91s%E2%80%"
   }
  }
 ]
