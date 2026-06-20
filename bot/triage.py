@@ -19,6 +19,30 @@ from pathlib import Path
 # location rather than the process CWD. open_batch.py reads state/cut_log.json
 # to exclude permanently-cut QIDs from future batches.
 STATE = Path(__file__).resolve().parent / "state"
+SKILLS = Path(__file__).resolve().parent.parent / ".claude" / "skills"
+MATHLIB_SEARCH = SKILLS / "mathlib-search" / "mathlib_search.py"
+WIKIDATA_SEARCH = SKILLS / "wikidata-search" / "wikidata.py"
+
+
+def verify(d):
+    """Deterministically check the LLM's retarget actually exists — the suggested
+    declaration against the live Mathlib index (mathlib-search) and the suggested
+    QID against Wikidata. A requeue pointing at a phantom decl can't be applied, so
+    auto-cut it rather than ship a tag that will fail the next build."""
+    decl, qid = d.get("suggested_decl"), d.get("suggested_qid")
+    if decl:
+        r = subprocess.run(["python3", str(MATHLIB_SEARCH), "decl", decl, "--live"],
+                           capture_output=True, text=True)
+        d["decl_exists"] = (r.returncode == 0 and "EXISTS" in r.stdout)
+    if qid:
+        r = subprocess.run(["python3", str(WIKIDATA_SEARCH), "entity", qid],
+                           capture_output=True, text=True)
+        d["qid_exists"] = (r.returncode == 0 and qid in r.stdout)
+    if d.get("decision") == "requeue" and decl and d.get("decl_exists") is False:
+        d["decision"] = "cut"
+        d["reason"] = (d.get("reason", "") +
+                       f" [auto-cut: suggested decl `{decl}` not found in Mathlib]").strip()
+    return d
 
 PROMPT = """You are triaging a Wikipedia↔Mathlib `@[wikidata]` cross-reference tag that human \
 reviewers did NOT approve for merge into Mathlib. Decide whether it is worth fixing and \
@@ -95,7 +119,7 @@ def main():
         if args.dry_run:
             print(f"[dry-run] would triage {e['qid']} with {len(e.get('notes', []))} note(s)")
             continue
-        d = ask_llm(e, args.model)
+        d = verify(ask_llm(e, args.model))
         rec = {**e, "triage": d}
         (requeue if d.get("decision") == "requeue" else cut).append(rec)
         retarget = " ".join(filter(None, [
