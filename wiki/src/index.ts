@@ -33,6 +33,7 @@ import {
   type UserProfileRow,
 } from "./pages.js";
 import { homePage, sitemapXml } from "./home.js";
+import { wikifunctionsPage } from "./wikifunctions.js";
 import { registerReviewRoutes } from "./review.js";
 import { registerQueueRoutes } from "./queue.js";
 import type { Annotation } from "./engine/types.js";
@@ -65,6 +66,7 @@ const RESERVED = new Set([
   "recent-changes",
   "flags",
   "stats",
+  "wikifunctions",
   "login",
   "logout",
   "graph",
@@ -398,6 +400,20 @@ app.get("/sitemap.xml", async (c) => {
   const xml = sitemapXml(rows);
   await c.env.RENDER_CACHE.put(cacheKey, xml, { expirationTtl: 3600 });
   return c.body(xml, 200, headers);
+});
+
+// ---- /wikifunctions — Wikifunctions-formalization tracker (static; public) --
+// A self-contained status page rendered from the embedded verified corpus
+// (wikifunctions-data.ts) — no D1, no migrations. Pure-function output, so it
+// is KV-cached with a long TTL; bump the cache key suffix when the page or the
+// embedded data changes.
+app.get("/wikifunctions", async (c) => {
+  const cacheKey = "page:wikifunctions:v1";
+  const cached = await c.env.RENDER_CACHE.get(cacheKey);
+  if (cached) return c.html(cached);
+  const html = wikifunctionsPage();
+  await c.env.RENDER_CACHE.put(cacheKey, html, { expirationTtl: 3600 });
+  return c.html(html);
 });
 
 // ---- /stats — live experiment instrumentation (P2a; public) ----

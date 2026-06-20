@@ -307,6 +307,7 @@ footer a:hover { text-decoration:underline; }
   <a class="wl-brand" href="/">WikiLean</a>
   <nav class="wl-nav" aria-label="Site">
     <a href="/concepts">Concepts</a>
+    <a href="/wikifunctions">Wikifunctions</a>
     <a href="/article-graph">Article graph</a>
     <a href="/graph">Concept graph</a>
     <a href="/about">About &amp; method</a>
