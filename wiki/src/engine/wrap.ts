@@ -432,27 +432,27 @@ function findProseBlock(src: string, section: string, snippet: string): [number,
         const rng = findSentenceRange(src, m.index, end, k);
         if (rng) {
           if (matchedEndsWithColon(src, rng[0], rng[1])) {
+            // ":" introduces a list — extend the wrap to absorb it.
             const listEnd = findFollowingList(src, end, sectionEnd);
             if (listEnd !== null) return [m.index, listEnd, "div"];
+            // ":" also introduces a display equation ("we have:" + <dl><math>).
+            const mathEnd = findFollowingDisplayMath(src, end, sectionEnd);
+            if (mathEnd !== null) return [m.index, mathEnd, "div"];
           }
-          // If the matched paragraph contains display math anywhere, OR if
-          // display math immediately follows it, promote the wrap to a <div>.
-          // A <span> wrap can't visually highlight a display:block child (its
-          // background doesn't extend past an inline parent), so the equation
-          // would render un-highlighted even when technically inside the wrap.
-          const blockMathPos = src.indexOf("mwe-math-element-block", m.index);
-          const blockHasDisplayMath = blockMathPos !== -1 && blockMathPos < end;
-          const mathAfter = findFollowingDisplayMath(src, end, sectionEnd);
-          if (blockHasDisplayMath || mathAfter !== null) {
-            const newEnd = mathAfter !== null ? mathAfter : end;
-            return [m.index, newEnd, "div"];
-          }
+          // Wrap the sentence range as-is. Display math nested inside the
+          // sentence (e.g. "If x = y, then …") used to force a promotion to a
+          // whole-block <div>, which dragged in sibling sentences in the same
+          // <p> — the snippet-edit bug. We don't need the promotion any more:
+          // the .anno-X .mwe-math-element-block CSS rule paints the equation
+          // itself, so a <span> sentence wrap with a display:block child still
+          // reads as one continuously highlighted statement.
           return [rng[0], rng[1], "span"];
         }
       }
-      // Block-fallback wrap, also extended over any following display math.
-      const mathEnd = findFollowingDisplayMath(src, end, sectionEnd);
-      if (mathEnd !== null) return [m.index, mathEnd, "div"];
+      // Block-fallback wrap: just the block. (Older versions absorbed
+      // immediately-following display math here too, but that captured
+      // unrelated equations; per-equation math_alttext anchors handle math
+      // coverage now.)
       return [m.index, end, "div"];
     }
   }
