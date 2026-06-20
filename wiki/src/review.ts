@@ -670,7 +670,9 @@ async function fetchFileLines(
 // ---- the assembled review payload returned to the browser ----
 
 export interface ReviewPayload {
-  repo: string;
+  repo: string;          // base repo (where the PR lives)
+  head_repo: string;     // head repo (the fork) — source links must use THIS, since
+                         // base/blob/<fork-sha> doesn't resolve and 302s to master
   pr: number;
   head_sha: string;
   title: string;
@@ -686,7 +688,7 @@ async function buildReviewPayload(
   renderMarkdown = false,
 ): Promise<ReviewPayload> {
   const full = `${owner}/${repo}`;
-  const meta = await ghJson<{ head: { sha: string }; title: string }>(
+  const meta = await ghJson<{ head: { sha: string; repo: { full_name: string } | null }; title: string }>(
     `${GH_API}/repos/${full}/pulls/${pr}`,
     token,
   );
@@ -801,6 +803,7 @@ async function buildReviewPayload(
 
   return {
     repo: full,
+    head_repo: meta.head.repo?.full_name ?? full,   // the fork; falls back to base for same-repo PRs
     pr,
     head_sha: meta.head.sha,
     title: meta.title,
@@ -1510,7 +1513,7 @@ function render(data){
     // file:line links to the Mathlib docs for the decl (module page + #name
     // anchor); a small "src ↗" links to the exact line of GitHub source. For a
     // non-Mathlib file (no docs page) the location itself links to source.
-    const srcUrl = "https://github.com/" + data.repo + "/blob/" + data.head_sha + "/" + d.file + "#L" + d.line;
+    const srcUrl = "https://github.com/" + data.head_repo + "/blob/" + data.head_sha + "/" + d.file + "#L" + d.line;
     const docsUrl = /^Mathlib\//.test(d.file || "")
       ? "https://leanprover-community.github.io/mathlib4_docs/" + d.file.replace(/\.lean$/, ".html") +
         (d.decl ? "#" + encodeURIComponent(d.decl) : "")
