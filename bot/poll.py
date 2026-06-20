@@ -131,12 +131,24 @@ def tick(mathlib, dry, no_open=False):
     if state != "OPEN":
         print(f"  #{pr} is {state} but NOT merged — needs manual attention; skipping"); return
     if st.get("settled_pr") == pr:
-        # Self-heal the fork-CI cache-verify failure (Post-Build 'target is
-        # out-of-date'): the proven fix is merging current master into the branch
-        # — a stale merged-master leaves core-file oleans uncached — and the push
-        # re-runs CI. If the branch is ALREADY current it's a genuine flake, not
-        # staleness, so fall back to a plain close+reopen re-trigger. At most ONCE
-        # per PR (retriggered_pr) so a genuinely-stuck PR doesn't loop.
+        # Reviews can land AFTER the settle (e.g. a maintainer rejects a tag that
+        # was green). Re-classify against the PR's CURRENT tags: if any are now
+        # recycled, re-settle to trim them. Once trimmed the recycle is empty, so
+        # this converges (idempotent). Re-trim takes precedence over CI self-heal.
+        recls = settle.classify(pr, REPO)
+        if recls["gate"] and recls["recycle"]:
+            print(f"  RE-SETTLE #{pr}: {len(recls['recycle'])} tag(s) rejected since the "
+                  f"last settle — re-trimming to {len(recls['green'])} green")
+            do_settle(pr, branch, mathlib, recls, dry)
+            if not dry:
+                st["settled_pr"] = pr; st.pop("retriggered_pr", None)  # fresh commit → CI re-runs
+                STATE.write_text(json.dumps(st, indent=1))
+            return
+        # No new trims — self-heal the fork-CI cache-verify failure (Post-Build
+        # 'target is out-of-date'): the proven fix is merging current master into
+        # the branch — a stale merged-master leaves core-file oleans uncached —
+        # and the push re-runs CI. If ALREADY current it's a genuine flake, so
+        # fall back to a close+reopen re-trigger. At most ONCE per PR.
         if st.get("retriggered_pr") != pr and ci_cache_flake(pr, REPO):
             print("  Post-Build cache failure — freshening branch against master")
             if dry:
@@ -173,7 +185,10 @@ def decide():
         return "act"                                   # merged -> open next
     if gh_state(pr) != "OPEN":
         return "wait"                                  # closed-not-merged -> manual
-    if st.get("settled_pr") == pr:                     # settled -> only the CI self-heal acts
+    if st.get("settled_pr") == pr:                     # settled -> re-trim new rejections, else CI self-heal
+        cls = settle.classify(pr, REPO)
+        if cls["gate"] and cls["recycle"]:
+            return "act"                               # a tag was rejected after the settle -> re-trim
         return "act" if (st.get("retriggered_pr") != pr and ci_cache_flake(pr, REPO)) else "wait"
     return "act" if settle.classify(pr, REPO)["gate"] else "wait"   # gate met -> settle
 
