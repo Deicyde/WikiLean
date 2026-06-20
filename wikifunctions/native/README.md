@@ -1,8 +1,23 @@
 # Native-implementation verification (Dafny / Verus)
 
-Deductive verification of Wikifunctions' **imperative implementations** against
-specifications derived from Mathlib — the heavyweight, SMT-backed proof track
-that complements the Lean composite-evaluator work in `../lean/`.
+Deductive verification of Wikifunctions' **imperative implementations** with
+heavyweight, SMT-backed provers.
+
+> **Read this first — what these files do and don't prove.** Dafny verifies
+> Dafny; Verus verifies Rust. Each proves a *re-implementation* of the algorithm
+> against a spec written **in its own logic** — it does **not** ingest the
+> deployed Python, and it cannot use Mathlib's `Nat.Coprime` as the spec. So
+> these are "verified re-implementations against a transcribed spec": a real but
+> *weaker and different* claim than the cross-system goal.
+>
+> The artifact that actually proves **the deployed Python computes Mathlib's
+> spec** is the Lean deep embedding in
+> [`../lean/Wikifunctions/Python/Z13701.lean`](../lean/Wikifunctions/Python/Z13701.lean):
+> the actual Python is embedded as data and proved equal to Mathlib's
+> `Nat.Coprime`, all in one trusted kernel. Prefer that as the model for "verify
+> the real code vs the Lean spec." These Dafny/Verus files are best understood as
+> (a) cross-prover corroboration, and (b) *verified implementations that could be
+> contributed back* to Wikifunctions (which is multi-implementation).
 
 ## Tools (installed locally, 2026-06)
 
