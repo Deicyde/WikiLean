@@ -1318,7 +1318,6 @@ pre.lean .n{color:#1f1f1f}
     <select id="filter">
       <option value="all">All</option>
       <option value="approve">🟢 approve</option>
-      <option value="revise">🟡 revise</option>
       <option value="reject">🔴 reject</option>
       <option value="flag">⚠️ deletion-candidate</option>
       <option value="none">◯ no review yet</option>
@@ -1538,7 +1537,6 @@ function render(data){
         '</div>' +
         '<div class="row status-ctrl" data-qid="' + d.qid + '"' + (showStatus?"":" hidden") + '>' +
           radio(d.qid,"approve","🟢 Approve",st.changeStatus) +
-          radio(d.qid,"revise","🟡 Revise",st.changeStatus) +
           radio(d.qid,"reject","🔴 Reject",st.changeStatus) +
         '</div>' +
         '<textarea class="note-ctrl" data-qid="' + d.qid + '"' + (showNote?"":" hidden") +
