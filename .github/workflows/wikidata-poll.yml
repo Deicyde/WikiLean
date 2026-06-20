@@ -27,11 +27,12 @@ name: wikidata batch poller
 
 on:
   schedule:
-    # BUDGET: private repo bills 1 min/run MINIMUM (rounded up), so frequency is
-    # the cost lever. Every 2h = ~360 no-op min/month (vs ~1460 at */30) — well
-    # under the 2,000-min Free allowance, leaving room for the rare heavy
-    # settle/open runs. Plenty responsive for a ~daily pipeline; tune if needed.
-    - cron: '0 */2 * * *'         # every 2 hours (GitHub may delay under load)
+    # BUDGET: private repo bills 1 min/run min (rounded up). At */30 that's ~1460
+    # no-op min/month + the rare heavy settle/open runs (~250-350) ≈ ~1750, under
+    # the 2,000-min Free allowance. The HARD guarantee against ever being charged
+    # is the account's $0 Actions spending limit (Settings → Billing → Cost
+    # management): if the allowance is ever exhausted, runs PAUSE — no overage.
+    - cron: '*/30 * * * *'        # every 30 min (GitHub may delay under load)
   workflow_dispatch:               # run on demand
     inputs:
       force_heavy:
