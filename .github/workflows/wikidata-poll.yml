@@ -27,7 +27,11 @@ name: wikidata batch poller
 
 on:
   schedule:
-    - cron: '*/30 * * * *'        # GitHub may delay scheduled runs under load
+    # BUDGET: private repo bills 1 min/run MINIMUM (rounded up), so frequency is
+    # the cost lever. Every 2h = ~360 no-op min/month (vs ~1460 at */30) — well
+    # under the 2,000-min Free allowance, leaving room for the rare heavy
+    # settle/open runs. Plenty responsive for a ~daily pipeline; tune if needed.
+    - cron: '0 */2 * * *'         # every 2 hours (GitHub may delay under load)
   workflow_dispatch:               # run on demand
     inputs:
       force_heavy:
