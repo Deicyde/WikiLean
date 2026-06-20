@@ -1,0 +1,117 @@
+name: wikidata batch poller
+
+# Always-on replacement for the macOS launchd watcher (org.wikilean.poll): runs
+# bot/poll.py on GitHub's infra so the @[wikidata] batch pipeline advances
+# (settle on gate-met, open next batch on merge, self-heal a CI cache stall) with
+# no laptop. The runner is a general Linux VM — it pushes to the Deicyde/mathlib4
+# fork and opens PRs against leanprover-community/mathlib4 main exactly as the
+# laptop does, using a PAT (NOT the default GITHUB_TOKEN, which is scoped to this
+# repo only).
+#
+# SECRETS to create (Settings → Secrets and variables → Actions):
+#   MATHLIB_FORK_PAT        classic PAT (scope: repo) owned by Deicyde — pushes
+#                           the branch to Deicyde/mathlib4 and opens/comments on
+#                           the leanprover-community/mathlib4 PR. (A fork PR needs
+#                           no write access to mathlib — any authed user can open
+#                           one; the PAT just is your `gh login`.)
+#   CLAUDE_CODE_OAUTH_TOKEN from `claude setup-token` on your Mac — lets triage.py
+#                           run `claude -p` against your Max subscription headless
+#                           (avoids the out-of-credits ANTHROPIC_API_KEY).
+#   PIPELINE_TOKEN          the wiki bot bearer (same value as wiki/.dev.vars
+#                           PIPELINE_TOKEN) for the /queue publish.
+#
+# STATE: the runner is stateless, so bot state (bot/state/{bot_state,recycle_queue,
+# cut_log}.json + batchN_approved.json) is persisted by committing it back to THIS
+# repo at the end of each run ([skip ci], only when it changed). The laptop
+# launchd poller MUST be retired once this is live, or the two diverge.
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'        # GitHub may delay scheduled runs under load
+  workflow_dispatch:               # run on demand (use this to validate first)
+
+permissions:
+  contents: write                  # commit the advanced poll state back
+
+concurrency:
+  group: wikidata-poll             # never two ticks at once
+  cancel-in-progress: false
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45            # the open path does lake build (cache-get'd)
+    env:
+      REPO: leanprover-community/mathlib4
+      MATHLIB: ${{ github.workspace }}/_mathlib4
+      WIKILEAN_API_TOKEN: ${{ secrets.PIPELINE_TOKEN }}
+      WIKILEAN_CROSSREF_DIR: ${{ github.workspace }}/_crossref
+      WIKILEAN_BASH: bash          # Linux: native bash 4+/GNU coreutils, no brew
+      GH_TOKEN: ${{ secrets.MATHLIB_FORK_PAT }}   # gh acts on mathlib + the fork
+    steps:
+      - name: Checkout WikiLean (with push-back creds)
+        uses: actions/checkout@v4   # default token can push state back (contents: write)
+
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install --quiet requests
+
+      # ---- cheap gh-only decision: act or wait? ----
+      - name: Decide
+        id: decide
+        run: |
+          python3 bot/poll.py --mathlib /tmp/unused --decide | tee /tmp/decide.txt
+          if grep -q 'POLL_DECISION=act' /tmp/decide.txt; then
+            echo "act=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "act=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # ---- heavy setup + the real tick, only when acting ----
+      - name: Install Lean toolchain (elan/lake)
+        if: steps.decide.outputs.act == 'true'
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
+            | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - uses: actions/setup-node@v4
+        if: steps.decide.outputs.act == 'true'
+        with: { node-version: '20' }
+      - name: Install Claude CLI
+        if: steps.decide.outputs.act == 'true'
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Clone mathlib4 (fork origin + upstream)
+        if: steps.decide.outputs.act == 'true'
+        run: |
+          git clone --filter=blob:none \
+            "https://x-access-token:${MATHLIB_FORK_PAT}@github.com/Deicyde/mathlib4.git" "$MATHLIB"
+          git -C "$MATHLIB" remote add upstream https://github.com/leanprover-community/mathlib4.git
+          git -C "$MATHLIB" config user.name  "wikilean-bot"
+          git -C "$MATHLIB" config user.email "bot@wikilean.jackmccarthy.org"
+        env:
+          MATHLIB_FORK_PAT: ${{ secrets.MATHLIB_FORK_PAT }}
+
+      - name: Poll tick (apply)
+        if: steps.decide.outputs.act == 'true'
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: |
+          git config --global user.name  "wikilean-bot"
+          git config --global user.email "bot@wikilean.jackmccarthy.org"
+          python3 bot/poll.py --mathlib "$MATHLIB" --apply
+
+      # ---- persist advanced state back to this repo ----
+      - name: Commit poll state
+        if: always()
+        run: |
+          git config user.name  "wikilean-bot"
+          git config user.email "bot@wikilean.jackmccarthy.org"
+          git add bot/state/ 2>/dev/null || true   # all non-ignored state (pool_candidates stays ignored)
+          if git diff --cached --quiet; then
+            echo "no state change"
+          else
+            git commit -m "bot: advance @[wikidata] poll state [skip ci]"
+            git push
+          fi

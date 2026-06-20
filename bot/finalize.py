@@ -24,10 +24,14 @@ sys.path.insert(0, str(HERE))
 STATE = HERE / "state"
 REPO = "leanprover-community/mathlib4"
 FORK = "Deicyde/mathlib4"
-CROSSREF = Path.home() / "Desktop" / "LEAN" / "mathlib-crossref-report"   # stable clone
+CROSSREF = (Path(os.environ["WIKILEAN_CROSSREF_DIR"]) if os.environ.get("WIKILEAN_CROSSREF_DIR")
+            else Path.home() / "Desktop" / "LEAN" / "mathlib-crossref-report")  # macOS default
 CROSSREF_GIT = "https://github.com/Deicyde/mathlib-crossref-report.git"
-BREW_BASH = "/opt/homebrew/bin/bash"                                       # scripts need bash 4+
-GNUBIN = "/opt/homebrew/opt/coreutils/libexec/gnubin"                      # GNU sha1sum/mapfile
+# macOS needs brew-bash (4+) + GNU coreutils on PATH; a Linux CI runner has both
+# natively, so BASH=bash and no gnubin prefix. Both env-overridable.
+_MAC = sys.platform == "darwin"
+BREW_BASH = os.environ.get("WIKILEAN_BASH") or ("/opt/homebrew/bin/bash" if _MAC else "bash")
+GNUBIN = os.environ.get("WIKILEAN_GNUBIN", "/opt/homebrew/opt/coreutils/libexec/gnubin" if _MAC else "")
 
 
 def run(cmd, **kw):
@@ -58,8 +62,8 @@ def step_crossref(pr):
     if d.returncode != 0 or not (d.stdout or "").strip():
         print("    (could not fetch PR diff — skipped)"); return False
     diff.write_text(d.stdout)
-    env = {**os.environ, "PATH": GNUBIN + ":" + os.environ.get("PATH", ""),
-           "CROSSREF_REPO": FORK, "CROSSREF_DIFF_FILE": str(diff)}
+    path = (GNUBIN + ":" + os.environ.get("PATH", "")) if GNUBIN else os.environ.get("PATH", "")
+    env = {**os.environ, "PATH": path, "CROSSREF_REPO": FORK, "CROSSREF_DIFF_FILE": str(diff)}
     ok = True
     for s in ("warm-cache.sh", "post-wikidata-comments.sh"):
         r = run([BREW_BASH, f"./scripts/{s}", str(pr)], cwd=str(CROSSREF), env=env, check=False)
