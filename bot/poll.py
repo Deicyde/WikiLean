@@ -66,6 +66,7 @@ def do_settle(pr, branch, mathlib, cls, dry):
     # corpus tag_with_mathlib learns from, and ensures requeued tags carry the
     # CORRECTED QID rather than repeating the rejected broad one.
     sh([sys.executable, str(HERE / "harvest_corrections.py"), str(pr), "--repo", REPO])
+    sh([sys.executable, str(HERE / "resolve_concepts.py")])   # fill QIDs the note named but didn't number
     sh([sys.executable, str(HERE / "apply_corrections.py")])
     # The tag table IS the trim/ready notice: ONE idempotent comment carrying the
     # green-only table + the ready-to-merge + recycled summary, rather than a
