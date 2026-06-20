@@ -39,6 +39,13 @@ DEFAULT_OUT = HERE / "data" / "pilot_tagged.jsonl"
 LEADS_CACHE = HERE / "data" / ".cache" / "leads.jsonl"
 MATHLIB = Path("/Users/jack/Desktop/LEAN/mathlib4")
 
+# Purpose-built search CLIs (WikiLean skills) the agent calls via Bash — semantic
+# /loogle/decl over Mathlib, and concept->QID over Wikidata. Absolute paths
+# because the agent's cwd is the mathlib4 checkout, not the WikiLean repo.
+SKILLS = Path("/Users/jack/Desktop/LEAN/WikiLean/.claude/skills")
+MATHLIB_SEARCH = SKILLS / "mathlib-search" / "mathlib_search.py"
+WIKIDATA_SEARCH = SKILLS / "wikidata-search" / "wikidata.py"
+
 WIKI_API = "https://en.wikipedia.org/w/api.php"
 WIKI_UA = (
     "WikiLean/0.1 (https://github.com/Deicyde/WikiLean; "
@@ -48,51 +55,49 @@ LEAD_BATCH = 20  # prop=extracts caps at 20 titles per call
 
 SYSTEM_PROMPT = """\
 You are a research assistant for the WikiLean project. For one Wikipedia
-mathematics article, identify Mathlib4 declarations (defs, theorems, lemmas,
-structures, classes, instances) that formalize its central concept.
+mathematics article, identify the Mathlib4 declaration that best formalizes its
+central concept, and the most specific Wikidata QID for that declaration.
 
-Mathlib4 is the current working directory. Only look in `Mathlib/`.
+Mathlib4 is the current working directory. You have two purpose-built search CLIs
+— run them with Bash and PREFER them over raw grep:
+
+  MATHLIB SEARCH — python3 <MS> <sub> ...
+    semantic "<prose statement>"    prose/concept -> ranked decls (LeanSearch). START HERE.
+    loogle   "<name/type pattern>"  syntactic/type search over Mathlib (ground truth).
+    decl     <Decl.Name> --live     EXACT existence + kind + module (authoritative index).
+  WIKIDATA  — python3 <WD> <sub> ...
+    search    "<concept>"           concept -> ranked QID candidates.
+    entity    <QID>                 label + description + P31/P279 + enwiki sitelink.
+    sitelinks <QID>                 confirm the QID's English-Wikipedia article.
 
 Process:
   1. From the article, identify the central concept.
-  2. Use Grep to find candidate declaration heads in Mathlib (e.g. `^def `,
-     `^theorem `, `^class `, `^structure `, or the concept's canonical Mathlib
-     spelling such as `MetricSpace`, `CauchySeq`).
-  3. Use Read to verify candidates exist and match the concept.
-  4. Report ONLY declarations you verified by grep/read. Do NOT invent names.
-  5. Prefer 1-5 high-confidence decls over a long list of guesses.
-     Prefer the canonical / most-general formalization of the concept as the
-     primary decl (avoid tagging a narrow special-case theorem when a canonical
-     statement of the concept exists).
+  2. DISCOVER the decl: run `python3 <MS> semantic "<concept or a precise statement>"`;
+     use `python3 <MS> loogle "<pattern>"` when you can express a type/name shape.
+     Grep/Read are a fallback, not the primary tool.
+  3. VERIFY EXISTENCE (MANDATORY): for EVERY decl you report, run
+     `python3 <MS> decl <Decl.Name> --live` and include ONLY decls it reports as
+     EXISTS (use the kind + module it prints). If a name is not found it is wrong —
+     do NOT emit it. Never invent or guess a declaration name.
+  4. Prefer the canonical / most-general formalization as the primary decl (avoid a
+     narrow special-case theorem when a canonical statement of the concept exists).
+     Prefer 1-5 high-confidence decls over a long list of guesses.
 
-SPECIFICITY STEP (do this AFTER you have chosen primary_decl):
-  The article's Wikidata QID (given in the prompt) may be a BROAD parent
-  concept. Determine the MOST SPECIFIC Wikidata concept that the chosen
-  declaration actually formalizes. If the declaration is NARROWER than the
-  article's concept, search Wikidata for the precise concept and use that
-  narrower QID instead of the article's QID. To do this you may run `curl`:
-
-    search:  curl -s -A '<UA>' \\
-      'https://www.wikidata.org/w/api.php?action=wbsearchentities&search=<term>&language=en&format=json&limit=10'
-    entity:  curl -s -A '<UA>' \\
-      'https://www.wikidata.org/w/api.php?action=wbgetentities&ids=<QID>&props=labels|descriptions|claims&languages=en&format=json'
-
-  (In the entity JSON, claim P279 = "subclass of" and P31 = "instance of";
-  a broad parent concept typically has the narrower concept as a subclass.)
-  URL-encode the search term. Verify with wbgetentities that the candidate's
-  English-Wikipedia article describes the SAME object the declaration defines
-  (same scope) — NOT a generalization, NOT a sibling. Only then use that
-  narrower QID. If the article's QID is already the right granularity, keep it.
-
-  Examples of the mistake to avoid:
-    - tagging `Basis` with 'Coordinate system' — use 'Basis' (Q189569)
-    - tagging `Module.Dual` with 'Duality' — use 'Dual space' (Q752487)
-    - tagging `trapezoidal_integral` with 'Numerical integration'
-        — use 'Trapezoidal rule' (Q833293)
-    - tagging `binomialRandom` with 'Random graph'
-        — use 'Erdős–Rényi model' (Q605807)
-    - tagging `IsBigO` with 'Asymptotic analysis'
-        — use 'Big-O notation' (Q623950)
+SPECIFICITY STEP (after primary_decl is chosen and verified):
+  The article's Wikidata QID (given in the prompt) may be a BROAD parent. Find the
+  MOST SPECIFIC QID the declaration actually formalizes:
+    a. `python3 <WD> search "<the decl's concept>"` -> candidates.
+    b. `python3 <WD> entity <QID>` on the top 1-3 — disambiguate by description +
+       P31 (instance of) / P279 (subclass of). Do NOT trust the search's top hit;
+       same-label items are common.
+    c. `python3 <WD> sitelinks <QID>` — confirm its English-Wikipedia article
+       describes the SAME object the decl defines (same scope), not a
+       generalization or sibling.
+  Use that narrower QID as primary_qid. If the article's QID is already the right
+  granularity, keep it. Examples of the mistake to avoid:
+    - `Module.Dual` with 'Duality' -> use 'Dual space' (Q752487)
+    - `trapezoidal_integral` with 'Numerical integration' -> 'Trapezoidal rule' (Q833293)
+    - `binomialRandom` with 'Random graph' -> 'Erdős–Rényi model' (Q605807)
 
 OUTPUT FORMAT — your final reply must be ONLY one JSON object, no prose:
 
@@ -103,7 +108,7 @@ OUTPUT FORMAT — your final reply must be ONLY one JSON object, no prose:
       "module": "<dotted module path, e.g. Mathlib.Topology.MetricSpace.Basic>",
       "kind": "def" | "theorem" | "lemma" | "structure" | "class" | "instance" | "abbrev" | "inductive" | "other",
       "confidence": "high" | "medium" | "low",
-      "evidence": "<relative path:line — short snippet you grepped>"
+      "evidence": "<module + kind from `decl --live`, or a loogle/semantic hit>"
     }
   ],
   "primary_decl": "<single most central decl name, or null>",
@@ -122,7 +127,7 @@ the prompt. If `primary_decl` is null, set `primary_qid` to the article's QID,
 If nothing exists, return `mathlib_decls: []` and set `no_match_reason` to one
 of: "not formalized", "too elementary", "not amenable to formalization",
 "unclear scope", "other".
-""".replace("<UA>", WIKI_UA)
+""".replace("<MS>", str(MATHLIB_SEARCH)).replace("<WD>", str(WIKIDATA_SEARCH))
 
 
 # Reviewer-correction feedback loop. If this file exists, past human rejections
@@ -397,18 +402,19 @@ async def run(
     model: str,
     max_turns: int,
 ) -> int:
-    # Wikidata lookup capability: we use scoped Bash (`Bash(curl:*)`) rather
-    # than WebFetch. Both were probed live and work under Max auth, but:
-    #   * WebFetch routes the response through a secondary extraction model, so
-    #     the agent never sees the raw JSON — lossy for reading P279/P31 claim
-    #     QIDs in wbgetentities. curl returns the exact JSON to parse.
-    #   * `Bash(curl:*)` scopes the shell to curl only (no unrestricted shell),
-    #     and reuses the existing WIKI_UA. The system prompt hands the agent the
-    #     exact wbsearchentities/wbgetentities curl commands to run.
+    # Search capability: scoped Bash to the two WikiLean skill CLIs only — Mathlib
+    # search (semantic/loogle/decl) and Wikidata (search/entity/sitelinks). These
+    # replace raw grep + raw curl: `semantic` (LeanSearch) is far better at
+    # concept->decl than name-grep, `decl --live` is an authoritative existence
+    # gate against the doc-gen4 index, and `wikidata entity/sitelinks` does the
+    # P31/P279 disambiguation raw wbsearchentities skips. The Bash perms are
+    # scoped to `python3 <those two scripts>` (no unrestricted shell).
     options = ClaudeAgentOptions(
         model=model,
         system_prompt=build_system_prompt(),
-        allowed_tools=["Read", "Grep", "Glob", "Bash(curl:*)"],
+        allowed_tools=["Read", "Grep", "Glob",
+                       f"Bash(python3 {MATHLIB_SEARCH}:*)",
+                       f"Bash(python3 {WIKIDATA_SEARCH}:*)"],
         cwd=str(MATHLIB),
         permission_mode="bypassPermissions",
         max_turns=max_turns,
