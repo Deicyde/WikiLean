@@ -104,8 +104,12 @@ def load_catalog():
                 if d.get("decl") == pd:
                     file, conf = module_to_file(d.get("module")), d.get("confidence")
                     break
+            # Label the TAG's QID, not the source article: when the agent narrowed
+            # to a more specific QID (e.g. "Three-dimensional space" article ->
+            # EuclideanSpace -> Q17295 "Euclidean space"), show that QID's label.
+            label = r.get("primary_qid_label") or r.get("title", "")
             cat[q] = {"tag_qid": tag_qid, "decl": pd, "file": file,
-                      "label": r.get("title", ""), "confidence": conf}
+                      "label": label, "confidence": conf}
     return cat
 
 

@@ -11,6 +11,28 @@ import argparse, json, os, subprocess, sys
 from pathlib import Path
 
 DEV_VARS = Path(__file__).resolve().parent.parent / "wiki" / ".dev.vars"
+WD_API = "https://www.wikidata.org/w/api.php"
+
+
+def wikidata_labels(qids):
+    """Authoritative English label per QID — so the queue shows the label of the
+    QID actually being tagged (e.g. Q17295 -> 'Euclidean space'), not a stale
+    source-article title. Batched wbgetentities; missing/failed lookups are skipped."""
+    labels, qids = {}, [q for q in dict.fromkeys(qids) if q]
+    for i in range(0, len(qids), 50):
+        chunk = qids[i:i + 50]
+        url = (f"{WD_API}?action=wbgetentities&ids={'|'.join(chunk)}"
+               f"&props=labels&languages=en&format=json&origin=*")
+        try:
+            out = subprocess.run(["curl", "-s", "-H", "User-Agent: WikiLean-bot/1.0", url],
+                                 capture_output=True, text=True, timeout=40).stdout
+            for q, e in json.loads(out).get("entities", {}).items():
+                lab = (e.get("labels", {}).get("en", {}) or {}).get("value")
+                if lab:
+                    labels[q] = lab
+        except Exception:
+            pass
+    return labels
 
 
 def find_token():
@@ -44,8 +66,11 @@ def main():
             t = e.get("triage", {})
             fix = t.get("fix_hint", "")
             items.append({
-                "qid": e["qid"],
-                "decl": t.get("suggested_decl") or e.get("current_decl", ""),
+                # The corrected concept (what will actually be re-tagged), not the
+                # original broad QID; keep the original as context.
+                "qid": t.get("suggested_qid") or e["qid"],
+                "orig_qid": e["qid"],
+                "decl": t.get("suggested_decl") or e.get("decl") or e.get("current_decl", ""),
                 "file": e.get("file"),
                 "status": "recycled",
                 "notes": e.get("notes", []),
@@ -55,6 +80,11 @@ def main():
         for c in json.loads(args.candidates.read_text()):
             items.append({"qid": c["qid"], "label": c.get("label"), "decl": c.get("decl", ""),
                           "file": c.get("file"), "status": "unreviewed"})
+
+    # Stamp every item with the authoritative Wikidata label for its (tagged) QID.
+    labs = wikidata_labels([it.get("qid") for it in items])
+    for it in items:
+        it["label"] = labs.get(it.get("qid")) or it.get("label")
 
     payload = {"items": items}
     if args.dry_run:
