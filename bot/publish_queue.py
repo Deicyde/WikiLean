@@ -49,7 +49,7 @@ def main():
                 "file": e.get("file"),
                 "status": "recycled",
                 "notes": e.get("notes", []),
-                "retarget": ((t.get("suggested_decl", "") + (" — " + fix if fix else "")).strip(" —")),
+                "retarget": (((t.get("suggested_decl") or "") + (" — " + fix if fix else "")).strip(" —")),
             })
     if args.candidates and args.candidates.exists():
         for c in json.loads(args.candidates.read_text()):
