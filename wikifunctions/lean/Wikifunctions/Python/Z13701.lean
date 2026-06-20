@@ -1,12 +1,13 @@
+import Wikifunctions.Python.Imp
 import Mathlib.Data.Nat.GCD.Basic
 import Mathlib.Tactic
 
 /-!
 # Wikifunctions Z13701 "are coprime" — verified against Mathlib's `Nat.Coprime`
 
-This file proves that the **actual** Python implementation deployed on Wikifunctions
-(function `Z13701`, implementation `Z29182`) computes exactly Mathlib's specification
-`Nat.Coprime`.
+Proves that the **actual** Python implementation deployed on Wikifunctions
+(function `Z13701`, implementation `Z29182`) computes exactly Mathlib's
+specification `Nat.Coprime`.
 
 ## The deployed Python
 
@@ -17,114 +18,28 @@ def Z13701(Z13701K1, Z13701K2):
     return Z13701K1 == 1
 ```
 
-## What this is
+## What this file does
 
-A **deep embedding** of the imperative Python subset this program uses. We define:
+The imperative-Python deep embedding (AST + fuel-interpreter semantics) lives in
+`Wikifunctions.Python.Imp`. Here we:
 
-* an AST of expressions (`Expr`: variable / nat literal / `%`), boolean conditions
-  (`Cond`: `e != 0`), and statements (`Stmt`: a *parallel* assignment, a `while` loop,
-  and sequencing);
-* an explicit **operational semantics** over a variable `State := String → Nat`
-  (a fuel interpreter `Stmt.run`);
-* the concrete program value `loop` that is a 1:1 transcription of the Python above; and
-* the theorem `runProgram_eq_coprime`, proved for **all** `a b : ℕ`, that running the
-  program from the initial state `{Z13701K1 := a, Z13701K2 := b}` terminates and its
-  boolean result equals `decide (Nat.Coprime a b)`.
+* build the concrete program value `loop` as **data** — a 1:1 transcription of the
+  Python above, using the real Wikifunctions variable names `Z13701K1`/`Z13701K2`;
+* prove `runProgram_eq_coprime`: for **all** `a b : ℕ`, running the program from
+  `{Z13701K1 := a, Z13701K2 := b}` terminates and its boolean result equals
+  `decide (Nat.Coprime a b)`.
 
-The embedding is a deep embedding of the *actual source*: `loop` and `loopBody` are data
-(an `Stmt`), not a Lean function, and the reader can see the AST mirrors the Python line
-for line. The parallel assignment `Z13701K1, Z13701K2 = Z13701K2, Z13701K1 % Z13701K2`
-is modelled faithfully by `doPassign`, which evaluates the *entire* right-hand side in
-the current state and then updates both variables simultaneously (a true swap, not a
-sequential assignment).
+The spec is Mathlib's own `Nat.Coprime` (imported); we do **not** define our own
+gcd/coprimality. Correctness is a genuine Euclidean-invariant argument
+(`gcd_body` via `Nat.gcd_rec`/`Nat.gcd_comm`), and termination is established by
+exhibiting sufficient fuel (`Z13701K2` strictly decreases each step, `Nat.mod_lt`).
 
-The correctness proof is a genuine invariant argument: the Euclidean invariant
-`Nat.gcd (s Z13701K1) (s Z13701K2)` is preserved by the loop body (`gcd_body`, via
-`Nat.gcd_rec` and `Nat.gcd_comm`), and at loop exit `Z13701K2 = 0` so the invariant
-collapses to `Nat.gcd a b` by `Nat.gcd_zero_right`. Coprimality is then read off via
-Mathlib's `Nat.coprime_iff_gcd_eq_one`. Termination is established by exhibiting
-sufficient fuel: `Z13701K2` strictly decreases each iteration (`Nat.mod_lt`), so
-`b + 1` units of fuel always suffice.
-
-The spec is Mathlib's own `Nat.Coprime`; we do **not** define our own gcd or coprimality.
-
-## Trust assumption
-
-The single trust assumption is that the operational semantics in this file (`Stmt.run`,
-`doPassign`, `Expr.eval`, `Cond.eval`) faithfully models CPython's behaviour on this
-subset of the language — in particular that Python's `while`, `%` on non-negative ints,
-`!= 0`, simultaneous tuple assignment, and `== 1` behave as encoded here. Everything
-downstream of that modelling is proved in Lean with no `sorry` and no extra axioms
+The single trust assumption (modelling CPython on this subset) is documented in
+`Imp`. Everything here is proved with no `sorry` and no extra axioms
 (`#print axioms` reports only `propext`, `Classical.choice`, `Quot.sound`).
 -/
 
 namespace Wikifunctions.Python
-
-/-- Program variables are named by strings: a faithful `String → Nat` variable store. -/
-abbrev State := String → Nat
-
-/-- Update one variable in a state. -/
-def State.set (s : State) (x : String) (v : Nat) : State :=
-  fun y => if y = x then v else s y
-
-/-- Expressions of the imperative Python subset used by `Z13701`. -/
-inductive Expr where
-  | var (x : String)        -- a variable reference, e.g. `Z13701K1`
-  | lit (n : Nat)           -- a nat literal, e.g. `0` or `1`
-  | mod (e₁ e₂ : Expr)      -- the `%` operator
-  deriving Repr
-
-/-- Boolean conditions. Only `e != 0` is needed (`while Z13701K2 != 0`). -/
-inductive Cond where
-  | ne0 (e : Expr)          -- `e != 0`
-  deriving Repr
-
-/-- Statements: a *parallel* (simultaneous) assignment, a `while` loop, and sequencing. -/
-inductive Stmt where
-  /-- `x₁, x₂ = e₁, e₂`: evaluate BOTH right-hand sides in the current state, then update
-  both targets simultaneously (a faithful swap, not a sequential assignment). -/
-  | passign (x₁ x₂ : String) (e₁ e₂ : Expr)
-  | while_ (c : Cond) (body : Stmt)
-  | seq (s₁ s₂ : Stmt)
-  deriving Repr
-
-/-- Expression evaluation. -/
-def Expr.eval (s : State) : Expr → Nat
-  | .var x => s x
-  | .lit n => n
-  | .mod e₁ e₂ => (e₁.eval s) % (e₂.eval s)
-
-/-- Condition evaluation: `e != 0` is `e.eval s ≠ 0`. -/
-def Cond.eval (s : State) : Cond → Bool
-  | .ne0 e => e.eval s ≠ 0
-
-/-- Semantics of the parallel assignment `x₁, x₂ = e₁, e₂`: both right-hand sides are
-evaluated in the *current* state `s`, then both targets are updated simultaneously. -/
-def doPassign (s : State) (x₁ x₂ : String) (e₁ e₂ : Expr) : State :=
-  let v₁ := e₁.eval s
-  let v₂ := e₂.eval s
-  (s.set x₁ v₁).set x₂ v₂
-
-/-- Fuel interpreter giving the operational semantics of statements.
-`none` means the loop ran out of fuel (did not terminate within the budget). -/
-def Stmt.run (fuel : Nat) (s : State) : Stmt → Option State
-  | .passign x₁ x₂ e₁ e₂ => some (doPassign s x₁ x₂ e₁ e₂)
-  | .seq a b =>
-      match a.run fuel s with
-      | none => none
-      | some s' => b.run fuel s'
-  | .while_ c body =>
-      match fuel with
-      | 0 => none
-      | fuel + 1 =>
-          if c.eval s then
-            match body.run fuel s with
-            | none => none
-            | some s' => (Stmt.while_ c body).run fuel s'
-          else
-            some s
-
-/-! ### The concrete program (a 1:1 transcription of the Python) -/
 
 /-- The variable holding `Z13701K1` (the first argument, `a`). -/
 def varA : String := "Z13701K1"
@@ -173,11 +88,8 @@ theorem gcd_body (s : State) :
       ((doPassign s varA varB (.var varB) (.mod (.var varA) (.var varB))) varB)
       = Nat.gcd (s varA) (s varB) := by
   rw [body_a, body_b]
-  -- goal: gcd (s b) (s a % s b) = gcd (s a) (s b)
   rw [Nat.gcd_comm (s varA) (s varB)]
-  -- goal: gcd (s b) (s a % s b) = gcd (s b) (s a)
   conv_rhs => rw [Nat.gcd_rec (s varB) (s varA)]
-  -- rhs becomes gcd (s a % s b) (s b)
   rw [Nat.gcd_comm (s varA % s varB) (s varB)]
 
 /-- **Loop correctness and termination.** With strictly more fuel than the current
@@ -193,16 +105,13 @@ theorem loop_correct (fuel : Nat) :
   | succ n ih =>
     intro s hb
     by_cases hc : s varB = 0
-    · -- loop exits immediately: final a = a = gcd a 0
-      refine ⟨s, ?_, ?_⟩
+    · refine ⟨s, ?_, ?_⟩
       · simp only [loop, Stmt.run, Cond.eval, Expr.eval, hc]
         simp
       · rw [hc, Nat.gcd_zero_right]
-    · -- one iteration at fuel `n+1`, then recurse at fuel `n`
-      have hpos : 0 < s varB := Nat.pos_of_ne_zero hc
+    · have hpos : 0 < s varB := Nat.pos_of_ne_zero hc
       set s' := doPassign s varA varB (.var varB) (.mod (.var varA) (.var varB))
         with hs'
-      -- new `Z13701K2` is `a % b < b ≤ n`, hence `< n`: enough fuel for the recursion
       have hb' : s' varB < n := by
         have hsb : s' varB = s varA % s varB := by rw [hs']; exact body_b s
         rw [hsb]
@@ -210,11 +119,9 @@ theorem loop_correct (fuel : Nat) :
         omega
       obtain ⟨t, hrun, hta⟩ := ih s' hb'
       refine ⟨t, ?_, ?_⟩
-      · -- unfold one step of the while loop at fuel `n+1`
-        have hcond : (Cond.ne0 (.var varB)).eval s = true := by
+      · have hcond : (Cond.ne0 (.var varB)).eval s = true := by
           simp [Cond.eval, Expr.eval, hc]
         simp only [loop, Stmt.run, hcond, if_true]
-        -- `loopBody.run n s = some s'`, then the recursive while on `s'`
         show (match loopBody.run n s with
               | none => none
               | some s'' => (Stmt.while_ (.ne0 (.var varB)) loopBody).run n s'')
