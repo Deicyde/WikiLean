@@ -1,0 +1,409 @@
+{
+  "slug": "Asymptotic_analysis",
+  "wikipedia_title": "Asymptotic analysis",
+  "display_title": "Asymptotic analysis",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Asymptotic analysis",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "asymptotic analysis , also known as asymptotics , is the development and application of methods"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib formalizes the central tools of asymptotic analysis (IsBigO/IsLittleO/IsTheta/IsEquivalent) but not the meta-concept of the discipline itself.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Function approximation example",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "An example of asymptotic analysis is function approximation."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Generic motivating example with no specific statement to formalize.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Prime number theorem example",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The prime number theorem is an example of an important asymptotic result."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The PNT (π(x) ~ x/log x) is not present in Mathlib; only partial Chebyshev-type bounds like Chebyshev.eventually_primeCounting_le exist.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Asymptotic equivalence",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Formally, given functions f ( x ) and g ( x ) , we define a binary relation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsEquivalent",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Asymptotics.IsEquivalent l u v is defined as (u - v) =o[l] v, generalizing the f/g→1 definition to arbitrary filters and normed groups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Tilde notation and equivalence relation",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "The relation is an equivalence relation on the set of functions of x"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsEquivalent",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The scoped notation `u ~[l] v` denotes IsEquivalent, with IsEquivalent.refl/symm/trans giving the equivalence-relation lemmas.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Alternative definition (little-o)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "some authors use an alternative definition. The alternative definition, in little-o notation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsEquivalent",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's IsEquivalent uses precisely the little-o definition: (u - v) =o[l] v.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence of definitions",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "This definition is equivalent to the prior definition if g ( x ) is not zero in some neighbourhood"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.isEquivalent_iff_tendsto_one",
+        "module": "Mathlib.Analysis.Asymptotics.AsymptoticEquivalent",
+        "match_kind": "exact"
+      },
+      "note": "isEquivalent_iff_tendsto_one gives IsEquivalent ↔ Tendsto (u/v) l (𝓝 1) under eventual nonvanishing of v.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Zero function never equivalent",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The zero function,"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.isEquivalent_zero_iff_eventually_zero",
+        "module": "Mathlib.Analysis.Asymptotics.AsymptoticEquivalent",
+        "match_kind": "exact"
+      },
+      "note": "Characterizes when a function is asymptotically equivalent to zero (precisely when it is eventually zero).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Partial ordering of little-o",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The little-o relation has the partial ordering property defined as if"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsLittleO.trans",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "Transitivity of =o[l] is in Mathlib; the strict-partial-order Wikipedia property is captured by IsLittleO's irreflexive transitive behavior but not packaged as a Preorder/PartialOrder instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reflexive, symmetric, transitive",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Asymptotic equivalence has reflexive , symmetric and transitive properties."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsEquivalent.refl",
+        "module": "Mathlib.Analysis.Asymptotics.AsymptoticEquivalent",
+        "match_kind": "exact"
+      },
+      "note": "IsEquivalent.refl, IsEquivalent.symm and IsEquivalent.trans collectively give the equivalence-relation properties.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponentiation preserves equivalence",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "If these functions are equivalent,"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsEquivalent.rpow",
+        "module": "Mathlib.Analysis.Asymptotics.SpecificAsymptotics",
+        "match_kind": "exact"
+      },
+      "note": "IsEquivalent.rpow shows u ~[l] v implies u^r ~[l] v^r for nonnegative v.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quotients of equivalents",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "then the quotients are equivalent:"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Asymptotics.IsEquivalent.div",
+        "module": "Mathlib.Analysis.Asymptotics.AsymptoticEquivalent",
+        "match_kind": "exact"
+      },
+      "note": "IsEquivalent.div proves t ~ u and v ~ w implies t/v ~ u/w in a normed field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Integration and differentiation",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Asymptotically equivalent functions remain asymptotically equivalent under integration if requirements related to convergence are met."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma stating asymptotic equivalence is preserved by integration/differentiation was located.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Stirling's approximation",
+      "anchor": {
+        "section": "Examples of asymptotic formulas",
+        "snippet": "Factorial"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Stirling.factorial_isEquivalent_stirling",
+        "module": "Mathlib.Analysis.SpecialFunctions.Stirling",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's Stirling.factorial_isEquivalent_stirling expresses n! ~ √(2πn) (n/e)^n via Asymptotics.IsEquivalent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Partition function asymptotic",
+      "anchor": {
+        "section": "Examples of asymptotic formulas",
+        "snippet": "Partition function For a positive integer n , the partition function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hardy–Ramanujan asymptotic for the integer partition function is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Airy function asymptotic",
+      "anchor": {
+        "section": "Examples of asymptotic formulas",
+        "snippet": "Airy function The Airy function, Ai( x ), is a solution of the differential equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Airy function is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hankel functions asymptotic",
+      "anchor": {
+        "section": "Examples of asymptotic formulas",
+        "snippet": "Hankel functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hankel functions are not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Asymptotic expansion",
+      "anchor": {
+        "section": "Asymptotic expansion",
+        "snippet": "An asymptotic expansion of a function f ( x ) is in practice an expression of that function in terms of a series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The general notion of a Poincaré asymptotic expansion (with asymptotic scales) is not formalized as a definition in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Asymptotic scale",
+      "anchor": {
+        "section": "Asymptotic expansion",
+        "snippet": "form an asymptotic scale"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of an asymptotic scale (sequence of gauge functions with φ_{n+1} = o(φ_n)) is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Gamma function expansion",
+      "anchor": {
+        "section": "Examples of asymptotic expansions",
+        "snippet": "Gamma function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The asymptotic series for Γ(z) (Stirling's series) is not in Mathlib, only the leading Stirling equivalent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Exponential integral expansion",
+      "anchor": {
+        "section": "Examples of asymptotic expansions",
+        "snippet": "Exponential integral"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The exponential integral Ei and its asymptotic expansion are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Error function expansion",
+      "anchor": {
+        "section": "Examples of asymptotic expansions",
+        "snippet": "Error function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The error function erf and its asymptotic expansion are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Worked example from formal power series",
+      "anchor": {
+        "section": "Worked example",
+        "snippet": "we might start with the formal power series"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The illustrative worked example tying a formal power series to an asymptotic expansion is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Asymptotic distribution",
+      "anchor": {
+        "section": "Asymptotic distribution",
+        "snippet": "an asymptotic distribution is a hypothetical distribution that is in a sense the \"limiting\" distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has weak convergence of measures but no named definition labelled `asymptotic distribution`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Asymptote",
+      "anchor": {
+        "section": "Asymptotic distribution",
+        "snippet": "An asymptote is a straight line that a curve approaches but never meets or crosses."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of a geometric asymptote of a curve appears in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

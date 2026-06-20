@@ -32,10 +32,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Int",
-        "module": null,
+        "module": "Init.Data.Int.Basic",
         "match_kind": "exact"
       },
-      "note": "The integer type `Int` (`ℤ`) is a Lean core definition used throughout Mathlib.",
+      "note": "The integer type `Int` (`ℤ`) is a Lean core inductive used throughout Mathlib.",
       "provenance": "ai",
       "id": "85a2783c984e"
     },
@@ -88,16 +88,6 @@
       },
       "note": "`PythagoreanTriple x y z` is defined as `x^2 + y^2 = z^2` over the integers.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "History",
-          "snippet": "a list of Pythagorean triples , that is, integers"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\left({\\frac {1}{2}}\\left(x-{\\frac {1}{x}}\\right)\\right)^{2}+1=\\left({\\frac {1}{2}}\\left(x+{\\frac {1}{x}}\\right)\\right)^{2},}"
-        }
-      ],
       "id": "18a346d2e6c7"
     },
     {
@@ -144,7 +134,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Mul",
-        "module": null,
+        "module": "Init.Prelude",
         "match_kind": "generalization"
       },
       "note": "Multiplication is given by the core `Mul`/`HMul` typeclass, instantiated for `ℤ` and `ℕ`.",
@@ -161,7 +151,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Dvd.dvd",
-        "module": null,
+        "module": "Init.Prelude",
         "match_kind": "generalization"
       },
       "note": "The divisibility relation `∣` is the core `Dvd` typeclass, available on `ℤ`.",
@@ -178,7 +168,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Nat.div_add_mod",
-        "module": null,
+        "module": "Init.Data.Nat.Div.Basic",
         "match_kind": "special_case"
       },
       "note": "`Nat.div_add_mod` (with `Nat.mod_lt`) gives the division-with-remainder decomposition; `Int.emod_add_ediv` is the integer analogue.",
@@ -229,7 +219,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Nat.gcd",
-        "module": null,
+        "module": "Init.Data.Nat.Gcd",
         "match_kind": "exact"
       },
       "note": "`Nat.gcd` (and `GCDMonoid.gcd`) give the greatest common divisor, characterized by `Nat.gcd_dvd`/`Nat.dvd_gcd`.",
@@ -246,7 +236,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Nat.Coprime",
-        "module": null,
+        "module": "Init.Data.Nat.Coprime",
         "match_kind": "exact"
       },
       "note": "`Nat.Coprime m n` is defined as `gcd m n = 1`; `IsCoprime` is the general ring version.",
@@ -506,16 +496,6 @@
       },
       "note": "`ZMod n` is the ring of integers modulo `n`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Elementary number theory",
-          "snippet": "Modular arithmetic works with finite sets of integers"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle a^{\\varphi (n)}\\equiv 1{\\pmod {n}},}"
-        }
-      ],
       "id": "27eac4e7c27b"
     },
     {
@@ -533,16 +513,6 @@
       },
       "note": "`Int.ModEq n a b` (`a ≡ b [ZMOD n]`) defines congruence; `Nat.ModEq` is the natural-number version.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Elementary number theory",
-          "snippet": "A congruence of two integers"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle a^{\\varphi (n)}\\equiv 1{\\pmod {n}},}"
-        }
-      ],
       "id": "3a52b5bb5512"
     },
     {
@@ -560,16 +530,6 @@
       },
       "note": "Residue classes mod `n` are exactly the elements of `ZMod n`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Elementary number theory",
-          "snippet": "is a set that contains all integers congruent to a specified"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle a^{\\varphi (n)}\\equiv 1{\\pmod {n}},}"
-        }
-      ],
       "id": "47b7fffdfccc"
     },
     {
@@ -587,16 +547,6 @@
       },
       "note": "`ZMod.pow_card` gives `a^p = a`, with `ZMod.pow_card_sub_one_eq_one` the `a^(p-1)=1` form.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Elementary number theory",
-          "snippet": "An influential theorem is Fermat's little theorem"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle a^{\\varphi (n)}\\equiv 1{\\pmod {n}},}"
-        }
-      ],
       "id": "842270911a23"
     },
     {
@@ -614,16 +564,6 @@
       },
       "note": "`Nat.ModEq.pow_totient` states `x^φ(n) ≡ 1 [MOD n]` for `x` coprime to `n`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Elementary number theory",
-          "snippet": "Euler's theorem extends this to assert that every integer"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle a^{\\varphi (n)}\\equiv 1{\\pmod {n}},}"
-        }
-      ],
       "id": "87ecd818ac7e"
     },
     {
@@ -653,7 +593,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "Filter.Tendsto",
-        "module": "Mathlib.Order.Filter.Basic",
+        "module": "Mathlib.Order.Filter.Defs",
         "match_kind": null
       },
       "note": "The limit notion is formalized via `Filter.Tendsto`, but 'analysis' as a field is not a statement.",
@@ -670,7 +610,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Filter.Tendsto",
-        "module": "Mathlib.Order.Filter.Basic",
+        "module": "Mathlib.Order.Filter.Defs",
         "match_kind": "generalization"
       },
       "note": "Limits of sequences are expressed as `Filter.Tendsto u atTop (nhds L)`.",
@@ -760,20 +700,6 @@
       },
       "note": "`riemannZeta` is the analytically continued zeta function, equal to `∑ 1/n^s` for `re s > 1`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Analytic number theory",
-          "snippet": "It is defined as the series"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\zeta (s)=\\sum _{n=1}^{\\infty }{\\frac {1}{n^{s}}}={\\frac {1}{1^{s}}}+{\\frac {1}{2^{s}}}+{\\frac {1}{3^{s}}}+\\cdots }"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\zeta (s)=\\prod _{p{\\text{ prime}}}\\left(1-{\\frac {1}{p^{s}}}\\right)^{-1}.}"
-        }
-      ],
       "id": "d288cb52faee"
     },
     {
@@ -791,20 +717,6 @@
       },
       "note": "`riemannZeta_eulerProduct` proves the product over primes equals `ζ(s)` for `re s > 1`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Analytic number theory",
-          "snippet": "Euler demonstrated a link involving the infinite product over all prime numbers"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\zeta (s)=\\sum _{n=1}^{\\infty }{\\frac {1}{n^{s}}}={\\frac {1}{1^{s}}}+{\\frac {1}{2^{s}}}+{\\frac {1}{3^{s}}}+\\cdots }"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\zeta (s)=\\prod _{p{\\text{ prime}}}\\left(1-{\\frac {1}{p^{s}}}\\right)^{-1}.}"
-        }
-      ],
       "id": "fdadc88f5ab2"
     },
     {
@@ -822,20 +734,6 @@
       },
       "note": "The statement `RiemannHypothesis` is formalized as a `Prop` (unproven conjecture).",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Analytic number theory",
-          "snippet": "Riemann extended the definition to a complex variable and conjectured"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\zeta (s)=\\sum _{n=1}^{\\infty }{\\frac {1}{n^{s}}}={\\frac {1}{1^{s}}}+{\\frac {1}{2^{s}}}+{\\frac {1}{3^{s}}}+\\cdots }"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\zeta (s)=\\prod _{p{\\text{ prime}}}\\left(1-{\\frac {1}{p^{s}}}\\right)^{-1}.}"
-        }
-      ],
       "id": "1517b39eaeeb"
     },
     {
@@ -864,11 +762,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "dedekindZeta",
+        "decl": "NumberField.dedekindZeta",
         "module": "Mathlib.NumberTheory.NumberField.DedekindZeta",
         "match_kind": "exact"
       },
-      "note": "`dedekindZeta` defines the Dedekind zeta function of a number field.",
+      "note": "`NumberField.dedekindZeta K s` defines the Dedekind zeta function of a number field.",
       "provenance": "ai",
       "id": "c54d927f9bd9"
     },
@@ -1068,7 +966,7 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Real.exists_rat_abs_sub_lt_one_div_den_sq_of_irrational",
+        "decl": "Real.infinite_rat_abs_sub_lt_one_div_den_sq_of_irrational",
         "module": "Mathlib.NumberTheory.DiophantineApproximation.Basic",
         "match_kind": null
       },
@@ -1194,6 +1092,214 @@
       "note": "A subfield of mathematics, not a formalizable statement.",
       "provenance": "ai",
       "id": "3c4a7389cc32"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fermat's Last Theorem",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Fermat's Last Theorem , which was proved 358 years after the original formulation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "FLT in full generality (Wiles's theorem) is not formalized in Mathlib; only individual exponents (n = 3, 4) appear.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Goldbach's conjecture",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Goldbach's conjecture , which remains unsolved since the 18th century"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The strong Goldbach conjecture is not stated as a named declaration in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Chinese remainder theorem",
+      "anchor": {
+        "section": "History",
+        "snippet": "The Chinese remainder theorem appears as an exercise"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ZMod.chineseRemainder",
+        "module": "Mathlib.Data.ZMod.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`ZMod.chineseRemainder` (with `Ideal.quotientInfRingEquivPiQuotient`) realizes the Chinese remainder isomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Pell equation",
+      "anchor": {
+        "section": "History",
+        "snippet": "indefinite quadratic equations—in particular, the Pell equation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Pell.exists_of_not_isSquare",
+        "module": "Mathlib.NumberTheory.Pell",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `Pell` namespace formalizes Pell's equation `x^2 - d*y^2 = 1` and existence of nontrivial solutions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Wilson's theorem",
+      "anchor": {
+        "section": "History",
+        "snippet": "Joseph-Louis Lagrange (1736–1813) gave full proofs of the four-square theorem , Wilson's theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.prime_iff_fac_equiv_neg_one",
+        "module": "Mathlib.NumberTheory.Wilson",
+        "match_kind": "exact"
+      },
+      "note": "Wilson's theorem is formalized as `(p-1)! ≡ -1 [MOD p] ↔ p prime`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lagrange's four-square theorem",
+      "anchor": {
+        "section": "History",
+        "snippet": "gave full proofs of the four-square theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.sum_four_squares",
+        "module": "Mathlib.NumberTheory.SumFourSquares",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.sum_four_squares` shows every natural number is a sum of four squares.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Quadratic reciprocity",
+      "anchor": {
+        "section": "History",
+        "snippet": "Adrien-Marie Legendre (1752–1833) stated the law of quadratic reciprocity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "legendreSym.quadratic_reciprocity",
+        "module": "Mathlib.NumberTheory.LegendreSymbol.QuadraticReciprocity",
+        "match_kind": "exact"
+      },
+      "note": "`legendreSym.quadratic_reciprocity` formalizes `(q/p)*(p/q) = (-1)^((p-1)(q-1)/4)` for distinct odd primes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Dirichlet's theorem on arithmetic progressions",
+      "anchor": {
+        "section": "History",
+        "snippet": "A conventional starting point for analytic number theory is Dirichlet's theorem on arithmetic progressions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.infinite_setOf_prime_and_eq_mod",
+        "module": "Mathlib.NumberTheory.LSeries.PrimesInAP",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.infinite_setOf_prime_and_eq_mod` formalizes infinitely many primes in any arithmetic progression with unit residue mod `q`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euler's totient function",
+      "anchor": {
+        "section": "Elementary number theory",
+        "snippet": "and Euler's totient function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.totient",
+        "module": "Mathlib.Data.Nat.Totient",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.totient n` (notation `φ n`) counts positive integers ≤ n coprime to n.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Perfect number",
+      "anchor": {
+        "section": "Elementary number theory",
+        "snippet": "prime numbers , and perfect numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.Perfect",
+        "module": "Mathlib.NumberTheory.Divisors",
+        "match_kind": "exact"
+      },
+      "note": "`Nat.Perfect n` holds iff `n` equals the sum of its proper divisors.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Divisor function",
+      "anchor": {
+        "section": "Elementary number theory",
+        "snippet": "Important number-theoretic functions include the divisor-counting function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.divisors",
+        "module": "Mathlib.NumberTheory.Divisors",
+        "match_kind": "generalization"
+      },
+      "note": "`Nat.divisors n` gives the finset of divisors of `n`; `σ k n` (`Nat.sigma`) gives divisor sums.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Twin prime conjecture",
+      "anchor": {
+        "section": "Analytic number theory",
+        "snippet": "the twin prime conjecture"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The twin prime conjecture is unsolved and not formalized as a named Mathlib statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Waring's problem",
+      "anchor": {
+        "section": "Analytic number theory",
+        "snippet": "the Waring problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Waring's problem in general is not formalized; only special cases such as the four-square theorem are.",
+      "provenance": "ai"
     }
   ]
 }

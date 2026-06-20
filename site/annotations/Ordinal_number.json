@@ -35,7 +35,7 @@
         "module": "Mathlib.Order.InitialSeg",
         "match_kind": "exact"
       },
-      "note": "For any two well-orders, one is an initial segment of the other (and isomorphism is the equality case).",
+      "note": "`InitialSeg.total` shows for any two well-orders, one is an initial segment of the other.",
       "provenance": "ai",
       "id": "818a2eeaca6f"
     },
@@ -52,7 +52,7 @@
         "module": "Mathlib.Order.RelClasses",
         "match_kind": "exact"
       },
-      "note": "`IsWellOrder` is the typeclass for a relation that is trichotomous, transitive and well-founded.",
+      "note": "`IsWellOrder` is the typeclass for a trichotomous, transitive, well-founded relation.",
       "provenance": "ai",
       "id": "dd12f8631460"
     },
@@ -69,7 +69,7 @@
         "module": "Mathlib.SetTheory.Ordinal.Basic",
         "match_kind": "exact"
       },
-      "note": "`Ordinal.type` maps a well-order to its order-isomorphism class, the ordinal.",
+      "note": "`Ordinal.type` maps a well-order to its order-isomorphism class.",
       "provenance": "ai",
       "id": "fdc305d374d4"
     },
@@ -137,7 +137,7 @@
         "module": "Mathlib.Order.RelClasses",
         "match_kind": "exact"
       },
-      "note": "`IsWellOrder` captures a total order in which every nonempty subset has a least element.",
+      "note": "`IsWellOrder` captures a total order whose every nonempty subset has a least element.",
       "provenance": "ai",
       "id": "11ce9cc4fbda"
     },
@@ -154,7 +154,7 @@
         "module": "Mathlib.Order.Hom.Basic",
         "match_kind": "exact"
       },
-      "note": "`OrderIso` (and `RelIso`) is an order-preserving bijection between ordered sets.",
+      "note": "`OrderIso` is the order-preserving bijection between ordered types.",
       "provenance": "ai",
       "id": "a4b63fb79c01"
     },
@@ -188,7 +188,7 @@
         "module": "Mathlib.SetTheory.Ordinal.Basic",
         "match_kind": "exact"
       },
-      "note": "The `Setoid` instance `Ordinal.isEquivalent` is precisely order-isomorphism as an equivalence relation on well-orders.",
+      "note": "`Ordinal.isEquivalent` is the `Setoid` of order-isomorphism on well-orders.",
       "provenance": "ai",
       "id": "9e2ffed0c8ac"
     },
@@ -222,7 +222,7 @@
         "module": "Mathlib.Order.InitialSeg",
         "match_kind": null
       },
-      "note": "Mathlib has the order-embedding collapse into an initial segment, but not the general set-theoretic Mostowski transitive collapse by name.",
+      "note": "Mathlib has the order-embedding collapse into an initial segment but not the general set-theoretic Mostowski transitive collapse by name.",
       "provenance": "ai",
       "id": "30ef18707a68"
     },
@@ -239,7 +239,7 @@
         "module": "Mathlib.SetTheory.ZFC.Basic",
         "match_kind": "exact"
       },
-      "note": "`ZFSet.omega` is the set of finite von Neumann ordinals, built from `∅` (omega_zero) and `insert x x` (omega_succ).",
+      "note": "`ZFSet.omega` is the set of finite von Neumann ordinals built from `∅` and `insert x x`.",
       "provenance": "ai",
       "id": "9e9877e6d942"
     },
@@ -273,7 +273,7 @@
         "module": "Mathlib.SetTheory.ZFC.Basic",
         "match_kind": null
       },
-      "note": "`ZFSet.omega` is defined directly from ℕ and shown inductive (omega_zero/omega_succ), but not characterized as the smallest inductive set.",
+      "note": "`ZFSet.omega` is constructed directly from ℕ; it is not characterized as the smallest inductive set in Mathlib.",
       "provenance": "ai",
       "id": "d15e245a266d"
     },
@@ -307,7 +307,7 @@
         "module": "Mathlib.SetTheory.ZFC.Ordinal",
         "match_kind": "exact"
       },
-      "note": "For ordinals, `x ⊆ y ↔ x = y ∨ x ∈ y`, i.e. `≤` is `⊆` and `<` is `∈`.",
+      "note": "For ordinals, `x ⊆ y ↔ x = y ∨ x ∈ y`, exactly the alternative characterization.",
       "provenance": "ai",
       "id": "a8e045300231"
     },
@@ -324,7 +324,7 @@
         "module": "Mathlib.SetTheory.Ordinal.Basic",
         "match_kind": "exact"
       },
-      "note": "`Ordinal` has a `LinearOrder` instance and `Ordinal.lt_wf`/`WellFoundedLT` makes it a well-order.",
+      "note": "`Ordinal` has a `LinearOrder` instance and `Ordinal.lt_wf` provides well-foundedness.",
       "provenance": "ai",
       "id": "15ce227a47bc"
     },
@@ -341,7 +341,7 @@
         "module": "Mathlib.SetTheory.Ordinal.Family",
         "match_kind": "special_case"
       },
-      "note": "Any (small) set of ordinals is bounded above, so its `sSup`/`iSup` (the union) is again an ordinal.",
+      "note": "Any small set of ordinals is bounded above, so its `sSup` is again an ordinal.",
       "provenance": "ai",
       "id": "c19ac3f1aac1"
     },
@@ -358,7 +358,7 @@
         "module": "Mathlib.Order.SuccPred.Basic",
         "match_kind": "special_case"
       },
-      "note": "Every ordinal is below its successor, so the successor of the supremum of a set exceeds all its members.",
+      "note": "Every ordinal is below its successor, so the successor of the supremum exceeds all members.",
       "provenance": "ai",
       "id": "dfcd78d6b99a"
     },
@@ -375,7 +375,7 @@
         "module": "Mathlib.SetTheory.Ordinal.Family",
         "match_kind": "exact"
       },
-      "note": "`not_small_ordinal` is the formal content of Burali-Forti: `Ordinal` is not a small type (a proper class).",
+      "note": "`not_small_ordinal` is the formal content of Burali-Forti: `Ordinal` is a proper class.",
       "provenance": "ai",
       "id": "99a3ceffdbd7"
     },
@@ -409,7 +409,7 @@
         "module": "Mathlib.SetTheory.Ordinal.Arithmetic",
         "match_kind": "exact"
       },
-      "note": "Every ordinal is zero, a successor, or a (successor) limit.",
+      "note": "Every ordinal is zero, a successor, or a limit.",
       "provenance": "ai",
       "id": "8057ae79e4da"
     },
@@ -422,11 +422,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Ordinal.zero_le",
+        "decl": "Ordinal.bot_eq_zero",
         "module": "Mathlib.SetTheory.Ordinal.Basic",
         "match_kind": "exact"
       },
-      "note": "`0 : Ordinal` exists and `Ordinal.zero_le` shows it is the least ordinal.",
+      "note": "`Ordinal.bot_eq_zero` together with the `OrderBot` instance gives that `0` is the least ordinal.",
       "provenance": "ai",
       "id": "0865bbac54ac"
     },
@@ -443,7 +443,7 @@
         "module": "Mathlib.Order.SuccPred.Basic",
         "match_kind": "exact"
       },
-      "note": "Ordinals have a `SuccOrder` instance; `Order.succ o` is the successor ordinal (`= o + 1`).",
+      "note": "Ordinals have a `SuccOrder` instance; `Order.succ o` is the successor ordinal.",
       "provenance": "ai",
       "id": "9f2ed9575b80"
     },
@@ -460,7 +460,7 @@
         "module": "Mathlib.Order.SuccPred.Limit",
         "match_kind": "exact"
       },
-      "note": "`Order.IsSuccLimit` (used for ordinals) is the limit-ordinal predicate.",
+      "note": "`Order.IsSuccLimit` is the limit-ordinal predicate Mathlib uses for ordinals.",
       "provenance": "ai",
       "id": "5d7b630bb1a4"
     },
@@ -490,8 +490,8 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "IsSuccPrelimit.sSup_Iio",
-        "module": "Mathlib.SetTheory.Ordinal.Family",
+        "decl": "Order.IsSuccPrelimit.sSup_Iio",
+        "module": "Mathlib.Order.SuccPred.CompleteLinearOrder",
         "match_kind": "exact"
       },
       "note": "A (pre)limit ordinal equals the supremum of all ordinals strictly below it.",
@@ -511,7 +511,7 @@
         "module": "Mathlib.SetTheory.Ordinal.Arithmetic",
         "match_kind": "exact"
       },
-      "note": "`omega0_le_of_isSuccLimit` shows ω ≤ any limit ordinal, i.e. ω is the least limit.",
+      "note": "`omega0_le_of_isSuccLimit` shows ω ≤ any limit ordinal, so ω is the least limit.",
       "provenance": "ai",
       "id": "523b06a7a331"
     },
@@ -545,7 +545,7 @@
         "module": "Mathlib.SetTheory.Ordinal.Basic",
         "match_kind": "generalization"
       },
-      "note": "`Ordinal.lt_wf` (the `WellFoundedLT` instance) means there are no infinite descending chains.",
+      "note": "`Ordinal.lt_wf` means there are no infinite descending chains of ordinals.",
       "provenance": "ai",
       "id": "dc75ac5c675d"
     },
@@ -562,7 +562,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "This is a methodological remark; Mathlib uses well-founded recursion but no theorem states this application.",
+      "note": "This is a methodological remark; Mathlib uses well-founded recursion but does not state this as a theorem.",
       "provenance": "ai",
       "id": "9c2ee59dcd92"
     },
@@ -579,7 +579,7 @@
         "module": "Mathlib.SetTheory.Ordinal.Family",
         "match_kind": null
       },
-      "note": "Ordinal-indexed sequences are represented as functions/bounded families, with no dedicated 'transfinite sequence' type.",
+      "note": "Ordinal-indexed sequences appear as bounded families; there is no dedicated 'transfinite sequence' type.",
       "provenance": "ai",
       "id": "7ba67198e28b"
     },
@@ -596,7 +596,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib does not reify proper classes, so a sequence indexed by all ordinals being a proper class is not stated.",
+      "note": "Mathlib does not reify proper classes, so this is not formalized.",
       "provenance": "ai",
       "id": "94408091ce67"
     },
@@ -613,7 +613,7 @@
         "module": "Mathlib.SetTheory.Ordinal.Family",
         "match_kind": "generalization"
       },
-      "note": "The supremum `iSup`/`sSup` of an ordinal family is its least upper bound (the limit).",
+      "note": "The supremum `iSup` of an ordinal family is its least upper bound (the limit).",
       "provenance": "ai",
       "id": "eff11e7fe830"
     },
@@ -630,7 +630,7 @@
         "module": "Mathlib.Order.IsNormal",
         "match_kind": null
       },
-      "note": "Continuity (preserving suprema at limits) is bundled into `Order.IsNormal` rather than defined separately.",
+      "note": "Continuity is bundled into `Order.IsNormal` rather than defined as a standalone predicate.",
       "provenance": "ai",
       "id": "434b89809709"
     },
@@ -647,7 +647,7 @@
         "module": "Mathlib.Order.IsNormal",
         "match_kind": "exact"
       },
-      "note": "`Order.IsNormal` means strictly monotone and continuous (sup-preserving at limits).",
+      "note": "`Order.IsNormal` is exactly: strictly monotone and continuous (sup-preserving at limits).",
       "provenance": "ai",
       "id": "cb02d9c21a25"
     },
@@ -698,7 +698,7 @@
         "module": "Mathlib.SetTheory.Ordinal.Arithmetic",
         "match_kind": "exact"
       },
-      "note": "`limitRecOn` plus its `_zero/_succ/_limit` computation rules give existence and (definitional) uniqueness.",
+      "note": "`limitRecOn` with its computation rules gives existence and definitional uniqueness.",
       "provenance": "ai",
       "id": "e2d52f0da2fa"
     },
@@ -766,7 +766,7 @@
         "module": "Mathlib.SetTheory.Ordinal.Principal",
         "match_kind": "exact"
       },
-      "note": "`IsPrincipal (·+·) a ↔ ∀ b<a, ∀ c<a, b+c ≠ a` is exactly additive indecomposability.",
+      "note": "`IsPrincipal (·+·) a` is exactly additive indecomposability.",
       "provenance": "ai",
       "id": "299f6c2bbbf8"
     },
@@ -783,7 +783,7 @@
         "module": "Mathlib.SetTheory.Ordinal.Veblen",
         "match_kind": "exact"
       },
-      "note": "`Ordinal.epsilon = veblen 1` enumerates the epsilon numbers (fixed points of ω^·).",
+      "note": "`Ordinal.epsilon` enumerates the epsilon numbers (fixed points of `ω^·`).",
       "provenance": "ai",
       "id": "138e4375267e"
     },
@@ -817,7 +817,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Natural (Hessenberg) sum/product of ordinals is not present in Mathlib.",
+      "note": "Natural (Hessenberg) sum/product of ordinals is not in Mathlib.",
       "provenance": "ai",
       "id": "bc97163ca742"
     },
@@ -851,7 +851,7 @@
         "module": "Mathlib.SetTheory.Cardinal.Order",
         "match_kind": "special_case"
       },
-      "note": "The well-ordering theorem is proved from Lean's choice axiom, but the equivalence AC ⇔ well-ordering is not formalized.",
+      "note": "The well-ordering theorem is derived from Lean's choice, but the AC ⇔ well-ordering equivalence is not formalized.",
       "provenance": "ai",
       "id": "5ba0d0b375cb"
     },
@@ -864,11 +864,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Ordinal.isSuccLimit_ord",
+        "decl": "Cardinal.isSuccLimit_ord",
         "module": "Mathlib.SetTheory.Ordinal.Arithmetic",
         "match_kind": "exact"
       },
-      "note": "`isSuccLimit_ord` shows `ord c` is a limit ordinal whenever `ℵ₀ ≤ c`.",
+      "note": "`Cardinal.isSuccLimit_ord` shows `c.ord` is a limit ordinal whenever `ℵ₀ ≤ c`.",
       "provenance": "ai",
       "id": "f28135ad3663"
     },
@@ -885,7 +885,7 @@
         "module": "Mathlib.SetTheory.Cardinal.Aleph",
         "match_kind": "special_case"
       },
-      "note": "`ω₁ = Ordinal.omega 1` is defined and documented as the first uncountable ordinal.",
+      "note": "`ω₁ = Ordinal.omega 1` is documented as the first uncountable ordinal.",
       "provenance": "ai",
       "id": "22dfbf0e27d4"
     },
@@ -902,7 +902,7 @@
         "module": "Mathlib.SetTheory.Cardinal.Cofinality.Ordinal",
         "match_kind": "exact"
       },
-      "note": "`Ordinal.cof` is the least cardinality of a cofinal subset (cardinal-valued cofinality).",
+      "note": "`Ordinal.cof` is the cardinal cofinality of an ordinal.",
       "provenance": "ai",
       "id": "b9adb51adf7a"
     },
@@ -919,7 +919,7 @@
         "module": "Mathlib.SetTheory.Cardinal.Cofinality.Ordinal",
         "match_kind": "exact"
       },
-      "note": "A limit ordinal below ω₁ has cofinality ℵ₀.",
+      "note": "A countable limit ordinal has cofinality ℵ₀.",
       "provenance": "ai",
       "id": "d549a1d0b12d"
     },
@@ -953,7 +953,7 @@
         "module": "Mathlib.SetTheory.Cardinal.Regular",
         "match_kind": "generalization"
       },
-      "note": "Mathlib defines regular cardinals (`Cardinal.IsRegular`); there is no standalone 'regular ordinal' predicate.",
+      "note": "Mathlib defines regular cardinals; there is no standalone 'regular ordinal' predicate.",
       "provenance": "ai",
       "id": "d4854f5f2f15"
     },
@@ -987,7 +987,7 @@
         "module": "Mathlib.Order.Bounds.Defs",
         "match_kind": "exact"
       },
-      "note": "`IsCofinal s : ∀ x, ∃ y ∈ s, x ≤ y` is the unbounded/cofinal subset notion.",
+      "note": "`IsCofinal s` is the unbounded/cofinal subset notion.",
       "provenance": "ai",
       "id": "d40864263e29"
     },
@@ -1004,7 +1004,7 @@
         "module": "Mathlib.SetTheory.Ordinal.Topology",
         "match_kind": "exact"
       },
-      "note": "`Ordinal.IsAcc o S` is `AccPt o (𝓟 S)`, i.e. `o` is a limit point of `S`.",
+      "note": "`Ordinal.IsAcc o S` says `o` is a limit point of `S`.",
       "provenance": "ai",
       "id": "fd67df621bc0"
     },
@@ -1038,7 +1038,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "There is no club (closed-unbounded) predicate in Mathlib (only the separate closed and unbounded notions).",
+      "note": "There is no club (closed-unbounded) predicate in Mathlib.",
       "provenance": "ai",
       "id": "3d51e154cd3d"
     },
@@ -1072,7 +1072,7 @@
         "module": "Mathlib.SetTheory.Ordinal.Topology",
         "match_kind": null
       },
-      "note": "Mathlib links normal enumerations with closed sets, but does not state the range of a normal function is a club.",
+      "note": "Mathlib links normal enumerations with closed sets but does not state the range of a normal function is a club.",
       "provenance": "ai",
       "id": "7d2e18082216"
     },
@@ -1089,7 +1089,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Not formalized; a Mathlib TODO note even flags this as future work.",
+      "note": "Not formalized in Mathlib.",
       "provenance": "ai",
       "id": "c744b796f7fe"
     },
@@ -1204,11 +1204,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Unbounded",
+        "decl": "Set.Unbounded",
         "module": "Mathlib.Order.RelClasses",
         "match_kind": "generalization"
       },
-      "note": "`Unbounded (·<·)` (with order-topology closedness) covers subsets of `Ordinal`; dedicated proper-class versions are not formalized.",
+      "note": "`Set.Unbounded` covers subsets of `Ordinal`; dedicated proper-class versions are not formalized.",
       "provenance": "ai",
       "id": "50205e53c861"
     },
@@ -1242,7 +1242,7 @@
         "module": "Mathlib.SetTheory.Ordinal.Veblen",
         "match_kind": "exact"
       },
-      "note": "`ε₀` is defined (`ε_ 0`) and characterized as the least fixed point of `ω^·`.",
+      "note": "`ε₀` is characterized as the least fixed point of `ω^·`.",
       "provenance": "ai",
       "id": "d18bf0236138"
     },
@@ -1327,7 +1327,7 @@
         "module": "Mathlib.Topology.Perfect",
         "match_kind": null
       },
-      "note": "Mathlib has the Cantor–Bendixson theorem (closed = perfect ∪ countable) but not the transfinite derived-set/rank iteration.",
+      "note": "Mathlib has Cantor–Bendixson but not the transfinite derived-set rank iteration.",
       "provenance": "ai",
       "id": "ab6a90570b0f"
     },
@@ -1361,7 +1361,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Cantor's 'number classes' terminology/objects are not formalized in Mathlib.",
+      "note": "Cantor's 'number classes' terminology is not formalized in Mathlib.",
       "provenance": "ai",
       "id": "ee5fdfe2800a"
     },
@@ -1378,7 +1378,7 @@
         "module": "Mathlib.SetTheory.Cardinal.Aleph",
         "match_kind": "special_case"
       },
-      "note": "`card_omega` gives `card ω₁ = ℵ₁`, the cardinality of the countable ordinals, though 'number class' is not named.",
+      "note": "`card_omega` gives `card ω₁ = ℵ₁`, the cardinality of the countable ordinals.",
       "provenance": "ai",
       "id": "a7a517d3ac46"
     },
@@ -1395,9 +1395,57 @@
         "module": "Mathlib.SetTheory.Cardinal.Aleph",
         "match_kind": "generalization"
       },
-      "note": "The aleph/initial-ordinal correspondence is formalized via `Cardinal.aleph`/`Ordinal.omega`, but not phrased as number classes.",
+      "note": "The aleph/initial-ordinal correspondence is formalized via `Cardinal.aleph`/`Ordinal.omega`.",
       "provenance": "ai",
       "id": "39cfc64ff526"
+    },
+    {
+      "kind": "theorem",
+      "label": "Axiom of choice implies every set is well-orderable",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The axiom of choice implies that every set can be well-ordered"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_wellOrder",
+        "module": "Mathlib.SetTheory.Cardinal.Order",
+        "match_kind": "exact"
+      },
+      "note": "Zermelo's well-ordering theorem, derived from Lean's choice axiom.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Perfect set is uncountable",
+      "anchor": {
+        "section": "History",
+        "snippet": "is a perfect set , so it is uncountable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Perfect.exists_nat_bool_injection",
+        "module": "Mathlib.Topology.MetricSpace.Perfect",
+        "match_kind": "generalization"
+      },
+      "note": "A nonempty perfect subset of a Polish space embeds the Cantor space, hence is uncountable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cantor–Bendixson theorem",
+      "anchor": {
+        "section": "History",
+        "snippet": "led to the Cantor-Bendixson theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_countable_union_perfect_of_isClosed",
+        "module": "Mathlib.Topology.Perfect",
+        "match_kind": "exact"
+      },
+      "note": "Every closed subset of a Polish space decomposes as a perfect set union a countable set.",
+      "provenance": "ai"
     }
   ]
 }

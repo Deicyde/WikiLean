@@ -52,7 +52,7 @@
         "module": "Mathlib.Topology.SmallInductiveDimension",
         "match_kind": null
       },
-      "note": "Dimension as a topological invariant is partially captured by `smallInductiveDimension`, but the general list of invariants is not a decl.",
+      "note": "Dimension as a topological invariant is partially captured by `smallInductiveDimension`, but the general list of invariants is not a single decl.",
       "provenance": "ai",
       "id": "d5a03cfa23c6"
     },
@@ -69,7 +69,7 @@
         "module": "Mathlib.Combinatorics.SimpleGraph.Trails",
         "match_kind": null
       },
-      "note": "Mathlib has the `IsEulerian` infrastructure but the actual Königsberg theorem (`Konigsberg.not_isEulerian`) lives in Archive, not Mathlib/.",
+      "note": "Mathlib has the `IsEulerian` infrastructure but the actual Königsberg theorem lives in Archive, not in Mathlib/.",
       "provenance": "ai",
       "id": "cce32a36c57f"
     },
@@ -86,7 +86,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The hairy ball theorem appears only as an unproven title in docs/1000.yaml with no Mathlib decl.",
+      "note": "The hairy ball theorem has no corresponding Mathlib decl.",
       "provenance": "ai",
       "id": "170ab9453491"
     },
@@ -154,9 +154,25 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The polyhedron formula V−E+F=2 appears only as an unproven title in docs/100.yaml with no decl.",
+      "note": "The polyhedron formula V−E+F=2 has no Mathlib decl.",
       "provenance": "ai",
       "id": "6353a9792ce3"
+    },
+    {
+      "kind": "definition",
+      "label": "Hausdorff space",
+      "anchor": {
+        "section": "History",
+        "snippet": "what is now called a Hausdorff space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "T2Space",
+        "module": "Mathlib.Topology.Separation.Hausdorff",
+        "match_kind": "exact"
+      },
+      "note": "`T2Space` is the Mathlib formalization of the Hausdorff separation axiom (distinct points have disjoint neighborhoods).",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -276,6 +292,22 @@
       "note": "`Continuous f` requires the preimage of every open set to be open.",
       "provenance": "ai",
       "id": "5f75f96dc64e"
+    },
+    {
+      "kind": "proposition",
+      "label": "Topological continuity agrees with ε-δ continuity on ℝ",
+      "anchor": {
+        "section": "Continuous functions and homeomorphisms",
+        "snippet": "this definition of continuous is equivalent to the definition of continuous in calculus"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.continuous_iff",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Metric.continuous_iff` expresses topological continuity in a metric space as the standard ε-δ condition, recovering the calculus definition for ℝ → ℝ.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -477,7 +509,7 @@
         "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
         "match_kind": "special_case"
       },
-      "note": "`Metric.isOpen_iff` characterizes open sets as those containing a ball around each point.",
+      "note": "`Metric.isOpen_iff` characterizes open sets in a metric space as those containing a ball around each point.",
       "provenance": "ai",
       "id": "9f85e8d89a29"
     },
@@ -497,6 +529,22 @@
       "note": "This names a subfield rather than a formalizable statement.",
       "provenance": "ai",
       "id": "e7462fd8f0f1"
+    },
+    {
+      "kind": "definition",
+      "label": "Homotopy groups",
+      "anchor": {
+        "section": "Algebraic topology",
+        "snippet": "The most important of these invariants are homotopy groups"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HomotopyGroup",
+        "module": "Mathlib.Topology.Homotopy.HomotopyGroup",
+        "match_kind": "exact"
+      },
+      "note": "`HomotopyGroup n X x` is the n-th homotopy group of a pointed space, formalized as the group of based homotopy classes of maps from the n-cube.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -562,7 +610,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The uniformization theorem appears only as an unproven title in docs/1000.yaml with no decl.",
+      "note": "The uniformization theorem has no Mathlib decl.",
       "provenance": "ai",
       "id": "b312b1f31cd5"
     },
@@ -664,9 +712,25 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has no robotics configuration-space manifold definition (only an unrelated symbolic-dynamics usage of the term).",
+      "note": "Mathlib has no robotics configuration-space manifold definition.",
       "provenance": "ai",
       "id": "3b6816b256b6"
+    },
+    {
+      "kind": "example",
+      "label": "Eulerian path in modular fiber art",
+      "anchor": {
+        "section": "Fiber art",
+        "snippet": "This process is an application of the Eulerian path"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SimpleGraph.Walk.IsEulerian",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Trails",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes Eulerian walks via `SimpleGraph.Walk.IsEulerian`; the fiber-art application is an informal use of this combinatorial notion.",
+      "provenance": "ai"
     }
   ]
 }

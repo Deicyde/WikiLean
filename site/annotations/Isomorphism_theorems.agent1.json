@@ -11,7 +11,15 @@
         "section": "Theorem A (groups)",
         "snippet": "be groups, and let"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuotientGroup.quotientKerEquivRange",
+        "module": "Mathlib.GroupTheory.QuotientGroup.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `QuotientGroup.quotientKerEquivRange` gives the explicit isomorphism `G / ker φ ≃* range φ` for a group homomorphism `φ`.",
+      "provenance": "ai-agent1",
+      "id": "d39bf4258ff4"
     },
     {
       "kind": "theorem",
@@ -20,7 +28,15 @@
         "section": "Theorem B (groups)",
         "snippet": "be a subgroup of"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuotientGroup.quotientInfEquivProdNormalQuotient",
+        "module": "Mathlib.GroupTheory.QuotientGroup.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `QuotientGroup.quotientInfEquivProdNormalQuotient` is the classical second isomorphism `H/(H ∩ N) ≃* HN/N` for `N` normal.",
+      "provenance": "ai-agent1",
+      "id": "e66b97814d30"
     },
     {
       "kind": "example",
@@ -29,7 +45,15 @@
         "section": "Theorem B (groups)",
         "snippet": "An application of the second isomorphism theorem identifies projective linear groups"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.ProjGenLinGroup",
+        "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Projective",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib defines `PGL(n,R) := GL n R ⧸ Subgroup.center (GL n R)` directly but does not phrase its identification as an application of the second isomorphism theorem.",
+      "provenance": "ai-agent1",
+      "id": "a10c0c3bf4ae"
     },
     {
       "kind": "theorem",
@@ -38,7 +62,15 @@
         "section": "Theorem C (groups)",
         "snippet": "a normal subgroup of"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuotientGroup.quotientQuotientEquivQuotient",
+        "module": "Mathlib.GroupTheory.QuotientGroup.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `QuotientGroup.quotientQuotientEquivQuotient` provides the canonical isomorphism `(G/N)/(M/N) ≃* G/M` when `N ≤ M`.",
+      "provenance": "ai-agent1",
+      "id": "1b1b0a3d52ff"
     },
     {
       "kind": "theorem",
@@ -47,6 +79,30 @@
         "section": "Theorem D (groups)",
         "snippet": "The canonical projection homomorphism"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "QuotientGroup.comapMk'OrderIso",
+        "module": "Mathlib.GroupTheory.QuotientGroup.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `QuotientGroup.comapMk'OrderIso` is the lattice isomorphism between subgroups of `G/N` and subgroups of `G` containing `N`.",
+      "provenance": "ai-agent1",
+      "id": "a9b0df2ba636"
+    },
+    {
+      "kind": "theorem",
+      "label": "Zassenhaus (butterfly) lemma",
+      "anchor": {
+        "section": "Theorem D (groups)",
+        "snippet": "The Zassenhaus lemma (also known as the butterfly lemma) is sometimes called the fourth isomorphism theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not yet contain a formal statement of the Zassenhaus/butterfly lemma identifying the canonical isomorphism between the two refinement quotients arising from subgroups H, K of a group with normal subgroups H' ⊴ H, K' ⊴ K.",
       "provenance": "ai-agent1"
     },
     {
@@ -56,7 +112,15 @@
         "section": "Theorem A (rings)",
         "snippet": "be rings, and let"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RingHom.quotientKerEquivRange",
+        "module": "Mathlib.RingTheory.Ideal.Quotient.Operations",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `RingHom.quotientKerEquivRange` gives `R/ker f ≃+* f.range` for a ring homomorphism `f`.",
+      "provenance": "ai-agent1",
+      "id": "f65cf476c5f0"
     },
     {
       "kind": "theorem",
@@ -65,7 +129,15 @@
         "section": "Theorem B (rings)",
         "snippet": "be a subring of"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RingCon.comapQuotientEquivRange",
+        "module": "Mathlib.RingTheory.Congruence.Hom",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `RingCon.comapQuotientEquivRange` is labelled as the second isomorphism theorem for rings via ring congruences, generalizing the classical `(S+I)/I ≅ S/(S∩I)` statement.",
+      "provenance": "ai-agent1",
+      "id": "63dfdf28b082"
     },
     {
       "kind": "theorem",
@@ -74,7 +146,15 @@
         "section": "Theorem C (rings)",
         "snippet": "Let R be a ring, and I an ideal of R"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DoubleQuot.quotQuotEquivQuotOfLE",
+        "module": "Mathlib.RingTheory.Ideal.Quotient.Operations",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `DoubleQuot.quotQuotEquivQuotOfLE` is the third isomorphism theorem for rings: `(R/I)/(J/I) ≃+* R/J` when `I ≤ J`.",
+      "provenance": "ai-agent1",
+      "id": "9b3bf6d35916"
     },
     {
       "kind": "theorem",
@@ -83,7 +163,15 @@
         "section": "Theorem D (rings)",
         "snippet": "is an inclusion -preserving bijection between the set of subrings"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ideal.relIsoOfSurjective",
+        "module": "Mathlib.RingTheory.Ideal.Maps",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `Ideal.relIsoOfSurjective` gives the order isomorphism `Ideal S ≃o {p : Ideal R // comap f ⊥ ≤ p}` for a surjective ring homomorphism.",
+      "provenance": "ai-agent1",
+      "id": "232c0192081c"
     },
     {
       "kind": "theorem",
@@ -92,7 +180,15 @@
         "section": "Theorem A (modules)",
         "snippet": "be modules, and let"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.quotKerEquivRange",
+        "module": "Mathlib.LinearAlgebra.Isomorphisms",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `LinearMap.quotKerEquivRange` provides the canonical `M/ker f ≃ₗ[R] range f` for a linear map `f`.",
+      "provenance": "ai-agent1",
+      "id": "c788b3d932ad"
     },
     {
       "kind": "theorem",
@@ -101,7 +197,15 @@
         "section": "Theorem B (modules)",
         "snippet": "be submodules of"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.quotientInfEquivSupQuotient",
+        "module": "Mathlib.LinearAlgebra.Isomorphisms",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `LinearMap.quotientInfEquivSupQuotient` is the second isomorphism theorem for modules: `p / (p ⊓ p') ≃ₗ (p ⊔ p') / p'`.",
+      "provenance": "ai-agent1",
+      "id": "6bc9a062290a"
     },
     {
       "kind": "theorem",
@@ -110,7 +214,15 @@
         "section": "Theorem C (modules)",
         "snippet": "Let M be a module, T a submodule of M"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.quotientQuotientEquivQuotient",
+        "module": "Mathlib.LinearAlgebra.Isomorphisms",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `Submodule.quotientQuotientEquivQuotient` provides `(M/S)/(T/S) ≃ₗ[R] M/T` when `S ≤ T`.",
+      "provenance": "ai-agent1",
+      "id": "bdaff56b2e40"
     },
     {
       "kind": "theorem",
@@ -119,6 +231,30 @@
         "section": "Theorem D (modules)",
         "snippet": "There is a bijection between the submodules of"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.comapMkQRelIso",
+        "module": "Mathlib.LinearAlgebra.Quotient.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `Submodule.comapMkQRelIso` gives the order isomorphism `Submodule R (M ⧸ p) ≃o Set.Ici p` between submodules of `M/p` and submodules of `M` containing `p`.",
+      "provenance": "ai-agent1",
+      "id": "fabb9397e70a"
+    },
+    {
+      "kind": "theorem",
+      "label": "Rank–nullity theorem (modules section)",
+      "anchor": {
+        "section": "Modules",
+        "snippet": "all of these theorems follow from the rank–nullity theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Submodule.finrank_quotient_add_finrank",
+        "module": "Mathlib.LinearAlgebra.Dimension.Finrank",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `Submodule.finrank_quotient_add_finrank` states `finrank (M ⧸ p) + finrank p = finrank M` for finite-dimensional vector spaces, the rank–nullity identity invoked here.",
       "provenance": "ai-agent1"
     },
     {
@@ -128,7 +264,15 @@
         "section": "Universal algebra",
         "snippet": "A congruence on an algebra"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Con",
+        "module": "Mathlib.GroupTheory.Congruence.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has structure-specific congruences (`Con` for magmas/monoids, `AddCon`, `RingCon`) and `Setoid`, but no fully general universal-algebra congruence definition.",
+      "provenance": "ai-agent1",
+      "id": "c9b3ce4c43d4"
     },
     {
       "kind": "theorem",
@@ -137,7 +281,15 @@
         "section": "Theorem A (universal algebra)",
         "snippet": "be an algebra homomorphism"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Con.quotientKerEquivRange",
+        "module": "Mathlib.GroupTheory.Congruence.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes the first isomorphism theorem for `Con`/`RingCon`/`Setoid` separately but lacks a single universal-algebra statement.",
+      "provenance": "ai-agent1",
+      "id": "d8b7fb0b9793"
     },
     {
       "kind": "theorem",
@@ -146,7 +298,15 @@
         "section": "Theorem B (universal algebra)",
         "snippet": "Given an algebra"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Con.comapQuotientEquiv",
+        "module": "Mathlib.GroupTheory.Congruence.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Only structure-specific versions (e.g. `Con.comapQuotientEquiv`, `RingCon.comapQuotientEquivRange`, `LinearMap.quotientInfEquivSupQuotient`) exist; no general universal-algebra version is in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "7651002936e1"
     },
     {
       "kind": "theorem",
@@ -155,7 +315,15 @@
         "section": "Theorem C (universal algebra)",
         "snippet": "two congruence relations on"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Setoid.quotientQuotientEquivQuotient",
+        "module": "Mathlib.Data.Setoid.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has `Setoid.quotientQuotientEquivQuotient` plus the `Con` and `RingCon` variants, but no statement at the level of universal algebra.",
+      "provenance": "ai-agent1",
+      "id": "cbcd76fae47e"
     },
     {
       "kind": "theorem",
@@ -164,7 +332,15 @@
         "section": "Theorem D (universal algebra)",
         "snippet": "the set of all congruences on"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has correspondence/lattice theorems for subgroups, ideals, and submodules but no general bijection between congruences containing a given congruence and congruences on the quotient algebra.",
+      "provenance": "ai-agent1",
+      "id": "f07ac405245b"
     }
   ]
 }

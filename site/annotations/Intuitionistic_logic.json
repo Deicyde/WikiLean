@@ -406,7 +406,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "not_forall_of_exists_not",
-        "module": "Mathlib.Logic.Basic",
+        "module": "Init.PropLemmas",
         "match_kind": "exact"
       },
       "note": "`not_forall_of_exists_not : (∃ x, ¬p x) → ¬ ∀ x, p x` is the intuitionistically valid direction.",
@@ -491,7 +491,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "and_imp",
-        "module": "Mathlib.Logic.Basic",
+        "module": "Init.SimpLemmas",
         "match_kind": "exact"
       },
       "note": "`and_imp : (a ∧ b → c) ↔ (a → b → c)` is the import-export equivalence, intuitionistically valid.",
@@ -528,7 +528,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Consequentia mirabilis is not named or formalized in Mathlib (grep for `consequentia`/`mirabilis` returned no Mathlib hits).",
+      "note": "Consequentia mirabilis is not named or formalized in Mathlib (loogle for `consequentia` returned 0 hits).",
       "provenance": "ai",
       "id": "ce62e02f7e2a"
     },
@@ -559,7 +559,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "iff_iff_implies_and_implies",
-        "module": "Mathlib.Logic.Basic",
+        "module": "Init.Core",
         "match_kind": "exact"
       },
       "note": "`iff_iff_implies_and_implies : (a ↔ b) ↔ ((a → b) ∧ (b → a))` formalizes this equivalence.",
@@ -661,10 +661,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "not_and_self_iff",
-        "module": "Mathlib.Logic.Basic",
+        "module": "Init.PropLemmas",
         "match_kind": "exact"
       },
-      "note": "`¬(A ∧ ¬A)` is provable intuitionistically; Mathlib has `not_and_self` and a Heyting-algebra analogue `inf_compl_eq_bot`.",
+      "note": "`¬(A ∧ ¬A)` is provable intuitionistically; Mathlib has `not_and_self_iff` and a Heyting-algebra analogue `inf_compl_eq_bot`.",
       "provenance": "ai",
       "id": "46f88686871d"
     },
@@ -905,6 +905,118 @@
       "note": "Although Lean is itself based on dependent type theory, no formal Curry–Howard correspondence between IPC and simply typed λ-calculus is stated in Mathlib.",
       "provenance": "ai",
       "id": "3bbdafe1ac73"
+    },
+    {
+      "kind": "proposition",
+      "label": "Principle of explosion",
+      "anchor": {
+        "section": "Existential vs. universal quantification",
+        "snippet": "by the principle of explosion , an existential statement implies anything"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "absurd",
+        "module": "Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "`absurd : a → ¬a → b` is the principle of explosion (ex falso quodlibet), intuitionistically valid.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Law of non-contradiction",
+      "anchor": {
+        "section": "Existential vs. universal quantification",
+        "snippet": "results in the law of non-contradiction principle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "not_and_self_iff",
+        "module": "Init.PropLemmas",
+        "match_kind": "exact"
+      },
+      "note": "`¬(p ∧ ¬p)` is the law of non-contradiction, intuitionistically provable; in Mathlib via `not_and_self_iff`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Drinker's paradox",
+      "anchor": {
+        "section": "Existential vs. universal quantification",
+        "snippet": "This inverse direction is equivalent to the drinker's paradox (DP)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The drinker's paradox (a classical-only existential lemma) is not formalized as a named result in Mathlib (loogle for `drinker` returned 0 hits).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Disjunctive syllogism",
+      "anchor": {
+        "section": "Double negation and implication",
+        "snippet": "A formula for which excluded middle holds can be proven stable using the disjunctive syllogism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Or.resolve_left",
+        "module": "Init.Prelude",
+        "match_kind": "exact"
+      },
+      "note": "`Or.resolve_left : a ∨ b → ¬a → b` is the disjunctive syllogism, intuitionistically valid.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reverse law of contraposition",
+      "anchor": {
+        "section": "Relation to classical logic",
+        "snippet": "One notable one is the (reverse) law of contraposition"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "not_imp_not",
+        "module": "Mathlib.Logic.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`not_imp_not : (¬b → ¬a) ↔ (a → b)` is the classical reverse contraposition; the forward direction is intuitionistic, the reverse needs classical logic.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Curry/uncurry as conjunction–implication equivalence",
+      "anchor": {
+        "section": "Conjunction vs. implication",
+        "snippet": "The equivalence formula for the negated conjunction may be understood as a special case of currying and uncurrying"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "and_imp",
+        "module": "Init.SimpLemmas",
+        "match_kind": "exact"
+      },
+      "note": "Currying/uncurrying at the level of propositions is `and_imp : (a ∧ b → c) ↔ (a → b → c)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Negation introduction via implication of contradiction",
+      "anchor": {
+        "section": "Double negation and implication",
+        "snippet": "Having proven such a mere double-negation also still aids in negating other statements through negation introduction"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mt",
+        "module": "Init.Core",
+        "match_kind": "exact"
+      },
+      "note": "`mt : (a → b) → ¬b → ¬a` (modus tollens) implements negation introduction: from `a → b` and `¬b`, derive `¬a`.",
+      "provenance": "ai"
     }
   ]
 }

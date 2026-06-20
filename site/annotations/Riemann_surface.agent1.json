@@ -11,7 +11,15 @@
         "section": "(Lead)",
         "snippet": "a Riemann surface is a connected one-dimensional complex manifold"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsManifold",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib has general complex manifolds via IsManifold over a ℂ-model, but no defined object 'Riemann surface' with the connected one-complex-dimensional restriction.",
+      "provenance": "ai-agent1",
+      "id": "f3859a78371d"
     },
     {
       "kind": "example",
@@ -20,7 +28,15 @@
         "section": "(Lead)",
         "snippet": "Examples of Riemann surfaces include graphs of multivalued functions"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of multivalued-function graphs as Riemann surfaces in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "fc13cd5d05a9"
     },
     {
       "kind": "proposition",
@@ -29,6 +45,30 @@
         "section": "(Lead)",
         "snippet": "a two-dimensional real manifold can be turned into a Riemann surface"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No result relating real surface orientability/metrizability to existence of a complex structure.",
+      "provenance": "ai-agent1",
+      "id": "959fcafd1dae"
+    },
+    {
+      "kind": "example",
+      "label": "Surfaces admitting / not admitting complex structures",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the sphere and torus admit complex structures but the Möbius strip"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib facts on which of S², T², Möbius strip, Klein bottle, ℝP² admit a complex (Riemann surface) structure.",
       "provenance": "ai-agent1"
     },
     {
@@ -38,7 +78,15 @@
         "section": "(Lead)",
         "snippet": "Every compact Riemann surface is a complex algebraic curve by Chow's theorem"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chow's theorem and the analytic-to-algebraic correspondence for compact Riemann surfaces are absent from Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "b013a407c82f"
     },
     {
       "kind": "definition",
@@ -47,7 +95,15 @@
         "section": "Definitions",
         "snippet": "is a connected complex manifold of complex dimension one"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsManifold",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": null
+      },
+      "note": "Complex manifolds are modeled by IsManifold over a ℂ-model-with-corners, but the one-complex-dimensional 'Riemann surface' is not a defined notion.",
+      "provenance": "ai-agent1",
+      "id": "de909d9999cc"
     },
     {
       "kind": "definition",
@@ -56,7 +112,15 @@
         "section": "Definitions",
         "snippet": "is a (connected) oriented manifold of (real) dimension two"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has a conformalGroupoid but no definition of a Riemann surface as an oriented 2-manifold with a conformal structure.",
+      "provenance": "ai-agent1",
+      "id": "b790ec559259"
     },
     {
       "kind": "proposition",
@@ -65,7 +129,15 @@
         "section": "Definitions",
         "snippet": "A complex structure gives rise to a conformal structure"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "DifferentiableAt.conformalAt",
+        "module": "Mathlib.Analysis.Complex.Conformal",
+        "match_kind": null
+      },
+      "note": "Mathlib proves a holomorphic map with nonvanishing derivative is conformal at a point, but not the manifold-level statement that a complex structure induces a conformal structure.",
+      "provenance": "ai-agent1",
+      "id": "872e617e2d24"
     },
     {
       "kind": "example",
@@ -74,7 +146,15 @@
         "section": "Examples",
         "snippet": "is the most basic Riemann surface"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "instIsManifoldModelSpace",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": null
+      },
+      "note": "ℂ carries the model-space complex manifold structure via instIsManifoldModelSpace, though it is not labeled a Riemann surface.",
+      "provenance": "ai-agent1",
+      "id": "7078c8a9b0e9"
     },
     {
       "kind": "example",
@@ -83,7 +163,15 @@
         "section": "Examples",
         "snippet": "Every nonempty connected open subset of the complex plane"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "TopologicalSpace.Opens.instIsManifold",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": null
+      },
+      "note": "Open subsets of a manifold (hence of ℂ) inherit a manifold structure, but not framed as Riemann surfaces.",
+      "provenance": "ai-agent1",
+      "id": "05b5d8d2a01d"
     },
     {
       "kind": "proposition",
@@ -92,7 +180,15 @@
         "section": "Examples",
         "snippet": "every non-empty open subset of a Riemann surface is a Riemann surface"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "TopologicalSpace.Opens.instIsManifold",
+        "module": "Mathlib.Geometry.Manifold.IsManifold.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib's instance gives that any open subset (Opens M) of a manifold is again a manifold, generalizing the Riemann-surface case.",
+      "provenance": "ai-agent1",
+      "id": "0b4918638420"
     },
     {
       "kind": "example",
@@ -101,6 +197,30 @@
         "section": "Examples",
         "snippet": "has a unique Riemann surface structure, called the Riemann sphere"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has the one-point compactification/projective line topologically but no complex-manifold (Riemann sphere) structure on it.",
+      "provenance": "ai-agent1",
+      "id": "5387b6874c1f"
+    },
+    {
+      "kind": "example",
+      "label": "Riemann sphere as projective line",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The Riemann sphere has another description, as the projective line"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Projectivization",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib has the projective line ℙ¹(ℂ) as a set, but does not equip it with the Riemann sphere complex-manifold structure.",
       "provenance": "ai-agent1"
     },
     {
@@ -110,7 +230,15 @@
         "section": "Examples",
         "snippet": "has many different Riemann surface structures"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No complex-torus quotient ℂ/Λ is constructed as a Riemann surface in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "64f2d21e1702"
     },
     {
       "kind": "example",
@@ -119,7 +247,15 @@
         "section": "Examples",
         "snippet": "Important examples of non-compact Riemann surfaces are provided by analytic continuation"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Analytic-continuation construction of Riemann surfaces is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "49efb7e56a86"
     },
     {
       "kind": "example",
@@ -128,7 +264,15 @@
         "section": "Algebraic curves",
         "snippet": "is any complex polynomial in two variables"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The smooth vanishing locus of a complex polynomial as a Riemann surface is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "208fd7eeb0e5"
     },
     {
       "kind": "proposition",
@@ -137,7 +281,15 @@
         "section": "Algebraic curves",
         "snippet": "Every elliptic curve is an algebraic curve"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "WeierstrassCurve.IsElliptic",
+        "module": "Mathlib.AlgebraicGeometry.EllipticCurve.Weierstrass",
+        "match_kind": null
+      },
+      "note": "Mathlib defines elliptic curves algebraically as Weierstrass curves (IsElliptic), but does not formalize the analytic-curve to algebraic-curve identification.",
+      "provenance": "ai-agent1",
+      "id": "b6963c778b42"
     },
     {
       "kind": "example",
@@ -146,7 +298,15 @@
         "section": "Algebraic curves",
         "snippet": "surfaces have Riemann surface structures, as ( compactifications of) hyperelliptic surfaces"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hyperelliptic Riemann surfaces are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "fcd7fbbd78fb"
     },
     {
       "kind": "definition",
@@ -155,7 +315,15 @@
         "section": "Further definitions and properties",
         "snippet": "is called holomorphic if for every chart"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "MDifferentiable",
+        "module": "Mathlib.Geometry.Manifold.MFDeriv.Basic",
+        "match_kind": null
+      },
+      "note": "Holomorphic maps between complex manifolds are captured by MDifferentiable over ℂ, but not specialized/named for Riemann surfaces.",
+      "provenance": "ai-agent1",
+      "id": "d7efe5f64230"
     },
     {
       "kind": "proposition",
@@ -164,7 +332,15 @@
         "section": "Further definitions and properties",
         "snippet": "The composition of two holomorphic maps is holomorphic"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MDifferentiable.comp",
+        "module": "Mathlib.Geometry.Manifold.MFDeriv.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "MDifferentiable.comp proves composition of differentiable maps between manifolds (hence holomorphic maps over ℂ) is again differentiable.",
+      "provenance": "ai-agent1",
+      "id": "654168740a53"
     },
     {
       "kind": "definition",
@@ -173,7 +349,15 @@
         "section": "Further definitions and properties",
         "snippet": "are called biholomorphic (or conformally equivalent"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Diffeomorph",
+        "module": "Mathlib.Geometry.Manifold.Diffeomorph",
+        "match_kind": null
+      },
+      "note": "Mathlib has Diffeomorph (differentiable equivalences of manifolds), which over ℂ gives biholomorphisms, but no dedicated biholomorphism/conformal-equivalence definition.",
+      "provenance": "ai-agent1",
+      "id": "bf08c07f7340"
     },
     {
       "kind": "proposition",
@@ -182,6 +366,30 @@
         "section": "Orientability",
         "snippet": "Each Riemann surface, being a complex manifold, is orientable as a real manifold"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has linear-algebra orientations but no notion of orientability of a manifold, so this statement is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "afcd63e9b64c"
+    },
+    {
+      "kind": "proposition",
+      "label": "Jacobian determinant of complex multiplication is |a|²",
+      "anchor": {
+        "section": "Orientability",
+        "snippet": "the real determinant of multiplication by a complex number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.det_conformalLinearMap",
+        "module": "Mathlib.Analysis.Complex.Conformal",
+        "match_kind": null
+      },
+      "note": "Mathlib computes the real determinant of multiplication by a complex scalar as |a|² ≥ 0, the key fact underlying orientability of holomorphic transition maps.",
       "provenance": "ai-agent1"
     },
     {
@@ -191,7 +399,15 @@
         "section": "Functions",
         "snippet": "Every non-compact Riemann surface admits non-constant holomorphic functions"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Existence of non-constant holomorphic functions on non-compact Riemann surfaces is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "daa93231fc61"
     },
     {
       "kind": "theorem",
@@ -200,7 +416,15 @@
         "section": "Functions",
         "snippet": "every non-compact Riemann surface is a Stein manifold"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Stein manifolds are not defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "6647a172445d"
     },
     {
       "kind": "proposition",
@@ -209,7 +433,15 @@
         "section": "Functions",
         "snippet": "is constant due to the maximum principle"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MDifferentiable.exists_eq_const_of_compactSpace",
+        "module": "Mathlib.Geometry.Manifold.Complex",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves a holomorphic function on a compact connected complex manifold is constant, of which a compact Riemann surface is a special case.",
+      "provenance": "ai-agent1",
+      "id": "4a0a3194cd07"
     },
     {
       "kind": "proposition",
@@ -218,7 +450,15 @@
         "section": "Functions",
         "snippet": "there always exist non-constant meromorphic functions"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Existence of non-constant meromorphic functions on a compact Riemann surface is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "de4acf4bb23e"
     },
     {
       "kind": "proposition",
@@ -227,7 +467,15 @@
         "section": "Functions",
         "snippet": "any two meromorphic functions are algebraically dependent"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The function field of a compact Riemann surface and its transcendence-degree-one property are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "c8de203dae34"
     },
     {
       "kind": "theorem",
@@ -236,6 +484,30 @@
         "section": "Algebraicity",
         "snippet": "All compact Riemann surfaces are algebraic curves"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The theorem that compact Riemann surfaces are algebraic curves is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "941db30c080c"
+    },
+    {
+      "kind": "theorem",
+      "label": "Kodaira embedding for compact Riemann surfaces",
+      "anchor": {
+        "section": "Algebraicity",
+        "snippet": "This follows from the Kodaira embedding theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Kodaira embedding theorem and positive line bundles on complex curves are not formalized in Mathlib.",
       "provenance": "ai-agent1"
     },
     {
@@ -245,7 +517,15 @@
         "section": "Analytic vs. algebraic",
         "snippet": "any compact Riemann surface is a projective variety"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the projective-variety structure of a compact Riemann surface.",
+      "provenance": "ai-agent1",
+      "id": "8f1253dbd475"
     },
     {
       "kind": "theorem",
@@ -254,7 +534,15 @@
         "section": "Analytic vs. algebraic",
         "snippet": "every compact Riemann surface can be embedded into complex projective 3-space"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Embedding of compact Riemann surfaces into ℂP³ is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "c0dfca120fcf"
     },
     {
       "kind": "example",
@@ -263,7 +551,15 @@
         "section": "Analytic vs. algebraic",
         "snippet": "As an example, consider the torus"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "PeriodPair.derivWeierstrassP_sq",
+        "module": "Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass",
+        "match_kind": null
+      },
+      "note": "Mathlib defines the Weierstrass ℘-function on a period lattice and proves ℘'² = 4℘³ − g₂℘ − g₃, but does not assemble the torus into an elliptic-curve Riemann surface.",
+      "provenance": "ai-agent1",
+      "id": "5d0d5af272a0"
     },
     {
       "kind": "proposition",
@@ -272,7 +568,15 @@
         "section": "Classification of Riemann surfaces",
         "snippet": "The set of all Riemann surfaces can be divided into three subsets"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The elliptic/parabolic/hyperbolic geometric classification of Riemann surfaces is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "be1862a64d8d"
     },
     {
       "kind": "theorem",
@@ -281,7 +585,15 @@
         "section": "Classification of Riemann surfaces",
         "snippet": "every simply connected Riemann surface is conformally equivalent to one of the following"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The uniformization theorem is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "1ec4544405d9"
     },
     {
       "kind": "definition",
@@ -290,7 +602,15 @@
         "section": "Classification of Riemann surfaces",
         "snippet": "A Riemann surface is elliptic, parabolic or hyperbolic according to whether its universal cover"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Classification of Riemann surfaces by universal cover type is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "dbc5ff3b29e4"
     },
     {
       "kind": "proposition",
@@ -299,7 +619,15 @@
         "section": "Elliptic Riemann surfaces",
         "snippet": "is the only example, as there is no group acting on it"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The fact that the Riemann sphere is the unique elliptic Riemann surface is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "0d6cba8fd391"
     },
     {
       "kind": "theorem",
@@ -308,7 +636,15 @@
         "section": "Parabolic Riemann surfaces",
         "snippet": "is a Riemann surface whose universal cover is isomorphic to the complex plane"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Classification of parabolic Riemann surfaces is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "7e8acb2f8060"
     },
     {
       "kind": "proposition",
@@ -317,6 +653,30 @@
         "section": "Parabolic Riemann surfaces",
         "snippet": "Topologically there are only three types: the plane, the cylinder and the torus"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The topological trichotomy of parabolic surfaces is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "e0b2d287fec8"
+    },
+    {
+      "kind": "definition",
+      "label": "Teichmüller space and moduli (parabolic)",
+      "anchor": {
+        "section": "Parabolic Riemann surfaces",
+        "snippet": "gives the Teichmüller space of \"marked\" Riemann surfaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Teichmüller space, the mapping class group action, and the resulting modular curve are not formalized in Mathlib.",
       "provenance": "ai-agent1"
     },
     {
@@ -326,7 +686,15 @@
         "section": "Hyperbolic Riemann surfaces",
         "snippet": "is a hyperbolic Riemann surface, that is isomorphic to a quotient of the upper half-plane by a Fuchsian group"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fuchsian groups and hyperbolic surfaces as upper-half-plane quotients are not formalized (Mathlib has the upper half-plane and Möbius action but not this construction).",
+      "provenance": "ai-agent1",
+      "id": "ef5994cd35e7"
     },
     {
       "kind": "proposition",
@@ -335,7 +703,15 @@
         "section": "Hyperbolic Riemann surfaces",
         "snippet": "can be any orientable surface save the torus and sphere"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classification of topological types of hyperbolic surfaces is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "42391137b66b"
     },
     {
       "kind": "proposition",
@@ -344,7 +720,15 @@
         "section": "Hyperbolic Riemann surfaces",
         "snippet": "is compact. Then its topological type is described by its genus"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Genus-based classification of compact hyperbolic surfaces is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "3578bde696c8"
     },
     {
       "kind": "proposition",
@@ -353,7 +737,15 @@
         "section": "Maps between Riemann surfaces",
         "snippet": "maps from hyperbolic to parabolic to elliptic are easy"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Constraints on holomorphic maps between the geometric types are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "4c0fa0451851"
     },
     {
       "kind": "theorem",
@@ -362,7 +754,15 @@
         "section": "Maps between Riemann surfaces",
         "snippet": "any holomorphic map from the sphere to the plane is constant"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Differentiable.apply_eq_apply_of_bounded",
+        "module": "Mathlib.Analysis.Complex.Liouville",
+        "match_kind": null
+      },
+      "note": "Liouville's theorem (bounded entire functions are constant) is formalized, but Little Picard's theorem and the manifold framing are not.",
+      "provenance": "ai-agent1",
+      "id": "5e4200ca1536"
     },
     {
       "kind": "example",
@@ -371,7 +771,15 @@
         "section": "Punctured spheres",
         "snippet": "With no punctures, it is the Riemann sphere, which is elliptic"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Geometric type of punctured spheres is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "ef1a7dfddf54"
     },
     {
       "kind": "proposition",
@@ -380,7 +788,15 @@
         "section": "Ramified covering spaces",
         "snippet": "compact Riemann surfaces can map to surfaces of lower genus"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The genus constraint on maps between compact Riemann surfaces is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "5773be6d5fb3"
     },
     {
       "kind": "proposition",
@@ -389,6 +805,30 @@
         "section": "Ramified covering spaces",
         "snippet": "non-constant maps are ramified covering maps"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ramified covering structure of non-constant holomorphic maps is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "6dc1fdde1416"
+    },
+    {
+      "kind": "theorem",
+      "label": "Riemann–Hurwitz formula",
+      "anchor": {
+        "section": "Ramified covering spaces",
+        "snippet": "constrained by the Riemann–Hurwitz formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Riemann–Hurwitz formula relating Euler characteristics of a ramified cover is not formalized in Mathlib.",
       "provenance": "ai-agent1"
     },
     {
@@ -398,7 +838,15 @@
         "section": "Ramified covering spaces",
         "snippet": "hyperbolic Riemann surfaces are ramified covering spaces of the sphere"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This covering-space statement is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "d29ec5306992"
     },
     {
       "kind": "proposition",
@@ -407,7 +855,15 @@
         "section": "Isometries of Riemann surfaces",
         "snippet": "The isometry group of a uniformized Riemann surface"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Isometry groups of uniformized Riemann surfaces are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "1e87101da236"
     },
     {
       "kind": "theorem",
@@ -416,7 +872,15 @@
         "section": "Isometries of Riemann surfaces",
         "snippet": "the isometry group is finite, and has order at most"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hurwitz's 84(g−1) automorphism bound is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "eb3838a311c9"
     },
     {
       "kind": "theorem",
@@ -425,7 +889,15 @@
         "section": "Isometries of Riemann surfaces",
         "snippet": "every finite group can be realized as the full group of isometries of some Riemann surface"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Realization of every finite group as a Riemann surface isometry group is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "ebc8f6c0d912"
     },
     {
       "kind": "example",
@@ -434,7 +906,15 @@
         "section": "Isometries of Riemann surfaces",
         "snippet": "For genus 2 the order is maximized by the Bolza surface"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Bolza surface is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "cc49a153995c"
     },
     {
       "kind": "example",
@@ -443,6 +923,30 @@
         "section": "Isometries of Riemann surfaces",
         "snippet": "For genus 3 the order is maximized by the Klein quartic"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Klein quartic is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "53b484156fbe"
+    },
+    {
+      "kind": "proposition",
+      "label": "Simple group of order 168 is second-smallest non-abelian simple",
+      "anchor": {
+        "section": "Isometries of Riemann surfaces",
+        "snippet": "the unique simple group of order 168, which is the second-smallest non-abelian simple group"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Uniqueness/identification of PSL(2,7) ≅ GL(3,2) as the simple group of order 168 is not formalized in Mathlib.",
       "provenance": "ai-agent1"
     },
     {
@@ -452,7 +956,15 @@
         "section": "Isometries of Riemann surfaces",
         "snippet": "For genus 4, Bring's surface is a highly symmetric surface"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bring's surface is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "86644b2cf851"
     },
     {
       "kind": "example",
@@ -461,7 +973,15 @@
         "section": "Isometries of Riemann surfaces",
         "snippet": "For genus 7 the order is maximized by the Macbeath surface"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Macbeath surface is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "d98ff5cebd34"
     },
     {
       "kind": "definition",
@@ -470,7 +990,15 @@
         "section": "Function-theoretic classification",
         "snippet": "a Riemann surface is called parabolic if there are no non-constant negative subharmonic functions"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Subharmonic functions are not defined in Mathlib, so the function-theoretic classification is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "78f63f2afd8f"
     },
     {
       "kind": "definition",
@@ -479,7 +1007,15 @@
         "section": "Function-theoretic classification",
         "snippet": "This class of hyperbolic surfaces is further subdivided into subclasses"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Subclasses (O_G, O_HP, etc.) of hyperbolic surfaces are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "2f8662d6f1b5"
     },
     {
       "kind": "example",
@@ -488,6 +1024,46 @@
         "section": "Function-theoretic classification",
         "snippet": "is parabolic in the function-theoretic classification but it is hyperbolic in the geometric classification"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The differing classifications of the unit disk are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "f1f7cfda7972"
+    },
+    {
+      "kind": "theorem",
+      "label": "Riemann–Roch theorem (listed)",
+      "anchor": {
+        "section": "Theorems regarding Riemann surfaces",
+        "snippet": "Riemann–Roch theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Riemann–Roch theorem for compact Riemann surfaces is not formalized in Mathlib.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Identity theorem for Riemann surfaces (listed)",
+      "anchor": {
+        "section": "Theorems regarding Riemann surfaces",
+        "snippet": "Identity theorem for Riemann surfaces"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AnalyticOnNhd.eqOn_of_preconnected_of_eventuallyEq",
+        "module": "Mathlib.Analysis.Analytic.IsolatedZeros",
+        "match_kind": null
+      },
+      "note": "Mathlib has the identity theorem for analytic functions on a connected open subset of ℂ, but not stated at the level of Riemann surfaces.",
       "provenance": "ai-agent1"
     }
   ]

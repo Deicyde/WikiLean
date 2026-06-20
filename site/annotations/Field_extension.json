@@ -31,11 +31,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Complex.instAlgebra",
-        "module": "Mathlib.Data.Complex.Module",
+        "decl": "Complex.instAlgebraOfReal",
+        "module": "Mathlib.LinearAlgebra.Complex.Module",
         "match_kind": "exact"
       },
-      "note": "Mathlib provides the ℝ-algebra (hence field extension) structure on ℂ.",
+      "note": "Mathlib provides the ℝ-algebra (hence field extension) structure on ℂ via `Complex.instAlgebraOfReal`.",
       "provenance": "ai",
       "id": "638aee34b1a8"
     },
@@ -82,11 +82,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Rat.instAlgebraReal",
-        "module": "Mathlib.Data.Real.Basic",
-        "match_kind": "exact"
+        "decl": "DivisionRing.toRatAlgebra",
+        "module": "Mathlib.Algebra.Algebra.Rat",
+        "match_kind": "generalization"
       },
-      "note": "Mathlib gives ℚ as a subfield/subring of ℝ via the canonical (injective) algebraMap.",
+      "note": "`DivisionRing.toRatAlgebra` gives ℝ (any char-zero division ring) a canonical ℚ-algebra structure with injective `algebraMap`.",
       "provenance": "ai",
       "id": "60f151a817a6"
     },
@@ -151,7 +151,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Module.finrank",
-        "module": "Mathlib.LinearAlgebra.Dimension.Free",
+        "module": "Mathlib.LinearAlgebra.Dimension.Finrank",
         "match_kind": "exact"
       },
       "note": "Mathlib uses `Module.finrank K L` (or `Module.rank`) for the degree [L:K].",
@@ -180,7 +180,7 @@
       "label": "Multiplicativity of degree",
       "anchor": {
         "section": "Extension field",
-        "snippet": "the extension"
+        "snippet": "is finite if and only if both"
       },
       "status": "formalized",
       "mathlib": {
@@ -188,8 +188,8 @@
         "module": "Mathlib.LinearAlgebra.Dimension.Free",
         "match_kind": "exact"
       },
-      "note": "States `finrank F K * finrank K A = finrank F A`, the tower law.",
-      "provenance": "ai",
+      "note": "States `finrank F K * finrank K A = finrank F A`, the tower law. (Anchor tightened from generic 'the extension' for uniqueness.)",
+      "provenance": "ai-moderated",
       "id": "04ab052c29f6"
     },
     {
@@ -287,7 +287,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "RingHom.injective",
-        "module": "Mathlib.Algebra.Field.Basic",
+        "module": "Mathlib.RingTheory.SimpleRing.Basic",
         "match_kind": "exact"
       },
       "note": "`RingHom.injective` shows any ring hom from a division ring (incl. fields) into a nontrivial ring is injective.",
@@ -303,11 +303,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Complex.instAlgebra",
-        "module": "Mathlib.Data.Complex.Module",
+        "decl": "Complex.instAlgebraOfReal",
+        "module": "Mathlib.LinearAlgebra.Complex.Module",
         "match_kind": "exact"
       },
-      "note": "ℂ/ℝ/ℚ tower is fully populated via existing `Algebra` and `IsScalarTower` instances.",
+      "note": "ℂ/ℝ/ℚ tower is fully populated via `Complex.instAlgebraOfReal` plus `DivisionRing.toRatAlgebra` and `IsScalarTower` instances.",
       "provenance": "ai",
       "id": "f6b5a15fa63a"
     },
@@ -474,7 +474,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "IntermediateField.adjoin.finiteDimensional",
-        "module": "Mathlib.FieldTheory.IntermediateField.Adjoin.Algebra",
+        "module": "Mathlib.FieldTheory.IntermediateField.Adjoin.Basic",
         "match_kind": "exact"
       },
       "note": "Algebraicity of x is equivalent to `FiniteDimensional K K⟮x⟯` via this and related lemmas.",
@@ -525,12 +525,28 @@
       "status": "formalized",
       "mathlib": {
         "decl": "IntermediateField.adjoin.finiteDimensional",
-        "module": "Mathlib.FieldTheory.IntermediateField.Adjoin.Algebra",
+        "module": "Mathlib.FieldTheory.IntermediateField.Adjoin.Basic",
         "match_kind": "exact"
       },
       "note": "Combined with `adjoin_simple_eq_top_iff_of_isAlgebraic` this gives the simple-algebraic ⇔ finite equivalence.",
       "provenance": "ai",
       "id": "6e72a4a87a5b"
+    },
+    {
+      "kind": "proposition",
+      "label": "Every finite extension is algebraic",
+      "anchor": {
+        "section": "Algebraic extension",
+        "snippet": "every finite extension is algebraic"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra.IsAlgebraic.of_finite",
+        "module": "Mathlib.RingTheory.Algebraic.Integral",
+        "match_kind": "exact"
+      },
+      "note": "`Algebra.IsAlgebraic.of_finite` is the instance deriving algebraicity from a finite extension.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -592,11 +608,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "MvRatFunc",
+        "decl": "MvRatFunc.rank_eq_max_lift",
         "module": "Mathlib.FieldTheory.MvRatFunc.Rank",
         "match_kind": "invocation"
       },
-      "note": "Multivariate rational function fields exist (`MvRatFunc`), but the concept of \"purely transcendental example\" is not packaged as a named lemma.",
+      "note": "Multivariate rational function fields exist (`FractionRing (MvPolynomial σ F)`) with rank results, but no named lemma packages the purely transcendental example.",
       "provenance": "ai",
       "id": "df939ad7b3a3"
     },
@@ -633,6 +649,22 @@
       "note": "`Normal F K` extends `Algebra.IsAlgebraic` with `Splits ((minpoly F x).map ...)` for all x.",
       "provenance": "ai",
       "id": "6e6c61174bb4"
+    },
+    {
+      "kind": "definition",
+      "label": "Normal closure",
+      "anchor": {
+        "section": "Normal, separable and Galois extensions",
+        "snippet": "admits a normal closure"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IntermediateField.normalClosure",
+        "module": "Mathlib.FieldTheory.Normal.Closure",
+        "match_kind": "exact"
+      },
+      "note": "`IntermediateField.normalClosure K L M` is the minimal normal intermediate field of `M/K` containing the image of L.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -695,7 +727,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "IsGalois.intermediateFieldEquivSubgroup",
-        "module": "Mathlib.FieldTheory.Galois.IsGaloisGroup",
+        "module": "Mathlib.FieldTheory.Galois.Basic",
         "match_kind": "exact"
       },
       "note": "Bijection between intermediate fields and subgroups, with `IntermediateFieldEquivClosedSubgroup` in the infinite case.",
@@ -721,6 +753,38 @@
     },
     {
       "kind": "example",
+      "label": "Quaternions as CSA over reals",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "the quaternions are a central simple algebra over the reals"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Quaternion",
+        "module": "Mathlib.Algebra.Quaternion",
+        "match_kind": "exact"
+      },
+      "note": "`Quaternion ℝ` (i.e. ℍ) is constructed; central simple structure follows via `Algebra.IsCentral` and `IsSimpleRing` instances.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Brauer equivalence / Brauer group",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "Brauer equivalent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BrauerGroup",
+        "module": "Mathlib.Algebra.BrauerGroup.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`BrauerGroup k` packages CSAs over k modulo Brauer equivalence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
       "label": "Extension of scalars by complexification",
       "anchor": {
         "section": "Extension of scalars",
@@ -728,11 +792,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "TensorProduct.instAlgebra",
+        "decl": "Algebra.TensorProduct.instAlgebra",
         "module": "Mathlib.RingTheory.TensorProduct.Basic",
         "match_kind": "generalization"
       },
-      "note": "Mathlib formalizes extension of scalars/base change as `TensorProduct R S M` with full algebra structure; complexification is the special case S = ℂ.",
+      "note": "Mathlib formalizes extension of scalars/base change as `Algebra.TensorProduct.instAlgebra` on `R ⊗[S] T`; complexification is the special case S = ℂ.",
       "provenance": "ai",
       "id": "a16cfdf526fd"
     }

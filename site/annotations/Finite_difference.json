@@ -37,16 +37,6 @@
       },
       "note": "Bundled as the ℤ-linear endomorphism `fwdDiffₗ M G h : Module.End ℤ (M → G)`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "(Lead)",
-          "snippet": "is the operator that maps a function f to the function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\Delta [f](x)=f(x+1)-f(x).}"
-        }
-      ],
       "id": "2557a01cd614"
     },
     {
@@ -64,16 +54,6 @@
       },
       "note": "No dedicated notion of `difference equation` (functional equation involving Δ) found in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "(Lead)",
-          "snippet": "A difference equation is a functional equation that involves the finite difference operator"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\Delta [f](x)=f(x+1)-f(x).}"
-        }
-      ],
       "id": "6a7c95bc2ef2"
     },
     {
@@ -108,16 +88,6 @@
       },
       "note": "No `backwardDiff`/`bwdDiff` declaration found in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Basic types",
-          "snippet": "A backward difference uses the function values at x and x − h"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\nabla _{h}[f](x)=f(x)-f(x-h)=\\Delta _{h}[f](x-h).}"
-        }
-      ],
       "id": "17bc9fff46ef"
     },
     {
@@ -135,16 +105,6 @@
       },
       "note": "No `centralDiff` or symmetric-difference operator declaration found in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Basic types",
-          "snippet": "Finally, the central difference is given by"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\delta _{h}[f](x)=f(x+{\\tfrac {h}{2}})-f(x-{\\tfrac {h}{2}})=\\Delta _{\\tfrac {h}{2}}[f](x)+\\nabla _{\\tfrac {h}{2}}[f](x).}"
-        }
-      ],
       "id": "2a7b56177e90"
     },
     {
@@ -162,16 +122,6 @@
       },
       "note": "`HasDerivAt f f' x ↔ Tendsto (slope f x) (𝓝[≠] x) (𝓝 f')`, with `slope f x y = (y-x)⁻¹ • (f y - f x)`, is the difference-quotient limit definition.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Relation with derivatives",
-          "snippet": "The derivative of a function f at a point x is defined by the limit"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f'(x)=\\lim _{h\\to 0}{\\frac {f(x+h)-f(x)}{h}}.}"
-        }
-      ],
       "id": "afda5040f83d"
     },
     {
@@ -189,16 +139,6 @@
       },
       "note": "Characterizes the derivative as the limit of `(f(x+h) - f(x))/h` as `h → 0`, i.e. the forward-difference quotient.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Relation with derivatives",
-          "snippet": "Hence, the forward difference divided by h approximates the derivative when h is small"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {\\Delta _{h}[f](x)}{h}}-f'(x)=o(h)\\to 0\\quad {\\text{as }}h\\to 0.}"
-        }
-      ],
       "id": "831783fb3fe6"
     },
     {
@@ -216,16 +156,6 @@
       },
       "note": "The two-sided slope-limit characterization covers `h → 0⁻` (backward) as well as `h → 0⁺`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Relation with derivatives",
-          "snippet": "The same formula holds for the backward difference"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {\\nabla _{h}[f](x)}{h}}-f'(x)=o(h)\\to 0\\quad {\\text{as }}h\\to 0.}"
-        }
-      ],
       "id": "e1ddecf26d27"
     },
     {
@@ -243,16 +173,6 @@
       },
       "note": "No statement about higher-order accuracy of the central-difference approximation found.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Relation with derivatives",
-          "snippet": "However, the central (also called centered) difference yields a more accurate approximation"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {\\delta _{h}[f](x)}{h}}-f'(x)=o\\left(h^{2}\\right).}"
-        }
-      ],
       "id": "a7a77757be63"
     },
     {
@@ -287,16 +207,6 @@
       },
       "note": "Mathlib does not state the `(f(x+h) - 2f(x) + f(x-h))/h²` approximation to `f''`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Higher-order differences",
-          "snippet": "we obtain the central difference approximation of the second derivative"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f''(x)\\approx {\\frac {\\delta _{h}^{2}[f](x)}{h^{2}}}={\\frac {{\\frac {f(x+h)-f(x)}{h}}-{\\frac {f(x)-f(x-h)}{h}}}{h}}={\\frac {f(x+h)-2f(x)+f(x-h)}{h^{2}}}~.}"
-        }
-      ],
       "id": "154baed043e8"
     },
     {
@@ -314,24 +224,6 @@
       },
       "note": "`Δ_[h]^[n] f` (iterated forward difference) is defined and given the explicit binomial formula; backward/central are absent.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Higher-order differences",
-          "snippet": "the n -th order forward, backward, and central differences are given by"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\Delta _{h}^{n}[f](x)=\\sum _{j=0}^{n}(-1)^{n-j}{\\binom {n}{j}}f{\\bigl (}x+jh{\\bigr )},}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\nabla _{h}^{n}[f](x)=\\sum _{j=0}^{n}(-1)^{j}{\\binom {n}{j}}f(x-jh),}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\delta _{h}^{n}[f](x)=\\sum _{j=0}^{n}(-1)^{j}{\\binom {n}{j}}f\\left(x+\\left({\\frac {n}{2}}-j\\right)h\\right)~.}"
-        }
-      ],
       "id": "fb15774bdc6b"
     },
     {
@@ -366,16 +258,6 @@
       },
       "note": "No O(h²) error-bound combination of forward differences approximating `f'` in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Higher-order differences",
-          "snippet": "approximates f ′( x ) up to a term of order h 2"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {\\Delta _{h}[f](x)-{\\frac {1}{2}}\\Delta _{h}^{2}[f](x)}{h}}=-{\\frac {f(x+2h)-4f(x+h)+3f(x)}{2h}}}"
-        }
-      ],
       "id": "939b41bbd6ca"
     },
     {
@@ -393,16 +275,6 @@
       },
       "note": "No central-difference approximation to `f''` formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Higher-order differences",
-          "snippet": "the latter can be approximated by second-order central difference of f ′( x )"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f''(x)\\approx {\\frac {f'(x+h)-f'(x-h)}{2h}}~.}"
-        }
-      ],
       "id": "a13b7c8668bf"
     },
     {
@@ -420,16 +292,6 @@
       },
       "note": "`Δ_[1]^[P.natDegree] P.eval = P.leadingCoeff • P.natDegree!` is exactly the `n!·a_n` result.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Polynomials",
-          "snippet": "After n pairwise differences, the following result can be achieved"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\Delta _{h}^{n}[P](x)=ah^{n}n!}"
-        }
-      ],
       "id": "06764d5b86b3"
     },
     {
@@ -447,16 +309,6 @@
       },
       "note": "Implicit base case (`n = 1`) of the formalized factorial identity; not stated as a separate lemma.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Base case",
-          "snippet": "Let Q ( x ) be a polynomial of degree 1"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\Delta _{h}[Q](x)=Q(x+h)-Q(x)=[a(x+h)+b]-[ax+b]=ah=ah^{1}1!}"
-        }
-      ],
       "id": "321224d2b546"
     },
     {
@@ -474,16 +326,6 @@
       },
       "note": "The inductive proof step is folded into the proof of `Polynomial.fwdDiff_iter_degree_eq_factorial`; not a standalone lemma.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Inductive step",
-          "snippet": "Let R ( x ) be a polynomial of degree m − 1 where m ≥ 2"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\Delta _{h}^{m-1}[R](x)=ah^{m-1}(m-1)!}"
-        }
-      ],
       "id": "20c45ca1326b"
     },
     {
@@ -518,16 +360,6 @@
       },
       "note": "The Leibniz/product rule `Δ(fg) = Δf · g + f · Δg + Δf · Δg` is `fwdDiff_smul`; no power rule for differences is stated.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Properties",
-          "snippet": "For all positive k and n"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\Delta _{kh}^{n}\\left(f,x\\right)=\\sum \\limits _{j_{1}=0}^{k-1}\\sum \\limits _{j_{2}=0}^{k-1}\\cdots \\sum \\limits _{j_{n}=0}^{k-1}\\Delta _{h}^{n}\\left(f,x+j_{1}h+j_{2}h+\\cdots +j_{n}h\\right).}"
-        }
-      ],
       "id": "79a806e70c9d"
     },
     {
@@ -562,20 +394,6 @@
       },
       "note": "No Mathlib statement of the Newton series for `sin`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Newton's series",
-          "snippet": "the sine function vanishes at integer multiples of"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\binom {x}{k}}={\\frac {(x)_{k}}{k!}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle (x)_{k}=x(x-1)(x-2)\\cdots (x-k+1)}"
-        }
-      ],
       "id": "7c5e405caccf"
     },
     {
@@ -593,16 +411,6 @@
       },
       "note": "Specific Fibonacci-doubling example is not in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Newton's series",
-          "snippet": "consider the first few terms of doubling the Fibonacci sequence"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{matrix}{\\begin{array}{|c||c|c|c|}\\hline x&amp;f=\\Delta ^{0}&amp;\\Delta ^{1}&amp;\\Delta ^{2}\\\\\\hline 1&amp;{\\underline {2}}&amp;&amp;\\\\&amp;&amp;{\\underline {0}}&amp;\\\\2&amp;2&amp;&amp;{\\underline {2}}\\\\&amp;&amp;2&amp;\\\\3&amp;4&amp;&amp;\\\\\\hline \\end{array}}&amp;\\quad {\\begin{aligned}f(x)&amp;=\\Delta ^{0}\\cdot 1+\\Delta ^{1}\\cdot {\\dfrac {(x-x_{0})_{1}}{1!}}+\\Delta ^{2}\\cdot {\\dfrac {(x-x_{0})_{2}}{2!}}\\quad (x_{0}=1)\\\\\\\\&amp;=2\\cdot 1+0\\cdot {\\dfrac {x-1}{1}}+2\\cdot {\\dfrac {(x-1)(x-2)}{2}}\\\\\\\\&amp;=2+(x-1)(x-2)\\\\\\end{aligned}}\\end{matrix}}}"
-        }
-      ],
       "id": "ba0454129add"
     },
     {
@@ -620,24 +428,6 @@
       },
       "note": "No `dividedDifference` / Newton's divided differences declaration found.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Newton's series",
-          "snippet": "For the case of nonuniform steps in the values of x , Newton computes the divided differences"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\Delta _{j,0}=y_{j},\\qquad \\Delta _{j,k}={\\frac {\\Delta _{j+1,k-1}-\\Delta _{j,k-1}}{x_{j+k}-x_{j}}}\\quad \\ni \\quad \\left\\{k&gt;0,\\;j\\leq \\max \\left(j\\right)-k\\right\\},\\qquad \\Delta 0_{k}=\\Delta _{0,k}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {P_{0}}=1,\\quad \\quad P_{k+1}=P_{k}\\cdot \\left(\\xi -x_{k}\\right),}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f(\\xi )=\\Delta 0\\cdot P\\left(\\xi \\right).}"
-        }
-      ],
       "id": "fc92d6d80fa1"
     },
     {
@@ -649,11 +439,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "hasSum_mahler",
+        "decl": "PadicInt.hasSum_mahler",
         "module": "Mathlib.NumberTheory.Padics.MahlerBasis",
         "match_kind": "exact"
       },
-      "note": "Mahler's theorem is `hasSum_mahler`: every continuous `f : C(ℤ_[p], E)` equals the sum `∑ mahlerTerm (Δ_[1]^[n] f 0) n`.",
+      "note": "Mahler's theorem is `PadicInt.hasSum_mahler`: every continuous `f : C(ℤ_[p], E)` equals the sum `∑ mahlerTerm (Δ_[1]^[n] f 0) n`.",
       "provenance": "ai",
       "id": "3066c8cb6e5f"
     },
@@ -689,16 +479,6 @@
       },
       "note": "Defined as `shiftₗ M G h := fwdDiffₗ M G h + 1`, so `fwdDiffₗ = shiftₗ - 1`, exactly Δ = T − I.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Calculus of finite differences",
-          "snippet": "The forward difference can be considered as an operator , called the difference operator"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\Delta _{h}=\\operatorname {T} _{h}-\\operatorname {I} ,}"
-        }
-      ],
       "id": "71f904f040da"
     },
     {
@@ -750,20 +530,6 @@
       },
       "note": "The formal operator identity `T_h = e^{hD}` (or `Δ = e^{hD} − 1`) is not stated in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Calculus of finite differences",
-          "snippet": "Formally applying the Taylor series with respect to h , yields the operator equation"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\operatorname {\\Delta } _{h}=h\\operatorname {D} +{\\frac {1}{2!}}h^{2}\\operatorname {D} ^{2}+{\\frac {1}{3!}}h^{3}\\operatorname {D} ^{3}+\\cdots =e^{h\\operatorname {D} }-\\operatorname {I} ,}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle h\\operatorname {D} =\\ln(1+\\Delta _{h})=\\Delta _{h}-{\\tfrac {1}{2}}\\,\\Delta _{h}^{2}+{\\tfrac {1}{3}}\\,\\Delta _{h}^{3}-\\cdots ~.}"
-        }
-      ],
       "id": "808251bd50bc"
     },
     {
@@ -781,16 +547,6 @@
       },
       "note": "No umbral calculus / umbral sine in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Calculus of finite differences",
-          "snippet": "For example, the umbral sine is"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\sin \\left(x\\operatorname {T} _{h}^{-1}\\right)=x-{\\frac {(x)_{3}}{3!}}+{\\frac {(x)_{5}}{5!}}-{\\frac {(x)_{7}}{7!}}+\\cdots }"
-        }
-      ],
       "id": "5aaa83abcf62"
     },
     {
@@ -825,16 +581,6 @@
       },
       "note": "No umbral correspondence Dirac↔sinc in Mathlib (sinc exists but not in this connection).",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Calculus of finite differences",
-          "snippet": "the Dirac delta function maps to its umbral correspondent, the cardinal sine function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\delta (x)\\mapsto {\\frac {\\sin \\left[{\\frac {\\pi }{2}}\\left(1+{\\frac {x}{h}}\\right)\\right]}{\\pi (x+h)}},}"
-        }
-      ],
       "id": "b36d6951ab87"
     },
     {
@@ -869,16 +615,6 @@
       },
       "note": "`fwdDiff_const` (Δ of constants is 0) plus `fwdDiff_add` and `fwdDiff_const_smul` give the constant/linearity rules.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Rules for calculus of finite difference operators",
-          "snippet": "Constant rule : If c is a constant"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\Delta c=0}"
-        }
-      ],
       "id": "cbc99dfd764e"
     },
     {
@@ -947,16 +683,6 @@
       },
       "note": "No general weighted-stencil `∑ μᵢ f(x + i h)` operator declared.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Generalizations",
-          "snippet": "A generalized finite difference is usually defined as"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\Delta _{h}^{\\mu }[f](x)=\\sum _{k=0}^{N}\\mu _{k}f(x+kh),}"
-        }
-      ],
       "id": "fd693469905c"
     },
     {
@@ -991,16 +717,6 @@
       },
       "note": "No partial-derivative finite-difference stencils declared.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Multivariate finite differences",
-          "snippet": "Some partial derivative approximations are"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}f_{x}(x,y)&amp;\\approx {\\frac {f(x+h,y)-f(x-h,y)}{2h}}\\\\f_{y}(x,y)&amp;\\approx {\\frac {f(x,y+k)-f(x,y-k)}{2k}}\\\\f_{xx}(x,y)&amp;\\approx {\\frac {f(x+h,y)-2f(x,y)+f(x-h,y)}{h^{2}}}\\\\f_{yy}(x,y)&amp;\\approx {\\frac {f(x,y+k)-2f(x,y)+f(x,y-k)}{k^{2}}}\\\\f_{xy}(x,y)&amp;\\approx {\\frac {f(x+h,y+k)-f(x+h,y-k)-f(x-h,y+k)+f(x-h,y-k)}{4hk}}.\\end{aligned}}}"
-        }
-      ],
       "id": "dd62e7dd8063"
     },
     {
@@ -1018,16 +734,6 @@
       },
       "note": "No mixed-partial finite-difference formula in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Multivariate finite differences",
-          "snippet": "a more efficient formula for the last case is"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f_{xy}(x,y)\\approx {\\frac {f(x+h,y+k)-f(x+h,y)-f(x,y+k)+2f(x,y)-f(x-h,y)-f(x,y-k)+f(x-h,y-k)}{2hk}},}"
-        }
-      ],
       "id": "406f5b80a2e3"
     },
     {
@@ -1046,6 +752,54 @@
       "note": "Computational-cost analysis is outside Mathlib's scope.",
       "provenance": "ai",
       "id": "ae620ba582e0"
+    },
+    {
+      "kind": "definition",
+      "label": "Finite difference method",
+      "anchor": {
+        "section": "In differential equations",
+        "snippet": "The resulting methods are called finite difference methods"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general framework of finite-difference methods for numerical solution of (P)DEs in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Falling factorial / Pochhammer symbol",
+      "anchor": {
+        "section": "Newton's series",
+        "snippet": "is the \" falling factorial \" or \"lower factorial\""
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "descPochhammer",
+        "module": "Mathlib.RingTheory.Polynomial.Pochhammer",
+        "match_kind": "exact"
+      },
+      "note": "The falling factorial `(x)_k = x(x-1)...(x-k+1)` is `descPochhammer` (with `ascPochhammer` for the rising-factorial variant).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Chu–Vandermonde identity",
+      "anchor": {
+        "section": "Newton's series",
+        "snippet": "the Chu–Vandermonde identity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.add_choose_eq",
+        "module": "Mathlib.Data.Nat.Choose.Vandermonde",
+        "match_kind": "exact"
+      },
+      "note": "Vandermonde's identity `(m + n).choose k = ∑ ij ∈ antidiagonal k, m.choose ij.1 * n.choose ij.2` is `Nat.add_choose_eq`.",
+      "provenance": "ai"
     }
   ]
 }

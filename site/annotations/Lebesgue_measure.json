@@ -694,7 +694,7 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "MeasureTheory.measure_zero_of_dimH_lt",
+        "decl": "measure_zero_of_dimH_lt",
         "module": "Mathlib.Topology.MetricSpace.HausdorffDimension",
         "match_kind": "invocation"
       },
@@ -734,29 +734,23 @@
       },
       "note": "BoxIntegral.Box is a product of intervals, and its volume equals ∏ i, (upper i - lower i) (BoxIntegral.volume_apply / Real.volume_Icc_pi).",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Construction of the Lebesgue measure",
-          "snippet": "is a set of the form"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle B=\\prod _{i=1}^{n}[a_{i},b_{i}]\\,,}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\operatorname {vol} (B)=\\prod _{i=1}^{n}(b_{i}-a_{i})\\,.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\lambda ^{*}(A)=\\inf \\left\\{\\sum _{B\\in {\\mathcal {C}}}\\operatorname {vol} (B):{\\mathcal {C}}{\\text{ is a countable collection of boxes whose union covers }}A\\right\\}.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\lambda ^{*}(S)=\\lambda ^{*}(S\\cap A)+\\lambda ^{*}(S\\setminus A)\\,.}"
-        }
-      ],
       "id": "7365bdf85528"
+    },
+    {
+      "kind": "theorem",
+      "label": "Carathéodory's extension theorem",
+      "anchor": {
+        "section": "Construction of the Lebesgue measure",
+        "snippet": "an application of Carathéodory's extension theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.OuterMeasure.toMeasure",
+        "module": "Mathlib.MeasureTheory.Measure.MeasureSpace",
+        "match_kind": "exact"
+      },
+      "note": "Carathéodory's extension restricting an outer measure to its Carathéodory-measurable σ-algebra is realized by OuterMeasure.toMeasure.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",

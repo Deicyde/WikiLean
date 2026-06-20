@@ -40,6 +40,54 @@
       "id": "26d33bd41891"
     },
     {
+      "kind": "theorem",
+      "label": "Monotone convergence theorem",
+      "anchor": {
+        "section": "Order properties of the real numbers",
+        "snippet": "the monotone convergence theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendsto_atTop_ciSup",
+        "module": "Mathlib.Topology.Order.MonotoneConvergence",
+        "match_kind": "exact"
+      },
+      "note": "tendsto_atTop_ciSup proves a monotone sequence bounded above converges to its supremum.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Intermediate value theorem",
+      "anchor": {
+        "section": "Order properties of the real numbers",
+        "snippet": "the intermediate value theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "intermediate_value_Icc",
+        "module": "Mathlib.Topology.Order.IntermediateValue",
+        "match_kind": "exact"
+      },
+      "note": "intermediate_value_Icc states the IVT for continuous functions on a closed interval.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Mean value theorem",
+      "anchor": {
+        "section": "Order properties of the real numbers",
+        "snippet": "the mean value theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_hasDerivAt_eq_slope",
+        "module": "Mathlib.Analysis.Calculus.Deriv.MeanValue",
+        "match_kind": "exact"
+      },
+      "note": "exists_hasDerivAt_eq_slope is the mean value theorem for real-valued differentiable functions.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Reals as a metric space",
       "anchor": {
@@ -105,24 +153,6 @@
       },
       "note": "A real-valued sequence is just a function `ℕ → ℝ`, with no separate named definition in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Sequences",
-          "snippet": "a real-valued sequence , here indexed by the natural numbers, is a map"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle (a_{n})=(a_{n})_{n\\in \\mathbb {N} }=(a_{1},a_{2},a_{3},\\dots ).}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle a_{1}\\leq a_{2}\\leq a_{3}\\leq \\cdots }"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle a_{1}\\geq a_{2}\\geq a_{3}\\geq \\cdots }"
-        }
-      ],
       "id": "09624e970ff1"
     },
     {
@@ -140,24 +170,6 @@
       },
       "note": "Convergence is `Tendsto u atTop (𝓝 L)` and divergence its negation, via the general filter Tendsto.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Sequences",
-          "snippet": "is said to be convergent ; otherwise it is divergent"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle (a_{n})=(a_{n})_{n\\in \\mathbb {N} }=(a_{1},a_{2},a_{3},\\dots ).}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle a_{1}\\leq a_{2}\\leq a_{3}\\leq \\cdots }"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle a_{1}\\geq a_{2}\\geq a_{3}\\geq \\cdots }"
-        }
-      ],
       "id": "14a0efe0fb05"
     },
     {
@@ -175,24 +187,6 @@
       },
       "note": "A bounded sequence is one whose range satisfies `Bornology.IsBounded (Set.range u)`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Sequences",
-          "snippet": "is bounded if there exists"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle (a_{n})=(a_{n})_{n\\in \\mathbb {N} }=(a_{1},a_{2},a_{3},\\dots ).}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle a_{1}\\leq a_{2}\\leq a_{3}\\leq \\cdots }"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle a_{1}\\geq a_{2}\\geq a_{3}\\geq \\cdots }"
-        }
-      ],
       "id": "553003b1f1b5"
     },
     {
@@ -210,24 +204,6 @@
       },
       "note": "Monotone/Antitone capture monotonically increasing/decreasing sequences exactly.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Sequences",
-          "snippet": "is monotonically increasing or decreasing if"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle (a_{n})=(a_{n})_{n\\in \\mathbb {N} }=(a_{1},a_{2},a_{3},\\dots ).}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle a_{1}\\leq a_{2}\\leq a_{3}\\leq \\cdots }"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle a_{1}\\geq a_{2}\\geq a_{3}\\geq \\cdots }"
-        }
-      ],
       "id": "bf9c1e5893a4"
     },
     {
@@ -262,20 +238,6 @@
       },
       "note": "Function limits are `Tendsto`, with the ε-δ form available as Metric.tendsto_nhdsWithin_nhds.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Limits and convergence",
-          "snippet": "be a real-valued function defined on"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f(x)\\to L\\ \\ {\\text{as}}\\ \\ x\\to x_{0},}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\lim _{x\\to x_{0}}f(x)=L.}"
-        }
-      ],
       "id": "73d48a59f6e3"
     },
     {
@@ -398,19 +360,35 @@
       "id": "0078b4b49a7a"
     },
     {
+      "kind": "proposition",
+      "label": "Uniform limit of continuous functions is continuous",
+      "anchor": {
+        "section": "Uniform and pointwise convergence for sequences of functions",
+        "snippet": "is guaranteed to converge to a continuous limiting function if the convergence is uniform"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TendstoUniformly.continuous",
+        "module": "Mathlib.Topology.UniformSpace.UniformApproximation",
+        "match_kind": "exact"
+      },
+      "note": "TendstoUniformly.continuous shows the uniform limit of continuous functions is continuous.",
+      "provenance": "ai"
+    },
+    {
       "kind": "example",
       "label": "Cantor ternary set is compact",
       "anchor": {
         "section": "Compactness",
         "snippet": "the Cantor ternary set"
       },
-      "status": "not_formalized",
+      "status": "formalized",
       "mathlib": {
-        "decl": null,
-        "module": null,
-        "match_kind": null
+        "decl": "isCompact_cantorSet",
+        "module": "Mathlib.Topology.Instances.CantorSet",
+        "match_kind": "exact"
       },
-      "note": "The middle-thirds Cantor ternary set as a compact subset of ℝ is not defined in Mathlib (only abstract Cantor schemes/perfect sets are).",
+      "note": "isCompact_cantorSet proves the middle-thirds Cantor ternary set (cantorSet) is compact in ℝ.",
       "provenance": "ai",
       "id": "068a8017db43"
     },
@@ -687,6 +665,22 @@
       "id": "50ad87513e89"
     },
     {
+      "kind": "example",
+      "label": "Weierstrass nowhere differentiable continuous function",
+      "anchor": {
+        "section": "Differentiation",
+        "snippet": "Weierstrass's nowhere differentiable continuous function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has not yet formalized a named version of Weierstrass's nowhere-differentiable continuous function.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Differentiability classes Cᵏ",
       "anchor": {
@@ -789,6 +783,22 @@
       "id": "b0363a103392"
     },
     {
+      "kind": "theorem",
+      "label": "Riemann rearrangement theorem",
+      "anchor": {
+        "section": "Series",
+        "snippet": "the Riemann rearrangement theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has lemmas on rearrangements of conditionally convergent series but no single named Riemann rearrangement theorem.",
+      "provenance": "ai"
+    },
+    {
       "kind": "example",
       "label": "Geometric series (convergent)",
       "anchor": {
@@ -818,7 +828,7 @@
         "module": "Mathlib.Analysis.PSeries",
         "match_kind": "exact"
       },
-      "note": "not_summable_one_div_natCast proves the harmonic series ∑ 1/n is not summable (diverges).",
+      "note": "Real.not_summable_one_div_natCast proves the harmonic series ∑ 1/n is not summable (diverges).",
       "provenance": "ai",
       "id": "d8698c02f57d"
     },
@@ -906,6 +916,22 @@
       "note": "A Maclaurin series is the special case of taylorWithinEval expanded at the base point 0, with no separate definition.",
       "provenance": "ai",
       "id": "1ce83ad75161"
+    },
+    {
+      "kind": "definition",
+      "label": "Radius of convergence",
+      "anchor": {
+        "section": "Taylor series",
+        "snippet": "the largest such R for which convergence is guaranteed is called the radius of convergence"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FormalMultilinearSeries.radius",
+        "module": "Mathlib.Analysis.Analytic.ConvergenceRadius",
+        "match_kind": "exact"
+      },
+      "note": "FormalMultilinearSeries.radius gives the radius of convergence of a formal power series.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -1062,6 +1088,22 @@
     },
     {
       "kind": "definition",
+      "label": "Lebesgue integral",
+      "anchor": {
+        "section": "Lebesgue integration and measure",
+        "snippet": "Lebesgue integration is a mathematical construction that extends the integral"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "MeasureTheory.integral is the (Bochner) Lebesgue integral, defined for a wide class of measurable functions on a measure space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Measure",
       "anchor": {
         "section": "Lebesgue integration and measure",
@@ -1110,6 +1152,374 @@
       "note": "Distributions always have derivatives (derivCLM) and suitable functions embed via toTemperedDistribution, but the exact statement for arbitrary locally integrable functions is not a single declaration.",
       "provenance": "ai",
       "id": "fcb3fb13c265"
+    },
+    {
+      "kind": "theorem",
+      "label": "Bolzano–Weierstrass theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "the Bolzano–Weierstrass and Heine–Borel theorems"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendsto_subseq_of_bounded",
+        "module": "Mathlib.Topology.MetricSpace.Sequences",
+        "match_kind": "generalization"
+      },
+      "note": "Every bounded sequence in ℝⁿ has a convergent subsequence via tendsto_subseq_of_bounded, the Bolzano–Weierstrass statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Baire category theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "the Baire category theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "dense_iInter_of_isOpen",
+        "module": "Mathlib.Topology.Baire.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "BaireSpace instance on complete metric / locally compact Hausdorff spaces, with the countable-intersection-of-dense-opens statement dense_iInter_of_isOpen.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "L'Hôpital's rule",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "the L'Hopital's rule"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasDerivAt.lhopital_zero_nhds",
+        "module": "Mathlib.Analysis.Calculus.LHopital",
+        "match_kind": "exact"
+      },
+      "note": "HasDerivAt.lhopital_zero_nhds (and atTop variants) formalize L'Hôpital's rule.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Taylor's theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "Taylor's theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "taylor_mean_remainder_lagrange",
+        "module": "Mathlib.Analysis.Calculus.Taylor",
+        "match_kind": "exact"
+      },
+      "note": "taylor_mean_remainder_lagrange (and Cauchy form) give Taylor's theorem with the explicit remainder.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Dini's theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "Dini's theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dini's theorem (monotone pointwise convergence to a continuous limit on a compact set is uniform) does not appear to have a single named declaration in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Arzelà–Ascoli theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "the Arzelà-Ascoli theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BoundedContinuousFunction.arzela_ascoli",
+        "module": "Mathlib.Topology.ContinuousMap.Bounded.ArzelaAscoli",
+        "match_kind": "exact"
+      },
+      "note": "BoundedContinuousFunction.arzela_ascoli formalizes the Arzelà–Ascoli compactness criterion for equicontinuous families of continuous functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Stone–Weierstrass theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "the Stone-Weierstrass theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.subalgebra_topologicalClosure_eq_top_of_separatesPoints",
+        "module": "Mathlib.Topology.ContinuousMap.StoneWeierstrass",
+        "match_kind": "exact"
+      },
+      "note": "ContinuousMap.subalgebra_topologicalClosure_eq_top_of_separatesPoints is the Stone–Weierstrass theorem (real form), with polynomial special case polynomialFunctions_closure_eq_top.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Banach fixed-point theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "the Banach fixed-point theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContractingWith.exists_fixedPoint",
+        "module": "Mathlib.Topology.MetricSpace.Contracting",
+        "match_kind": "exact"
+      },
+      "note": "ContractingWith.fixedPoint / exists_fixedPoint give the Banach contraction mapping theorem on complete metric spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Inverse function theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "the inverse and implicit function theorems"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasStrictFDerivAt.localInverse",
+        "module": "Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv",
+        "match_kind": "exact"
+      },
+      "note": "HasStrictFDerivAt.localInverse / to_localHomeomorph formalizes the inverse function theorem in Banach spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Implicit function theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "the inverse and implicit function theorems"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasStrictFDerivAt.implicitFunction",
+        "module": "Mathlib.Analysis.Calculus.Implicit",
+        "match_kind": "exact"
+      },
+      "note": "HasStrictFDerivAt.implicitFunction states the implicit function theorem in Banach spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Stokes' theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "Stokes' theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.integral2_divergence_prod_of_hasFDerivAt_off_countable",
+        "module": "Mathlib.MeasureTheory.Integral.DivergenceTheorem",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the divergence/Stokes theorem on rectangles (and the BoxIntegral GP form) but no general Stokes' theorem on manifolds yet.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Egorov's theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "Egorov's theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Egorov.tendstoUniformlyOn_sdiff_iUnionNotConvergentSeq",
+        "module": "Mathlib.MeasureTheory.Function.Egorov",
+        "match_kind": "exact"
+      },
+      "note": "MeasureTheory.Egorov.tendstoUniformlyOn_sdiff_iUnionNotConvergentSeq states Egorov's theorem: a.e.-convergent measurable functions converge uniformly off a small-measure set.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lusin's theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "Lusin's theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lusin's theorem (measurable functions agree with continuous functions off small-measure sets) is not yet a named declaration in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fatou's lemma",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "Fatou's lemma"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.lintegral_liminf_le",
+        "module": "Mathlib.MeasureTheory.Integral.Lebesgue.Add",
+        "match_kind": "exact"
+      },
+      "note": "MeasureTheory.lintegral_liminf_le states Fatou's lemma for the Lebesgue (lower-integral) version.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Monotone convergence theorem (Lebesgue)",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "the monotone and dominated convergence theorems"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.lintegral_iSup",
+        "module": "Mathlib.MeasureTheory.Integral.Lebesgue.Add",
+        "match_kind": "exact"
+      },
+      "note": "MeasureTheory.lintegral_iSup is the monotone convergence theorem for the Lebesgue integral.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Dominated convergence theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "the monotone and dominated convergence theorems"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.tendsto_integral_of_dominated_convergence",
+        "module": "Mathlib.MeasureTheory.Integral.DominatedConvergence",
+        "match_kind": "exact"
+      },
+      "note": "MeasureTheory.tendsto_integral_of_dominated_convergence is the Lebesgue/Bochner dominated convergence theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fubini's theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "Fubini's theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_prod",
+        "module": "Mathlib.MeasureTheory.Integral.Prod",
+        "match_kind": "exact"
+      },
+      "note": "MeasureTheory.integral_prod is Fubini's theorem for product integrals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Radon–Nikodym theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "the Radon-Nikodym theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.absolutelyContinuous_iff_withDensity_rnDeriv_eq",
+        "module": "Mathlib.MeasureTheory.Measure.Decomposition.RadonNikodym",
+        "match_kind": "exact"
+      },
+      "note": "rnDeriv / Measure.withDensity_rnDeriv_eq give the Radon–Nikodym derivative and theorem for σ-finite measures.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lebesgue differentiation theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "the Lebesgue differentiation theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": "Mathlib.MeasureTheory.Covering.Differentiation",
+        "match_kind": null
+      },
+      "note": "Mathlib has Vitali-family differentiation lemmas (tendsto_ae limits of averages over shrinking balls) but no single named 'Lebesgue differentiation theorem'.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hahn–Banach theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "the Hahn-Banach theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "exists_extension_norm_eq",
+        "module": "Mathlib.Analysis.Normed.Module.HahnBanach",
+        "match_kind": "exact"
+      },
+      "note": "exists_extension_norm_eq formalizes the analytic Hahn–Banach extension theorem on normed spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Banach–Alaoglu theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "the Banach-Alaoglu theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "WeakDual.isCompact_polar",
+        "module": "Mathlib.Analysis.Normed.Module.WeakDual",
+        "match_kind": "exact"
+      },
+      "note": "WeakDual.isCompact_polar / isCompact_closedBall give the Banach–Alaoglu theorem on weak-* compactness of the closed unit ball of the dual.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Riesz representation theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "the Riesz representation theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace.toDual",
+        "module": "Mathlib.Analysis.InnerProductSpace.Dual",
+        "match_kind": "generalization"
+      },
+      "note": "InnerProductSpace.toDual is the Riesz representation theorem for Hilbert spaces; rieszContent gives the measure-theoretic Riesz–Markov–Kakutani form.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Plancherel theorem",
+      "anchor": {
+        "section": "Important results",
+        "snippet": "the Plancherel theorem"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has partial Fourier-isometry results for L² but no single named Plancherel theorem declaration.",
+      "provenance": "ai"
     }
   ]
 }

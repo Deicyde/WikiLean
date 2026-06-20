@@ -18,22 +18,8 @@
         "module": "Mathlib.Analysis.Distribution.TemperedDistribution",
         "match_kind": "exact"
       },
-      "note": "The Dirac delta is formalized both as `Measure.dirac`, `Distribution.delta`, and `TemperedDistribution.delta`.",
+      "note": "The Dirac delta is formalized as `MeasureTheory.Measure.dirac`, `Distribution.delta`, and `TemperedDistribution.delta`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "(Lead)",
-          "snippet": "the Dirac delta function (or"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\delta (x)={\\begin{cases}0,&amp;x\\neq 0\\\\{\\infty },&amp;x=0\\end{cases}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\int _{-\\infty }^{\\infty }\\delta (x)\\,dx=1.}"
-        }
-      ],
       "id": "6ea46e9750b4"
     },
     {
@@ -49,22 +35,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "This is an informal heuristic description of δ and has no formalized counterpart.",
+      "note": "This is an informal heuristic description of δ with no formalized counterpart.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definitions",
-          "snippet": "can be loosely thought of as a function on the real line which is zero everywhere except at the origin"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\delta (x)\\simeq {\\begin{cases}+\\infty ,&amp;x=0\\\\0,&amp;x\\neq 0\\end{cases}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\int _{-\\infty }^{\\infty }\\delta (x)\\,dx=1.}"
-        }
-      ],
       "id": "4330a51cf1b4"
     },
     {
@@ -80,22 +52,8 @@
         "module": "Mathlib.MeasureTheory.Measure.Dirac",
         "match_kind": "exact"
       },
-      "note": "Defined as `MeasureTheory.Measure.dirac` with `dirac_apply_of_mem` giving the value 1 on sets containing the point.",
+      "note": "Defined as `MeasureTheory.Measure.dirac` in `Mathlib.MeasureTheory.Measure.Dirac`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "As a measure",
-          "snippet": "to define a measure , called Dirac measure"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\int _{-\\infty }^{\\infty }f(x)\\,\\delta (dx)=f(0)}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\int _{-\\infty }^{\\infty }f(x)\\,\\delta (x)\\,dx=f(0)}"
-        }
-      ],
       "id": "1db8f5df7276"
     },
     {
@@ -111,22 +69,8 @@
         "module": "Mathlib.MeasureTheory.Measure.Dirac",
         "match_kind": "generalization"
       },
-      "note": "`mutuallySingular_dirac` shows `dirac x ⟂ₘ μ` for any `NoAtoms μ`, which specializes to Lebesgue and implies non-absolute-continuity.",
+      "note": "`mutuallySingular_dirac` shows `dirac x ⟂ₘ μ` for any `NoAtoms μ`, specializing to Lebesgue.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "As a measure",
-          "snippet": "The measure [MATH] is not absolutely continuous with respect to the Lebesgue measure"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\int _{-\\infty }^{\\infty }f(x)\\,\\delta (dx)=f(0)}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\int _{-\\infty }^{\\infty }f(x)\\,\\delta (x)\\,dx=f(0)}"
-        }
-      ],
       "id": "b50542504268"
     },
     {
@@ -144,24 +88,6 @@
       },
       "note": "No declaration computes the CDF of the Dirac measure as the Heaviside step function.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "As a measure",
-          "snippet": "the delta measure is characterized by its cumulative distribution function , which is the unit step function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle H(x)={\\begin{cases}1&amp;{\\text{if }}x\\geq 0\\\\0&amp;{\\text{if }}x&lt;0.\\end{cases}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle H(x)=\\int _{\\mathbf {R} }\\mathbf {1} _{(-\\infty ,x]}(t)\\,\\delta (dt)=\\delta \\!\\left((-\\infty ,x]\\right),}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\int _{-\\infty }^{\\infty }f(x)\\,\\delta (dx)=\\int _{-\\infty }^{\\infty }f(x)\\,dH(x).}"
-        }
-      ],
       "id": "2069fb6f0c0c"
     },
     {
@@ -194,7 +120,7 @@
         "module": "Mathlib.Analysis.Distribution.Distribution",
         "match_kind": "exact"
       },
-      "note": "`Distribution.delta` is the linear functional `f ↦ f x` on test functions in `𝓓^{n}(Ω, ℝ)`.",
+      "note": "`Distribution.delta` is the linear functional `f ↦ f x` on test functions.",
       "provenance": "ai",
       "id": "93ed67ec8573"
     },
@@ -211,18 +137,8 @@
         "module": "Mathlib.Analysis.Distribution.TestFunction",
         "match_kind": "generalization"
       },
-      "note": "Mathlib characterizes continuity on 𝓓 via the LF inductive-limit structure, but the explicit seminorm/C·sup-of-derivatives form stated in the article is not isolated.",
+      "note": "Mathlib characterizes continuity on 𝓓 via the LF inductive-limit structure, not the explicit seminorm/C·sup-of-derivatives form.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "As a distribution",
-          "snippet": "it is necessary and sufficient that, for every positive integer"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\left|S[\\varphi ]\\right|\\leq C_{N}\\sum _{k=0}^{M_{N}}\\sup _{x\\in [-N,N]}\\left|\\varphi ^{(k)}(x)\\right|}"
-        }
-      ],
       "id": "21626044f794"
     },
     {
@@ -240,16 +156,6 @@
       },
       "note": "No declaration identifies δ as the distributional derivative of the Heaviside step function.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "As a distribution",
-          "snippet": "it is the distributional derivative of the Heaviside step function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\delta [\\varphi ]=-\\int _{-\\infty }^{\\infty }\\varphi '(x)\\,H(x)\\,dx.}"
-        }
-      ],
       "id": "acf2a662c714"
     },
     {
@@ -333,7 +239,7 @@
         "module": "Mathlib.MeasureTheory.Measure.Dirac",
         "match_kind": "generalization"
       },
-      "note": "`Measure.dirac` provides the Radon measure δ_a on any measurable space, including locally compact Hausdorff spaces.",
+      "note": "`Measure.dirac` provides δ_a on any measurable space, including locally compact Hausdorff spaces.",
       "provenance": "ai",
       "id": "47d39c380756"
     },
@@ -369,16 +275,6 @@
       },
       "note": "No lemma establishes the scaling identity δ(αx) = δ(x)/|α| for the delta distribution.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Scaling and symmetry",
-          "snippet": "The delta function satisfies the following scaling property for a non-zero scalar"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\int _{-\\infty }^{\\infty }\\delta (\\alpha x)f(x)\\,dx=\\int _{-\\infty }^{\\infty }\\delta (u)f(u/\\alpha )\\,{\\frac {du}{|\\alpha |}}={\\frac {f(0)}{|\\alpha |}}}"
-        }
-      ],
       "id": "dbab358e4a42"
     },
     {
@@ -532,16 +428,6 @@
       },
       "note": "Indefinite-integral identity for δ is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Indefinite integral",
-          "snippet": "For a constant [MATH] and a \"well-behaved\" arbitrary real-valued function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\displaystyle {\\int }y(x)\\delta (x-a)dx=y(a)H(x-a)+c,}"
-        }
-      ],
       "id": "b227b78ac000"
     },
     {
@@ -559,16 +445,6 @@
       },
       "note": "No formalized n-dimensional scaling property δ(αx)=|α|^{-n} δ(x).",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Properties in n dimensions",
-          "snippet": "The delta distribution in an n -dimensional space satisfies the following scaling property"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\delta (\\alpha {\\boldsymbol {x}})=|\\alpha |^{-n}\\delta ({\\boldsymbol {x}})~,}"
-        }
-      ],
       "id": "60d5b1824763"
     },
     {
@@ -586,16 +462,6 @@
       },
       "note": "No lemma showing rotational/reflection invariance of δ in ℝⁿ.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Properties in n dimensions",
-          "snippet": "Under any reflection or rotation ρ , the delta function is invariant"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\delta (\\rho {\\boldsymbol {x}})=\\delta ({\\boldsymbol {x}})~.}"
-        }
-      ],
       "id": "d051359801cd"
     },
     {
@@ -613,16 +479,6 @@
       },
       "note": "Composition of δ with a bi-Lipschitz function is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Properties in n dimensions",
-          "snippet": "it is possible to define the composition of δ with a bi-Lipschitz function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\int _{\\mathbb {R} ^{n}}\\delta (g({\\boldsymbol {x}}))\\,f(g({\\boldsymbol {x}}))\\left|\\det g'({\\boldsymbol {x}})\\right|d{\\boldsymbol {x}}=\\int _{g(\\mathbb {R} ^{n})}\\delta ({\\boldsymbol {u}})f({\\boldsymbol {u}})\\,d{\\boldsymbol {u}}}"
-        }
-      ],
       "id": "4a7c9ca4cb10"
     },
     {
@@ -640,16 +496,6 @@
       },
       "note": "Composition of δ with a submersion via the coarea formula is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Properties in n dimensions",
-          "snippet": "Using the coarea formula from geometric measure theory"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\int _{\\mathbb {R} ^{n}}f({\\boldsymbol {x}})\\,\\delta (g({\\boldsymbol {x}}))\\,d{\\boldsymbol {x}}=\\int _{g^{-1}(0)}{\\frac {f({\\boldsymbol {x}})}{|{\\boldsymbol {\\nabla }}g|}}\\,d\\sigma ({\\boldsymbol {x}})}"
-        }
-      ],
       "id": "8557cd16abce"
     },
     {
@@ -667,16 +513,6 @@
       },
       "note": "The simple-layer surface distribution δ_S is not defined.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Properties in n dimensions",
-          "snippet": "if S is a smooth hypersurface of R n , then we can associate to S the distribution"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\delta _{S}[g]=\\int _{S}g({\\boldsymbol {s}})\\,d\\sigma ({\\boldsymbol {s}})}"
-        }
-      ],
       "id": "f8d7f8838dc7"
     },
     {
@@ -726,18 +562,8 @@
         "module": "Mathlib.Analysis.Distribution.TemperedDistribution",
         "match_kind": "invocation"
       },
-      "note": "Mathlib has `derivCLM` for tempered distributions, so `derivCLM (delta x)` is δ′, but no dedicated `delta'` decl with its API exists.",
+      "note": "Mathlib has `derivCLM` for tempered distributions, so `derivCLM (delta x)` is δ′, but no dedicated `delta'` decl exists.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Derivatives",
-          "snippet": "The derivative of the Dirac delta distribution, denoted δ′ and also called the Dirac delta prime"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\delta '[\\varphi ]=-\\delta [\\varphi ']=-\\varphi '(0).}"
-        }
-      ],
       "id": "761a3f630657"
     },
     {
@@ -770,7 +596,7 @@
         "module": "Mathlib.Analysis.Distribution.TemperedDistribution",
         "match_kind": "invocation"
       },
-      "note": "All tempered distributions admit `derivCLM` of every order, so δ is implicitly infinitely differentiable, but no explicit statement is given.",
+      "note": "All tempered distributions admit `derivCLM` of every order, so δ is implicitly infinitely differentiable, but no explicit statement.",
       "provenance": "ai",
       "id": "7a6172e774aa"
     },
@@ -789,16 +615,6 @@
       },
       "note": "No lemma identifies δ′ as the distributional limit of (δ - τ_h δ)/h.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Derivatives",
-          "snippet": "The first derivative of the delta function is the distributional limit of the difference quotients"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\delta '(x)=\\lim _{h\\to 0}{\\frac {\\delta (x+h)-\\delta (x)}{h}}.}"
-        }
-      ],
       "id": "f3374730a83e"
     },
     {
@@ -816,16 +632,6 @@
       },
       "note": "Specific algebraic identities involving δ′ are not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Derivatives",
-          "snippet": "The derivative of the delta function satisfies a number of basic properties"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\delta '(-x)&amp;=-\\delta '(x)\\\\x\\delta '(x)&amp;=-\\delta (x)\\end{aligned}}}"
-        }
-      ],
       "id": "22a77064b950"
     },
     {
@@ -860,16 +666,6 @@
       },
       "note": "`Distribution.delta x : 𝓓'^{n}(Ω, ℝ)` is defined on any open set Ω ⊆ E in a finite-dimensional space.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Higher dimensions",
-          "snippet": "the Dirac delta distribution centered at a point a ∈ U is defined"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\delta _{a}[\\varphi ]=\\varphi (a)}"
-        }
-      ],
       "id": "08009b02df76"
     },
     {
@@ -887,16 +683,6 @@
       },
       "note": "Multi-index partial derivatives ∂^α δ_a are not defined as such.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Higher dimensions",
-          "snippet": "denotes the associated mixed partial derivative operator, then the α -th derivative"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\delta _{a}[\\varphi ]=\\varphi (a)}"
-        }
-      ],
       "id": "7e5045724311"
     },
     {
@@ -914,16 +700,6 @@
       },
       "note": "No structure theorem for distributions with point support is formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Higher dimensions",
-          "snippet": "Higher derivatives enter into mathematics naturally as the building blocks for the complete structure of distributions with point support"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle S=\\sum _{|\\alpha |\\leq m}c_{\\alpha }\\partial ^{\\alpha }\\delta _{a}.}"
-        }
-      ],
       "id": "36a54f6ad5e4"
     },
     {
@@ -956,18 +732,8 @@
         "module": "Mathlib.Analysis.Calculus.BumpFunction.Normed",
         "match_kind": "special_case"
       },
-      "note": "`ContDiffBump.normed` provides normalized bumps used as approximations to the identity, but `η_ε` as a general rescaling construction is not isolated.",
+      "note": "`ContDiffBump.normed` provides normalized bumps used as approximations to the identity, but η_ε as a general rescaling construction is not isolated.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Approximations to the identity",
-          "snippet": "An approximate delta function η ε can be constructed in the following manner"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\eta _{\\varepsilon }(x)=\\varepsilon ^{-1}\\eta \\left({\\frac {x}{\\varepsilon }}\\right).}"
-        }
-      ],
       "id": "302b6560a0b6"
     },
     {
@@ -1000,7 +766,7 @@
         "module": "Mathlib.Analysis.Calculus.BumpFunction.Basic",
         "match_kind": "special_case"
       },
-      "note": "`ContDiffBump` provides smooth, compactly supported bumps that are mollifiers; the term `Mollifier` itself is not introduced as a separate definition.",
+      "note": "`ContDiffBump` provides smooth, compactly supported bumps that are mollifiers; no dedicated `Mollifier` name is introduced.",
       "provenance": "ai",
       "id": "09504fff738b"
     },
@@ -1053,16 +819,6 @@
       },
       "note": "No rectangular-function approximation of δ is recorded.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Probabilistic considerations",
-          "snippet": "if η 1 is the uniform distribution"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\eta _{\\varepsilon }(x)={\\frac {1}{\\varepsilon }}\\operatorname {rect} \\left({\\frac {x}{\\varepsilon }}\\right)={\\begin{cases}{\\frac {1}{\\varepsilon }},&amp;-{\\frac {\\varepsilon }{2}}&lt;x&lt;{\\frac {\\varepsilon }{2}},\\\\0,&amp;{\\text{otherwise}}.\\end{cases}}}"
-        }
-      ],
       "id": "cab3aa079310"
     },
     {
@@ -1080,16 +836,6 @@
       },
       "note": "The Wigner semicircle distribution is not in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Probabilistic considerations",
-          "snippet": "Another example is with the Wigner semicircle distribution"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\eta _{\\varepsilon }(x)={\\begin{cases}{\\frac {2}{\\pi \\varepsilon ^{2}}}{\\sqrt {\\varepsilon ^{2}-x^{2}}},&amp;-\\varepsilon &lt;x&lt;\\varepsilon ,\\\\0,&amp;{\\text{otherwise}}.\\end{cases}}}"
-        }
-      ],
       "id": "1d2ace2fffca"
     },
     {
@@ -1107,16 +853,6 @@
       },
       "note": "No `ConvolutionSemigroup` structure is defined in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Semigroups",
-          "snippet": "Approximations to the delta functions often arise as convolution semigroups"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\eta _{\\varepsilon }*\\eta _{\\delta }=\\eta _{\\varepsilon +\\delta }}"
-        }
-      ],
       "id": "9732cbe77ec1"
     },
     {
@@ -1134,20 +870,6 @@
       },
       "note": "No `heatKernel` declaration was found.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "The heat kernel",
-          "snippet": "The heat kernel , defined by"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\eta _{\\varepsilon }(x)={\\frac {1}{\\sqrt {2\\pi \\varepsilon }}}\\mathrm {e} ^{-{\\frac {x^{2}}{2\\varepsilon }}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {\\partial u}{\\partial t}}={\\frac {1}{2}}{\\frac {\\partial ^{2}u}{\\partial x^{2}}}.}"
-        }
-      ],
       "id": "40a2f66107b4"
     },
     {
@@ -1165,16 +887,6 @@
       },
       "note": "The n-dimensional heat kernel is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "The heat kernel",
-          "snippet": "In higher-dimensional Euclidean space R n , the heat kernel is"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\eta _{\\varepsilon }={\\frac {1}{(2\\pi \\varepsilon )^{n/2}}}\\mathrm {e} ^{-{\\frac {x\\cdot x}{2\\varepsilon }}},}"
-        }
-      ],
       "id": "26841d5bc8db"
     },
     {
@@ -1187,21 +899,11 @@
       "status": "formalized",
       "mathlib": {
         "decl": "poissonKernel",
-        "module": "Mathlib.Analysis.Complex.Harmonic.Poisson",
+        "module": "Mathlib.Analysis.Complex.Poisson",
         "match_kind": "exact"
       },
       "note": "`poissonKernel` is defined and used in the Poisson integral formula for harmonic functions.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "The Poisson kernel",
-          "snippet": "The Poisson kernel"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\eta _{\\varepsilon }(x)={\\frac {1}{\\pi }}\\mathrm {Im} \\left\\{{\\frac {1}{x-\\mathrm {i} \\varepsilon }}\\right\\}={\\frac {1}{\\pi }}{\\frac {\\varepsilon }{\\varepsilon ^{2}+x^{2}}}={\\frac {1}{2\\pi }}\\int _{-\\infty }^{\\infty }\\mathrm {e} ^{\\mathrm {i} \\xi x-|\\varepsilon \\xi |}\\,d\\xi }"
-        }
-      ],
       "id": "982a161ea77e"
     },
     {
@@ -1219,16 +921,6 @@
       },
       "note": "The Airy function is not defined in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Oscillatory integrals",
-          "snippet": "is the rescaled Airy function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\varepsilon ^{-1/3}\\operatorname {Ai} \\left(x\\varepsilon ^{-1/3}\\right).}"
-        }
-      ],
       "id": "928745c25f36"
     },
     {
@@ -1246,16 +938,6 @@
       },
       "note": "The wave-equation Cauchy problem is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Oscillatory integrals",
-          "snippet": "Another example is the Cauchy problem for the wave equation"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}c^{-2}{\\frac {\\partial ^{2}u}{\\partial t^{2}}}-\\Delta u&amp;=0\\\\u=0,\\quad {\\frac {\\partial u}{\\partial t}}=\\delta &amp;\\qquad {\\text{for }}t=0.\\end{aligned}}}"
-        }
-      ],
       "id": "d3ec52d0cc6d"
     },
     {
@@ -1273,16 +955,6 @@
       },
       "note": "`Real.sinc` is defined, but its role as an approximate identity converging to δ is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Oscillatory integrals",
-          "snippet": "Other approximations to the identity of this kind include the sinc function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\eta _{\\varepsilon }(x)={\\frac {1}{\\pi x}}\\sin \\left({\\frac {x}{\\varepsilon }}\\right)={\\frac {1}{2\\pi }}\\int _{-{\\frac {1}{\\varepsilon }}}^{\\frac {1}{\\varepsilon }}\\cos(kx)\\,dk}"
-        }
-      ],
       "id": "9cce19f94891"
     },
     {
@@ -1300,16 +972,6 @@
       },
       "note": "Bessel functions are not defined in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Oscillatory integrals",
-          "snippet": "and the Bessel function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\eta _{\\varepsilon }(x)={\\frac {1}{\\varepsilon }}J_{\\frac {1}{\\varepsilon }}\\left({\\frac {x+1}{\\varepsilon }}\\right).}"
-        }
-      ],
       "id": "490deeb7b37b"
     },
     {
@@ -1327,16 +989,6 @@
       },
       "note": "Plane-wave decomposition of δ via Laplacian and sphere measure is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Plane wave decomposition",
-          "snippet": "Then δ is obtained by applying a power of the Laplacian to the integral with respect to the unit sphere measure"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\delta (x)=\\Delta _{x}^{(n+k)/2}\\int _{S^{n-1}}g(x\\cdot \\xi )\\,d\\omega _{\\xi }.}"
-        }
-      ],
       "id": "b608eda92657"
     },
     {
@@ -1388,20 +1040,6 @@
       },
       "note": "`fourier_delta_zero` gives 𝓕(δ) = 1; the symmetric inverse 𝓕⁻¹(1) = δ statement is not a separate lemma.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Fourier transform",
-          "snippet": "The inverse Fourier transform of the tempered distribution f ( ξ ) = 1 is the delta function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\int _{-\\infty }^{\\infty }1\\cdot e^{2\\pi ix\\xi }\\,d\\xi =\\delta (x)}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\langle 1,{\\widehat {f}}\\rangle =f(0)=\\langle \\delta ,f\\rangle }"
-        }
-      ],
       "id": "a9fa1c4e786a"
     },
     {
@@ -1419,16 +1057,6 @@
       },
       "note": "No declaration computes the Laplace transform of δ.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Fourier transform",
-          "snippet": "the Laplace transform of the delta function is found to be"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\int _{0}^{\\infty }\\delta (t-a)\\,e^{-st}\\,dt=e^{-sa}.}"
-        }
-      ],
       "id": "9812f99470e3"
     },
     {
@@ -1446,32 +1074,6 @@
       },
       "note": "No `DirichletKernel` is defined in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Fourier kernels",
-          "snippet": "is defined by convolution (on the interval [−π,π] ) with the Dirichlet kernel"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle D_{N}(x)=\\sum _{n=-N}^{N}e^{inx}={\\frac {\\sin \\left(\\left(N+{\\frac {1}{2}}\\right)x\\right)}{\\sin(x/2)}}.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle s_{N}(f)(x)=D_{N}*f(x)=\\sum _{n=-N}^{N}a_{n}e^{inx}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle a_{n}={\\frac {1}{2\\pi }}\\int _{-\\pi }^{\\pi }f(y)e^{-iny}\\,dy.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle s_{N}(f)(0)=\\int _{-\\pi }^{\\pi }D_{N}(x)f(x)\\,dx\\to 2\\pi f(0)}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\delta (x)={\\frac {1}{2\\pi }}\\sum _{n=-\\infty }^{\\infty }e^{inx}}"
-        }
-      ],
       "id": "89afb610ece3"
     },
     {
@@ -1489,32 +1091,6 @@
       },
       "note": "No theorem stating Dirichlet kernels tend to δ.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Fourier kernels",
-          "snippet": "A fundamental result of elementary Fourier series states that the Dirichlet kernel restricted to the interval"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle D_{N}(x)=\\sum _{n=-N}^{N}e^{inx}={\\frac {\\sin \\left(\\left(N+{\\frac {1}{2}}\\right)x\\right)}{\\sin(x/2)}}.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle s_{N}(f)(x)=D_{N}*f(x)=\\sum _{n=-N}^{N}a_{n}e^{inx}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle a_{n}={\\frac {1}{2\\pi }}\\int _{-\\pi }^{\\pi }f(y)e^{-iny}\\,dy.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle s_{N}(f)(0)=\\int _{-\\pi }^{\\pi }D_{N}(x)f(x)\\,dx\\to 2\\pi f(0)}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\delta (x)={\\frac {1}{2\\pi }}\\sum _{n=-\\infty }^{\\infty }e^{inx}}"
-        }
-      ],
       "id": "20c73ae88bad"
     },
     {
@@ -1532,16 +1108,6 @@
       },
       "note": "No `FejerKernel` is defined in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Fourier kernels",
-          "snippet": "The method of Cesàro summation leads to the Fejér kernel"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle F_{N}(x)={\\frac {1}{N}}\\sum _{n=0}^{N-1}D_{n}(x)={\\frac {1}{N}}\\left({\\frac {\\sin {\\frac {Nx}{2}}}{\\sin {\\frac {x}{2}}}}\\right)^{2}.}"
-        }
-      ],
       "id": "185cfd0a18b1"
     },
     {
@@ -1559,16 +1125,6 @@
       },
       "note": "No theorem about Fejér-kernel convergence to δ is formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Fourier kernels",
-          "snippet": "The Fejér kernels tend to the delta function in a stronger sense"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\int _{-\\pi }^{\\pi }F_{N}(x)f(x)\\,dx\\to 2\\pi f(0)}"
-        }
-      ],
       "id": "0047589a8713"
     },
     {
@@ -1637,16 +1193,6 @@
       },
       "note": "The Bergman kernel is not defined in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Spaces of holomorphic functions",
-          "snippet": "is represented by integration against a kernel [MATH] , the Bergman kernel"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\delta _{w}[f]=f(w)={\\frac {1}{\\pi }}\\iint _{|z|&lt;1}{\\frac {f(z)\\,dx\\,dy}{(1-{\\bar {z}}w)^{2}}}.}"
-        }
-      ],
       "id": "acc06b52be11"
     },
     {
@@ -1664,20 +1210,6 @@
       },
       "note": "No `ResolutionOfIdentity` declaration was found.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Resolutions of the identity",
-          "snippet": "is called a resolution of the identity"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle I=\\sum _{n=1}^{\\infty }\\varphi _{n}\\varphi _{n}^{\\dagger },}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\varphi _{n}\\varphi _{n}^{\\dagger },}"
-        }
-      ],
       "id": "43b810213d0e"
     },
     {
@@ -1729,16 +1261,6 @@
       },
       "note": "No `DiracComb` declaration was found in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Dirac comb",
-          "snippet": "A so-called uniform \"pulse train\" of Dirac delta measures, which is known as a Dirac comb"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\operatorname {\\text{&#x428;}} (x)=\\sum _{n=-\\infty }^{\\infty }\\delta (x-n),}"
-        }
-      ],
       "id": "29a846674070"
     },
     {
@@ -1756,20 +1278,6 @@
       },
       "note": "`Real.tsum_eq_tsum_fourier` and variants formalize the Poisson summation formula.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Dirac comb",
-          "snippet": "is precisely the Poisson summation formula"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle (f*\\operatorname {\\text{&#x428;}} )(x)=\\sum _{n=-\\infty }^{\\infty }f(x-n).}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle (f*\\operatorname {\\text{&#x428;}} )^{\\wedge }={\\widehat {f}}{\\widehat {\\operatorname {\\text{&#x428;}} }}={\\widehat {f}}\\operatorname {\\text{&#x428;}} }"
-        }
-      ],
       "id": "2cc7bc64bd0d"
     },
     {
@@ -1889,20 +1397,6 @@
       },
       "note": "Local time of a stochastic process is not defined in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Probability theory",
-          "snippet": "The local time of a stochastic process B ( t ) is given by"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\ell (x,t)=\\int _{0}^{t}\\delta (x-B(s))\\,ds}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\ell (x,t)=\\lim _{\\varepsilon \\to 0^{+}}{\\frac {1}{2\\varepsilon }}\\int _{0}^{t}\\mathbf {1} _{[x-\\varepsilon ,x+\\varepsilon ]}(B(s))\\,ds}"
-        }
-      ],
       "id": "1cf8c346b267"
     },
     {
@@ -1954,16 +1448,6 @@
       },
       "note": "Mass-spring impulse ODE with δ forcing is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Structural mechanics",
-          "snippet": "The governing equation of a simple mass–spring system excited by a sudden force impulse"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle m{\\frac {d^{2}\\xi }{dt^{2}}}+k\\xi =I\\delta (t),}"
-        }
-      ],
       "id": "fbe33b9bc1e9"
     },
     {
@@ -1999,6 +1483,70 @@
       "note": "Point-moment loading via δ′ on a beam is not formalized.",
       "provenance": "ai",
       "id": "0f6961f116c3"
+    },
+    {
+      "kind": "proposition",
+      "label": "Riemann–Stieltjes integral against delta",
+      "anchor": {
+        "section": "As a measure",
+        "snippet": "the integration of the delta function against a continuous function can be properly understood as a Riemann–Stieltjes integral"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma rephrases integration against δ as a Riemann–Stieltjes integral with respect to the Heaviside step function.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Delta as distribution of order zero with compact support",
+      "anchor": {
+        "section": "As a distribution",
+        "snippet": "Thus, [MATH] is a distribution of order zero. It is, furthermore, a distribution with compact support"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration explicitly asserts that δ is of order zero or characterizes its compact support {0}.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Higher powers identity x^n δ = 0",
+      "anchor": {
+        "section": "Algebraic properties",
+        "snippet": "More generally, [MATH] for all positive integers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The generalization x^n · δ = 0 for positive integers n is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Delta(x^2 − α^2) decomposition",
+      "anchor": {
+        "section": "Composition with a function",
+        "snippet": "Thus, for example"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The standard example δ(x² − α²) = (δ(x−α) + δ(x+α))/(2|α|) is not formalized.",
+      "provenance": "ai"
     }
   ]
 }

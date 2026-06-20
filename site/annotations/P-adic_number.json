@@ -3,6 +3,7 @@
   "wikipedia_title": "P-adic number",
   "display_title": "P-adic number",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "definition",
@@ -11,6 +12,13 @@
         "section": "(Lead)",
         "snippet": "a p -adic number can be defined as a series"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Padic",
+        "module": "Mathlib.NumberTheory.Padics.PadicNumbers",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib defines `Padic` as the Cauchy-sequence completion of ℚ with respect to `padicNorm`, not as formal series of `a_i p^i`, so the series-form definition is not directly formalized.",
       "provenance": "ai-agent1",
       "id": "f7795b4170bb"
     },
@@ -21,6 +29,13 @@
         "section": "(Lead)",
         "snippet": "A p -adic integer is a p -adic number such that"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PadicInt",
+        "module": "Mathlib.NumberTheory.Padics.PadicIntegers",
+        "match_kind": "exact"
+      },
+      "note": "`PadicInt p := {x : ℚ_[p] // ‖x‖ ≤ 1}` directly formalizes p-adic integers as elements of ℚ_[p] with norm ≤ 1, equivalent to non-negative valuation.",
       "provenance": "ai-agent1",
       "id": "9bbb8d80b022"
     },
@@ -31,6 +46,13 @@
         "section": "(Lead)",
         "snippet": "it is convergent for the p -adic absolute value"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "padicNorm",
+        "module": "Mathlib.NumberTheory.Padics.PadicNorm",
+        "match_kind": "exact"
+      },
+      "note": "`padicNorm p q` on ℚ and the lifted `padicNormE` / `Norm` instance on ℚ_[p] formalize the p-adic absolute value.",
       "provenance": "ai-agent1",
       "id": "8b13d8acd61b"
     },
@@ -41,6 +63,13 @@
         "section": "(Lead)",
         "snippet": "Every rational number can be uniquely expressed as the sum of a series as above"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem in Mathlib states that every rational is uniquely a convergent p-adic series of digits in {0,…,p−1}; only Cauchy-sequence representatives and approximations via `appr` exist.",
       "provenance": "ai-agent1",
       "id": "870577f2f8b5"
     },
@@ -51,6 +80,13 @@
         "section": "Motivation",
         "snippet": "doing this loses some information because the reduction"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific statement in Mathlib formalizes 'reduction mod p loses information' as a motivational fact for p-adics.",
       "provenance": "ai-agent1",
       "id": "6053f8a361e1"
     },
@@ -61,6 +97,13 @@
         "section": "Motivation",
         "snippet": "the set of p -adic numbers"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Padic",
+        "module": "Mathlib.NumberTheory.Padics.PadicNumbers",
+        "match_kind": "exact"
+      },
+      "note": "`Padic p` is declared with `deriving … Field` (line 533 of PadicNumbers.lean), so ℚ_[p] is a field instance in Mathlib.",
       "provenance": "ai-agent1",
       "id": "ca4927edbd5f"
     },
@@ -71,6 +114,13 @@
         "section": "As a base- p expansion",
         "snippet": "p -adic integers can be thought of as integers in base- p , but the digits extend infinitely to the left"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define `PadicInt` via formal base-p digit expansions; only the `appr` function gives finite truncations as natural numbers.",
       "provenance": "ai-agent1",
       "id": "527aa8cb9e39"
     },
@@ -81,6 +131,13 @@
         "section": "As a base- p expansion",
         "snippet": "Since addition and multiplication can be performed with p -adic integers, they form a ring"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PadicInt.instCommRing",
+        "module": "Mathlib.NumberTheory.Padics.PadicIntegers",
+        "match_kind": "exact"
+      },
+      "note": "`instance instCommRing : CommRing ℤ_[p]` (line 92) directly establishes the ring structure on p-adic integers.",
       "provenance": "ai-agent1",
       "id": "5cbc0601f921"
     },
@@ -91,6 +148,13 @@
         "section": "As a base- p expansion",
         "snippet": "p -adic numbers can be thought of as p -adic integers with finitely many digits after the decimal point"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PadicInt.isFractionRing",
+        "module": "Mathlib.NumberTheory.Padics.PadicIntegers",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves `ℚ_[p]` is the fraction ring of `ℤ_[p]` (`PadicInt.isFractionRing`), formalizing the algebraic content of 'p-adic numbers are p-adic integers with finitely many fractional digits' without the digit-expansion form.",
       "provenance": "ai-agent1",
       "id": "36b109817d6b"
     },
@@ -101,6 +165,13 @@
         "section": "As a base- p expansion",
         "snippet": "the p -adic numbers form a field"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Padic",
+        "module": "Mathlib.NumberTheory.Padics.PadicNumbers",
+        "match_kind": "exact"
+      },
+      "note": "Same as the Motivation field statement: `Padic p` derives `Field` in PadicNumbers.lean.",
       "provenance": "ai-agent1",
       "id": "011cc22ffa79"
     },
@@ -111,6 +182,13 @@
         "section": "As a base- p expansion",
         "snippet": "the rational number ⁠ 1 / 5 ⁠ is a 3-adic integer"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific example in Mathlib establishes 1/5 as a 3-adic integer, though it follows from `PadicInt.isUnit_den` applied to a representative.",
       "provenance": "ai-agent1",
       "id": "e14bfbd34c4a"
     },
@@ -121,6 +199,13 @@
         "section": "As a sequence of residues mod p k",
         "snippet": "Another way to define p -adic integers is by representing it as a sequence of residues"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PadicInt.toZModPow",
+        "module": "Mathlib.NumberTheory.Padics.RingHoms",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib provides the compatible system of maps `PadicInt.toZModPow n : ℤ_[p] →+* ZMod (p^n)` and a universal `lift`, but does not define `ℤ_[p]` itself as a compatible-residue sequence.",
       "provenance": "ai-agent1",
       "id": "ba9b0c64acbb"
     },
@@ -131,6 +216,13 @@
         "section": "As a sequence of residues mod p k",
         "snippet": "This is equivalent to the base- p definition, because the last k digits of a base- p expansion uniquely define its value mod p k"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Since Mathlib never sets up the base-p digit definition, no equivalence proof between digit and residue definitions exists.",
       "provenance": "ai-agent1",
       "id": "19c9e1a372d0"
     },
@@ -141,6 +233,13 @@
         "section": "As a sequence of residues mod p k",
         "snippet": "its 3-adic expansion consists of the multiplicative inverses of 5 mod 3"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No worked example computing the 3-adic expansion of 1/5 via inverses mod 3^k exists in Mathlib.",
       "provenance": "ai-agent1",
       "id": "c868f039e516"
     },
@@ -151,6 +250,13 @@
         "section": "As formal series in base p",
         "snippet": "A p -adic integer is often defined as a formal power series of the form"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's `PadicInt` is the unit ball in ℚ_[p], not a formal power series ring with digit coefficients in {0,…,p−1}.",
       "provenance": "ai-agent1",
       "id": "4b46a3341690"
     },
@@ -161,6 +267,13 @@
         "section": "As formal series in base p",
         "snippet": "A p -adic unit is a p -adic integer whose first digit is nonzero"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PadicInt.isUnit_iff",
+        "module": "Mathlib.NumberTheory.Padics.PadicIntegers",
+        "match_kind": "generalization"
+      },
+      "note": "`PadicInt.isUnit_iff` characterizes units of ℤ_[p] as elements of norm 1, equivalent (via `toZMod`) to having nonzero leading digit.",
       "provenance": "ai-agent1",
       "id": "1bd555042d33"
     },
@@ -171,6 +284,13 @@
         "section": "As formal series in base p",
         "snippet": "A p -adic number is then defined as a formal Laurent series of the form"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's ℚ_[p] is a Cauchy completion of ℚ, not a formal Laurent series construction.",
       "provenance": "ai-agent1",
       "id": "1acb32399f36"
     },
@@ -181,6 +301,13 @@
         "section": "As formal series in base p",
         "snippet": "The first index v for which the digit"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Padic.valuation",
+        "module": "Mathlib.NumberTheory.Padics.PadicNumbers",
+        "match_kind": "exact"
+      },
+      "note": "`Padic.valuation : ℚ_[p] → ℤ` (line 1040) gives the p-adic valuation; `padicValRat`, `padicValInt`, `padicValNat` provide it on ℚ/ℤ/ℕ.",
       "provenance": "ai-agent1",
       "id": "8ca925d43146"
     },
@@ -191,6 +318,13 @@
         "section": "As formal series in base p",
         "snippet": "With these operations, the set of p -adic numbers form a field"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Padic",
+        "module": "Mathlib.NumberTheory.Padics.PadicNumbers",
+        "match_kind": "exact"
+      },
+      "note": "`Padic p` is given a `Field` instance via the `deriving` clause in its definition.",
       "provenance": "ai-agent1",
       "id": "f638e58bc250"
     },
@@ -201,6 +335,13 @@
         "section": "As equivalence classes",
         "snippet": "Every nonzero rational number r can be written"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "padicValRat",
+        "module": "Mathlib.NumberTheory.Padics.PadicVal.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has `padicValRat` and many divisibility lemmas implying the factorization r = p^v · m/n with p coprime to mn, but no single named lemma packages the canonical factorization.",
       "provenance": "ai-agent1",
       "id": "3efd5e98da8e"
     },
@@ -211,6 +352,13 @@
         "section": "As equivalence classes",
         "snippet": "The exponent v is uniquely determined by r and is called its p -adic valuation"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "padicValRat",
+        "module": "Mathlib.NumberTheory.Padics.PadicVal.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`padicValRat p q : ℤ` directly formalizes the p-adic valuation of a rational number.",
       "provenance": "ai-agent1",
       "id": "0d405f6d48b7"
     },
@@ -221,6 +369,13 @@
         "section": "As equivalence classes",
         "snippet": "A p -adic series is a formal Laurent series of the form"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib uses Cauchy sequences (`PadicSeq`) rather than formal Laurent series in p with integer coefficients; no `PadicSeries` type exists.",
       "provenance": "ai-agent1",
       "id": "8e00e9a1322b"
     },
@@ -231,6 +386,13 @@
         "section": "As equivalence classes",
         "snippet": "are equivalent if there is an integer N such that"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Since p-adic series are not defined, neither is the equivalence relation between them; Mathlib instead uses CauSeq equivalence under `padicNorm`.",
       "provenance": "ai-agent1",
       "id": "4a0849eadc4c"
     },
@@ -241,6 +403,13 @@
         "section": "As equivalence classes",
         "snippet": "is normalized if either all"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of 'normalized p-adic series' (with digits in {0,…,p−1}) exists in Mathlib.",
       "provenance": "ai-agent1",
       "id": "fe9e4910cd70"
     },
@@ -251,6 +420,13 @@
         "section": "As equivalence classes",
         "snippet": "Every p -adic series is equivalent to exactly one normalized series"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a notion of normalized series, the uniqueness theorem is not formalized.",
       "provenance": "ai-agent1",
       "id": "066a7266e27f"
     },
@@ -261,6 +437,13 @@
         "section": "As equivalence classes",
         "snippet": "The usual operations of series (addition, subtraction, multiplication, division) are compatible with equivalence of p -adic series"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Operations on p-adic series and their compatibility with equivalence are not formalized in Mathlib.",
       "provenance": "ai-agent1",
       "id": "2b2e0b25a5ab"
     },
@@ -271,6 +454,13 @@
         "section": "As equivalence classes",
         "snippet": "the p -adic numbers are defined as the equivalence classes of p -adic series"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Padic",
+        "module": "Mathlib.NumberTheory.Padics.PadicNumbers",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines ℚ_[p] as equivalence classes of `PadicSeq p` (Cauchy sequences of rationals under `padicNorm`), morally equivalent but not via formal series.",
       "provenance": "ai-agent1",
       "id": "03925399eae3"
     },
@@ -281,6 +471,13 @@
         "section": "As equivalence classes",
         "snippet": "The p -adic absolute value of a nonzero p -adic number x"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "padicNormE",
+        "module": "Mathlib.NumberTheory.Padics.PadicNumbers",
+        "match_kind": "exact"
+      },
+      "note": "`padicNormE` and the norm instance on ℚ_[p] are defined as |x|_p = p^(-v(x)), formalizing the absolute value via the valuation.",
       "provenance": "ai-agent1",
       "id": "22ca6e8763e0"
     },
@@ -291,6 +488,13 @@
         "section": "Other equivalent definitions",
         "snippet": "p -adic numbers form a field called the field of p -adic numbers"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Padic",
+        "module": "Mathlib.NumberTheory.Padics.PadicNumbers",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `Padic p` is the field of p-adic numbers (constructed differently from normalized series).",
       "provenance": "ai-agent1",
       "id": "e96314991d8e"
     },
@@ -301,6 +505,13 @@
         "section": "Other equivalent definitions",
         "snippet": "There is a unique field homomorphism from the rational numbers into the p -adic numbers"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Padic.denseRange_ratCast",
+        "module": "Mathlib.NumberTheory.Padics.PadicNumbers",
+        "match_kind": "invocation"
+      },
+      "note": "The rational embedding `Rat.cast : ℚ → ℚ_[p]` exists with dense range and is a ring hom; uniqueness from ℚ follows from `Rat`'s initial-field property but no named lemma states it explicitly for ℚ_[p].",
       "provenance": "ai-agent1",
       "id": "8d044ec46ee8"
     },
@@ -311,6 +522,13 @@
         "section": "Other equivalent definitions",
         "snippet": "This valuation is a discrete valuation"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PadicInt.instIsDiscreteValuationRing",
+        "module": "Mathlib.NumberTheory.Padics.PadicIntegers",
+        "match_kind": "exact"
+      },
+      "note": "`instance : IsDiscreteValuationRing ℤ_[p]` (line 521) formalizes that the p-adic valuation is a discrete valuation.",
       "provenance": "ai-agent1",
       "id": "8c77140d253d"
     },
@@ -321,6 +539,13 @@
         "section": "p -adic expansion of rational numbers",
         "snippet": "The division step consists of writing"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The explicit division-step algorithm for p-adic expansions of rationals is not formalized.",
       "provenance": "ai-agent1",
       "id": "395b57923c5b"
     },
@@ -331,6 +556,13 @@
         "section": "p -adic expansion of rational numbers",
         "snippet": "The integer a can be computed as a modular multiplicative inverse"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of computing p-adic digits via modular inverses is present in Mathlib.",
       "provenance": "ai-agent1",
       "id": "bbf5642786df"
     },
@@ -341,6 +573,13 @@
         "section": "p -adic expansion of rational numbers",
         "snippet": "The p -adic expansion of a rational number is eventually periodic"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The 'eventually periodic iff rational' characterization of p-adic expansions is not formalized.",
       "provenance": "ai-agent1",
       "id": "b9f3ff47db25"
     },
@@ -351,6 +590,13 @@
         "section": "Example",
         "snippet": "Let us compute the 5-adic expansion of"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific worked example computing a 5-adic expansion is in Mathlib.",
       "provenance": "ai-agent1",
       "id": "8bfe92b8a2ff"
     },
@@ -361,6 +607,13 @@
         "section": "p -adic integers",
         "snippet": "The p -adic integers are the p -adic numbers with a nonnegative valuation"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PadicInt",
+        "module": "Mathlib.NumberTheory.Padics.PadicIntegers",
+        "match_kind": "exact"
+      },
+      "note": "`PadicInt p := {x : ℚ_[p] // ‖x‖ ≤ 1}` is equivalent to nonnegative valuation, with `valuation_coe_nonneg` providing the link.",
       "provenance": "ai-agent1",
       "id": "83273c62d9f2"
     },
@@ -371,6 +624,13 @@
         "section": "p -adic integers",
         "snippet": "The rational numbers of the form"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PadicInt.isUnit_den",
+        "module": "Mathlib.NumberTheory.Padics.PadicIntegers",
+        "match_kind": "generalization"
+      },
+      "note": "`PadicInt.isUnit_den` shows that a rational r has ‖r‖_p ≤ 1 iff its denominator is a p-adic unit (i.e., not divisible by p), exactly the rationals that are p-adic integers.",
       "provenance": "ai-agent1",
       "id": "c520993644e1"
     },
@@ -381,6 +641,13 @@
         "section": "p -adic integers",
         "snippet": "It is an integral domain , since it is a subring of a field"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PadicInt.instIsDomain",
+        "module": "Mathlib.NumberTheory.Padics.PadicIntegers",
+        "match_kind": "exact"
+      },
+      "note": "`instance : IsDomain ℤ_[p]` (line 204) directly establishes that ℤ_[p] is an integral domain.",
       "provenance": "ai-agent1",
       "id": "13834b3d6079"
     },
@@ -391,6 +658,13 @@
         "section": "p -adic integers",
         "snippet": "The units (invertible elements) of"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PadicInt.isUnit_iff",
+        "module": "Mathlib.NumberTheory.Padics.PadicIntegers",
+        "match_kind": "exact"
+      },
+      "note": "`PadicInt.isUnit_iff : IsUnit z ↔ ‖z‖ = 1` characterizes the units of ℤ_[p] as norm-1 elements.",
       "provenance": "ai-agent1",
       "id": "eade28d2ff68"
     },
@@ -401,6 +675,13 @@
         "section": "p -adic integers",
         "snippet": "It is a principal ideal domain , such that each ideal is generated by a power of p"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PadicInt.ideal_eq_span_pow_p",
+        "module": "Mathlib.NumberTheory.Padics.PadicIntegers",
+        "match_kind": "exact"
+      },
+      "note": "`PadicInt.ideal_eq_span_pow_p` shows every nonzero ideal is `span {p^n}`; together with the DVR instance this gives the PID structure.",
       "provenance": "ai-agent1",
       "id": "820ed98f1e4b"
     },
@@ -411,6 +692,13 @@
         "section": "p -adic integers",
         "snippet": "It is a local ring of Krull dimension one"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PadicInt.instIsLocalRing",
+        "module": "Mathlib.NumberTheory.Padics.PadicIntegers",
+        "match_kind": "exact"
+      },
+      "note": "`instance : IsLocalRing ℤ_[p]` (line 499) formalizes the local-ring part; Krull dimension one follows from the DVR instance but no explicit `krullDim = 1` statement was located.",
       "provenance": "ai-agent1",
       "id": "4c2dd5029cb6"
     },
@@ -421,6 +709,13 @@
         "section": "p -adic integers",
         "snippet": "It is a discrete valuation ring , since this results from the preceding properties"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PadicInt.instIsDiscreteValuationRing",
+        "module": "Mathlib.NumberTheory.Padics.PadicIntegers",
+        "match_kind": "exact"
+      },
+      "note": "`instance : IsDiscreteValuationRing ℤ_[p]` (line 521) establishes the DVR structure.",
       "provenance": "ai-agent1",
       "id": "7d3b6d67bdab"
     },
@@ -431,6 +726,13 @@
         "section": "p -adic integers",
         "snippet": "It is the completion of the local ring"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PadicInt.adicCompletionIntegersEquiv",
+        "module": "Mathlib.NumberTheory.Padics.HeightOneSpectrum",
+        "match_kind": "generalization"
+      },
+      "note": "`PadicInt.adicCompletionIntegersEquiv` and `IsAdicComplete (maximalIdeal ℤ_[p]) ℤ_[p]` together encode that ℤ_[p] is the (p)-adic completion of ℤ_(p) / ℤ, matching the textbook statement.",
       "provenance": "ai-agent1",
       "id": "0f172812672f"
     },
@@ -441,6 +743,13 @@
         "section": "Topological properties",
         "snippet": "the p -adic absolute value of a nonzero p -adic number x is"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Padic.norm_eq_zpow_neg_valuation",
+        "module": "Mathlib.NumberTheory.Padics.PadicNumbers",
+        "match_kind": "exact"
+      },
+      "note": "`Padic.norm_eq_zpow_neg_valuation` proves ‖x‖ = p^(-valuation x) for nonzero x ∈ ℚ_[p].",
       "provenance": "ai-agent1",
       "id": "7a58b65a1f9c"
     },
@@ -451,6 +760,13 @@
         "section": "Topological properties",
         "snippet": "This is an absolute value that satisfies the strong triangle inequality"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Padic.nonarchimedean",
+        "module": "Mathlib.NumberTheory.Padics.PadicNumbers",
+        "match_kind": "exact"
+      },
+      "note": "`Padic.nonarchimedean : ‖q + r‖ ≤ max ‖q‖ ‖r‖` (line 839) directly states the strong triangle inequality.",
       "provenance": "ai-agent1",
       "id": "f176d03964db"
     },
@@ -461,6 +777,13 @@
         "section": "Topological properties",
         "snippet": "This makes the p -adic numbers a metric space , and even an ultrametric space"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Padic.instIsUltrametricDist",
+        "module": "Mathlib.NumberTheory.Padics.PadicNumbers",
+        "match_kind": "exact"
+      },
+      "note": "`instance : IsUltrametricDist ℚ_[p]` (line 781) plus `MetricSpace ℚ_[p]` formalize the ultrametric structure.",
       "provenance": "ai-agent1",
       "id": "cc62fb37c1ff"
     },
@@ -471,6 +794,13 @@
         "section": "Topological properties",
         "snippet": "the p -adic numbers form the completion of the rational numbers equipped with the p -adic absolute value"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Padic",
+        "module": "Mathlib.NumberTheory.Padics.PadicNumbers",
+        "match_kind": "exact"
+      },
+      "note": "By definition `Padic p := CauSeq.Completion.Cauchy (padicNorm p)`, together with `Padic.rat_dense` and `CompleteSpace ℚ_[p]`, formalizing the completion property.",
       "provenance": "ai-agent1",
       "id": "42847a9bdcf4"
     },
@@ -481,6 +811,13 @@
         "section": "Topological properties",
         "snippet": "As the metric is defined from a discrete valuation , every open ball is also closed"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsUltrametricDist",
+        "module": "Mathlib.Topology.MetricSpace.Ultra.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "General ultrametric facts about clopen balls live in `IsUltrametricDist` API, which applies to ℚ_[p] via its `IsUltrametricDist` instance; no Padic-specific 'open = closed ball' lemma was found.",
       "provenance": "ai-agent1",
       "id": "7d5207750f79"
     },
@@ -491,6 +828,13 @@
         "section": "Topological properties",
         "snippet": "form a locally compact space"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PadicInt.compactSpace",
+        "module": "Mathlib.NumberTheory.Padics.ProperSpace",
+        "match_kind": "exact"
+      },
+      "note": "`PadicInt.compactSpace : CompactSpace ℤ_[p]` plus `instance : ProperSpace ℚ_[p]` (giving local compactness) formalize both claims.",
       "provenance": "ai-agent1",
       "id": "e32cc573cc9e"
     },
@@ -501,6 +845,13 @@
         "section": "Topological properties",
         "snippet": "The space of 2-adic integers"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No homeomorphism between ℤ_[2] and the Cantor set is established in Mathlib.",
       "provenance": "ai-agent1",
       "id": "ee714ec76441"
     },
@@ -511,6 +862,13 @@
         "section": "Topological properties",
         "snippet": "The Pontryagin dual of the group of p -adic integers is the Prüfer p -group"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no PrüferGroup type and no theorem identifying the Pontryagin dual of ℤ_[p] with the Prüfer p-group.",
       "provenance": "ai-agent1",
       "id": "794ca33cca29"
     },
@@ -521,6 +879,13 @@
         "section": "Modular properties",
         "snippet": "may be identified with the ring"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PadicInt.ker_toZModPow",
+        "module": "Mathlib.NumberTheory.Padics.RingHoms",
+        "match_kind": "exact"
+      },
+      "note": "`PadicInt.toZModPow n : ℤ_[p] →+* ZMod (p^n)` with `ker_toZModPow` showing the kernel is `span {p^n}` formalizes the isomorphism ℤ_[p]/p^n ≅ ℤ/p^nℤ.",
       "provenance": "ai-agent1",
       "id": "ad3f86b00219"
     },
@@ -531,6 +896,13 @@
         "section": "Modular properties",
         "snippet": "The inverse limit of the rings"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PadicInt.lift",
+        "module": "Mathlib.NumberTheory.Padics.RingHoms",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib does not name the inverse limit of `ZMod (p^n)` explicitly, but `PadicInt.lift` proves ℤ_[p] satisfies the universal property of that inverse limit.",
       "provenance": "ai-agent1",
       "id": "0c2d6109ec47"
     },
@@ -541,6 +913,13 @@
         "section": "Modular properties",
         "snippet": "The mapping that maps a normalized p -adic series to the sequence of its partial sums is a ring isomorphism"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PadicInt.lift_unique",
+        "module": "Mathlib.NumberTheory.Padics.RingHoms",
+        "match_kind": "exact"
+      },
+      "note": "`PadicInt.lift_unique` shows ℤ_[p] is the universal/limit ring for compatible systems of `ZMod (p^n)`-valued ring homs, formalizing 'ℤ_[p] = lim ZMod (p^n)'.",
       "provenance": "ai-agent1",
       "id": "fcfaf78a2c93"
     },
@@ -551,6 +930,13 @@
         "section": "Modular properties",
         "snippet": "for computing the p -adic (multiplicative) inverse of an integer, one can use Newton's method"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Newton's-method procedure for computing p-adic inverses is formalized in Mathlib.",
       "provenance": "ai-agent1",
       "id": "964747d49d04"
     },
@@ -561,6 +947,13 @@
         "section": "Modular properties",
         "snippet": "The same method can be used for computing the p -adic square root of an integer"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Newton's-method computation of p-adic square roots is formalized.",
       "provenance": "ai-agent1",
       "id": "0668d1e70fd8"
     },
@@ -571,6 +964,13 @@
         "section": "Modular properties",
         "snippet": "Hensel lifting is a similar method that allows to"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "hensels_lemma",
+        "module": "Mathlib.NumberTheory.Padics.Hensel",
+        "match_kind": "generalization"
+      },
+      "note": "`hensels_lemma` lifts approximate roots in ℤ_[p] to exact ones (root form of Hensel), but the factorization form of Hensel lifting is not formalized as a separate theorem.",
       "provenance": "ai-agent1",
       "id": "de364a39be52"
     },
@@ -581,6 +981,13 @@
         "section": "Cardinality",
         "snippet": "are uncountable and have the cardinality of the continuum"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem stating `#ℚ_[p] = 𝔠` or `#ℤ_[p] = 𝔠` was found in Mathlib (loogle returns 0 hits for Padic ∩ cardinal).",
       "provenance": "ai-agent1",
       "id": "709d63162aad"
     },
@@ -591,6 +998,13 @@
         "section": "Algebraic closure",
         "snippet": "is a field of characteristic 0"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Padic.instCharZero",
+        "module": "Mathlib.NumberTheory.Padics.PadicNumbers",
+        "match_kind": "exact"
+      },
+      "note": "`instance : CharZero ℚ_[p]` (line 563) directly establishes characteristic 0.",
       "provenance": "ai-agent1",
       "id": "f8f816cd86f5"
     },
@@ -601,6 +1015,13 @@
         "section": "Algebraic closure",
         "snippet": "cannot be turned into an ordered field"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement that ℚ_[p] cannot be linearly ordered as a field was found.",
       "provenance": "ai-agent1",
       "id": "1d7ea77ace74"
     },
@@ -611,6 +1032,13 @@
         "section": "Algebraic closure",
         "snippet": "the algebraic closure of"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem about the degree (infinite) of the algebraic closure of ℚ_[p] is present; only the existence of `PadicAlgCl p` is formalized.",
       "provenance": "ai-agent1",
       "id": "31b6a154fbe7"
     },
@@ -621,6 +1049,13 @@
         "section": "Algebraic closure",
         "snippet": "is algebraically closed"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PadicComplex.isAlgClosed",
+        "module": "Mathlib.NumberTheory.Padics.Complex",
+        "match_kind": "exact"
+      },
+      "note": "`instance isAlgClosed : IsAlgClosed ℂ_[p]` (line 244) directly formalizes that ℂ_[p] is algebraically closed.",
       "provenance": "ai-agent1",
       "id": "969553fb7ca2"
     },
@@ -631,6 +1066,13 @@
         "section": "Algebraic closure",
         "snippet": "this field is not locally compact"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem stating ℂ_[p] is not locally compact was found.",
       "provenance": "ai-agent1",
       "id": "285229954b87"
     },
@@ -641,6 +1083,13 @@
         "section": "Algebraic closure",
         "snippet": "are isomorphic"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The (noncanonical, AC-dependent) isomorphism ℂ_[p] ≅ ℂ is not formalized.",
       "provenance": "ai-agent1",
       "id": "75a3b9152055"
     },
@@ -651,6 +1100,13 @@
         "section": "Algebraic closure",
         "snippet": "the absolute Galois group"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement about the absolute Galois group of ℚ_[p] being prosolvable (Iwasawa) is formalized.",
       "provenance": "ai-agent1",
       "id": "b478202248fe"
     },
@@ -661,6 +1117,13 @@
         "section": "Multiplicative group",
         "snippet": "Hensel's lemma implies that the torsion subgroup of"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem identifying the torsion subgroup of ℚ_[p]^× (e.g., as (p−1)-th roots of unity for odd p) is formalized.",
       "provenance": "ai-agent1",
       "id": "5c9915023fb6"
     },
@@ -671,6 +1134,13 @@
         "section": "Multiplicative group",
         "snippet": "the field"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement classifying cyclotomic subfields inside ℚ_[p] is present.",
       "provenance": "ai-agent1",
       "id": "faa2ff810974"
     },
@@ -681,6 +1151,13 @@
         "section": "Multiplicative group",
         "snippet": "Given a natural number k , let"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem about the finite index of (ℚ_[p]^×)^k in ℚ_[p]^× is present.",
       "provenance": "ai-agent1",
       "id": "24587953cea3"
     },
@@ -691,6 +1168,13 @@
         "section": "Local–global principle",
         "snippet": "Helmut Hasse 's local–global principle is said to hold for an equation if it can be solved over the rational numbers if and only if it can be solved over the real numbers and over the p -adic numbers for every prime p"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hasse–Minkowski / local-global principle is not formalized in Mathlib (no matches for Hasse-Minkowski).",
       "provenance": "ai-agent1",
       "id": "0f4b749c37e7"
     },
@@ -701,6 +1185,13 @@
         "section": "Analysis",
         "snippet": "Mahler's theorem , which characterizes every continuous p -adic function in terms of polynomials"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PadicInt.hasSum_mahler",
+        "module": "Mathlib.NumberTheory.Padics.MahlerBasis",
+        "match_kind": "exact"
+      },
+      "note": "`PadicInt.hasSum_mahler` and the isometric equivalence `PadicInt.mahlerEquiv` together state Mahler's theorem in Mathlib.",
       "provenance": "ai-agent1",
       "id": "900c391a9cc3"
     },
@@ -711,6 +1202,13 @@
         "section": "Generalizations and related concepts",
         "snippet": "Suppose D is a Dedekind domain and E is its field of fractions"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsDedekindDomain.HeightOneSpectrum.adicCompletion",
+        "module": "Mathlib.RingTheory.DedekindDomain.AdicValuation",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib formalizes the adic completion of a Dedekind domain at a height-one prime via `IsDedekindDomain.HeightOneSpectrum.adicCompletion`, used in `Padic.adicCompletionEquiv` to recover ℚ_[p].",
       "provenance": "ai-agent1",
       "id": "d4ca8522feaa"
     },
@@ -721,6 +1219,13 @@
         "section": "Generalizations and related concepts",
         "snippet": "Ostrowski's theorem says that every non-trivial non-Archimedean absolute value on E arises as some"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ostrowski's theorem (classifying absolute values on number fields) does not appear to be formalized in Mathlib.",
       "provenance": "ai-agent1",
       "id": "154de19087de"
     },
@@ -731,6 +1236,13 @@
         "section": "Generalizations and related concepts",
         "snippet": "p -adic integers can be extended to p -adic solenoids"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "p-adic solenoids are not defined in Mathlib.",
       "provenance": "ai-agent1",
       "id": "02b7f51ccdec"
     },
@@ -741,6 +1253,13 @@
         "section": "Generalizations and related concepts",
         "snippet": "The p -adic integers can also be extended to profinite integers"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Profinite integers (Ẑ) are not defined as a named object in Mathlib.",
       "provenance": "ai-agent1",
       "id": "354506514f61"
     },
@@ -751,8 +1270,175 @@
         "section": "Generalizations and related concepts",
         "snippet": "The Chinese remainder theorem likewise implies a structure of"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No 'n-adic integer' construction with CRT-decomposition into products of ℤ_[p_i] is formalized.",
       "provenance": "ai-agent1",
       "id": "7315cb014bf9"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hensel's lemma lifts solutions mod p to higher prime powers",
+      "anchor": {
+        "section": "Motivation",
+        "snippet": "applying Hensel's lemma to lift solutions modulo p to modulo p 2 , p 3"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "hensels_lemma",
+        "module": "Mathlib.NumberTheory.Padics.Hensel",
+        "match_kind": "exact"
+      },
+      "note": "`hensels_lemma` in Mathlib.NumberTheory.Padics.Hensel produces an exact root in ℤ_[p] from a sufficiently good approximate solution, which is the lifting statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quote notation for p-adic rationals",
+      "anchor": {
+        "section": "Notation",
+        "snippet": "Quote notation is a variant of the p -adic representation of rational numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quote notation for p-adic rationals is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Teichmüller representatives as p-adic digits",
+      "anchor": {
+        "section": "Notation",
+        "snippet": "Teichmüller representatives are sometimes used as digits"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "While Mathlib has Witt-vector Teichmüller maps elsewhere, no formalization of Teichmüller representatives as p-adic integer digits was located in the Padics directory.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "R has a unique proper algebraic extension",
+      "anchor": {
+        "section": "Algebraic closure",
+        "snippet": "The field of real numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem in Mathlib states uniqueness of ℂ as the proper algebraic extension of ℝ; only `Complex.isAlgClosed` is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Complex p-adic numbers C_p",
+      "anchor": {
+        "section": "Algebraic closure",
+        "snippet": "Its (metric) completion is denoted"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PadicComplex",
+        "module": "Mathlib.NumberTheory.Padics.Complex",
+        "match_kind": "exact"
+      },
+      "note": "`PadicComplex p` (notation ℂ_[p]) is defined as `UniformSpace.Completion (PadicAlgCl p)`, exactly the metric completion of the algebraic closure of ℚ_[p].",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Volkenborn integral",
+      "anchor": {
+        "section": "Analysis",
+        "snippet": "Volkenborn integral , which provides a method of integration for p -adic functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Volkenborn integral is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "p-adic Hodge theory",
+      "anchor": {
+        "section": "Hodge theory",
+        "snippet": "p -adic Hodge theory is a theory that provides a way to classify and study p -adic Galois representations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "p-adic Hodge theory is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "p-adic Teichmüller theory",
+      "anchor": {
+        "section": "Teichmüller theory",
+        "snippet": "p -adic Teichmüller theory describes the"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "p-adic Teichmüller theory is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "p-adic quantum mechanics",
+      "anchor": {
+        "section": "Quantum physics",
+        "snippet": "p -adic quantum mechanics is a collection of related research efforts in quantum physics that replace real numbers with p -adic numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "p-adic quantum mechanics is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Adele rings and idele groups",
+      "anchor": {
+        "section": "Generalizations and related concepts",
+        "snippet": "This is accomplished by adele rings and idele groups"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsDedekindDomain.HeightOneSpectrum.adicCompletion",
+        "module": "Mathlib.RingTheory.DedekindDomain.AdicValuation",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has adic completions and infrastructure used to build adele/idele rings in `Mathlib.NumberTheory.NumberField.AdeleRing` and similar, but the exact 'adele/idele' definitions as a single decl were not verified in the Padics directory; treated as partial.",
+      "provenance": "ai"
     }
   ]
 }

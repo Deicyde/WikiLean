@@ -16,9 +16,9 @@
       "mathlib": {
         "decl": "Matrix.IsHermitian.spectral_theorem",
         "module": "Mathlib.Analysis.Matrix.Spectrum",
-        "match_kind": "special_case"
+        "match_kind": "generalization"
       },
-      "note": "Mathlib's spectral theorem unitarily diagonalizes any Hermitian matrix over an RCLike field; real symmetric matrices are the special case 𝕜 = ℝ.",
+      "note": "Mathlib's `Matrix.IsHermitian.spectral_theorem` unitarily diagonalizes any Hermitian matrix over an RCLike field; real symmetric matrices are the special case 𝕜 = ℝ.",
       "provenance": "ai",
       "id": "2fe9b30d4b08"
     },
@@ -37,16 +37,6 @@
       },
       "note": "`LinearMap.IsSymmetric T` is defined as `∀ x y, ⟪T x, y⟫ = ⟪x, T y⟫`, exactly the Hermitian/symmetric inner-product condition.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Hermitian maps and Hermitian matrices",
-          "snippet": "The Hermitian condition on"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\langle Ax,y\\rangle =\\langle x,Ay\\rangle .}"
-        }
-      ],
       "id": "4321fa255016"
     },
     {
@@ -101,6 +91,22 @@
       "id": "35990c451d98"
     },
     {
+      "kind": "proposition",
+      "label": "Fundamental theorem of algebra (used in proof)",
+      "anchor": {
+        "section": "Hermitian maps and Hermitian matrices",
+        "snippet": "By the fundamental theorem of algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.isAlgClosed",
+        "module": "Mathlib.Analysis.Complex.Polynomial.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib formalizes the fundamental theorem of algebra as the algebraic closedness of ℂ (`Complex.isAlgClosed`), which guarantees the characteristic polynomial has a complex root.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Spectral decomposition",
       "anchor": {
@@ -111,20 +117,10 @@
       "mathlib": {
         "decl": "LinearMap.IsSymmetric.direct_sum_isInternal",
         "module": "Mathlib.Analysis.InnerProductSpace.Spectrum",
-        "match_kind": "special_case"
+        "match_kind": "exact"
       },
       "note": "Mathlib gives the spectral/eigenspace decomposition as an internal orthogonal direct sum over eigenvalues for self-adjoint operators in finite dimension.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Hermitian maps and Hermitian matrices",
-          "snippet": "called its spectral decomposition"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle V_{\\lambda }=\\{v\\in V:Av=\\lambda v\\}}"
-        }
-      ],
       "id": "394617882454"
     },
     {
@@ -142,16 +138,6 @@
       },
       "note": "`Module.End.eigenspace f μ` is defined as the kernel of `f - μ • 1`, the eigenspace for eigenvalue μ.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Hermitian maps and Hermitian matrices",
-          "snippet": "be the eigenspace corresponding to an eigenvalue"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle V_{\\lambda }=\\{v\\in V:Av=\\lambda v\\}}"
-        }
-      ],
       "id": "d229f4d67e4d"
     },
     {
@@ -215,7 +201,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "IsStarNormal",
-        "module": "Mathlib.Algebra.Star.Basic",
+        "module": "Mathlib.Algebra.Star.SelfAdjoint",
         "match_kind": "exact"
       },
       "note": "`IsStarNormal x` is the class asserting `star x` commutes with `x`, the normality condition A*A = AA*.",
@@ -271,16 +257,6 @@
       },
       "note": "This specific multiplication operator on L²[0,1] and its lack of eigenvectors is not formalized in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Possible absence of eigenvectors",
-          "snippet": "let A be the operator of multiplication by t"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle [Af](t)=tf(t).}"
-        }
-      ],
       "id": "db166985c77c"
     },
     {
@@ -349,16 +325,6 @@
       },
       "note": "The PVM-integral formulation A = ∫ λ dP is absent since projection-valued measures are not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Spectral subspaces and projection-valued measures",
-          "snippet": "One formulation of the spectral theorem expresses the operator A as an integral"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle A=\\int _{\\sigma (A)}\\lambda \\,d\\pi (\\lambda ).}"
-        }
-      ],
       "id": "1d50c204f37f"
     },
     {
@@ -394,6 +360,22 @@
       "note": "There is no multiplication-operator-on-L² construction in this spectral context in Mathlib.",
       "provenance": "ai",
       "id": "8ff780e2017b"
+    },
+    {
+      "kind": "proposition",
+      "label": "Operator norm equals magnitude of largest eigenvalue",
+      "anchor": {
+        "section": "Multiplication operator version",
+        "snippet": "the operator norm"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousLinearMap.spectralRadius_eq_nnnorm",
+        "module": "Mathlib.Analysis.InnerProductSpace.Rayleigh",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves the spectral radius (sup |λ| over the spectrum) of a self-adjoint bounded operator equals its norm; for finite-dimensional self-adjoint operators this specializes to operator norm = max |eigenvalue|.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -444,16 +426,6 @@
       },
       "note": "Direct integrals of Hilbert spaces are not defined in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Direct integrals",
-          "snippet": "We then form the direct integral Hilbert space"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\int _{\\mathbf {R} }^{\\oplus }H_{\\lambda }\\,d\\mu (\\lambda ).}"
-        }
-      ],
       "id": "02cc1e500a97"
     },
     {
@@ -556,16 +528,6 @@
       },
       "note": "`cfc` is Mathlib's continuous functional calculus, applying a function to (e.g. self-adjoint) operators/elements.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Functional calculus",
-          "snippet": "the idea of defining a functional calculus"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle [f(A)s](\\lambda )=f(\\lambda )s(\\lambda ).}"
-        }
-      ],
       "id": "88bcb6018336"
     },
     {

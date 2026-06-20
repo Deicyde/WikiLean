@@ -11,7 +11,15 @@
         "section": "(Lead)",
         "snippet": "Bell's theorem is a term encompassing a number of closely related results in physics"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "CHSH_inequality_of_comm",
+        "module": "Mathlib.Algebra.Star.CHSH",
+        "match_kind": "special_case"
+      },
+      "note": "The general Bell's theorem is not formalized, but Mathlib's CHSH inequality (and Tsirelson) in `Mathlib/Algebra/Star/CHSH.lean` provides the algebraic core of one of its main instances.",
+      "provenance": "ai-agent1",
+      "id": "ecf2b5b8e30c"
     },
     {
       "kind": "definition",
@@ -20,7 +28,15 @@
         "section": "(Lead)",
         "snippet": "\"local\" refers to the principle of locality"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No physics-level definition of locality / spacelike separation exists in Mathlib (CHSH only encodes it via the commutation hypothesis in `IsCHSHTuple`).",
+      "provenance": "ai-agent1",
+      "id": "47dbe527149b"
     },
     {
       "kind": "definition",
@@ -29,7 +45,15 @@
         "section": "(Lead)",
         "snippet": "\" Hidden variables \" are supposed properties of quantum particles"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formal notion of a hidden-variable theory.",
+      "provenance": "ai-agent1",
+      "id": "927c4ebc082f"
     },
     {
       "kind": "definition",
@@ -38,7 +62,15 @@
         "section": "(Lead)",
         "snippet": "Such a constraint would later be named a Bell inequality"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "CHSH_inequality_of_comm",
+        "module": "Mathlib.Algebra.Star.CHSH",
+        "match_kind": "special_case"
+      },
+      "note": "Bell inequalities in general are not defined, but the canonical CHSH Bell inequality is proved as `CHSH_inequality_of_comm`.",
+      "provenance": "ai-agent1",
+      "id": "d3bc279f1a9d"
     },
     {
       "kind": "theorem",
@@ -47,7 +79,15 @@
         "section": "Theorem",
         "snippet": "This is a Bell inequality, specifically, the CHSH inequality"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CHSH_inequality_of_comm",
+        "module": "Mathlib.Algebra.Star.CHSH",
+        "match_kind": "generalization"
+      },
+      "note": "Proved as `CHSH_inequality_of_comm` for commutative ordered *-algebras over ℝ, which generalizes the classical probability statement.",
+      "provenance": "ai-agent1",
+      "id": "292b7be5366f"
     },
     {
       "kind": "definition",
@@ -56,7 +96,15 @@
         "section": "Theorem",
         "snippet": "sometimes called the assumption of realism"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formal definition of the realism assumption is present in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "26ef12ff8443"
     },
     {
       "kind": "definition",
@@ -65,7 +113,15 @@
         "section": "Theorem",
         "snippet": "often called the assumption of locality"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No standalone definition of the locality assumption; only encoded implicitly as commutativity in CHSH tuples.",
+      "provenance": "ai-agent1",
+      "id": "a22f05ceaa32"
     },
     {
       "kind": "example",
@@ -74,6 +130,62 @@
         "section": "Theorem",
         "snippet": "Quantum mechanics can violate the CHSH inequality, as follows"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's CHSH file notes the existence of a 4×4 matrix CHSH tuple attaining 2√2 only as future work; no Bell-state construction is given.",
+      "provenance": "ai-agent1",
+      "id": "011ee504ac2c"
+    },
+    {
+      "kind": "definition",
+      "label": "Bell state",
+      "anchor": {
+        "section": "Theorem",
+        "snippet": "Victor prepares a pair of qubits which he describes by the Bell state"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize the Bell state |Φ+⟩ = (|00⟩+|11⟩)/√2 as a named quantum state.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Pauli matrices",
+      "anchor": {
+        "section": "Theorem",
+        "snippet": "the eigenstates of one of the Pauli matrices"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not have a dedicated definition of the Pauli matrices σ_x, σ_y, σ_z as named declarations.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "definition",
+      "label": "Born rule",
+      "anchor": {
+        "section": "Theorem",
+        "snippet": "Victor can calculate the quantum expectation values for pairs of these observables using the Born rule"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formalization of the Born rule for quantum measurement probabilities.",
       "provenance": "ai-agent1"
     },
     {
@@ -83,7 +195,15 @@
         "section": "Theorem",
         "snippet": "the largest that quantum physics permits for this combination of expectation values, making it a Tsirelson bound"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tsirelson_inequality",
+        "module": "Mathlib.Algebra.Star.CHSH",
+        "match_kind": "generalization"
+      },
+      "note": "Tsirelson's bound `A₀B₀ + A₀B₁ + A₁B₀ - A₁B₁ ≤ √2^3 • 1` is proved in `tsirelson_inequality` for general ordered *-algebras over ℝ.",
+      "provenance": "ai-agent1",
+      "id": "e265d7f216e8"
     },
     {
       "kind": "example",
@@ -92,7 +212,15 @@
         "section": "Theorem",
         "snippet": "The CHSH inequality can also be thought of as a game in which Alice and Bob try to coordinate their actions"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The CHSH game / nonlocal-game reformulation is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "4a8862253c86"
     },
     {
       "kind": "theorem",
@@ -101,6 +229,30 @@
         "section": "Bell (1964)",
         "snippet": "Bell proves by example that these special cases can be explained in terms of hidden variables, then proceeds to show that the full range of possibilities involving intermediate angles cannot"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The original Bell 1964 inequality and its proof are not formalized; only CHSH appears in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "ebae2e70766c"
+    },
+    {
+      "kind": "definition",
+      "label": "Spin singlet state",
+      "anchor": {
+        "section": "Bell (1964)",
+        "snippet": "described by a spin singlet state (which is an example of an entangled state)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The spin singlet state (|↑↓⟩−|↓↑⟩)/√2 is not formalized as a named declaration in Mathlib.",
       "provenance": "ai-agent1"
     },
     {
@@ -110,7 +262,15 @@
         "section": "Bell (1964)",
         "snippet": "Bell posited that a local hidden-variable model for these correlations would explain them in terms of an integral over the possible values of some hidden parameter"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no formal definition of a local hidden-variable model in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "f9765a1a9b4a"
     },
     {
       "kind": "example",
@@ -119,7 +279,15 @@
         "section": "Bell (1964)",
         "snippet": "For example, let the vectors"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalized worked example of Bell-violating spin measurements is present.",
+      "provenance": "ai-agent1",
+      "id": "bb7f26904d94"
     },
     {
       "kind": "definition",
@@ -128,7 +296,15 @@
         "section": "Bell (1964)",
         "snippet": "The theorem builds upon the \"EPR criterion of reality\""
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The EPR criterion of reality is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "a56687d6ac3b"
     },
     {
       "kind": "theorem",
@@ -137,7 +313,15 @@
         "section": "GHZ–Mermin (1990)",
         "snippet": "Daniel Greenberger , Michael A. Horne , and Anton Zeilinger presented a four-particle thought experiment in 1990"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grepping for GHZ/Greenberger/Mermin in Mathlib returns no results.",
+      "provenance": "ai-agent1",
+      "id": "cfa9f9f731cf"
     },
     {
       "kind": "example",
@@ -146,7 +330,15 @@
         "section": "GHZ–Mermin (1990)",
         "snippet": "But this is inconsistent with quantum physics"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No GHZ contradiction example is in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "14d44bc3e351"
     },
     {
       "kind": "example",
@@ -155,7 +347,15 @@
         "section": "GHZ–Mermin (1990)",
         "snippet": "This thought experiment can also be recast as a traditional Bell inequality or, equivalently, as a nonlocal game"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The GHZ nonlocal game is not formalized; Mathlib has no nonlocal-game framework.",
+      "provenance": "ai-agent1",
+      "id": "60d02382b890"
     },
     {
       "kind": "theorem",
@@ -164,7 +364,15 @@
         "section": "Kochen–Specker theorem (1967)",
         "snippet": "a Kochen–Specker configuration is an \"uncolorable set\" that demonstrates the inconsistency of assuming a hidden variable"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for Kochen/Specker in Mathlib yields no results.",
+      "provenance": "ai-agent1",
+      "id": "aa0e0028230d"
     },
     {
       "kind": "definition",
@@ -173,7 +381,15 @@
         "section": "Kochen–Specker theorem (1967)",
         "snippet": "A Kochen–Specker configuration is a finite set of vectors made of multiple interlocking bases"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Kochen–Specker configurations are not defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "8819a4ce9dec"
     },
     {
       "kind": "theorem",
@@ -182,7 +398,15 @@
         "section": "Free will theorem",
         "snippet": "This type of argument gained attention when an instance of it was advanced by John Conway and Simon Kochen under the name of the free will theorem"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Conway–Kochen free-will theorem appears in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "f1e0d0532f0e"
     },
     {
       "kind": "definition",
@@ -191,7 +415,15 @@
         "section": "Quasiclassical entanglement",
         "snippet": "Werner states are bipartite quantum states that are invariant under unitaries of symmetric tensor-product form"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of Werner states in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "56c41cea5858"
     },
     {
       "kind": "example",
@@ -200,7 +432,15 @@
         "section": "Quasiclassical entanglement",
         "snippet": "Robert Spekkens introduced a toy model that starts with the premise of local, discretized degrees of freedom"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for Spekkens / toy model returns no results.",
+      "provenance": "ai-agent1",
+      "id": "51c1e0ab5802"
     },
     {
       "kind": "theorem",
@@ -209,6 +449,30 @@
         "section": "Background",
         "snippet": "Gleason's theorem provided an argument that a broad class of hidden-variable theories are incompatible with quantum mechanics"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Mathlib occurrences of 'Gleason' refer to Jonathan Gleason's Haar-measure write-up and Gleason's projective-topological-spaces result, not Andrew Gleason's theorem on quantum measures.",
+      "provenance": "ai-agent1",
+      "id": "12cd03ac72b2"
+    },
+    {
+      "kind": "definition",
+      "label": "Counterfactual definiteness",
+      "anchor": {
+        "section": "The Copenhagen interpretation",
+        "snippet": "the assumption often called counterfactual definiteness or \"realism\""
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Counterfactual definiteness is not formalized in Mathlib.",
       "provenance": "ai-agent1"
     }
   ]

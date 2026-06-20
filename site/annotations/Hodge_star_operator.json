@@ -3,6 +3,7 @@
   "wikipedia_title": "Hodge star operator",
   "display_title": "Hodge star operator",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "definition",
@@ -11,6 +12,13 @@
         "section": "(Lead)",
         "snippet": "the Hodge star operator or Hodge star is a linear map defined on the exterior algebra"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Hodge star operator is defined anywhere in Mathlib4 (no `hodgeStar`/`Hodge` results in `Mathlib/`).",
       "provenance": "ai-agent1",
       "id": "5e07b2cd8fc9"
     },
@@ -21,6 +29,13 @@
         "section": "(Lead)",
         "snippet": "in an oriented 3-dimensional Euclidean space, an oriented plane can be represented by the exterior product of two basis vectors"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `crossProduct` and `Orientation.volumeForm`, but no Hodge-dual interpretation linking bivectors to vectors in 3D.",
       "provenance": "ai-agent1",
       "id": "a9994afb7209"
     },
@@ -31,6 +46,13 @@
         "section": "Formal definition",
         "snippet": "This induces an inner product on k -vectors"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `ExteriorPower` and inner product spaces but no induced inner product on the exterior power of an inner product space.",
       "provenance": "ai-agent1",
       "id": "c7e46dcc6439"
     },
@@ -41,6 +63,13 @@
         "section": "Formal definition",
         "snippet": "The unit n -vector"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Orientation.volumeForm",
+        "module": "Mathlib.Analysis.InnerProductSpace.Orientation",
+        "match_kind": null
+      },
+      "note": "The dual notion of the unit top-form is captured by `Orientation.volumeForm`, but the unit n-vector itself in the exterior algebra is not defined.",
       "provenance": "ai-agent1",
       "id": "b521f60c091e"
     },
@@ -51,6 +80,13 @@
         "section": "Formal definition",
         "snippet": "the right complement of a basis element"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of right complement on basis elements of an exterior algebra appears in Mathlib.",
       "provenance": "ai-agent1",
       "id": "3a9880fc404f"
     },
@@ -61,6 +97,13 @@
         "section": "Formal definition",
         "snippet": "The Hodge star operator is a linear operator on the exterior algebra of V"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Hodge star is defined on the exterior algebra in Mathlib.",
       "provenance": "ai-agent1",
       "id": "97169a4a4071"
     },
@@ -71,6 +114,13 @@
         "section": "Formal definition",
         "snippet": "The Hodge star has the following property"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The defining identity α∧⋆β = ⟨α,β⟩ω is absent from Mathlib since the Hodge star itself is not formalized.",
       "provenance": "ai-agent1",
       "id": "9cac4b3f3826"
     },
@@ -81,6 +131,13 @@
         "section": "Formal definition",
         "snippet": "the dual to"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Orientation.volumeForm",
+        "module": "Mathlib.Analysis.InnerProductSpace.Orientation",
+        "match_kind": "exact"
+      },
+      "note": "`Orientation.volumeForm` is the canonical top-dimensional alternating form on an oriented real inner product space.",
       "provenance": "ai-agent1",
       "id": "3c70350d831c"
     },
@@ -91,6 +148,13 @@
         "section": "Formal definition",
         "snippet": "we obtain the dual property"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a Hodge star in Mathlib, the dual property ⟨⋆α,β⟩ω = α∧β is also absent.",
       "provenance": "ai-agent1",
       "id": "3cc8b830ab7a"
     },
@@ -101,6 +165,13 @@
         "section": "Formal definition",
         "snippet": "writing an orthonormal basis of k -vectors as"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formula for the Hodge star on orthonormal k-vectors in Mathlib.",
       "provenance": "ai-agent1",
       "id": "4c5cfa3b2171"
     },
@@ -111,6 +182,13 @@
         "section": "Formal definition",
         "snippet": "The Hodge dual of a multivector m can be calculated with the geometric product using the identity"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `CliffordAlgebra` but no Hodge dual expressed via geometric product.",
       "provenance": "ai-agent1",
       "id": "5806fa8fbbcb"
     },
@@ -121,6 +199,13 @@
         "section": "Formal definition",
         "snippet": "The left Hodge dual is denoted by a subscript star and defined as"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No left Hodge dual in Mathlib.",
       "provenance": "ai-agent1",
       "id": "6f6954d85225"
     },
@@ -131,6 +216,13 @@
         "section": "Formal definition",
         "snippet": "the Hodge star operator takes an orthonormal basis to an orthonormal basis"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Hodge star, hence no isometry property in Mathlib.",
       "provenance": "ai-agent1",
       "id": "e9c1cd9cb50e"
     },
@@ -141,6 +233,13 @@
         "section": "Geometric explanation",
         "snippet": "The Hodge star acting on a decomposable vector can be written as a decomposable"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The geometric (orthogonal-complement) characterization of the Hodge star is not in Mathlib.",
       "provenance": "ai-agent1",
       "id": "8de35b93697b"
     },
@@ -151,6 +250,13 @@
         "section": "Two dimensions",
         "snippet": "In two dimensions with the normalized Euclidean metric and orientation given by the ordering"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Hodge star in Mathlib; the 2D rotation-by-90° comes from `Orientation.rightAngleRotation` but is not framed as a Hodge dual.",
       "provenance": "ai-agent1",
       "id": "cdbafd0ba7f3"
     },
@@ -161,6 +267,13 @@
         "section": "Three dimensions",
         "snippet": "A common example of the Hodge star operator is the case"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has the 3D `crossProduct` but no Hodge star tying it to bivectors.",
       "provenance": "ai-agent1",
       "id": "d481fb3d090f"
     },
@@ -171,6 +284,13 @@
         "section": "Three dimensions",
         "snippet": "The Hodge star relates the exterior and cross product in three dimensions"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "crossProduct",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": null
+      },
+      "note": "`crossProduct` exists in Mathlib but is not identified with the Hodge dual of an exterior product.",
       "provenance": "ai-agent1",
       "id": "57ed69aa8615"
     },
@@ -181,6 +301,13 @@
         "section": "Three dimensions",
         "snippet": "the Hodge star provides an isomorphism between axial vectors and bivectors"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formal Hodge-star isomorphism between vectors and bivectors in 3D appears in Mathlib.",
       "provenance": "ai-agent1",
       "id": "1e1c73e2c312"
     },
@@ -191,6 +318,13 @@
         "section": "Three dimensions",
         "snippet": "cross product of vectors corresponds to the commutator Lie bracket of linear operators"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines `crossProduct` and Lie brackets but does not identify the cross product with the commutator of associated linear operators.",
       "provenance": "ai-agent1",
       "id": "2a822a4e549f"
     },
@@ -201,6 +335,13 @@
         "section": "Four dimensions",
         "snippet": "If the signature of the metric tensor is all positive, i.e. on a Riemannian manifold , then the Hodge star is an involution"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Hodge star and no associated involution on 2-forms in Mathlib.",
       "provenance": "ai-agent1",
       "id": "b0f330ea2eaf"
     },
@@ -211,6 +352,13 @@
         "section": "Four dimensions",
         "snippet": "we discuss the Hodge star operator in Minkowski spacetime"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Minkowski-signature Hodge star is not formalized in Mathlib.",
       "provenance": "ai-agent1",
       "id": "925f37b27fd6"
     },
@@ -221,6 +369,13 @@
         "section": "Four dimensions",
         "snippet": "and hence deserve the name self-dual and anti-self-dual two-forms"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Self-dual/anti-self-dual two-forms are not defined in Mathlib.",
       "provenance": "ai-agent1",
       "id": "5c630e7375cf"
     },
@@ -231,6 +386,13 @@
         "section": "Conformal invariance",
         "snippet": "The Hodge star is conformally invariant on n -forms on a 2 n -dimensional vector space"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Hodge star and no statement of conformal invariance on middle-degree forms in Mathlib.",
       "provenance": "ai-agent1",
       "id": "70f83b87466e"
     },
@@ -241,6 +403,13 @@
         "section": "Example: Derivatives in three dimensions",
         "snippet": "the first case written out in components gives"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gradient is in Mathlib but not expressed via Hodge star and exterior derivative.",
       "provenance": "ai-agent1",
       "id": "a1cd77268bb4"
     },
@@ -251,6 +420,13 @@
         "section": "Example: Derivatives in three dimensions",
         "snippet": "In the second case, a vector field"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Curl is not expressed via Hodge star and exterior derivative in Mathlib.",
       "provenance": "ai-agent1",
       "id": "0438df9b652d"
     },
@@ -261,6 +437,13 @@
         "section": "Example: Derivatives in three dimensions",
         "snippet": "Applying Hodge star, exterior derivative, and Hodge star again"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Divergence in Mathlib is not expressed using Hodge star and exterior derivative.",
       "provenance": "ai-agent1",
       "id": "6d05ada4e118"
     },
@@ -268,9 +451,16 @@
       "kind": "proposition",
       "label": "Special cases of d² = 0",
       "anchor": {
-        "section": "Example: Derivatives in three dimensions",
+        "section": "Example: Derivatives in three cases",
         "snippet": "has as special cases two other identities"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The vector-calculus identities curl∘grad=0 and div∘curl=0 are not stated as consequences of d² = 0 in Mathlib.",
       "provenance": "ai-agent1",
       "id": "99782f82fd9b"
     },
@@ -281,6 +471,13 @@
         "section": "Example: Derivatives in three dimensions",
         "snippet": "One can also obtain the Laplacian"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Laplacian is defined in Mathlib but not via the Hodge star / codifferential construction.",
       "provenance": "ai-agent1",
       "id": "5ab69df23dbf"
     },
@@ -291,6 +488,13 @@
         "section": "Duality",
         "snippet": "applying the Hodge star twice leaves a k -vector unchanged up to a sign"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No ⋆⋆ = ±id identity since Mathlib has no Hodge star.",
       "provenance": "ai-agent1",
       "id": "af9c6ae9d8b3"
     },
@@ -301,6 +505,13 @@
         "section": "Duality",
         "snippet": "The above identity implies that the inverse of"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized; the Hodge star itself is absent.",
       "provenance": "ai-agent1",
       "id": "85a5351e9da8"
     },
@@ -311,6 +522,13 @@
         "section": "On manifolds",
         "snippet": "We define the Hodge dual of a k -form"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pseudo-Riemannian Hodge dual on differential forms is not in Mathlib.",
       "provenance": "ai-agent1",
       "id": "5dd7ead79929"
     },
@@ -321,6 +539,13 @@
         "section": "On manifolds",
         "snippet": "one can define the Hodge star of a k -form as a"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Hodge star with values in pseudo-forms / densities is formalized in Mathlib.",
       "provenance": "ai-agent1",
       "id": "8530a73905bc"
     },
@@ -331,6 +556,13 @@
         "section": "Computation in index notation",
         "snippet": "The Hodge dual of a decomposable k -form is"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The index-notation formula for the Hodge dual is not in Mathlib.",
       "provenance": "ai-agent1",
       "id": "45488045ad0f"
     },
@@ -341,6 +573,13 @@
         "section": "Computation in index notation",
         "snippet": "The unit volume form"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Orientation.volumeForm",
+        "module": "Mathlib.Analysis.InnerProductSpace.Orientation",
+        "match_kind": null
+      },
+      "note": "`Orientation.volumeForm` provides the volume form on an oriented real inner product space; the coordinate formula √|det g| ε is not stated.",
       "provenance": "ai-agent1",
       "id": "9ea47d847c7c"
     },
@@ -351,6 +590,13 @@
         "section": "Codifferential",
         "snippet": "The most important application of the Hodge star on manifolds is to define the codifferential"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The codifferential δ is not defined in Mathlib.",
       "provenance": "ai-agent1",
       "id": "b76368e83fbd"
     },
@@ -361,6 +607,13 @@
         "section": "Codifferential",
         "snippet": "The codifferential is the adjoint of the exterior derivative with respect to the square-integrable scalar product"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib (no codifferential and no L²-adjoint statement for d).",
       "provenance": "ai-agent1",
       "id": "137138966b5f"
     },
@@ -371,6 +624,13 @@
         "section": "Codifferential",
         "snippet": "the codifferential has the corresponding property"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "δ² = 0 is not in Mathlib because δ is not defined.",
       "provenance": "ai-agent1",
       "id": "970b98cd95cc"
     },
@@ -381,6 +641,13 @@
         "section": "Codifferential",
         "snippet": "The Laplace–deRham operator is given by"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hodge Laplacian Δ = dδ + δd is not formalized in Mathlib.",
       "provenance": "ai-agent1",
       "id": "851b6e634b04"
     },
@@ -391,6 +658,13 @@
         "section": "Codifferential",
         "snippet": "The Hodge star sends harmonic forms to harmonic forms"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Harmonic forms and the Hodge star are absent from Mathlib.",
       "provenance": "ai-agent1",
       "id": "a6dabe89baa5"
     },
@@ -401,6 +675,13 @@
         "section": "Codifferential",
         "snippet": "In coordinates, with notation as above, the codifferential of the form"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No coordinate formula for the codifferential in Mathlib.",
       "provenance": "ai-agent1",
       "id": "b99b977eb936"
     },
@@ -411,6 +692,13 @@
         "section": "Poincare lemma for codifferential",
         "snippet": "one can define its version for codifferential"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib; even the standard Poincaré lemma for d is not present at this generality.",
       "provenance": "ai-agent1",
       "id": "dbb57c120161"
     },
@@ -421,6 +709,13 @@
         "section": "Poincare lemma for codifferential",
         "snippet": "We can then define cohomotopy operator as"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No cohomotopy operator on differential forms in Mathlib.",
       "provenance": "ai-agent1",
       "id": "981a0bea9ef7"
     },
@@ -431,6 +726,13 @@
         "section": "Poincare lemma for codifferential",
         "snippet": "The cohomotopy operator fulfills (co)homotopy invariance formula"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib.",
       "provenance": "ai-agent1",
       "id": "05a764e7e185"
     },
@@ -441,8 +743,79 @@
         "section": "Poincare lemma for codifferential",
         "snippet": "They make it possible to use it to define"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Anticoexact forms are not formalized in Mathlib.",
       "provenance": "ai-agent1",
       "id": "67767be5a20e"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hodge star induces isomorphism of cohomology groups",
+      "anchor": {
+        "section": "Codifferential",
+        "snippet": "the Hodge star induces an isomorphism of cohomology groups"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No de Rham cohomology Hodge isomorphism in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Laplace–deRham operator is symmetric and non-negative",
+      "anchor": {
+        "section": "Codifferential",
+        "snippet": "It is symmetric"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not in Mathlib; the operator itself is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homotopy operator",
+      "anchor": {
+        "section": "Poincare lemma for codifferential",
+        "snippet": "One has to define a homotopy operator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No homotopy operator for the Poincaré lemma on differential forms is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Direct sum decomposition into exact and anticoexact forms",
+      "anchor": {
+        "section": "Poincare lemma for codifferential",
+        "snippet": "make a direct sum decomposition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This direct sum decomposition is not in Mathlib.",
+      "provenance": "ai"
     }
   ]
 }

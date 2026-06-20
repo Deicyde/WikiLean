@@ -20,16 +20,6 @@
       },
       "note": "`Monoid.npow` is the canonical inductive definition of iterated multiplication on a monoid.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "(Lead)",
-          "snippet": "When n is a positive integer , exponentiation corresponds to repeated multiplication of the base"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle b^{n}=\\underbrace {b\\times b\\times \\dots \\times b\\times b} _{n{\\text{ times}}}.}"
-        }
-      ],
       "id": "b8fc6a52cb1b"
     },
     {
@@ -42,21 +32,11 @@
       "status": "formalized",
       "mathlib": {
         "decl": "pow_add",
-        "module": "Mathlib.Algebra.GroupPower.Basic",
+        "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "exact"
       },
       "note": "`pow_add` proves `a^(m+n) = a^m * a^n` in any monoid.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "(Lead)",
-          "snippet": "the multiplication rule"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}b^{n}\\times b^{m}&amp;=\\underbrace {b\\times \\dots \\times b} _{n{\\text{ times}}}\\times \\underbrace {b\\times \\dots \\times b} _{m{\\text{ times}}}\\\\[1ex]&amp;=\\underbrace {b\\times \\dots \\times b} _{n+m{\\text{ times}}}=b^{n+m}.\\end{aligned}}}"
-        }
-      ],
       "id": "d0795ace5313"
     },
     {
@@ -74,24 +54,6 @@
       },
       "note": "Integer powers via `zpowRec`/`DivInvMonoid.zpow`, and rational/real extensions via `Real.rpow`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "(Lead)",
-          "snippet": "Exponentiation can also be extended to powers that are not positive integers"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle b^{0}=1}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle b^{-n}=1/b^{n},}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle b^{n/m}={\\sqrt[{m}]{b^{n}}}}"
-        }
-      ],
       "id": "649819e3e1bf"
     },
     {
@@ -121,7 +83,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "pow_add",
-        "module": "Mathlib.Algebra.GroupPower.Basic",
+        "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "generalization"
       },
       "note": "Mathlib has the general `pow_add` law; the Archimedes historical specialization to powers of ten is not stated separately.",
@@ -138,7 +100,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "sq",
-        "module": "Mathlib.Algebra.GroupPower.Basic",
+        "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "exact"
       },
       "note": "`sq a = a * a = a^2` is defined in Mathlib.",
@@ -206,7 +168,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "pow_add",
-        "module": "Mathlib.Algebra.GroupPower.Basic",
+        "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "exact"
       },
       "note": "`pow_add` formalizes `a^(m+n) = a^m * a^n` from monoid associativity.",
@@ -257,7 +219,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "zpow_neg",
-        "module": "Mathlib.Algebra.Group.Defs",
+        "module": "Mathlib.Algebra.Group.Basic",
         "match_kind": "exact"
       },
       "note": "`zpow_neg` gives `a^(-n) = (a^n)⁻¹`.",
@@ -427,7 +389,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "neg_one_pow_eq_pow_mod_two",
-        "module": "Mathlib.Algebra.GroupPower.Basic",
+        "module": "Mathlib.Algebra.Ring.Commute",
         "match_kind": "exact"
       },
       "note": "`neg_one_pow_eq_pow_mod_two` captures the alternation; related `Odd.neg_one_pow` etc.",
@@ -665,10 +627,10 @@
       "status": "partial",
       "mathlib": {
         "decl": "Real.exp",
-        "module": "Mathlib.Data.Complex.Exponential",
+        "module": "Mathlib.Analysis.Complex.Exponential",
         "match_kind": "generalization"
       },
-      "note": "`Real.exp` is defined via the power series; the `(1+x/n)^n` limit form is not the primary definition in Mathlib.",
+      "note": "`Real.exp` is defined via the power series; the `(1+x/n)^n` limit form is proved equivalent via `Real.tendsto_one_add_div_pow_exp`.",
       "provenance": "ai",
       "id": "c1eb40e25a6c"
     },
@@ -682,7 +644,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Real.exp_add",
-        "module": "Mathlib.Data.Complex.Exponential",
+        "module": "Mathlib.Analysis.Complex.Exponential",
         "match_kind": "exact"
       },
       "note": "`Real.exp_add` proves `exp (x+y) = exp x * exp y`.",
@@ -698,11 +660,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Real.exp_one",
-        "module": "Mathlib.Data.Complex.Exponential",
-        "match_kind": "exact"
+        "decl": "Real.exp",
+        "module": "Mathlib.Analysis.Complex.Exponential",
+        "match_kind": "invocation"
       },
-      "note": "Mathlib uses `Real.exp 1` for Euler's number; `Real.exp_one_pos` etc.",
+      "note": "Mathlib has no dedicated `Real.e` constant; Euler's number is `Real.exp 1`, with numerical bounds like `Real.exp_one_gt_two`.",
       "provenance": "ai",
       "id": "c7fea11fa08c"
     },
@@ -716,7 +678,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Complex.exp",
-        "module": "Mathlib.Data.Complex.Exponential",
+        "module": "Mathlib.Analysis.Complex.Exponential",
         "match_kind": "exact"
       },
       "note": "`Complex.exp` is the complex exponential.",
@@ -767,7 +729,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Complex.exp_mul_I",
-        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Circle",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
         "match_kind": "exact"
       },
       "note": "`Complex.exp_mul_I` is Euler's formula `exp (x*I) = cos x + sin x * I`.",
@@ -783,11 +745,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Complex.abs_mul_exp_arg_mul_I",
-        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Circle",
+        "decl": "Complex.norm_mul_exp_arg_mul_I",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Arg",
         "match_kind": "exact"
       },
-      "note": "`Complex.abs_mul_exp_arg_mul_I` writes `z = ‖z‖ * exp(arg z * I)`.",
+      "note": "`Complex.norm_mul_exp_arg_mul_I` writes `z = ‖z‖ * exp(arg z * I)`.",
       "provenance": "ai",
       "id": "650e2688c4d3"
     },
@@ -817,11 +779,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Complex.card_nthRoots",
-        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Circle",
+        "decl": "IsPrimitiveRoot.card_nthRoots",
+        "module": "Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots",
         "match_kind": "exact"
       },
-      "note": "`Complex.card_nthRoots` (and `Polynomial.card_nthRoots`) give the n distinct roots.",
+      "note": "`IsPrimitiveRoot.card_nthRoots` gives that `nthRoots n a` has cardinality `n` (when a root exists).",
       "provenance": "ai",
       "id": "f278491112b6"
     },
@@ -886,7 +848,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "IsPrimitiveRoot",
-        "module": "Mathlib.RingTheory.RootsOfUnity.Basic",
+        "module": "Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots",
         "match_kind": "exact"
       },
       "note": "`IsPrimitiveRoot ζ n` formalises primitive nth roots of unity.",
@@ -903,7 +865,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "IsPrimitiveRoot.nthRoots_eq",
-        "module": "Mathlib.RingTheory.RootsOfUnity.Basic",
+        "module": "Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots",
         "match_kind": "generalization"
       },
       "note": "Mathlib relates nth roots to primitive roots, e.g. via `IsPrimitiveRoot.nthRoots_eq`.",
@@ -1061,24 +1023,6 @@
       },
       "note": "Specific numerical example; not in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Computation",
-          "snippet": "The polar form of i is"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\log i=i\\left({\\frac {\\pi }{2}}+2k\\pi \\right).}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle i^{i}=e^{i\\log i}=e^{-{\\frac {\\pi }{2}}}e^{-2k\\pi }.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle e^{-{\\frac {\\pi }{2}}}\\approx 0.2079.}"
-        }
-      ],
       "id": "0c4f8e6abf41"
     },
     {
@@ -1096,16 +1040,6 @@
       },
       "note": "Specific numerical example; not in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Computation",
-          "snippet": "the polar form of −2 is"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}(-2)^{3+4i}&amp;=2^{3}e^{-4(\\pi +2k\\pi )}(\\cos(4\\ln 2+3(\\pi +2k\\pi ))+i\\sin(4\\ln 2+3(\\pi +2k\\pi )))\\\\&amp;=-2^{3}e^{-4(\\pi +2k\\pi )}(\\cos(4\\ln 2)+i\\sin(4\\ln 2)).\\end{aligned}}}"
-        }
-      ],
       "id": "a3e28737f8ee"
     },
     {
@@ -1123,24 +1057,6 @@
       },
       "note": "No 'failure' counterexample lemma in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Failure of power and logarithm identities",
-          "snippet": "The identity log( b x ) = x ⋅ log b holds whenever b is a positive real number"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\log((-i)^{2})=\\log(-1)=i\\pi \\neq 2\\log(-i)=2\\log(e^{-i\\pi /2})=2\\,{\\frac {-i\\pi }{2}}=-i\\pi }"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\log w^{z}\\equiv z\\log w{\\pmod {2\\pi i}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\left\\{\\log w^{z}\\right\\}&amp;=\\left\\{z\\cdot \\operatorname {Log} w+z\\cdot 2\\pi in+2\\pi im\\mid m,n\\in \\mathbb {Z} \\right\\}\\\\\\left\\{z\\log w\\right\\}&amp;=\\left\\{z\\operatorname {Log} w+z\\cdot 2\\pi in\\mid n\\in \\mathbb {Z} \\right\\}\\end{aligned}}}"
-        }
-      ],
       "id": "5e32e3e4bae0"
     },
     {
@@ -1158,20 +1074,6 @@
       },
       "note": "Conditional cpow identities exist but the failure statement is not formalised.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Failure of power and logarithm identities",
-          "snippet": "The identities ( bc ) x = b x c x and ( b / c ) x = b x / c x are valid"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle (-1\\cdot -1)^{\\frac {1}{2}}=1\\neq (-1)^{\\frac {1}{2}}(-1)^{\\frac {1}{2}}=i\\cdot i=i^{2}=-1}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\left({\\frac {1}{-1}}\\right)^{\\frac {1}{2}}=(-1)^{\\frac {1}{2}}=i\\neq {\\frac {1^{\\frac {1}{2}}}{(-1)^{\\frac {1}{2}}}}={\\frac {1}{i}}=-i}"
-        }
-      ],
       "id": "e1127501188f"
     },
     {
@@ -1201,7 +1103,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "IsAlgebraic.pow",
-        "module": "Mathlib.RingTheory.Algebraic.Basic",
+        "module": "Mathlib.RingTheory.Algebraic.Integral",
         "match_kind": "generalization"
       },
       "note": "`IsAlgebraic.pow` covers integer powers; the rational exponent case via nth roots is not given a single Mathlib lemma.",
@@ -1353,11 +1255,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Commute.conj_pow",
-        "module": "Mathlib.Algebra.Group.Semiconj.Units",
+        "decl": "conj_pow",
+        "module": "Mathlib.Algebra.Group.Conj",
         "match_kind": "invocation"
       },
-      "note": "Mathlib has `conj_pow` lemmas but no `x^y` conjugation notation.",
+      "note": "Mathlib has `conj_pow` (and `Units.conj_pow`) but no `x^y` conjugation notation per se.",
       "provenance": "ai",
       "id": "0b9804e7e594"
     },
@@ -1371,7 +1273,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "IsNilpotent",
-        "module": "Mathlib.RingTheory.Nilpotent.Defs",
+        "module": "Mathlib.Algebra.GroupWithZero.Basic",
         "match_kind": "exact"
       },
       "note": "`IsNilpotent` is Mathlib's nilpotency predicate.",
@@ -1405,7 +1307,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "IsReduced",
-        "module": "Mathlib.RingTheory.Nilpotent.Defs",
+        "module": "Mathlib.Algebra.GroupWithZero.Basic",
         "match_kind": "exact"
       },
       "note": "`IsReduced R` formalises reduced rings.",
@@ -1455,11 +1357,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Matrix.pow_eq",
-        "module": "Mathlib.LinearAlgebra.Matrix.ZPow",
-        "match_kind": "exact"
+        "decl": "Monoid.npow",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "invocation"
       },
-      "note": "Square matrices form a monoid, so `A^n` is given by `Monoid.npow`; `Matrix.zpow` for integer exponents.",
+      "note": "Square matrices form a monoid, so `A^n` is given by `Monoid.npow`; many `Matrix.*_pow` lemmas exist.",
       "provenance": "ai",
       "id": "7ea7c89cd85c"
     },
@@ -1540,11 +1442,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "FiniteField.isCyclic",
-        "module": "Mathlib.FieldTheory.Finite.Basic",
+        "decl": "instIsCyclicUnitsOfFinite",
+        "module": "Mathlib.RingTheory.IntegralDomain",
         "match_kind": "invocation"
       },
-      "note": "Mathlib proves the unit group is cyclic, implying a primitive element exists; no `primitiveElement` decl specific to finite fields.",
+      "note": "`instIsCyclicUnitsOfFinite` shows the unit group of any finite integral domain (incl. finite fields) is cyclic, so a primitive element exists; no `primitiveElement` decl specific to finite fields.",
       "provenance": "ai",
       "id": "ebe7f86da493"
     },
@@ -1575,7 +1477,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "frobenius",
-        "module": "Mathlib.Algebra.CharP.Frobenius",
+        "module": "Mathlib.Algebra.CharP.Lemmas",
         "match_kind": "exact"
       },
       "note": "`frobenius R p` is the Frobenius ring homomorphism.",
@@ -1591,11 +1493,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "GaloisField",
-        "module": "Mathlib.FieldTheory.Finite.GaloisField",
+        "decl": "FiniteField.instIsCyclicAlgEquivOfFinite",
+        "module": "Mathlib.FieldTheory.Finite.Basic",
         "match_kind": "invocation"
       },
-      "note": "Mathlib's `GaloisField` and Frobenius theory cover the structure but no single 'Gal = ⟨Frob⟩' decl was found.",
+      "note": "`FiniteField.instIsCyclicAlgEquivOfFinite` proves the Galois group is cyclic; no single 'Gal = ⟨Frob⟩' decl was found.",
       "provenance": "ai",
       "id": "da5709b90598"
     },
@@ -1626,7 +1528,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Set.prod",
-        "module": "Mathlib.Data.Set.Prod",
+        "module": "Mathlib.Data.Set.Operations",
         "match_kind": "exact"
       },
       "note": "`Set.prod` is the Cartesian product of sets.",
@@ -1643,7 +1545,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "Set.pi",
-        "module": "Mathlib.Data.Set.Prod",
+        "module": "Mathlib.Data.Set.Operations",
         "match_kind": "generalization"
       },
       "note": "Iterated Cartesian power is realised via `Fin n → S` or `Set.pi`, but there is no `Set.npow` decl.",
@@ -1659,11 +1561,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Pi",
-        "module": "Mathlib.Init.Data.Pi",
-        "match_kind": "exact"
+        "decl": "Cardinal.power_def",
+        "module": "Mathlib.SetTheory.Cardinal.Defs",
+        "match_kind": "invocation"
       },
-      "note": "Mathlib uses `T → S` (the Pi type) for function sets; cardinal exponentiation `#S ^ #T` matches by `Cardinal.power_def`.",
+      "note": "Mathlib uses `T → S` (the Pi type) for function sets; cardinal exponentiation `#S ^ #T` matches via `Cardinal.power_def`.",
       "provenance": "ai",
       "id": "f04130b2e79b"
     },
@@ -1677,7 +1579,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Equiv.curry",
-        "module": "Mathlib.Logic.Equiv.Basic",
+        "module": "Mathlib.Logic.Equiv.Prod",
         "match_kind": "exact"
       },
       "note": "`Equiv.curry` gives `(α × β → γ) ≃ (α → β → γ)`.",
@@ -1694,7 +1596,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Set.powerset",
-        "module": "Mathlib.Data.Set.Basic",
+        "module": "Mathlib.Data.Set.Defs",
         "match_kind": "exact"
       },
       "note": "`Set.powerset` and `Finset.powerset` realise `2^S`; cardinality via `Fintype.card_finset`.",
@@ -1728,7 +1630,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "CategoryTheory.exp.adjunction",
-        "module": "Mathlib.CategoryTheory.Closed.Cartesian",
+        "module": "Mathlib.CategoryTheory.Monoidal.Closed.Cartesian",
         "match_kind": "exact"
       },
       "note": "`CategoryTheory.exp.adjunction` is the prod ⊣ exp adjunction in Cartesian closed categories.",
@@ -1745,7 +1647,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "CategoryTheory.CartesianClosed",
-        "module": "Mathlib.CategoryTheory.Closed.Cartesian",
+        "module": "Mathlib.CategoryTheory.Monoidal.Closed.Cartesian",
         "match_kind": "exact"
       },
       "note": "`CartesianClosed` is Mathlib's typeclass for CCCs.",
@@ -1830,7 +1732,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Function.comp",
-        "module": "Mathlib.Init.Function",
+        "module": "Init.Prelude",
         "match_kind": "exact"
       },
       "note": "`Function.comp` is composition; `∘` notation.",
@@ -1846,11 +1748,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Function.iterate",
+        "decl": "Nat.iterate",
         "module": "Mathlib.Logic.Function.Iterate",
         "match_kind": "exact"
       },
-      "note": "`Function.iterate f n` is the nth iterate `f^[n]`.",
+      "note": "`Nat.iterate f n` is the nth iterate `f^[n]` (with `Function.iterate_*` API).",
       "provenance": "ai",
       "id": "88b65ca95d59"
     },
@@ -1870,6 +1772,118 @@
       "note": "`Function.invFun` / `Equiv.symm` formalise the inverse-function notation.",
       "provenance": "ai",
       "id": "60a8795030a0"
+    },
+    {
+      "kind": "theorem",
+      "label": "Exponentiation by squaring",
+      "anchor": {
+        "section": "Efficient computation with integer exponents",
+        "snippet": "the number of multiplication operations required to compute b n can be reduced"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "npowBinRec",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`npowBinRec` is Mathlib's repeated-squaring implementation of `npow`, equated to `npowRec` via `npowRec_eq_npowBinRec`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Right-associativity of serial exponentiation",
+      "anchor": {
+        "section": "Identities and properties",
+        "snippet": "the conventional order of operations for serial exponentiation in superscript notation is top-down"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Notational convention; not a Mathlib lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Special limit defining e^x",
+      "anchor": {
+        "section": "Large exponents",
+        "snippet": "If the exponentiated number varies while tending to 1 as the exponent tends to infinity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.tendsto_one_add_div_pow_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.LogBounds",
+        "match_kind": "exact"
+      },
+      "note": "`Real.tendsto_one_add_div_pow_exp` proves `(1 + t/n)^n → exp t` as `n → ∞`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Polar form product rule",
+      "anchor": {
+        "section": "n th roots of a complex number",
+        "snippet": "The polar form of the product of two complex numbers is obtained by multiplying the absolute values and adding the arguments"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.arg_mul",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Arg",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.arg_mul` and multiplicativity of `Complex.abs` give the polar product rule.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cyclic group of order n from element of order n",
+      "anchor": {
+        "section": "In a group",
+        "snippet": "If the order of x is n , then"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "orderOf_eq_card_of_zpowers_eq_top",
+        "module": "Mathlib.GroupTheory.SpecificGroups.Cyclic.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib relates `orderOf x = n` to the finite cyclic subgroup `Subgroup.zpowers x` via `orderOf_eq_card_of_zpowers_eq_top`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of primitive elements is φ(q-1)",
+      "anchor": {
+        "section": "Finite fields",
+        "snippet": "There are"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.totient",
+        "module": "Mathlib.Data.Nat.Totient",
+        "match_kind": "invocation"
+      },
+      "note": "Count of generators of a cyclic group of order n is `Nat.totient n`; specialization to finite fields is via cyclicity of the unit group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Currying isomorphism for direct sums vs products",
+      "anchor": {
+        "section": "Sets as exponents",
+        "snippet": "where"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.sumArrowEquivProdArrow",
+        "module": "Mathlib.Logic.Equiv.Prod",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv.sumArrowEquivProdArrow` gives `(α ⊕ β → γ) ≃ (α → γ) × (β → γ)`.",
+      "provenance": "ai"
     }
   ]
 }

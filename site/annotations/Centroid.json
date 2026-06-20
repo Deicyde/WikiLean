@@ -3,6 +3,7 @@
   "wikipedia_title": "Centroid",
   "display_title": "Centroid",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "definition",
@@ -12,7 +13,14 @@
         "snippet": "the mean position of all the points in the figure"
       },
       "provenance": "ai-agent1",
-      "id": "25471dc59b55"
+      "id": "25471dc59b55",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Finset.centroid",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Centroid",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes only the discrete `Finset.centroid` (mean of finitely many points), not the general 'mean position of all points in a figure'."
     },
     {
       "kind": "definition",
@@ -22,7 +30,14 @@
         "snippet": "one often assumes uniform mass density"
       },
       "provenance": "ai-agent1",
-      "id": "7aacdc3937ca"
+      "id": "7aacdc3937ca",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Finset.centerMass",
+        "module": "Mathlib.Analysis.Convex.Combination",
+        "match_kind": "special_case"
+      },
+      "note": "`Finset.centerMass` is the discrete weighted barycenter; continuous uniform-density barycenter of a figure is not formalized."
     },
     {
       "kind": "definition",
@@ -32,7 +47,14 @@
         "snippet": "a center of gravity can be defined as the weighted mean of all points"
       },
       "provenance": "ai-agent1",
-      "id": "2dd338edf606"
+      "id": "2dd338edf606",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Finset.centerMass",
+        "module": "Mathlib.Analysis.Convex.Combination",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has the discrete weighted-mean `Finset.centerMass`; the gravity-field / continuous version is not present."
     },
     {
       "kind": "definition",
@@ -42,7 +64,14 @@
         "snippet": "the centroid of a radial projection of a region of the Earth's surface to sea level"
       },
       "provenance": "ai-agent1",
-      "id": "f02e03d6fb5b"
+      "id": "f02e03d6fb5b",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No geography-specific centroid construction is in Mathlib."
     },
     {
       "kind": "proposition",
@@ -52,7 +81,14 @@
         "snippet": "The geometric centroid of a convex object always lies in the object"
       },
       "provenance": "ai-agent1",
-      "id": "92244eab8206"
+      "id": "92244eab8206",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Finset.centroid_mem_convexHull",
+        "module": "Mathlib.Analysis.Convex.Combination",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves the discrete centroid of a finite point set lies in its convex hull, but not the analogous statement for a general convex body's geometric centroid."
     },
     {
       "kind": "proposition",
@@ -62,7 +98,14 @@
         "snippet": "it is a fixed point of all isometries in its symmetry group"
       },
       "provenance": "ai-agent1",
-      "id": "24be9686b471"
+      "id": "24be9686b471",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No theorem in Mathlib asserts that the centroid is preserved by every isometry of a figure's symmetry group."
     },
     {
       "kind": "proposition",
@@ -72,7 +115,14 @@
         "snippet": "the centroid of a parallelogram is the meeting point of its two diagonals"
       },
       "provenance": "ai-agent1",
-      "id": "e3a8ebccada2"
+      "id": "e3a8ebccada2",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no `Parallelogram` structure nor a theorem identifying its centroid with the diagonals' intersection."
     },
     {
       "kind": "proposition",
@@ -82,7 +132,14 @@
         "snippet": "the centroid of an object with translational symmetry is undefined"
       },
       "provenance": "ai-agent1",
-      "id": "ff2910333ce6"
+      "id": "ff2910333ce6",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No corresponding lemma in Mathlib."
     },
     {
       "kind": "example",
@@ -92,7 +149,14 @@
         "snippet": "The centroid of a triangle is the intersection of the three medians of the triangle"
       },
       "provenance": "ai-agent1",
-      "id": "0a1414965d5f"
+      "id": "0a1414965d5f",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Simplex.eq_centroid_of_forall_mem_median",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Simplex.Centroid",
+        "match_kind": "generalization"
+      },
+      "note": "Stated in arbitrary dimension (1 < n): the unique point lying on every median of a simplex is the centroid; specializes to the triangle case."
     },
     {
       "kind": "definition",
@@ -102,7 +166,14 @@
         "snippet": "The centroid of a finite set of"
       },
       "provenance": "ai-agent1",
-      "id": "ca3ceacfe2bf"
+      "id": "ca3ceacfe2bf",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.centroid",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Centroid",
+        "match_kind": "exact"
+      },
+      "note": "`Finset.centroid` is exactly the affine combination with uniform weights 1/#s."
     },
     {
       "kind": "proposition",
@@ -112,7 +183,14 @@
         "snippet": "This point minimizes the sum of squared Euclidean distances between itself and each point in the set"
       },
       "provenance": "ai-agent1",
-      "id": "2730f6b4356e"
+      "id": "2730f6b4356e",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma identifies the centroid as the minimizer of the sum of squared Euclidean distances to a finite point set."
     },
     {
       "kind": "definition",
@@ -122,7 +200,14 @@
         "snippet": "can be computed by dividing it into a finite number of simpler figures"
       },
       "provenance": "ai-agent1",
-      "id": "4b9226315d2e"
+      "id": "4b9226315d2e",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The decomposition formula for computing centroids of figures is not formalized."
     },
     {
       "kind": "example",
@@ -132,7 +217,14 @@
         "snippet": "the figure below (a) is easily divided into a square and a triangle"
       },
       "provenance": "ai-agent1",
-      "id": "3df5f7d374c9"
+      "id": "3df5f7d374c9",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No such worked example exists in Mathlib."
     },
     {
       "kind": "proposition",
@@ -142,7 +234,14 @@
         "snippet": "The same formula holds for any three-dimensional objects"
       },
       "provenance": "ai-agent1",
-      "id": "34511a5a23bb"
+      "id": "34511a5a23bb",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize the geometric-decomposition formula for centroids of 3D objects."
     },
     {
       "kind": "definition",
@@ -152,7 +251,14 @@
         "snippet": "can also be computed by the vector formula"
       },
       "provenance": "ai-agent1",
-      "id": "f2ccb19e0b77"
+      "id": "f2ccb19e0b77",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No definition of a region's centroid as ∫x dA / ∫dA appears in Mathlib."
     },
     {
       "kind": "definition",
@@ -162,7 +268,14 @@
         "snippet": "the coordinate-wise formula for the centroid is defined as"
       },
       "provenance": "ai-agent1",
-      "id": "f2d80ed24744"
+      "id": "f2d80ed24744",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Continuous coordinate-wise integral centroid formula is not in Mathlib."
     },
     {
       "kind": "definition",
@@ -172,7 +285,14 @@
         "snippet": "For a plane figure, in particular, the barycentric coordinates are"
       },
       "provenance": "ai-agent1",
-      "id": "60e9eb213ce9"
+      "id": "60e9eb213ce9",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has abstract `AffineBasis.coord` barycentric coordinates but no integral barycentric formula for a plane region."
     },
     {
       "kind": "proposition",
@@ -182,7 +302,14 @@
         "snippet": "of a region bounded by the graphs of the continuous functions"
       },
       "provenance": "ai-agent1",
-      "id": "d376e48c4004"
+      "id": "d376e48c4004",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the centroid of a region between two graphs."
     },
     {
       "kind": "proposition",
@@ -192,7 +319,14 @@
         "snippet": "The mathematical principle involved is a special case of Green's theorem"
       },
       "provenance": "ai-agent1",
-      "id": "c5420b80ac9c"
+      "id": "c5420b80ac9c",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib lacks both the integraph centroid construction and Green's-theorem-based centroid formula."
     },
     {
       "kind": "example",
@@ -202,7 +336,14 @@
         "snippet": "This is a method of determining the centroid of an L-shaped object"
       },
       "provenance": "ai-agent1",
-      "id": "69e85140c728"
+      "id": "69e85140c728",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No such worked example exists in Mathlib."
     },
     {
       "kind": "theorem",
@@ -212,7 +353,14 @@
         "snippet": "The centroid of a triangle is the point of intersection of its medians"
       },
       "provenance": "ai-agent1",
-      "id": "5693c0551af8"
+      "id": "5693c0551af8",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Triangle.dist_point_centroid",
+        "module": "Mathlib.Geometry.Euclidean.Simplex",
+        "match_kind": "exact"
+      },
+      "note": "Combined with `Affine.Simplex.eq_centroid_of_forall_mem_median`, this gives the medians' intersection and the 2:1 distance ratio for triangles."
     },
     {
       "kind": "proposition",
@@ -222,7 +370,14 @@
         "snippet": "The centroid is therefore at"
       },
       "provenance": "ai-agent1",
-      "id": "054460a4d784"
+      "id": "054460a4d784",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Finset.centroidWeights",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Centroid",
+        "match_kind": "generalization"
+      },
+      "note": "`centroidWeights` assigns equal weight 1/n to each vertex, which is the (1/3,1/3,1/3) barycentric statement for a triangle, but no triangle-specific lemma stating this in barycentric form is present."
     },
     {
       "kind": "proposition",
@@ -232,7 +387,14 @@
         "snippet": "In trilinear coordinates the centroid can be expressed in any of these equivalent ways"
       },
       "provenance": "ai-agent1",
-      "id": "b8b84f369030"
+      "id": "b8b84f369030",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Trilinear coordinates are not formalized in Mathlib."
     },
     {
       "kind": "proposition",
@@ -242,7 +404,31 @@
         "snippet": "The centroid is also the physical center of mass if the triangle is made from a uniform sheet of material"
       },
       "provenance": "ai-agent1",
-      "id": "1f00a082cb33"
+      "id": "1f00a082cb33",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Finset.centroid_eq_centerMass",
+        "module": "Mathlib.Analysis.Convex.Combination",
+        "match_kind": "special_case"
+      },
+      "note": "Discrete `centroid = centerMass` is proved; the physical center-of-mass interpretation for a uniform triangular lamina is not separately formalized."
+    },
+    {
+      "kind": "proposition",
+      "label": "Spieker center for perimeter-distributed mass",
+      "anchor": {
+        "section": "Of a triangle",
+        "snippet": "the center of mass lies at the Spieker center"
+      },
+      "provenance": "ai",
+      "note": "No declaration containing 'Spieker' exists in Mathlib.",
+      "id": null,
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      }
     },
     {
       "kind": "proposition",
@@ -252,7 +438,14 @@
         "snippet": "The area of the triangle is"
       },
       "provenance": "ai-agent1",
-      "id": "eefe7c5efb27"
+      "id": "eefe7c5efb27",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No area-via-centroid-distance formula is in Mathlib."
     },
     {
       "kind": "theorem",
@@ -262,7 +455,14 @@
         "snippet": "A triangle's centroid lies on its Euler line between its orthocenter"
       },
       "provenance": "ai-agent1",
-      "id": "06683e53dfe6"
+      "id": "06683e53dfe6",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Affine.Triangle.orthocenter_eq_smul_vsub_vadd_circumcenter",
+        "module": "Mathlib.Geometry.Euclidean.MongePoint",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib proves the collinearity formula H = 3(G − O) + O directly but does not define `EulerLine` as a named object."
     },
     {
       "kind": "proposition",
@@ -272,7 +472,14 @@
         "snippet": "In addition, for the incenter"
       },
       "provenance": "ai-agent1",
-      "id": "db36c8e0be6b"
+      "id": "db36c8e0be6b",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has incenter and nine-point-circle, but no centroid distance relations among them are formalized."
     },
     {
       "kind": "proposition",
@@ -282,7 +489,14 @@
         "snippet": "The isogonal conjugate of a triangle's centroid is its symmedian point"
       },
       "provenance": "ai-agent1",
-      "id": "957e94750ee4"
+      "id": "957e94750ee4",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither isogonal conjugate nor symmedian point are in Mathlib."
     },
     {
       "kind": "proposition",
@@ -292,7 +506,14 @@
         "snippet": "Any of the three medians through the centroid divides the triangle's area in half"
       },
       "provenance": "ai-agent1",
-      "id": "ab31071291da"
+      "id": "ab31071291da",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Triangle-area lemmas in Mathlib do not include the median-bisection property."
     },
     {
       "kind": "theorem",
@@ -302,7 +523,14 @@
         "snippet": "the sum of the squared distances of"
       },
       "provenance": "ai-agent1",
-      "id": "a74f6f4f9d5c"
+      "id": "a74f6f4f9d5c",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Leibniz-style identity relating sum of squared distances to the centroid is not in Mathlib."
     },
     {
       "kind": "theorem",
@@ -312,7 +540,14 @@
         "snippet": "The sum of the squares of the triangle's sides equals three times the sum of the squared distances of the centroid from the vertices"
       },
       "provenance": "ai-agent1",
-      "id": "b47005b7d6f9"
+      "id": "b47005b7d6f9",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No such identity is formalized."
     },
     {
       "kind": "proposition",
@@ -322,17 +557,31 @@
         "snippet": "A triangle's centroid is the point that maximizes the product of the directed distances of a point from the triangle's sidelines"
       },
       "provenance": "ai-agent1",
-      "id": "9ffe0a3b5999"
+      "id": "9ffe0a3b5999",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No such optimization characterization of the centroid is in Mathlib."
     },
     {
       "kind": "proposition",
       "label": "Midpoint identity for any point in plane",
       "anchor": {
         "section": "Of a triangle",
-        "snippet": "let [MATH] be the midpoints of segments"
+        "snippet": "be the midpoints of segments"
       },
-      "provenance": "ai-agent1",
-      "id": "91409d23e5aa"
+      "provenance": "ai-moderated",
+      "id": "91409d23e5aa",
+      "note": "Snippet trimmed to remove [MATH] token.",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      }
     },
     {
       "kind": "definition",
@@ -342,7 +591,14 @@
         "snippet": "The centroid of a non-self-intersecting closed polygon defined by"
       },
       "provenance": "ai-agent1",
-      "id": "734f4f46f918"
+      "id": "734f4f46f918",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`Mathlib/Geometry/Polygon/Basic.lean` defines `Polygon` but no centroid construction for it."
     },
     {
       "kind": "definition",
@@ -352,7 +608,14 @@
         "snippet": "is the polygon's signed area"
       },
       "provenance": "ai-agent1",
-      "id": "3d60f6e90c39"
+      "id": "3d60f6e90c39",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The shoelace formula for polygon signed area is not formalized in Mathlib."
     },
     {
       "kind": "proposition",
@@ -362,7 +625,14 @@
         "snippet": "The centroid of a non-triangular polygon is not the same as its vertex centroid"
       },
       "provenance": "ai-agent1",
-      "id": "0467dfeae40a"
+      "id": "0467dfeae40a",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No comparison of polygon centroid and vertex centroid in Mathlib."
     },
     {
       "kind": "proposition",
@@ -372,7 +642,14 @@
         "snippet": "The centroid of a cone or pyramid is located on the line segment that connects the apex to the centroid of the base"
       },
       "provenance": "ai-agent1",
-      "id": "ad6c9d5d112d"
+      "id": "ad6c9d5d112d",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cones and pyramids are not present as geometric figures in Mathlib."
     },
     {
       "kind": "proposition",
@@ -382,7 +659,31 @@
         "snippet": "These seven line segments all meet at the centroid of the tetrahedron"
       },
       "provenance": "ai-agent1",
-      "id": "5ac0790274b7"
+      "id": "5ac0790274b7",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Affine.Simplex.eq_centroid_of_forall_mem_median",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Simplex.Centroid",
+        "match_kind": "generalization"
+      },
+      "note": "Concurrence of the four medians at the centroid is proven for all simplices with 1 < n; bimedians are not formalized as such."
+    },
+    {
+      "kind": "proposition",
+      "label": "Tetrahedron medians divided in 3:1 ratio at centroid",
+      "anchor": {
+        "section": "Of a tetrahedron and n -dimensional simplex",
+        "snippet": "The medians are divided by the centroid in the ratio"
+      },
+      "provenance": "ai",
+      "note": "`Affine.Simplex.dist_point_centroid` gives the n:1 ratio in arbitrary dimension; n=3 specializes to 3:1 for tetrahedra.",
+      "id": null,
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Simplex.dist_point_centroid",
+        "module": "Mathlib.Geometry.Euclidean.Simplex",
+        "match_kind": "generalization"
+      }
     },
     {
       "kind": "proposition",
@@ -392,7 +693,14 @@
         "snippet": "The centroid of a tetrahedron is the midpoint between its Monge point and circumcenter"
       },
       "provenance": "ai-agent1",
-      "id": "cda8b0ffa5af"
+      "id": "cda8b0ffa5af",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Affine.Simplex.mongePoint_eq_smul_vsub_vadd_circumcenter",
+        "module": "Mathlib.Geometry.Euclidean.MongePoint",
+        "match_kind": "generalization"
+      },
+      "note": "The general Monge-point/circumcenter/centroid relation for n-simplices is in Mathlib; the specialized 'midpoint' phrasing for tetrahedra is not separately stated."
     },
     {
       "kind": "definition",
@@ -402,7 +710,14 @@
         "snippet": "These results generalize to any"
       },
       "provenance": "ai-agent1",
-      "id": "a8b8aa30cf6b"
+      "id": "a8b8aa30cf6b",
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Affine.Simplex.centroid",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Simplex.Centroid",
+        "match_kind": "exact"
+      },
+      "note": "`Affine.Simplex.centroid` is the centroid of the simplex's vertices for arbitrary n."
     },
     {
       "kind": "proposition",
@@ -412,7 +727,14 @@
         "snippet": "The geometric centroid coincides with the center of mass if the mass is uniformly distributed over the whole simplex"
       },
       "provenance": "ai-agent1",
-      "id": "b2d1676e39ff"
+      "id": "b2d1676e39ff",
+      "status": "partial",
+      "mathlib": {
+        "decl": "Finset.centroid_eq_centerMass",
+        "module": "Mathlib.Analysis.Convex.Combination",
+        "match_kind": "special_case"
+      },
+      "note": "Discrete equivalence of `centroid` and `centerMass` is proved; uniform mass distribution over a continuous simplex is not formalized."
     },
     {
       "kind": "proposition",
@@ -422,7 +744,14 @@
         "snippet": "The centroid of a solid hemisphere"
       },
       "provenance": "ai-agent1",
-      "id": "b95e4ad8cc17"
+      "id": "b95e4ad8cc17",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No hemisphere centroid computation appears in Mathlib."
     },
     {
       "kind": "proposition",
@@ -432,7 +761,14 @@
         "snippet": "The centroid of a hollow hemisphere"
       },
       "provenance": "ai-agent1",
-      "id": "749534b29fa2"
+      "id": "749534b29fa2",
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No hollow-hemisphere centroid computation appears in Mathlib."
     }
   ]
 }

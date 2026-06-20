@@ -216,28 +216,14 @@
         "section": "First order corrections",
         "snippet": "they can be written as a (Maclaurin) power series in λ"
       },
-      "status": "not_formalized",
+      "status": "partial",
       "mathlib": {
-        "decl": null,
-        "module": null,
-        "match_kind": null
+        "decl": "HasFPowerSeriesAt",
+        "module": "Mathlib.Analysis.Analytic.Basic",
+        "match_kind": "generalization"
       },
-      "note": "While Mathlib has general power-series infrastructure, the perturbative expansion of eigenstates/eigenvalues in λ is a physics ansatz not formalized.",
+      "note": "Mathlib has general formal/analytic power-series infrastructure (`HasFPowerSeriesAt`, `FormalMultilinearSeries`), but the specific perturbative ansatz for eigenstates/eigenvalues in λ is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "First order corrections",
-          "snippet": "they can be written as a (Maclaurin) power series in λ"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}E_{n}&amp;=E_{n}^{(0)}+\\lambda E_{n}^{(1)}+\\lambda ^{2}E_{n}^{(2)}+\\cdots \\\\[1ex]|n\\rangle &amp;=\\left|n^{(0)}\\right\\rangle +\\lambda \\left|n^{(1)}\\right\\rangle +\\lambda ^{2}\\left|n^{(2)}\\right\\rangle +\\cdots \\end{aligned}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}E_{n}^{(k)}&amp;={\\frac {1}{k!}}{\\frac {d^{k}E_{n}}{d\\lambda ^{k}}}{\\bigg |}_{\\lambda =0}\\\\[1ex]\\left|n^{(k)}\\right\\rangle &amp;=\\left.{\\frac {1}{k!}}{\\frac {d^{k}|n\\rangle }{d\\lambda ^{k}}}\\right|_{\\lambda =0.}\\end{aligned}}}"
-        }
-      ],
       "id": "73ef2f716a6c"
     },
     {
@@ -255,16 +241,6 @@
       },
       "note": "The Schrödinger equation and its order-by-order expansion are not formalized in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "First order corrections",
-          "snippet": "The zeroth-order equation is simply the Schrödinger equation for the unperturbed system"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle H_{0}\\left|n^{(0)}\\right\\rangle =E_{n}^{(0)}\\left|n^{(0)}\\right\\rangle .}"
-        }
-      ],
       "id": "fb094c3b872c"
     },
     {
@@ -282,16 +258,6 @@
       },
       "note": "The first-order perturbation equation is a physics derivation absent from Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "First order corrections",
-          "snippet": "The first-order equation is"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle H_{0}\\left|n^{(1)}\\right\\rangle +V\\left|n^{(0)}\\right\\rangle =E_{n}^{(0)}\\left|n^{(1)}\\right\\rangle +E_{n}^{(1)}\\left|n^{(0)}\\right\\rangle .}"
-        }
-      ],
       "id": "9b796ad95b8b"
     },
     {
@@ -309,16 +275,6 @@
       },
       "note": "The first-order energy shift formula is a quantum-mechanics result not in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "First order corrections",
-          "snippet": "This leads to the first-order energy shift"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle E_{n}^{(1)}=\\left\\langle n^{(0)}\\right|V\\left|n^{(0)}\\right\\rangle .}"
-        }
-      ],
       "id": "c150ae296c83"
     },
     {
@@ -421,20 +377,6 @@
       },
       "note": "Connected correlation functions and their relation to energy corrections are not formalized in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Second-order and higher-order corrections",
-          "snippet": "It is possible to relate the k -th order correction to the energy E n to the k -point connected correlation function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\langle n^{(0)}|V(\\tau )V(0)|n^{(0)}\\rangle -\\langle n^{(0)}|V|n^{(0)}\\rangle ^{2}=\\mathrel {\\mathop {:} } \\int _{\\mathbb {R} }\\!ds\\;\\rho _{n,2}(s)\\,e^{-(s-E_{n}^{(0)})\\tau }}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle E_{n}^{(2)}=-\\int _{\\mathbb {R} }\\!{\\frac {ds}{s-E_{n}^{(0)}}}\\,\\rho _{n,2}(s).}"
-        }
-      ],
       "id": "7a2c3ef9825f"
     },
     {
@@ -469,20 +411,6 @@
       },
       "note": "Diagonalizing the perturbation on the degenerate subspace is a physics procedure absent from Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Degenerate perturbation theory",
-          "snippet": "we need solve the perturbed Hamiltonian restricted to the degenerate subspace D"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle V|k^{(0)}\\rangle =\\epsilon _{k}|k^{(0)}\\rangle +{\\text{small}}\\qquad \\forall |k^{(0)}\\rangle \\in D,}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\langle k^{(0)}|V|l^{(0)}\\rangle =V_{kl}\\qquad \\forall \\;|k^{(0)}\\rangle ,|l^{(0)}\\rangle \\in D.}"
-        }
-      ],
       "id": "73c4d8eac612"
     },
     {
@@ -500,16 +428,6 @@
       },
       "note": "Higher-order degenerate corrections are physics results not formalized in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Degenerate perturbation theory",
-          "snippet": "Higher-order corrections due to other eigenstates outside D can be found in the same way as for the non-degenerate case"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\left(E_{n}^{(0)}-H_{0}\\right)|n^{(1)}\\rangle =\\sum _{k\\not \\in D}\\left(\\langle k^{(0)}|V|n^{(0)}\\rangle \\right)|k^{(0)}\\rangle .}"
-        }
-      ],
       "id": "533343325af1"
     },
     {
@@ -561,20 +479,6 @@
       },
       "note": "Second-order corrections with lifted degeneracy are physics formulas not formalized in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Degeneracy lifted to first order",
-          "snippet": "we have the following formulae for the energy correction to the second order"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle E_{nk}=E_{n}^{0}+\\lambda V_{nk,nk}+\\lambda ^{2}\\sum \\limits _{m\\neq n}{\\frac {\\left|V_{m,nk}\\right|^{2}}{E_{n}^{(0)}-E_{m}^{(0)}}}+{\\mathcal {O}}(\\lambda ^{3})\\,,}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\left|\\psi _{nk}\\right\\rangle =\\left|\\psi _{nk}^{(0)}\\right\\rangle +\\lambda \\sum \\limits _{m\\neq n}{\\frac {V_{m,nk}}{E_{m}^{(0)}-E_{n}^{(0)}}}\\left(-\\left|\\psi _{m}^{(0)}\\right\\rangle +\\sum \\limits _{l\\neq k}{\\frac {V_{nl,m}}{E_{nl}^{(1)}-E_{nk}^{(1)}}}\\left|\\psi _{nl}^{(0)}\\right\\rangle \\right)+{\\mathcal {O}}(\\lambda ^{2})\\,.}"
-        }
-      ],
       "id": "58375321dd07"
     },
     {
@@ -626,16 +530,6 @@
       },
       "note": "The linearly parameterized Hamiltonian is a physics object absent from Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Hamiltonian and force operator",
-          "snippet": "The following linearly parameterized Hamiltonian is frequently used"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle H(x^{\\mu })=H(0)+x^{\\mu }F_{\\mu }.}"
-        }
-      ],
       "id": "b1a8d0077975"
     },
     {
@@ -687,16 +581,6 @@
       },
       "note": "The Hellmann–Feynman theorem is not formalized in Mathlib (the only 'Feynman' reference is an unrelated comment about path integrals).",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Hellmann–Feynman theorems",
-          "snippet": "The first Hellmann–Feynman theorem gives the derivative of the energy"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\partial _{\\mu }E_{n}=\\langle n|\\partial _{\\mu }H|n\\rangle }"
-        }
-      ],
       "id": "3973e6ba7c08"
     },
     {
@@ -714,16 +598,6 @@
       },
       "note": "The second Hellmann–Feynman theorem has no formalization in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Hellmann–Feynman theorems",
-          "snippet": "The second Hellmann–Feynman theorem gives the derivative of the state"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\langle m|\\partial _{\\mu }n\\rangle ={\\frac {\\langle m|\\partial _{\\mu }H|n\\rangle }{E_{n}-E_{m}}},\\qquad \\langle \\partial _{\\mu }m|n\\rangle ={\\frac {\\langle m|\\partial _{\\mu }H|n\\rangle }{E_{m}-E_{n}}}.}"
-        }
-      ],
       "id": "b1c2929ce347"
     },
     {
@@ -758,16 +632,6 @@
       },
       "note": "The geometric second-order state correction is a physics result not formalized in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Correction of energy and state",
-          "snippet": "The same computational scheme is applicable for the correction of states"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\left|n\\left(x^{\\mu }\\right)\\right\\rangle =|n\\rangle &amp;+\\sum _{m\\neq n}{\\frac {\\langle m|\\partial _{\\mu }H|n\\rangle }{E_{n}-E_{m}}}|m\\rangle x^{\\mu }\\\\&amp;+\\left(\\sum _{m\\neq n}\\sum _{l\\neq n}{\\frac {\\langle m|\\partial _{\\mu }H|l\\rangle \\langle l|\\partial _{\\nu }H|n\\rangle }{(E_{n}-E_{m})(E_{n}-E_{l})}}|m\\rangle -\\sum _{m\\neq n}{\\frac {\\langle m|\\partial _{\\mu }H|n\\rangle \\langle n|\\partial _{\\nu }H|n\\rangle }{(E_{n}-E_{m})^{2}}}|m\\rangle -{\\frac {1}{2}}\\sum _{m\\neq n}{\\frac {\\langle n|\\partial _{\\mu }H|m\\rangle \\langle m|\\partial _{\\nu }H|n\\rangle }{(E_{n}-E_{m})^{2}}}|n\\rangle \\right)x^{\\mu }x^{\\nu }+\\cdots .\\end{aligned}}}"
-        }
-      ],
       "id": "4df2028d20cc"
     },
     {
@@ -819,16 +683,6 @@
       },
       "note": "The Born-rule occupation probability is a physics statement absent from Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Method of variation of constants",
-          "snippet": "The square of the absolute amplitude c n ( t ) is the probability that the system is in state n at time t"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\left|c_{n}(t)\\right|^{2}=\\left|\\langle n|\\psi (t)\\rangle \\right|^{2}~.}"
-        }
-      ],
       "id": "25e2820680b2"
     },
     {
@@ -846,16 +700,6 @@
       },
       "note": "The coupled amplitude equations from variation of constants are physics derivations not in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Method of variation of constants",
-          "snippet": "this can be reduced to a set of coupled differential equations for the amplitudes"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {dc_{n}}{dt}}={\\frac {-i}{\\hbar }}\\sum _{k}\\langle n|V(t)|k\\rangle \\,c_{k}(t)\\,e^{-i(E_{k}-E_{n})t/\\hbar }~.}"
-        }
-      ],
       "id": "a1a5b6cec948"
     },
     {
@@ -873,24 +717,6 @@
       },
       "note": "The iterative perturbative solution for amplitudes is a physics procedure absent from Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Method of variation of constants",
-          "snippet": "Repeatedly substituting this expression for c n back into right hand side, yields an iterative solution"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle c_{n}(t)=c_{n}^{(0)}+c_{n}^{(1)}+c_{n}^{(2)}+\\cdots }"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle c_{n}^{(1)}(t)={\\frac {-i}{\\hbar }}\\sum _{k}\\int _{0}^{t}dt'\\;\\langle n|V(t')|k\\rangle \\,c_{k}^{(0)}\\,e^{-i(E_{k}-E_{n})t'/\\hbar }~.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle c_{n}^{(1)}(t)={\\frac {-i}{\\hbar }}\\int _{0}^{t}dt'\\;\\langle n|V(t')|k\\rangle \\,e^{-i(E_{k}-E_{n})t'/\\hbar }~.}"
-        }
-      ],
       "id": "f18f6f12670d"
     },
     {
@@ -925,28 +751,6 @@
       },
       "note": "The time-ordered Dyson series is a physics construction with no Mathlib formalization.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Method of Dyson series",
-          "snippet": "where T is the time ordering operator"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle H(t)|\\psi (t)\\rangle =i\\hbar {\\frac {\\partial |\\psi (t)\\rangle }{\\partial t}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle |\\psi (t)\\rangle =T\\exp {\\left[-{\\frac {i}{\\hbar }}\\int _{t_{0}}^{t}dt'H(t')\\right]}|\\psi (t_{0})\\rangle ~,}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle TA(t_{1})A(t_{2})={\\begin{cases}A(t_{1})A(t_{2})&amp;t_{1}&gt;t_{2}\\\\A(t_{2})A(t_{1})&amp;t_{2}&gt;t_{1}\\end{cases}}~.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle |\\psi (t)\\rangle =\\left[1-{\\frac {i}{\\hbar }}\\int _{t_{0}}^{t}dt_{1}H(t_{1})-{\\frac {1}{\\hbar ^{2}}}\\int _{t_{0}}^{t}dt_{1}\\int _{t_{0}}^{t_{1}}dt_{2}H(t_{1})H(t_{2})+\\ldots \\right]|\\psi (t_{0})\\rangle ~.}"
-        }
-      ],
       "id": "1cca2456f26b"
     },
     {
@@ -964,16 +768,6 @@
       },
       "note": "The first-order transition amplitude is a physics result absent from Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Method of Dyson series",
-          "snippet": "The corresponding transition probability amplitude to first order is"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle A_{\\alpha \\beta }=-{\\frac {i\\lambda }{\\hbar }}\\int _{t_{0}}^{t}dt_{1}\\langle \\beta |V(t_{1})|\\alpha \\rangle e^{-{\\frac {i}{\\hbar }}(E_{\\alpha }-E_{\\beta })(t_{1}-t_{0})}~,}"
-        }
-      ],
       "id": "a15e6b246118"
     },
     {
@@ -991,16 +785,6 @@
       },
       "note": "Embedding time-independent PT within the Dyson series is a physics observation not in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Method of Dyson series",
-          "snippet": "time-independent perturbation theory is also organized inside this time-dependent perturbation theory Dyson series"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle U(t)=1-{\\frac {i\\lambda }{\\hbar }}\\int _{t_{0}}^{t}dt_{1}e^{{\\frac {i}{\\hbar }}H_{0}(t_{1}-t_{0})}V(t_{1})e^{-{\\frac {i}{\\hbar }}H_{0}(t_{1}-t_{0})}-{\\frac {\\lambda ^{2}}{\\hbar ^{2}}}\\int _{t_{0}}^{t}dt_{1}\\int _{t_{0}}^{t_{1}}dt_{2}e^{{\\frac {i}{\\hbar }}H_{0}(t_{1}-t_{0})}V(t_{1})e^{-{\\frac {i}{\\hbar }}H_{0}(t_{1}-t_{0})}e^{{\\frac {i}{\\hbar }}H_{0}(t_{2}-t_{0})}V(t_{2})e^{-{\\frac {i}{\\hbar }}H_{0}(t_{2}-t_{0})}+\\cdots }"
-        }
-      ],
       "id": "e3e92c576625"
     },
     {
@@ -1069,16 +853,6 @@
       },
       "note": "The quartic-oscillator ground-state energy example is a physics computation absent from Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Example of first-order perturbation theory – ground-state energy of the quartic oscillator",
-          "snippet": "Consider the quantum harmonic oscillator with the quartic potential perturbation"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle H=-{\\frac {\\hbar ^{2}}{2m}}{\\frac {\\partial ^{2}}{\\partial x^{2}}}+{\\frac {m\\omega ^{2}x^{2}}{2}}+\\lambda x^{4}.}"
-        }
-      ],
       "id": "a19eac67b77b"
     },
     {
@@ -1096,20 +870,6 @@
       },
       "note": "The quantum pendulum example is a physics computation not formalized in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Example of first- and second-order perturbation theory – quantum pendulum",
-          "snippet": "Consider the quantum-mathematical pendulum with the Hamiltonian"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle H=-{\\frac {\\hbar ^{2}}{2ma^{2}}}{\\frac {\\partial ^{2}}{\\partial \\phi ^{2}}}-\\lambda \\cos \\phi }"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle V=-\\cos \\phi .}"
-        }
-      ],
       "id": "4feeda7f87c1"
     },
     {
@@ -1127,33 +887,279 @@
       },
       "note": "The free-particle-with-weak-potential example is a physics computation absent from Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Potential energy as a perturbation",
-          "snippet": "When the unperturbed state is a free motion of a particle with kinetic energy"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\nabla ^{2}\\psi ^{(0)}+k^{2}\\psi ^{(0)}=0}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\nabla ^{2}\\psi ^{(1)}+k^{2}\\psi ^{(1)}={\\frac {2mU}{\\hbar ^{2}}}\\psi ^{(0)},}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\psi ^{(1)}(x,y,z)=-{\\frac {m}{2\\pi \\hbar ^{2}}}\\int \\psi ^{(0)}U(x',y',z'){\\frac {e^{ikr}}{r}}\\,dx'dy'dz',}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\psi ^{(1)}(x,y)=-{\\frac {im}{2\\hbar ^{2}}}\\int \\psi ^{(0)}U(x',y')H_{0}^{(1)}(kr)\\,dx'dy',}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\psi ^{(1)}(x)=-{\\frac {im}{\\hbar ^{2}}}\\int \\psi ^{(0)}U(x'){\\frac {e^{ikr}}{k}}\\,dx',}"
-        }
-      ],
       "id": "ff341df9278f"
+    },
+    {
+      "kind": "definition",
+      "label": "Hilbert space",
+      "anchor": {
+        "section": "Hamiltonian and force operator",
+        "snippet": "an Hermitian operator H ( x μ ) that acts on the Hilbert space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Hilbert spaces are formalized in Mathlib as `InnerProductSpace` (combined with `CompleteSpace`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hermitian operator",
+      "anchor": {
+        "section": "First order corrections",
+        "snippet": "Thus, V is formally a Hermitian operator"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LinearMap.IsSymmetric",
+        "module": "Mathlib.Analysis.InnerProductSpace.Symmetric",
+        "match_kind": "exact"
+      },
+      "note": "Hermitian/symmetric linear operators on inner-product spaces are formalized as `LinearMap.IsSymmetric` (with `IsSelfAdjoint` also available for the bounded/star setting).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Maclaurin / Taylor series",
+      "anchor": {
+        "section": "Perturbation theory as power series expansion",
+        "snippet": "such that their values in the vicinity region can be calculated in power series (like Taylor expansion ) of the parameters"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HasFPowerSeriesAt",
+        "module": "Mathlib.Analysis.Analytic.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Taylor/Maclaurin series and analytic-function power series are formalized via `HasFPowerSeriesAt` and `FormalMultilinearSeries`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Vector bundle over parameter manifold",
+      "anchor": {
+        "section": "Hamiltonian and force operator",
+        "snippet": "the states [MATH] form a vector bundle over the parameter manifold"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "VectorBundle",
+        "module": "Mathlib.Topology.VectorBundle.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Vector bundles are formalized in Mathlib as the `VectorBundle` typeclass (with smooth variants in `Mathlib.Geometry.Manifold.VectorBundle`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Covariant derivative / connection",
+      "anchor": {
+        "section": "Perturbation theory as power series expansion",
+        "snippet": "it should be understood as the covariant derivative if the vector bundle is equipped with non-vanishing connection"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "General connections/covariant derivatives on vector bundles are not yet formalized in Mathlib in this differential-geometric sense.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lie derivative",
+      "anchor": {
+        "section": "Correction of energy and state",
+        "snippet": "In terms of Lie derivatives"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lie derivatives on smooth manifolds are not currently formalized in Mathlib at this level of generality.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inverse Laplace transform",
+      "anchor": {
+        "section": "Second-order and higher-order corrections",
+        "snippet": "one has to consider the inverse Laplace transform"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Laplace transform and its inverse are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Orthonormal basis of eigenstates",
+      "anchor": {
+        "section": "Hellmann–Feynman theorems",
+        "snippet": "Given that the eigenstates of the Hamiltonian always form an orthonormal basis"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HilbertBasis",
+        "module": "Mathlib.Analysis.InnerProductSpace.l2Space",
+        "match_kind": "exact"
+      },
+      "note": "Orthonormal bases of Hilbert spaces are formalized in Mathlib as `HilbertBasis` (built on the `Orthonormal` predicate).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Resolution of the identity",
+      "anchor": {
+        "section": "First order corrections",
+        "snippet": "By using the resolution of the identity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "While orthonormal-basis completeness exists in Mathlib, the spectral 'resolution of the identity' for self-adjoint operators is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Time-ordering operator",
+      "anchor": {
+        "section": "Method of Dyson series",
+        "snippet": "where T is the time ordering operator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The time-ordering operator is a physics construct with no Mathlib formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Interaction (Dirac) picture",
+      "anchor": {
+        "section": "Method of Dyson series",
+        "snippet": "Perform the following unitary transformation to the interaction picture (or Dirac picture)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The interaction/Dirac picture transformation is a quantum-mechanics construction not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Schrödinger picture",
+      "anchor": {
+        "section": "Method of variation of constants",
+        "snippet": "its state at subsequent times varies only by a phase (in the Schrödinger picture"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Schrödinger picture of quantum dynamics is a physics framework not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bra–ket notation",
+      "anchor": {
+        "section": "First order corrections",
+        "snippet": "Note the use of bra–ket notation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bra–ket notation is a physics notational device; Mathlib uses inner-product notation instead.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Hankel function of the first kind",
+      "anchor": {
+        "section": "Potential energy as a perturbation",
+        "snippet": "is the Hankel function of the first kind"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Hankel functions are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Rabi cycle",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "Rabi cycle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Rabi cycle is a physics application with no Mathlib formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Muon spin spectroscopy",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "Muon spin spectroscopy"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Muon spin spectroscopy is an experimental physics technique not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Perturbed angular correlation",
+      "anchor": {
+        "section": "Applications",
+        "snippet": "Perturbed angular correlation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Perturbed angular correlation is a physics technique not formalized in Mathlib.",
+      "provenance": "ai"
     }
   ]
 }

@@ -95,11 +95,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "PiLp.instNormedAddCommGroup",
+        "decl": "PiLp.normedAddCommGroup",
         "module": "Mathlib.Analysis.Normed.Lp.PiLp",
         "match_kind": "exact"
       },
-      "note": "PiLp p β under [Fact (1 ≤ p)] carries a NormedAddCommGroup instance encoding the norm axioms.",
+      "note": "PiLp.normedAddCommGroup endows PiLp p α with a NormedAddCommGroup under [Fact (1 ≤ p)], packaging all the norm axioms.",
       "provenance": "ai",
       "id": "4a76e3074480"
     },
@@ -260,11 +260,10 @@
       "mathlib": {
         "decl": null,
         "module": null,
-        "module_note": null,
         "match_kind": null
       },
       "note": "Mathlib has no Banach-style F-norm definition for L^0.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "anchors": [
         {
           "section": "When p = 0",
@@ -284,14 +283,14 @@
         "section": "When p = 0",
         "snippet": "is the number of non-zero entries of the vector"
       },
-      "status": "formalized",
+      "status": "partial",
       "mathlib": {
         "decl": "PiLp.norm_eq_card",
         "module": "Mathlib.Analysis.Normed.Lp.PiLp",
         "match_kind": "exact"
       },
-      "note": "PiLp.norm_eq_card defines ‖f‖ on PiLp 0 as the cardinality of the nonzero-coordinate set.",
-      "provenance": "ai",
+      "note": "PiLp.norm_eq_card on PiLp 0 gives the cardinality of the nonzero support, matching the Donoho zero-norm informally (though it is not a true norm).",
+      "provenance": "ai-moderated",
       "anchors": [
         {
           "section": "When p = 0",
@@ -546,7 +545,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Filter.EventuallyEq",
-        "module": "Mathlib.Order.Filter.Germ.Basic",
+        "module": "Mathlib.Order.Filter.Defs",
         "match_kind": "exact"
       },
       "note": "f =ᵐ[μ] g notation expresses equality almost everywhere via Filter.EventuallyEq on MeasureTheory.ae μ.",
@@ -654,11 +653,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "MeasureTheory.Lp.instSeminormedAddCommGroup",
+        "decl": "MeasureTheory.Lp.instNormedAddCommGroup",
         "module": "Mathlib.MeasureTheory.Function.LpSpace.Basic",
         "match_kind": "exact"
       },
-      "note": "Lp E p μ is shown to be a SeminormedAddCommGroup, packaging all seminorm axioms.",
+      "note": "Lp E p μ carries a NormedAddCommGroup instance, which packages absolute homogeneity, triangle inequality, and non-negativity (the seminorm axioms) on the quotient.",
       "provenance": "ai",
       "id": "08274f415d04"
     },
@@ -1343,11 +1342,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "MeasureTheory.ContinuousMap.toLp_denseRange",
+        "decl": "ContinuousMap.toLp_denseRange",
         "module": "Mathlib.MeasureTheory.Function.ContinuousMapDense",
         "match_kind": "exact"
       },
-      "note": "ContinuousMap.toLp_denseRange shows continuous functions are dense in Lp under suitable regularity assumptions.",
+      "note": "ContinuousMap.toLp_denseRange shows continuous functions are dense in Lp under suitable regularity assumptions on a compact normal space.",
       "provenance": "ai",
       "id": "95d0536d614b"
     },
@@ -1360,11 +1359,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "MeasureTheory.BoundedContinuousFunction.toLp_denseRange",
+        "decl": "BoundedContinuousFunction.toLp_denseRange",
         "module": "Mathlib.MeasureTheory.Function.ContinuousMapDense",
         "match_kind": "exact"
       },
-      "note": "BoundedContinuousFunction.toLp_denseRange gives density of continuous (bounded) functions in Lp for weakly regular finite measures, e.g. Lebesgue measure on compact sets.",
+      "note": "BoundedContinuousFunction.toLp_denseRange gives density of bounded continuous functions in Lp for weakly regular finite measures, e.g. Lebesgue measure on compact sets.",
       "provenance": "ai",
       "id": "604f8b55f218"
     },
@@ -1845,6 +1844,38 @@
       "note": "Isomorphism of L^0 spaces under infinite Lebesgue measure is not formalized.",
       "provenance": "ai",
       "id": "748e85b2edd8"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hamming distance is a valid metric",
+      "anchor": {
+        "section": "When p = 0",
+        "snippet": "the associated metric, known as Hamming distance"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Hamming.instMetricSpace",
+        "module": "Mathlib.InformationTheory.Hamming",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib formalizes the Hamming distance as a MetricSpace via Hamming.instMetricSpace.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bochner L^p generalization",
+      "anchor": {
+        "section": "L p spaces and Lebesgue integrals",
+        "snippet": "The above definitions generalize to Bochner spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Lp",
+        "module": "Mathlib.MeasureTheory.Function.LpSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "MeasureTheory.Lp is defined for arbitrary normed/Banach-valued functions (Bochner setting) and not just scalar-valued ones.",
+      "provenance": "ai"
     }
   ]
 }

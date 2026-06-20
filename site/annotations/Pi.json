@@ -20,16 +20,6 @@
       },
       "note": "Mathlib defines `Real.pi` analytically (twice the smallest zero of cos), not as the circumference/diameter ratio of a geometric circle.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition",
-          "snippet": "π is commonly defined as the ratio of a circle 's circumference C to its diameter d"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\pi ={\\frac {C}{d}}.}"
-        }
-      ],
       "id": "7bcbdcaa88ac"
     },
     {
@@ -81,16 +71,6 @@
       },
       "note": "Mathlib's π is defined via real cosine rather than as the half-period of `exp`, although `Complex.exp_pi_mul_I` connects the two.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition",
-          "snippet": "π can be defined using properties of the complex exponential"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\{\\dots ,-2\\pi i,0,2\\pi i,4\\pi i,\\dots \\}=\\{2\\pi ki\\mid k\\in \\mathbb {Z} \\}}"
-        }
-      ],
       "id": "5f45fa7c4463"
     },
     {
@@ -163,6 +143,22 @@
     },
     {
       "kind": "proposition",
+      "label": "Algebraic independence of π and e (Schanuel's conjecture)",
+      "anchor": {
+        "section": "Transcendence",
+        "snippet": "An unsolved problem thus far is the question of whether or not the numbers π and e are algebraically independent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Open problem; would follow from Schanuel's conjecture, which is itself not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
       "label": "Simple continued fraction of π",
       "anchor": {
         "section": "Continued fractions",
@@ -185,13 +181,13 @@
         "section": "Continued fractions",
         "snippet": "Each approximation generated in this way is a best rational approximation"
       },
-      "status": "partial",
+      "status": "not_formalized",
       "mathlib": {
-        "decl": "GenContFract.of_convergents_eq_best_approximation",
-        "module": "Mathlib.Algebra.ContinuedFractions.Computation.ApproximationCorollaries",
+        "decl": null,
+        "module": null,
         "match_kind": null
       },
-      "note": "Mathlib has the general best-rational-approximation theorem for continued fractions, not applied to π specifically.",
+      "note": "No best-rational-approximation theorem for continued fractions is present in Mathlib (only convergence corollaries).",
       "provenance": "ai",
       "id": "5ba3a9ed255a"
     },
@@ -222,7 +218,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Complex.exp_mul_I",
-        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
         "match_kind": "exact"
       },
       "note": "`Complex.exp_mul_I : exp (θ * I) = cos θ + sin θ * I` is Euler's formula.",
@@ -272,11 +268,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Real.pi_gt_3141592",
+        "decl": "Real.pi_gt_d6",
         "module": "Mathlib.Analysis.Real.Pi.Bounds",
         "match_kind": null
       },
-      "note": "Mathlib has rigorous numeric bounds on π in `Real.Pi.Bounds` but not Archimedes' specific polygon-perimeter argument.",
+      "note": "Mathlib has rigorous numeric bounds such as `Real.pi_gt_d6 : 3.141592 < π` in `Real.Pi.Bounds` but not Archimedes' specific polygon-perimeter argument.",
       "provenance": "ai",
       "id": "df05695ea478"
     },
@@ -482,28 +478,6 @@
       },
       "note": "The Gauss–Legendre AGM-based algorithm for π is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Computer era and iterative algorithms",
-          "snippet": "The Gauss–Legendre iterative algorithm"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\textstyle a_{0}=1,\\quad b_{0}={\\frac {1}{\\sqrt {2}}},\\quad t_{0}={\\frac {1}{4}},\\quad p_{0}=1.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\textstyle a_{n+1}={\\frac {a_{n}+b_{n}}{2}},\\quad \\quad b_{n+1}={\\sqrt {a_{n}b_{n}}},}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\textstyle t_{n+1}=t_{n}-p_{n}(a_{n}-a_{n+1})^{2},\\quad \\quad p_{n+1}=2p_{n}.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\textstyle \\pi \\approx {\\frac {(a_{n}+b_{n})^{2}}{4t_{n}}}.}"
-        }
-      ],
       "id": "2a6dd49584ec"
     },
     {
@@ -623,16 +597,6 @@
       },
       "note": "The Bailey–Borwein–Plouffe formula is not present in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Spigot algorithms",
-          "snippet": "the BBP digit extraction algorithm , was discovered in 1995 by Simon Plouffe"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\pi =\\sum _{k=0}^{\\infty }{\\frac {1}{16^{k}}}\\left({\\frac {4}{8k+1}}-{\\frac {2}{8k+4}}-{\\frac {1}{8k+5}}-{\\frac {1}{8k+6}}\\right).}"
-        }
-      ],
       "id": "4b7575f17ab8"
     },
     {
@@ -786,16 +750,6 @@
       },
       "note": "`Real.sin_periodic`/`Real.cos_periodic` give periodicity with period `2π`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Unit of angle",
-          "snippet": "sine and cosine have period 2 π"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\sin \\theta =\\sin \\left(\\theta +2\\pi k\\right){\\text{ and }}\\cos \\theta =\\cos \\left(\\theta +2\\pi k\\right).}"
-        }
-      ],
       "id": "ffee7ae44fc7"
     },
     {
@@ -892,11 +846,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Real.fourierIntegral",
+        "decl": "Fourier.fourierIntegral",
         "module": "Mathlib.Analysis.Fourier.FourierTransform",
         "match_kind": "exact"
       },
-      "note": "`Real.fourierIntegral` (and the more general `VectorFourier.fourierIntegral`) defines the Fourier transform with the `e^{-2πi x ξ}` convention.",
+      "note": "`Fourier.fourierIntegral` (with the real-line wrapper `FourierTransform.fourier`) defines the Fourier transform with the `e^{-2πi x ξ}` convention.",
       "provenance": "ai",
       "id": "a9206f4d904c"
     },
@@ -1267,7 +1221,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "AddCircle.toCircle",
-        "module": "Mathlib.Analysis.Complex.Circle",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Circle",
         "match_kind": null
       },
       "note": "Mathlib has `AddCircle.toCircle` and Pontryagin duality machinery, but I did not find a theorem stating that every character of `T` is one of the integer exponentials.",

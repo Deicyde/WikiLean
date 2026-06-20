@@ -11,7 +11,15 @@
         "section": "(Lead)",
         "snippet": "Exponential growth occurs when a quantity grows as an exponential function of time"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ExpGrowth.expGrowthSup",
+        "module": "Mathlib.Analysis.Asymptotics.ExpGrowth",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `expGrowthSup`/`expGrowthInf` measuring exponential growth rate of a sequence via limsup/liminf of `log (u n) / n`, but does not define 'exponential growth' as a free-standing property of a real-valued time function.",
+      "provenance": "ai-agent1",
+      "id": "b4434bcf46c4"
     },
     {
       "kind": "definition",
@@ -20,7 +28,15 @@
         "section": "(Lead)",
         "snippet": "its instantaneous rate of change (that is, the derivative ) of a quantity with respect to an independent variable is proportional to the quantity itself"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.hasDerivAt_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.ExpDeriv",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves `HasDerivAt exp (exp x) x` (so `exp` has derivative equal to itself), but has no general 'rate proportional to quantity' definition or characterization.",
+      "provenance": "ai-agent1",
+      "id": "e841526fa6ea"
     },
     {
       "kind": "definition",
@@ -29,7 +45,15 @@
         "section": "(Lead)",
         "snippet": "If the constant of proportionality is negative, then the quantity decreases over time, and is said to be undergoing exponential decay"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration defines 'exponential decay'; only the underlying `Real.exp` with negative arguments is available.",
+      "provenance": "ai-agent1",
+      "id": "d75e2b4a3f3d"
     },
     {
       "kind": "definition",
@@ -38,7 +62,15 @@
         "section": "(Lead)",
         "snippet": "In the case of a discrete domain of definition with equal intervals, it is also called geometric growth or geometric decay"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "hasSum_geometric_of_lt_one",
+        "module": "Mathlib.Analysis.SpecificLimits.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has geometric series and powers like `r ^ n` (e.g., `hasSum_geometric_of_lt_one`), but no named definition of 'geometric growth' as a discrete-time growth notion.",
+      "provenance": "ai-agent1",
+      "id": "5ff48f8ce59f"
     },
     {
       "kind": "definition",
@@ -47,7 +79,15 @@
         "section": "(Lead)",
         "snippet": "The formula for exponential growth of a variable x at the growth rate r , as time t goes on in discrete intervals"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The formula `x_t = x_0 (1+r)^t` is not formalized as a named declaration in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "48270fed6eb0"
     },
     {
       "kind": "example",
@@ -56,7 +96,15 @@
         "section": "(Lead)",
         "snippet": "The growth of a bacterial colony is often used to illustrate it"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize bacterial-growth illustrations.",
+      "provenance": "ai-agent1",
+      "id": "c6c159cf22f8"
     },
     {
       "kind": "definition",
@@ -65,7 +113,33 @@
         "section": "Basic formula",
         "snippet": "A quantity x depends exponentially on time t"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `Real.exp` and `Real.rpow` but not the parameterized form `a · b^(t/τ)` as a named declaration.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Basic formula",
+          "snippet": "A quantity x depends exponentially on time t"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x(t)=a\\cdot b^{t/\\tau }}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x(0)=a\\,,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x(t+\\tau )=a\\cdot b^{(t+\\tau )/\\tau }=a\\cdot b^{t/\\tau }\\cdot b^{\\tau /\\tau }=x(t)\\cdot b\\,.}"
+        }
+      ],
+      "id": "53191ddf8245"
     },
     {
       "kind": "proposition",
@@ -74,7 +148,15 @@
         "section": "Basic formula",
         "snippet": "If τ > 0 and b > 1 , then x has exponential growth"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration captures the dichotomy of growth-vs-decay based on signs of τ and the position of b relative to 1.",
+      "provenance": "ai-agent1",
+      "id": "d0bbc023f1b3"
     },
     {
       "kind": "example",
@@ -83,7 +165,15 @@
         "section": "Basic formula",
         "snippet": "If a species of bacteria doubles every ten minutes, starting out with only one bacterium, how many bacteria would be present after one hour"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Worked example with bacteria is not part of Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "d99496d76754"
     },
     {
       "kind": "proposition",
@@ -92,7 +182,25 @@
         "section": "Basic formula",
         "snippet": "Thus the law of exponential growth can be written in different but mathematically equivalent forms, by using a different base"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.rpow_natCast",
+        "module": "Mathlib.Analysis.SpecialFunctions.Pow.Real",
+        "match_kind": "invocation"
+      },
+      "note": "Change of base for `rpow` (and `Real.exp_log`, `Real.log_exp`) is in Mathlib but the specific 'equivalent forms of the exponential growth law' statement is not.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Basic formula",
+          "snippet": "Thus the law of exponential growth can be written in different but mathematically equivalent forms, by using a different base"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x(t)=x_{0}\\cdot e^{kt}=x_{0}\\cdot e^{t/\\tau }=x_{0}\\cdot 2^{t/T}=x_{0}\\cdot \\left(1+{\\frac {r}{100}}\\right)^{t/p},}"
+        }
+      ],
+      "id": "0fb07a96438e"
     },
     {
       "kind": "definition",
@@ -101,7 +209,15 @@
         "section": "Basic formula",
         "snippet": "The growth constant k is the frequency (number of times per unit time) of growing by a factor e"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no named definitions for growth constant, time constant, doubling time, or growth-rate-per-unit-time.",
+      "provenance": "ai-agent1",
+      "id": "bc96ed4e4a58"
     },
     {
       "kind": "proposition",
@@ -110,7 +226,25 @@
         "section": "Basic formula",
         "snippet": "have a one-to-one connection given by the following equation"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The relations `k = 1/τ = ln(1+r) = ln 2 / T` are not formalized.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Basic formula",
+          "snippet": "have a one-to-one connection given by the following equation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle k={\\frac {1}{\\tau }}={\\frac {\\ln 2}{T}}={\\frac {\\ln \\left(1+{\\frac {r}{100}}\\right)}{p}}}"
+        }
+      ],
+      "id": "065ac1fadf19"
     },
     {
       "kind": "proposition",
@@ -119,7 +253,15 @@
         "section": "Basic formula",
         "snippet": "A popular approximated method for calculating the doubling time from the growth rate is the rule of 70"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The rule-of-70 doubling-time heuristic is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "fd3b669c131d"
     },
     {
       "kind": "proposition",
@@ -128,7 +270,25 @@
         "section": "Reformulation as log-linear growth",
         "snippet": "then the log (to any base) of x grows linearly over time, as can be seen by taking logarithms of both sides of the exponential growth equation"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.log_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "`Real.log_exp` and `Real.log_pow` provide the algebraic ingredients, but the statement 'log of an exponentially growing quantity grows linearly' is not packaged as a named theorem.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Reformulation as log-linear growth",
+          "snippet": "then the log (to any base) of x grows linearly over time, as can be seen by taking logarithms of both sides of the exponential growth equation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\log x(t)=\\log x_{0}+t\\cdot \\log(1+r).}"
+        }
+      ],
+      "id": "74b98392da12"
     },
     {
       "kind": "proposition",
@@ -137,7 +297,25 @@
         "section": "Differential equation",
         "snippet": "satisfies the linear differential equation"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.hasDerivAt_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.ExpDeriv",
+        "match_kind": "special_case"
+      },
+      "note": "`Real.hasDerivAt_exp : HasDerivAt exp (exp x) x` solves the k=1 case `x' = x`; the general `x' = kx` characterization with arbitrary `k` is not packaged as a single named theorem.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Differential equation",
+          "snippet": "satisfies the linear differential equation"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {dx}{dt}}=kx}"
+        }
+      ],
+      "id": "32439a964a65"
     },
     {
       "kind": "proposition",
@@ -146,7 +324,29 @@
         "section": "Differential equation",
         "snippet": "The differential equation is solved by direct integration"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ODE_solution_unique",
+        "module": "Mathlib.Analysis.ODE.Gronwall",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has general ODE uniqueness via Grönwall (`ODE_solution_unique`) and `Real.hasDerivAt_exp`, but no packaged theorem 'unique solution of x' = kx with x(0)=x₀ is x₀ exp(kt)'.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Differential equation",
+          "snippet": "The differential equation is solved by direct integration"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}{\\frac {dx}{dt}}&amp;=kx\\\\[5pt]{\\frac {dx}{x}}&amp;=k\\,dt\\\\[5pt]\\int _{x_{0}}^{x(t)}{\\frac {dx}{x}}&amp;=k\\int _{0}^{t}\\,dt\\\\[5pt]\\ln {\\frac {x(t)}{x_{0}}}&amp;=kt.\\end{aligned}}}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle x(t)=x_{0}e^{kt}.}"
+        }
+      ],
+      "id": "92f96117139c"
     },
     {
       "kind": "proposition",
@@ -155,7 +355,15 @@
         "section": "Differential equation",
         "snippet": "In the above differential equation, if k < 0 , then the quantity experiences exponential decay"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The negative-`k` decay case of the ODE characterization is not named in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "933920d00f75"
     },
     {
       "kind": "proposition",
@@ -164,7 +372,25 @@
         "section": "Other growth rates",
         "snippet": "exponential growth of any kind will overtake linear growth of any kind"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.isLittleO_rpow_exp_atTop",
+        "module": "Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics",
+        "match_kind": "exact"
+      },
+      "note": "`Real.isLittleO_rpow_exp_atTop` shows `x ^ s =o[atTop] exp` for any real `s`, formalizing that exponentials dominate polynomial growth.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Other growth rates",
+          "snippet": "exponential growth of any kind will overtake linear growth of any kind"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\lim _{t\\to \\infty }{\\frac {t^{\\alpha }}{ae^{t}}}=0.}"
+        }
+      ],
+      "id": "cd785fabeb91"
     },
     {
       "kind": "definition",
@@ -173,7 +399,15 @@
         "section": "Other growth rates",
         "snippet": "when growth increases without bound in finite time, it is called hyperbolic growth"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no definition of hyperbolic (finite-time blow-up) growth.",
+      "provenance": "ai-agent1",
+      "id": "2a264e3f6676"
     },
     {
       "kind": "example",
@@ -182,7 +416,15 @@
         "section": "Rice on a chessboard",
         "snippet": "the courtier surprised the king by asking for one grain of rice on the first square, two grains on the second, four grains on the third, and so on"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The wheat-and-chessboard parable is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "28b6b75ddbfb"
     },
     {
       "kind": "example",
@@ -191,6 +433,62 @@
         "section": "Water lily",
         "snippet": "The plant doubles in size every day and, if left alone, it would smother the pond in 30 days"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The water-lily doubling riddle is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "a8be245f7cf4"
+    },
+    {
+      "kind": "definition",
+      "label": "Logistic growth",
+      "anchor": {
+        "section": "Logistic growth",
+        "snippet": "In 1845, the Belgian mathematician Pierre François Verhulst first proposed a mathematical model of growth like this, called the \" logistic growth \""
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not have the Verhulst/logistic growth model (the ODE `x' = kx(1 - x/K)` or its sigmoid solution) as a named definition; the logistic/sigmoid function appears only via tangent-like identities, not as a population model.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "example",
+      "label": "Compound interest",
+      "anchor": {
+        "section": "Finance",
+        "snippet": "Compound interest at a constant interest rate provides exponential growth of the capital"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize compound interest as a named financial-growth model, though the underlying `(1 + r) ^ n` formula is available via `Monoid.npow`.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponential complexity 2^x doubles per unit input",
+      "anchor": {
+        "section": "Computer science",
+        "snippet": "for an algorithm of time complexity 2 x , if a problem of size x = 10 requires 10 seconds to complete, and a problem of size x = 11 requires 20 seconds"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "pow_succ",
+        "module": "Mathlib.Algebra.GroupPower.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "The algebraic identity `2^(n+1) = 2 · 2^n` underlying the doubling-per-unit-size claim is `pow_succ`, but the computational-complexity framing is not in Mathlib.",
       "provenance": "ai-agent1"
     }
   ]

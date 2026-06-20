@@ -286,11 +286,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "riemannianEDist_le_pathELength",
+        "decl": "Manifold.riemannianEDist_le_pathELength",
         "module": "Mathlib.Geometry.Manifold.Riemannian.PathELength",
         "match_kind": "generalization"
       },
-      "note": "riemannianEDist_le_pathELength shows the geodesic (Riemannian) distance lower-bounds any C¹ path length, capturing the curve-minimization idea but not the specific Euclidean straight-line characterization.",
+      "note": "Manifold.riemannianEDist_le_pathELength shows the Riemannian distance lower-bounds any C¹ path length, capturing the curve-minimization idea but not the specific Euclidean straight-line characterization.",
       "provenance": "ai",
       "id": "18e53e76fa4a"
     },
@@ -595,6 +595,22 @@
       "note": "lipschitzWith_one_norm states the norm map is LipschitzWith 1, a direct consequence of the reverse triangle inequality.",
       "provenance": "ai",
       "id": "ec32b64a0b83"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reverse triangle inequality (metric)",
+      "anchor": {
+        "section": "Reverse triangle inequality",
+        "snippet": "or for metric spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "abs_dist_sub_le",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The metric-space reverse triangle inequality |dist x z − dist y z| ≤ dist x y is captured by abs_dist_sub_le.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",

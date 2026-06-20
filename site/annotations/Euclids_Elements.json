@@ -301,13 +301,13 @@
         "section": "Book IX",
         "snippet": "This result is the Euclid–Euler theorem"
       },
-      "status": "not_formalized",
+      "status": "partial",
       "mathlib": {
-        "decl": null,
-        "module": null,
+        "decl": "mersenne",
+        "module": "Mathlib.NumberTheory.LucasLehmer",
         "match_kind": null
       },
-      "note": "Mathlib has Nat.Perfect and Mersenne primes but no theorem characterising even perfect numbers as 2^(p−1)·(2^p − 1).",
+      "note": "Mathlib has Nat.Perfect and the mersenne function/LucasLehmer test, but no theorem characterizing even perfect numbers as 2^(p−1)·(2^p − 1) with 2^p−1 prime.",
       "provenance": "ai",
       "id": "d34bb58db9d4"
     },
@@ -473,6 +473,134 @@
       "note": "Neither the synthetic equilateral-triangle construction nor the two-circle intersection axiom is formalized in Mathlib.",
       "provenance": "ai",
       "id": "f1d297a60d50"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euclidean algorithm for GCD (Book VII, Props. 1–4)",
+      "anchor": {
+        "section": "Book VII",
+        "snippet": "the Euclidean algorithm, a method for determining whether numbers are relatively prime and for finding the greatest common divisor"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.gcd",
+        "module": "Mathlib.Data.Nat.GCD.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines Nat.gcd by the Euclidean recursion gcd a b = gcd (b % a) a and proves the standard correctness lemmas (Nat.gcd_dvd_left, Nat.dvd_gcd, etc.).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Law of cosines (geometric precursor in Book II)",
+      "anchor": {
+        "section": "Book II",
+        "snippet": "a geometric precursor of the law of cosines"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InnerProductGeometry.norm_sub_sq_eq_norm_sq_add_norm_sq_sub_two_mul_norm_mul_norm_mul_cos_angle",
+        "module": "Mathlib.Geometry.Euclidean.Triangle",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes the law of cosines in inner-product space form, generalizing Euclid's geometric precursor in Book II (Propositions 12–13).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Constructible regular polygons (Book IV)",
+      "anchor": {
+        "section": "Book IV",
+        "snippet": "constructible regular polygons (i.e., those that have a straightedge and compass construction ) with 4, 5, 6, and 15 sides"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not have a synthetic framework for straightedge-and-compass constructions or for constructibility of regular n-gons.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Impossibility of doubling the cube",
+      "anchor": {
+        "section": "Book VI",
+        "snippet": "doubling the cube , now known impossible with compass and straightedge"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The impossibility of duplicating the cube by straightedge and compass is not formalized in Mathlib; the underlying constructible-number theory is also absent.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Method of exhaustion (Book XII)",
+      "anchor": {
+        "section": "Book XII",
+        "snippet": "the method of exhaustion , a precursor to integration"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes Lebesgue/Bochner integration but does not give Euclid's classical method of exhaustion as a stated technique.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Gödel's incompleteness theorem",
+      "anchor": {
+        "section": "Axiomatics",
+        "snippet": "any sound axiom system for set theory must necessarily be incomplete"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has supporting machinery (e.g. Logic/Godel/GodelBetaFunction) but no stated form of Gödel's first incompleteness theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cross ratio (projective geometry)",
+      "anchor": {
+        "section": "Book V",
+        "snippet": "the cross ratio (central to projective geometry )"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not currently define the projective cross ratio of four collinear points.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pasch's axiom",
+      "anchor": {
+        "section": "Axiomatics",
+        "snippet": "Pasch's axiom"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pasch's axiom — that a line entering a triangle through one side must exit through another — is not stated synthetically in Mathlib.",
+      "provenance": "ai"
     }
   ]
 }

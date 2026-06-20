@@ -20,16 +20,6 @@
       },
       "note": "Mathlib defines the numeric constant φ = (1+√5)/2 but does not formalize the abstract relational definition on two quantities.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "(Lead)",
-          "snippet": "two quantities are in the golden ratio if their ratio is the same as the ratio of their sum to the larger of the two quantities"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {a+b}{a}}={\\frac {a}{b}}=\\varphi ,}"
-        }
-      ],
       "id": "15899c69e484"
     },
     {
@@ -166,16 +156,6 @@
       },
       "note": "Mathlib shows φ satisfies X² − X − 1 = 0 but has no explicit `minpoly ℤ φ = X² - X - 1` statement.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Minimal polynomial",
-          "snippet": "the polynomial of lowest degree with integer coefficients that has the golden ratio as a root"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle x^{2}-x-1.}"
-        }
-      ],
       "id": "df1ac2fba62e"
     },
     {
@@ -193,16 +173,6 @@
       },
       "note": "No `IsIntegral ℤ φ`/`IsIntegral ℤ ψ` statement asserting that the golden ratio and its conjugate are algebraic integers is present.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Minimal polynomial",
-          "snippet": "both roots are algebraic integers"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle x^{2}-x-1.}"
-        }
-      ],
       "id": "3e8e1be6b894"
     },
     {
@@ -254,16 +224,6 @@
       },
       "note": "Mathlib proves φ⁻¹ = −ψ = φ − 1, but does not state a uniqueness theorem characterizing φ as the unique positive number with x⁻¹ = x − 1.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Golden ratio conjugate and powers",
-          "snippet": "This illustrates the unique property of the golden ratio among positive numbers"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {1}{\\varphi }}=\\varphi -1,}"
-        }
-      ],
       "id": "72baee029703"
     },
     {
@@ -281,16 +241,6 @@
       },
       "note": "`goldenRatio_pow_sub_goldenRatio_pow` states φ^(n+2) − φ^(n+1) = φ^n, the Fibonacci-like recurrence on powers.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Golden ratio conjugate and powers",
-          "snippet": "is equal to the sum of the two immediately preceding powers"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\varphi ^{n}=\\varphi ^{n-1}+\\varphi ^{n-2}=\\varphi \\cdot \\operatorname {F} _{n}+\\operatorname {F} _{n-1}.}"
-        }
-      ],
       "id": "6eb9627be70b"
     },
     {
@@ -308,16 +258,6 @@
       },
       "note": "The continued fraction expansion [1;1,1,1,…] of the golden ratio is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Continued fraction and square root",
-          "snippet": "can be expanded recursively to obtain a simple continued fraction for the golden ratio"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\varphi =[1;1,1,1,\\dots ]=1+{\\cfrac {1}{1+{\\cfrac {1}{1+{\\cfrac {1}{1+{{\\vphantom {1}} \\atop \\ddots }}}}}}}}"
-        }
-      ],
       "id": "6672564b3157"
     },
     {
@@ -335,16 +275,6 @@
       },
       "note": "Hurwitz's theorem on Diophantine approximation (constant 1/√5) is not present in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Continued fraction and square root",
-          "snippet": "Hurwitz inequality for Diophantine approximations"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\left|\\xi -{\\frac {p}{q}}\\right|&lt;{\\frac {1}{{\\sqrt {5}}q^{2}}}.}"
-        }
-      ],
       "id": "e066d2c4f7f3"
     },
     {
@@ -362,16 +292,6 @@
       },
       "note": "The nested radical expression φ = √(1 + √(1 + ...)) is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Continued fraction and square root",
-          "snippet": "A continued square root form"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\varphi ={\\sqrt {1+{\\sqrt {\\textstyle 1+{\\sqrt {1+\\cdots {\\vphantom {)}}}}}}}}.}"
-        }
-      ],
       "id": "a02089c66c52"
     },
     {
@@ -379,7 +299,7 @@
       "label": "Fibonacci sequence recurrence",
       "anchor": {
         "section": "Relationship to Fibonacci and Lucas numbers",
-        "snippet": "each term"
+        "snippet": "In the Fibonacci sequence, each term"
       },
       "status": "formalized",
       "mathlib": {
@@ -388,7 +308,7 @@
         "match_kind": "exact"
       },
       "note": "`Nat.fib_add_two` proves `fib (n+2) = fib n + fib (n+1)` for Mathlib's `Nat.fib`.",
-      "provenance": "ai",
+      "provenance": "ai-moderated",
       "id": "5bac6c5d106a"
     },
     {
@@ -423,16 +343,6 @@
       },
       "note": "Mathlib proves the Fibonacci ratio limit equals φ, but the Lucas-number version is absent.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Relationship to Fibonacci and Lucas numbers",
-          "snippet": "the golden ratio is equal to the limit of the ratios of successive terms in the Fibonacci sequence and sequence of Lucas numbers"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\lim _{n\\to \\infty }{\\frac {F_{n+1}}{F_{n}}}=\\lim _{n\\to \\infty }{\\frac {L_{n+1}}{L_{n}}}=\\varphi .}"
-        }
-      ],
       "id": "d51bb962849f"
     },
     {
@@ -467,16 +377,6 @@
       },
       "note": "Without Lucas numbers in Mathlib, this limit statement cannot be formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Relationship to Fibonacci and Lucas numbers",
-          "snippet": "the limit of the quotient of Lucas numbers by Fibonacci numbers as equal to the square root of five"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\lim _{n\\to \\infty }{\\frac {L_{n}}{F_{n}}}={\\sqrt {5}}.}"
-        }
-      ],
       "id": "9b5a71a66ede"
     },
     {
@@ -579,16 +479,6 @@
       },
       "note": "Regular pentagons and their diagonal-to-side ratio are not formalized in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Pentagonal symmetry system",
-          "snippet": "In a regular pentagon the ratio of a diagonal to a side is the golden ratio"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {a}{b}}={\\frac {a+b}{a}}=\\varphi .}"
-        }
-      ],
       "id": "7adccd307d95"
     },
     {
@@ -691,16 +581,6 @@
       },
       "note": "The Kepler triangle (sides 1 : √φ : φ) is not formalized in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "In triangles and quadrilaterals",
-          "snippet": "is the unique right triangle with sides in geometric progression"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle 1\\mathbin {:} {\\sqrt {\\varphi {\\vphantom {+}}}}\\mathbin {:} \\varphi .}"
-        }
-      ],
       "id": "26eca3acb2a9"
     },
     {
@@ -786,16 +666,6 @@
       },
       "note": "Golden / logarithmic spirals are not defined in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Golden spiral",
-          "snippet": "A logarithmic spiral whose radius increases by a factor of the golden ratio for each quarter-turn is called the golden spiral"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle r=\\varphi ^{2\\theta /\\pi }.}"
-        }
-      ],
       "id": "cf0466f615a2"
     },
     {
@@ -932,24 +802,6 @@
       },
       "note": "Modular-function identities involving φ (e.g. via Rogers–Ramanujan) are not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Other properties",
-          "snippet": "The golden ratio appears in the theory of modular functions"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle R(q)={\\cfrac {q^{1/5}}{1+{\\cfrac {q}{1+{\\cfrac {q^{2}}{1+{\\cfrac {q^{3}}{1+{{\\vphantom {1}} \\atop \\ddots }}}}}}}}}.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle R(e^{-2\\pi })={\\sqrt {\\varphi {\\sqrt {5}}}}-\\varphi ,\\quad R(-e^{-\\pi })=\\varphi ^{-1}-{\\sqrt {2-\\varphi ^{-1}}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle R(e^{-2\\pi i/\\tau })={\\frac {1-\\varphi R(e^{2\\pi i\\tau })}{\\varphi +R(e^{2\\pi i\\tau })}}}"
-        }
-      ],
       "id": "38110a6d8752"
     },
     {
@@ -968,6 +820,70 @@
       "note": "Pisot–Vijayaraghavan numbers are not defined in Mathlib.",
       "provenance": "ai",
       "id": "1aa7a1f5cad3"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quadratic equation satisfied by φ",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "satisfies the quadratic equation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.goldenRatio_sq",
+        "module": "Mathlib.NumberTheory.Real.GoldenRatio",
+        "match_kind": "exact"
+      },
+      "note": "`goldenRatio_sq` proves φ² = φ + 1, equivalently φ² − φ − 1 = 0.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Powers of φ round to Lucas numbers",
+      "anchor": {
+        "section": "Relationship to Fibonacci and Lucas numbers",
+        "snippet": "the powers of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The statement that φⁿ rounds to Lₙ (for n ≥ 2) is not formalized; Lucas numbers are absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Polynomial in φ reduces to linear expression",
+      "anchor": {
+        "section": "Relationship to Fibonacci and Lucas numbers",
+        "snippet": "This identity allows any polynomial in"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The general reduction of polynomials in φ to a linear expression aφ + b (with Fibonacci coefficients) is not stated as a Mathlib lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convergents alternate above and below φ",
+      "anchor": {
+        "section": "Relationship to Fibonacci and Lucas numbers",
+        "snippet": "These approximations are alternately lower and higher"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The alternating-above-and-below behavior of Fibonacci/Lucas successive-ratio convergents to φ is not formalized.",
+      "provenance": "ai"
     }
   ]
 }

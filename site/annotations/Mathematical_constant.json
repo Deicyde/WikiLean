@@ -1,0 +1,569 @@
+{
+  "slug": "Mathematical_constant",
+  "wikipedia_title": "Mathematical constant",
+  "display_title": "Mathematical constant",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Mathematical constant",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A mathematical constant is a number whose value is fixed by an unambiguous definition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal meta-mathematical notion with no corresponding Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Named constants are definable",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "All named mathematical constants are definable numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "An informal claim about definability of constants; not stated in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Square root of 2",
+      "anchor": {
+        "section": "Pythagoras' constant √ 2",
+        "snippet": "the unique positive real number that, when multiplied by itself, gives the number 2"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.sqrt",
+        "module": "Mathlib.Analysis.SpecialFunctions.Pow.NNReal",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has `Real.sqrt 2` with `Real.sq_sqrt`/`Real.sqrt_sq` characterizing it as the unique nonnegative real squaring to 2.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "√2 as diagonal of unit square",
+      "anchor": {
+        "section": "Pythagoras' constant √ 2",
+        "snippet": "Geometrically the square root of 2 is the length of a diagonal across a square with sides of one unit of length"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific geometric statement identifying √2 with the diagonal of a unit square is recorded in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "√2 is irrational and algebraic",
+      "anchor": {
+        "section": "Pythagoras' constant √ 2",
+        "snippet": "It is an irrational number, possibly the first number to be known as such, and an algebraic number"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "irrational_sqrt_two",
+        "module": "Mathlib.NumberTheory.Real.Irrational",
+        "match_kind": "exact"
+      },
+      "note": "Irrationality is `irrational_sqrt_two`; algebraicity of √2 over ℚ has no dedicated lemma but follows trivially from `Real.sq_sqrt`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "99/70 approximation of √2",
+      "anchor": {
+        "section": "Pythagoras' constant √ 2",
+        "snippet": "the quick approximation 99/70 (≈ 1.41429) for the square root of two was frequently used before the common use of electronic calculators"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma records the specific rational approximation 99/70 for √2.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Definition of π",
+      "anchor": {
+        "section": "Archimedes' constant π",
+        "snippet": "The constant π (pi) has a natural definition in Euclidean geometry as the ratio between the circumference and diameter of a circle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.pi",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `Real.pi` analytically via the first positive zero of cos rather than geometrically, but the resulting constant is the same.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hydrogen ground state wave function",
+      "anchor": {
+        "section": "Archimedes' constant π",
+        "snippet": "the ground state wave function of the hydrogen atom"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quantum-mechanical wave functions for the hydrogen atom are not part of Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "π is irrational, transcendental, a period",
+      "anchor": {
+        "section": "Archimedes' constant π",
+        "snippet": "π is an irrational number , transcendental number and an algebraic period"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "irrational_pi",
+        "module": "Mathlib.Analysis.Real.Pi.Irrational",
+        "match_kind": "exact"
+      },
+      "note": "Irrationality of π is `irrational_pi`; transcendence of π and its status as a period are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "22/7 and 355/113 approximations of π",
+      "anchor": {
+        "section": "Archimedes' constant π",
+        "snippet": "Unusually good approximations are given by the fractions 22/7 and 355/113"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not record the rational approximations 22/7 or 355/113 for π.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Definition of e",
+      "anchor": {
+        "section": "Euler's number e",
+        "snippet": "one possible definition of it is the value of the following expression"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.exp",
+        "module": "Mathlib.Data.Complex.Exponential",
+        "match_kind": "invocation"
+      },
+      "note": "Euler's number is `Real.exp 1`; the limit definition `(1+1/n)^n → e` is the special case of `tendsto_one_add_div_pow_exp` at `t = 1`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "e and the exponential function",
+      "anchor": {
+        "section": "Euler's number e",
+        "snippet": "The constant e is intrinsically related to the exponential function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.exp",
+        "module": "Mathlib.Data.Complex.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `Real.exp` is the real exponential function with `Real.exp 1` exactly Euler's number.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Bernoulli's compound interest",
+      "anchor": {
+        "section": "Euler's number e",
+        "snippet": "Jacob Bernoulli discovered that e arises in compound interest"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.tendsto_one_add_div_pow_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.LogBounds",
+        "match_kind": "generalization"
+      },
+      "note": "The underlying limit `(1 + t/n)^n → exp t` is formalized; the financial interpretation is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Slot machine probability",
+      "anchor": {
+        "section": "Euler's number e",
+        "snippet": "suppose that a slot machine with a one in n probability of winning is played n times"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.tendsto_one_add_div_pow_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.LogBounds",
+        "match_kind": "special_case"
+      },
+      "note": "The slot-machine limit `(1 - 1/n)^n → 1/e` is the `t = -1` specialization of `tendsto_one_add_div_pow_exp`, but no probabilistic packaging is given.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Derangements / hat check problem",
+      "anchor": {
+        "section": "Euler's number e",
+        "snippet": "is in the problem of derangements , also known as the hat check problem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "numDerangements_tendsto_inv_e",
+        "module": "Mathlib.Combinatorics.Derangements.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves `numDerangements n / n! → exp (-1)`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "e is irrational and transcendental",
+      "anchor": {
+        "section": "Euler's number e",
+        "snippet": "e is an irrational number and a transcendental number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither irrationality nor transcendence of `Real.exp 1` is recorded under any obvious name in Mathlib (`irrational_e` and `transcendental_e` do not exist).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Imaginary unit",
+      "anchor": {
+        "section": "The imaginary unit i",
+        "snippet": "is a mathematical concept which extends the real number system to the complex number system"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.I",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.I : ℂ` is the imaginary unit.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "i² = −1",
+      "anchor": {
+        "section": "The imaginary unit i",
+        "snippet": "The imaginary unit's core property is that i 2 = −1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.I_sq",
+        "module": "Mathlib.Data.Complex.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Stated literally as `Complex.I_sq : I ^ 2 = -1`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Two complex square roots of −1",
+      "anchor": {
+        "section": "The imaginary unit i",
+        "snippet": "There are in fact two complex square roots of −1, namely i and − i"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma `x ^ 2 = -1 ↔ x = I ∨ x = -I` (or equivalent) appears in Mathlib's complex library.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Diagonal of regular pentagon equals φ times its side",
+      "anchor": {
+        "section": "The golden ratio φ",
+        "snippet": "the length of a regular pentagon 's diagonal is φ times its side"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize the regular pentagon nor its diagonal-to-side ratio.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Icosahedron vertices from golden rectangles",
+      "anchor": {
+        "section": "The golden ratio φ",
+        "snippet": "The vertices of a regular icosahedron are those of three mutually orthogonal golden rectangles"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no construction of the regular icosahedron or a description of its vertices via golden rectangles.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Kepler: φ as limit of Fibonacci ratios",
+      "anchor": {
+        "section": "The golden ratio φ",
+        "snippet": "Kepler proved that it is the limit of the ratio of consecutive Fibonacci numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendsto_fib_succ_div_fib_atTop",
+        "module": "Mathlib.Analysis.SpecificLimits.Fibonacci",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves `fib (n+1) / fib n → φ` as `n → ∞`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Slowest converging continued fraction",
+      "anchor": {
+        "section": "The golden ratio φ",
+        "snippet": "The golden ratio has the slowest converging continued fraction of any irrational number"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not state any optimality claim about φ's continued fraction convergence rate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euler–Mascheroni constant",
+      "anchor": {
+        "section": "The Euler–Mascheroni constant γ",
+        "snippet": "Euler's constant or the Euler–Mascheroni constant is defined as the limiting difference between the harmonic series and the natural logarithm"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.eulerMascheroniConstant",
+        "module": "Mathlib.NumberTheory.Harmonic.EulerMascheroni",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib defines `Real.eulerMascheroniConstant` as the limit `H_n - log n`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Apéry's constant",
+      "anchor": {
+        "section": "Apéry's constant ζ(3)",
+        "snippet": "Apery's constant is defined as the sum of the reciprocals of the cubes of the natural numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "riemannZeta",
+        "module": "Mathlib.NumberTheory.LSeries.RiemannZeta",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has `riemannZeta` and so `riemannZeta 3` exists, but no dedicated `apery` constant or `tsum (1/n^3)` identification is recorded.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler's solution to the Basel problem",
+      "anchor": {
+        "section": "Apéry's constant ζ(3)",
+        "snippet": "Euler famously solved the Basel problem by giving"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "hasSum_zeta_two",
+        "module": "Mathlib.NumberTheory.ZetaValues",
+        "match_kind": "exact"
+      },
+      "note": "`hasSum_zeta_two` states `∑ 1/n^2 = π²/6`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Apéry: ζ(3) is irrational",
+      "anchor": {
+        "section": "Apéry's constant ζ(3)",
+        "snippet": "is known to be an irrational number which was proven by the French mathematician Roger Apéry in 1979"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Apéry's theorem on the irrationality of ζ(3) is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Catalan's constant",
+      "anchor": {
+        "section": "Catalan's constant G",
+        "snippet": "Catalan's constant is defined by the alternating sum of the reciprocals of the odd square numbers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has Catalan numbers but no definition of Catalan's analytic constant G.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Feigenbaum constants α and δ",
+      "anchor": {
+        "section": "The Feigenbaum constants α and δ",
+        "snippet": "the constant α is the ratio between the width of a tine and the width of one of its two subtines, and the constant δ is the limiting ratio of each bifurcation interval to the next"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Feigenbaum's bifurcation constants are not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Liouville and Champernowne constants",
+      "anchor": {
+        "section": "Simple representatives of sets of numbers",
+        "snippet": "Some constants, such as the square root of 2 , Liouville's constant and Champernowne constant"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "liouvilleNumber",
+        "module": "Mathlib.NumberTheory.Transcendental.Liouville.LiouvilleNumber",
+        "match_kind": "exact"
+      },
+      "note": "`liouvilleNumber` is defined; the Champernowne constant is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Hippasus: irrationality of √2",
+      "anchor": {
+        "section": "Simple representatives of sets of numbers",
+        "snippet": "the Pythagorean Hippasus of Metapontum who proved, most likely geometrically, the irrationality of the square root of 2"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "irrational_sqrt_two",
+        "module": "Mathlib.NumberTheory.Real.Irrational",
+        "match_kind": "exact"
+      },
+      "note": "The mathematical content (irrationality of √2) is `irrational_sqrt_two`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Liouville's constant is transcendental",
+      "anchor": {
+        "section": "Simple representatives of sets of numbers",
+        "snippet": "it was the first number to be proven transcendental"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "transcendental_liouvilleNumber",
+        "module": "Mathlib.NumberTheory.Transcendental.Liouville.LiouvilleNumber",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves `Transcendental ℤ (liouvilleNumber m)` for `2 ≤ m`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Chaitin's constant",
+      "anchor": {
+        "section": "Chaitin's constant Ω",
+        "snippet": "Chaitin's constant is the real number representing the probability that a randomly chosen Turing machine will halt"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chaitin's halting probability constant Ω is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Chaitin's constant is transcendental and normal",
+      "anchor": {
+        "section": "Chaitin's constant Ω",
+        "snippet": "has been proven to be transcendental and normal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No transcendence or normality result for Chaitin's Ω appears in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "0.999... equals 1",
+      "anchor": {
+        "section": "Representing constants",
+        "snippet": "the two representations 0.999... and 1 are equivalent"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.ofDigits_const_last_eq_one",
+        "module": "Mathlib.Analysis.Real.OfDigits",
+        "match_kind": "generalization"
+      },
+      "note": "`ofDigits_const_last_eq_one` proves the base-b identity `0.(b-1)(b-1)… = 1`, which specializes at `b = 10` to `0.999… = 1`.",
+      "provenance": "ai"
+    }
+  ]
+}

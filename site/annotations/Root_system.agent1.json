@@ -11,7 +11,15 @@
         "section": "Definitions and examples",
         "snippet": "These six vectors satisfy the following definition, and therefore they form a root system"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "RootPairing.IsRootSystem",
+        "module": "Mathlib.LinearAlgebra.RootSystem.Defs",
+        "match_kind": null
+      },
+      "note": "The general root-system definition exists and CartanMatrix.A 2 is available, but the explicit six-vector A₂ root system is not constructed in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "c1ad4d26bed8"
     },
     {
       "kind": "definition",
@@ -20,7 +28,15 @@
         "section": "Definition",
         "snippet": "is a finite set of non-zero vectors (called roots ) that satisfy the following conditions"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RootPairing.IsRootSystem",
+        "module": "Mathlib.LinearAlgebra.RootSystem.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "RootPairing with the IsRootSystem class formalizes the spanning + reflection-stability axioms (more general: any commutative ring, integrality factored out as IsCrystallographic).",
+      "provenance": "ai-agent1",
+      "id": "12689bd76f4d"
     },
     {
       "kind": "proposition",
@@ -29,7 +45,15 @@
         "section": "Definition",
         "snippet": "Equivalent ways of writing conditions 3 and 4, respectively, are as follows"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "RootPairing.mapsTo_reflection_root",
+        "module": "Mathlib.LinearAlgebra.RootSystem.Defs",
+        "match_kind": null
+      },
+      "note": "Reflection-stability is captured by mapsTo_reflection_root and integrality by pairingIn/IsCrystallographic, but the explicit equivalences are not stated as such.",
+      "provenance": "ai-agent1",
+      "id": "115114dee186"
     },
     {
       "kind": "definition",
@@ -38,7 +62,15 @@
         "section": "Definition",
         "snippet": "a root system that also satisfies the integrality condition is known as a crystallographic root system"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RootPairing.IsCrystallographic",
+        "module": "Mathlib.LinearAlgebra.RootSystem.IsValuedIn",
+        "match_kind": "exact"
+      },
+      "note": "IsCrystallographic is defined as IsValuedIn ℤ, i.e. every root-coroot pairing is an integer.",
+      "provenance": "ai-agent1",
+      "id": "d0e28f2f2188"
     },
     {
       "kind": "definition",
@@ -47,7 +79,15 @@
         "section": "Definition",
         "snippet": "then they call root systems satisfying condition 2 reduced"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RootPairing.IsReduced",
+        "module": "Mathlib.LinearAlgebra.RootSystem.Reduced",
+        "match_kind": "exact"
+      },
+      "note": "IsReduced states that linearly dependent roots differ only by a sign.",
+      "provenance": "ai-agent1",
+      "id": "7c7a2bd156db"
     },
     {
       "kind": "proposition",
@@ -56,7 +96,25 @@
         "section": "Definition",
         "snippet": "the integrality condition is equivalent to stating that"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "RootPairing.reflection_apply_root'",
+        "module": "Mathlib.LinearAlgebra.RootSystem.IsValuedIn",
+        "match_kind": null
+      },
+      "note": "reflection_apply_root' shows s_α(β) = β - (pairingIn ℤ β α)•α, expressing the reflection as an integer-multiple shift, but the equivalence with integrality is not isolated as a lemma.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "the integrality condition is equivalent to stating that"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\langle \\cdot ,\\cdot \\rangle \\colon \\Phi \\times \\Phi \\to \\mathbb {Z} }"
+        }
+      ],
+      "id": "617a13532c42"
     },
     {
       "kind": "proposition",
@@ -65,7 +123,25 @@
         "section": "Definition",
         "snippet": "It is not necessarily symmetric and is linear only in the first argument"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "RootPairing.coroot'",
+        "module": "Mathlib.LinearAlgebra.RootSystem.Defs",
+        "match_kind": null
+      },
+      "note": "The pairing is built from linear functionals root'/coroot' (linear in the first argument), but the assertion of non-symmetry / not-an-inner-product is not a stated theorem.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Definition",
+          "snippet": "It is not necessarily symmetric and is linear only in the first argument"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\langle \\cdot ,\\cdot \\rangle \\colon \\Phi \\times \\Phi \\to \\mathbb {Z} }"
+        }
+      ],
+      "id": "02c099d78c35"
     },
     {
       "kind": "definition",
@@ -74,7 +150,15 @@
         "section": "Definition",
         "snippet": "The rank of a root system Φ is the dimension of E"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "RootPairing.finrank_rootSpanIn",
+        "module": "Mathlib.LinearAlgebra.RootSystem.IsValuedIn",
+        "match_kind": null
+      },
+      "note": "There is no dedicated `rank` definition, but finrank of the (root)span/ambient module captures the dimension.",
+      "provenance": "ai-agent1",
+      "id": "8d5cc96039bc"
     },
     {
       "kind": "definition",
@@ -83,7 +167,15 @@
         "section": "Definition",
         "snippet": "A root system which does not arise from such a combination"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RootPairing.IsIrreducible",
+        "module": "Mathlib.LinearAlgebra.RootSystem.Irreducible",
+        "match_kind": "exact"
+      },
+      "note": "IsIrreducible encodes the absence of proper reflection-invariant submodules, equivalent to non-decomposability.",
+      "provenance": "ai-agent1",
+      "id": "eb95eebde85a"
     },
     {
       "kind": "definition",
@@ -92,7 +184,15 @@
         "section": "Definition",
         "snippet": "are called isomorphic if there is an invertible linear transformation"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RootPairing.Equiv",
+        "module": "Mathlib.LinearAlgebra.RootSystem.Hom",
+        "match_kind": "exact"
+      },
+      "note": "RootPairing.Equiv is a linear isomorphism of weight spaces compatible with roots/coroots.",
+      "provenance": "ai-agent1",
+      "id": "bbcbcfe93722"
     },
     {
       "kind": "definition",
@@ -101,7 +201,15 @@
         "section": "Definition",
         "snippet": "The root lattice of a root system Φ is the Z -submodule of E generated by Φ"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RootPairing.rootSpan",
+        "module": "Mathlib.LinearAlgebra.RootSystem.IsValuedIn",
+        "match_kind": "special_case"
+      },
+      "note": "rootSpan ℤ = span ℤ (range P.root) is exactly the root lattice (rootSpan is the general S-span of roots).",
+      "provenance": "ai-agent1",
+      "id": "e551920a1b94"
     },
     {
       "kind": "definition",
@@ -110,7 +218,15 @@
         "section": "Weyl group",
         "snippet": "The group of isometries of E generated by reflections through hyperplanes associated to the roots of Φ"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RootPairing.weylGroup",
+        "module": "Mathlib.LinearAlgebra.RootSystem.WeylGroup",
+        "match_kind": "exact"
+      },
+      "note": "weylGroup is the subgroup of automorphisms generated by the reflections.",
+      "provenance": "ai-agent1",
+      "id": "cd90cc67eb0f"
     },
     {
       "kind": "proposition",
@@ -119,7 +235,15 @@
         "section": "Weyl group",
         "snippet": "As it acts faithfully on the finite set Φ, the Weyl group is always finite"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Finite/Fintype instance for weylGroup is present; faithfulness of the index representation is even listed as a TODO.",
+      "provenance": "ai-agent1",
+      "id": "a9965a7802ce"
     },
     {
       "kind": "example",
@@ -128,7 +252,15 @@
         "section": "Rank one example",
         "snippet": "There is only one root system of rank 1, consisting of two nonzero vectors"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The rank-one classification/uniqueness is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "3bfbdadbb916"
     },
     {
       "kind": "example",
@@ -137,7 +269,15 @@
         "section": "Rank two examples",
         "snippet": "In rank 2 there are four possibilities"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No enumeration/classification of rank-two root systems exists in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "836b171d0100"
     },
     {
       "kind": "proposition",
@@ -146,7 +286,15 @@
         "section": "Rank two examples",
         "snippet": "Note that a root system is not determined by the lattice that it generates"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai-agent1",
+      "id": "1f27b102a066"
     },
     {
       "kind": "proposition",
@@ -155,7 +303,15 @@
         "section": "Rank two examples",
         "snippet": "then Ψ is a root system in S"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no result constructing a root system from the intersection of Φ with a subspace.",
+      "provenance": "ai-agent1",
+      "id": "59cba3e2231c"
     },
     {
       "kind": "proposition",
@@ -164,7 +320,15 @@
         "section": "Rank two examples",
         "snippet": "two such roots must meet at an angle of 0, 30, 45, 60, 90, 120, 135, 150, or 180 degrees"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "RootPairing.pairingIn_pairingIn_mem_set_of_isCrystallographic",
+        "module": "Mathlib.LinearAlgebra.RootSystem.Finite.Lemmas",
+        "match_kind": null
+      },
+      "note": "The integer pairing-pairs are restricted to the finite set corresponding to these angles, but angles themselves are not computed.",
+      "provenance": "ai-agent1",
+      "id": "29a8cddf9372"
     },
     {
       "kind": "definition",
@@ -173,7 +337,25 @@
         "section": "Root systems arising from semisimple Lie algebras",
         "snippet": "we can construct a root system as follows"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieAlgebra.IsKilling.rootSystem",
+        "module": "Mathlib.Algebra.Lie.Weights.RootSystem",
+        "match_kind": "exact"
+      },
+      "note": "Roots are the nonzero weights (Weight K H L), indexed by H.root, used to build rootSystem.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Root systems arising from semisimple Lie algebras",
+          "snippet": "we can construct a root system as follows"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle [H,X]=\\alpha (H)X}"
+        }
+      ],
+      "id": "182b1f0063d8"
     },
     {
       "kind": "proposition",
@@ -182,7 +364,25 @@
         "section": "Root systems arising from semisimple Lie algebras",
         "snippet": "there is an inner product for which the set of roots forms a root system"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieAlgebra.IsKilling.rootSystem",
+        "module": "Mathlib.Algebra.Lie.Weights.RootSystem",
+        "match_kind": "exact"
+      },
+      "note": "rootSystem with its IsRootSystem instance proves the roots of a finite splitting semisimple (Killing) Lie algebra form a root system.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Root systems arising from semisimple Lie algebras",
+          "snippet": "there is an inner product for which the set of roots forms a root system"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle [H,X]=\\alpha (H)X}"
+        }
+      ],
+      "id": "7d3aeebd0fd3"
     },
     {
       "kind": "proposition",
@@ -191,7 +391,25 @@
         "section": "Elementary consequences of the root system axioms",
         "snippet": "The cosine of the angle between two roots is constrained to be one-half of the square root of a positive integer"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "RootPairing.coxeterWeightIn_le_four",
+        "module": "Mathlib.LinearAlgebra.RootSystem.Finite.Lemmas",
+        "match_kind": null
+      },
+      "note": "The Coxeter weight (=4cos²θ) is shown to be a bounded nonnegative integer, giving the constraint, but the cosine itself is not formalized.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Elementary consequences of the root system axioms",
+          "snippet": "The cosine of the angle between two roots is constrained to be one-half of the square root of a positive integer"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\begin{aligned}\\langle \\beta ,\\alpha \\rangle \\langle \\alpha ,\\beta \\rangle &=2{\\frac {(\\alpha ,\\beta )}{(\\alpha ,\\alpha )}}\\cdot 2{\\frac {(\\alpha ,\\beta )}{(\\beta ,\\beta )}}\\\\&=4{\\frac {(\\alpha ,\\beta )^{2}}{\\vert \\alpha \\vert ^{2}\\vert \\beta \\vert ^{2}}}\\\\&=4\\cos ^{2}(\\theta )\\\\&=(2\\cos(\\theta ))^{2}\\in \\mathbb {Z} .\\end{aligned}}}"
+        }
+      ],
+      "id": "5afaa5c3db1d"
     },
     {
       "kind": "proposition",
@@ -200,7 +418,15 @@
         "section": "Elementary consequences of the root system axioms",
         "snippet": "In summary, here are the only possibilities for each pair of roots"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RootPairing.pairingIn_pairingIn_mem_set_of_isCrystal_of_isRed",
+        "module": "Mathlib.LinearAlgebra.RootSystem.Finite.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "The classification of (⟨α,β⟩,⟨β,α⟩) pairs into the finite admissible set is exactly the angle/length-ratio table.",
+      "provenance": "ai-agent1",
+      "id": "0e40919bd725"
     },
     {
       "kind": "definition",
@@ -209,7 +435,15 @@
         "section": "Positive roots and simple roots",
         "snippet": "we can always choose (in many ways) a set of positive roots"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "RootPairing.Base.IsPos",
+        "module": "Mathlib.LinearAlgebra.RootSystem.Base",
+        "match_kind": null
+      },
+      "note": "Positivity relative to a base is defined via Base.IsPos (positive height); the separating-functional formulation is via baseOf.",
+      "provenance": "ai-agent1",
+      "id": "d322f1a1d0eb"
     },
     {
       "kind": "definition",
@@ -218,7 +452,15 @@
         "section": "Positive roots and simple roots",
         "snippet": "are called negative roots"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "RootPairing.Base.IsPos",
+        "module": "Mathlib.LinearAlgebra.RootSystem.Base",
+        "match_kind": null
+      },
+      "note": "Negative roots are the complement of IsPos (IsPos.neg_iff_not), but there is no separate `IsNeg` definition.",
+      "provenance": "ai-agent1",
+      "id": "ed5629f1605c"
     },
     {
       "kind": "proposition",
@@ -227,7 +469,15 @@
         "section": "Positive roots and simple roots",
         "snippet": "every set of positive roots arises in this way"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized; Mathlib only constructs positive systems from a functional, not the converse.",
+      "provenance": "ai-agent1",
+      "id": "0517c82cef91"
     },
     {
       "kind": "definition",
@@ -236,7 +486,15 @@
         "section": "Positive roots and simple roots",
         "snippet": "is called a simple root (also fundamental root ) if it cannot be written as the sum of two elements"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RootPairing.Base",
+        "module": "Mathlib.LinearAlgebra.RootSystem.Base",
+        "match_kind": "exact"
+      },
+      "note": "RootPairing.Base bundles the support of simple roots; existence is RootPairing.nonempty_base.",
+      "provenance": "ai-agent1",
+      "id": "f09f49972681"
     },
     {
       "kind": "proposition",
@@ -245,7 +503,15 @@
         "section": "Positive roots and simple roots",
         "snippet": "with the following additional special properties"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RootPairing.Base.toWeightBasis",
+        "module": "Mathlib.LinearAlgebra.RootSystem.Base",
+        "match_kind": null
+      },
+      "note": "A base yields a basis (toWeightBasis) and exists_root_eq_sum_int shows each root is an integer combination with uniform sign.",
+      "provenance": "ai-agent1",
+      "id": "2bbc0795f40a"
     },
     {
       "kind": "proposition",
@@ -254,7 +520,15 @@
         "section": "Positive roots and simple roots",
         "snippet": "any two sets of positive roots differ by the action of the Weyl group"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The simply-transitive Weyl-group action on bases is noted in docs but not formalized.",
+      "provenance": "ai-agent1",
+      "id": "0131073f90ca"
     },
     {
       "kind": "definition",
@@ -263,7 +537,25 @@
         "section": "The dual root system",
         "snippet": "the coroot α ∨ of a root α is defined by"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RootPairing.coroot",
+        "module": "Mathlib.LinearAlgebra.RootSystem.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Coroots are part of the RootPairing data, with root_coroot_two giving ⟨α,α∨⟩=2.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "The dual root system",
+          "snippet": "the coroot α ∨ of a root α is defined by"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\alpha ^{\\vee }={2 \\over (\\alpha ,\\alpha )}\\,\\alpha .}"
+        }
+      ],
+      "id": "6ee07a8a474f"
     },
     {
       "kind": "definition",
@@ -272,7 +564,25 @@
         "section": "The dual root system",
         "snippet": "The set of coroots also forms a root system Φ ∨ in E , called the dual root system"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RootPairing.flip",
+        "module": "Mathlib.LinearAlgebra.RootSystem.Defs",
+        "match_kind": "exact"
+      },
+      "note": "P.flip swaps roots and coroots and is again a root pairing/system.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "The dual root system",
+          "snippet": "The set of coroots also forms a root system Φ ∨ in E , called the dual root system"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (s\\alpha )^{\\vee }=s(\\alpha ^{\\vee }).}"
+        }
+      ],
+      "id": "2707056bb908"
     },
     {
       "kind": "proposition",
@@ -281,7 +591,25 @@
         "section": "The dual root system",
         "snippet": "By direct calculation, α ∨∨ = α"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RootPairing.flip_flip",
+        "module": "Mathlib.LinearAlgebra.RootSystem.Defs",
+        "match_kind": "exact"
+      },
+      "note": "flip_flip : P.flip.flip = P, and P.flip.coroot = P.root, giving α∨∨ = α.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "The dual root system",
+          "snippet": "By direct calculation, α ∨∨ = α"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle (s\\alpha )^{\\vee }=s(\\alpha ^{\\vee }).}"
+        }
+      ],
+      "id": "3dfceeef3d6d"
     },
     {
       "kind": "proposition",
@@ -290,7 +618,15 @@
         "section": "The dual root system",
         "snippet": "then Δ ∨ is a set of simple roots for Φ ∨"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RootPairing.Base.flip",
+        "module": "Mathlib.LinearAlgebra.RootSystem.Base",
+        "match_kind": "exact"
+      },
+      "note": "Base.flip gives a base of P.flip with the same support, i.e. the coroots of Δ form a base of Φ∨.",
+      "provenance": "ai-agent1",
+      "id": "deb887477d51"
     },
     {
       "kind": "proposition",
@@ -299,7 +635,15 @@
         "section": "The dual root system",
         "snippet": "are all self-dual, meaning that the dual root system is isomorphic to the original root system"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No self-duality results for specific types are formalized.",
+      "provenance": "ai-agent1",
+      "id": "6197f45db0f5"
     },
     {
       "kind": "definition",
@@ -308,7 +652,25 @@
         "section": "Integral elements",
         "snippet": "if its inner product with each coroot is an integer"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of integral element / weight lattice element is defined.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Integral elements",
+          "snippet": "if its inner product with each coroot is an integer"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle 2{\\frac {(\\lambda ,\\alpha )}{(\\alpha ,\\alpha )}}\\in \\mathbb {Z} ,\\quad \\alpha \\in \\Phi .}"
+        }
+      ],
+      "id": "83f3d9c280d7"
     },
     {
       "kind": "definition",
@@ -317,7 +679,15 @@
         "section": "Integral elements",
         "snippet": "The set of integral elements is called the weight lattice associated to the given root system"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The weight lattice is not defined in Mathlib's root-system development.",
+      "provenance": "ai-agent1",
+      "id": "c4c874965e4f"
     },
     {
       "kind": "proposition",
@@ -326,7 +696,15 @@
         "section": "Integral elements",
         "snippet": "guarantees that the roots themselves are integral elements"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "RootPairing.IsCrystallographic",
+        "module": "Mathlib.LinearAlgebra.RootSystem.IsValuedIn",
+        "match_kind": null
+      },
+      "note": "The integrality of root-coroot pairings (roots being integral) is exactly IsCrystallographic, but the weight-lattice framing is absent.",
+      "provenance": "ai-agent1",
+      "id": "83d9ac97e136"
     },
     {
       "kind": "definition",
@@ -335,7 +713,15 @@
         "section": "Classification of root systems by Dynkin diagrams",
         "snippet": "A root system is irreducible if it cannot be partitioned into the union of two proper subsets"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RootPairing.IsIrreducible",
+        "module": "Mathlib.LinearAlgebra.RootSystem.Irreducible",
+        "match_kind": "generalization"
+      },
+      "note": "IsIrreducible (no proper invariant submodule) is the formalized notion, equivalent to non-partitionability.",
+      "provenance": "ai-agent1",
+      "id": "23441908a358"
     },
     {
       "kind": "proposition",
@@ -344,7 +730,15 @@
         "section": "Classification of root systems by Dynkin diagrams",
         "snippet": "Irreducible root systems correspond to certain graphs"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classification of irreducible root systems by Dynkin diagrams is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "949885665c53"
     },
     {
       "kind": "definition",
@@ -353,7 +747,15 @@
         "section": "Constructing the Dynkin diagram",
         "snippet": "The vertices of the associated Dynkin diagram correspond to the roots in Δ"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "RootPairing.Base.cartanMatrix",
+        "module": "Mathlib.LinearAlgebra.RootSystem.CartanMatrix",
+        "match_kind": null
+      },
+      "note": "The Cartan matrix relative to a base is defined (Base.cartanMatrix), but the Dynkin diagram graph itself is not built from it.",
+      "provenance": "ai-agent1",
+      "id": "00732b82689f"
     },
     {
       "kind": "proposition",
@@ -362,7 +764,15 @@
         "section": "Classifying root systems",
         "snippet": "the Weyl group acts transitively on such choices"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transitivity of the Weyl group on bases is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "042ff17a4b19"
     },
     {
       "kind": "proposition",
@@ -371,7 +781,15 @@
         "section": "Classifying root systems",
         "snippet": "the Dynkin diagram is independent of the choice of simple roots"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No result that the Cartan matrix/Dynkin diagram is independent of the base choice.",
+      "provenance": "ai-agent1",
+      "id": "f8290a3f9d03"
     },
     {
       "kind": "proposition",
@@ -380,7 +798,15 @@
         "section": "Classifying root systems",
         "snippet": "A root systems is irreducible if and only if its Dynkin diagram is connected"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "RootPairing.Base.induction_on_cartanMatrix",
+        "module": "Mathlib.LinearAlgebra.RootSystem.CartanMatrix",
+        "match_kind": null
+      },
+      "note": "induction_on_cartanMatrix is a connectedness characterisation of the Dynkin diagram for irreducible pairings, but the full iff is not stated.",
+      "provenance": "ai-agent1",
+      "id": "db62305a4ab9"
     },
     {
       "kind": "proposition",
@@ -389,7 +815,15 @@
         "section": "Classifying root systems",
         "snippet": "by keeping all the same vertices and edges, but reversing the directions of all arrows"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "RootPairing.pairing_flip",
+        "module": "Mathlib.LinearAlgebra.RootSystem.Defs",
+        "match_kind": null
+      },
+      "note": "pairing_flip shows the dual's pairing is the transpose (Cartan matrix transposed = reversed arrows), but no Dynkin-diagram statement exists.",
+      "provenance": "ai-agent1",
+      "id": "81594e1fc3f3"
     },
     {
       "kind": "definition",
@@ -398,7 +832,15 @@
         "section": "Weyl chambers and the Weyl group",
         "snippet": "each connected component is called a Weyl chamber"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Weyl chambers are not defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "7de39941ac4f"
     },
     {
       "kind": "definition",
@@ -407,7 +849,15 @@
         "section": "Weyl chambers and the Weyl group",
         "snippet": "we may define the fundamental Weyl chamber associated to Δ"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized (no Weyl chambers).",
+      "provenance": "ai-agent1",
+      "id": "2caaae0be403"
     },
     {
       "kind": "proposition",
@@ -416,7 +866,15 @@
         "section": "Weyl chambers and the Weyl group",
         "snippet": "each Weyl group element permutes the Weyl chambers"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized (no Weyl chambers).",
+      "provenance": "ai-agent1",
+      "id": "fd5e6930fc4d"
     },
     {
       "kind": "theorem",
@@ -425,7 +883,15 @@
         "section": "Weyl chambers and the Weyl group",
         "snippet": "The Weyl group acts freely and transitively on the Weyl chambers"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized (no Weyl chambers).",
+      "provenance": "ai-agent1",
+      "id": "65fed2e1a547"
     },
     {
       "kind": "theorem",
@@ -434,7 +900,15 @@
         "section": "Weyl chambers and the Weyl group",
         "snippet": "contains exactly one point in the closure"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized (no Weyl chambers).",
+      "provenance": "ai-agent1",
+      "id": "2b670ad51100"
     },
     {
       "kind": "proposition",
@@ -443,7 +917,15 @@
         "section": "Root systems and Lie theory",
         "snippet": "Irreducible root systems classify a number of related objects in Lie theory"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classification correspondence with Lie-theoretic objects is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "377020654733"
     },
     {
       "kind": "proposition",
@@ -452,7 +934,15 @@
         "section": "Root systems and Lie theory",
         "snippet": "the roots are non-zero weights of the adjoint representation"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "LieAlgebra.IsKilling.rootSystem",
+        "module": "Mathlib.Algebra.Lie.Weights.RootSystem",
+        "match_kind": null
+      },
+      "note": "Roots are defined as nonzero weights (Weight K H L) of H acting on L (adjoint), so this is definitional rather than a stated theorem.",
+      "provenance": "ai-agent1",
+      "id": "eb5235de2de2"
     },
     {
       "kind": "proposition",
@@ -461,7 +951,15 @@
         "section": "Root systems and Lie theory",
         "snippet": "a semisimple Lie algebra is simple if and only if the associated root system is irreducible"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieAlgebra.IsKilling.isSimple_iff_isIrreducible",
+        "module": "Mathlib.Algebra.Lie.Weights.IsSimple",
+        "match_kind": "exact"
+      },
+      "note": "isSimple_iff_isIrreducible proves a Killing Lie algebra is simple iff its root system is irreducible.",
+      "provenance": "ai-agent1",
+      "id": "d17ae131d9c6"
     },
     {
       "kind": "proposition",
@@ -470,7 +968,15 @@
         "section": "Root systems and Lie theory",
         "snippet": "any two Cartan subalgebras give isomorphic root systems"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Independence of the root system from the choice of Cartan subalgebra is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "6db1098b0404"
     },
     {
       "kind": "proposition",
@@ -479,7 +985,15 @@
         "section": "Root systems and Lie theory",
         "snippet": "the root system determines the Lie algebra up to isomorphism"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No uniqueness theorem reconstructing the Lie algebra from its root system is formalized.",
+      "provenance": "ai-agent1",
+      "id": "3f2ef42ac496"
     },
     {
       "kind": "proposition",
@@ -488,7 +1002,15 @@
         "section": "Root systems and Lie theory",
         "snippet": "there is an associated simple Lie algebra"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "RootPairing.GeckConstruction.lieAlgebra",
+        "module": "Mathlib.LinearAlgebra.RootSystem.GeckConstruction.Basic",
+        "match_kind": null
+      },
+      "note": "Geck's construction builds a (semisimple) Lie algebra from a reduced crystallographic root system with base, giving the existence direction, but full simple-Lie-algebra existence/classification is not assembled.",
+      "provenance": "ai-agent1",
+      "id": "e49b68541d8e"
     },
     {
       "kind": "proposition",
@@ -497,7 +1019,15 @@
         "section": "Properties of the irreducible root systems",
         "snippet": "There are four infinite families"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "CartanMatrix.A",
+        "module": "Mathlib.Data.Matrix.Cartan",
+        "match_kind": null
+      },
+      "note": "Cartan matrices for the families A,B,C,D and exceptionals E₆,E₇,E₈,F₄,G₂ are defined, but the completeness/classification theorem is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "0ffa4bd6903d"
     },
     {
       "kind": "proposition",
@@ -506,7 +1036,15 @@
         "section": "Properties of the irreducible root systems",
         "snippet": "there can be at most two values for the length"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RootPairing.InvariantForm.exists_apply_eq_or",
+        "module": "Mathlib.LinearAlgebra.RootSystem.Finite.Lemmas",
+        "match_kind": "exact"
+      },
+      "note": "exists_apply_eq_or proves a reduced irreducible finite crystallographic root system has at most two root lengths.",
+      "provenance": "ai-agent1",
+      "id": "167515479272"
     },
     {
       "kind": "definition",
@@ -515,7 +1053,15 @@
         "section": "Properties of the irreducible root systems",
         "snippet": "the root system is said to be simply laced"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.IsSimplyLaced",
+        "module": "Mathlib.Data.Matrix.Cartan",
+        "match_kind": null
+      },
+      "note": "IsSimplyLaced is defined for Cartan matrices (off-diagonal 0 or -1), but not as a property of an abstract root pairing.",
+      "provenance": "ai-agent1",
+      "id": "97fec42b7b2d"
     },
     {
       "kind": "proposition",
@@ -524,7 +1070,15 @@
         "section": "Properties of the irreducible root systems",
         "snippet": "Any two roots of the same length lie in the same orbit of the Weyl group"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No result placing equal-length roots in a common Weyl orbit is formalized.",
+      "provenance": "ai-agent1",
+      "id": "1f21d7faf31b"
     },
     {
       "kind": "example",
@@ -533,7 +1087,15 @@
         "section": "A n",
         "snippet": "Let E be the subspace of R n +1 for which the coordinates sum to 0"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "CartanMatrix.A",
+        "module": "Mathlib.Data.Matrix.Cartan",
+        "match_kind": null
+      },
+      "note": "Only the type-A Cartan matrix is defined; the explicit Aₙ root system in R^{n+1} is not constructed.",
+      "provenance": "ai-agent1",
+      "id": "6a947bf5c471"
     },
     {
       "kind": "proposition",
@@ -542,7 +1104,15 @@
         "section": "A n",
         "snippet": "is most easily described as the set of integer vectors in R n +1 whose components sum to zero"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Aₙ root lattice description is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "7510bf3dd810"
     },
     {
       "kind": "example",
@@ -551,7 +1121,15 @@
         "section": "B n",
         "snippet": "let Φ consist of all integer vectors in E of length 1 or √ 2"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "CartanMatrix.B",
+        "module": "Mathlib.Data.Matrix.Cartan",
+        "match_kind": null
+      },
+      "note": "Only the type-B Cartan matrix is defined; the explicit Bₙ root system is not constructed.",
+      "provenance": "ai-agent1",
+      "id": "f78f118ebcee"
     },
     {
       "kind": "proposition",
@@ -560,7 +1138,15 @@
         "section": "B n",
         "snippet": "The B n root lattice—that is, the lattice generated by the B n roots—consists of all integer vectors"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Bₙ root lattice description is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "e2dfeaf62f5f"
     },
     {
       "kind": "proposition",
@@ -569,7 +1155,15 @@
         "section": "B n",
         "snippet": "B 1 is isomorphic to A 1 via scaling by √ 2"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "CartanMatrix.B_one",
+        "module": "Mathlib.Data.Matrix.Cartan",
+        "match_kind": null
+      },
+      "note": "B_one : B 1 = A 1 gives the coincidence at the Cartan-matrix level, not a root-system isomorphism.",
+      "provenance": "ai-agent1",
+      "id": "cd14f8cfb802"
     },
     {
       "kind": "example",
@@ -578,7 +1172,15 @@
         "section": "C n",
         "snippet": "let Φ consist of all integer vectors in E of length √ 2 together with all vectors of the form 2 λ"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "CartanMatrix.C",
+        "module": "Mathlib.Data.Matrix.Cartan",
+        "match_kind": null
+      },
+      "note": "Only the type-C Cartan matrix is defined; the explicit Cₙ root system is not constructed.",
+      "provenance": "ai-agent1",
+      "id": "0ab179dd01f1"
     },
     {
       "kind": "proposition",
@@ -587,7 +1189,15 @@
         "section": "C n",
         "snippet": "The C n root lattice—that is, the lattice generated by the C n roots—consists of all integer vectors whose components sum to an even integer"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Cₙ root lattice description is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "86f1c0935e81"
     },
     {
       "kind": "proposition",
@@ -596,7 +1206,15 @@
         "section": "C n",
         "snippet": "C 2 is isomorphic to B 2 via scaling by √ 2 and a 45 degree rotation"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "CartanMatrix.C_transpose",
+        "module": "Mathlib.Data.Matrix.Cartan",
+        "match_kind": null
+      },
+      "note": "C_transpose : (C n).transpose = B n encodes B/C duality at the Cartan-matrix level, not the C₂≅B₂ root-system isomorphism.",
+      "provenance": "ai-agent1",
+      "id": "b02c31cbc680"
     },
     {
       "kind": "example",
@@ -605,7 +1223,15 @@
         "section": "D n",
         "snippet": "The total number of roots is 2 n ( n − 1)"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "CartanMatrix.D",
+        "module": "Mathlib.Data.Matrix.Cartan",
+        "match_kind": null
+      },
+      "note": "Only the type-D Cartan matrix is defined; the explicit Dₙ root system and root count are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "89bd1ce4f880"
     },
     {
       "kind": "proposition",
@@ -614,7 +1240,15 @@
         "section": "D n",
         "snippet": "This is the same as the C n root lattice"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai-agent1",
+      "id": "ee6686a9bf94"
     },
     {
       "kind": "proposition",
@@ -623,7 +1257,15 @@
         "section": "D n",
         "snippet": "D 3 coincides with A 3"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "CartanMatrix.D_three'",
+        "module": "Mathlib.Data.Matrix.Cartan",
+        "match_kind": null
+      },
+      "note": "D_three' : (D 3).reindex ... = A 3 gives the coincidence at the Cartan-matrix level.",
+      "provenance": "ai-agent1",
+      "id": "47e619e48dfa"
     },
     {
       "kind": "proposition",
@@ -632,7 +1274,15 @@
         "section": "D n",
         "snippet": "D 4 has additional symmetry called triality"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Triality of D₄ is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "9de6ed8c22ef"
     },
     {
       "kind": "example",
@@ -641,7 +1291,25 @@
         "section": "E 6 , E 7 , E 8",
         "snippet": "The E 8 root system is any set of vectors in R 8 that is congruent to the following set"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "CartanMatrix.E₈",
+        "module": "Mathlib.Data.Matrix.Cartan",
+        "match_kind": null
+      },
+      "note": "Only the E₈ Cartan matrix is defined; the explicit E₈ root system in R⁸ is not constructed.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "E 6 , E 7 , E 8",
+          "snippet": "The E 8 root system is any set of vectors in R 8 that is congruent to the following set"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle D_{8}\\cup \\left\\{{\\frac {1}{2}}\\left(\\sum _{i=1}^{8}\\varepsilon _{i}\\mathbf {e} _{i}\\right):\\varepsilon _{i}=\\pm 1,\\,\\varepsilon _{1}\\cdots \\varepsilon _{8}=+1\\right\\}.}"
+        }
+      ],
+      "id": "5327b7291de2"
     },
     {
       "kind": "proposition",
@@ -650,7 +1318,15 @@
         "section": "E 6 , E 7 , E 8",
         "snippet": "The root system has 240 roots"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The E₈ root count is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "f2060ab8a264"
     },
     {
       "kind": "example",
@@ -659,7 +1335,15 @@
         "section": "E 6 , E 7 , E 8",
         "snippet": "is the set of vectors in E 8 that are perpendicular to a fixed root in E 8"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "CartanMatrix.E₇",
+        "module": "Mathlib.Data.Matrix.Cartan",
+        "match_kind": null
+      },
+      "note": "Only the E₇ Cartan matrix is defined; the explicit E₇ root system is not constructed.",
+      "provenance": "ai-agent1",
+      "id": "37dd0eb81885"
     },
     {
       "kind": "example",
@@ -668,7 +1352,15 @@
         "section": "E 6 , E 7 , E 8",
         "snippet": "is the subsystem of E 8 perpendicular to two suitably chosen roots of E 8"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "CartanMatrix.E₆",
+        "module": "Mathlib.Data.Matrix.Cartan",
+        "match_kind": null
+      },
+      "note": "Only the E₆ Cartan matrix is defined; the explicit E₆ root system is not constructed.",
+      "provenance": "ai-agent1",
+      "id": "db71e77901f6"
     },
     {
       "kind": "proposition",
@@ -677,7 +1369,15 @@
         "section": "E 6 , E 7 , E 8",
         "snippet": "The lattices Γ 8 and Γ' 8 are isomorphic"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai-agent1",
+      "id": "7349aa8dfad1"
     },
     {
       "kind": "example",
@@ -686,7 +1386,15 @@
         "section": "F 4",
         "snippet": "let Φ denote the set of vectors α of length 1 or √ 2 such that the coordinates of 2α are all integers"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "CartanMatrix.F₄",
+        "module": "Mathlib.Data.Matrix.Cartan",
+        "match_kind": null
+      },
+      "note": "Only the F₄ Cartan matrix is defined; the explicit F₄ root system is not constructed.",
+      "provenance": "ai-agent1",
+      "id": "48a18ea936fd"
     },
     {
       "kind": "proposition",
@@ -695,7 +1403,15 @@
         "section": "F 4",
         "snippet": "This lattice is isomorphic to the lattice of Hurwitz quaternions"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai-agent1",
+      "id": "e6fac3f73210"
     },
     {
       "kind": "example",
@@ -704,7 +1420,15 @@
         "section": "G 2",
         "snippet": "The root system G 2 has 12 roots, which form the vertices of a hexagram"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "RootPairing.IsG2",
+        "module": "Mathlib.LinearAlgebra.RootSystem.Finite.G2",
+        "match_kind": null
+      },
+      "note": "IsG2/EmbeddedG2 abstractly characterise the 𝔤₂ root system and card_index_eq_twelve proves it has 12 roots, but the explicit hexagram construction is not given.",
+      "provenance": "ai-agent1",
+      "id": "f24e5c2db2b5"
     },
     {
       "kind": "proposition",
@@ -713,7 +1437,15 @@
         "section": "G 2",
         "snippet": "is the same as the A 2 root lattice"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai-agent1",
+      "id": "e937c2f189fa"
     },
     {
       "kind": "definition",
@@ -722,7 +1454,15 @@
         "section": "The root poset",
         "snippet": "The set of positive roots is naturally ordered by saying that"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "RootPairing.Base.height",
+        "module": "Mathlib.LinearAlgebra.RootSystem.Base",
+        "match_kind": null
+      },
+      "note": "The height function (monotone for this order) is defined, but the root poset ordering itself is not introduced.",
+      "provenance": "ai-agent1",
+      "id": "d7c15dc4f6e5"
     },
     {
       "kind": "proposition",
@@ -731,7 +1471,15 @@
         "section": "The root poset",
         "snippet": "one can determine the degrees of the fundamental invariants of the corresponding Weyl group from this poset"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized.",
+      "provenance": "ai-agent1",
+      "id": "9c4f4bd1f06e"
     }
   ]
 }

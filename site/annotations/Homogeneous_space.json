@@ -1,0 +1,521 @@
+{
+  "slug": "Homogeneous_space",
+  "wikipedia_title": "Homogeneous space",
+  "display_title": "Homogeneous space",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Homogeneous space (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a homogeneous space is, very informally, a space that looks the same everywhere"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Informal description; no dedicated Mathlib decl captures this prose-level intuition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homogeneous space for a group G",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a homogeneous space for a group G is a non-empty manifold or topological space X on which G acts transitively"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MulAction.IsPretransitive",
+        "module": "Mathlib.Algebra.Group.Action.Pretransitive",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines pretransitive (= transitive on nonempty) actions abstractly but no bundled `HomogeneousSpace` structure combining nonemptiness with a topological/manifold X.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Symmetries of X",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The elements of G are called the symmetries of X"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Purely terminological; Mathlib has no dedicated 'symmetries' notion attached to a G-action.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "G-space",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "X is called a G -space if it is equipped with an action of G on X"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction",
+        "module": "Mathlib.Algebra.Group.Action.Defs",
+        "match_kind": "exact"
+      },
+      "note": "A G-space is precisely a type carrying a `MulAction G X` instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Homogeneous space (formal)",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "A homogeneous space is a G -space on which G acts transitively"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction.IsPretransitive",
+        "module": "Mathlib.Algebra.Group.Action.Pretransitive",
+        "match_kind": "exact"
+      },
+      "note": "`MulAction.IsPretransitive G X` encodes the transitivity condition for a G-space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "G-space structure as homomorphism",
+      "anchor": {
+        "section": "Formal definition",
+        "snippet": "the structure of a G -space is a homomorphism"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction.toPermHom",
+        "module": "Mathlib.Algebra.Group.Action.End",
+        "match_kind": "exact"
+      },
+      "note": "`MulAction.toPermHom` is the homomorphism G → Equiv.Perm X induced by a group action.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Topological G-space",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "if X is a topological space , then group elements are assumed to act as homeomorphisms"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousSMul",
+        "module": "Mathlib.Topology.Algebra.MulAction",
+        "match_kind": "exact"
+      },
+      "note": "`ContinuousSMul G X` requires the action to be continuous, giving group elements as homeomorphisms when G is a group.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Differentiable G-space",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "if X is a differentiable manifold , then the group elements are diffeomorphisms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No bundled 'smooth/differentiable action of a Lie group on a manifold' class found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Sphere as homogeneous space",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Positive curvature: Sphere"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`Metric.sphere` exists as a set but no homogeneous-space structure SO(n+1)/SO(n) is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Oriented sphere",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Oriented sphere"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the oriented sphere as SO(n+1)/SO(n) found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Projective space",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Projective space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Projectivization",
+        "module": "Mathlib.LinearAlgebra.Projectivization.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`Projectivization` defines projective space, but its description as PO(n+1)/PO(n) homogeneous space is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Euclidean space",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Flat (zero curvature): Euclidean space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "EuclideanSpace",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "generalization"
+      },
+      "note": "`EuclideanSpace` exists, but no formalization of E(n)/O(n) as a homogeneous space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hyperbolic space",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Negative curvature: Hyperbolic space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Loogle finds only `Matrix.IsHyperbolic`; no hyperbolic space manifold or O(1,n)/O(n) presentation in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Oriented hyperbolic space",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Oriented hyperbolic space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of oriented hyperbolic space as a quotient of indefinite orthogonal groups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Anti-de Sitter space",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Anti-de Sitter space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Anti-de Sitter space is not present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Affine space over field",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Affine space over field"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AddTorsor",
+        "module": "Mathlib.Algebra.AddTorsor.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`AddTorsor` formalizes affine spaces as torsors but the presentation as Aff(n)/GL(n) homogeneous space is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Grassmannian",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "Grassmannian"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Module.Grassmannian",
+        "module": "Mathlib.RingTheory.Grassmannian",
+        "match_kind": "generalization"
+      },
+      "note": "`Module.Grassmannian` defines the Grassmannian functorially, but not as a GL/O-quotient homogeneous space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Minkowski space",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "This includes Minkowski space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Loogle results for 'Minkowski' return only the Minkowski-bound number-theory lemmas; no Minkowski spacetime.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Line geometry of Plücker",
+      "anchor": {
+        "section": "Geometry",
+        "snippet": "the space of lines in projective space of three dimensions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Loogle finds no Plücker/Pluecker constants; the Klein quadric / line Grassmannian is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Points correspond to left cosets",
+      "anchor": {
+        "section": "Homogeneous spaces as coset spaces",
+        "snippet": "the points of X correspond to the left cosets"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction.orbitEquivQuotientStabilizer",
+        "module": "Mathlib.GroupTheory.GroupAction.Quotient",
+        "match_kind": "exact"
+      },
+      "note": "`MulAction.orbitEquivQuotientStabilizer` provides the canonical bijection between an orbit and G/Stab, the coset-space description.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Coset space is homogeneous",
+      "anchor": {
+        "section": "Homogeneous spaces as coset spaces",
+        "snippet": "given a coset space G / H , it is a homogeneous space for G with a distinguished point"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction.QuotientAction",
+        "module": "Mathlib.GroupTheory.GroupAction.Quotient",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib equips `G ⧸ H` with a natural G-action via `MulAction.QuotientAction`, which is automatically transitive.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "G-torsor",
+      "anchor": {
+        "section": "Homogeneous spaces as coset spaces",
+        "snippet": "if H is the identity subgroup"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AddTorsor",
+        "module": "Mathlib.Algebra.AddTorsor.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "`AddTorsor` formalizes principal homogeneous spaces (additive torsors); the multiplicative analogue is implicit via the same definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Stabilizers under change of origin",
+      "anchor": {
+        "section": "Homogeneous spaces as coset spaces",
+        "snippet": "a different choice of origin o will lead to a quotient of G by a different subgroup"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MulAction.stabilizer",
+        "module": "Mathlib.GroupTheory.GroupAction.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`MulAction.stabilizer` is defined, and conjugation lemmas exist, but the precise statement that changing the basepoint conjugates the stabilizer is a folklore consequence rather than a single named decl I located.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Stabilizer is closed; Cartan",
+      "anchor": {
+        "section": "Homogeneous spaces as coset spaces",
+        "snippet": "If the action of G on X is continuous and X is Hausdorff , then H is a closed subgroup of G"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "I found no Mathlib lemma asserting the stabilizer of a point is a closed subgroup under continuous action on a Hausdorff space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Clifford–Klein forms",
+      "anchor": {
+        "section": "Homogeneous spaces as coset spaces",
+        "snippet": "double coset spaces, notably Clifford–Klein forms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Clifford–Klein form construction is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Stabilizer in line geometry",
+      "anchor": {
+        "section": "Example",
+        "snippet": "in the line geometry case, we can identify H as a 12-dimensional subgroup"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific to the Klein-quadric example which is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Quadratic relation among minors",
+      "anchor": {
+        "section": "Example",
+        "snippet": "a single quadratic relation holds between the six minors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Plücker quadratic relation is not formalized; no Plücker decls exist in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Prehomogeneous vector space",
+      "anchor": {
+        "section": "Prehomogeneous vector spaces",
+        "snippet": "It is a finite-dimensional vector space V with a group action of an algebraic group G , such that there is an orbit of G that is open for the Zariski topology"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Loogle returns no 'prehomogeneous' decls in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "GL(1) on one-dimensional space",
+      "anchor": {
+        "section": "Prehomogeneous vector spaces",
+        "snippet": "An example is GL(1) acting on a one-dimensional space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of this specific prehomogeneous-vector-space example.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Minkowski space as coset",
+      "anchor": {
+        "section": "Homogeneous spaces in physics",
+        "snippet": "the space of cosets G / H is the Minkowski space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Minkowski space and the Poincaré/Lorentz quotient construction are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Killing vectors bound",
+      "anchor": {
+        "section": "Homogeneous spaces in physics",
+        "snippet": "A homogeneous space of N dimensions admits a set of at least N and up to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Killing vector fields on Riemannian manifolds (in the geometric sense) are not formalized; loogle 'Killing' returns only Lie-algebra Killing-form decls.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Three non-vanishing Killing fields in 3D",
+      "anchor": {
+        "section": "Homogeneous spaces in physics",
+        "snippet": "homogeneous 3-spaces have the property that one may use linear combinations of these to find three everywhere non-vanishing Killing vector fields"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized; depends on Killing-vector-field machinery absent from Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

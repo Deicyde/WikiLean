@@ -108,6 +108,22 @@
       "id": "2f3d55305e44"
     },
     {
+      "kind": "example",
+      "label": "Archimedes' quadrature of the parabola",
+      "anchor": {
+        "section": "History",
+        "snippet": "the so-called \"parabola segment\", was computed by Archimedes by the method of exhaustion"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Archimedes' method-of-exhaustion computation of a parabolic segment area is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Parabola (locus definition)",
       "anchor": {
@@ -1350,7 +1366,7 @@
         },
         {
           "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}h&amp;={\\frac {p}{2}},\\\\q&amp;={\\sqrt {f^{2}+h^{2}}},\\\\s&amp;={\\frac {hq}{f}}+f\\ln {\\frac {h+q}{f}}.\\end{aligned}}}"
+          "value": "{\\displaystyle {\\begin{aligned}h&={\\frac {p}{2}},\\\\q&={\\sqrt {f^{2}+h^{2}}},\\\\s&={\\frac {hq}{f}}+f\\ln {\\frac {h+q}{f}}.\\end{aligned}}}"
         }
       ],
       "id": "1ad486276cd6"
@@ -1626,7 +1642,7 @@
         },
         {
           "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}{\\vec {c}}(t)&amp;=\\sum _{i=0}^{2}{\\binom {2}{i}}t^{i}(1-t)^{2-i}{\\vec {p}}_{i}\\\\[1ex]&amp;=(1-t)^{2}{\\vec {p}}_{0}+2t(1-t){\\vec {p}}_{1}+t^{2}{\\vec {p}}_{2}\\\\[2ex]&amp;=\\left({\\vec {p}}_{0}-2{\\vec {p}}_{1}+{\\vec {p}}_{2}\\right)t^{2}+\\left(-2{\\vec {p}}_{0}+2{\\vec {p}}_{1}\\right)t+{\\vec {p}}_{0},\\quad t\\in [0,1].\\end{aligned}}}"
+          "value": "{\\displaystyle {\\begin{aligned}{\\vec {c}}(t)&=\\sum _{i=0}^{2}{\\binom {2}{i}}t^{i}(1-t)^{2-i}{\\vec {p}}_{i}\\\\[1ex]&=(1-t)^{2}{\\vec {p}}_{0}+2t(1-t){\\vec {p}}_{1}+t^{2}{\\vec {p}}_{2}\\\\[2ex]&=\\left({\\vec {p}}_{0}-2{\\vec {p}}_{1}+{\\vec {p}}_{2}\\right)t^{2}+\\left(-2{\\vec {p}}_{0}+2{\\vec {p}}_{1}\\right)t+{\\vec {p}}_{0},\\quad t\\in [0,1].\\end{aligned}}}"
         }
       ],
       "id": "0a431c517b71"
@@ -1708,6 +1724,22 @@
       "note": "Angle trisection via a parabola is not formalized.",
       "provenance": "ai",
       "id": "6ab961cdd7af"
+    },
+    {
+      "kind": "proposition",
+      "label": "Triple-angle cubic for the trisectrix construction",
+      "anchor": {
+        "section": "As trisectrix",
+        "snippet": "Solving the equation system given by the circle around"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.cos_three_mul",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": null
+      },
+      "note": "The triple-angle identity cos(3α) = 4cos³α − 3cos α used to verify the trisection is `Real.cos_three_mul` in Mathlib; the geometric trisection proof itself is not formalized.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",

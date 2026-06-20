@@ -20,16 +20,6 @@
       },
       "note": "Mathlib defines `gaussianReal μ v` as the Gaussian measure on ℝ with mean μ and variance v.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "(Lead)",
-          "snippet": "a normal distribution or Gaussian distribution is a type of continuous probability distribution for a real-valued random variable"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f(x)={\\frac {1}{\\sqrt {2\\pi \\sigma ^{2}}}}\\exp {\\left(-{\\frac {(x-\\mu )^{2}}{2\\sigma ^{2}}}\\right)}\\,.}"
-        }
-      ],
       "id": "20774e57c3c1"
     },
     {
@@ -81,16 +71,6 @@
       },
       "note": "`gaussianReal 0 1` is the standard normal; `stdGaussian E` is the multivariate analogue.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Standard normal distribution",
-          "snippet": "The simplest case of a normal distribution is known as the standard normal distribution or unit normal distribution"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\varphi (z)={\\frac {e^{-z^{2}/2}}{\\sqrt {2\\pi }}}\\,.}"
-        }
-      ],
       "id": "1209f7fb0984"
     },
     {
@@ -193,16 +173,6 @@
       },
       "note": "Mathlib only parameterizes Gaussians by mean and variance.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Alternative parameterizations",
-          "snippet": "Some authors advocate using the precision"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f(x)={\\sqrt {\\frac {\\tau }{2\\pi }}}e^{-\\tau (x-\\mu )^{2}/2}.}"
-        }
-      ],
       "id": "dee38998bc1f"
     },
     {
@@ -220,16 +190,6 @@
       },
       "note": "Reciprocal-standard-deviation parameterization is not present.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Alternative parameterizations",
-          "snippet": "Alternatively, the reciprocal of the standard deviation"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f(x)={\\frac {\\tau '}{\\sqrt {2\\pi }}}e^{-(\\tau ')^{2}(x-\\mu )^{2}/2}.}"
-        }
-      ],
       "id": "2e7d5f6593ee"
     },
     {
@@ -264,16 +224,6 @@
       },
       "note": "Mathlib has no dedicated definition of Φ; one can take `gaussianReal 0 1 (Set.Iic x)` ad hoc.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Cumulative distribution function",
-          "snippet": "The cumulative distribution function (CDF) of the standard normal distribution"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\Phi (x)={\\frac {1}{\\sqrt {2\\pi }}}\\int _{-\\infty }^{x}e^{-t^{2}/2}\\,dt\\,.}"
-        }
-      ],
       "id": "6dec3e90f695"
     },
     {
@@ -291,16 +241,6 @@
       },
       "note": "The error function `erf` is not defined in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Cumulative distribution function",
-          "snippet": "The related error function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\operatorname {erf} (x)={\\frac {1}{\\sqrt {\\pi }}}\\int _{-x}^{x}e^{-t^{2}}\\,dt={\\frac {2}{\\sqrt {\\pi }}}\\int _{0}^{x}e^{-t^{2}}\\,dt\\,.}"
-        }
-      ],
       "id": "021da2ebe2ee"
     },
     {
@@ -318,16 +258,6 @@
       },
       "note": "Without erf or Φ formalized, the relation is absent.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Cumulative distribution function",
-          "snippet": "The two functions are closely related"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\Phi (x)={\\frac {1}{2}}\\left[1+\\operatorname {erf} \\left({\\frac {x}{\\sqrt {2}}}\\right)\\right].}"
-        }
-      ],
       "id": "36e4357c7547"
     },
     {
@@ -345,16 +275,6 @@
       },
       "note": "Mathlib expresses Gaussian measure of a set as an integral of the pdf but does not name the CDF.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Cumulative distribution function",
-          "snippet": "For a generic normal distribution with density"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle F(x)=\\Phi {\\left({\\frac {x-\\mu }{\\sigma }}\\right)}={\\frac {1}{2}}\\left[1+\\operatorname {erf} \\left({\\frac {x-\\mu }{\\sigma {\\sqrt {2}}}}\\right)\\right].}"
-        }
-      ],
       "id": "f94353e85339"
     },
     {
@@ -372,16 +292,6 @@
       },
       "note": "The interval-probability formula follows from `gaussianReal_apply_eq_integral` but is not stated directly.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Cumulative distribution function",
-          "snippet": "The probability that x lies between a and b"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\operatorname {P} (a&lt;x\\leq b)={\\frac {1}{2}}\\left[\\operatorname {erf} \\left({\\frac {b-\\mu }{\\sigma {\\sqrt {2}}}}\\right)-\\operatorname {erf} \\left({\\frac {a-\\mu }{\\sigma {\\sqrt {2}}}}\\right)\\right]}"
-        }
-      ],
       "id": "8dfebded381a"
     },
     {
@@ -416,16 +326,6 @@
       },
       "note": "No symmetry lemma for the standard normal CDF is present.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Cumulative distribution function",
-          "snippet": "has 2-fold rotational symmetry around the point (0,1/2)"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\int \\Phi (x)\\,dx=x\\Phi (x)+\\varphi (x)+C.}"
-        }
-      ],
       "id": "4978d8a3317f"
     },
     {
@@ -443,16 +343,6 @@
       },
       "note": "Tail asymptotics of the normal CDF are not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Cumulative distribution function",
-          "snippet": "An asymptotic expansion of the cumulative distribution function for large x can be derived using integration by parts"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\Phi (x)={\\frac {1}{2}}+{\\frac {1}{\\sqrt {2\\pi }}}e^{-x^{2}/2}\\sum _{n=0}^{\\infty }{\\frac {1}{(2n+1)!!}}x^{2n+1}\\,.}"
-        }
-      ],
       "id": "687d2cdef260"
     },
     {
@@ -504,20 +394,6 @@
       },
       "note": "Mathlib has the identity expressing iterated derivatives of the Gaussian via Hermite polynomials, but no Taylor-series recursion for Φ.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Recursive computation with Taylor series",
-          "snippet": "The recurrence relation for Hermite polynomials"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\Phi (x)=\\sum _{n=0}^{\\infty }{\\frac {\\Phi ^{(n)}(x_{0})}{n!}}(x-x_{0})^{n}\\,,}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\Phi ^{(0)}(x_{0})&amp;={\\frac {1}{\\sqrt {2\\pi }}}\\int _{-\\infty }^{x_{0}}e^{-t^{2}/2}\\,dt\\\\\\Phi ^{(1)}(x_{0})&amp;={\\frac {1}{\\sqrt {2\\pi }}}e^{-x_{0}^{2}/2}\\\\\\Phi ^{(n)}(x_{0})&amp;=-\\left(x_{0}\\Phi ^{(n-1)}(x_{0})+(n-2)\\Phi ^{(n-2)}(x_{0})\\right),&amp;n\\geq 2\\,.\\end{aligned}}}"
-        }
-      ],
       "id": "23147b045e53"
     },
     {
@@ -552,20 +428,6 @@
       },
       "note": "No probit/quantile function for the normal is defined.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Quantile function",
-          "snippet": "The quantile function of a distribution is the inverse of the cumulative distribution function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\Phi ^{-1}(p)={\\sqrt {2}}\\operatorname {erf} ^{-1}(2p-1),\\quad p\\in (0,1).}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle F^{-1}(p)=\\mu +\\sigma \\Phi ^{-1}(p)=\\mu +\\sigma {\\sqrt {2}}\\operatorname {erf} ^{-1}(2p-1),\\quad p\\in (0,1).}"
-        }
-      ],
       "id": "955c5e4f7d71"
     },
     {
@@ -583,16 +445,6 @@
       },
       "note": "Newton iteration applied to the normal quantile is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Using root finding to compute the quantile function",
-          "snippet": "can be used with Newton's method"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle x_{n}=x_{n-1}-{\\frac {\\Phi (x_{n-1})-q}{\\varphi (x_{n-1})}}\\,.}"
-        }
-      ],
       "id": "a1cc565c8b06"
     },
     {
@@ -695,16 +547,6 @@
       },
       "note": "Finiteness of all moments of the Gaussian is captured by `memLp_id_gaussianReal`; closed-form moment formulas are not stated.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Moments",
-          "snippet": "the non-central moments exist and are finite for any"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\operatorname {E} \\left[(X-\\mu )^{p}\\right]={\\begin{cases}0&amp;{\\text{if }}p{\\text{ is odd,}}\\\\\\sigma ^{p}(p-1)!!&amp;{\\text{if }}p{\\text{ is even.}}\\end{cases}}}"
-        }
-      ],
       "id": "ab37b9999642"
     },
     {
@@ -739,16 +581,6 @@
       },
       "note": "The inverse Mills ratio is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Moments",
-          "snippet": "The expectation of ⁠ ⁠ conditioned on the event"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\operatorname {E} \\left[X\\mid a&lt;X&lt;b\\right]=\\mu -\\sigma ^{2}{\\frac {f(b)-f(a)}{F(b)-F(a)}}\\,,}"
-        }
-      ],
       "id": "2dd06fbc1252"
     },
     {
@@ -783,16 +615,6 @@
       },
       "note": "Mathlib has the general `charFun` and the closed form for the Gaussian.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Fourier transform and characteristic function",
-          "snippet": "is closely connected to the characteristic function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\varphi _{X}(t)={\\hat {f}}(-t)\\,.}"
-        }
-      ],
       "id": "a8ae6eb63104"
     },
     {
@@ -827,16 +649,6 @@
       },
       "note": "Both the generic `cgf` and the Gaussian formula `μt + v t²/2` are present.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Moment- and cumulant-generating functions",
-          "snippet": "The cumulant generating function is the logarithm of the moment generating function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle g(t)=\\ln M(t)=\\mu t+{\\tfrac {1}{2}}\\sigma ^{2}t^{2}\\,.}"
-        }
-      ],
       "id": "5b94777b6a1d"
     },
     {
@@ -871,16 +683,6 @@
       },
       "note": "Mathlib defines the zero-variance Gaussian as `Measure.dirac μ`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Zero-variance limit",
-          "snippet": "In the limit when"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle F(x)={\\begin{cases}0&amp;{\\text{if }}x&lt;\\mu \\\\1&amp;{\\text{if }}x\\geq \\mu .\\end{cases}}}"
-        }
-      ],
       "id": "414d89be61a8"
     },
     {
@@ -898,20 +700,6 @@
       },
       "note": "Differential entropy and its maximization are not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Maximum entropy",
-          "snippet": "Of all probability distributions over the reals with a specified finite mean"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle H(X)=-\\int _{-\\infty }^{\\infty }f(x)\\ln f(x)\\,dx\\,,}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle L=-\\int _{-\\infty }^{\\infty }f(x)\\ln f(x)\\,dx-\\lambda _{0}\\left(1-\\int _{-\\infty }^{\\infty }f(x)\\,dx\\right)-\\lambda _{1}\\left(\\mu -\\int _{-\\infty }^{\\infty }f(x)x\\,dx\\right)-\\lambda _{2}\\left(\\sigma ^{2}-\\int _{-\\infty }^{\\infty }f(x)(x-\\mu )^{2}\\,dx\\right)\\,.}"
-        }
-      ],
       "id": "531703f9b1ca"
     },
     {
@@ -957,27 +745,29 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "ProbabilityTheory.klDivergence",
+        "decl": "InformationTheory.klDiv",
         "module": "Mathlib.InformationTheory.KullbackLeibler.Basic",
         "match_kind": "generalization"
       },
-      "note": "KL divergence is defined generally but the closed-form formula for two normals is not stated.",
+      "note": "KL divergence between measures is defined generally as `InformationTheory.klDiv`, but the closed-form formula for two normals is not stated.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Other properties",
-          "snippet": "The Kullback–Leibler divergence of one normal distribution"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle D_{\\mathrm {KL} }(X_{1}\\parallel X_{2})={\\frac {(\\mu _{1}-\\mu _{2})^{2}}{2\\sigma _{2}^{2}}}+{\\frac {1}{2}}\\left({\\frac {\\sigma _{1}^{2}}{\\sigma _{2}^{2}}}-1-\\ln {\\frac {\\sigma _{1}^{2}}{\\sigma _{2}^{2}}}\\right)}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle H^{2}(X_{1},X_{2})=1-{\\sqrt {\\frac {2\\sigma _{1}\\sigma _{2}}{\\sigma _{1}^{2}+\\sigma _{2}^{2}}}}\\exp \\left(-{\\frac {1}{4}}{\\frac {(\\mu _{1}-\\mu _{2})^{2}}{\\sigma _{1}^{2}+\\sigma _{2}^{2}}}\\right)}"
-        }
-      ],
       "id": "37d02de1e96d"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hellinger distance between normals",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "The Hellinger distance between the same distributions is equal to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Hellinger distance and its closed form for normals are not in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -994,16 +784,6 @@
       },
       "note": "Fisher information is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Other properties",
-          "snippet": "The Fisher information matrix for a normal distribution"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\mathcal {I}}(\\mu ,\\sigma ^{2})={\\begin{pmatrix}{\\frac {1}{\\sigma ^{2}}}&amp;0\\\\0&amp;{\\frac {1}{2\\sigma ^{4}}}\\end{pmatrix}}}"
-        }
-      ],
       "id": "2c2557361bc4"
     },
     {
@@ -1021,17 +801,23 @@
       },
       "note": "Bayesian conjugate-prior theory is not in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Other properties",
-          "snippet": "The conjugate prior of the mean of a normal distribution is another normal distribution"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mu \\mid x_{1},\\ldots ,x_{n}\\sim {\\mathcal {N}}\\left({\\frac {{\\frac {\\sigma ^{2}}{n}}\\mu _{0}+\\sigma _{0}^{2}{\\bar {x}}}{{\\frac {\\sigma ^{2}}{n}}+\\sigma _{0}^{2}}},\\left({\\frac {n}{\\sigma ^{2}}}+{\\frac {1}{\\sigma _{0}^{2}}}\\right)^{-1}\\right)}"
-        }
-      ],
       "id": "5906b7add1ec"
+    },
+    {
+      "kind": "proposition",
+      "label": "Statistical manifold of normals",
+      "anchor": {
+        "section": "Other properties",
+        "snippet": "In information geometry , the family of normal distributions forms a statistical manifold with constant curvature"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Information geometry / statistical manifolds are not in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -1048,16 +834,6 @@
       },
       "note": "1D CLT for i.i.d. variables with finite variance is in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Central limit theorem",
-          "snippet": "The central limit theorem states that under certain (fairly common) conditions"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle Z={\\sqrt {n}}{\\biggl (}{\\frac {1}{n}}\\sum _{i=1}^{n}X_{i}{\\biggr )}}"
-        }
-      ],
       "id": "45e60730d645"
     },
     {
@@ -1245,16 +1021,6 @@
       },
       "note": "Stable distributions are not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Operations on a single normal variable",
-          "snippet": "It follows that the normal distribution is stable"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle X_{3}={\\frac {aX_{1}+bX_{2}-(a+b)\\mu }{\\sqrt {a^{2}+b^{2}}}}+\\mu }"
-        }
-      ],
       "id": "ae4bed9155e0"
     },
     {
@@ -1323,16 +1089,6 @@
       },
       "note": "Chi-squared distribution is not in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Operations on multiple independent normal variables",
-          "snippet": "then the sum of their squares has the chi-squared distribution"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle X_{1}^{2}+\\cdots +X_{n}^{2}\\sim \\chi _{n}^{2}.}"
-        }
-      ],
       "id": "a1d987b30b02"
     },
     {
@@ -1350,16 +1106,6 @@
       },
       "note": "Sample mean/variance independence and the t-distribution are not in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Operations on multiple independent normal variables",
-          "snippet": "then their sample mean is independent from the sample standard deviation"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle t={\\frac {{\\overline {X}}-\\mu }{S/{\\sqrt {n}}}}={\\frac {{\\frac {1}{n}}(X_{1}+\\cdots +X_{n})-\\mu }{\\sqrt {{\\frac {1}{n(n-1)}}\\left[(X_{1}-{\\overline {X}})^{2}+\\cdots +(X_{n}-{\\overline {X}})^{2}\\right]}}}\\sim t_{n-1}.}"
-        }
-      ],
       "id": "4bae1bb0bc77"
     },
     {
@@ -1377,16 +1123,6 @@
       },
       "note": "The F-distribution is not in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Operations on multiple independent normal variables",
-          "snippet": "then the ratio of their normalized sums of squares will have the F-distribution"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle F={\\frac {\\left(X_{1}^{2}+X_{2}^{2}+\\cdots +X_{n}^{2}\\right)/n}{\\left(Y_{1}^{2}+Y_{2}^{2}+\\cdots +Y_{m}^{2}\\right)/m}}\\sim F_{n,m}.}"
-        }
-      ],
       "id": "2e4f2a28635a"
     },
     {
@@ -1642,17 +1378,23 @@
       },
       "note": "Not in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Extensions",
-          "snippet": "A random variable X has a two-piece normal distribution"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f_{X}(x)={\\begin{cases}N(\\mu ,\\sigma _{1}^{2}),&amp;{\\text{ if }}x\\leq \\mu \\\\N(\\mu ,\\sigma _{2}^{2}),&amp;{\\text{ if }}x\\geq \\mu \\end{cases}}}"
-        }
-      ],
       "id": "e41414feceae"
+    },
+    {
+      "kind": "definition",
+      "label": "Pearson distribution and generalized normal",
+      "anchor": {
+        "section": "Extensions",
+        "snippet": "Pearson distribution — a four-parameter family of probability distributions that extend the normal law"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pearson and generalized normal families are not in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -1669,20 +1411,6 @@
       },
       "note": "MLE for normal parameters is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Estimation of parameters",
-          "snippet": "The standard approach to this problem is the maximum likelihood method"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\ln {\\mathcal {L}}(\\mu ,\\sigma ^{2})&amp;=\\sum _{i=1}^{n}\\ln f(x_{i}\\mid \\mu ,\\sigma ^{2})\\\\&amp;=-{\\frac {n}{2}}\\ln(2\\pi )-{\\frac {n}{2}}\\ln \\sigma ^{2}-{\\frac {1}{2\\sigma ^{2}}}\\sum _{i=1}^{n}(x_{i}-\\mu )^{2}.\\end{aligned}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\hat {\\mu }}={\\overline {x}}\\equiv {\\frac {1}{n}}\\sum _{i=1}^{n}x_{i},\\qquad {\\hat {\\sigma }}^{2}={\\frac {1}{n}}\\sum _{i=1}^{n}(x_{i}-{\\overline {x}})^{2}.}"
-        }
-      ],
       "id": "cb79cc5c9232"
     },
     {
@@ -1700,16 +1428,6 @@
       },
       "note": "Sample-mean estimator is not formalized as a named concept.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Sample mean",
-          "snippet": "is called the sample mean , since it is the arithmetic mean of all observations"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\hat {\\mu }}\\sim {\\mathcal {N}}(\\mu ,\\sigma ^{2}/n).}"
-        }
-      ],
       "id": "f14574784b8d"
     },
     {
@@ -1727,16 +1445,6 @@
       },
       "note": "Lehmann-Scheffé is not in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Sample mean",
-          "snippet": "by the Lehmann–Scheffé theorem"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\hat {\\mu }}\\sim {\\mathcal {N}}(\\mu ,\\sigma ^{2}/n).}"
-        }
-      ],
       "id": "4f25a1406b9c"
     },
     {
@@ -1754,20 +1462,6 @@
       },
       "note": "Sample variance with Bessel correction is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Sample variance",
-          "snippet": "is called the sample variance , since it is the variance of the sample"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle s^{2}={\\frac {n}{n-1}}{\\hat {\\sigma }}^{2}={\\frac {1}{n-1}}\\sum _{i=1}^{n}(x_{i}-{\\overline {x}})^{2}.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle s^{2}\\sim {\\frac {\\sigma ^{2}}{n-1}}\\cdot \\chi _{n-1}^{2},\\qquad {\\hat {\\sigma }}^{2}\\sim {\\frac {\\sigma ^{2}}{n}}\\cdot \\chi _{n-1}^{2}.}"
-        }
-      ],
       "id": "63a893ae97b8"
     },
     {
@@ -1785,24 +1479,6 @@
       },
       "note": "Cochran's theorem is not in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Confidence intervals",
-          "snippet": "By Cochran's theorem , for normal distributions the sample mean"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle t={\\frac {{\\hat {\\mu }}-\\mu }{s/{\\sqrt {n}}}}={\\frac {{\\overline {x}}-\\mu }{\\sqrt {{\\frac {1}{n(n-1)}}\\sum (x_{i}-{\\overline {x}})^{2}}}}\\sim t_{n-1}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mu \\in \\left[{\\hat {\\mu }}-t_{n-1,1-\\alpha /2}{\\frac {s}{\\sqrt {n}}},\\,{\\hat {\\mu }}+t_{n-1,1-\\alpha /2}{\\frac {s}{\\sqrt {n}}}\\right]}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\sigma ^{2}\\in \\left[{\\frac {n-1}{\\chi _{n-1,1-\\alpha /2}^{2}}}s^{2},\\,{\\frac {n-1}{\\chi _{n-1,\\alpha /2}^{2}}}s^{2}\\right]}"
-        }
-      ],
       "id": "a3a3472445c1"
     },
     {
@@ -1820,24 +1496,6 @@
       },
       "note": "t and chi-squared confidence intervals are not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Confidence intervals",
-          "snippet": "This quantity t has the Student's t-distribution"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle t={\\frac {{\\hat {\\mu }}-\\mu }{s/{\\sqrt {n}}}}={\\frac {{\\overline {x}}-\\mu }{\\sqrt {{\\frac {1}{n(n-1)}}\\sum (x_{i}-{\\overline {x}})^{2}}}}\\sim t_{n-1}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mu \\in \\left[{\\hat {\\mu }}-t_{n-1,1-\\alpha /2}{\\frac {s}{\\sqrt {n}}},\\,{\\hat {\\mu }}+t_{n-1,1-\\alpha /2}{\\frac {s}{\\sqrt {n}}}\\right]}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\sigma ^{2}\\in \\left[{\\frac {n-1}{\\chi _{n-1,1-\\alpha /2}^{2}}}s^{2},\\,{\\frac {n-1}{\\chi _{n-1,\\alpha /2}^{2}}}s^{2}\\right]}"
-        }
-      ],
       "id": "e5d71c2e6a80"
     },
     {
@@ -1940,16 +1598,6 @@
       },
       "note": "Inverse-gamma conjugate prior is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "With known mean",
-          "snippet": "the conjugate prior of the variance has an inverse gamma distribution"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle p(\\sigma ^{2}\\mid \\nu _{0},\\sigma _{0}^{2})={\\frac {(\\sigma _{0}^{2}{\\frac {\\nu _{0}}{2}})^{\\nu _{0}/2}}{\\Gamma \\left({\\frac {\\nu _{0}}{2}}\\right)}}~{\\frac {\\exp \\left[{\\frac {-\\nu _{0}\\sigma _{0}^{2}}{2\\sigma ^{2}}}\\right]}{(\\sigma ^{2})^{1+{\\frac {\\nu _{0}}{2}}}}}\\propto {\\frac {\\exp \\left[{\\frac {-\\nu _{0}\\sigma _{0}^{2}}{2\\sigma ^{2}}}\\right]}{(\\sigma ^{2})^{1+{\\frac {\\nu _{0}}{2}}}}}}"
-        }
-      ],
       "id": "2fdeeee38527"
     },
     {
@@ -2154,16 +1802,6 @@
       },
       "note": "Box-Muller is not in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Generating values from normal distribution",
-          "snippet": "The Box–Muller method uses two independent random numbers"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle X={\\sqrt {-2\\ln U}}\\,\\cos(2\\pi V),\\qquad Y={\\sqrt {-2\\ln U}}\\,\\sin(2\\pi V).}"
-        }
-      ],
       "id": "b74241bf5ca7"
     },
     {
@@ -2181,16 +1819,6 @@
       },
       "note": "Not in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Generating values from normal distribution",
-          "snippet": "The Marsaglia polar method is a modification of the Box–Muller method"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle X=U{\\sqrt {\\frac {-2\\ln S}{S}}},\\qquad Y=V{\\sqrt {\\frac {-2\\ln S}{S}}}}"
-        }
-      ],
       "id": "3c388bc88f87"
     },
     {
@@ -2242,16 +1870,6 @@
       },
       "note": "Numerical approximation not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Numerical approximations for the normal cumulative distribution function and normal quantile function",
-          "snippet": "give the approximation for"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\Phi (x)=1-\\varphi (x)\\left(b_{1}t+b_{2}t^{2}+b_{3}t^{3}+b_{4}t^{4}+b_{5}t^{5}\\right)+\\varepsilon (x),\\qquad t={\\frac {1}{1+b_{0}x}},}"
-        }
-      ],
       "id": "851abb093c4d"
     },
     {
@@ -2286,16 +1904,6 @@
       },
       "note": "Not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Numerical approximations for the normal cumulative distribution function and normal quantile function",
-          "snippet": "suggested a simple algorithm"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\Phi (x)={\\frac {1}{2}}+\\varphi (x)\\left(x+{\\frac {x^{3}}{3}}+{\\frac {x^{5}}{3\\cdot 5}}+{\\frac {x^{7}}{3\\cdot 5\\cdot 7}}+{\\frac {x^{9}}{3\\cdot 5\\cdot 7\\cdot 9}}+\\cdots \\right)}"
-        }
-      ],
       "id": "3fdd36803276"
     },
     {
@@ -2313,16 +1921,6 @@
       },
       "note": "Not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Numerical approximations for the normal cumulative distribution function and normal quantile function",
-          "snippet": "introduced simple approximations that may be incorporated in stochastic optimization models"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle z=\\Phi ^{-1}(p)=5.5556\\left[1-\\left({\\frac {1-p}{p}}\\right)^{0.1186}\\right],\\qquad p\\geq 1/2}"
-        }
-      ],
       "id": "fc20abc5beeb"
     },
     {
@@ -2357,16 +1955,6 @@
       },
       "note": "Gauss's characterization by least squares is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Development",
-          "snippet": "Gauss demonstrates that the only law that rationalizes the choice of arithmetic mean as an estimator of the location parameter"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\varphi {\\mathit {\\Delta }}={\\frac {h}{\\surd \\pi }}\\,e^{-\\mathrm {hh} \\Delta \\Delta },}"
-        }
-      ],
       "id": "ea0970373945"
     },
     {

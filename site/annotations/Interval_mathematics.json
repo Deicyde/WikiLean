@@ -65,11 +65,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Set.sSup_Icc",
-        "module": "Mathlib.Order.CompleteLatticeIntervals",
+        "decl": "csSup_Icc",
+        "module": "Mathlib.Order.ConditionallyCompletePartialOrder.Basic",
         "match_kind": "invocation"
       },
-      "note": "No standalone 'endpoint' notion; sup/inf of an interval are computed lemma-by-lemma (e.g. `sSup_Icc`, `csInf_Ioo`).",
+      "note": "No standalone 'endpoint' notion; sup/inf of an interval are computed lemma-by-lemma (e.g. `csSup_Icc`, `csInf_Ioo`).",
       "provenance": "ai",
       "id": "edd0199958a4"
     },
@@ -236,7 +236,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "BddBelow",
-        "module": "Mathlib.Order.Bounds.Basic",
+        "module": "Mathlib.Order.Bounds.Defs",
         "match_kind": "generalization"
       },
       "note": "`BddBelow` / `BddAbove` provide the left/right boundedness predicates for any set, including intervals.",
@@ -287,7 +287,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "IsLeast",
-        "module": "Mathlib.Order.Bounds.Basic",
+        "module": "Mathlib.Order.Bounds.Defs",
         "match_kind": "invocation"
       },
       "note": "`IsLeast`/`IsGreatest` capture min/max-of-a-set, but Mathlib has no `LeftOpenInterval` predicate keyed to absence of a minimum.",
@@ -304,7 +304,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "IsLeast",
-        "module": "Mathlib.Order.Bounds.Basic",
+        "module": "Mathlib.Order.Bounds.Defs",
         "match_kind": "invocation"
       },
       "note": "No standalone 'left-closed interval' predicate exists; it would be expressed via `IsLeast` or `¬ BddBelow`.",
@@ -440,7 +440,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Real.ball_eq_Ioo",
-        "module": "Mathlib.Analysis.Normed.Order.Lattice",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
         "match_kind": "exact"
       },
       "note": "`Real.ball_eq_Ioo` identifies open metric balls in ℝ with bounded open intervals.",
@@ -508,7 +508,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Metric.continuous_iff",
-        "module": "Mathlib.Topology.MetricSpace.Basic",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
         "match_kind": "exact"
       },
       "note": "`Continuous` is defined topologically; `Metric.continuous_iff` gives the ε–δ characterization on metric spaces, specializing to ℝ.",
@@ -568,7 +568,7 @@
     },
     {
       "kind": "theorem",
-      "label": "Totally ordered set is monotonically normal",
+      "label": "Order topology is completely normal",
       "anchor": {
         "section": "In general topology",
         "snippet": "every totally ordered set endowed with the order topology is completely normal"
@@ -579,8 +579,8 @@
         "module": "Mathlib.Topology.Order.T5",
         "match_kind": "exact"
       },
-      "note": "`OrderTopology.completelyNormalSpace` (and `t5Space`) prove a linearly ordered space with the order topology is completely normal.",
-      "provenance": "ai",
+      "note": "`OrderTopology.completelyNormalSpace` (and `t5Space`) prove a linearly ordered space with the order topology is completely normal. (The article also asserts the stronger 'monotonically normal' result, which is not in Mathlib.)",
+      "provenance": "ai-moderated",
       "id": "11ca94c55d7d"
     },
     {
@@ -593,7 +593,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Real.ball_eq_Ioo",
-        "module": "Mathlib.Analysis.Normed.Order.Lattice",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
         "match_kind": "exact"
       },
       "note": "`Real.ball_eq_Ioo` (and `Real.closedBall_eq_Icc`) identify ℝ-balls with intervals.",
@@ -854,6 +854,54 @@
       "note": "Mathlib has no `HyperbolicNumber`/`SplitComplex` type, so the claimed ring isomorphism is not formalized.",
       "provenance": "ai",
       "id": "dfcd4c5b7f6c"
+    },
+    {
+      "kind": "definition",
+      "label": "Integer interval",
+      "anchor": {
+        "section": "Integer intervals",
+        "snippet": "used to indicate the interval of all integers between a and b included"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.Icc",
+        "module": "Mathlib.Order.Interval.Finset.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Finset.Icc a b` (and `Ico`, `Ioc`, `Ioo`) on `ℤ` (via `LocallyFiniteOrder`) gives the finite integer interval; `Set.Icc` on `ℤ` is the set-level analogue.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Image of an interval under a continuous function is an interval",
+      "anchor": {
+        "section": "Real analysis",
+        "snippet": "An equivalent formulation of the theorem asserts that the image of an interval by a continuous function is an interval"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsPreconnected.image",
+        "module": "Mathlib.Topology.Connected.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Combining `IsPreconnected.image` with `isPreconnected_iff_ordConnected` yields that a continuous image of a real interval is preconnected, hence an interval.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Extended-real interval",
+      "anchor": {
+        "section": "Infinite endpoints",
+        "snippet": "an interval may be defined as a subset of the extended real numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.Icc",
+        "module": "Mathlib.Order.Interval.Set.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "`Set.Icc`, `Ico`, `Ioc`, `Ioo` instantiated at `EReal` provide intervals on the extended reals, including `[−∞, +∞]`.",
+      "provenance": "ai"
     }
   ]
 }

@@ -1,0 +1,601 @@
+{
+  "slug": "Distributive_property",
+  "wikipedia_title": "Distributive property",
+  "display_title": "Distributive property",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Distributive property (informal)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the distributive property of binary operations is a generalization of the distributive law"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Distrib",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The `Distrib` typeclass bundles the left- and right-distributive laws for a multiplication over an addition, matching the informal definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Arithmetic example of distributivity",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "For example, in elementary arithmetic"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "left_distrib",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Concrete arithmetic identities like 2·(1+3)=2·1+2·3 are instances of `left_distrib` (a · (b + c) = a · b + a · c) applied on `ℕ`/`ℤ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Left-distributive operation",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "the operation [MATH] is left-distributive over (or with respect to) [MATH] if, given any elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LeftDistribClass",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`LeftDistribClass` axiomatizes `a * (b + c) = a * b + a * c`, exactly the left-distributivity condition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Right-distributive operation",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "the operation [MATH] is right-distributive over [MATH] if, given any elements"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "RightDistribClass",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`RightDistribClass` axiomatizes `(a + b) * c = a * c + b * c`, exactly the right-distributivity condition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Distributive operation",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "and the operation [MATH] is distributive over [MATH] if it is left- and right-distributive"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Distrib",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Distrib` bundles both `left_distrib` and `right_distrib`, matching the two-sided distributivity definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence under commutativity",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "When [MATH] is commutative , the three conditions above are logically equivalent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No named Mathlib lemma packages the three-way equivalence of left-/right-/two-sided distributivity assuming commutativity of the outer operation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Left vs right distributivity under commutativity",
+      "anchor": {
+        "section": "Meaning",
+        "snippet": "If the operation outside the parentheses (in this case, the multiplication) is commutative, then left-distributivity implies right-distributivity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no standalone lemma converting `LeftDistribClass` into `RightDistribClass` via commutativity of the outer operation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Division is only right-distributive",
+      "anchor": {
+        "section": "Meaning",
+        "snippet": "One example of an operation that is \"only\" right-distributive is division"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "add_div",
+        "module": "Mathlib.Algebra.Field.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`add_div` states `(a + b) / c = a / c + b / c`, capturing the right-distributivity of division over addition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Distributive laws in rings and fields",
+      "anchor": {
+        "section": "Meaning",
+        "snippet": "The distributive laws are among the axioms for rings"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ring",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Ring` extends `Distrib` so the distributive axioms are built into the ring class.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multiplying sums (expansion rule)",
+      "anchor": {
+        "section": "Meaning",
+        "snippet": "When a sum is multiplied by a sum, multiply each summand of a sum with each summand of the other sum"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.sum_mul_sum",
+        "module": "Mathlib.Algebra.BigOperators.Ring.Finset",
+        "match_kind": "exact"
+      },
+      "note": "`Finset.sum_mul_sum` expresses a product of two finite sums as the double sum of pairwise products.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Mental arithmetic via distributivity",
+      "anchor": {
+        "section": "Real numbers",
+        "snippet": "During mental arithmetic, distributivity is often used unconsciously"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "left_distrib",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "The mental-arithmetic trick is a routine use of `left_distrib`/`right_distrib` on concrete numbers.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Factoring via distributivity",
+      "anchor": {
+        "section": "Real numbers",
+        "snippet": "Since the factor [MATH] occurs in all summands, it can be factored out"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mul_add",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "Factoring is `mul_add`/`left_distrib` applied right-to-left.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Distributivity of matrix multiplication",
+      "anchor": {
+        "section": "Matrices",
+        "snippet": "The distributive law is valid for matrix multiplication"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.mul_add",
+        "module": "Mathlib.Data.Matrix.Mul",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.mul_add` and `Matrix.add_mul` give the two-sided distributivity of matrix multiplication over matrix addition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ordinal multiplication is only left-distributive",
+      "anchor": {
+        "section": "Other examples",
+        "snippet": "Multiplication of ordinal numbers , in contrast, is only left-distributive, not right-distributive"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ordinal.leftDistribClass",
+        "module": "Mathlib.SetTheory.Ordinal.Arithmetic",
+        "match_kind": "exact"
+      },
+      "note": "`Ordinal.leftDistribClass` instances `LeftDistribClass Ordinal`; no `RightDistribClass` instance is provided, matching the asymmetric situation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cross product distributes over vector addition",
+      "anchor": {
+        "section": "Other examples",
+        "snippet": "The cross product is left- and right-distributive over vector addition"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "crossProduct",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": "generalization"
+      },
+      "note": "`crossProduct` is defined as a bilinear `LinearMap`, so left/right additivity (and hence distributivity over vector addition) is built in via the `LinearMap` structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Union and intersection mutually distribute",
+      "anchor": {
+        "section": "Other examples",
+        "snippet": "For sets , the union is distributive over intersection , and intersection is distributive over union"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Set.inter_union_distrib_left",
+        "module": "Mathlib.Data.Set.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Set.inter_union_distrib_left` and `Set.union_inter_distrib_left` give the two mutual distributivity laws for set operations.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Disjunction and conjunction mutually distribute",
+      "anchor": {
+        "section": "Other examples",
+        "snippet": "Logical disjunction (\"or\") is distributive over logical conjunction (\"and\"), and vice versa"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "or_and_left",
+        "module": "Init.PropLemmas",
+        "match_kind": "exact"
+      },
+      "note": "`or_and_left` and `and_or_left` formalize the mutual distributivity of `∨` and `∧` on `Prop`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Max and min mutually distribute",
+      "anchor": {
+        "section": "Other examples",
+        "snippet": "the maximum operation is distributive over the minimum operation, and vice versa"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "max_min_distrib_left",
+        "module": "Mathlib.Order.MinMax",
+        "match_kind": "exact"
+      },
+      "note": "`max_min_distrib_left` and `min_max_distrib_left` give the mutual distributivity of `max` and `min` on linear orders.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "gcd and lcm mutually distribute",
+      "anchor": {
+        "section": "Other examples",
+        "snippet": "the greatest common divisor is distributive over the least common multiple"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Searches in `Mathlib.Algebra.GCDMonoid` and `Nat`/`Int` gcd files turn up no `gcd_lcm`/`lcm_gcd` distributivity lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Addition distributes over max and min",
+      "anchor": {
+        "section": "Other examples",
+        "snippet": "For real numbers, addition distributes over the maximum operation, and also over the minimum operation"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "max_add_add_left",
+        "module": "Mathlib.Algebra.Order.Monoid.Unbundled.MinMax",
+        "match_kind": "exact"
+      },
+      "note": "`max_add_add_left` (resp. `min_add_add_left`) states `a + max b c = max (a + b) (a + c)`, capturing the distributivity of `+` over `max`/`min`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "FOIL method for binomial multiplication",
+      "anchor": {
+        "section": "Other examples",
+        "snippet": "For binomial multiplication, distribution is sometimes referred to as the FOIL Method"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "add_mul_add",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "invocation"
+      },
+      "note": "FOIL `(a+b)(c+d) = ac+ad+bc+bd` is an immediate consequence of `mul_add`/`add_mul`; not bundled as a separate named lemma but routinely closed by `ring`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Distributivity in semirings",
+      "anchor": {
+        "section": "Other examples",
+        "snippet": "In all semirings , including the complex numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Semiring",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Semiring` extends `Distrib`, so distributivity is part of the class definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Distributivity in algebras over a field",
+      "anchor": {
+        "section": "Other examples",
+        "snippet": "In all algebras over a field , including the octonions and other non-associative algebras"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra",
+        "module": "Mathlib.Algebra.Algebra.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`Algebra` builds on `Semiring`/`Ring`, so distributivity is inherited; non-associative variants such as `NonUnitalNonAssocSemiring` are also present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Distribution rule of replacement",
+      "anchor": {
+        "section": "Rule of replacement",
+        "snippet": "distribution [ 3 ] [ 4 ] in logical proofs uses two valid rules of replacement"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "or_and_left",
+        "module": "Init.PropLemmas",
+        "match_kind": "exact"
+      },
+      "note": "The two `∨`/`∧` distribution equivalences used as rules of replacement are `or_and_left` and `and_or_left`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Distributivity of truth-functional connectives",
+      "anchor": {
+        "section": "Truth functional connectives",
+        "snippet": "The following logical equivalences demonstrate that distributivity is a property of particular connectives"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "and_or_left",
+        "module": "Init.PropLemmas",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib/`Init` provide `and_or_left`, `or_and_left`, etc., capturing the standard distributivity equivalences for propositional connectives.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Distributivity failure in floating-point arithmetic",
+      "anchor": {
+        "section": "Distributivity and rounding",
+        "snippet": "the distributive property of multiplication (and division) over addition may fail because of the limitations of arithmetic precision"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma states or quantifies the failure of distributivity for IEEE `Float`/`FloatArray` arithmetic.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Semiring",
+      "anchor": {
+        "section": "In rings and other structures",
+        "snippet": "A semiring has two binary operations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Semiring",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Semiring` is the standard Mathlib class for a semiring with the two distributivity axioms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ring as semiring with additive inverses",
+      "anchor": {
+        "section": "In rings and other structures",
+        "snippet": "A ring is a semiring with additive inverses"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Ring",
+        "module": "Mathlib.Algebra.Ring.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Ring` extends `Semiring` together with an `AddGroup` structure, exactly matching the informal definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Distributive lattice",
+      "anchor": {
+        "section": "In rings and other structures",
+        "snippet": "A lattice is another kind of algebraic structure with two binary operations"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "DistribLattice",
+        "module": "Mathlib.Order.Lattice",
+        "match_kind": "exact"
+      },
+      "note": "`DistribLattice` is the Mathlib class for lattices satisfying the distributivity of `⊔` over `⊓` (equivalently the dual).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Boolean algebra as ring or distributive lattice",
+      "anchor": {
+        "section": "In rings and other structures",
+        "snippet": "A Boolean algebra can be interpreted either as a special kind of ring"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BooleanRing.toBooleanAlgebra",
+        "module": "Mathlib.Algebra.Ring.BooleanRing",
+        "match_kind": "exact"
+      },
+      "note": "`BooleanAlgebra` (in `Mathlib.Order.BooleanAlgebra.Defs`) and `BooleanRing` are both formalized, and `BooleanRing.toBooleanAlgebra` connects them.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Product of sums equals sum of products",
+      "anchor": {
+        "section": "In rings and other structures",
+        "snippet": "In any semiring, distributivity can be used to show that any product of sums is a sum of products"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.sum_mul_sum",
+        "module": "Mathlib.Algebra.BigOperators.Ring.Finset",
+        "match_kind": "exact"
+      },
+      "note": "`Finset.sum_mul_sum` rewrites a product of two `Finset` sums as the double sum of pairwise products.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Near-rings and near-fields",
+      "anchor": {
+        "section": "In rings and other structures",
+        "snippet": "Structures without two-sided distributive laws are near-rings and near-fields"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no `NearRing` or `NearField` typeclass; `decl_exists` for these names returns false and grep finds no near-ring structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sub- and super-distributivity",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "the notions of sub-distributivity , where equality is replaced by \"less than or equal\""
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Subdistrib`/`Superdistrib` classes appear in Mathlib; only specific inequality lemmas (e.g. `Nat.mul_add_le`) exist sporadically.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Distributive law of monads",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "if [MATH] and [MATH] are monads on a category"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Loogle finds no `distrib`-named declaration mentioning `Monad` in the category-theoretic sense; the Beck distributive law between two monads is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Antidistributive property of inversion",
+      "anchor": {
+        "section": "Antidistributivity",
+        "snippet": "The ubiquitous identity that relates inverses to the binary operation in any group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "mul_inv_rev",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`mul_inv_rev` states `(a * b)⁻¹ = b⁻¹ * a⁻¹` in any `DivisionMonoid`, capturing the antidistributivity of inversion over the group operation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Antidistributive elements in a near-ring",
+      "anchor": {
+        "section": "Antidistributivity",
+        "snippet": "one can speak of (two-sided) distributive elements but also of antidistributive elements"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Since near-rings themselves are absent from Mathlib, the notion of antidistributive elements in a near-ring is also not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Antidistributive laws for implication",
+      "anchor": {
+        "section": "Antidistributivity",
+        "snippet": "the term antidistributive law is sometimes used to denote the interchange between conjunction and disjunction when implication factors over them"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "imp_and",
+        "module": "Init.PropLemmas",
+        "match_kind": "exact"
+      },
+      "note": "`imp_and` (`a → (b ∧ c) ↔ (a → b) ∧ (a → c)`) and `or_imp` (`(a ∨ b) → c ↔ (a → c) ∧ (b → c)`) formalize the antidistributive laws for `→` over `∧`/`∨`.",
+      "provenance": "ai"
+    }
+  ]
+}

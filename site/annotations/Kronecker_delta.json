@@ -1,0 +1,537 @@
+{
+  "slug": "Kronecker_delta",
+  "wikipedia_title": "Kronecker delta",
+  "display_title": "Kronecker delta",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Kronecker delta",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the Kronecker delta (named after Leopold Kronecker ) is a function of two variables"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.one_apply",
+        "module": "Mathlib.Data.Matrix.Diagonal",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has no standalone `kroneckerDelta` constant; the standard `if i = j then 1 else 0` form appears as `Matrix.one_apply`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Identity matrix entries as Kronecker delta",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "identity matrix"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.one_apply",
+        "module": "Mathlib.Data.Matrix.Diagonal",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.one_apply` states `(1 : Matrix n n α) i j = if i = j then 1 else 0`, exactly the Kronecker delta entry formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Inner product via Kronecker delta",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the inner product of vectors can be written as"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "orthonormal_iff_ite",
+        "module": "Mathlib.Analysis.InnerProductSpace.Orthonormal",
+        "match_kind": "generalization"
+      },
+      "note": "`orthonormal_iff_ite` characterizes orthonormality by `⟪v i, v j⟫ = if i = j then 1 else 0`, the Kronecker-delta inner-product identity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Delta as identity matrix",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "the matrix δ can be considered as an identity matrix"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.one_apply_eq",
+        "module": "Mathlib.Data.Matrix.Diagonal",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.one_apply_eq`/`Matrix.one_apply_ne` give the diagonal/off-diagonal entries of the identity matrix, identifying it with the Kronecker delta.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Geometric series representation",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Another useful representation is the following form"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib decl expresses the Kronecker delta as a limit/average of a geometric series of roots of unity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Iverson bracket notation",
+      "anchor": {
+        "section": "Alternative notation",
+        "snippet": "Using the Iverson bracket"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no `Iverson` bracket notation; only the explicit `if ... then 1 else 0` pattern is used.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Single-argument notation",
+      "anchor": {
+        "section": "Alternative notation",
+        "snippet": "a single-argument notation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib decl introduces the single-argument δ_{i−j} notation for the Kronecker delta.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Substitution tensor",
+      "anchor": {
+        "section": "Alternative notation",
+        "snippet": "Sometimes the Kronecker delta is called the substitution tensor"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The terminology 'substitution tensor' is absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unit sample function",
+      "anchor": {
+        "section": "Digital signal processing",
+        "snippet": "the Kronecker delta function sometimes means the unit sample function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no DSP unit-sample function distinct from the generic indicator/if-then-else.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Discrete unit sample function",
+      "anchor": {
+        "section": "Digital signal processing",
+        "snippet": "The discrete unit sample function is more simply defined as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated DSP discrete-unit-sample function exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Dirac delta function",
+      "anchor": {
+        "section": "Digital signal processing",
+        "snippet": "The Dirac delta is defined as"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.dirac",
+        "module": "Mathlib.MeasureTheory.Measure.Dirac",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.Measure.dirac` defines the Dirac delta as a measure concentrated at a point, the standard measure-theoretic formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sifting property",
+      "anchor": {
+        "section": "Notable properties",
+        "snippet": "The Kronecker delta has the so-called sifting property"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.sum_ite_eq'",
+        "module": "Mathlib.Algebra.BigOperators.Group.Finset.Piecewise",
+        "match_kind": "exact"
+      },
+      "note": "`Finset.sum_ite_eq'` evaluates `∑ i, (if i = j then a j else 0)` to `a j`, exactly the Kronecker delta sifting identity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Multiplicative identity of incidence algebra",
+      "anchor": {
+        "section": "Notable properties",
+        "snippet": "forms the multiplicative identity element of an incidence algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IncidenceAlgebra.one_apply",
+        "module": "Mathlib.Combinatorics.Enumerative.IncidenceAlgebra",
+        "match_kind": "exact"
+      },
+      "note": "`IncidenceAlgebra.one_apply` shows the multiplicative unit of the incidence algebra is the Kronecker-delta function `if a = b then 1 else 0`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Elementary recursive function",
+      "anchor": {
+        "section": "Notable properties",
+        "snippet": "The Kronecker delta is an elementary recursive function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not develop the elementary-recursive-functions hierarchy with the Kronecker delta as an instance.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Probability mass function via Kronecker delta",
+      "anchor": {
+        "section": "Relationship to the Dirac delta function",
+        "snippet": "the probability mass function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PMF.pure_apply",
+        "module": "Mathlib.Probability.ProbabilityMassFunction.Monad",
+        "match_kind": "exact"
+      },
+      "note": "`PMF.pure_apply` gives `pure a a' = if a' = a then 1 else 0`, the Kronecker-delta probability mass function concentrated at a point.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Probability density function via Dirac delta",
+      "anchor": {
+        "section": "Relationship to the Dirac delta function",
+        "snippet": "the probability density function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.dirac",
+        "module": "Mathlib.MeasureTheory.Measure.Dirac",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib formalizes the Dirac measure (`MeasureTheory.Measure.dirac`) but not specifically as a probability density via the Dirac delta distribution.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Kronecker from sampled Dirac delta",
+      "anchor": {
+        "section": "Relationship to the Dirac delta function",
+        "snippet": "the Kronecker delta can arise from sampling a Dirac delta function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize the discrete sampling identity δ_ij = δ(i−j) connecting Kronecker and Dirac deltas.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Kronecker tensor",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "the Kronecker tensor can be written"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formalization of the mixed (1,1) Kronecker delta tensor δ^i_j as a tensor; `Matrix.kroneckerMap` is the unrelated Kronecker product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generalized Kronecker delta",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "The generalized Kronecker delta or multi-index Kronecker delta"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The multi-index generalized Kronecker delta is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generalized Kronecker delta by indices",
+      "anchor": {
+        "section": "Definitions of the generalized Kronecker delta",
+        "snippet": "In terms of the indices, the generalized Kronecker delta is defined as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No index-based definition of the generalized Kronecker delta exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Definition via symmetric group",
+      "anchor": {
+        "section": "Definitions of the generalized Kronecker delta",
+        "snippet": "be the symmetric group of degree"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib lacks the symmetric-group-based definition of the generalized Kronecker delta.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Definition via anti-symmetrization",
+      "anchor": {
+        "section": "Definitions of the generalized Kronecker delta",
+        "snippet": "Using anti-symmetrization"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No anti-symmetrization-based definition of the generalized Kronecker delta is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Definition via determinant",
+      "anchor": {
+        "section": "Definitions of the generalized Kronecker delta",
+        "snippet": "In terms of a"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not define the generalized Kronecker delta as a minor/determinant of identity entries.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Recursive definition via Laplace expansion",
+      "anchor": {
+        "section": "Definitions of the generalized Kronecker delta",
+        "snippet": "it may be defined recursively"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No recursive Laplace-expansion definition of the generalized Kronecker delta is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Definition via Levi-Civita symbol",
+      "anchor": {
+        "section": "Definitions of the generalized Kronecker delta",
+        "snippet": "in terms of the Levi-Civita symbol"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Levi-Civita symbol, hence no definition of the generalized Kronecker delta in those terms.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Contraction formula",
+      "anchor": {
+        "section": "Contractions of the generalized Kronecker delta",
+        "snippet": "Kronecker Delta contractions depend on the dimension of the space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dimension-dependent contraction identities for the generalized Kronecker delta are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Full contracted delta",
+      "anchor": {
+        "section": "Contractions of the generalized Kronecker delta",
+        "snippet": "the full contracted delta is obtained as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The full contraction `n!/(n−p)!` identity for the generalized Kronecker delta is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Anti-symmetrization with generalized delta",
+      "anchor": {
+        "section": "Properties of the generalized Kronecker delta",
+        "snippet": "The generalized Kronecker delta may be used for anti-symmetrization"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MultilinearMap.alternatization",
+        "module": "Mathlib.LinearAlgebra.Alternating.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`MultilinearMap.alternatization` formalizes anti-symmetrization via `∑ σ, sign σ • ...`, the same construction the generalized Kronecker delta encodes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Properties of generalized Kronecker delta",
+      "anchor": {
+        "section": "Properties of the generalized Kronecker delta",
+        "snippet": "we can derive the properties of the generalized Kronecker delta"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Properties of the generalized Kronecker delta are absent from Mathlib since the object itself is not defined.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Order reduction via summation",
+      "anchor": {
+        "section": "Properties of the generalized Kronecker delta",
+        "snippet": "Reducing the order via summation of the indices may be expressed by the identity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Index-summation order-reduction identities for the generalized Kronecker delta are not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Summation rule for Levi-Civita symbol",
+      "anchor": {
+        "section": "Properties of the generalized Kronecker delta",
+        "snippet": "the summation rule of the Levi-Civita symbol is derived"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize a Levi-Civita symbol or its summation rule.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Contour integral representation",
+      "anchor": {
+        "section": "Integral representations",
+        "snippet": "the Kronecker delta can be written as a complex contour integral"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib decl writes the Kronecker delta as a complex contour integral of `z^(n−m−1)/2πi`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Kronecker comb",
+      "anchor": {
+        "section": "Kronecker comb",
+        "snippet": "The Kronecker comb function with period"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Kronecker comb (periodic Kronecker delta) function.",
+      "provenance": "ai"
+    }
+  ]
+}

@@ -11,7 +11,15 @@
         "section": "(Lead)",
         "snippet": "together with an operation called the Lie bracket"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieAlgebra",
+        "module": "Mathlib.Algebra.Lie.Basic",
+        "match_kind": "exact"
+      },
+      "note": "LieRing/LieAlgebra are defined exactly as a module with a bracket satisfying skew/Jacobi axioms.",
+      "provenance": "ai-agent1",
+      "id": "10c1c4916ac5"
     },
     {
       "kind": "proposition",
@@ -20,7 +28,15 @@
         "section": "(Lead)",
         "snippet": "every associative algebra gives rise to a Lie algebra"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieAlgebra.ofAssociativeAlgebra",
+        "module": "Mathlib.Algebra.Lie.OfAssociative",
+        "match_kind": "exact"
+      },
+      "note": "An associative algebra is given a Lie algebra instance via the ring commutator bracket.",
+      "provenance": "ai-agent1",
+      "id": "0460518f321a"
     },
     {
       "kind": "example",
@@ -29,7 +45,15 @@
         "section": "(Lead)",
         "snippet": "with Lie bracket defined by the cross product"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cross.lieRing",
+        "module": "Mathlib.LinearAlgebra.CrossProduct",
+        "match_kind": "exact"
+      },
+      "note": "`Cross.lieRing` makes `Fin 3 → R` a Lie ring under the cross product.",
+      "provenance": "ai-agent1",
+      "id": "6800bc596540"
     },
     {
       "kind": "example",
@@ -38,7 +62,15 @@
         "section": "(Lead)",
         "snippet": "the space of all linear maps from a vector space to itself"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieRing.ofAssociativeRing",
+        "module": "Mathlib.Algebra.Lie.OfAssociative",
+        "match_kind": "special_case"
+      },
+      "note": "`Module.End R V` is a ring, hence a Lie algebra via the commutator instance.",
+      "provenance": "ai-agent1",
+      "id": "7359f01f0832"
     },
     {
       "kind": "definition",
@@ -47,7 +79,15 @@
         "section": "Definition",
         "snippet": "satisfying the following axioms"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieRing",
+        "module": "Mathlib.Algebra.Lie.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The LieRing class bundles bilinearity, the alternating axiom `lie_self`, and the Leibniz/Jacobi identity.",
+      "provenance": "ai-agent1",
+      "id": "0b64e89fcda2"
     },
     {
       "kind": "proposition",
@@ -56,7 +96,15 @@
         "section": "Definition",
         "snippet": "bilinearity and the alternating property together imply"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lie_skew",
+        "module": "Mathlib.Algebra.Lie.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`lie_skew : -⁅y, x⁆ = ⁅x, y⁆` is derived from additivity and `lie_self`.",
+      "provenance": "ai-agent1",
+      "id": "a56be8d51981"
     },
     {
       "kind": "proposition",
@@ -65,7 +113,15 @@
         "section": "Definition",
         "snippet": "then anticommutativity implies the alternating property"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib takes `lie_self` (alternating) as the axiom and has no converse lemma recovering it from anticommutativity in characteristic ≠ 2.",
+      "provenance": "ai-agent1",
+      "id": "7ae65d41d269"
     },
     {
       "kind": "proposition",
@@ -74,7 +130,15 @@
         "section": "Definition",
         "snippet": "allows to rewrite the Jacobi identity as a"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "leibniz_lie",
+        "module": "Mathlib.Algebra.Lie.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The axiom `leibniz_lie` states the Jacobi identity in Leibniz/derivation form `⁅x,⁅y,z⁆⁆ = ⁅⁅x,y⁆,z⁆ + ⁅y,⁅x,z⁆⁆`.",
+      "provenance": "ai-agent1",
+      "id": "5ecdc88c1082"
     },
     {
       "kind": "definition",
@@ -83,7 +147,15 @@
         "section": "Generators and dimension",
         "snippet": "The dimension of a Lie algebra over a field means its dimension as a vector space"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "There is no Lie-specific dimension; one uses the underlying module's `Module.finrank`/`Module.rank`.",
+      "provenance": "ai-agent1",
+      "id": "fb399db915d8"
     },
     {
       "kind": "definition",
@@ -92,7 +164,15 @@
         "section": "Generators and dimension",
         "snippet": "such that any Lie subalgebra (as defined below) that contains"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieSubalgebra.lieSpan",
+        "module": "Mathlib.Algebra.Lie.Subalgebra",
+        "match_kind": "generalization"
+      },
+      "note": "`lieSpan` is the smallest Lie subalgebra containing a set, so a generating set is one whose `lieSpan` is `⊤`.",
+      "provenance": "ai-agent1",
+      "id": "50f3125bbf66"
     },
     {
       "kind": "definition",
@@ -101,7 +181,15 @@
         "section": "Abelian Lie algebras",
         "snippet": "A Lie algebra is called abelian if its Lie bracket is identically zero"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsLieAbelian",
+        "module": "Mathlib.Algebra.Lie.Abelian",
+        "match_kind": "exact"
+      },
+      "note": "`IsLieAbelian L` is defined as the bracket being trivial on `L`.",
+      "provenance": "ai-agent1",
+      "id": "75754362a8ad"
     },
     {
       "kind": "proposition",
@@ -110,7 +198,15 @@
         "section": "Abelian Lie algebras",
         "snippet": "Every one-dimensional Lie algebra is abelian"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No named result asserting that a one-dimensional Lie algebra is abelian was found.",
+      "provenance": "ai-agent1",
+      "id": "45870b4fb6b2"
     },
     {
       "kind": "definition",
@@ -119,7 +215,15 @@
         "section": "The Lie algebra of matrices",
         "snippet": "a Lie bracket may be defined by the commutator"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieRing.of_associative_ring_bracket",
+        "module": "Mathlib.Algebra.Lie.OfAssociative",
+        "match_kind": "exact"
+      },
+      "note": "The Lie ring on a ring has bracket `⁅x, y⁆ = x*y - y*x`.",
+      "provenance": "ai-agent1",
+      "id": "bbb05c21f159"
     },
     {
       "kind": "definition",
@@ -128,7 +232,15 @@
         "section": "The Lie algebra of matrices",
         "snippet": "The endomorphism ring of an"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lieEquivMatrix'",
+        "module": "Mathlib.Algebra.Lie.Matrix",
+        "match_kind": "special_case"
+      },
+      "note": "`Module.End R V` carries the commutator Lie algebra structure, equivalent to matrices via `lieEquivMatrix'`.",
+      "provenance": "ai-agent1",
+      "id": "d03a74dee62a"
     },
     {
       "kind": "definition",
@@ -137,7 +249,15 @@
         "section": "The Lie algebra of matrices",
         "snippet": "the space of n × n matrices over F"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "lieEquivMatrix'",
+        "module": "Mathlib.Algebra.Lie.Matrix",
+        "match_kind": "special_case"
+      },
+      "note": "`Matrix n n R` is a Lie algebra via the commutator and is Lie-equivalent to `Module.End R (n → R)`.",
+      "provenance": "ai-agent1",
+      "id": "979c7fc695f9"
     },
     {
       "kind": "example",
@@ -146,7 +266,15 @@
         "section": "The Lie algebra of matrices",
         "snippet": "is the Lie algebra of the general linear group"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Lie-group/Lie-algebra correspondence for GL(n,R) is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "4d33d00bd84a"
     },
     {
       "kind": "definition",
@@ -155,7 +283,15 @@
         "section": "Subalgebras, ideals and homomorphisms",
         "snippet": "A Lie subalgebra is a linear subspace"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieSubalgebra",
+        "module": "Mathlib.Algebra.Lie.Subalgebra",
+        "match_kind": "exact"
+      },
+      "note": "`LieSubalgebra` is a submodule closed under the bracket.",
+      "provenance": "ai-agent1",
+      "id": "b5c48b37bc10"
     },
     {
       "kind": "definition",
@@ -164,7 +300,15 @@
         "section": "Subalgebras, ideals and homomorphisms",
         "snippet": "is a linear subspace that satisfies the stronger condition"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieIdeal",
+        "module": "Mathlib.Algebra.Lie.Ideal",
+        "match_kind": "exact"
+      },
+      "note": "`LieIdeal` is defined as a Lie submodule for the adjoint action.",
+      "provenance": "ai-agent1",
+      "id": "f12c88c88d0e"
     },
     {
       "kind": "definition",
@@ -173,7 +317,15 @@
         "section": "Subalgebras, ideals and homomorphisms",
         "snippet": "A Lie algebra homomorphism is a linear map compatible with the respective Lie brackets"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieHom",
+        "module": "Mathlib.Algebra.Lie.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`LieHom` (`L →ₗ⁅R⁆ L'`) is a linear map preserving the bracket.",
+      "provenance": "ai-agent1",
+      "id": "16ff957e7f78"
     },
     {
       "kind": "definition",
@@ -182,6 +334,30 @@
         "section": "Subalgebras, ideals and homomorphisms",
         "snippet": "An isomorphism of Lie algebras is a bijective homomorphism."
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieEquiv",
+        "module": "Mathlib.Algebra.Lie.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`LieEquiv` (`L ≃ₗ⁅R⁆ L'`) is a bijective Lie homomorphism.",
+      "provenance": "ai-agent1",
+      "id": "49974a67a842"
+    },
+    {
+      "kind": "definition",
+      "label": "Quotient Lie algebra",
+      "anchor": {
+        "section": "Subalgebras, ideals and homomorphisms",
+        "snippet": "the quotient Lie algebra"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieIdeal.instHasQuotient",
+        "module": "Mathlib.Algebra.Lie.Quotient",
+        "match_kind": "exact"
+      },
+      "note": "Quotient of a Lie algebra by an ideal is constructed as `L ⧸ I` with its Lie algebra structure.",
       "provenance": "ai-agent1"
     },
     {
@@ -191,7 +367,15 @@
         "section": "Subalgebras, ideals and homomorphisms",
         "snippet": "The first isomorphism theorem holds for Lie algebras"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieHom.quotKerEquivRange",
+        "module": "Mathlib.Algebra.Lie.Quotient",
+        "match_kind": "exact"
+      },
+      "note": "`quotKerEquivRange : (L ⧸ f.ker) ≃ₗ⁅R⁆ f.range` is the first isomorphism theorem.",
+      "provenance": "ai-agent1",
+      "id": "c1ce2502cdbd"
     },
     {
       "kind": "definition",
@@ -200,7 +384,15 @@
         "section": "Subalgebras, ideals and homomorphisms",
         "snippet": "are said to commute if their bracket vanishes"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated predicate; commuting is just the proposition `⁅x, y⁆ = 0`.",
+      "provenance": "ai-agent1",
+      "id": "af507621cc15"
     },
     {
       "kind": "definition",
@@ -209,7 +401,15 @@
         "section": "Subalgebras, ideals and homomorphisms",
         "snippet": "The centralizer subalgebra of a subset"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "LieAlgebra.center",
+        "module": "Mathlib.Algebra.Lie.Abelian",
+        "match_kind": "special_case"
+      },
+      "note": "The center `LieAlgebra.center` is formalized, but a general centralizer subalgebra of an arbitrary subset is not.",
+      "provenance": "ai-agent1",
+      "id": "fcdfa6cd30e3"
     },
     {
       "kind": "definition",
@@ -218,7 +418,15 @@
         "section": "Subalgebras, ideals and homomorphisms",
         "snippet": "for a subspace S , the normalizer subalgebra of"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieSubalgebra.normalizer",
+        "module": "Mathlib.Algebra.Lie.Normalizer",
+        "match_kind": "exact"
+      },
+      "note": "`LieSubalgebra.normalizer` (and `LieSubmodule.normalizer`) implement the normalizer.",
+      "provenance": "ai-agent1",
+      "id": "c056b8dcbde0"
     },
     {
       "kind": "example",
@@ -227,7 +435,15 @@
         "section": "Example",
         "snippet": "of diagonal matrices in"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No named declaration for the diagonal matrices forming an abelian Lie subalgebra was found.",
+      "provenance": "ai-agent1",
+      "id": "dc587124a956"
     },
     {
       "kind": "example",
@@ -236,7 +452,15 @@
         "section": "Example",
         "snippet": "Every one-dimensional linear subspace of a Lie algebra"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No named result that every one-dimensional subspace is an abelian subalgebra was found.",
+      "provenance": "ai-agent1",
+      "id": "25b6389772d0"
     },
     {
       "kind": "definition",
@@ -245,7 +469,15 @@
         "section": "Product and semidirect product",
         "snippet": "the product Lie algebra is the vector space"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "instLieRing",
+        "module": "Mathlib.Algebra.Lie.Prod",
+        "match_kind": "exact"
+      },
+      "note": "`Prod.lean` provides `LieRing (L₁ × L₂)` and `LieAlgebra R (L₁ × L₂)` instances with componentwise bracket.",
+      "provenance": "ai-agent1",
+      "id": "0baa0704dc99"
     },
     {
       "kind": "definition",
@@ -254,7 +486,15 @@
         "section": "Product and semidirect product",
         "snippet": "is said to be a semidirect product of"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieAlgebra.SemiDirectSum",
+        "module": "Mathlib.Algebra.Lie.SemiDirect",
+        "match_kind": "exact"
+      },
+      "note": "`SemiDirectSum K L ψ` (`K ⋊⁅ψ⁆ L`) is the semidirect sum twisted by a derivation map.",
+      "provenance": "ai-agent1",
+      "id": "7c78d93f8831"
     },
     {
       "kind": "definition",
@@ -263,7 +503,15 @@
         "section": "Derivations",
         "snippet": "a derivation of A over F is a linear map"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Derivation",
+        "module": "Mathlib.RingTheory.Derivation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Derivation R A A` is an R-linear map satisfying the Leibniz rule.",
+      "provenance": "ai-agent1",
+      "id": "e685d4eaed3f"
     },
     {
       "kind": "proposition",
@@ -272,7 +520,15 @@
         "section": "Derivations",
         "snippet": "is again a derivation"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Derivation.instLieAlgebra",
+        "module": "Mathlib.RingTheory.Derivation.Lie",
+        "match_kind": "exact"
+      },
+      "note": "The commutator of two derivations is a derivation, giving `Derivation R A A` a Lie algebra structure.",
+      "provenance": "ai-agent1",
+      "id": "120c227f1d21"
     },
     {
       "kind": "example",
@@ -281,7 +537,15 @@
         "section": "Derivations",
         "snippet": "the Lie algebra of vector fields"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "VectorField.lieBracket",
+        "module": "Mathlib.Geometry.Manifold.VectorField.LieBracket",
+        "match_kind": "special_case"
+      },
+      "note": "The Lie bracket of vector fields is defined, but not bundled into a `LieAlgebra` instance on the space of vector fields.",
+      "provenance": "ai-agent1",
+      "id": "8a415ac948bb"
     },
     {
       "kind": "definition",
@@ -290,7 +554,15 @@
         "section": "Derivations",
         "snippet": "The inner derivation associated to any"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieDerivation.inner",
+        "module": "Mathlib.Algebra.Lie.Derivation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`LieDerivation.inner` sends `x` to the inner derivation `y ↦ ⁅x, y⁆`.",
+      "provenance": "ai-agent1",
+      "id": "2ab83ae03f6e"
     },
     {
       "kind": "definition",
@@ -299,7 +571,15 @@
         "section": "Derivations",
         "snippet": "the Lie algebra of outer derivations is defined as the quotient Lie algebra"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The quotient of derivations by inner derivations is not defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "520c1df55ea4"
     },
     {
       "kind": "theorem",
@@ -308,7 +588,15 @@
         "section": "Derivations",
         "snippet": "every derivation is inner"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieDerivation.IsKilling.exists_eq_ad",
+        "module": "Mathlib.Algebra.Lie.Derivation.Killing",
+        "match_kind": "generalization"
+      },
+      "note": "Every derivation of a finite-dimensional Killing (semisimple in char 0) Lie algebra is inner (`= ad x`).",
+      "provenance": "ai-agent1",
+      "id": "9b6b01d18fdd"
     },
     {
       "kind": "definition",
@@ -317,7 +605,15 @@
         "section": "Matrix Lie algebras",
         "snippet": "A matrix group is a Lie group consisting of invertible matrices"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Matrix Lie groups and the tangent-space construction of their Lie algebra are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "50f9d0c4a6af"
     },
     {
       "kind": "proposition",
@@ -326,7 +622,15 @@
         "section": "Matrix Lie algebras",
         "snippet": "one can recover the Lie group as the subgroup generated by the matrix exponential"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No result recovering a matrix Lie group from its Lie algebra via the matrix exponential was found.",
+      "provenance": "ai-agent1",
+      "id": "e5d081ce5501"
     },
     {
       "kind": "example",
@@ -335,7 +639,15 @@
         "section": "Matrix Lie algebras",
         "snippet": "consists of all real n × n matrices with determinant 1"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieAlgebra.SpecialLinear.sl",
+        "module": "Mathlib.Algebra.Lie.Classical",
+        "match_kind": "special_case"
+      },
+      "note": "`sl` is defined as trace-zero matrices; the link to the group SL(n) is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "663a1192b40c"
     },
     {
       "kind": "example",
@@ -344,7 +656,15 @@
         "section": "Matrix Lie algebras",
         "snippet": "plays a basic role in geometry"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieAlgebra.Orthogonal.so",
+        "module": "Mathlib.Algebra.Lie.Classical",
+        "match_kind": "special_case"
+      },
+      "note": "`so` is defined as skew-adjoint matrices; the link to the group SO(n) is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "c04d2955158c"
     },
     {
       "kind": "example",
@@ -353,7 +673,15 @@
         "section": "Matrix Lie algebras",
         "snippet": "are given by the same formulas applied to n x n complex matrices"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieAlgebra.Orthogonal.so",
+        "module": "Mathlib.Algebra.Lie.Classical",
+        "match_kind": "special_case"
+      },
+      "note": "`so` is defined over an arbitrary commutative ring, so it specializes to complex matrices.",
+      "provenance": "ai-agent1",
+      "id": "5af56b8d32fe"
     },
     {
       "kind": "example",
@@ -362,7 +690,15 @@
         "section": "Matrix Lie algebras",
         "snippet": "that preserves the length of vectors in"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The unitary Lie algebra of skew-Hermitian matrices is not defined (skew-adjoint there is for bilinear forms).",
+      "provenance": "ai-agent1",
+      "id": "398ebc521945"
     },
     {
       "kind": "example",
@@ -371,7 +707,15 @@
         "section": "Matrix Lie algebras",
         "snippet": "is the subgroup of matrices with determinant 1 in"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The special unitary Lie algebra su(n) is not defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "7e531715f857"
     },
     {
       "kind": "example",
@@ -380,7 +724,15 @@
         "section": "Matrix Lie algebras",
         "snippet": "that preserves the standard alternating bilinear form on"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieAlgebra.Symplectic.sp",
+        "module": "Mathlib.Algebra.Lie.Classical",
+        "match_kind": "special_case"
+      },
+      "note": "`sp` is the symplectic Lie algebra; the link to the symplectic group is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "4c13b5d9c70f"
     },
     {
       "kind": "definition",
@@ -389,7 +741,15 @@
         "section": "Matrix Lie algebras",
         "snippet": "The classical Lie algebras are those listed above"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieAlgebra.SpecialLinear.sl",
+        "module": "Mathlib.Algebra.Lie.Classical",
+        "match_kind": "exact"
+      },
+      "note": "`Classical.lean` defines the type A/B/C/D Lie algebras `sl`, `so`, `sp`.",
+      "provenance": "ai-agent1",
+      "id": "fccb2823a3f1"
     },
     {
       "kind": "theorem",
@@ -398,7 +758,15 @@
         "section": "Two dimensions",
         "snippet": "of dimension 2 over any field F , up to isomorphism"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classification of two-dimensional Lie algebras is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "bdf1cac582ce"
     },
     {
       "kind": "example",
@@ -407,7 +775,15 @@
         "section": "Two dimensions",
         "snippet": "The affine group G can be identified with the group of matrices"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The affine group and its associated Lie algebra are not formalized in this matrix form.",
+      "provenance": "ai-agent1",
+      "id": "fdca439f424b"
     },
     {
       "kind": "definition",
@@ -416,7 +792,15 @@
         "section": "Three dimensions",
         "snippet": "is the three-dimensional Lie algebra with a basis"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Heisenberg Lie algebra definition was found in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "80fdc35ad088"
     },
     {
       "kind": "example",
@@ -425,7 +809,15 @@
         "section": "Three dimensions",
         "snippet": "is nilpotent (though not abelian)"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Since the Heisenberg algebra is not defined, its nilpotency is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "1a5d386b5af9"
     },
     {
       "kind": "example",
@@ -434,7 +826,15 @@
         "section": "Three dimensions",
         "snippet": "of the rotation group SO(3) is the space of skew-symmetric 3 x 3 matrices"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "skewAdjointMatricesLieSubalgebra",
+        "module": "Mathlib.Algebra.Lie.SkewAdjoint",
+        "match_kind": "special_case"
+      },
+      "note": "Skew-adjoint matrices form a Lie subalgebra; so(3) is the n=3 case (also via `Orthogonal.so`).",
+      "provenance": "ai-agent1",
+      "id": "5023af286b8d"
     },
     {
       "kind": "proposition",
@@ -443,7 +843,15 @@
         "section": "Three dimensions",
         "snippet": "it is simple , meaning that it is not abelian and its only ideals are 0 and all of"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Simplicity of so(3) is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "5b3a268d8e8f"
     },
     {
       "kind": "example",
@@ -452,7 +860,15 @@
         "section": "Three dimensions",
         "snippet": "Another simple Lie algebra of dimension 3"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieAlgebra.SpecialLinear.sl",
+        "module": "Mathlib.Algebra.Lie.Classical",
+        "match_kind": "special_case"
+      },
+      "note": "sl(2) is `sl (Fin 2) F`; `IsSl2Triple` also captures the sl₂ relations.",
+      "provenance": "ai-agent1",
+      "id": "830b0f94b0ff"
     },
     {
       "kind": "proposition",
@@ -461,7 +877,15 @@
         "section": "Three dimensions",
         "snippet": "is simple, and classify its finite-dimensional representations"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Simplicity of sl(2) (and the classification of its representations) is not formalized as such.",
+      "provenance": "ai-agent1",
+      "id": "801769753041"
     },
     {
       "kind": "proposition",
@@ -470,7 +894,15 @@
         "section": "Three dimensions",
         "snippet": "is isomorphic to the complexification of"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "su(2) is not defined, so this isomorphism is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "ece9dd7dc4e3"
     },
     {
       "kind": "example",
@@ -479,7 +911,15 @@
         "section": "Infinite dimensions",
         "snippet": "The Lie algebra of vector fields on a smooth manifold of positive dimension is an infinite-dimensional Lie algebra"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "VectorField.lieBracket",
+        "module": "Mathlib.Geometry.Manifold.VectorField.LieBracket",
+        "match_kind": "special_case"
+      },
+      "note": "The bracket of vector fields exists but is not packaged as a `LieAlgebra` instance.",
+      "provenance": "ai-agent1",
+      "id": "55df28bf1528"
     },
     {
       "kind": "example",
@@ -488,7 +928,15 @@
         "section": "Infinite dimensions",
         "snippet": "The Kac–Moody algebras are a large class of infinite-dimensional Lie algebras"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.ToLieAlgebra",
+        "module": "Mathlib.Algebra.Lie.SerreConstruction",
+        "match_kind": "generalization"
+      },
+      "note": "The Serre construction of a Lie algebra from a Cartan matrix is formalized, but Kac–Moody algebras are not named/developed as such.",
+      "provenance": "ai-agent1",
+      "id": "ea3f591e86dd"
     },
     {
       "kind": "example",
@@ -497,7 +945,15 @@
         "section": "Infinite dimensions",
         "snippet": "The Moyal algebra is an infinite-dimensional Lie algebra that contains all the classical Lie algebras as subalgebras."
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Moyal algebra is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "1c4bab0ed137"
     },
     {
       "kind": "example",
@@ -506,7 +962,15 @@
         "section": "Infinite dimensions",
         "snippet": "The Virasoro algebra is important in string theory"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Virasoro algebra is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "eaa30a8ab4f1"
     },
     {
       "kind": "definition",
@@ -515,7 +979,15 @@
         "section": "Infinite dimensions",
         "snippet": "called the free Lie algebra on a vector space V"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FreeLieAlgebra",
+        "module": "Mathlib.Algebra.Lie.Free",
+        "match_kind": "exact"
+      },
+      "note": "`FreeLieAlgebra R X` is defined with its universal property `FreeLieAlgebra.lift`.",
+      "provenance": "ai-agent1",
+      "id": "25b00aeb729c"
     },
     {
       "kind": "definition",
@@ -524,7 +996,15 @@
         "section": "Definitions",
         "snippet": "on V is a Lie algebra homomorphism"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieModule",
+        "module": "Mathlib.Algebra.Lie.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Representations are modeled as `LieModule`s; `LieModule.toEnd : L →ₗ⁅R⁆ Module.End R M` is the corresponding homomorphism to gl(V).",
+      "provenance": "ai-agent1",
+      "id": "834c766e1f11"
     },
     {
       "kind": "definition",
@@ -533,7 +1013,15 @@
         "section": "Definitions",
         "snippet": "A representation is said to be faithful if its kernel is zero."
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieModule.IsFaithful",
+        "module": "Mathlib.Algebra.Lie.OfAssociative",
+        "match_kind": "exact"
+      },
+      "note": "`LieModule.IsFaithful` states the action map `toEnd` is injective.",
+      "provenance": "ai-agent1",
+      "id": "78989aaed142"
     },
     {
       "kind": "theorem",
@@ -542,7 +1030,15 @@
         "section": "Definitions",
         "snippet": "Ado's theorem states that every finite-dimensional Lie algebra over a field of characteristic zero has a faithful representation"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ado's theorem is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "5b37684d5c2a"
     },
     {
       "kind": "definition",
@@ -551,7 +1047,15 @@
         "section": "Adjoint representation",
         "snippet": "the adjoint representation is the representation"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieAlgebra.ad",
+        "module": "Mathlib.Algebra.Lie.OfAssociative",
+        "match_kind": "exact"
+      },
+      "note": "`LieAlgebra.ad : L →ₗ⁅R⁆ Module.End R L` with `ad x y = ⁅x, y⁆`.",
+      "provenance": "ai-agent1",
+      "id": "b10e67f42007"
     },
     {
       "kind": "theorem",
@@ -560,7 +1064,15 @@
         "section": "Goals of representation theory",
         "snippet": "says that every finite-dimensional representation is a direct sum of irreducible representations"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Weyl's complete reducibility theorem is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "dbfff4f86aa2"
     },
     {
       "kind": "definition",
@@ -569,7 +1081,15 @@
         "section": "Universal enveloping algebra",
         "snippet": "called the universal enveloping algebra"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "UniversalEnvelopingAlgebra",
+        "module": "Mathlib.Algebra.Lie.UniversalEnveloping",
+        "match_kind": "exact"
+      },
+      "note": "`UniversalEnvelopingAlgebra R L` is defined with its universal property `lift`.",
+      "provenance": "ai-agent1",
+      "id": "b50b8926116e"
     },
     {
       "kind": "theorem",
@@ -578,7 +1098,15 @@
         "section": "Universal enveloping algebra",
         "snippet": "It satisfies the Poincaré–Birkhoff–Witt theorem"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Only the universal property is built; the PBW basis theorem is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "b8a4a38a12e7"
     },
     {
       "kind": "proposition",
@@ -587,7 +1115,15 @@
         "section": "Abelian, nilpotent, and solvable",
         "snippet": "Every finite-dimensional abelian Lie algebra over a field"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No classification result for abelian Lie algebras was found.",
+      "provenance": "ai-agent1",
+      "id": "1c20b2170255"
     },
     {
       "kind": "definition",
@@ -596,7 +1132,15 @@
         "section": "Abelian, nilpotent, and solvable",
         "snippet": "the commutator subalgebra (or derived subalgebra ) of a Lie algebra"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieAlgebra.derivedSeries",
+        "module": "Mathlib.Algebra.Lie.Solvable",
+        "match_kind": "generalization"
+      },
+      "note": "The derived subalgebra `⁅L,L⁆` is `derivedSeries R L 1`, the first term of the derived series of ideals.",
+      "provenance": "ai-agent1",
+      "id": "b3038acac94d"
     },
     {
       "kind": "definition",
@@ -605,7 +1149,15 @@
         "section": "Abelian, nilpotent, and solvable",
         "snippet": "is nilpotent if the lower central series"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieModule.IsNilpotent",
+        "module": "Mathlib.Algebra.Lie.Nilpotent",
+        "match_kind": "exact"
+      },
+      "note": "`IsNilpotent` is defined via vanishing of the `lowerCentralSeries` (nilpotency of L is `LieModule.IsNilpotent R L L`).",
+      "provenance": "ai-agent1",
+      "id": "30b39ba0426c"
     },
     {
       "kind": "theorem",
@@ -614,7 +1166,15 @@
         "section": "Abelian, nilpotent, and solvable",
         "snippet": "By Engel's theorem , a Lie algebra over any field is nilpotent if and only if"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieAlgebra.isEngelian_of_isNoetherian",
+        "module": "Mathlib.Algebra.Lie.Engel",
+        "match_kind": "generalization"
+      },
+      "note": "Engel's theorem is proved (for Noetherian Lie algebras over any commutative ring) via the `IsEngelian` framework.",
+      "provenance": "ai-agent1",
+      "id": "e1e1a50f1816"
     },
     {
       "kind": "definition",
@@ -623,7 +1183,15 @@
         "section": "Abelian, nilpotent, and solvable",
         "snippet": "is said to be solvable if the derived series"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieAlgebra.IsSolvable",
+        "module": "Mathlib.Algebra.Lie.Solvable",
+        "match_kind": "exact"
+      },
+      "note": "`IsSolvable` holds iff some term of `derivedSeries` is `⊥`.",
+      "provenance": "ai-agent1",
+      "id": "f6dfe98bebb7"
     },
     {
       "kind": "definition",
@@ -632,7 +1200,15 @@
         "section": "Abelian, nilpotent, and solvable",
         "snippet": "has a unique maximal solvable ideal, called its radical"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieAlgebra.radical",
+        "module": "Mathlib.Algebra.Lie.Solvable",
+        "match_kind": "exact"
+      },
+      "note": "`LieAlgebra.radical` is defined as the maximal solvable ideal.",
+      "provenance": "ai-agent1",
+      "id": "c003eff221fc"
     },
     {
       "kind": "definition",
@@ -641,7 +1217,15 @@
         "section": "Simple and semisimple",
         "snippet": "is called simple if it is not abelian and the only ideals"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieAlgebra.IsSimple",
+        "module": "Mathlib.Algebra.Lie.Semisimple.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsSimple` requires only ideals `⊥`/`⊤` and non-abelian.",
+      "provenance": "ai-agent1",
+      "id": "2fcdeee0befe"
     },
     {
       "kind": "definition",
@@ -650,7 +1234,15 @@
         "section": "Simple and semisimple",
         "snippet": "is called semisimple if the only solvable ideal in"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieAlgebra.IsSemisimple",
+        "module": "Mathlib.Algebra.Lie.Semisimple.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`IsSemisimple` (and the equivalent `HasTrivialRadical`) is defined; over char 0 it matches the zero-solvable-radical condition.",
+      "provenance": "ai-agent1",
+      "id": "c3257e69a498"
     },
     {
       "kind": "theorem",
@@ -659,7 +1251,15 @@
         "section": "Simple and semisimple",
         "snippet": "is semisimple if and only if it is isomorphic to a product of simple Lie algebras"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "LieAlgebra.IsSemisimple.isSimple_of_isAtom",
+        "module": "Mathlib.Algebra.Lie.Semisimple.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib defines semisimple via independent simple atomic ideals summing to `⊤`, but the explicit `≅ product of simple` biconditional is not a single decl.",
+      "provenance": "ai-agent1",
+      "id": "3271e59a2d59"
     },
     {
       "kind": "example",
@@ -668,7 +1268,15 @@
         "section": "Simple and semisimple",
         "snippet": "and every field F of characteristic zero (or just of characteristic not dividing n )"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Simplicity of `sl n` is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "3f8b7d0d9490"
     },
     {
       "kind": "theorem",
@@ -677,7 +1285,15 @@
         "section": "Simple and semisimple",
         "snippet": "every finite-dimensional representation of a semisimple Lie algebra is semisimple"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This (Weyl's theorem) is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "4ff09b4d6486"
     },
     {
       "kind": "definition",
@@ -686,7 +1302,15 @@
         "section": "Simple and semisimple",
         "snippet": "is called reductive if its adjoint representation is semisimple"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "LieAlgebra.HasCentralRadical",
+        "module": "Mathlib.Algebra.Lie.Semisimple.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "`HasCentralRadical` (radical = center) is the Mathlib notion of reductive in char 0, defined differently from the adjoint-rep-semisimple phrasing.",
+      "provenance": "ai-agent1",
+      "id": "d0dd1e860fc8"
     },
     {
       "kind": "theorem",
@@ -695,7 +1319,15 @@
         "section": "Simple and semisimple",
         "snippet": "Every reductive Lie algebra is isomorphic to the product of an abelian Lie algebra and a semisimple Lie algebra."
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The abelian × semisimple decomposition of reductive Lie algebras is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "f5f7c0f896d2"
     },
     {
       "kind": "definition",
@@ -704,7 +1336,15 @@
         "section": "Cartan's criterion",
         "snippet": "the Killing form , the symmetric bilinear form on"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "killingForm",
+        "module": "Mathlib.Algebra.Lie.Killing",
+        "match_kind": "exact"
+      },
+      "note": "`killingForm R L` is the trace form of the adjoint representation.",
+      "provenance": "ai-agent1",
+      "id": "e1831660aeee"
     },
     {
       "kind": "theorem",
@@ -713,6 +1353,30 @@
         "section": "Cartan's criterion",
         "snippet": "is semisimple if and only if the Killing form is nondegenerate"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieAlgebra.HasTrivialRadical.instIsKilling",
+        "module": "Mathlib.Algebra.Lie.CartanCriterion",
+        "match_kind": "exact"
+      },
+      "note": "Trivial radical ⟹ nondegenerate Killing form, and `IsKilling.instSemisimple` gives the converse.",
+      "provenance": "ai-agent1",
+      "id": "3ebe931b942d"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cartan's criterion for solvability",
+      "anchor": {
+        "section": "Cartan's criterion",
+        "snippet": "is solvable if and only if"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The solvability half of Cartan's criterion (Killing form vanishes on [L,L]) is not formalized.",
       "provenance": "ai-agent1"
     },
     {
@@ -722,7 +1386,15 @@
         "section": "Classification",
         "snippet": "The Levi decomposition asserts that every finite-dimensional Lie algebra over a field of characteristic zero is a semidirect product"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Levi decomposition is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "4190e56965b0"
     },
     {
       "kind": "theorem",
@@ -731,7 +1403,15 @@
         "section": "Classification",
         "snippet": "every simple Lie algebra is of type A n , B n , C n , D n , E 6 , E 7 , E 8 , F 4 , or G 2"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classification of simple Lie algebras by Dynkin type is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "f12a7e0a6a23"
     },
     {
       "kind": "theorem",
@@ -740,7 +1420,15 @@
         "section": "Relation to Lie groups",
         "snippet": "This is Lie's third theorem"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lie's third theorem (integration of Lie algebras to Lie groups) is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "490e06f3b8d9"
     },
     {
       "kind": "theorem",
@@ -749,7 +1437,15 @@
         "section": "Relation to Lie groups",
         "snippet": "taking the Lie algebra gives an equivalence of categories from simply connected Lie groups to Lie algebras"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This Lie group/Lie algebra equivalence of categories is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "d8566d6dbf95"
     },
     {
       "kind": "proposition",
@@ -758,7 +1454,15 @@
         "section": "Relation to Lie groups",
         "snippet": "Every connected Lie group is isomorphic to its universal cover modulo a discrete central subgroup."
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This Lie group structure theorem is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "7d8c98620e69"
     },
     {
       "kind": "definition",
@@ -767,7 +1471,15 @@
         "section": "Real form and complexification",
         "snippet": "is said to be a real form of"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "LieAlgebra.ExtendScalars.instLieAlgebra",
+        "module": "Mathlib.Algebra.Lie.BaseChange",
+        "match_kind": "generalization"
+      },
+      "note": "Base change/complexification `A ⊗[R] L` is formalized, but the notion of a real form is not defined.",
+      "provenance": "ai-agent1",
+      "id": "1c90b45ed835"
     },
     {
       "kind": "definition",
@@ -776,7 +1488,15 @@
         "section": "Real form and complexification",
         "snippet": "a split form of it is a real form that splits"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Split real forms are not defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "83d83b253336"
     },
     {
       "kind": "definition",
@@ -785,7 +1505,15 @@
         "section": "Real form and complexification",
         "snippet": "A compact form is a real form that is the Lie algebra of a compact Lie group."
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Compact real forms are not defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "43618bb29c29"
     },
     {
       "kind": "definition",
@@ -794,7 +1522,15 @@
         "section": "Lie algebra with additional structures",
         "snippet": "a graded Lie algebra is a Lie algebra (or more generally a Lie superalgebra ) with a compatible grading"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GradedLieAlgebra",
+        "module": "Mathlib.Algebra.Lie.Graded",
+        "match_kind": "exact"
+      },
+      "note": "`GradedLieAlgebra ℒ` requires a bracket-compatible internal grading.",
+      "provenance": "ai-agent1",
+      "id": "9296314b909c"
     },
     {
       "kind": "definition",
@@ -803,7 +1539,15 @@
         "section": "Lie algebra with additional structures",
         "snippet": "A differential graded Lie algebra also comes with a differential"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Differential graded Lie algebras are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "da09606ad30f"
     },
     {
       "kind": "example",
@@ -812,7 +1556,15 @@
         "section": "Lie algebra with additional structures",
         "snippet": "the homotopy groups of a simply connected topological space form a graded Lie algebra"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Whitehead-product graded Lie algebra on homotopy groups is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "b25c99c9f231"
     },
     {
       "kind": "definition",
@@ -821,6 +1573,30 @@
         "section": "Lie ring",
         "snippet": "over R is an R - module with an alternating R -bilinear map"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "LieRing",
+        "module": "Mathlib.Algebra.Lie.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`LieRing`/`LieAlgebra R L` are defined exactly over a general commutative ring R.",
+      "provenance": "ai-agent1",
+      "id": "463944475cf7"
+    },
+    {
+      "kind": "definition",
+      "label": "Lazard correspondence",
+      "anchor": {
+        "section": "Lie ring",
+        "snippet": "Lie rings are used in the study of finite p-groups (for a prime number p ) through the Lazard correspondence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Lazard correspondence between finite p-groups and Lie rings is not formalized.",
       "provenance": "ai-agent1"
     },
     {
@@ -830,7 +1606,15 @@
         "section": "Examples",
         "snippet": "a construction of Lie rings arising from the study of abstract groups"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The associated graded Lie ring of a group's lower central series is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "9dbd27abd68d"
     },
     {
       "kind": "example",
@@ -839,7 +1623,15 @@
         "section": "Examples",
         "snippet": "the Lie ring associated to the lower central series on the dihedral group of order 8 is the Heisenberg Lie algebra of dimension 3"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This specific computation is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "d32c91145b66"
     },
     {
       "kind": "definition",
@@ -848,7 +1640,15 @@
         "section": "Definition using category-theoretic notation",
         "snippet": "in the category of vector spaces together with a morphism"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib defines Lie algebras via type classes, not as an internal object in the category of vector spaces.",
+      "provenance": "ai-agent1",
+      "id": "22339d6d2fc5"
     }
   ]
 }

@@ -210,6 +210,22 @@
       "id": "f5b85052f454"
     },
     {
+      "kind": "proposition",
+      "label": "Symmetric group S_n is not solvable for n ≥ 5",
+      "anchor": {
+        "section": "Solvable groups and solution by radicals",
+        "snippet": "the symmetric group S n contains a simple , noncyclic, normal subgroup , namely the alternating group A n"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.Perm.not_solvable",
+        "module": "Mathlib.GroupTheory.Solvable",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib proves `Equiv.Perm.not_solvable` for cardinality ≥ 5, via simplicity of the alternating group `alternatingGroup.isSimple` for n ≥ 5.",
+      "provenance": "ai"
+    },
+    {
       "kind": "example",
       "label": "Non-solvable quintic x^5 − x − 1",
       "anchor": {
@@ -262,6 +278,22 @@
     },
     {
       "kind": "theorem",
+      "label": "Cayley's theorem",
+      "anchor": {
+        "section": "Inverse Galois problem",
+        "snippet": "Cayley's theorem says that G is (up to isomorphism) a subgroup of the symmetric group S on the elements of G"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MulAction.toPermHom",
+        "module": "Mathlib.Algebra.Group.Action.End",
+        "match_kind": "generalization"
+      },
+      "note": "Cayley's theorem is realized via the left-regular action embedding `G ↪ Equiv.Perm G`; see also `Subgroup.equivMapOfInjective` and the standard embedding into `Equiv.Perm`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
       "label": "Shafarevich: solvable finite groups over Q",
       "anchor": {
         "section": "Inverse Galois problem",
@@ -293,6 +325,70 @@
       "note": "Mathlib has substantial `PurelyInseparable` API but no formalization of Jacobson's bijection between intermediate fields and restricted Lie algebras of derivations.",
       "provenance": "ai",
       "id": "7264946b2229"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fundamental theorem of Galois theory",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "this connection, the fundamental theorem of Galois theory , allows reducing certain problems in field theory to group theory"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsGalois.intermediateFieldEquivSubgroup",
+        "module": "Mathlib.FieldTheory.Galois.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The Galois correspondence between intermediate fields of `E/F` and subgroups of `Gal(E/F)` is formalized as `IsGalois.intermediateFieldEquivSubgroup` (with companion lemmas about fixed fields and orders).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Purely inseparable extension",
+      "anchor": {
+        "section": "Inseparable extensions",
+        "snippet": "General field extensions can be split into a separable, followed by a purely inseparable field extension"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsPurelyInseparable",
+        "module": "Mathlib.FieldTheory.PurelyInseparable.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsPurelyInseparable F E` formalizes purely inseparable extensions; the separable/purely-inseparable decomposition is available via the separable closure inside `E`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Constructible regular polygons (Gauss–Wantzel)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "characterizing the regular polygons that are constructible"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not contain the Gauss–Wantzel characterization of constructible regular n-gons (n a product of a power of 2 and distinct Fermat primes).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Impossibility of doubling the cube and trisecting the angle",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "doubling the cube and trisecting the angle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib lacks formalizations of the classical impossibility results for doubling the cube and trisecting an arbitrary angle by compass and straightedge.",
+      "provenance": "ai"
     }
   ]
 }

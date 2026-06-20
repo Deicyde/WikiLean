@@ -18,7 +18,7 @@
         "module": "Mathlib.LinearAlgebra.Matrix.Defs",
         "match_kind": "exact"
       },
-      "note": "Mathlib defines `Matrix m n α := m → n → α`, matching the rectangular-array notion with arbitrary entry type.",
+      "note": "`Matrix m n α := m → n → α` encodes the rectangular-array notion with arbitrary entry type.",
       "provenance": "ai",
       "id": "54f4ca67ae22"
     },
@@ -35,18 +35,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "A concrete 2×3 example matrix is not part of Mathlib's library.",
+      "note": "No concrete 2×3 illustrative matrix is part of Mathlib's library.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "(Lead)",
-          "snippet": "denotes a matrix with two rows and three columns"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{bmatrix}1&amp;9&amp;-13\\\\20&amp;5&amp;-6\\end{bmatrix}}}"
-        }
-      ],
       "id": "f194fd16019c"
     },
     {
@@ -62,7 +52,7 @@
         "module": "Mathlib.LinearAlgebra.Matrix.Defs",
         "match_kind": "special_case"
       },
-      "note": "Square matrices are written as `Matrix n n α` (same index type for rows and columns); there is no separate `SquareMatrix` definition.",
+      "note": "Square matrices are written `Matrix n n α` (same index type on both sides); there is no separate `SquareMatrix` definition.",
       "provenance": "ai",
       "id": "a16c309ee753"
     },
@@ -79,7 +69,7 @@
         "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
         "match_kind": "generalization"
       },
-      "note": "Mathlib proves `IsUnit A ↔ IsUnit A.det` over a commutative ring; over a field this reduces to det ≠ 0.",
+      "note": "`Matrix.isUnit_iff_isUnit_det` states `IsUnit A ↔ IsUnit A.det` over a commutative ring; over a field this reduces to det ≠ 0.",
       "provenance": "ai",
       "id": "0ee8254f9279"
     },
@@ -96,18 +86,8 @@
         "module": "Mathlib.LinearAlgebra.Matrix.Defs",
         "match_kind": "exact"
       },
-      "note": "Same `Matrix` definition encodes the formal rectangular-array notion.",
+      "note": "The same `Matrix` definition encodes the formal rectangular-array notion.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition",
-          "snippet": "A matrix is a rectangular array of numbers (or other mathematical objects), called the \"entries\""
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mathbf {A} ={\\begin{bmatrix}-1.3&amp;0.6\\\\20.4&amp;5.5\\\\9.7&amp;-6.2\\end{bmatrix}}.}"
-        }
-      ],
       "id": "b1898e6579d6"
     },
     {
@@ -123,18 +103,8 @@
         "module": "Mathlib.LinearAlgebra.Matrix.Defs",
         "match_kind": "special_case"
       },
-      "note": "Real/complex matrices are instances `Matrix m n ℝ` / `Matrix m n ℂ`; no dedicated abbreviations.",
+      "note": "Real/complex matrices are simply `Matrix m n ℝ` / `Matrix m n ℂ`; no dedicated abbreviation.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition",
-          "snippet": "A real matrix and a complex matrix are matrices whose entries are respectively real numbers or complex numbers"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mathbf {A} ={\\begin{bmatrix}-1.3&amp;0.6\\\\20.4&amp;5.5\\\\9.7&amp;-6.2\\end{bmatrix}}.}"
-        }
-      ],
       "id": "c3cb62f0d311"
     },
     {
@@ -150,8 +120,8 @@
         "module": "Mathlib.LinearAlgebra.Matrix.Defs",
         "match_kind": "invocation"
       },
-      "note": "Matrices are indexed by row/column types and `Matrix.row`/`Matrix.col` extract row/column functions.",
-      "provenance": "ai",
+      "note": "Matrices are indexed by row/column types; `Matrix.row`/`Matrix.col` package row and column functions.",
+      "provenance": "ai-moderated",
       "id": "38871bb2f26f"
     },
     {
@@ -167,7 +137,7 @@
         "module": "Mathlib.LinearAlgebra.Matrix.Defs",
         "match_kind": "invocation"
       },
-      "note": "Size is encoded by the index types `m` and `n`; no explicit `size` function is defined.",
+      "note": "Size is encoded by the index types `m` and `n` themselves; there is no explicit `size` function.",
       "provenance": "ai",
       "id": "a6de1942e258"
     },
@@ -184,7 +154,7 @@
         "module": "Mathlib.LinearAlgebra.Matrix.Defs",
         "match_kind": "special_case"
       },
-      "note": "Expressed as `Matrix (Fin m) (Fin n) α`; no separate `mxnMatrix` abbreviation.",
+      "note": "Expressed as `Matrix (Fin m) (Fin n) α`; no dedicated abbreviation.",
       "provenance": "ai",
       "id": "036cf8fe82bf"
     },
@@ -201,8 +171,8 @@
         "module": "Mathlib.LinearAlgebra.Matrix.Defs",
         "match_kind": "invocation"
       },
-      "note": "Row/column vectors are typically written as `Matrix Unit n α` or via `Matrix.row`/`Matrix.col`; no separate named type.",
-      "provenance": "ai",
+      "note": "Row/column vectors are written via `Matrix.row`/`Matrix.col` or as `Matrix Unit n α`; no separate named type.",
+      "provenance": "ai-moderated",
       "id": "5d184a6deba0"
     },
     {
@@ -218,7 +188,7 @@
         "module": "Mathlib.LinearAlgebra.Matrix.Defs",
         "match_kind": "special_case"
       },
-      "note": "Square matrices are written `Matrix n n α`; no dedicated wrapper type.",
+      "note": "Square matrices are `Matrix n n α`; no dedicated wrapper type.",
       "provenance": "ai",
       "id": "5d29907d84ee"
     },
@@ -235,7 +205,7 @@
         "module": "Mathlib.LinearAlgebra.Matrix.Defs",
         "match_kind": "generalization"
       },
-      "note": "Mathlib's `Matrix m n α` allows arbitrary (including infinite) index types, but many operations (mul, det) require `Fintype`.",
+      "note": "`Matrix m n α` allows arbitrary (including infinite) index types, but most operations like `mul`/`det` require `Fintype`.",
       "provenance": "ai",
       "id": "0a51cecb02d5"
     },
@@ -265,12 +235,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Matrix.add",
+        "decl": "Matrix.add_apply",
         "module": "Mathlib.LinearAlgebra.Matrix.Defs",
         "match_kind": "exact"
       },
-      "note": "Entrywise `Add`, `Sub`, `Neg` instances on `Matrix m n α` are defined inheriting from the pi type.",
-      "provenance": "ai",
+      "note": "`Add`/`Sub`/`Neg` instances on `Matrix m n α` inherited pointwise; `Matrix.add_apply` says `(A + B) i j = A i j + B i j`.",
+      "provenance": "ai-moderated",
       "id": "d380f4327656"
     },
     {
@@ -286,8 +256,8 @@
         "module": "Mathlib.LinearAlgebra.Matrix.Defs",
         "match_kind": "exact"
       },
-      "note": "The `AddCommMonoid (Matrix m n α)` instance gives commutativity of matrix addition.",
-      "provenance": "ai",
+      "note": "The `AddCommMonoid (Matrix m n α)` instance `Matrix.addCommMonoid` gives commutativity of matrix addition.",
+      "provenance": "ai-moderated",
       "id": "642ec7e4865d"
     },
     {
@@ -299,22 +269,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Matrix.smul",
+        "decl": "Matrix.smul_apply",
         "module": "Mathlib.LinearAlgebra.Matrix.Defs",
         "match_kind": "exact"
       },
-      "note": "Entrywise `SMul R (Matrix m n α)` instance encodes scalar multiplication.",
-      "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Scalar multiplication",
-          "snippet": "The product c A of a number c (also called a scalar in this context) and a matrix A is computed by multiplying each entry of A by c"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle (c{\\mathbf {A}})_{i,j}=c\\cdot {\\mathbf {A}}_{i,j}}"
-        }
-      ],
+      "note": "Pointwise `SMul R (Matrix m n α)`; `(c • A) i j = c • A i j` via `Matrix.smul_apply`.",
+      "provenance": "ai-moderated",
       "id": "f0ebcb652f05"
     },
     {
@@ -330,22 +290,8 @@
         "module": "Mathlib.LinearAlgebra.Matrix.Defs",
         "match_kind": "exact"
       },
-      "note": "`Matrix.transpose M i j = M j i`, notated `Mᵀ`.",
-      "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Transpose",
-          "snippet": "The transpose of an m × n matrix A is the n × m matrix A T (also denoted A tr or t A ) formed by turning rows into columns and vice versa"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\left({\\mathbf {A}}^{\\rm {T}}\\right)_{i,j}={\\mathbf {A}}_{j,i}.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{bmatrix}1&amp;2&amp;3\\\\0&amp;-6&amp;7\\end{bmatrix}}^{\\mathrm {T} }={\\begin{bmatrix}1&amp;0\\\\2&amp;-6\\\\3&amp;7\\end{bmatrix}}}"
-        }
-      ],
+      "note": "`Matrix.transpose M i j = M j i`, with notation `Mᵀ`.",
+      "provenance": "ai-moderated",
       "id": "9cbc6dc2c56b"
     },
     {
@@ -361,8 +307,8 @@
         "module": "Mathlib.LinearAlgebra.Matrix.Defs",
         "match_kind": "exact"
       },
-      "note": "`Matrix.transpose_add`, `transpose_smul`, `transpose_mul` are all in Mathlib.",
-      "provenance": "ai",
+      "note": "`Matrix.transpose_add`, `transpose_smul`, `transpose_transpose`, and `transpose_mul` are in Mathlib.",
+      "provenance": "ai-moderated",
       "id": "e91ad0076b40"
     },
     {
@@ -374,26 +320,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Matrix.mul",
+        "decl": "Matrix.mul_apply",
         "module": "Mathlib.Data.Matrix.Mul",
         "match_kind": "exact"
       },
-      "note": "Matrix multiplication is defined via `HMul`/`Mul` instances on `Matrix m n α` × `Matrix n p α`.",
+      "note": "Matrix multiplication is defined via the `HMul` instance and characterized by `Matrix.mul_apply : (A * B) i j = ∑ k, A i k * B k j`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Matrix multiplication",
-          "snippet": "If A is an m × n matrix and B is an n × p matrix, then their matrix product AB is the m × p matrix"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle [\\mathbf {AB} ]_{i,j}=a_{i,1}b_{1,j}+a_{i,2}b_{2,j}+\\cdots +a_{i,n}b_{n,j}=\\sum _{r=1}^{n}a_{i,r}b_{r,j},}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}{\\begin{bmatrix}{\\underline {2}}&amp;{\\underline {3}}&amp;{\\underline {4}}\\\\1&amp;0&amp;0\\\\\\end{bmatrix}}{\\begin{bmatrix}0&amp;{\\underline {1000}}\\\\1&amp;{\\underline {100}}\\\\0&amp;{\\underline {10}}\\\\\\end{bmatrix}}&amp;={\\begin{bmatrix}3&amp;{\\underline {2340}}\\\\0&amp;1000\\\\\\end{bmatrix}}.\\end{aligned}}}"
-        }
-      ],
       "id": "2a51ee03de50"
     },
     {
@@ -409,18 +341,8 @@
         "module": "Mathlib.Data.Matrix.Mul",
         "match_kind": "exact"
       },
-      "note": "`Matrix.mul_assoc` and the `NonUnitalNonAssocSemiring`/`Semiring` instances yield distributivity.",
+      "note": "`Matrix.mul_assoc` plus the `NonUnitalNonAssocSemiring`/`Semiring` instances yield associativity and distributivity.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Matrix multiplication",
-          "snippet": "Matrix multiplication satisfies the rules"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\mathbf {AB}}\\neq {\\mathbf {BA}}.}"
-        }
-      ],
       "id": "9006505832d9"
     },
     {
@@ -436,23 +358,41 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No explicit Mathlib lemma asserting non-commutativity of matrix multiplication (it is implicit in the lack of `CommRing` instance).",
+      "note": "No explicit Mathlib lemma asserts non-commutativity (it is implicit in the absence of a `CommRing` instance).",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Matrix multiplication",
-          "snippet": "matrix multiplication is not commutative , in marked contrast to (rational, real, or complex) numbers"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{bmatrix}1&amp;2\\\\3&amp;4\\\\\\end{bmatrix}}{\\begin{bmatrix}0&amp;1\\\\0&amp;0\\\\\\end{bmatrix}}={\\begin{bmatrix}0&amp;1\\\\0&amp;3\\\\\\end{bmatrix}},}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{bmatrix}0&amp;1\\\\0&amp;0\\\\\\end{bmatrix}}{\\begin{bmatrix}1&amp;2\\\\3&amp;4\\\\\\end{bmatrix}}={\\begin{bmatrix}3&amp;4\\\\0&amp;0\\\\\\end{bmatrix}}.}"
-        }
-      ],
       "id": "b60c2569994a"
+    },
+    {
+      "kind": "definition",
+      "label": "Hadamard product",
+      "anchor": {
+        "section": "Matrix multiplication",
+        "snippet": "such as the Hadamard product and the Kronecker product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.hadamard",
+        "module": "Mathlib.LinearAlgebra.Matrix.Hadamard",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.hadamard A B` is the entrywise (Hadamard) product of two matrices of the same shape.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Kronecker product",
+      "anchor": {
+        "section": "Matrix multiplication",
+        "snippet": "such as the Hadamard product and the Kronecker product"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.kroneckerMap",
+        "module": "Mathlib.LinearAlgebra.Matrix.Kronecker",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.kroneckerMap` (with `Matrix.kronecker` for multiplication) formalizes the Kronecker product.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -464,10 +404,10 @@
       "status": "partial",
       "mathlib": {
         "decl": "Matrix.updateRow",
-        "module": "Mathlib.Data.Matrix.RowCol",
+        "module": "Mathlib.LinearAlgebra.Matrix.RowCol",
         "match_kind": "invocation"
       },
-      "note": "Mathlib has `Matrix.updateRow`, `Matrix.transvection`, and row swapping but no single unified \"elementary row operation\" classifier.",
+      "note": "Mathlib has `Matrix.updateRow`, `Matrix.transvection`, and row-swap operations, but no unified \"elementary row operation\" classifier.",
       "provenance": "ai",
       "id": "b85a2227d8dd"
     },
@@ -484,18 +424,8 @@
         "module": "Mathlib.LinearAlgebra.Matrix.Defs",
         "match_kind": "generalization"
       },
-      "note": "`Matrix.submatrix A r c` reindexes rows/columns by arbitrary functions, subsuming the row/column-deletion view.",
-      "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Submatrix",
-          "snippet": "A submatrix of a matrix is a matrix obtained by deleting any collection of rows or columns or both"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mathbf {A} ={\\begin{bmatrix}1&amp;\\color {red}{2}&amp;3&amp;4\\\\5&amp;\\color {red}{6}&amp;7&amp;8\\\\\\color {red}{9}&amp;\\color {red}{10}&amp;\\color {red}{11}&amp;\\color {red}{12}\\end{bmatrix}}\\rightarrow {\\begin{bmatrix}1&amp;3&amp;4\\\\5&amp;7&amp;8\\end{bmatrix}}.}"
-        }
-      ],
+      "note": "`Matrix.submatrix A r c` reindexes rows/columns by arbitrary functions, subsuming row/column deletion.",
+      "provenance": "ai-moderated",
       "id": "e0c353ef7fe1"
     },
     {
@@ -511,8 +441,8 @@
         "module": "Mathlib.LinearAlgebra.Matrix.Defs",
         "match_kind": "special_case"
       },
-      "note": "Expressible as `M.submatrix f f` but there is no `principalSubmatrix` definition.",
-      "provenance": "ai",
+      "note": "Expressible as `M.submatrix f f` but there is no dedicated `principalSubmatrix` definition.",
+      "provenance": "ai-moderated",
       "id": "f4a7fd82659d"
     },
     {
@@ -528,22 +458,8 @@
         "module": "Mathlib.Data.Matrix.Mul",
         "match_kind": "invocation"
       },
-      "note": "Linear systems are written `A *ᵥ x = b` via `Matrix.mulVec`; no dedicated `LinearSystem` notion.",
+      "note": "Linear systems are written `A *ᵥ x = b` via `Matrix.mulVec`; there is no dedicated `LinearSystem` notion.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Linear equations",
-          "snippet": "Matrices can be used to compactly write and work with multiple linear equations"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mathbf {Ax} =\\mathbf {b} }"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}a_{1,1}x_{1}+a_{1,2}x_{2}+&amp;\\cdots +a_{1,n}x_{n}=b_{1}\\\\&amp;\\ \\ \\vdots \\\\a_{m,1}x_{1}+a_{m,2}x_{2}+&amp;\\cdots +a_{m,n}x_{n}=b_{m}\\end{aligned}}}"
-        }
-      ],
       "id": "02586494e340"
     },
     {
@@ -559,18 +475,8 @@
         "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
         "match_kind": "invocation"
       },
-      "note": "Mathlib provides `A⁻¹` (`nonsing_inv`) and `A * A⁻¹ = 1` results, from which `x = A⁻¹ *ᵥ b` follows, but the explicit system-solution statement is not a single lemma.",
+      "note": "Mathlib provides `A⁻¹` (`nonsing_inv`) and `A * A⁻¹ = 1`, from which `x = A⁻¹ *ᵥ b` follows; not packaged as a single lemma.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Linear equations",
-          "snippet": "If n = m and the equations are independent , then this can be done by writing"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mathbf {x} =\\mathbf {A} ^{-1}\\mathbf {b} }"
-        }
-      ],
       "id": "8fe88448251a"
     },
     {
@@ -586,7 +492,7 @@
         "module": "Mathlib.LinearAlgebra.Matrix.ToLin",
         "match_kind": "exact"
       },
-      "note": "`Matrix.toLin'` is the linear-equivalence `Matrix m n R ≃ₗ[R] (n → R) →ₗ[R] (m → R)`.",
+      "note": "`Matrix.toLin'` is the linear equivalence `Matrix m n R ≃ₗ[R] (n → R) →ₗ[R] (m → R)`.",
       "provenance": "ai",
       "id": "e49aa91140be"
     },
@@ -603,18 +509,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The geometric parallelogram-image example is not part of Mathlib.",
+      "note": "The geometric parallelogram-image example is not present in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Linear transformations",
-          "snippet": "the 2 × 2 matrix [MATH] can be viewed as the transform of the unit square into a parallelogram"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mathbf {A} ={\\begin{bmatrix}a&amp;c\\\\b&amp;d\\end{bmatrix}}}"
-        }
-      ],
       "id": "8bba182ae8ed"
     },
     {
@@ -632,16 +528,6 @@
       },
       "note": "`LinearMap.toMatrix_comp` (and `toMatrix'_comp`) state that composition of linear maps corresponds to matrix multiplication.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Linear transformations",
-          "snippet": "Under the 1-to-1 correspondence between matrices and linear maps, matrix multiplication corresponds to composition of maps"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle (g\\circ f)({\\mathbf {x}})=g(f({\\mathbf {x}}))=g({\\mathbf {Ax}})={\\mathbf {B}}({\\mathbf {Ax}})=({\\mathbf {BA}}){\\mathbf {x}}.}"
-        }
-      ],
       "id": "849ce0a05335"
     },
     {
@@ -657,7 +543,7 @@
         "module": "Mathlib.LinearAlgebra.Matrix.Rank",
         "match_kind": "exact"
       },
-      "note": "`Matrix.rank` is defined and `rank_eq_finrank_span_cols`/`rank_eq_finrank_span_row` equate it with row/column rank.",
+      "note": "`Matrix.rank` is defined and equated with row/column rank by `rank_eq_finrank_span_*` lemmas.",
       "provenance": "ai",
       "id": "ec94475a778a"
     },
@@ -674,7 +560,7 @@
         "module": "Mathlib.LinearAlgebra.FiniteDimensional.Lemmas",
         "match_kind": "exact"
       },
-      "note": "Rank-nullity is `LinearMap.finrank_range_add_finrank_ker`, used in `Matrix/Rank.lean` for matrices via `toLin`.",
+      "note": "Rank–nullity is `LinearMap.finrank_range_add_finrank_ker`, used for matrices via `toLin`.",
       "provenance": "ai",
       "id": "193f4d7b2479"
     },
@@ -691,7 +577,7 @@
         "module": "Mathlib.Data.Matrix.Diagonal",
         "match_kind": "invocation"
       },
-      "note": "Square matrices are `Matrix n n α`; main diagonal is `Matrix.diag`.",
+      "note": "Square matrices are `Matrix n n α`; the main diagonal is `Matrix.diag`.",
       "provenance": "ai",
       "id": "172ffd5985c2"
     },
@@ -708,7 +594,7 @@
         "module": "Mathlib.Data.Matrix.Mul",
         "match_kind": "exact"
       },
-      "note": "`instance instRing : Ring (Matrix n n α)` for `Fintype n` and `Ring α`.",
+      "note": "`Matrix.instRing` provides `Ring (Matrix n n α)` for `Fintype n` and `Ring α`.",
       "provenance": "ai",
       "id": "151de3550ee5"
     },
@@ -725,9 +611,25 @@
         "module": "Mathlib.LinearAlgebra.Matrix.Block",
         "match_kind": "generalization"
       },
-      "note": "`Matrix.BlockTriangular` (and `Matrix.IsDiag` for diagonal) generalize triangular matrices; no specific `IsUpperTriangular` predicate.",
+      "note": "`Matrix.BlockTriangular` generalizes triangular matrices, and `Matrix.IsDiag` handles diagonal ones; no dedicated `IsUpperTriangular` predicate.",
       "provenance": "ai",
       "id": "f004ab528ddc"
+    },
+    {
+      "kind": "definition",
+      "label": "Diagonal matrix",
+      "anchor": {
+        "section": "Diagonal and triangular matrix",
+        "snippet": "If all entries outside the main diagonal are zero, A is called a diagonal matrix"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.diagonal",
+        "module": "Mathlib.Data.Matrix.Diagonal",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.diagonal d` builds a diagonal matrix from `d : n → α`; the predicate `Matrix.IsDiag M` characterizes diagonal matrices.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -742,22 +644,8 @@
         "module": "Mathlib.Data.Matrix.Diagonal",
         "match_kind": "exact"
       },
-      "note": "`instance one : One (Matrix n n α) := ⟨diagonal fun _ => 1⟩` gives the identity matrix `1`.",
+      "note": "The `One (Matrix n n α)` instance is `Matrix.one`, defined as `diagonal fun _ => 1`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Identity matrix",
-          "snippet": "The identity matrix I n of size n is the n -by- n matrix in which all the elements on the main diagonal are equal to 1"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}\\mathbf {I} _{1}&amp;={\\begin{bmatrix}1\\end{bmatrix}},\\\\[4pt]\\mathbf {I} _{2}&amp;={\\begin{bmatrix}1&amp;0\\\\0&amp;1\\end{bmatrix}},\\\\[4pt]\\vdots &amp;\\\\[4pt]\\mathbf {I} _{n}&amp;={\\begin{bmatrix}1&amp;0&amp;\\cdots &amp;0\\\\0&amp;1&amp;\\cdots &amp;0\\\\\\vdots &amp;\\vdots &amp;\\ddots &amp;\\vdots \\\\0&amp;0&amp;\\cdots &amp;1\\end{bmatrix}}\\end{aligned}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\mathbf {AI}}_{n}={\\mathbf {I}}_{m}{\\mathbf {A}}={\\mathbf {A}}}"
-        }
-      ],
       "id": "99cdec511e42"
     },
     {
@@ -773,8 +661,8 @@
         "module": "Mathlib.Data.Matrix.Basic",
         "match_kind": "exact"
       },
-      "note": "Mathlib has `Matrix.diagonalRingHom`/`scalar` (sending `r` to `r • 1` as a ring hom) but no `IsScalarMatrix` predicate.",
-      "provenance": "ai",
+      "note": "`Matrix.scalar` is the ring hom sending `r` to `r • 1`; there is no `IsScalarMatrix` predicate.",
+      "provenance": "ai-moderated",
       "id": "e19839c4bd62"
     },
     {
@@ -790,7 +678,7 @@
         "module": "Mathlib.LinearAlgebra.Matrix.Symmetric",
         "match_kind": "exact"
       },
-      "note": "`Matrix.IsSymm A := Aᵀ = A` is defined; no separate `IsSkewSymm` predicate, though `-A = Aᵀ` is expressible.",
+      "note": "`Matrix.IsSymm A := Aᵀ = A` is defined; there is no dedicated `IsSkewSymm` predicate.",
       "provenance": "ai",
       "id": "c3db72c83a16"
     },
@@ -810,6 +698,22 @@
       "note": "`Matrix.IsHermitian A := Aᴴ = A` is the standard Mathlib definition.",
       "provenance": "ai",
       "id": "d1edae74be97"
+    },
+    {
+      "kind": "definition",
+      "label": "Conjugate transpose",
+      "anchor": {
+        "section": "Symmetric or skew-symmetric matrix",
+        "snippet": "where the star or asterisk denotes the conjugate transpose of the matrix, that is, the transpose of the complex conjugate of A"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.conjTranspose",
+        "module": "Mathlib.LinearAlgebra.Matrix.ConjTranspose",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.conjTranspose M = (star M)ᵀ`, with notation `Mᴴ`.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -841,18 +745,8 @@
         "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
         "match_kind": "exact"
       },
-      "note": "Invertibility is `IsUnit A` in the matrix ring; characterized by `isUnit_iff_isUnit_det` and `Matrix.invertibleOfDetInvertible`.",
+      "note": "Invertibility is `IsUnit A` in the matrix ring, characterized by `Matrix.isUnit_iff_isUnit_det`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Invertible matrix and its inverse",
-          "snippet": "A square matrix A is called invertible or non-singular if there exists a matrix B such that"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\mathbf {AB}}={\\mathbf {BA}}={\\mathbf {I}}_{n},}"
-        }
-      ],
       "id": "e5657cf57756"
     },
     {
@@ -868,18 +762,8 @@
         "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
         "match_kind": "invocation"
       },
-      "note": "Uniqueness follows from `Group`/`Units` structure on the matrix ring; the chosen inverse is `A⁻¹` (`nonsing_inv`).",
+      "note": "Uniqueness follows from the `Units`/`Group` structure on the matrix ring; the chosen inverse is `A⁻¹` (`nonsing_inv`).",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Invertible matrix and its inverse",
-          "snippet": "If B exists, it is unique and is called the inverse matrix of A"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\mathbf {AB}}={\\mathbf {BA}}={\\mathbf {I}}_{n},}"
-        }
-      ],
       "id": "05cbf5e15269"
     },
     {
@@ -897,16 +781,6 @@
       },
       "note": "`Matrix.PosDef` (and `PosSemidef`) capture positive-definiteness via the associated quadratic form.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definite matrix",
-          "snippet": "A symmetric real matrix A is called positive-definite if the associated quadratic form"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f({\\mathbf {x}})={\\mathbf {x}}^{\\rm {T}}{\\mathbf {Ax}}}"
-        }
-      ],
       "id": "449d06e6ec56"
     },
     {
@@ -939,18 +813,8 @@
         "module": "Mathlib.LinearAlgebra.Matrix.BilinearForm",
         "match_kind": "exact"
       },
-      "note": "`Matrix.toBilin'` is the linear equivalence `Matrix n n R₁ ≃ₗ BilinForm R₁ (n → R₁)`.",
+      "note": "`Matrix.toBilin'` is the linear equivalence between `Matrix n n R₁` and bilinear forms on `n → R₁`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definite matrix",
-          "snippet": "Allowing as input two different vectors instead yields the bilinear form associated to A"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle B_{\\mathbf {A}}({\\mathbf {x}},{\\mathbf {y}})={\\mathbf {x}}^{\\rm {T}}{\\mathbf {Ay}}.}"
-        }
-      ],
       "id": "9ff2c8d10889"
     },
     {
@@ -966,22 +830,8 @@
         "module": "Mathlib.LinearAlgebra.UnitaryGroup",
         "match_kind": "exact"
       },
-      "note": "`Matrix.orthogonalGroup n R := unitaryGroup n R`; `mem_orthogonalGroup_iff` says `A * Aᵀ = 1`.",
+      "note": "`Matrix.orthogonalGroup n R := unitaryGroup n R`; membership is characterized by `A * Aᵀ = 1`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Orthogonal matrix",
-          "snippet": "An orthogonal matrix is a square matrix with real entries whose columns and rows are orthogonal unit vectors"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mathbf {A} ^{\\mathrm {T} }=\\mathbf {A} ^{-1},\\,}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mathbf {A} ^{\\mathrm {T} }\\mathbf {A} =\\mathbf {A} \\mathbf {A} ^{\\mathrm {T} }=\\mathbf {I} _{n},}"
-        }
-      ],
       "id": "5662ef824bda"
     },
     {
@@ -997,7 +847,7 @@
         "module": "Mathlib.LinearAlgebra.UnitaryGroup",
         "match_kind": "invocation"
       },
-      "note": "Orthogonal group is a `Group`, so each element is invertible; no dedicated lemma `IsOrthogonal.invertible`.",
+      "note": "Orthogonal group is a `Group` so each element is invertible; no dedicated `IsOrthogonal.invertible` lemma.",
       "provenance": "ai",
       "id": "9903a005b417"
     },
@@ -1014,9 +864,25 @@
         "module": "Mathlib.LinearAlgebra.UnitaryGroup",
         "match_kind": "exact"
       },
-      "note": "`Matrix.specialOrthogonalGroup`, characterized as orthogonal matrices with `det = 1`.",
+      "note": "`Matrix.specialOrthogonalGroup` is exactly orthogonal matrices with `det = 1`.",
       "provenance": "ai",
       "id": "b9f942c0e016"
+    },
+    {
+      "kind": "definition",
+      "label": "Unitary matrix",
+      "anchor": {
+        "section": "Orthogonal matrix",
+        "snippet": "The complex analog of an orthogonal matrix is a unitary matrix"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.unitaryGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.unitaryGroup n R` is the group of matrices with `Aᴴ * A = 1`.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -1033,24 +899,6 @@
       },
       "note": "`Matrix.trace A := ∑ i, diag A i`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Trace",
-          "snippet": "The trace , tr( A ) of a square matrix A is the sum of its diagonal entries"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\operatorname {tr} (\\mathbf {AB} )=\\operatorname {tr} (\\mathbf {BA} ).}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\operatorname {tr} (\\mathbf {AB} )=\\sum _{i=1}^{m}\\sum _{j=1}^{n}a_{ij}b_{ji}=\\operatorname {tr} (\\mathbf {BA} ).}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\operatorname {tr} ({\\mathbf {A}})=\\operatorname {tr} ({\\mathbf {A}}^{\\rm {T}}).}"
-        }
-      ],
       "id": "a6412475bf40"
     },
     {
@@ -1068,24 +916,6 @@
       },
       "note": "`Matrix.trace_mul_comm`: `trace (A * B) = trace (B * A)`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Trace",
-          "snippet": "the trace of the product of two matrices is independent of the order of the factors"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\operatorname {tr} (\\mathbf {AB} )=\\operatorname {tr} (\\mathbf {BA} ).}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\operatorname {tr} (\\mathbf {AB} )=\\sum _{i=1}^{m}\\sum _{j=1}^{n}a_{ij}b_{ji}=\\operatorname {tr} (\\mathbf {BA} ).}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\operatorname {tr} ({\\mathbf {A}})=\\operatorname {tr} ({\\mathbf {A}}^{\\rm {T}}).}"
-        }
-      ],
       "id": "27667fec90ae"
     },
     {
@@ -1103,24 +933,6 @@
       },
       "note": "`Matrix.trace_transpose`: `trace Aᵀ = trace A`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Trace",
-          "snippet": "the trace of a matrix is equal to that of its transpose"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\operatorname {tr} (\\mathbf {AB} )=\\operatorname {tr} (\\mathbf {BA} ).}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\operatorname {tr} (\\mathbf {AB} )=\\sum _{i=1}^{m}\\sum _{j=1}^{n}a_{ij}b_{ji}=\\operatorname {tr} (\\mathbf {BA} ).}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\operatorname {tr} ({\\mathbf {A}})=\\operatorname {tr} ({\\mathbf {A}}^{\\rm {T}}).}"
-        }
-      ],
       "id": "70c0ba68f369"
     },
     {
@@ -1153,7 +965,7 @@
         "module": "Mathlib.LinearAlgebra.Matrix.NonsingularInverse",
         "match_kind": "generalization"
       },
-      "note": "`isUnit_iff_isUnit_det` over a `CommRing`; for fields `IsUnit ↔ ≠ 0`.",
+      "note": "`Matrix.isUnit_iff_isUnit_det` over a `CommRing`; specializes to `det ≠ 0` over a field.",
       "provenance": "ai",
       "id": "78ddf4d16ba9"
     },
@@ -1172,17 +984,23 @@
       },
       "note": "`Matrix.det_fin_two A = A 0 0 * A 1 1 - A 0 1 * A 1 0`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Determinant",
-          "snippet": "The determinant of 2 × 2 matrices is given by"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\det {\\begin{bmatrix}a&amp;b\\\\c&amp;d\\end{bmatrix}}=ad-bc.}"
-        }
-      ],
       "id": "d6095dd925ec"
+    },
+    {
+      "kind": "proposition",
+      "label": "Leibniz formula for determinant",
+      "anchor": {
+        "section": "Determinant",
+        "snippet": "The more lengthy Leibniz formula generalizes these two formulae to all dimensions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_apply",
+        "module": "Mathlib.LinearAlgebra.Matrix.Determinant.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.det_apply` writes `det M` as the signed sum `∑ σ : Perm n, σ.sign • ∏ i, M (σ i) i`, the Leibniz formula.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -1199,20 +1017,6 @@
       },
       "note": "`Matrix.det_mul`: `det (M * N) = det M * det N`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Determinant",
-          "snippet": "The determinant of a product of square matrices equals the product of their determinants"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\det({\\mathbf {AB}})=\\det({\\mathbf {A}})\\cdot \\det({\\mathbf {B}}),}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle |{\\mathbf {AB}}|=|{\\mathbf {A}}|\\cdot |{\\mathbf {B}}|.}"
-        }
-      ],
       "id": "54ea5be02b8b"
     },
     {
@@ -1230,20 +1034,6 @@
       },
       "note": "`Matrix.det_succ_row_zero` (and `det_eq_sum_mul_adjugate_row`) give Laplace expansion via minors.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Determinant",
-          "snippet": "the Laplace expansion expresses the determinant in terms of minors"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\det({\\mathbf {AB}})=\\det({\\mathbf {A}})\\cdot \\det({\\mathbf {B}}),}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle |{\\mathbf {AB}}|=|{\\mathbf {A}}|\\cdot |{\\mathbf {B}}|.}"
-        }
-      ],
       "id": "71f3054f1f9a"
     },
     {
@@ -1259,22 +1049,8 @@
         "module": "Mathlib.LinearAlgebra.Matrix.Adjugate",
         "match_kind": "exact"
       },
-      "note": "`Matrix.cramer` and related lemmas (`cramer_apply`, `mul_adjugate`) encode Cramer's rule.",
+      "note": "`Matrix.cramer`, with `cramer_apply` and `mul_adjugate`, encodes Cramer's rule.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Determinant",
-          "snippet": "Determinants can be used to solve linear systems using Cramer's rule"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\det({\\mathbf {AB}})=\\det({\\mathbf {A}})\\cdot \\det({\\mathbf {B}}),}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle |{\\mathbf {AB}}|=|{\\mathbf {A}}|\\cdot |{\\mathbf {B}}|.}"
-        }
-      ],
       "id": "ff8ff5395d88"
     },
     {
@@ -1290,18 +1066,8 @@
         "module": "Mathlib.LinearAlgebra.Eigenspace.Basic",
         "match_kind": "exact"
       },
-      "note": "`Module.End.HasEigenvalue` and `HasEigenvector` are defined for endomorphisms; applied to matrices via `Matrix.toLin`.",
+      "note": "`Module.End.HasEigenvalue`/`HasEigenvector` are defined for endomorphisms and applied to matrices via `Matrix.toLin`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Eigenvalues and eigenvectors",
-          "snippet": "are called an eigenvalue and an eigenvector of A , respectively"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mathbf {A} \\mathbf {v} =\\lambda \\mathbf {v} }"
-        }
-      ],
       "id": "6bbe2ef36fba"
     },
     {
@@ -1319,16 +1085,6 @@
       },
       "note": "`Matrix.charpoly M := det (charmatrix M)`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Eigenvalues and eigenvectors",
-          "snippet": "is called the characteristic polynomial of A"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mathbf {A} \\mathbf {v} =\\lambda \\mathbf {v} }"
-        }
-      ],
       "id": "33dd341a2ac9"
     },
     {
@@ -1346,17 +1102,23 @@
       },
       "note": "`Matrix.aeval_self_charpoly M : aeval M M.charpoly = 0` is Cayley–Hamilton.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Eigenvalues and eigenvectors",
-          "snippet": "According to the Cayley–Hamilton theorem , p A ( A ) = 0"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mathbf {A} \\mathbf {v} =\\lambda \\mathbf {v} }"
-        }
-      ],
       "id": "92a98da8a136"
+    },
+    {
+      "kind": "proposition",
+      "label": "Charpoly is monic of degree n",
+      "anchor": {
+        "section": "Eigenvalues and eigenvectors",
+        "snippet": "It is a monic polynomial of degree n"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.charpoly_monic",
+        "module": "Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.charpoly_monic` and `Matrix.charpoly_natDegree_eq_dim` give monicity and degree of `charpoly`.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -1371,7 +1133,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "The Strassen matrix-multiplication algorithm and its complexity are not formalized in Mathlib.",
+      "note": "Strassen's matrix-multiplication algorithm and its complexity are not formalized in Mathlib.",
       "provenance": "ai",
       "id": "fdb766c2ed50"
     },
@@ -1388,9 +1150,25 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No notion of sparse matrices is in Mathlib.",
+      "note": "No notion of sparse matrices exists in Mathlib.",
       "provenance": "ai",
       "id": "8a5401d592a4"
+    },
+    {
+      "kind": "definition",
+      "label": "Adjugate matrix",
+      "anchor": {
+        "section": "Computational aspects",
+        "snippet": "one can calculate the inverse of a matrix by computing its adjugate matrix"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.adjugate",
+        "module": "Mathlib.LinearAlgebra.Matrix.Adjugate",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.adjugate` is the classical adjugate; `Matrix.mul_adjugate`/`adjugate_mul` give `A * adjugate A = det A • 1`.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -1422,7 +1200,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "SVD is not formalized for matrices in Mathlib (only related notions like singular values for compact operators).",
+      "note": "Matrix SVD is not formalized in Mathlib (only related notions like singular values for compact operators).",
       "provenance": "ai",
       "id": "8b03425ff04d"
     },
@@ -1439,18 +1217,8 @@
         "module": "Mathlib.Analysis.Matrix.Spectrum",
         "match_kind": "special_case"
       },
-      "note": "Hermitian diagonalization is covered by `spectral_theorem`; general eigendecomposition is not a single statement.",
+      "note": "Hermitian diagonalization is covered by `spectral_theorem`; general eigendecomposition is not packaged as a single statement.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Decomposition",
-          "snippet": "The eigendecomposition or diagonalization expresses A as a product VDV −1"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\mathbf {A}}^{n}=({\\mathbf {VDV}}^{-1})^{n}={\\mathbf {VDV}}^{-1}{\\mathbf {VDV}}^{-1}\\ldots {\\mathbf {VDV}}^{-1}={\\mathbf {VD}}^{n}{\\mathbf {V}}^{-1}}"
-        }
-      ],
       "id": "4794f8f80ac4"
     },
     {
@@ -1468,17 +1236,23 @@
       },
       "note": "Jordan normal form is not formalized in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Decomposition",
-          "snippet": "the Jordan decomposition transforms a matrix into Jordan normal form"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\mathbf {A}}^{n}=({\\mathbf {VDV}}^{-1})^{n}={\\mathbf {VDV}}^{-1}{\\mathbf {VDV}}^{-1}\\ldots {\\mathbf {VDV}}^{-1}={\\mathbf {VD}}^{n}{\\mathbf {V}}^{-1}}"
-        }
-      ],
       "id": "b73fbd8648b2"
+    },
+    {
+      "kind": "definition",
+      "label": "Matrix exponential",
+      "anchor": {
+        "section": "Decomposition",
+        "snippet": "This can be used to compute the matrix exponential e A"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "NormedSpace.exp",
+        "module": "Mathlib.Analysis.Normed.Algebra.Exponential",
+        "match_kind": "invocation"
+      },
+      "note": "The matrix exponential is `NormedSpace.exp ℝ A` for `A : Matrix n n ℝ`, with matrix-specific API in `Analysis/NormedSpace/MatrixExponential.lean`.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -1493,7 +1267,7 @@
         "module": "Mathlib.Data.Matrix.Mul",
         "match_kind": "exact"
       },
-      "note": "`Ring (Matrix n n α)` instance; isomorphism to endomorphisms is `LinearMap.toMatrixAlgEquiv`.",
+      "note": "`Ring (Matrix n n α)` instance via `Matrix.instRing`; the endomorphism isomorphism is `LinearMap.toMatrixAlgEquiv`.",
       "provenance": "ai",
       "id": "334d8d045c04"
     },
@@ -1544,7 +1318,7 @@
         "module": "Mathlib.Data.Matrix.Block",
         "match_kind": "exact"
       },
-      "note": "`Matrix.fromBlocks` assembles a block matrix from four submatrices, with `toBlocks₁₁`/etc. extracting blocks.",
+      "note": "`Matrix.fromBlocks` assembles a block matrix from four submatrices; `toBlocks₁₁` etc. extract blocks.",
       "provenance": "ai",
       "id": "6144e6679a29"
     },
@@ -1563,16 +1337,6 @@
       },
       "note": "`LinearMap.toMatrix` is the linear equivalence `(M₁ →ₗ[R] M₂) ≃ₗ Matrix m n R` given bases.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Relationship to linear maps",
-          "snippet": "any linear map f : V → W between finite- dimensional vector spaces can be described by a matrix"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f(\\mathbf {v} _{j})=\\sum _{i=1}^{m}a_{i,j}\\mathbf {w} _{i}\\qquad {\\mbox{for}}\\ j=1,\\ldots ,n.}"
-        }
-      ],
       "id": "0079e9700ddb"
     },
     {
@@ -1605,7 +1369,7 @@
         "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs",
         "match_kind": "invocation"
       },
-      "note": "Matrix groups are subgroups of `Matrix.GeneralLinearGroup`; no abstract `MatrixGroup` class.",
+      "note": "Matrix groups appear as subgroups of `Matrix.GeneralLinearGroup`; no abstract `MatrixGroup` class.",
       "provenance": "ai",
       "id": "e559cb27cf01"
     },
@@ -1641,16 +1405,6 @@
       },
       "note": "`Matrix.SpecialLinearGroup n R` is matrices with determinant 1.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Matrix groups",
-          "snippet": "form a group called the special linear group of degree"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\mathbf {M}}^{\\rm {T}}{\\mathbf {M}}={\\mathbf {I}},}"
-        }
-      ],
       "id": "e039a2493c19"
     },
     {
@@ -1666,18 +1420,8 @@
         "module": "Mathlib.LinearAlgebra.UnitaryGroup",
         "match_kind": "exact"
       },
-      "note": "`Matrix.orthogonalGroup n R := unitaryGroup n R`, satisfying `A * Aᵀ = 1`.",
+      "note": "`Matrix.orthogonalGroup n R := unitaryGroup n R` satisfying `A * Aᵀ = 1`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Matrix groups",
-          "snippet": "The set of orthogonal matrices , determined by the condition"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\mathbf {M}}^{\\rm {T}}{\\mathbf {M}}={\\mathbf {I}},}"
-        }
-      ],
       "id": "e1dc27c9630e"
     },
     {
@@ -1695,16 +1439,6 @@
       },
       "note": "`Matrix.specialOrthogonalGroup` is orthogonal matrices with `det = 1`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Matrix groups",
-          "snippet": "Orthogonal matrices with determinant 1 form a group called the special orthogonal group"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\mathbf {M}}^{\\rm {T}}{\\mathbf {M}}={\\mathbf {I}},}"
-        }
-      ],
       "id": "98a770ede9ea"
     },
     {
@@ -1720,7 +1454,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Cayley's theorem (finite group → permutation group) is in Mathlib, but the explicit composition with the permutation-matrix embedding into `GL n R` is not stated.",
+      "note": "Cayley's theorem is in Mathlib, but its composition with the permutation-matrix embedding into `GL n R` is not stated.",
       "provenance": "ai",
       "id": "f92403960228"
     },
@@ -1784,11 +1518,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Matrix.mul",
+        "decl": "Matrix.mul_apply",
         "module": "Mathlib.Data.Matrix.Mul",
         "match_kind": "special_case"
       },
-      "note": "Follows directly from `Matrix.mul_apply` with `Fintype.sum_empty`, but no dedicated lemma.",
+      "note": "Follows directly from `Matrix.mul_apply` combined with `Fintype.sum_empty`, but no dedicated lemma packages it.",
       "provenance": "ai",
       "id": "9766e0af1e3f"
     },
@@ -1839,8 +1573,8 @@
         "module": "Mathlib.LinearAlgebra.Matrix.Defs",
         "match_kind": "exact"
       },
-      "note": "`AddCommMonoid (Matrix m n α)` follows from `AddCommMonoid α`, which a semiring provides.",
-      "provenance": "ai",
+      "note": "`AddCommMonoid (Matrix m n α)` follows from `AddCommMonoid α`, which a semiring provides; instance is `Matrix.addCommMonoid`.",
+      "provenance": "ai-moderated",
       "id": "7d85eb834e62"
     },
     {
@@ -1856,7 +1590,7 @@
         "module": "Mathlib.Data.Matrix.Mul",
         "match_kind": "exact"
       },
-      "note": "`instance semiring : Semiring (Matrix n n α)` for `Fintype n`, `DecidableEq n`, and `Semiring α`.",
+      "note": "`Matrix.semiring` provides `Semiring (Matrix n n α)` under `Fintype n`, `DecidableEq n`, and `Semiring α`.",
       "provenance": "ai",
       "id": "5dc39acdda19"
     },
@@ -1873,7 +1607,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Positive/negative determinant pair for semiring matrices is not formalized.",
+      "note": "Positive/negative determinant pair for semiring matrices is not formalized in Mathlib.",
       "provenance": "ai",
       "id": "7aec9ed398d2"
     },
@@ -1901,14 +1635,14 @@
         "section": "Probability theory and statistics",
         "snippet": "Stochastic matrices are square matrices whose rows are probability vectors"
       },
-      "status": "formalized",
+      "status": "not_formalized",
       "mathlib": {
-        "decl": "Matrix.rowStochastic",
-        "module": "Mathlib.LinearAlgebra.Matrix.Stochastic",
-        "match_kind": "exact"
+        "decl": null,
+        "module": null,
+        "match_kind": null
       },
-      "note": "`Matrix.rowStochastic` (and `colStochastic`, `doublyStochastic`) capture stochastic matrices.",
-      "provenance": "ai",
+      "note": "No `Matrix.rowStochastic` or `IsStochastic` declaration is in Mathlib; the underlying conditions are expressible but not packaged.",
+      "provenance": "ai-moderated",
       "id": "ac352da5d1ff"
     },
     {
@@ -1924,7 +1658,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Random matrices as such are not formalized in Mathlib.",
+      "note": "Random matrices as a named concept are not formalized in Mathlib.",
       "provenance": "ai",
       "id": "ddd97db70601"
     },
@@ -1994,16 +1728,6 @@
       },
       "note": "No `Hessian` matrix definition in Mathlib (only iterated `fderiv`).",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Analysis and geometry",
-          "snippet": "The Hessian matrix of a differentiable function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle H(f)=\\left[{\\frac {\\partial ^{2}f}{\\partial x_{i}\\,\\partial x_{j}}}\\right].}"
-        }
-      ],
       "id": "774808437fae"
     },
     {
@@ -2019,7 +1743,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Second-derivative test for local minima via positive-definite Hessian is not in Mathlib.",
+      "note": "The second-derivative test via positive-definite Hessian is not in Mathlib.",
       "provenance": "ai",
       "id": "1146b410b6dc"
     },
@@ -2036,18 +1760,8 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No standalone `JacobianMatrix` definition in Mathlib's analysis library; only `fderiv` (a continuous linear map).",
+      "note": "No standalone `JacobianMatrix` in Mathlib's analysis library; only `fderiv` as a continuous linear map.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Analysis and geometry",
-          "snippet": "Another matrix frequently used in geometrical situations is the Jacobi matrix of a differentiable map"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle J(f)=\\left[{\\frac {\\partial f_{i}}{\\partial x_{j}}}\\right]_{1\\leq i\\leq m,1\\leq j\\leq n}.}"
-        }
-      ],
       "id": "45d8995ab073"
     },
     {
@@ -2065,16 +1779,6 @@
       },
       "note": "`HasStrictFDerivAt.implicitFunction` formalizes the implicit function theorem (with companion inverse-function-theorem results).",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Analysis and geometry",
-          "snippet": "f is locally invertible at that point, by the implicit function theorem"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle J(f)=\\left[{\\frac {\\partial f_{i}}{\\partial x_{j}}}\\right]_{1\\leq i\\leq m,1\\leq j\\leq n}.}"
-        }
-      ],
       "id": "7fa76fd65455"
     }
   ]

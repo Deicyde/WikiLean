@@ -11,6 +11,30 @@
         "section": "(Lead)",
         "snippet": "is a probabilistic technique for approximating the global optimum"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Simulated annealing as a metaheuristic optimization algorithm is not formalized in Mathlib, which contains no annealing or Metropolis-type search procedures.",
+      "provenance": "ai-agent1",
+      "id": "2dcfcf6bbf5e"
+    },
+    {
+      "kind": "definition",
+      "label": "Metropolis–Hastings algorithm",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "The method is an adaptation of the Metropolis–Hastings algorithm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Metropolis–Hastings MCMC sampler is not formalized in Mathlib; Mathlib has no Markov-chain Monte Carlo machinery.",
       "provenance": "ai-agent1"
     },
     {
@@ -20,7 +44,15 @@
         "section": "Overview",
         "snippet": "is analogous to the internal energy of the system in that state"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The physical energy-function analogy used to motivate simulated annealing has no Mathlib formalization.",
+      "provenance": "ai-agent1",
+      "id": "93fdab66a453"
     },
     {
       "kind": "definition",
@@ -29,7 +61,15 @@
         "section": "The basic iteration",
         "snippet": "probabilistically decides between moving the system to state"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The probabilistic accept/reject iteration of simulated annealing is an algorithm not present in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "8be86089b181"
     },
     {
       "kind": "definition",
@@ -38,7 +78,15 @@
         "section": "The neighbors of a state",
         "snippet": "is called a move"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of a 'move' between neighboring states in a search space is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "872f8e677a2c"
     },
     {
       "kind": "example",
@@ -47,7 +95,15 @@
         "section": "The neighbors of a state",
         "snippet": "each state is typically defined as a permutation of the cities to be visited"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Equiv.Perm",
+        "module": "Mathlib.Logic.Equiv.Defs",
+        "match_kind": null
+      },
+      "note": "Permutations are formalized as `Equiv.Perm`, but the TSP state space and its neighbor structure are not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "2ee7bd611cac"
     },
     {
       "kind": "proposition",
@@ -56,7 +112,15 @@
         "section": "The neighbors of a state",
         "snippet": "is not guaranteed to lead to any of the existing better solutions"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The claim that greedy hill climbing can get trapped in local optima is an algorithmic observation absent from Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "1003c93a5bca"
     },
     {
       "kind": "definition",
@@ -65,7 +129,15 @@
         "section": "Acceptance probabilities",
         "snippet": "is specified by an acceptance probability function"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The acceptance probability function P(e, e', T) of simulated annealing is not defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "60988bed66b5"
     },
     {
       "kind": "proposition",
@@ -74,7 +146,15 @@
         "section": "Acceptance probabilities",
         "snippet": "must be positive even when"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This requirement on the acceptance function is specific to simulated annealing and not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "2d498aeeb9e9"
     },
     {
       "kind": "proposition",
@@ -83,6 +163,30 @@
         "section": "Acceptance probabilities",
         "snippet": "and to a positive value otherwise"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The T→0 limiting behavior of the acceptance probability is a statement about the SA function, which Mathlib does not contain.",
+      "provenance": "ai-agent1",
+      "id": "eef7e88bf99b"
+    },
+    {
+      "kind": "proposition",
+      "label": "Reduction to greedy algorithm at T=0",
+      "anchor": {
+        "section": "Acceptance probabilities",
+        "snippet": "the procedure reduces to the greedy algorithm"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The reduction of simulated annealing to a greedy descent in the zero-temperature limit is an algorithmic statement absent from Mathlib.",
       "provenance": "ai-agent1"
     },
     {
@@ -92,7 +196,15 @@
         "section": "Acceptance probabilities",
         "snippet": "the procedure always moved downhill when it found a way to do so"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The original Metropolis always-downhill acceptance rule is an algorithmic convention with no Mathlib formalization.",
+      "provenance": "ai-agent1",
+      "id": "b2459cf7c161"
     },
     {
       "kind": "proposition",
@@ -101,7 +213,15 @@
         "section": "Acceptance probabilities",
         "snippet": "small uphill moves are more likely than large ones"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This monotonicity property of the SA acceptance probability is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "f5697260193b"
     },
     {
       "kind": "proposition",
@@ -110,7 +230,15 @@
         "section": "Acceptance probabilities",
         "snippet": "plays a crucial role in controlling the evolution"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The role of the temperature parameter in SA dynamics is not a Mathlib concept.",
+      "provenance": "ai-agent1",
+      "id": "f4d428fd09f0"
     },
     {
       "kind": "definition",
@@ -119,7 +247,15 @@
         "section": "The annealing schedule",
         "snippet": "it is decreased at each step following some annealing schedule"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The temperature annealing schedule is specific to simulated annealing and not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "66821341095e"
     },
     {
       "kind": "theorem",
@@ -128,7 +264,15 @@
         "section": "The annealing schedule",
         "snippet": "the probability that the simulated annealing algorithm terminates with a global optimal solution approaches 1"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The asymptotic convergence theorem for simulated annealing is not formalized; Mathlib has no SA Markov chain convergence result.",
+      "provenance": "ai-agent1",
+      "id": "6108eed8a59f"
     },
     {
       "kind": "definition",
@@ -137,7 +281,15 @@
         "section": "Parameter selection",
         "snippet": "one must specify the following parameters"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The list of parameters one must supply to run simulated annealing is implementation guidance not present in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "608a072074fa"
     },
     {
       "kind": "definition",
@@ -146,7 +298,15 @@
         "section": "Sufficiently near neighbour",
         "snippet": "may be modeled as a random walk on a search graph"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep found no random-walk formalization in Mathlib, and the SA search-graph model is absent.",
+      "provenance": "ai-agent1",
+      "id": "86fb99f33325"
     },
     {
       "kind": "proposition",
@@ -155,7 +315,15 @@
         "section": "Sufficiently near neighbour",
         "snippet": "it must provide a sufficiently short path on this graph"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This heuristic requirement on the search graph's diameter for SA is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "450ea9fb87e2"
     },
     {
       "kind": "example",
@@ -164,7 +332,15 @@
         "section": "Sufficiently near neighbour",
         "snippet": "the search space for n = 20 cities has n! = 2,432,902,008,176,640,000 (2.4 quintillion) states"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.factorial",
+        "module": "Mathlib.Data.Nat.Factorial.Basic",
+        "match_kind": null
+      },
+      "note": "The factorial function `Nat.factorial` is formalized (so 20! is computable), but the TSP state-counting example itself is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "4b3889fc407f"
     },
     {
       "kind": "definition",
@@ -173,7 +349,15 @@
         "section": "Transition probabilities",
         "snippet": "the transition probability is defined as the probability that the simulated annealing algorithm will move to state"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The SA-specific transition probability (generator times acceptance) is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "e257d5177ce8"
     },
     {
       "kind": "proposition",
@@ -182,7 +366,15 @@
         "section": "Acceptance probabilities (2)",
         "snippet": "is partially redundant"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This observation about redundancy in specifying SA's generator and acceptance functions is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "b44922260673"
     },
     {
       "kind": "definition",
@@ -191,7 +383,15 @@
         "section": "Acceptance probabilities (2)",
         "snippet": "In the formulation of the method by Kirkpatrick et al."
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Kirkpatrick exponential acceptance function is specific to simulated annealing and not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "62362e9e0c8e"
     },
     {
       "kind": "proposition",
@@ -200,7 +400,15 @@
         "section": "Acceptance probabilities (2)",
         "snippet": "proposed that a deterministic update"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The proposal that a deterministic update accelerates SA is an algorithmic claim absent from Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "269ee91d3cae"
     },
     {
       "kind": "theorem",
@@ -209,7 +417,15 @@
         "section": "Acceptance probabilities (2)",
         "snippet": "the deterministic update strategy is indeed the optimal one"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The optimality theorem for the deterministic SA update strategy is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "8cfbc5212221"
     },
     {
       "kind": "proposition",
@@ -218,7 +434,15 @@
         "section": "Efficient candidate generation",
         "snippet": "one should skew the generator towards candidate moves"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This candidate-generation heuristic for SA is not a Mathlib formalization.",
+      "provenance": "ai-agent1",
+      "id": "47696baf6cd7"
     },
     {
       "kind": "example",
@@ -227,7 +451,15 @@
         "section": "Efficient candidate generation",
         "snippet": "swapping two consecutive cities in a low-energy tour is expected to have a modest effect on its energy"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This TSP example about swap moves and energy change is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "f44d68a467f7"
     },
     {
       "kind": "proposition",
@@ -236,7 +468,15 @@
         "section": "Efficient candidate generation",
         "snippet": "A more precise statement of the heuristic is that one should try the first candidate states"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This refined SA candidate-ordering heuristic is not present in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "a83038886ec5"
     },
     {
       "kind": "definition",
@@ -245,7 +485,15 @@
         "section": "Barrier avoidance",
         "snippet": "states (or sets of connected states) that have much lower energy than all its neighboring states"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The notion of deep local minima in an SA energy landscape is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "a3daa77b266a"
     },
     {
       "kind": "proposition",
@@ -254,7 +502,15 @@
         "section": "Barrier avoidance",
         "snippet": "may trap the simulated annealing algorithm with high probability"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The claim that catchment basins trap SA with high probability is an algorithmic statement absent from Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "d7a602e05c76"
     },
     {
       "kind": "proposition",
@@ -263,7 +519,15 @@
         "section": "Barrier avoidance",
         "snippet": "it is impossible to design a candidate generator that will satisfy this goal"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This impossibility observation about SA candidate generators is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "6550ca32b052"
     },
     {
       "kind": "example",
@@ -272,7 +536,15 @@
         "section": "Barrier avoidance",
         "snippet": "it is not hard to exhibit two tours"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This TSP example exhibiting two deep-basin tours is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "4f5652ee06f8"
     },
     {
       "kind": "proposition",
@@ -281,7 +553,15 @@
         "section": "Cooling schedule",
         "snippet": "assumes that the cooling rate is low enough"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The quasi-equilibrium slow-cooling assumption of SA is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "e382f8d895e1"
     },
     {
       "kind": "definition",
@@ -290,7 +570,15 @@
         "section": "Cooling schedule",
         "snippet": "the time one must wait for the equilibrium to be restored after a change in temperature"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The relaxation time of an SA Markov chain is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "8258d7411819"
     },
     {
       "kind": "definition",
@@ -299,7 +587,15 @@
         "section": "Restarts",
         "snippet": "This process is called restarting of simulated annealing"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The restart strategy for simulated annealing is an algorithmic technique not present in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "17edc3d70926"
     },
     {
       "kind": "definition",
@@ -308,7 +604,15 @@
         "section": "Related methods",
         "snippet": "combines simulated annealing moves with an acceptance-rejection of the best-fitted individuals"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Interacting Metropolis–Hastings / particle-filter SA is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "9201cf19e8cb"
     },
     {
       "kind": "definition",
@@ -317,7 +621,15 @@
         "section": "Related methods",
         "snippet": "uses \"quantum fluctuations\" instead of thermal fluctuations"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quantum annealing is an optimization metaheuristic not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "e17948a2662f"
     },
     {
       "kind": "definition",
@@ -326,7 +638,15 @@
         "section": "Related methods",
         "snippet": "attempts to overcome the increasing difficulty simulated annealing runs have in escaping from local minima"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Stochastic tunneling is an optimization method with no Mathlib formalization.",
+      "provenance": "ai-agent1",
+      "id": "c3d4491daf1a"
     },
     {
       "kind": "definition",
@@ -335,7 +655,15 @@
         "section": "Related methods",
         "snippet": "normally moves to neighbouring states of lower energy"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Tabu search is a metaheuristic not present in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "86e1aa23b292"
     },
     {
       "kind": "definition",
@@ -344,7 +672,15 @@
         "section": "Related methods",
         "snippet": "is a family of algorithms and processes"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Dual-phase evolution is an algorithmic family not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "239321a205f4"
     },
     {
       "kind": "definition",
@@ -353,7 +689,15 @@
         "section": "Related methods",
         "snippet": "focuses on combining machine learning with optimization"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Reactive search optimization is a metaheuristic not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "8146eaf575cb"
     },
     {
       "kind": "definition",
@@ -362,7 +706,15 @@
         "section": "Related methods",
         "snippet": "maintain a pool of solutions rather than just one"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Genetic algorithms are an optimization metaheuristic with no Mathlib formalization.",
+      "provenance": "ai-agent1",
+      "id": "4783671dd7c5"
     },
     {
       "kind": "definition",
@@ -371,7 +723,15 @@
         "section": "Related methods",
         "snippet": "search for solutions by employing a set of agents that both cooperate and compete"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Memetic algorithms are not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "81ecef8d5b62"
     },
     {
       "kind": "definition",
@@ -380,7 +740,15 @@
         "section": "Related methods",
         "snippet": "digressively \"smooths\" the target function while optimizing"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Graduated optimization (continuation) as an algorithm is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "f12e4eb41882"
     },
     {
       "kind": "definition",
@@ -389,7 +757,15 @@
         "section": "Related methods",
         "snippet": "uses many ants (or agents) to traverse the solution space"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Ant colony optimization is a swarm metaheuristic not present in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "5231d5b72100"
     },
     {
       "kind": "definition",
@@ -398,7 +774,15 @@
         "section": "Related methods",
         "snippet": "generates candidate solutions via a parameterized probability distribution"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The cross-entropy optimization method is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "f282fd2e46cc"
     },
     {
       "kind": "definition",
@@ -407,7 +791,15 @@
         "section": "Related methods",
         "snippet": "mimics musicians in improvisation"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Harmony search is a metaheuristic with no Mathlib formalization.",
+      "provenance": "ai-agent1",
+      "id": "d1e0a6c941b5"
     },
     {
       "kind": "definition",
@@ -416,7 +808,15 @@
         "section": "Related methods",
         "snippet": "is an umbrella set of methods that includes simulated annealing"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Stochastic optimization as an algorithmic umbrella is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "9f4650259b20"
     },
     {
       "kind": "definition",
@@ -425,7 +825,15 @@
         "section": "Related methods",
         "snippet": "is an algorithm modeled on swarm intelligence"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Particle swarm optimization is a swarm metaheuristic not present in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "c12b7fee7b33"
     },
     {
       "kind": "definition",
@@ -434,7 +842,15 @@
         "section": "Related methods",
         "snippet": "is a meta-heuristic optimization algorithm for solving unimodal and multimodal problems"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The runner-root algorithm is a metaheuristic not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "f322b265466e"
     },
     {
       "kind": "definition",
@@ -443,7 +859,15 @@
         "section": "Related methods",
         "snippet": "mimics the behavior of natural water drops"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The intelligent water drops algorithm is a metaheuristic with no Mathlib formalization.",
+      "provenance": "ai-agent1",
+      "id": "e525e27a78a4"
     },
     {
       "kind": "definition",
@@ -452,7 +876,15 @@
         "section": "Related methods",
         "snippet": "is a simulation of model copies at different temperatures"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Parallel tempering (replica exchange MCMC) is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "0aee181635f4"
     },
     {
       "kind": "definition",
@@ -461,7 +893,15 @@
         "section": "Related methods",
         "snippet": "have been used in multi-objective optimization"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Multi-objective simulated annealing is an algorithmic variant absent from Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "c9d9e4cec78e"
     }
   ]
 }

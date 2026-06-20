@@ -65,11 +65,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "contMDiffNegSphere",
+        "decl": "contMDiff_neg_sphere",
         "module": "Mathlib.Geometry.Manifold.Instances.Sphere",
         "match_kind": null
       },
-      "note": "Antipodal map on the unit sphere is formalized via negation, but diameter as a chord/segment is not defined.",
+      "note": "The antipodal map on the unit sphere is formalized via negation (`contMDiff_neg_sphere`), but diameter as a chord/segment is not defined.",
       "provenance": "ai",
       "id": "c2a08ad26f13"
     },
@@ -271,6 +271,22 @@
       "id": "a3093f9e06e7"
     },
     {
+      "kind": "theorem",
+      "label": "Archimedes' sphere–cylinder volume relation",
+      "anchor": {
+        "section": "Enclosed volume",
+        "snippet": "the volume inside a sphere is twice the volume between the sphere and the circumscribed cylinder"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Archimedes' classical result that V(sphere) = 2·V(cylinder minus sphere) is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
       "kind": "example",
       "label": "Sphere inscribed in a cube (52.4% volume)",
       "anchor": {
@@ -303,6 +319,22 @@
       "note": "Mathlib has no formula `4πr²` for the surface measure of the 2-sphere.",
       "provenance": "ai",
       "id": "a871aa26d191"
+    },
+    {
+      "kind": "proposition",
+      "label": "Surface area as derivative of volume",
+      "anchor": {
+        "section": "Surface area",
+        "snippet": "it equals the derivative of the formula for the volume with respect to r"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identity A(r) = dV/dr relating sphere surface area to ball volume is not formalized.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -475,6 +507,22 @@
       "id": "1ce72a6b7d69"
     },
     {
+      "kind": "proposition",
+      "label": "Rotation group SO(3) acts on the sphere",
+      "anchor": {
+        "section": "Properties of the sphere",
+        "snippet": "this family is the rotation group SO(3)"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.specialOrthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": null
+      },
+      "note": "Mathlib defines `SO(n)` (`Matrix.specialOrthogonalGroup`) and has the orthogonal action on Euclidean space; the smooth action on `S²` is not packaged as a named result.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Geodesic as great circle on the sphere",
       "anchor": {
@@ -507,6 +555,22 @@
       "note": "Shortest-path/Riemannian-distance on the sphere is not formalized.",
       "provenance": "ai",
       "id": "302315191adb"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sphere fails the parallel postulate",
+      "anchor": {
+        "section": "Spherical geometry",
+        "snippet": "the sphere fails to satisfy some of classical geometry's postulates , including the parallel postulate"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no formal spherical geometry, so the parallel postulate's failure on the sphere is not stated.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -551,7 +615,7 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "contMDiffNegSphere",
+        "decl": "contMDiff_neg_sphere",
         "module": "Mathlib.Geometry.Manifold.Instances.Sphere",
         "match_kind": null
       },
@@ -864,6 +928,22 @@
       "note": "The unit sphere in `EuclideanSpace ℝ (Fin (n+1))` is given a `ChartedSpace` instance over `EuclideanSpace ℝ (Fin n)` and is compact via `isCompact_sphere`.",
       "provenance": "ai",
       "id": "8c0aaa77bf64"
+    },
+    {
+      "kind": "definition",
+      "label": "Exotic sphere",
+      "anchor": {
+        "section": "Dimensionality",
+        "snippet": "it need not be diffeomorphic to the Euclidean sphere (an exotic sphere"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Exotic spheres (smooth manifolds homeomorphic but not diffeomorphic to the standard sphere) are not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",

@@ -1,0 +1,505 @@
+{
+  "slug": "Ball_mathematics",
+  "wikipedia_title": "Ball (mathematics)",
+  "display_title": "Ball (mathematics)",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Ball (solid figure)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a ball is the solid figure bounded by a sphere"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Metric.closedBall",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines metric balls (Metric.ball / Metric.closedBall) rather than the geometric solid bounded by a sphere; the informal notion is captured up to generalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Closed vs open ball",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "It may be a closed ball (including the boundary points that constitute the sphere) or an open ball"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.closedBall",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib has both Metric.ball (strict) and Metric.closedBall (≤) in the same file, distinguishing open and closed balls.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "n-ball / hyperball",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A ball in n dimensions is called a hyperball or n -ball"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Metric.ball",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "There is no dedicated `n-ball` notion; one takes Metric.ball in EuclideanSpace ℝ (Fin n) so the dimensional terminology is implicit.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Open Euclidean n-ball",
+      "anchor": {
+        "section": "In Euclidean space",
+        "snippet": "an (open) n -ball of radius r and center x is the set of all points of distance less than r from x"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.ball",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Metric.ball x r := {y | dist y x < r} specializes to the Euclidean open n-ball when applied to EuclideanSpace ℝ (Fin n).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Closed Euclidean n-ball",
+      "anchor": {
+        "section": "In Euclidean space",
+        "snippet": "A closed n -ball of radius r is the set of all points of distance less than or equal to r away from x"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.closedBall",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Metric.closedBall x r := {y | dist y x ≤ r}, which is the closed Euclidean n-ball when used in EuclideanSpace ℝ (Fin n).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Euclidean ball bounded by hypersphere",
+      "anchor": {
+        "section": "In Euclidean space",
+        "snippet": "every ball is bounded by a hypersphere"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Metric.sphere",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines Metric.sphere as the dist = r locus and has frontier/closure lemmas, but no single named result phrased as `the boundary of the ball is the sphere`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Volume of Euclidean n-ball",
+      "anchor": {
+        "section": "Volume",
+        "snippet": "The n -dimensional volume of a Euclidean ball of radius r"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.volume_ball",
+        "module": "Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls",
+        "match_kind": "exact"
+      },
+      "note": "EuclideanSpace.volume_ball gives the volume of Metric.ball x r in EuclideanSpace ℝ ι as rⁿ · π^(n/2)/Γ(n/2+1).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Double factorial",
+      "anchor": {
+        "section": "Volume",
+        "snippet": "the double factorial (2 k + 1)!! is defined for odd integers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.doubleFactorial",
+        "module": "Mathlib.Data.Nat.Factorial.DoubleFactorial",
+        "match_kind": "exact"
+      },
+      "note": "Nat.doubleFactorial defines n!! by the standard recursion, covering both parities of n.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Surface area of n-ball",
+      "anchor": {
+        "section": "Volume",
+        "snippet": "The surface area of an n-ball"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Loogle finds no `volume_sphere`/`areaOfSphere`/`sphere_surface` decl giving the (n-1)-dimensional Hausdorff measure of the Euclidean sphere.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Open metric ball",
+      "anchor": {
+        "section": "In general metric spaces",
+        "snippet": "The open (metric) ball of radius r centered at a point p in M"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.ball",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Metric.ball is exactly the open ball in any (pseudo)metric space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Closed metric ball",
+      "anchor": {
+        "section": "In general metric spaces",
+        "snippet": "The closed (metric) ball, sometimes denoted"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.closedBall",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Metric.closedBall is the closed ball in any (pseudo)metric space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unit ball",
+      "anchor": {
+        "section": "In general metric spaces",
+        "snippet": "A unit ball (open or closed) is a ball of radius 1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.ball",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib uses `Metric.ball 0 1` / `Metric.closedBall 0 1` for the unit ball (e.g. via Homeomorph.unitBall in Mathlib.Analysis.Normed.Module.Ball.Homeomorph).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Chebyshev and taxicab balls",
+      "anchor": {
+        "section": "In general metric spaces",
+        "snippet": "a ball in real coordinate space under the Chebyshev distance is a hypercube"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "PiLp",
+        "module": "Mathlib.Analysis.Normed.Lp.PiLp",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has PiLp / L^p norms (including L^1 and L^∞) so the balls exist, but the geometric identification with hypercubes/octahedra is not explicitly stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closed ball in infinite-dim space is not compact",
+      "anchor": {
+        "section": "In general metric spaces",
+        "snippet": "a closed ball in any infinite-dimensional normed vector space is never compact"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FiniteDimensional.of_isCompact_closedBall",
+        "module": "Mathlib.Analysis.Normed.Module.FiniteDimension",
+        "match_kind": "exact"
+      },
+      "note": "FiniteDimensional.of_isCompact_closedBall is Riesz's theorem: compactness of a positive-radius closed ball forces finite-dimensionality, equivalent to the contrapositive.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Balls in normed spaces are convex",
+      "anchor": {
+        "section": "In general metric spaces",
+        "snippet": "a ball in a normed vector space will always be convex"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "convex_ball",
+        "module": "Mathlib.Analysis.Normed.Module.Convex",
+        "match_kind": "exact"
+      },
+      "note": "convex_ball states `Convex ℝ (Metric.ball a r)` in any real seminormed space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bounded subset of metric space",
+      "anchor": {
+        "section": "In general metric spaces",
+        "snippet": "A subset of a metric space is bounded if it is contained in some ball"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Bornology.IsBounded",
+        "module": "Mathlib.Topology.Bornology.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Bornology.IsBounded is the bornology-bounded predicate, and Bornology.IsBounded.subset_ball confirms it is equivalent to containment in some metric ball.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Totally bounded set",
+      "anchor": {
+        "section": "In general metric spaces",
+        "snippet": "A set is totally bounded if, given any positive radius"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TotallyBounded",
+        "module": "Mathlib.Topology.UniformSpace.Cauchy",
+        "match_kind": "exact"
+      },
+      "note": "TotallyBounded is defined in uniform spaces and specializes to the standard finite-cover-by-balls notion in metric spaces.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Topology induced by a metric",
+      "anchor": {
+        "section": "In general metric spaces",
+        "snippet": "The open balls of a metric space can serve as a base"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.isOpen_iff",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Metric.isOpen_iff characterizes open sets via open balls, witnessing that the open balls form a base of the metric topology.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Closure of open ball under discrete metric",
+      "anchor": {
+        "section": "In general metric spaces",
+        "snippet": "denote the closure of the open ball"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific lemma comparing closure(Metric.ball) with Metric.closedBall under the discrete metric was found via loogle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Balls in a normed vector space",
+      "anchor": {
+        "section": "In normed vector spaces",
+        "snippet": "Any normed vector space V with norm"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.ball",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "exact"
+      },
+      "note": "In a normed space, Metric.ball/closedBall are exactly the norm balls since dist is induced by the norm.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Open ball in p-norm",
+      "anchor": {
+        "section": "p -norm",
+        "snippet": "In a Cartesian space R n with the p -norm L p"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PiLp",
+        "module": "Mathlib.Analysis.Normed.Lp.PiLp",
+        "match_kind": "exact"
+      },
+      "note": "PiLp p α equips ∏ α with the L^p norm; Metric.ball on PiLp is the p-norm open ball.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "p-norm balls in the plane",
+      "anchor": {
+        "section": "p -norm",
+        "snippet": "according to the L 1 -norm (often called the taxicab or Manhattan metric) are bounded by squares"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib decl identifies the L¹/L∞ unit balls in ℝ² with explicit squares.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "p-norm balls in 3-space",
+      "anchor": {
+        "section": "p -norm",
+        "snippet": "the L 1 -balls are within octahedra with axes-aligned body diagonals"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib decl identifies the L¹/L∞ unit balls in ℝ³ with octahedra/cubes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Infinity-norm ball",
+      "anchor": {
+        "section": "p -norm",
+        "snippet": "Often can also consider the case of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "PiLp",
+        "module": "Mathlib.Analysis.Normed.Lp.PiLp",
+        "match_kind": "special_case"
+      },
+      "note": "PiLp ∞ gives the sup norm and its Metric.ball is the L^∞ ball.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Norm from centrally symmetric convex set",
+      "anchor": {
+        "section": "General convex norm",
+        "snippet": "given any centrally symmetric , bounded , open , and convex subset X of R n , one can define a norm"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "gaugeSeminorm",
+        "module": "Mathlib.Analysis.Convex.Gauge",
+        "match_kind": "exact"
+      },
+      "note": "gaugeSeminorm constructs a seminorm from a balanced convex absorbent set (the Minkowski functional), exactly the claim with `centrally symmetric, bounded, open, convex` hypotheses translated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Topological n-ball",
+      "anchor": {
+        "section": "In topological spaces",
+        "snippet": "An (open or closed) n -dimensional topological ball of X is any subset of X which is homeomorphic"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No declaration of `topological n-ball` (a subset homeomorphic to a Euclidean ball) was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Open topological n-ball homeomorphic to R^n",
+      "anchor": {
+        "section": "In topological spaces",
+        "snippet": "Any open topological n -ball is homeomorphic to the Cartesian space R n"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Homeomorph.unitBall",
+        "module": "Mathlib.Analysis.Normed.Module.Ball.Homeomorph",
+        "match_kind": "special_case"
+      },
+      "note": "Homeomorph.unitBall gives E ≃ₜ Metric.ball (0:E) 1, providing the ℝⁿ ≃ open unit ball case but not the general statement about arbitrary topological n-balls.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Closed topological n-ball homeomorphic to n-cube",
+      "anchor": {
+        "section": "In topological spaces",
+        "snippet": "Any closed topological n -ball is homeomorphic to the closed n -cube"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No homeomorphism between Mathlib's closed Euclidean ball and a closed n-cube was located.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "n-ball homeomorphic to m-ball iff n=m",
+      "anchor": {
+        "section": "In topological spaces",
+        "snippet": "An n -ball is homeomorphic to an m -ball if and only if n = m"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no invariance-of-dimension result distinguishing Euclidean balls of different dimensions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Topological balls need not be smooth",
+      "anchor": {
+        "section": "In topological spaces",
+        "snippet": "A topological n -ball need not be smooth"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib decl on exotic smooth structures on topological balls was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ball regions (cap, segment, shell, wedge)",
+      "anchor": {
+        "section": "Regions",
+        "snippet": "A number of special regions can be defined for a ball"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Spherical caps, segments, shells, and wedges are not defined in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

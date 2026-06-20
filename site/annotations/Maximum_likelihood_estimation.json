@@ -23,6 +23,22 @@
       "id": "e2226c7675ff"
     },
     {
+      "kind": "proposition",
+      "label": "OLS maximizes the likelihood under Gaussian errors",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the ordinary least squares estimator for a linear regression model maximizes the likelihood when the random errors are assumed to have normal distributions with the same variance"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither OLS nor its equivalence with MLE under homoscedastic Gaussian errors is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Likelihood function",
       "anchor": {
@@ -37,20 +53,6 @@
       },
       "note": "No likelihood function L(θ;x) is defined in Mathlib; only densities/Radon-Nikodym derivatives exist.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Principles",
-          "snippet": "which is called the likelihood function"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\mathcal {L}}_{n}(\\theta )={\\mathcal {L}}_{n}(\\theta ;\\mathbf {y} )=f_{n}(\\mathbf {y} ;\\theta )\\;,}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f_{n}(\\mathbf {y} ;\\theta )=\\prod _{k=1}^{n}\\,f_{k}^{\\mathsf {univar}}(y_{k};\\theta )~.}"
-        }
-      ],
       "id": "be3fea203cf0"
     },
     {
@@ -68,20 +70,6 @@
       },
       "note": "Mathlib characterizes independence by joint law factoring as a product of marginals, but not the likelihood-as-product statement.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Principles",
-          "snippet": "will be the product of univariate density functions"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\mathcal {L}}_{n}(\\theta )={\\mathcal {L}}_{n}(\\theta ;\\mathbf {y} )=f_{n}(\\mathbf {y} ;\\theta )\\;,}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f_{n}(\\mathbf {y} ;\\theta )=\\prod _{k=1}^{n}\\,f_{k}^{\\mathsf {univar}}(y_{k};\\theta )~.}"
-        }
-      ],
       "id": "6cfda0ee4e3b"
     },
     {
@@ -99,16 +87,6 @@
       },
       "note": "No argmax-of-likelihood construction exists in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Principles",
-          "snippet": "to find the values of the model parameters that maximize the likelihood function over the parameter space"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\hat {\\theta }}={\\underset {\\theta \\in \\Theta }{\\operatorname {arg\\;max} }}\\,{\\mathcal {L}}_{n}(\\theta \\,;\\mathbf {y} )~.}"
-        }
-      ],
       "id": "bf24d9f3d3ea"
     },
     {
@@ -177,21 +155,23 @@
       },
       "note": "Mathlib defines the log-likelihood ratio (log of the Radon-Nikodym derivative), a closely related object but not the log-likelihood of a parameter.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Principles",
-          "snippet": "called the log-likelihood"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\ell (\\theta \\,;\\mathbf {y} )=\\ln {\\mathcal {L}}_{n}(\\theta \\,;\\mathbf {y} )~.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {\\partial \\ell }{\\partial \\theta _{1}}}=0,\\quad {\\frac {\\partial \\ell }{\\partial \\theta _{2}}}=0,\\quad \\ldots ,\\quad {\\frac {\\partial \\ell }{\\partial \\theta _{k}}}=0~,}"
-        }
-      ],
       "id": "2119eb3c9fe1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Log preserves the argmax of the likelihood",
+      "anchor": {
+        "section": "Principles",
+        "snippet": "Since the logarithm is a monotonic function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.log_lt_log_iff",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Strict monotonicity of log on the positive reals is formalized; the corresponding argmax-preservation for the likelihood is not stated.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -208,20 +188,6 @@
       },
       "note": "Mathlib has Fermat's interior-extremum theorem (gradient vanishes at a local extremum), the general form of the first-order likelihood equations.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Principles",
-          "snippet": "known as the likelihood equations"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\ell (\\theta \\,;\\mathbf {y} )=\\ln {\\mathcal {L}}_{n}(\\theta \\,;\\mathbf {y} )~.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {\\partial \\ell }{\\partial \\theta _{1}}}=0,\\quad {\\frac {\\partial \\ell }{\\partial \\theta _{2}}}=0,\\quad \\ldots ,\\quad {\\frac {\\partial \\ell }{\\partial \\theta _{k}}}=0~,}"
-        }
-      ],
       "id": "e5bf66cce0ad"
     },
     {
@@ -273,16 +239,6 @@
       },
       "note": "The Lagrange multiplier theorem yielding stationarity of a Lagrangian is formalized, but not the restricted likelihood equations specifically.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Restricted parameter space",
-          "snippet": "leads to the restricted likelihood equations"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {\\partial \\ell }{\\partial \\theta }}-{\\frac {\\partial h(\\theta )^{\\mathsf {T}}}{\\partial \\theta }}\\lambda =0}"
-        }
-      ],
       "id": "d479ddb5ca6b"
     },
     {
@@ -334,16 +290,6 @@
       },
       "note": "The framework of extremum estimators is not present in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Properties",
-          "snippet": "is an extremum estimator obtained by maximizing"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\widehat {\\ell \\,}}(\\theta \\,;x)=\\sum _{i=1}^{n}\\ln f(x_{i}\\mid \\theta ),}"
-        }
-      ],
       "id": "a5103e50ca36"
     },
     {
@@ -429,16 +375,6 @@
       },
       "note": "Model identifiability (injectivity of the parameter-to-distribution map) is not formalized as an MLE condition.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Consistency",
-          "snippet": "different parameter values θ correspond to different distributions within the model"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\theta \\neq \\theta _{0}\\quad \\Leftrightarrow \\quad f(\\cdot \\mid \\theta )\\neq f(\\cdot \\mid \\theta _{0}).}"
-        }
-      ],
       "id": "45808718085a"
     },
     {
@@ -473,16 +409,6 @@
       },
       "note": "Continuity is a general Mathlib concept but this MLE-consistency regularity condition is not stated.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Consistency",
-          "snippet": "is continuous in θ for almost all values of x"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\operatorname {\\mathbb {P} } {\\Bigl [}\\;\\ln f(x\\mid \\theta )\\;\\in \\;C^{0}(\\Theta )\\;{\\Bigr ]}=1.}"
-        }
-      ],
       "id": "9a6cd8c7ddc7"
     },
     {
@@ -500,20 +426,6 @@
       },
       "note": "Integrable dominating functions exist generally, but this MLE dominance condition is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Consistency",
-          "snippet": "there exists D ( x ) integrable with respect to the distribution"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\Bigl |}\\ln f(x\\mid \\theta ){\\Bigr |}&lt;D(x)\\quad {\\text{ for all }}\\theta \\in \\Theta .}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\sup _{\\theta \\in \\Theta }\\left|{\\widehat {\\ell \\,}}(\\theta \\mid x)-\\ell (\\theta )\\,\\right|\\ \\xrightarrow {\\text{p}} \\ 0.}"
-        }
-      ],
       "id": "2cf29dd57a9a"
     },
     {
@@ -531,16 +443,6 @@
       },
       "note": "The 1D central limit theorem (convergence in distribution to a Gaussian) is formalized, but not the asymptotic normality of the MLE.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Consistency",
-          "snippet": "the maximum likelihood estimator converges in distribution to a normal distribution"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\sqrt {n}}\\left({\\widehat {\\theta \\,}}_{\\mathrm {mle} }-\\theta _{0}\\right)\\ \\xrightarrow {d} \\ {\\mathcal {N}}\\left(0,\\,I^{-1}\\right)}"
-        }
-      ],
       "id": "411f0edbed1b"
     },
     {
@@ -677,16 +579,6 @@
       },
       "note": "Bias-corrected MLEs are not defined in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Second-order efficiency after correction for bias",
-          "snippet": "is called the bias-corrected maximum likelihood estimator"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\widehat {\\theta \\,}}_{\\text{mle}}^{*}={\\widehat {\\theta \\,}}_{\\text{mle}}-{\\widehat {b\\,}}~.}"
-        }
-      ],
       "id": "ef627a2da7c7"
     },
     {
@@ -755,20 +647,6 @@
       },
       "note": "The reformulation of the Bayes rule under 0-1 loss (the MAP classifier) is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Application of maximum-likelihood estimation in Bayes decision theory",
-          "snippet": "the Bayes Decision rule can be reformulated as"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\operatorname {\\mathbb {P} } (w_{i}\\mid x)={\\frac {\\operatorname {\\mathbb {P} } (x\\mid w_{i})\\operatorname {\\mathbb {P} } (w_{i})}{\\operatorname {\\mathbb {P} } (x)}},}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle h_{\\text{Bayes}}={\\underset {w}{\\operatorname {arg\\;max} }}\\,{\\bigl [}\\,\\operatorname {\\mathbb {P} } (x\\mid w)\\,\\operatorname {\\mathbb {P} } (w)\\,{\\bigr ]}\\;,}"
-        }
-      ],
       "id": "48a61fe7ef26"
     },
     {
@@ -1058,16 +936,6 @@
       },
       "note": "This is an informal observation with no formal counterpart in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Iterative procedures",
-          "snippet": "cannot be solved explicitly for an estimator"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\widehat {\\theta }}_{r+1}={\\widehat {\\theta }}_{r}+\\eta _{r}\\mathbf {d} _{r}\\left({\\widehat {\\theta }}\\right)}"
-        }
-      ],
       "id": "354db22f05ff"
     },
     {
@@ -1085,16 +953,6 @@
       },
       "note": "Generic numerical optimization update schemes are not formalized in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Iterative procedures",
-          "snippet": "algorithms based on an updating formula of the form"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\widehat {\\theta }}_{r+1}={\\widehat {\\theta }}_{r}+\\eta _{r}\\mathbf {d} _{r}\\left({\\widehat {\\theta }}\\right)}"
-        }
-      ],
       "id": "89ff0c6230ab"
     },
     {
@@ -1180,16 +1038,6 @@
       },
       "note": "The DFP formula is not formalized in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Davidon–Fletcher–Powell formula",
-          "snippet": "DFP formula finds a solution that is symmetric, positive-definite and closest to the current approximate value of second-order derivative"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mathbf {H} _{k+1}=\\left(I-\\gamma _{k}y_{k}s_{k}^{\\mathsf {T}}\\right)\\mathbf {H} _{k}\\left(I-\\gamma _{k}s_{k}y_{k}^{\\mathsf {T}}\\right)+\\gamma _{k}y_{k}y_{k}^{\\mathsf {T}},}"
-        }
-      ],
       "id": "aa8d46f60092"
     },
     {

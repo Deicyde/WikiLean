@@ -1,0 +1,633 @@
+{
+  "slug": "Ratio",
+  "wikipedia_title": "Ratio",
+  "display_title": "Ratio",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Ratio",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "a ratio"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no abstract `Ratio` notion; ratios are handled as ordinary division/fractions in a field.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Oranges to lemons ratio",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "if there are eight oranges and six lemons in a bowl of fruit"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Numerical illustration, not a theorem; not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Proportion",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A statement expressing the equality of two ratios is called a proportion"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Equality of ratios is just an equality of quotients in Mathlib; no named `Proportion` predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Ratio in physical sciences (dimensionless quotient)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A more specific definition adopted in physical sciences"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no dimensional-analysis framework that distinguishes dimensionless quotients.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rate",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "A quotient of two quantities that are measured with different units may be called a rate"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No units/rate framework in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Terms, antecedent, consequent",
+      "anchor": {
+        "section": "Notation and terminology",
+        "snippet": "The numbers A and B are sometimes called terms of the ratio"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Terminology only; not a Mathlib definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Proportion and its terms",
+      "anchor": {
+        "section": "Notation and terminology",
+        "snippet": "A statement expressing the equality of two ratios A : B and C : D is called a proportion"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Not formalized as a named structure in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Extremes and means",
+      "anchor": {
+        "section": "Notation and terminology",
+        "snippet": "A and D are called its extremes , and B and C are called its means"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Classical terminology with no corresponding Mathlib declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Continued proportion",
+      "anchor": {
+        "section": "Notation and terminology",
+        "snippet": "is called a continued proportion"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `ContinuedProportion` concept in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Two-by-four edge length proportion",
+      "anchor": {
+        "section": "Notation and terminology",
+        "snippet": "the proportion for the edge lengths of a \" two by four \" that is ten inches long"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Numerical example, not a Mathlib theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Concrete mix ratio",
+      "anchor": {
+        "section": "Notation and terminology",
+        "snippet": "A good concrete mix (in volume units) is sometimes quoted as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Applied example; not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Part and multiple of a quantity",
+      "anchor": {
+        "section": "Euclid's definitions",
+        "snippet": "The first two definitions say that a part of a quantity is another quantity that \"measures\" it"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Dvd.dvd",
+        "module": "Init.Core",
+        "match_kind": "generalization"
+      },
+      "note": "Euclid's 'measures' corresponds informally to divisibility, formalized as `Dvd.dvd` in Lean core, but no Euclid-specific definition exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euclid's general definition of ratio (Def. 3)",
+      "anchor": {
+        "section": "Euclid's definitions",
+        "snippet": "Definition 3 describes what a ratio is in a general way"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not formalize Euclid's informal Definition 3.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Existence of a ratio / Archimedean property (Def. 4)",
+      "anchor": {
+        "section": "Euclid's definitions",
+        "snippet": "Definition 4 makes this more rigorous"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Archimedean",
+        "module": "Mathlib.Algebra.Order.Archimedean.Defs",
+        "match_kind": "exact"
+      },
+      "note": "The Archimedean property is formalized as the typeclass `Archimedean`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Equality of ratios (Def. 5)",
+      "anchor": {
+        "section": "Euclid's definitions",
+        "snippet": "Definition 5 is the most complex and difficult"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Eudoxus's cross-multiplication criterion is not formalized as a distinct Mathlib notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Proportional quantities (Def. 6)",
+      "anchor": {
+        "section": "Euclid's definitions",
+        "snippet": "Definition 6 says that quantities that have the same ratio are proportional or in proportion"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Proportional` definition in Mathlib matching Euclid Def. 6.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Comparison of ratios (Def. 7)",
+      "anchor": {
+        "section": "Euclid's definitions",
+        "snippet": "Definition 7 defines what it means for one ratio to be less than or greater than another"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Euclidean ratio comparison is not a separately named concept in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Three or more terms in proportion; geometric progressions (Def. 8)",
+      "anchor": {
+        "section": "Euclid's definitions",
+        "snippet": "definition 8 is regarded by some as being a later insertion"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "geom_series_def",
+        "module": null,
+        "match_kind": "generalization"
+      },
+      "note": "Geometric progressions exist in Mathlib (e.g., `geom_series`, `geom_sum_eq`), but Euclid's Definition 8 itself is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Duplicate and triplicate ratios (Defs. 9 and 10)",
+      "anchor": {
+        "section": "Euclid's definitions",
+        "snippet": "Definitions 9 and 10 apply this"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No duplicate/triplicate ratio definitions in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Oranges and apples ratio as fractions",
+      "anchor": {
+        "section": "Number of terms and use of fractions",
+        "snippet": "If there are 2 oranges and 3 apples"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Pedagogical example, not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ratio with three entities (2:3:7)",
+      "anchor": {
+        "section": "Number of terms and use of fractions",
+        "snippet": "from a ratio of 2:3:7 we can infer"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Numerical example, not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Invariance of ratio under common multiplication",
+      "anchor": {
+        "section": "Proportions and percentage ratios",
+        "snippet": "If we multiply all quantities involved in a ratio by the same number, the ratio remains valid"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "mul_div_mul_left",
+        "module": "Mathlib.Algebra.Order.Field.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Equivalent to `mul_div_mul_left : (c*a)/(c*b) = a/b`, an algebraic fact in Mathlib, though not stated as a 'ratio invariance' proposition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Mixture A:B:C:D = 5:9:4:2",
+      "anchor": {
+        "section": "Proportions and percentage ratios",
+        "snippet": "If a mixture contains substances A , B , C and D in the ratio 5:9:4:2"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Numerical example, not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Proportion as comparison to the whole",
+      "anchor": {
+        "section": "Proportions and percentage ratios",
+        "snippet": "This comparison of a specific quantity to \"the whole\" is called a proportion"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No 'part-to-whole proportion' definition in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Aspect ratios of televisions",
+      "anchor": {
+        "section": "Proportions and percentage ratios",
+        "snippet": "older televisions have a 4:3 aspect ratio"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Applied example; not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Reduction of ratios",
+      "anchor": {
+        "section": "Reduction",
+        "snippet": "Ratios can be reduced (as fractions are) by dividing each quantity by the common factors"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Rat.mk",
+        "module": "Mathlib.Data.Rat.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Rational numbers are stored in reduced form via `Rat`, but ratio-reduction as a named operation is not a separate Mathlib concept.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Simplest form / lowest terms",
+      "anchor": {
+        "section": "Reduction",
+        "snippet": "A ratio that has integers for both quantities and that cannot be reduced any further"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.Coprime",
+        "module": "Mathlib.Data.Nat.GCD.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Lowest terms corresponds to coprimality of numerator and denominator (`Nat.Coprime`); `Rat` enforces this invariant.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Writing 4:5 in the form 1:x or x:1",
+      "anchor": {
+        "section": "Reduction",
+        "snippet": "the ratio 4:5 can be written as 1:1.25"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Arithmetic example, not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Irrational (incommensurable) ratios",
+      "anchor": {
+        "section": "Irrational ratios",
+        "snippet": "Ratios may also be established between incommensurable quantities"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Irrational",
+        "module": "Mathlib.NumberTheory.Real.Irrational",
+        "match_kind": "exact"
+      },
+      "note": "Incommensurable ratio = irrational real; formalized as `Irrational : ℝ → Prop`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Diagonal-to-side ratio of a square",
+      "anchor": {
+        "section": "Irrational ratios",
+        "snippet": "the ratio of the length of the diagonal d to the length of a side s of a square"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "irrational_sqrt_two",
+        "module": "Mathlib.NumberTheory.Real.Irrational",
+        "match_kind": "exact"
+      },
+      "note": "The diagonal-to-side ratio √2 is shown irrational by `irrational_sqrt_two`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Ratio of circumference to diameter (π)",
+      "anchor": {
+        "section": "Irrational ratios",
+        "snippet": "Another example is the ratio of a circle 's circumference to its diameter"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "irrational_pi",
+        "module": "Mathlib.Analysis.Real.Pi.Irrational",
+        "match_kind": "exact"
+      },
+      "note": "`Real.pi` is defined and `irrational_pi : Irrational Real.pi` is proved in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Golden ratio",
+      "anchor": {
+        "section": "Irrational ratios",
+        "snippet": "Also well known is the golden ratio of two (mostly) lengths a and b"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.goldenRatio",
+        "module": "Mathlib.NumberTheory.Real.GoldenRatio",
+        "match_kind": "exact"
+      },
+      "note": "`Real.goldenRatio := (1 + √5)/2` is defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Golden ratio as limit of Fibonacci ratios",
+      "anchor": {
+        "section": "Irrational ratios",
+        "snippet": "An example of an occurrence of the golden ratio in math is as the limiting value"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "tendsto_fib_succ_div_fib_atTop",
+        "module": "Mathlib.Analysis.SpecificLimits.Fibonacci",
+        "match_kind": "exact"
+      },
+      "note": "States `fib(n+1)/fib(n) → Real.goldenRatio`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Silver ratio",
+      "anchor": {
+        "section": "Irrational ratios",
+        "snippet": "Similarly, the silver ratio of a and b is defined by the proportion"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `silverRatio` declaration found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Odds as ratios",
+      "anchor": {
+        "section": "Odds",
+        "snippet": "odds of \"7 to 3 against\" (7:3)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gambling odds terminology, not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Unitless ratios",
+      "anchor": {
+        "section": "Units",
+        "snippet": "Ratios may be unitless , as in the case they relate quantities in units of the same dimension"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no units/dimension framework distinguishing unitless ratios.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Rates (non-dimensionless quotients)",
+      "anchor": {
+        "section": "Units",
+        "snippet": "there are non-dimensionless quotients, also known as rates"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formal notion of dimensioned rates in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Barycentric coordinates",
+      "anchor": {
+        "section": "Triangular coordinates",
+        "snippet": "In barycentric coordinates , a point with coordinates α, β, γ"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AffineBasis.coord",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.Basis",
+        "match_kind": "generalization"
+      },
+      "note": "Barycentric coordinates relative to an affine basis are formalized as `AffineBasis.coord`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Trilinear coordinates",
+      "anchor": {
+        "section": "Triangular coordinates",
+        "snippet": "In trilinear coordinates , a point with coordinates x : y : z"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No trilinear-coordinates declaration found in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

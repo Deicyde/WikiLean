@@ -332,11 +332,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Real.hasDerivAt_const_rpow",
+        "decl": "Real.hasStrictDerivAt_const_rpow",
         "module": "Mathlib.Analysis.SpecialFunctions.Pow.Deriv",
         "match_kind": "generalization"
       },
-      "note": "Mathlib has the derivative of `a^x` via rpow (giving `a^x * log a`) though it is computed without going through the limit definition.",
+      "note": "Mathlib gives the derivative of `a^x` via rpow as `a^x * log a`, computed without going through the limit definition.",
       "provenance": "ai",
       "id": "0774a91042b8"
     },
@@ -519,7 +519,7 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "LindemannWeierstrass",
+        "decl": "LindemannWeierstrass.exp_polynomial_approx",
         "module": "Mathlib.NumberTheory.Transcendental.Lindemann.AnalyticalPart",
         "match_kind": "generalization"
       },
@@ -672,8 +672,8 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "NormedSpace.exp_eq_tsum_div",
-        "module": "Mathlib.Analysis.Normed.Algebra.Exponential",
+        "decl": "Real.exp_one_near_20",
+        "module": "Mathlib.Analysis.Complex.ExponentialBounds",
         "match_kind": "special_case"
       },
       "note": "The standard series at x=1 is what's typically used; effective digit bounds appear in `Real.exp_one_near_20`.",
@@ -696,6 +696,166 @@
       "note": "Mathlib does not formalize binary-splitting algorithms for computing e.",
       "provenance": "ai",
       "id": "7728cee1e521"
+    },
+    {
+      "kind": "proposition",
+      "label": "e is irrational (lead)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "e is irrational , meaning that it cannot be represented as a ratio of integers"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Irrational (Real.exp 1)` declaration found in Mathlib; the irrationality statement is reiterated in the lead.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "e is transcendental (lead)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "like the constant π , it is transcendental"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LindemannWeierstrass.exp_polynomial_approx",
+        "module": "Mathlib.NumberTheory.Transcendental.Lindemann.AnalyticalPart",
+        "match_kind": "generalization"
+      },
+      "note": "Transcendence of e follows from Lindemann–Weierstrass; only the analytical part is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler's identity (lead)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "All five appear in one formulation of Euler's identity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_pi_mul_I",
+        "module": "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.exp_pi_mul_I` gives `exp (π * I) = -1`, the core content of Euler's identity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence of limit and series definitions",
+      "anchor": {
+        "section": "History",
+        "snippet": "The equivalence of the two characterizations using the limit and the infinite series can be proved via the binomial theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Both representations exist in Mathlib but no lemma directly proves their equivalence via the binomial theorem.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Exponential identity for derivative",
+      "anchor": {
+        "section": "Calculus",
+        "snippet": "Thus, when the value of a is set to e , this limit is equal to 1"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.hasDerivAt_exp",
+        "module": "Mathlib.Analysis.SpecialFunctions.ExpDeriv",
+        "match_kind": "exact"
+      },
+      "note": "Choosing base e gives `d/dx e^x = e^x`, formalized as `HasDerivAt exp (exp x) x`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Natural logarithm as inverse of exp",
+      "anchor": {
+        "section": "Calculus",
+        "snippet": "The number e is the value of the exponential function evaluated at"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.exp_log",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Real.log` is the inverse of `Real.exp` on positives, with `Real.log_one = 0` and `Real.exp_log` establishing the inverse relation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bernoulli's inequality limiting case",
+      "anchor": {
+        "section": "Inequalities",
+        "snippet": "This is a limiting case of Bernoulli's inequality"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.add_one_le_exp",
+        "module": "Mathlib.Analysis.Complex.Exponential",
+        "match_kind": "exact"
+      },
+      "note": "Bernoulli's inequality `(1 + x)^n ≥ 1 + n*x` is in Mathlib; its exponential limit is `Real.add_one_le_exp`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cosine and sine via exponential",
+      "anchor": {
+        "section": "Complex numbers",
+        "snippet": "The expressions of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.cos",
+        "module": "Mathlib.Analysis.Complex.Trigonometric",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.cos z = (exp (z*I) + exp (-z*I))/2` and `Complex.sin z = (exp (-z*I) - exp (z*I))*I/2` are the defining identities.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "conjecture",
+      "label": "Algebraic independence of e and π",
+      "anchor": {
+        "section": "Number theory",
+        "snippet": "the question of whether or not the numbers e and π are algebraically independent"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Open problem; would follow from Schanuel's conjecture, which is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "conjecture",
+      "label": "e is normal",
+      "anchor": {
+        "section": "Number theory",
+        "snippet": "It is conjectured that e is normal"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Open conjecture; Mathlib does not define normality of e.",
+      "provenance": "ai"
     }
   ]
 }

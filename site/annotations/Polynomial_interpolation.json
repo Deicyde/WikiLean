@@ -1,0 +1,537 @@
+{
+  "slug": "Polynomial_interpolation",
+  "wikipedia_title": "Polynomial interpolation",
+  "display_title": "Polynomial interpolation",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Polynomial interpolation",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "polynomial interpolation is the interpolation of a given data set by the polynomial of lowest possible degree"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Lagrange.interpolate",
+        "module": "Mathlib.LinearAlgebra.Lagrange",
+        "match_kind": "exact"
+      },
+      "note": "`Lagrange.interpolate s v r` produces the unique polynomial of degree `< #s` interpolating the given data.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Interpolating polynomial",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is said to interpolate the data if"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Lagrange.eval_interpolate_at_node",
+        "module": "Mathlib.LinearAlgebra.Lagrange",
+        "match_kind": "exact"
+      },
+      "note": "`eval_interpolate_at_node` states the interpolation property `eval (v i) (interpolate s v r) = r i`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Existence and uniqueness (lead)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "There is always a unique such polynomial, commonly given by two explicit formulas"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Lagrange.eq_interpolate_iff",
+        "module": "Mathlib.LinearAlgebra.Lagrange",
+        "match_kind": "exact"
+      },
+      "note": "`eq_interpolate_iff` characterises the interpolant as the unique polynomial of degree `< #s` taking the prescribed values.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Interpolation theorem",
+      "anchor": {
+        "section": "Interpolation theorem",
+        "snippet": "there exists a unique polynomial"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Lagrange.eq_interpolate_iff",
+        "module": "Mathlib.LinearAlgebra.Lagrange",
+        "match_kind": "exact"
+      },
+      "note": "Existence is given by `Lagrange.interpolate` and uniqueness by `eq_interpolate_iff`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Interpolation as linear bijection",
+      "anchor": {
+        "section": "Interpolation theorem",
+        "snippet": "polynomial interpolation defines a linear bijection"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Lagrange.funEquivDegreeLT",
+        "module": "Mathlib.LinearAlgebra.Lagrange",
+        "match_kind": "exact"
+      },
+      "note": "`funEquivDegreeLT` is the linear equivalence between `degreeLT F #s` and `s → F` via evaluation/interpolation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Validity over infinite fields",
+      "anchor": {
+        "section": "Interpolation theorem",
+        "snippet": "The theorem is also valid over any infinite field in place of the real numbers"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Lagrange.interpolate",
+        "module": "Mathlib.LinearAlgebra.Lagrange",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's `Lagrange.interpolate` is stated over an arbitrary `Field F`, subsuming the infinite-field case.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lagrange basis functions",
+      "anchor": {
+        "section": "First proof",
+        "snippet": "Consider the Lagrange basis functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Lagrange.basis",
+        "module": "Mathlib.LinearAlgebra.Lagrange",
+        "match_kind": "exact"
+      },
+      "note": "`Lagrange.basis s v i` is the polynomial that evaluates to 1 at `v i` and 0 at the other nodes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lagrange combination interpolates",
+      "anchor": {
+        "section": "First proof",
+        "snippet": "is an interpolating polynomial of degree"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Lagrange.eval_interpolate_at_node",
+        "module": "Mathlib.LinearAlgebra.Lagrange",
+        "match_kind": "exact"
+      },
+      "note": "Combined with `Lagrange.degree_interpolate_lt`, this proves the Lagrange combination interpolates with degree `< #s`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Uniqueness via zeros",
+      "anchor": {
+        "section": "First proof",
+        "snippet": "a non-zero polynomial of degree at most"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Polynomial.eq_zero_of_degree_lt_of_eval_finset_eq_zero",
+        "module": "Mathlib.LinearAlgebra.Lagrange",
+        "match_kind": "exact"
+      },
+      "note": "A polynomial of degree `< #s` vanishing on `s` distinct points must be zero.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vandermonde invertibility",
+      "anchor": {
+        "section": "Second proof",
+        "snippet": "The matrix X on the left is a Vandermonde matrix"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.det_vandermonde",
+        "module": "Mathlib.LinearAlgebra.Vandermonde",
+        "match_kind": "exact"
+      },
+      "note": "`det_vandermonde` gives the product formula for the Vandermonde determinant, implying invertibility at distinct nodes.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Corollary: interpolation of low-degree polynomial",
+      "anchor": {
+        "section": "Corollary",
+        "snippet": "the interpolating polynomial of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Lagrange.eq_interpolate",
+        "module": "Mathlib.LinearAlgebra.Lagrange",
+        "match_kind": "exact"
+      },
+      "note": "`eq_interpolate` shows that any polynomial of degree `< #s` equals its own Lagrange interpolant.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lagrange interpolation formula",
+      "anchor": {
+        "section": "Lagrange interpolation",
+        "snippet": "We may write down the polynomial immediately in terms of Lagrange polynomials"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Lagrange.interpolate_eq_sum",
+        "module": "Mathlib.LinearAlgebra.Lagrange",
+        "match_kind": "exact"
+      },
+      "note": "`interpolate_eq_sum` gives the explicit Lagrange formula as the sum of `C (r i / ∏(v i - v j)) * ∏(X - C (v j))`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Newton interpolation theorem",
+      "anchor": {
+        "section": "Theorem",
+        "snippet": "that interpolates"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Newton form of the interpolating polynomial appears in Mathlib (searches for Newton interpolation and divided differences return nothing relevant).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Divided differences / Newton coefficients",
+      "anchor": {
+        "section": "Polynomial coefficients",
+        "snippet": "is the notation for divided differences"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No divided-difference notion appears under that name or related search in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Newton forward interpolation formula",
+      "anchor": {
+        "section": "Newton forward formula",
+        "snippet": "the Newton forward interpolation formula is expressed as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Newton forward interpolation formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Newton backward interpolation formula",
+      "anchor": {
+        "section": "Newton backward formula",
+        "snippet": "the Newton backward interpolation formula is expressed as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Newton backward interpolation formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lozenge diagram",
+      "anchor": {
+        "section": "Lozenge diagram",
+        "snippet": "A Lozenge diagram is a diagram that is used to describe different interpolation formulas"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The combinatorial lozenge diagram for finite differences is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equivalence of lozenge paths",
+      "anchor": {
+        "section": "Proof of equivalence",
+        "snippet": "Hence the equivalence of paths with same starting and ending points is shown"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of lozenge-diagram path equivalence in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Newton formula from lozenge",
+      "anchor": {
+        "section": "Newton formula",
+        "snippet": "gives the interpolation formula of all the"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not derive Newton's formula via lozenge paths.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Gauss forward and backward formulas",
+      "anchor": {
+        "section": "Gauss formula",
+        "snippet": "we get Gauss forward formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gauss central-difference interpolation formulas are absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Stirling formula",
+      "anchor": {
+        "section": "Stirling formula",
+        "snippet": "we get Stirling formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Stirling's interpolation formula is not in Mathlib (the asymptotic Stirling formula in Mathlib is a distinct concept).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Stirling as average of Gauss formulas",
+      "anchor": {
+        "section": "Stirling formula",
+        "snippet": "Stirling formula is the average of Gauss forward and Gauss backward formulas"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of this relationship since the underlying formulas are not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Bessel formula",
+      "anchor": {
+        "section": "Bessel formula",
+        "snippet": "we get Bessel formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bessel's interpolation formula is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Runge function divergence",
+      "anchor": {
+        "section": "Convergence properties",
+        "snippet": "One classical example, due to Carl Runge"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Runge's example/phenomenon does not appear in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Absolute value function example",
+      "anchor": {
+        "section": "Convergence properties",
+        "snippet": "Another example is the function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bernstein's divergence example for |x| on equispaced nodes is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Interpolation error formula",
+      "anchor": {
+        "section": "Interpolation error: Lagrange remainder formula",
+        "snippet": "we get the error"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No interpolation error formula `f(x) - p(x) = f^{(n)}(ξ)/n! · ∏(x - x_i)` is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Lagrange remainder form of error",
+      "anchor": {
+        "section": "Interpolation error: Lagrange remainder formula",
+        "snippet": "there is a Lagrange remainder form of the error"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "taylor_mean_remainder_lagrange",
+        "module": "Mathlib.Analysis.Calculus.Taylor",
+        "match_kind": null
+      },
+      "note": "Mathlib has the Lagrange remainder for Taylor expansion (`taylor_mean_remainder_lagrange`) but not the analogous statement for Lagrange interpolation error.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Equally spaced error bound",
+      "anchor": {
+        "section": "Equally spaced intervals",
+        "snippet": "the product term in the interpolation error formula can be bound"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The bound on `∏(x - x_i)` for equispaced nodes is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lebesgue constant",
+      "anchor": {
+        "section": "Lebesgue constants",
+        "snippet": "The Lebesgue constant L is defined as the operator norm of X"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Lebesgue constant of an interpolation projector is not defined in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Lebesgue's lemma bound",
+      "anchor": {
+        "section": "Lebesgue constants",
+        "snippet": "the interpolation polynomial is at most a factor"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lebesgue's lemma `‖f - p‖ ≤ (1 + Λ_n) E_n(f)` is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Existence of converging nodes",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Marcinkiewicz-type existence of a triangular node array giving uniform convergence is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Divergence for any fixed node table (Faber)",
+      "anchor": {
+        "section": "Convergence properties",
+        "snippet": "For any table of nodes there is a continuous function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Faber's theorem is not formalized (search for `Faber` returned no Mathlib decls).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Chebyshev nodes convergence for AC functions",
+      "anchor": {
+        "section": "Convergence properties",
+        "snippet": "For every absolutely continuous function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Convergence of Chebyshev-node interpolants for absolutely continuous functions is not present in Mathlib.",
+      "provenance": "ai"
+    }
+  ]
+}

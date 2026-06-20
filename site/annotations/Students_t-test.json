@@ -24,6 +24,22 @@
     },
     {
       "kind": "definition",
+      "label": "Student's t-distribution",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "in which the test statistic follows a Student's t -distribution under the null hypothesis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Loogle finds no 'studentT' declarations; the Student t-distribution is not formalized as a probability measure in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "One-sample t-test",
       "anchor": {
         "section": "One-sample t -test",
@@ -72,6 +88,22 @@
       "note": "No two-sample location test is formalized in Mathlib.",
       "provenance": "ai",
       "id": "89f3d494003b"
+    },
+    {
+      "kind": "definition",
+      "label": "Welch's t-test (informal mention)",
+      "anchor": {
+        "section": "Two-sample t -tests",
+        "snippet": "the form of the test used when this assumption is dropped is sometimes called Welch's t -test"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Welch's t-test is not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -177,6 +209,22 @@
     },
     {
       "kind": "definition",
+      "label": "Matched-pairs sample",
+      "anchor": {
+        "section": "Paired samples",
+        "snippet": "A paired samples t -test based on a \"matched-pairs sample\" results from an unpaired sample"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Matched-pairs sampling is an experimental-design notion absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Form of test statistic t = Z/s",
       "anchor": {
         "section": "Assumptions",
@@ -208,6 +256,22 @@
       "note": "Mathlib does not formalize the assumption hypotheses of a t-test.",
       "provenance": "ai",
       "id": "e4f66359e265"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sample variance follows scaled chi-squared",
+      "anchor": {
+        "section": "Assumptions",
+        "snippet": "s 2 ( n − 1)/ σ 2 follows a χ 2 distribution with n − 1 degrees of freedom"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Loogle finds no chi-squared distribution decls; this scaled chi-squared result is not in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -245,6 +309,22 @@
     },
     {
       "kind": "proposition",
+      "label": "CLT approximation of sample means",
+      "anchor": {
+        "section": "Assumptions",
+        "snippet": "sample means of moderately large samples are often well-approximated by a normal distribution"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.tendstoInDistribution_inv_sqrt_mul_sum_sub",
+        "module": "Mathlib.Probability.CentralLimitTheorem",
+        "match_kind": "invocation"
+      },
+      "note": "This is an informal restatement of the classical CLT, which Mathlib formalizes for i.i.d. variables with finite second moment.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
       "label": "Slutsky's theorem for large samples",
       "anchor": {
         "section": "Assumptions",
@@ -262,6 +342,38 @@
     },
     {
       "kind": "proposition",
+      "label": "Law of large numbers for sample variance",
+      "anchor": {
+        "section": "Assumptions",
+        "snippet": "as per the law of large numbers"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.strong_law_ae",
+        "module": "Mathlib.Probability.StrongLaw",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib has the strong law of large numbers, which justifies convergence of the sample variance to its population value.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Simple linear regression model",
+      "anchor": {
+        "section": "Slope of a regression line",
+        "snippet": "Suppose one is fitting the model"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Simple linear regression with normal errors is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
       "label": "t-distribution of regression slope statistic",
       "anchor": {
         "section": "Slope of a regression line",
@@ -276,6 +388,22 @@
       "note": "Neither the Student t-distribution nor regression-slope inference is in Mathlib.",
       "provenance": "ai",
       "id": "913340c6ebd7"
+    },
+    {
+      "kind": "definition",
+      "label": "Pearson correlation coefficient",
+      "anchor": {
+        "section": "Slope of a regression line",
+        "snippet": "where r is the Pearson correlation coefficient"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Loogle finds no Pearson-named declarations; the empirical Pearson correlation coefficient is not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -381,6 +509,22 @@
     },
     {
       "kind": "proposition",
+      "label": "Orthogonal-matrix construction yields independent normal/chi-squared components",
+      "anchor": {
+        "section": "Exact method for unequal variances and sample sizes",
+        "snippet": "so Z 1 , the first element of Z , is statistically independent of the remaining elements by orthogonality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The orthogonal-decomposition construction underlying the exact Behrens–Fisher test is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
       "label": "Dependent t-test for paired samples",
       "anchor": {
         "section": "Dependent t -test for paired samples",
@@ -466,6 +610,22 @@
     },
     {
       "kind": "proposition",
+      "label": "t-test asymptotically approaches z-test",
+      "anchor": {
+        "section": "Alternatives to the t -test for location problems",
+        "snippet": "In large enough samples, the t -test asymptotically approaches the z -test"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Convergence of Student's t-distribution to the normal as degrees of freedom grow is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
       "label": "Wilcoxon power advantage",
       "anchor": {
         "section": "Alternatives to the t -test for location problems",
@@ -528,7 +688,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No occurrence of Hotelling's T-squared statistic exists in Mathlib.",
+      "note": "Loogle finds no Hotelling-named declarations in Mathlib.",
       "provenance": "ai",
       "id": "039cb5c359b9"
     },
@@ -554,7 +714,9 @@
       "label": "Two-sample Hotelling's t-squared",
       "anchor": {
         "section": "Multivariate testing",
-        "snippet": "For a two-sample multivariate test, the hypothesis is that the mean vectors"
+        "snippet": "The two-sample Hotelling's T-squared test is not formalized in Mathlib.",
+        "provenance": "ai",
+        "id": "d32624662f30"
       },
       "status": "not_formalized",
       "mathlib": {

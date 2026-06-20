@@ -3,6 +3,7 @@
   "wikipedia_title": "Homology (mathematics)",
   "display_title": "Homology (mathematics)",
   "schema_version": 3,
+  "annotation_style": "theorem_article",
   "annotations": [
     {
       "kind": "definition",
@@ -11,6 +12,13 @@
         "section": "Homology of chain complexes",
         "snippet": "We start with a chain complex, which is a sequence"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ChainComplex",
+        "module": "Mathlib.Algebra.Homology.HomologicalComplex",
+        "match_kind": "exact"
+      },
+      "note": "ChainComplex is defined as a HomologicalComplex with the down-Nat shape, directly formalizing the article's notion.",
       "provenance": "ai-agent1",
       "id": "b6f1acc3a4ed"
     },
@@ -21,6 +29,13 @@
         "section": "Homology of chain complexes",
         "snippet": "th group of cycles"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HomologicalComplex.cycles",
+        "module": "Mathlib.Algebra.Homology.ShortComplex.HomologicalComplex",
+        "match_kind": "exact"
+      },
+      "note": "HomologicalComplex.cycles K i is the i-th cycles object, formalizing ker d_n in a chain complex.",
       "provenance": "ai-agent1",
       "id": "bc6754603f38"
     },
@@ -31,6 +46,13 @@
         "section": "Homology of chain complexes",
         "snippet": "th group of boundaries"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HomologicalComplex.opcycles",
+        "module": "Mathlib.Algebra.Homology.ShortComplex.HomologicalComplex",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has no standalone HomologicalComplex.boundaries; boundaries appear only implicitly through the image-to-cycles factorization and opcycles in the ShortComplex API.",
       "provenance": "ai-agent1",
       "id": "a78a0a5565bb"
     },
@@ -41,6 +63,13 @@
         "section": "Homology of chain complexes",
         "snippet": "th homology group"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HomologicalComplex.homology",
+        "module": "Mathlib.Algebra.Homology.ShortComplex.HomologicalComplex",
+        "match_kind": "exact"
+      },
+      "note": "HomologicalComplex.homology K i defines the i-th homology of a homological complex (kernel mod image) categorically.",
       "provenance": "ai-agent1",
       "id": "661947c669bd"
     },
@@ -51,6 +80,13 @@
         "section": "Homology theories",
         "snippet": "To associate a homology theory to other types of mathematical objects"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HomologicalComplex.homologyFunctor",
+        "module": "Mathlib.Algebra.Homology.ShortComplex.HomologicalComplex",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has the general categorical homology-functor machinery but no axiomatic Eilenberg–Steenrod \"homology theory\" structure.",
       "provenance": "ai-agent1",
       "id": "cae62c57c7a5"
     },
@@ -61,6 +97,13 @@
         "section": "Homology theories",
         "snippet": "In the language of category theory , a homology theory is a type of functor"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HomologicalComplex.homologyFunctor",
+        "module": "Mathlib.Algebra.Homology.ShortComplex.HomologicalComplex",
+        "match_kind": "exact"
+      },
+      "note": "HomologicalComplex.homologyFunctor is the n-th homology as a functor on the category of homological complexes.",
       "provenance": "ai-agent1",
       "id": "6570c98ad817"
     },
@@ -71,6 +114,13 @@
         "section": "Homology of a topological space",
         "snippet": "Perhaps the most familiar usage of the term homology is for the homology of a topological space"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgebraicTopology.singularHomologyFunctor",
+        "module": "Mathlib.AlgebraicTopology.SingularHomology.Basic",
+        "match_kind": "exact"
+      },
+      "note": "AlgebraicTopology.singularHomologyFunctor C n defines the n-th singular homology functor on TopCat with coefficients in C.",
       "provenance": "ai-agent1",
       "id": "6e4c40465d5d"
     },
@@ -81,6 +131,13 @@
         "section": "Cycles and boundaries (informal discussion)",
         "snippet": "in the context of chain complexes , a boundary is any element of the image"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HomologicalComplex.opcycles",
+        "module": "Mathlib.Algebra.Homology.ShortComplex.HomologicalComplex",
+        "match_kind": "generalization"
+      },
+      "note": "Boundaries appear only implicitly as image of d via the ShortComplex homology data; there is no standalone HomologicalComplex.boundaries decl.",
       "provenance": "ai-agent1",
       "id": "8be3b31485f1"
     },
@@ -91,6 +148,13 @@
         "section": "Cycles and boundaries (informal discussion)",
         "snippet": "In the context of chain complexes, a cycle is any element of the kernel"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HomologicalComplex.cycles",
+        "module": "Mathlib.Algebra.Homology.ShortComplex.HomologicalComplex",
+        "match_kind": "exact"
+      },
+      "note": "HomologicalComplex.cycles K i directly formalizes the kernel of the differential.",
       "provenance": "ai-agent1",
       "id": "b5391a0a0097"
     },
@@ -101,6 +165,13 @@
         "section": "Homology groups",
         "snippet": "th homology group"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgebraicTopology.singularHomologyFunctor",
+        "module": "Mathlib.AlgebraicTopology.SingularHomology.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The n-th singular homology of a topological space is defined as singularHomologyFunctor C n applied to coefficients and the space.",
       "provenance": "ai-agent1",
       "id": "025043d317df"
     },
@@ -111,6 +182,13 @@
         "section": "Informal examples",
         "snippet": "A one-dimensional sphere"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib computation of the singular homology of S^1 was found.",
       "provenance": "ai-agent1",
       "id": "711a6ebedce9"
     },
@@ -121,6 +199,13 @@
         "section": "Informal examples",
         "snippet": "A two-dimensional sphere"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib computation of the singular homology of S^2 was found.",
       "provenance": "ai-agent1",
       "id": "9ec3c37db85d"
     },
@@ -131,6 +216,13 @@
         "section": "Informal examples",
         "snippet": "In general for an n -dimensional sphere"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib computation of H_*(S^n) was found.",
       "provenance": "ai-agent1",
       "id": "a2517b9ecead"
     },
@@ -141,6 +233,13 @@
         "section": "Informal examples",
         "snippet": "A two-dimensional ball"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib computation of the singular homology of a disk was found.",
       "provenance": "ai-agent1",
       "id": "d89acb5e361b"
     },
@@ -151,6 +250,13 @@
         "section": "Informal examples",
         "snippet": "The torus is defined as a product of two circles"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib computation of H_*(T^2) was found.",
       "provenance": "ai-agent1",
       "id": "fe5b9592a075"
     },
@@ -161,6 +267,13 @@
         "section": "Informal examples",
         "snippet": "If n products of a topological space X is written as"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib computation of H_*(T^n) was found.",
       "provenance": "ai-agent1",
       "id": "25a5c0b93a44"
     },
@@ -171,8 +284,31 @@
         "section": "Informal examples",
         "snippet": "For the projective plane P , a simple computation shows"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib computation of H_*(RP^2) was found.",
       "provenance": "ai-agent1",
       "id": "39e49e26aee4"
+    },
+    {
+      "kind": "definition",
+      "label": "Torsion in homology",
+      "anchor": {
+        "section": "Informal examples",
+        "snippet": "This phenomenon is called torsion"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Module torsion exists in Mathlib but there is no dedicated 'torsion in homology' notion specific to this article's usage.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -181,8 +317,31 @@
         "section": "Construction of homology groups",
         "snippet": "A chain complex is a sequence of abelian groups or modules"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HomologicalComplex",
+        "module": "Mathlib.Algebra.Homology.HomologicalComplex",
+        "match_kind": "generalization"
+      },
+      "note": "HomologicalComplex generalizes the article's construction to any complex shape over a category with zero morphisms.",
       "provenance": "ai-agent1",
       "id": "99a19558b2ab"
+    },
+    {
+      "kind": "proposition",
+      "label": "Boundary of a boundary is zero",
+      "anchor": {
+        "section": "Construction of homology groups",
+        "snippet": "the composition of any two consecutive boundary operators be trivial"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HomologicalComplex.d_comp_d",
+        "module": "Mathlib.Algebra.Homology.HomologicalComplex",
+        "match_kind": "exact"
+      },
+      "note": "HomologicalComplex.d_comp_d states that the composition of any two differentials is zero.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -191,6 +350,13 @@
         "section": "Construction of homology groups",
         "snippet": "Elements of"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "HomologicalComplex.cycles",
+        "module": "Mathlib.Algebra.Homology.ShortComplex.HomologicalComplex",
+        "match_kind": "generalization"
+      },
+      "note": "Cycles are formalized as HomologicalComplex.cycles; boundaries exist only implicitly via the imageToCycles/opcycles factorization in the ShortComplex API.",
       "provenance": "ai-agent1",
       "id": "65b0dfdac261"
     },
@@ -201,6 +367,13 @@
         "section": "Construction of homology groups",
         "snippet": "called the n th homology group of X"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HomologicalComplex.homology",
+        "module": "Mathlib.Algebra.Homology.ShortComplex.HomologicalComplex",
+        "match_kind": "exact"
+      },
+      "note": "HomologicalComplex.homology K n is the n-th homology of a homological complex.",
       "provenance": "ai-agent1",
       "id": "fa2a9dd2fea0"
     },
@@ -211,6 +384,13 @@
         "section": "Construction of homology groups",
         "snippet": "A chain complex is said to be exact if the image"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HomologicalComplex.ExactAt",
+        "module": "Mathlib.Algebra.Homology.ShortComplex.HomologicalComplex",
+        "match_kind": "exact"
+      },
+      "note": "HomologicalComplex.ExactAt K i (and exactness at every degree) formalizes the article's notion of an exact chain complex.",
       "provenance": "ai-agent1",
       "id": "b50dd6c0007f"
     },
@@ -221,6 +401,13 @@
         "section": "Construction of homology groups",
         "snippet": "The reduced homology groups of a chain complex"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Loogle finds no decl with reducedHomology in its name.",
       "provenance": "ai-agent1",
       "id": "89ce43f45355"
     },
@@ -231,6 +418,13 @@
         "section": "Construction of homology groups",
         "snippet": "The simplicial homology groups H n ( X ) of a simplicial complex X are defined"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicTopology.alternatingFaceMapComplex",
+        "module": "Mathlib.AlgebraicTopology.AlternatingFaceMapComplex",
+        "match_kind": "invocation"
+      },
+      "note": "The alternating face map complex of a simplicial object exists and its homology gives simplicial homology, but no top-level `simplicialHomology` decl was found.",
       "provenance": "ai-agent1",
       "id": "be8052daa190"
     },
@@ -241,6 +435,13 @@
         "section": "Construction of homology groups",
         "snippet": "The singular homology groups H n ( X ) are defined for any topological space X"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgebraicTopology.singularHomologyFunctor",
+        "module": "Mathlib.AlgebraicTopology.SingularHomology.Basic",
+        "match_kind": "exact"
+      },
+      "note": "AlgebraicTopology.singularHomologyFunctor is the n-th singular homology functor on TopCat.",
       "provenance": "ai-agent1",
       "id": "4246466b6718"
     },
@@ -251,6 +452,13 @@
         "section": "Construction of homology groups",
         "snippet": "Cohomology groups are formally similar to homology groups"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CochainComplex",
+        "module": "Mathlib.Algebra.Homology.HomologicalComplex",
+        "match_kind": "generalization"
+      },
+      "note": "CochainComplex is a HomologicalComplex with up-Nat shape; cohomology is obtained by applying HomologicalComplex.homology to a cochain complex.",
       "provenance": "ai-agent1",
       "id": "62b0a82d9ef6"
     },
@@ -261,6 +469,13 @@
         "section": "Homology vs. homotopy",
         "snippet": "The nth homotopy group"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FundamentalGroup",
+        "module": "Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib defines FundamentalGroup (π_1) and has Mathlib/Topology/Homotopy/HomotopyGroup.lean, but a general π_n decl does not appear in the public API surface.",
       "provenance": "ai-agent1",
       "id": "bf9b094f4b51"
     },
@@ -271,8 +486,31 @@
         "section": "Homology vs. homotopy",
         "snippet": "the Hurewicz theorem describes a homomorphism"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Loogle finds no Hurewicz-named decl in Mathlib.",
       "provenance": "ai-agent1",
       "id": "fec5e655da4e"
+    },
+    {
+      "kind": "proposition",
+      "label": "Hurewicz isomorphism: H_1 is abelianization of pi_1",
+      "anchor": {
+        "section": "Homology vs. homotopy",
+        "snippet": "the Hurewicz homomorphism coincides with abelianization"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No decl relating H_1 to the abelianization of the fundamental group was found.",
+      "provenance": "ai"
     },
     {
       "kind": "example",
@@ -281,6 +519,13 @@
         "section": "Homology vs. homotopy",
         "snippet": "example, suppose"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib treatment of the figure-eight wedge S^1 ∨ S^1 with its homotopy/homology contrast was found.",
       "provenance": "ai-agent1",
       "id": "72e49a4baa30"
     },
@@ -291,6 +536,13 @@
         "section": "Simplicial homology",
         "snippet": "The motivating example comes from algebraic topology"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicTopology.alternatingFaceMapComplex",
+        "module": "Mathlib.AlgebraicTopology.AlternatingFaceMapComplex",
+        "match_kind": "invocation"
+      },
+      "note": "The alternating face map complex is the standard model for simplicial homology in Mathlib, but no top-level simplicialHomology functor is exposed.",
       "provenance": "ai-agent1",
       "id": "27a4ba824b63"
     },
@@ -301,6 +553,13 @@
         "section": "Singular homology",
         "snippet": "Using simplicial homology example as a model, one can define a singular homology"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgebraicTopology.singularHomologyFunctor",
+        "module": "Mathlib.AlgebraicTopology.SingularHomology.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Singular homology is defined as a functor on TopCat via the singular chain complex.",
       "provenance": "ai-agent1",
       "id": "6d4ec856c5ee"
     },
@@ -311,6 +570,13 @@
         "section": "Group homology",
         "snippet": "In abstract algebra , one uses homology to define derived functors"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "groupHomology",
+        "module": "Mathlib.RepresentationTheory.Homological.GroupHomology.Basic",
+        "match_kind": "exact"
+      },
+      "note": "groupHomology A n is the n-th group homology of a k-linear G-representation, computed via the inhomogeneous chains complex.",
       "provenance": "ai-agent1",
       "id": "46fb98246bfa"
     },
@@ -321,6 +587,13 @@
         "section": "Homology functors",
         "snippet": "Chain complexes form a category"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HomologicalComplex.Hom",
+        "module": "Mathlib.Algebra.Homology.HomologicalComplex",
+        "match_kind": "exact"
+      },
+      "note": "HomologicalComplex.Hom defines morphisms (chain maps) between homological complexes, making them into a category.",
       "provenance": "ai-agent1",
       "id": "fd86c28e8988"
     },
@@ -331,6 +604,13 @@
         "section": "Homology functors",
         "snippet": "If the chain complex depends on the object X in a covariant manner"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HomologicalComplex.homologyFunctor",
+        "module": "Mathlib.Algebra.Homology.ShortComplex.HomologicalComplex",
+        "match_kind": "exact"
+      },
+      "note": "HomologicalComplex.homologyFunctor C c n is the covariant n-th homology functor on the category of homological complexes.",
       "provenance": "ai-agent1",
       "id": "156f957965e0"
     },
@@ -341,6 +621,13 @@
         "section": "Homology functors",
         "snippet": "The only difference between homology and cohomology"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CochainComplex",
+        "module": "Mathlib.Algebra.Homology.HomologicalComplex",
+        "match_kind": "generalization"
+      },
+      "note": "CochainComplex provides the cochain framework but the article's specific covariant/contravariant distinction is not packaged as a single decl.",
       "provenance": "ai-agent1",
       "id": "bf8423dd81f9"
     },
@@ -351,6 +638,13 @@
         "section": "Properties",
         "snippet": "then we can define the Euler characteristic"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HomologicalComplex.eulerChar",
+        "module": "Mathlib.Algebra.Homology.EulerCharacteristic",
+        "match_kind": "exact"
+      },
+      "note": "HomologicalComplex.eulerChar is the Euler characteristic as an alternating sum of ranks of complex objects.",
       "provenance": "ai-agent1",
       "id": "2ae149aa4856"
     },
@@ -361,6 +655,13 @@
         "section": "Properties",
         "snippet": "It turns out that the Euler characteristic can also be computed on the level of homology"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HomologicalComplex.homologyEulerChar",
+        "module": "Mathlib.Algebra.Homology.EulerCharacteristic",
+        "match_kind": "exact"
+      },
+      "note": "HomologicalComplex.homologyEulerChar computes the Euler characteristic from homology, matching the chain-level version.",
       "provenance": "ai-agent1",
       "id": "76bbf9b690fb"
     },
@@ -371,8 +672,31 @@
         "section": "Properties",
         "snippet": "Every short exact sequence"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HomologicalComplex.HomologySequence.snakeInput",
+        "module": "Mathlib.Algebra.Homology.HomologySequence",
+        "match_kind": "exact"
+      },
+      "note": "HomologicalComplex.HomologySequence.snakeInput packages a short exact sequence of complexes into a SnakeInput, yielding the long exact homology sequence via the snake lemma.",
       "provenance": "ai-agent1",
       "id": "f090fc88bf1e"
+    },
+    {
+      "kind": "theorem",
+      "label": "Zig-zag lemma (connecting homomorphisms)",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "The latter are called connecting homomorphisms and are provided by the zig-zag lemma"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.ShortComplex.SnakeInput.δ",
+        "module": "Mathlib.Algebra.Homology.ShortComplex.SnakeLemma",
+        "match_kind": "exact"
+      },
+      "note": "The connecting homomorphism δ is defined by the snake lemma for SnakeInput, providing the zig-zag/connecting map of the long exact sequence.",
+      "provenance": "ai"
     },
     {
       "kind": "theorem",
@@ -381,6 +705,13 @@
         "section": "Application in pure mathematics",
         "snippet": "The Brouwer fixed point theorem"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Brouwer fixed-point theorem for the disk was found in Mathlib (only unrelated Brouwer-style results in order theory).",
       "provenance": "ai-agent1",
       "id": "6baf3fc61517"
     },
@@ -391,6 +722,13 @@
         "section": "Application in pure mathematics",
         "snippet": "Invariance of domain"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Loogle finds no invarianceOfDomain decl.",
       "provenance": "ai-agent1",
       "id": "42f37440fcb6"
     },
@@ -401,6 +739,13 @@
         "section": "Application in pure mathematics",
         "snippet": "The Hairy ball theorem"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No hairy-ball theorem was found in Mathlib.",
       "provenance": "ai-agent1",
       "id": "cee6a734126c"
     },
@@ -411,6 +756,13 @@
         "section": "Application in pure mathematics",
         "snippet": "The Borsuk–Ulam theorem"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Borsuk–Ulam decl was found in Mathlib.",
       "provenance": "ai-agent1",
       "id": "9c4caf49e8cf"
     },
@@ -421,6 +773,13 @@
         "section": "Application in pure mathematics",
         "snippet": "Invariance of dimension"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No invariance-of-dimension result was found in Mathlib.",
       "provenance": "ai-agent1",
       "id": "1136aac421c9"
     },
@@ -431,6 +790,13 @@
         "section": "Surfaces",
         "snippet": "The Jordan curve theorem shows that any closed curve"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Jordan curve theorem was found in Mathlib.",
       "provenance": "ai-agent1",
       "id": "da84c8a54c0f"
     },
@@ -441,6 +807,13 @@
         "section": "Surfaces",
         "snippet": "is the Klein bottle , which is a torus with a twist"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Klein bottle topological space appears in Mathlib (only Klein four-group, an unrelated namesake).",
       "provenance": "ai-agent1",
       "id": "d795390740a7"
     },
@@ -451,6 +824,13 @@
         "section": "Surfaces",
         "snippet": "The projective plane"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Real projective plane as a topological surface does not appear to be formalized.",
       "provenance": "ai-agent1",
       "id": "b2c24655bec8"
     },
@@ -461,6 +841,13 @@
         "section": "Surfaces",
         "snippet": "all closed surfaces can be produced by gluing the sides of some polygon"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Polygon-gluing construction of closed surfaces is not present in Mathlib.",
       "provenance": "ai-agent1",
       "id": "385169ebb5e5"
     },
@@ -471,6 +858,13 @@
         "section": "Surfaces",
         "snippet": "Any closed 2-manifold can be realised as the connected sum"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The classification of closed surfaces via connected sum is not formalized in Mathlib.",
       "provenance": "ai-agent1",
       "id": "071552241b54"
     }

@@ -1,0 +1,665 @@
+{
+  "slug": "Character_theory",
+  "wikipedia_title": "Character theory",
+  "display_title": "Character theory",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Character of a representation",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "The character of ρ is the function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FDRep.character",
+        "module": "Mathlib.RepresentationTheory.Character",
+        "match_kind": "exact"
+      },
+      "note": "`FDRep.character V g := LinearMap.trace k V (V.ρ g)` is exactly the character of a representation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Irreducible character",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "A character χ ρ is called irreducible or simple if ρ is an irreducible representation"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FDRep.character",
+        "module": "Mathlib.RepresentationTheory.Character",
+        "match_kind": null
+      },
+      "note": "Mathlib has `FDRep.character` and a `CategoryTheory.Simple` class on `FDRep`, but no separate `irreducibleCharacter` definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Degree of a character",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "The degree of the character χ is the dimension of ρ"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FDRep.char_one",
+        "module": "Mathlib.RepresentationTheory.Character",
+        "match_kind": "exact"
+      },
+      "note": "`FDRep.char_one : V.character 1 = Module.finrank k V` is the equality of degree of χ with dim ρ.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Linear character",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "A character of degree 1 is called linear"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `linearCharacter` definition for degree-1 group representation characters appears in `Mathlib/RepresentationTheory`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Kernel of a character",
+      "anchor": {
+        "section": "Definitions",
+        "snippet": "the kernel of the character χ ρ is the normal subgroup"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Searches for `character.*kernel`/`ker.*character` in `RepresentationTheory` find nothing; the normal subgroup `{g : χ(g) = χ(1)}` is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Characters are class functions",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Characters are class functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FDRep.char_conj",
+        "module": "Mathlib.RepresentationTheory.Character",
+        "match_kind": "exact"
+      },
+      "note": "`FDRep.char_conj : V.character (h * g * h⁻¹) = V.character g` is exactly the class-function property.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Irreducible characters form basis of class functions",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "the set of irreducible characters of a given group G into a field F form a basis"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Basis` of the space of class functions indexed by irreducible representations is present in `Mathlib/RepresentationTheory`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Isomorphic representations have the same character",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Isomorphic representations have the same characters"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FDRep.char_iso",
+        "module": "Mathlib.RepresentationTheory.Character",
+        "match_kind": "exact"
+      },
+      "note": "`FDRep.char_iso : (V ≅ W) → V.character = W.character` is precisely this statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Character determines representation (char 0)",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "two representations are isomorphic if and only if they have the same character"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FDRep.simple_iff_char_is_norm_one",
+        "module": "Mathlib.RepresentationTheory.FinGroupCharZero",
+        "match_kind": null
+      },
+      "note": "Related character/norm criteria exist (e.g. `simple_iff_char_is_norm_one`) but the full theorem `χ_V = χ_W ↔ V ≅ W` in char 0 is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Character of a direct sum",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "If a representation is the direct sum of subrepresentations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `char_directSum`/`char_add` lemma in `Mathlib.RepresentationTheory.Character`; only tensor, dual, and linHom are stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Restriction of a character to a subgroup",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "If a character of the finite group G is restricted to a subgroup H"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Although `Rep.res`/restriction functors exist, no lemma expressing `(Res V).character = V.character ∘ inclusion` is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Character values are sums of roots of unity",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Every character value χ ( g ) is a sum of n m -th roots of unity"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No lemma relating character values of finite groups to sums of roots of unity is found in `Mathlib.RepresentationTheory`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Algebraic integrality for irreducible characters",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "If F = C and χ is irreducible, then"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The integrality of `|G|·χ(g)/χ(1)` for irreducible χ is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Number of irreducible characters equals number of conjugacy classes",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "the number of irreducible characters of G is equal to the number of conjugacy classes of G"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No bijection or cardinality equality between irreducible characters and conjugacy classes is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Degrees of irreducible characters divide |G|",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "the degrees of the irreducible characters are divisors of the order of G"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Frobenius's divisibility theorem for irreducible character degrees is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Arithmetic identities for characters",
+      "anchor": {
+        "section": "Arithmetic properties",
+        "snippet": "Let ρ and σ be representations of G . Then the following identities hold"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FDRep.char_tensor",
+        "module": "Mathlib.RepresentationTheory.Character",
+        "match_kind": null
+      },
+      "note": "Some identities are formalized (`char_tensor`, `char_dual`, `char_linHom`) but the full list (e.g. symmetric/alternating powers, direct sum) is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Character table is square",
+      "anchor": {
+        "section": "Character tables",
+        "snippet": "The character table is always square"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `characterTable` object is defined in Mathlib, so its squareness is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Character table of cyclic group of order 3",
+      "anchor": {
+        "section": "Character tables",
+        "snippet": "the cyclic group with three elements and generator u"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No explicit computation of the character table of `ZMod 3` (or any specific small group) is present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inner product on class functions",
+      "anchor": {
+        "section": "Orthogonality relations",
+        "snippet": "The space of complex-valued class functions of a finite group G has a natural inner product"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FDRep.char_orthonormal",
+        "module": "Mathlib.RepresentationTheory.Character",
+        "match_kind": null
+      },
+      "note": "The averaging pairing `(1/|G|) Σ χ(g)·ψ(g⁻¹)` appears explicitly in `char_orthonormal` but is not packaged as a named inner product on class functions.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Row orthogonality of irreducible characters",
+      "anchor": {
+        "section": "Orthogonality relations",
+        "snippet": "the irreducible characters form an orthonormal basis for the space of class-functions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FDRep.char_orthonormal",
+        "module": "Mathlib.RepresentationTheory.Character",
+        "match_kind": "special_case"
+      },
+      "note": "`FDRep.char_orthonormal` formalizes the orthonormality `⟨χ_V, χ_W⟩ = [V≅W]` but the full statement that irreducible characters form a basis of class functions is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Column orthogonality",
+      "anchor": {
+        "section": "Orthogonality relations",
+        "snippet": "applying the same inner product to the columns of the character table yields"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The second orthogonality (column) relation for character tables is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Order of G from first column of character table",
+      "anchor": {
+        "section": "Character table properties",
+        "snippet": "The order of G is given by the sum of the squares of the entries of the first column"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The identity `Σ (dim V_i)² = |G|` is not stated as a Mathlib lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Centralizer order from column sums",
+      "anchor": {
+        "section": "Character table properties",
+        "snippet": "the sum of the squares of the absolute values of the entries in any column gives the order of the centralizer"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of `Σ_i |χ_i(g)|² = |C_G(g)|`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Normal subgroups recognised from character table",
+      "anchor": {
+        "section": "Character table properties",
+        "snippet": "All normal subgroups of G"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not have any character-table-based recognition of normal subgroups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Kernel of a character from its table values",
+      "anchor": {
+        "section": "Character table properties",
+        "snippet": "The kernel of a character χ is the set of elements g in G for which χ ( g ) = χ (1)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The kernel-of-character definition (and its equality to `{g : χ(g) = χ(1)}`) is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Normal subgroups as intersections of character kernels",
+      "anchor": {
+        "section": "Character table properties",
+        "snippet": "Each normal subgroup of G is the intersection of the kernels of some of the irreducible characters"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of normal subgroups as intersections of irreducible character kernels.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Commutator subgroup as intersection of linear character kernels",
+      "anchor": {
+        "section": "Character table properties",
+        "snippet": "The commutator subgroup of G is the intersection of the kernels of the linear characters of G"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`commutator G = ⋂ ker(linear χ)` is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Abelian iff irreducible characters all linear",
+      "anchor": {
+        "section": "Character table properties",
+        "snippet": "G is abelian iff each conjugacy class is a singleton"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not have the equivalence `IsAbelian G ↔ all irreducible characters are linear`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Q and D_4 share a character table",
+      "anchor": {
+        "section": "Character table properties",
+        "snippet": "the quaternion group Q and the dihedral group of 8 elements"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No comparison of character tables for `Quaternion` and `DihedralGroup 4` is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Linear characters form a group (character group)",
+      "anchor": {
+        "section": "Character table properties",
+        "snippet": "The linear representations of G are themselves a group under the tensor product"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `Group` instance on the set of linear characters / `Hom(G, k^×)` under tensor product appears in `RepresentationTheory`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Frobenius reciprocity / induced character",
+      "anchor": {
+        "section": "Induced characters and Frobenius reciprocity",
+        "snippet": "there is a unique class function θ G of G with the property that"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Rep.indResAdjunction",
+        "module": "Mathlib.RepresentationTheory.Induced",
+        "match_kind": null
+      },
+      "note": "Frobenius reciprocity is formalized at the representation level via the induction-restriction adjunction `Rep.indResAdjunction`, but the character-level statement (induced character via integration against trivial extension) is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Explicit formula for the induced character",
+      "anchor": {
+        "section": "Induced characters and Frobenius reciprocity",
+        "snippet": "This induced character vanishes on all elements of G which are not conjugate to any element of H"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The explicit averaging formula for the induced character `θ^G(g)` is not stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Permutation character",
+      "anchor": {
+        "section": "Induced characters and Frobenius reciprocity",
+        "snippet": "When θ is the trivial character of H , the induced character obtained is known as the permutation character"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `permutationCharacter` (or `Ind(trivial)`) decl is present in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Mackey's formula",
+      "anchor": {
+        "section": "Mackey decomposition",
+        "snippet": "Mackey's formula states that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Mackey decomposition (`loogle \"Mackey\"` returns zero hits).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Inner product of two induced class functions",
+      "anchor": {
+        "section": "Mackey decomposition",
+        "snippet": "yields a well-known and useful formula for the inner product of two class functions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Mackey-style inner product formula for two induced class functions is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Character at identity equals dimension",
+      "anchor": {
+        "section": "\"Twisted\" dimension",
+        "snippet": "its value at the identity is the dimension of the space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FDRep.char_one",
+        "module": "Mathlib.RepresentationTheory.Character",
+        "match_kind": "exact"
+      },
+      "note": "`FDRep.char_one : V.character 1 = Module.finrank k V` is exactly χ(1) = dim V.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Character of a Lie group representation",
+      "anchor": {
+        "section": "Characters of Lie groups and Lie algebras",
+        "snippet": "is defined precisely as for any group as"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "FDRep.character",
+        "module": "Mathlib.RepresentationTheory.Character",
+        "match_kind": "generalization"
+      },
+      "note": "`FDRep.character` works for any monoid/group and therefore subsumes the Lie group case, but there is no Lie-group-specific definition or continuity statement.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Character of a Lie algebra representation",
+      "anchor": {
+        "section": "Characters of Lie groups and Lie algebras",
+        "snippet": "we can define the character"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`LieAlgebra.LieCharacter` denotes 1-dimensional Lie characters `L →ₗ⁅R⁆ R`, not the trace `X ↦ tr(ρ(X))` of a Lie algebra representation; the latter is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Compatibility of Lie group and Lie algebra characters",
+      "anchor": {
+        "section": "Characters of Lie groups and Lie algebras",
+        "snippet": "If we have a Lie group representation and an associated Lie algebra representation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The relation `Θ(exp X) = tr(e^{ρ(X)})` between Lie group and Lie algebra characters is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Character on Cartan via weight multiplicities",
+      "anchor": {
+        "section": "Characters of Lie groups and Lie algebras",
+        "snippet": "can easily be computed in terms of the weight spaces"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of the character of a representation on a Cartan as `Σ dim(V_λ) e^λ`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Weyl character formula",
+      "anchor": {
+        "section": "Characters of Lie groups and Lie algebras",
+        "snippet": "can be computed more explicitly by the Weyl character formula"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Weyl character formula is not in Mathlib (`Weyl` hits are about Weyl groups in root systems, not character formulas).",
+      "provenance": "ai"
+    }
+  ]
+}

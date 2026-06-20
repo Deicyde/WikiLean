@@ -11,7 +11,15 @@
         "section": "(Lead)",
         "snippet": "a transcendental number is a real or complex number that is not algebraic"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Transcendental",
+        "module": "Mathlib.RingTheory.Algebraic.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Transcendental R x` is defined as `¬IsAlgebraic R x`, matching 'not algebraic' (over ℚ/ℤ for real/complex numbers).",
+      "provenance": "ai-agent1",
+      "id": "4f596d19c8b5"
     },
     {
       "kind": "proposition",
@@ -20,7 +28,15 @@
         "section": "(Lead)",
         "snippet": "almost all real and complex numbers are transcendental"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Algebraic.countable",
+        "module": "Mathlib.Algebra.AlgebraicCard",
+        "match_kind": null
+      },
+      "note": "Algebraic numbers are countable (so their complement is co-countable/full-measure), but no decl states 'almost all numbers are transcendental' directly.",
+      "provenance": "ai-agent1",
+      "id": "710336681b29"
     },
     {
       "kind": "proposition",
@@ -29,7 +45,15 @@
         "section": "(Lead)",
         "snippet": "All transcendental real numbers (also known as real transcendental numbers or transcendental irrational numbers ) are irrational"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Transcendental.irrational",
+        "module": "Mathlib.NumberTheory.Real.Irrational",
+        "match_kind": "exact"
+      },
+      "note": "`Transcendental.irrational` proves `Transcendental ℚ r → Irrational r`.",
+      "provenance": "ai-agent1",
+      "id": "6fd630adb8a7"
     },
     {
       "kind": "example",
@@ -38,7 +62,15 @@
         "section": "(Lead)",
         "snippet": "the square root of 2 is an irrational number, but it is not a transcendental number"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "irrational_sqrt_two",
+        "module": "Mathlib.NumberTheory.Real.Irrational",
+        "match_kind": null
+      },
+      "note": "`irrational_sqrt_two` gives √2 irrational; its algebraicity (root of X²−2) follows trivially from `IsAlgebraic` but is not a stated decl.",
+      "provenance": "ai-agent1",
+      "id": "583ec4cb9e0a"
     },
     {
       "kind": "theorem",
@@ -47,7 +79,15 @@
         "section": "History",
         "snippet": "sin x is not an algebraic function of x"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transcendence of the sine function as an algebraic function is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "f8f067d80e07"
     },
     {
       "kind": "proposition",
@@ -56,7 +96,15 @@
         "section": "History",
         "snippet": "conjectured that e and π were both transcendental numbers"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the transcendence of e nor of π is proven in Mathlib (only the analytical part of Lindemann–Weierstrass).",
+      "provenance": "ai-agent1",
+      "id": "25c6fdfada3d"
     },
     {
       "kind": "theorem",
@@ -65,7 +113,15 @@
         "section": "History",
         "snippet": "Joseph Liouville first proved the existence of transcendental numbers"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "transcendental_liouvilleNumber",
+        "module": "Mathlib.NumberTheory.Transcendental.Liouville.LiouvilleNumber",
+        "match_kind": "invocation"
+      },
+      "note": "`transcendental_liouvilleNumber` exhibits an explicit transcendental real number, witnessing existence.",
+      "provenance": "ai-agent1",
+      "id": "1c5f306e9832"
     },
     {
       "kind": "definition",
@@ -74,7 +130,15 @@
         "section": "History",
         "snippet": "this class of numbers is called the Liouville numbers"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Liouville",
+        "module": "Mathlib.NumberTheory.Transcendental.Liouville.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Liouville x` is defined by the standard rational-approximation property.",
+      "provenance": "ai-agent1",
+      "id": "e3c9cccd9eb2"
     },
     {
       "kind": "theorem",
@@ -83,7 +147,15 @@
         "section": "History",
         "snippet": "Liouville showed that all Liouville numbers are transcendental"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Liouville.transcendental",
+        "module": "Mathlib.NumberTheory.Transcendental.Liouville.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Liouville.transcendental` proves `Liouville x → Transcendental ℤ x`.",
+      "provenance": "ai-agent1",
+      "id": "688ce17281af"
     },
     {
       "kind": "theorem",
@@ -92,7 +164,15 @@
         "section": "History",
         "snippet": "The first number to be proven transcendental without having been specifically constructed"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "LindemannWeierstrass.exp_polynomial_approx",
+        "module": "Mathlib.NumberTheory.Transcendental.Lindemann.AnalyticalPart",
+        "match_kind": null
+      },
+      "note": "Only the analytical part of Lindemann–Weierstrass is formalized; the transcendence of e itself is not yet proven.",
+      "provenance": "ai-agent1",
+      "id": "f7d5cfcd9421"
     },
     {
       "kind": "theorem",
@@ -101,7 +181,15 @@
         "section": "History",
         "snippet": "the algebraic numbers are countable and the real numbers are uncountable"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebraic.countable",
+        "module": "Mathlib.Algebra.AlgebraicCard",
+        "match_kind": "exact"
+      },
+      "note": "`Algebraic.countable` gives countability of algebraic numbers and `Cardinal.not_countable_real` gives uncountability of ℝ.",
+      "provenance": "ai-agent1",
+      "id": "a7c18f0fa2f8"
     },
     {
       "kind": "theorem",
@@ -110,7 +198,15 @@
         "section": "History",
         "snippet": "Ferdinand von Lindemann published the first complete proof that π is transcendental"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "LindemannWeierstrass.exp_polynomial_approx",
+        "module": "Mathlib.NumberTheory.Transcendental.Lindemann.AnalyticalPart",
+        "match_kind": null
+      },
+      "note": "Only the analytical part of Lindemann–Weierstrass exists; π's transcendence is not proven, though `irrational_pi` proves the weaker irrationality.",
+      "provenance": "ai-agent1",
+      "id": "e8a89b77468d"
     },
     {
       "kind": "theorem",
@@ -119,6 +215,46 @@
         "section": "History",
         "snippet": "He first proved that e a is transcendental if a is a non-zero algebraic number"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "LindemannWeierstrass.exp_polynomial_approx",
+        "module": "Mathlib.NumberTheory.Transcendental.Lindemann.AnalyticalPart",
+        "match_kind": null
+      },
+      "note": "This is Lindemann–Weierstrass; only its analytical part is formalized, not the transcendence conclusion.",
+      "provenance": "ai-agent1",
+      "id": "f118d9c8c765"
+    },
+    {
+      "kind": "theorem",
+      "label": "Euler's identity",
+      "anchor": {
+        "section": "History",
+        "snippet": "e iπ = −1 is algebraic (see Euler's identity )"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Complex.exp_pi_mul_I",
+        "module": "Mathlib.Analysis.SpecialFunctions.Complex.Circle",
+        "match_kind": "exact"
+      },
+      "note": "`Complex.exp_pi_mul_I` states `exp (π * I) = -1`, the core identity used here.",
+      "provenance": "ai-agent1"
+    },
+    {
+      "kind": "theorem",
+      "label": "Squaring the circle impossible",
+      "anchor": {
+        "section": "History",
+        "snippet": "squaring the circle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The impossibility of squaring the circle (a consequence of π's transcendence) is not formalized.",
       "provenance": "ai-agent1"
     },
     {
@@ -128,6 +264,30 @@
         "section": "History",
         "snippet": "The affirmative answer was provided in 1934 by the Gelfond–Schneider theorem"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Gelfond–Schneider theorem is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "829ae58ca795"
+    },
+    {
+      "kind": "theorem",
+      "label": "Baker's theorem on linear forms in logarithms",
+      "anchor": {
+        "section": "History",
+        "snippet": "his work on lower bounds for linear forms in any number of logarithms"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Baker's theorem on linear forms in logarithms of algebraic numbers is not formalized.",
       "provenance": "ai-agent1"
     },
     {
@@ -137,7 +297,15 @@
         "section": "Properties",
         "snippet": "A transcendental number is a (possibly complex) number that is not the root of any integer polynomial"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Transcendental",
+        "module": "Mathlib.RingTheory.Algebraic.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Transcendental ℤ x` is exactly 'not a root of any nonzero integer polynomial', via `transcendental_iff`.",
+      "provenance": "ai-agent1",
+      "id": "b7dc446cd769"
     },
     {
       "kind": "proposition",
@@ -146,7 +314,15 @@
         "section": "Properties",
         "snippet": "Every real transcendental number must also be irrational"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Transcendental.irrational",
+        "module": "Mathlib.NumberTheory.Real.Irrational",
+        "match_kind": "exact"
+      },
+      "note": "`Transcendental.irrational` proves `Transcendental ℚ r → Irrational r`.",
+      "provenance": "ai-agent1",
+      "id": "c4465ac5b5af"
     },
     {
       "kind": "theorem",
@@ -155,6 +331,30 @@
         "section": "Properties",
         "snippet": "The set of transcendental numbers is uncountably infinite"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Algebraic.countable",
+        "module": "Mathlib.Algebra.AlgebraicCard",
+        "match_kind": null
+      },
+      "note": "Follows from `Algebraic.countable` plus `Cardinal.not_countable_real`, but uncountability of the transcendentals is not a single stated decl.",
+      "provenance": "ai-agent1",
+      "id": "22fcba93abed"
+    },
+    {
+      "kind": "theorem",
+      "label": "Cantor's diagonal argument",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Cantor's diagonal argument proves that the real numbers (and therefore also the complex numbers ) are uncountable"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Cardinal.not_countable_real",
+        "module": "Mathlib.SetTheory.Cardinal.Continuum",
+        "match_kind": "exact"
+      },
+      "note": "Uncountability of ℝ (and ℂ) is in Mathlib, established via diagonalization-style cardinality arguments.",
       "provenance": "ai-agent1"
     },
     {
@@ -164,7 +364,15 @@
         "section": "Properties",
         "snippet": "The irrational numbers contain all the real transcendental numbers and a subset of the algebraic numbers"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Transcendental.irrational",
+        "module": "Mathlib.NumberTheory.Real.Irrational",
+        "match_kind": null
+      },
+      "note": "`Transcendental.irrational` gives real transcendentals ⊆ irrationals, but the full set-containment statement is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "d95fdc4cf392"
     },
     {
       "kind": "proposition",
@@ -173,7 +381,15 @@
         "section": "Properties",
         "snippet": "Applying any non-constant single-variable algebraic function to a transcendental argument yields a transcendental value"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Transcendental.aeval",
+        "module": "Mathlib.RingTheory.Algebraic.Basic",
+        "match_kind": "special_case"
+      },
+      "note": "`Transcendental.aeval` covers non-constant polynomials applied to a transcendental, a special case of general algebraic functions.",
+      "provenance": "ai-agent1",
+      "id": "80e52c0e77e5"
     },
     {
       "kind": "proposition",
@@ -182,7 +398,15 @@
         "section": "Properties",
         "snippet": "at least one of a + b and ab must be transcendental"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No decl states that at least one of the sum and product of two transcendentals is transcendental.",
+      "provenance": "ai-agent1",
+      "id": "020fe13083ef"
     },
     {
       "kind": "example",
@@ -191,6 +415,30 @@
         "section": "Properties",
         "snippet": "π and (1 − π ) are both transcendental, but"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This example depends on the unformalized transcendence of π and is not stated in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "a1661653392a"
+    },
+    {
+      "kind": "theorem",
+      "label": "Algebraic numbers form an algebraically closed field",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "algebraic numbers form an algebraically closed field"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Algebra.IsAlgebraic.isAlgebraicClosure_of_isAlgClosed",
+        "module": "Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib proves the algebraic closure of ℚ in ℂ (i.e., the algebraic numbers) is algebraically closed; the precise idiomatic statement is via `IsAlgClosure`/`AlgebraicClosure`.",
       "provenance": "ai-agent1"
     },
     {
@@ -200,7 +448,15 @@
         "section": "Properties",
         "snippet": "The non-computable numbers are a strict subset of the transcendental numbers"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of computable real numbers tied to transcendence.",
+      "provenance": "ai-agent1",
+      "id": "6bb19fea698b"
     },
     {
       "kind": "proposition",
@@ -209,7 +465,15 @@
         "section": "Properties",
         "snippet": "All Liouville numbers are transcendental, but not vice versa"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Liouville.transcendental",
+        "module": "Mathlib.NumberTheory.Transcendental.Liouville.Basic",
+        "match_kind": null
+      },
+      "note": "`Liouville.transcendental` proves the forward direction; the converse-failure (a transcendental that is not Liouville) is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "89b57c26fb43"
     },
     {
       "kind": "proposition",
@@ -218,7 +482,15 @@
         "section": "Properties",
         "snippet": "there exist transcendental numbers which have bounded partial quotients"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No result on transcendence of continued fractions with bounded partial quotients is in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "42ce7a7a6e17"
     },
     {
       "kind": "proposition",
@@ -227,7 +499,15 @@
         "section": "Properties",
         "snippet": "one can show that e is not a Liouville number"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib does not prove that e is not a Liouville number.",
+      "provenance": "ai-agent1",
+      "id": "abaf075b0460"
     },
     {
       "kind": "theorem",
@@ -236,7 +516,15 @@
         "section": "Properties",
         "snippet": "Kurt Mahler showed in 1953 that π is also not a Liouville number"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mahler's result that π is not a Liouville number is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "8e39d9247fe4"
     },
     {
       "kind": "proposition",
@@ -245,7 +533,15 @@
         "section": "Properties",
         "snippet": "It is conjectured that all infinite continued fractions with bounded terms"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This open conjecture about continued fractions is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "7798b188fd5b"
     },
     {
       "kind": "theorem",
@@ -254,7 +550,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "Numbers proven to be transcendental"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "LindemannWeierstrass.exp_polynomial_approx",
+        "module": "Mathlib.NumberTheory.Transcendental.Lindemann.AnalyticalPart",
+        "match_kind": null
+      },
+      "note": "Only the analytical part of Lindemann–Weierstrass is formalized; π's transcendence is not (though `irrational_pi` proves irrationality).",
+      "provenance": "ai-agent1",
+      "id": "578e9b83b5be"
     },
     {
       "kind": "theorem",
@@ -263,7 +567,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "in particular Euler's number e"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "LindemannWeierstrass.exp_polynomial_approx",
+        "module": "Mathlib.NumberTheory.Transcendental.Lindemann.AnalyticalPart",
+        "match_kind": null
+      },
+      "note": "Only the analytical part of Lindemann–Weierstrass exists; transcendence of e and e^a is not proven.",
+      "provenance": "ai-agent1",
+      "id": "7462e1f4fdb4"
     },
     {
       "kind": "theorem",
@@ -272,7 +584,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "where n is a positive integer; in particular Gelfond's constant"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transcendence of Gelfond's constant e^π (Gelfond–Schneider) is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "8a3b1b917652"
     },
     {
       "kind": "theorem",
@@ -281,7 +601,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "following from their algebraic independence"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Algebraic independence of π and e^π is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "d9478f88cdd6"
     },
     {
       "kind": "theorem",
@@ -290,7 +618,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "where a is algebraic but not 0 or 1, and b is irrational algebraic"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Gelfond–Schneider theorem and its constant 2^√2 are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "56c21dc98eef"
     },
     {
       "kind": "theorem",
@@ -299,7 +635,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "The natural logarithm ln( a ) if a is algebraic and not equal to 0 or 1"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transcendence of ln(a) for algebraic a (Lindemann–Weierstrass) is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "43a45c4f51ce"
     },
     {
       "kind": "theorem",
@@ -308,7 +652,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "if a and b are positive integers not both powers of the same integer"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transcendence of such logarithms (Gelfond–Schneider) is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "33088c14d1f5"
     },
     {
       "kind": "theorem",
@@ -317,7 +669,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "by Baker's theorem"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Baker's theorem on linear forms in logarithms is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "87df28a7cd78"
     },
     {
       "kind": "theorem",
@@ -326,7 +686,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "The trigonometric functions sin( x ), cos( x ) and their hyperbolic counterparts"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transcendence of trig values at nonzero algebraic arguments is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "b4c1f13848a5"
     },
     {
       "kind": "theorem",
@@ -335,7 +703,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "Non-zero results of the inverse trigonometric functions"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transcendence of inverse trig values at algebraic arguments is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "47342cd70934"
     },
     {
       "kind": "theorem",
@@ -344,7 +720,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "for rational x such that"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No such transcendence result for special-function values at rational x is in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "cbdd67929820"
     },
     {
       "kind": "example",
@@ -353,7 +737,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "The Dottie number d (the fixed point of the cosine function)"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transcendence of the Dottie number is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "1fcbb008c27c"
     },
     {
       "kind": "theorem",
@@ -362,7 +754,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "for any branch of the Lambert W function"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transcendence of Lambert W values and the omega constant is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "e0fa107de960"
     },
     {
       "kind": "theorem",
@@ -371,7 +771,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "for any branch of the generalized Lambert W function"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transcendence of generalized Lambert W values is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "8ca4d097f391"
     },
     {
       "kind": "theorem",
@@ -380,7 +788,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "the square super-root of any natural number is either an integer or transcendental"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This dichotomy for the square super-root is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "0ee2e7448c29"
     },
     {
       "kind": "theorem",
@@ -389,7 +805,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "Values of the gamma function of rational numbers"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transcendence of Γ at rational arguments is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "7324873f1ae1"
     },
     {
       "kind": "theorem",
@@ -398,7 +822,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "such as the lemniscate constant"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transcendence of the lemniscate constant is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "f2c366b73a11"
     },
     {
       "kind": "theorem",
@@ -407,7 +839,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "The values of Beta function"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transcendence of Beta function values is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "0cbb72ddcb26"
     },
     {
       "kind": "theorem",
@@ -416,7 +856,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "The Bessel function of the first kind"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transcendence results for Bessel function values are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "b4d81e9f6f06"
     },
     {
       "kind": "theorem",
@@ -425,7 +873,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "are Bessel functions and γ is the Euler–Mascheroni constant"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This Bessel/γ combination transcendence result is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "0febdfb7575c"
     },
     {
       "kind": "theorem",
@@ -434,7 +890,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "Values of the Fibonacci zeta function at positive even arguments"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transcendence of Fibonacci zeta values is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "6f6007db4e45"
     },
     {
       "kind": "example",
@@ -443,7 +907,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "Any Liouville number , in particular: Liouville's constant"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "transcendental_liouvilleNumber",
+        "module": "Mathlib.NumberTheory.Transcendental.Liouville.LiouvilleNumber",
+        "match_kind": "special_case"
+      },
+      "note": "The `liouvilleNumber` family (including the classical base constant) is proven transcendental by `transcendental_liouvilleNumber`.",
+      "provenance": "ai-agent1",
+      "id": "9a573f508a8b"
     },
     {
       "kind": "theorem",
@@ -452,7 +924,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "Numbers with irrationality measure larger than 2"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "LiouvilleWith",
+        "module": "Mathlib.NumberTheory.Transcendental.Liouville.LiouvilleWith",
+        "match_kind": null
+      },
+      "note": "The irrationality-measure predicate `LiouvilleWith` is defined, but the Thue–Siegel–Roth transcendence consequence is not proven.",
+      "provenance": "ai-agent1",
+      "id": "0472b428ff69"
     },
     {
       "kind": "proposition",
@@ -461,7 +941,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "Numbers artificially constructed not to be algebraic periods"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The theory of periods is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "b9d2527e0000"
     },
     {
       "kind": "example",
@@ -470,7 +958,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "Any non-computable number , in particular: Chaitin's constant"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Chaitin's constant and non-computable reals are not connected to transcendence in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "262caa74bc7c"
     },
     {
       "kind": "proposition",
@@ -479,7 +975,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "Constructed irrational numbers which are not simply normal in any base"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Normality of numbers and this transcendence criterion are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "be5702476e80"
     },
     {
       "kind": "theorem",
@@ -488,7 +992,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "form a Sturmian word"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transcendence of numbers with Sturmian digit sequences is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "177fb7d32103"
     },
     {
       "kind": "example",
@@ -497,7 +1009,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "The Prouhet–Thue–Morse constant"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transcendence of the Thue–Morse and rabbit constants is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "70f5afc14184"
     },
     {
       "kind": "example",
@@ -506,7 +1026,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "The Komornik–Loreti constant"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transcendence of the Komornik–Loreti constant is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "055bf461dd0d"
     },
     {
       "kind": "example",
@@ -515,7 +1043,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "The paperfolding constant"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transcendence of the paperfolding constant is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "d650035bf7a5"
     },
     {
       "kind": "theorem",
@@ -524,7 +1060,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "The values of the infinite series with fast convergence rate"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This fast-convergence-series transcendence result is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "8a73f9565b82"
     },
     {
       "kind": "theorem",
@@ -533,7 +1077,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "are polynomials in variables"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This construction's transcendence is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "d690209ec458"
     },
     {
       "kind": "theorem",
@@ -542,7 +1094,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "is the floor function"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transcendence of these floor-function constructions is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "544e05f5279a"
     },
     {
       "kind": "example",
@@ -551,7 +1111,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "whose nonzero digit positions are given by the Moser–de Bruijn sequence"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transcendence of Moser–de Bruijn digit numbers is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "2dfce5bc9998"
     },
     {
       "kind": "theorem",
@@ -560,7 +1128,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "The values of the Rogers-Ramanujan continued fraction"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transcendence of Rogers–Ramanujan continued fraction values is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "c3771bd11c2e"
     },
     {
       "kind": "theorem",
@@ -569,7 +1145,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "The lemniscatic values of theta function"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transcendence of lemniscatic theta-function values is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "abae4e77f36b"
     },
     {
       "kind": "theorem",
@@ -578,7 +1162,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "is algebraic but not imaginary quadratic"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transcendence of j-invariant values at such arguments is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "8e1e05aa5cb4"
     },
     {
       "kind": "theorem",
@@ -587,7 +1179,15 @@
         "section": "Numbers proven to be transcendental",
         "snippet": "in the formula for first index of occurrence of Gijswijt's sequence"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "These constants in Gijswijt's sequence formula are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "326e8329f5ee"
     },
     {
       "kind": "proposition",
@@ -596,7 +1196,15 @@
         "section": "Conjectured transcendental numbers",
         "snippet": "Most nontrivial combinations of two or more transcendental numbers"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This meta-observation about open problems is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "702c668a75ba"
     },
     {
       "kind": "proposition",
@@ -605,7 +1213,15 @@
         "section": "Conjectured transcendental numbers",
         "snippet": "do not satisfy any polynomial equation of degree ≤ 8"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "These bounds on e+π and π/e are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "c31fc45b38ea"
     },
     {
       "kind": "theorem",
@@ -614,7 +1230,15 @@
         "section": "Conjectured transcendental numbers",
         "snippet": "At least one of the numbers e e and e e 2 is transcendental"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This 'at least one' transcendence result is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "e17d8db946da"
     },
     {
       "kind": "theorem",
@@ -623,7 +1247,15 @@
         "section": "Conjectured transcendental numbers",
         "snippet": "at least one of the numbers eπ and e + π is transcendental"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This classic 'at least one of eπ, e+π' result is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "dc9e3846feb6"
     },
     {
       "kind": "proposition",
@@ -632,7 +1264,15 @@
         "section": "Conjectured transcendental numbers",
         "snippet": "Schanuel's conjecture would imply that all of the above numbers are transcendental and algebraically independent"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Schanuel's conjecture is not stated in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "455d8e28bc80"
     },
     {
       "kind": "theorem",
@@ -641,7 +1281,15 @@
         "section": "Conjectured transcendental numbers",
         "snippet": "an infinite list of Euler-Lehmer constants (which includes γ /4 ) contains at most one algebraic number"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This result on Euler–Lehmer constants is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "8ed9c97b3430"
     },
     {
       "kind": "theorem",
@@ -650,7 +1298,15 @@
         "section": "Conjectured transcendental numbers",
         "snippet": "at least one of γ and the Gompertz constant δ is transcendental"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This 'at least one of γ, Gompertz' result is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "89756111f94e"
     },
     {
       "kind": "proposition",
@@ -659,7 +1315,15 @@
         "section": "Conjectured transcendental numbers",
         "snippet": "in particular Apéry's constant ζ (3) , which is known to be irrational"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither irrationality of ζ(3) (Apéry) nor transcendence of ζ at odd integers is formalized.",
+      "provenance": "ai-agent1",
+      "id": "8ea720f9c00c"
     },
     {
       "kind": "theorem",
@@ -668,7 +1332,15 @@
         "section": "Conjectured transcendental numbers",
         "snippet": "at least one of the numbers ζ (4 k +3) and"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This conditional transcendence statement about ζ values is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "2a386a1801ec"
     },
     {
       "kind": "proposition",
@@ -677,7 +1349,15 @@
         "section": "Conjectured transcendental numbers",
         "snippet": "in particular Catalan's Constant β (2)"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Transcendence/irrationality of Catalan's constant and Dirichlet beta values is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "aea577e740ac"
     },
     {
       "kind": "proposition",
@@ -686,7 +1366,15 @@
         "section": "Conjectured transcendental numbers",
         "snippet": "Values of the Gamma Function Γ (1/ n ) for positive integers"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Results on Γ(1/n) values are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "38c357e856ac"
     },
     {
       "kind": "theorem",
@@ -695,7 +1383,15 @@
         "section": "Conjectured transcendental numbers",
         "snippet": "at least one the numbers Γ(1/ n ) and Γ(2/ n ) is transcendental"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This 'at least one of Γ(1/n), Γ(2/n)' result is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "9cb7b08ccf09"
     },
     {
       "kind": "proposition",
@@ -704,7 +1400,15 @@
         "section": "Conjectured transcendental numbers",
         "snippet": "Any number given by some kind of limit that is not obviously algebraic"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This heuristic meta-statement is not a formalizable theorem in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "5333b4fc8835"
     },
     {
       "kind": "theorem",
@@ -713,7 +1417,15 @@
         "section": "A proof that e is transcendental",
         "snippet": "The first proof that the base of the natural logarithms, e , is transcendental dates from 1873"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "LindemannWeierstrass.exp_polynomial_approx",
+        "module": "Mathlib.NumberTheory.Transcendental.Lindemann.AnalyticalPart",
+        "match_kind": null
+      },
+      "note": "Only the analytical part of the Lindemann–Weierstrass machinery is formalized; e's transcendence is not yet concluded.",
+      "provenance": "ai-agent1",
+      "id": "7700bbe0aff7"
     },
     {
       "kind": "proposition",
@@ -722,7 +1434,15 @@
         "section": "Lemma 1",
         "snippet": "There are arbitrarily large k such that"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "LindemannWeierstrass.exp_polynomial_approx",
+        "module": "Mathlib.NumberTheory.Transcendental.Lindemann.AnalyticalPart",
+        "match_kind": null
+      },
+      "note": "This proof-specific lemma corresponds to the analytical estimates in `exp_polynomial_approx`, but is not isolated as such in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "62ad8404cfaa"
     },
     {
       "kind": "proposition",
@@ -731,7 +1451,15 @@
         "section": "Lemma 2",
         "snippet": "For sufficiently large k"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "LindemannWeierstrass.exp_polynomial_approx",
+        "module": "Mathlib.NumberTheory.Transcendental.Lindemann.AnalyticalPart",
+        "match_kind": null
+      },
+      "note": "This proof-specific bound corresponds to the analytical machinery in `exp_polynomial_approx`, but is not isolated as such in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "581a42b42e35"
     },
     {
       "kind": "theorem",
@@ -740,7 +1468,15 @@
         "section": "The transcendence of π",
         "snippet": "can be used to show that the number π is transcendental"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "LindemannWeierstrass.exp_polynomial_approx",
+        "module": "Mathlib.NumberTheory.Transcendental.Lindemann.AnalyticalPart",
+        "match_kind": null
+      },
+      "note": "Only the analytical part of Lindemann–Weierstrass is formalized; π's transcendence is not concluded, though `irrational_pi` proves irrationality.",
+      "provenance": "ai-agent1",
+      "id": "e830065775fb"
     }
   ]
 }

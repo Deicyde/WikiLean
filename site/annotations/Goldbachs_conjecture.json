@@ -18,7 +18,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "Grep shows no Goldbach conjecture statement in Mathlib (the only 'Goldbach' hit is the unrelated Fermat-numbers theorem in NumberTheory/Fermat.lean).",
+      "note": "Grep finds no Goldbach conjecture statement in Mathlib (the only 'Goldbach' hit is the unrelated Fermat-numbers reference in NumberTheory/Fermat.lean).",
       "provenance": "ai",
       "id": "cccbb1c49952"
     },
@@ -108,6 +108,22 @@
       "id": "80e806f5f5c6"
     },
     {
+      "kind": "proposition",
+      "label": "Weak Goldbach conjecture (ternary)",
+      "anchor": {
+        "section": "Partial results",
+        "snippet": "every odd integer greater than 5 is the sum of three primes"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The ternary/weak Goldbach conjecture statement itself is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
       "kind": "theorem",
       "label": "Chudakov–van der Corput–Estermann (1937–38)",
       "anchor": {
@@ -137,7 +153,7 @@
         "module": "Mathlib.Combinatorics.Schnirelmann",
         "match_kind": null
       },
-      "note": "Schnirelmann density is defined in Combinatorics/Schnirelmann.lean, but the file's TODO explicitly lists 'Prove Schnirelmann's theorem' so the theorem itself is not yet formalized.",
+      "note": "Schnirelmann density is defined in Combinatorics/Schnirelmann.lean (decl_exists confirmed), but the file's TODO explicitly lists 'Prove Schnirelmann's theorem' so the theorem itself is not yet formalized.",
       "provenance": "ai",
       "id": "44b30487b887"
     },
@@ -312,6 +328,22 @@
       "id": "4031fc77ee1b"
     },
     {
+      "kind": "theorem",
+      "label": "Helfgott's proof of the weak conjecture (2013)",
+      "anchor": {
+        "section": "Partial results",
+        "snippet": "In 2013, Harald Helfgott submitted a proof of the weak conjecture"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Helfgott's proof of ternary Goldbach is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
       "kind": "proposition",
       "label": "Weak conjecture implied by Goldbach",
       "anchor": {
@@ -414,6 +446,22 @@
       "id": "4fede8939a0b"
     },
     {
+      "kind": "theorem",
+      "label": "Prime number theorem",
+      "anchor": {
+        "section": "Heuristic justification",
+        "snippet": "The prime number theorem asserts that an integer m selected at random has roughly"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.primeCounting",
+        "module": "Mathlib.NumberTheory.PrimeCounting",
+        "match_kind": null
+      },
+      "note": "decl_exists confirms no `PrimeNumberTheorem` decl and no Mathlib/NumberTheory/LSeries/PrimeNumberTheorem.lean file; only prerequisites are present (Nat.primeCounting, Chebyshev bounds like Chebyshev.eventually_primeCounting_le, and zeta non-vanishing in LSeries/Nonvanishing.lean which explicitly calls itself a PNT prerequisite), so PNT itself is not yet formalized.",
+      "provenance": "ai"
+    },
+    {
       "kind": "proposition",
       "label": "Hardy–Littlewood asymptotic for c primes",
       "anchor": {
@@ -511,7 +559,7 @@
         "module": "Mathlib.NumberTheory.SumFourSquares",
         "match_kind": "exact"
       },
-      "note": "Nat.sum_four_squares in NumberTheory/SumFourSquares.lean states ∃ a b c d, a^2 + b^2 + c^2 + d^2 = n.",
+      "note": "Nat.sum_four_squares in NumberTheory/SumFourSquares.lean states ∃ a b c d, a^2 + b^2 + c^2 + d^2 = n (confirmed via decl_exists).",
       "provenance": "ai",
       "id": "850222e8efeb"
     },

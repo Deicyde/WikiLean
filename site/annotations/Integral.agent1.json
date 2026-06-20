@@ -11,7 +11,15 @@
         "section": "(Lead)",
         "snippet": "A definite integral computes the signed area of the region in the plane that is bounded by the graph of a given function between two points in the real line"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "intervalIntegral",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`intervalIntegral f a b μ` is the signed integral of `f` from `a` to `b`.",
+      "provenance": "ai-agent1",
+      "id": "0481240b8779"
     },
     {
       "kind": "definition",
@@ -20,7 +28,15 @@
         "section": "(Lead)",
         "snippet": "Integrals also refer to the concept of an antiderivative , a function whose derivative is the given function"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "HasDerivAt",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib has no named `antiderivative` definition; antiderivatives are stated via `HasDerivAt F' = f` hypotheses.",
+      "provenance": "ai-agent1",
+      "id": "f78185eb80d5"
     },
     {
       "kind": "theorem",
@@ -29,7 +45,15 @@
         "section": "(Lead)",
         "snippet": "The fundamental theorem of calculus relates definite integration to differentiation and provides a method to compute the definite integral of a function when its antiderivative is known"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "intervalIntegral.integral_eq_sub_of_hasDerivAt",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus",
+        "match_kind": "exact"
+      },
+      "note": "FTC-2 is `∫ x in a..b, f' x = F b - F a` when `HasDerivAt F (f' x) x`.",
+      "provenance": "ai-agent1",
+      "id": "ef1840da2176"
     },
     {
       "kind": "definition",
@@ -38,7 +62,15 @@
         "section": "(Lead)",
         "snippet": "a line integral is defined for functions of two or more variables, and the interval of integration is replaced by a curve connecting two points in space"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general line integral over a curve is defined in Mathlib (no `curveIntegral` decl exists); only `intervalIntegral` over an interval and `circleIntegral` for circles.",
+      "provenance": "ai-agent1",
+      "id": "4ab2c3ff01e4"
     },
     {
       "kind": "definition",
@@ -47,7 +79,15 @@
         "section": "(Lead)",
         "snippet": "In a surface integral , the curve is replaced by a piece of a surface in three-dimensional space"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general surface integral over a parametric 2-surface appears in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "1e6b87e2e6de"
     },
     {
       "kind": "example",
@@ -56,7 +96,15 @@
         "section": "Pre-calculus integration",
         "snippet": "Cavalieri computing the integrals of x n up to degree n = 9 in Cavalieri's quadrature formula"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "integral_pow",
+        "module": "Mathlib.Analysis.SpecialFunctions.Integrals.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`∫ x in a..b, x^n = (b^(n+1) - a^(n+1))/(n+1)`.",
+      "provenance": "ai-agent1",
+      "id": "9c0637e57da2"
     },
     {
       "kind": "definition",
@@ -65,7 +113,15 @@
         "section": "Terminology and notation",
         "snippet": "In general, the integral of a real-valued function f ( x ) with respect to a real variable x on an interval [ a , b ] is written as"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "intervalIntegral",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib uses the notation `∫ x in a..b, f x` for `intervalIntegral`.",
+      "provenance": "ai-agent1",
+      "id": "83f766b5b170"
     },
     {
       "kind": "definition",
@@ -74,7 +130,15 @@
         "section": "Terminology and notation",
         "snippet": "A function is said to be integrable if its integral over its domain is finite"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Integrable",
+        "module": "Mathlib.MeasureTheory.Function.L1Space.Integrable",
+        "match_kind": "exact"
+      },
+      "note": "`Integrable f μ` means `f` is a.e. strongly measurable with finite `lintegral` of `‖f‖`.",
+      "provenance": "ai-agent1",
+      "id": "3f2f7f76bf26"
     },
     {
       "kind": "definition",
@@ -83,7 +147,15 @@
         "section": "Terminology and notation",
         "snippet": "the integral is called an indefinite integral, which represents a class of functions (the antiderivative ) whose derivative is the integrand"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "HasDerivAt",
+        "module": "Mathlib.Analysis.Calculus.Deriv.Basic",
+        "match_kind": null
+      },
+      "note": "There is no named indefinite-integral/antiderivative constant in Mathlib; the relation is expressed pointwise via `HasDerivAt`.",
+      "provenance": "ai-agent1",
+      "id": "e068be260454"
     },
     {
       "kind": "example",
@@ -92,7 +164,15 @@
         "section": "Interpretations",
         "snippet": "to find the area of the region bounded by the graph of the function f ( x ) ="
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an illustrative numerical example, not a formal statement.",
+      "provenance": "ai-agent1",
+      "id": "91204d2681f7"
     },
     {
       "kind": "definition",
@@ -101,7 +181,15 @@
         "section": "Riemann integral",
         "snippet": "A tagged partition of a closed interval [ a , b ] on the real line is a finite sequence"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BoxIntegral.TaggedPrepartition",
+        "module": "Mathlib.Analysis.BoxIntegral.Partition.Tagged",
+        "match_kind": "generalization"
+      },
+      "note": "`TaggedPrepartition I` formalizes tagged partitions of boxes (generalizing intervals).",
+      "provenance": "ai-agent1",
+      "id": "f14b9f9a3163"
     },
     {
       "kind": "definition",
@@ -110,7 +198,15 @@
         "section": "Riemann integral",
         "snippet": "A Riemann sum of a function f with respect to such a tagged partition is defined as"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BoxIntegral.integralSum",
+        "module": "Mathlib.Analysis.BoxIntegral.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`integralSum f vol π` is the Riemann sum of `f` over a tagged prepartition `π`.",
+      "provenance": "ai-agent1",
+      "id": "f1c2442c54cf"
     },
     {
       "kind": "definition",
@@ -119,7 +215,15 @@
         "section": "Riemann integral",
         "snippet": "The mesh of such a tagged partition is the width of the largest sub-interval formed by the partition"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "BoxIntegral.Prepartition.distortion",
+        "module": "Mathlib.Analysis.BoxIntegral.Partition.SubboxInduction",
+        "match_kind": null
+      },
+      "note": "Mathlib's BoxIntegral uses `distortion` and `isSubordinate` rather than a scalar mesh.",
+      "provenance": "ai-agent1",
+      "id": "7b6ae7fbe1f8"
     },
     {
       "kind": "definition",
@@ -128,7 +232,15 @@
         "section": "Riemann integral",
         "snippet": "The Riemann integral of a function f over the interval [ a , b ] is equal to S if:"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BoxIntegral.integral",
+        "module": "Mathlib.Analysis.BoxIntegral.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "`BoxIntegral.integral` with the Riemann filter generalizes the Riemann integral to boxes.",
+      "provenance": "ai-agent1",
+      "id": "fe8b474e9c48"
     },
     {
       "kind": "definition",
@@ -137,7 +249,15 @@
         "section": "Riemann integral",
         "snippet": "When the chosen tags are the maximum (respectively, minimum) value of the function in each interval, the Riemann sum becomes an upper (respectively, lower) Darboux sum"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No upper/lower Darboux sums are defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "89ac3ae1d676"
     },
     {
       "kind": "definition",
@@ -146,7 +266,15 @@
         "section": "Lebesgue integral",
         "snippet": "the integral of a non-negative function f : R → R should be the sum over t of the areas between a thin horizontal strip"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.lintegral",
+        "module": "Mathlib.MeasureTheory.Integral.Lebesgue.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`lintegral μ f` is the lower Lebesgue integral of an `ℝ≥0∞`-valued function.",
+      "provenance": "ai-agent1",
+      "id": "753f5b1bfa34"
     },
     {
       "kind": "definition",
@@ -155,7 +283,15 @@
         "section": "Lebesgue integral",
         "snippet": "A general measurable function f is Lebesgue-integrable if the sum of the absolute values of the areas of the regions between the graph of f and the x -axis is finite"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Integrable",
+        "module": "Mathlib.MeasureTheory.Function.L1Space.Integrable",
+        "match_kind": "exact"
+      },
+      "note": "`Integrable f μ` requires `∫⁻ ‖f x‖ ∂μ < ∞`.",
+      "provenance": "ai-agent1",
+      "id": "3525bbfd09af"
     },
     {
       "kind": "definition",
@@ -164,7 +300,15 @@
         "section": "Other integrals",
         "snippet": "The Darboux integral , which is defined by Darboux sums (restricted Riemann sums) yet is equivalent to the Riemann integral"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Darboux integral is defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "84dc0cf6247e"
     },
     {
       "kind": "definition",
@@ -173,7 +317,15 @@
         "section": "Other integrals",
         "snippet": "The Riemann–Stieltjes integral , an extension of the Riemann integral which integrates with respect to a function as opposed to a variable"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "StieltjesFunction.measure",
+        "module": "Mathlib.MeasureTheory.Measure.Stieltjes",
+        "match_kind": null
+      },
+      "note": "Mathlib has Stieltjes measures (used for Lebesgue–Stieltjes integration) but no explicit Riemann–Stieltjes construction.",
+      "provenance": "ai-agent1",
+      "id": "8cdab286a288"
     },
     {
       "kind": "definition",
@@ -182,7 +334,15 @@
         "section": "Other integrals",
         "snippet": "The Lebesgue–Stieltjes integral , further developed by Johann Radon , which generalizes both the Riemann–Stieltjes and Lebesgue integrals"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "StieltjesFunction.measure",
+        "module": "Mathlib.MeasureTheory.Measure.Stieltjes",
+        "match_kind": null
+      },
+      "note": "Lebesgue–Stieltjes integrals are realized by integrating against `StieltjesFunction.measure`, but no dedicated definition exists.",
+      "provenance": "ai-agent1",
+      "id": "5403f867e84b"
     },
     {
       "kind": "definition",
@@ -191,7 +351,15 @@
         "section": "Other integrals",
         "snippet": "The Daniell integral , which subsumes the Lebesgue integral and Lebesgue–Stieltjes integral without depending on measures"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Daniell integral construction exists in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "f483eb49306d"
     },
     {
       "kind": "definition",
@@ -200,7 +368,15 @@
         "section": "Other integrals",
         "snippet": "The Haar integral , used for integration on locally compact topological groups, introduced by Alfréd Haar in 1933"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.Measure.haarMeasure",
+        "module": "Mathlib.MeasureTheory.Measure.Haar.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Integration with respect to `haarMeasure` realises the Haar integral on a locally compact group.",
+      "provenance": "ai-agent1",
+      "id": "a3c816c7e843"
     },
     {
       "kind": "definition",
@@ -209,7 +385,15 @@
         "section": "Other integrals",
         "snippet": "The Henstock–Kurzweil integral , variously defined by Arnaud Denjoy , Oskar Perron"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BoxIntegral.integral",
+        "module": "Mathlib.Analysis.BoxIntegral.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "BoxIntegral with the Henstock filter is the gauge / Henstock–Kurzweil integral.",
+      "provenance": "ai-agent1",
+      "id": "e47c3630a08d"
     },
     {
       "kind": "definition",
@@ -218,7 +402,15 @@
         "section": "Other integrals",
         "snippet": "The Khinchin integral , named after Aleksandr Khinchin"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Khinchin integral appears in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "32e82976953b"
     },
     {
       "kind": "definition",
@@ -227,7 +419,15 @@
         "section": "Other integrals",
         "snippet": "The Itô integral and Stratonovich integral , which define integration with respect to semimartingales such as Brownian motion"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No stochastic Itô or Stratonovich integral exists in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "a541888aeb22"
     },
     {
       "kind": "definition",
@@ -236,7 +436,15 @@
         "section": "Other integrals",
         "snippet": "The Young integral , which is a kind of Riemann–Stieltjes integral with respect to certain functions of unbounded variation"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Young integral exists in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "85d36e3034f7"
     },
     {
       "kind": "definition",
@@ -245,7 +453,15 @@
         "section": "Other integrals",
         "snippet": "The rough path integral, which is defined for functions equipped with some additional"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No rough path theory exists in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "9bab74fe3619"
     },
     {
       "kind": "definition",
@@ -254,7 +470,15 @@
         "section": "Other integrals",
         "snippet": "The Choquet integral , a subadditive or superadditive integral created by Gustave Choquet in 1953"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Choquet integral appears in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "c983d140c255"
     },
     {
       "kind": "definition",
@@ -263,7 +487,15 @@
         "section": "Other integrals",
         "snippet": "The Bochner integral , a generalization of the Lebesgue integral to functions that take values in a Banach space"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`MeasureTheory.integral μ f` is the Bochner integral of a Banach-space-valued function.",
+      "provenance": "ai-agent1",
+      "id": "bd071f32675c"
     },
     {
       "kind": "proposition",
@@ -272,7 +504,15 @@
         "section": "Linearity",
         "snippet": "the collection of integrable functions is closed under taking linear combinations , and the integral of a linear combination is the linear combination of the integrals"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "intervalIntegral.integral_add",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Additivity and scalar multiplication of the interval integral are proven (`integral_add`, `integral_smul`).",
+      "provenance": "ai-agent1",
+      "id": "6cf3e563bce5"
     },
     {
       "kind": "proposition",
@@ -281,7 +521,15 @@
         "section": "Linearity",
         "snippet": "the set of real -valued Lebesgue-integrable functions on a given measure space E with measure μ is closed under taking linear combinations and hence form a vector space"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_add",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`integral_add` plus `integral_smul` give the linearity of the (Bochner/Lebesgue) integral on `L¹`.",
+      "provenance": "ai-agent1",
+      "id": "563d8eab97c8"
     },
     {
       "kind": "definition",
@@ -290,7 +538,15 @@
         "section": "Linearity",
         "snippet": "Then one may define an abstract integration map assigning to each function f an element of V or the symbol ∞"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Mathlib's `MeasureTheory.integral` is exactly the abstract integration map into a Banach space.",
+      "provenance": "ai-agent1",
+      "id": "926c19b823f6"
     },
     {
       "kind": "proposition",
@@ -299,7 +555,15 @@
         "section": "Inequalities",
         "snippet": "An integrable function f on [ a , b ] , is necessarily bounded on that interval"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's measure-theoretic integrability does not imply boundedness, so this Riemann-specific fact is not stated.",
+      "provenance": "ai-agent1",
+      "id": "4c48510183a6"
     },
     {
       "kind": "proposition",
@@ -308,7 +572,15 @@
         "section": "Inequalities",
         "snippet": "If f ( x ) ≤ g ( x ) for each x in [ a , b ] then each of the upper and lower sums of f is bounded above by the upper and lower sums, respectively, of g"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "intervalIntegral.integral_mono",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Monotonicity of the interval integral; the global form is `MeasureTheory.integral_mono`.",
+      "provenance": "ai-agent1",
+      "id": "ac6559cc75c6"
     },
     {
       "kind": "proposition",
@@ -317,7 +589,15 @@
         "section": "Inequalities",
         "snippet": "If [ c , d ] is a subinterval of [ a , b ] and f ( x ) is non-negative for all x , then"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.setIntegral_mono_set",
+        "module": "Mathlib.MeasureTheory.Integral.Bochner.Set",
+        "match_kind": "exact"
+      },
+      "note": "Monotonicity of `setIntegral` under set inclusion for a.e. non-negative integrands.",
+      "provenance": "ai-agent1",
+      "id": "d3b5f525baba"
     },
     {
       "kind": "proposition",
@@ -326,7 +606,15 @@
         "section": "Inequalities",
         "snippet": "If f is Riemann-integrable on [ a , b ] then the same is true for | f |"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "intervalIntegral.abs_integral_le_integral_abs",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`|∫ x in a..b, f x| ≤ ∫ x in a..b, |f x|`.",
+      "provenance": "ai-agent1",
+      "id": "aeb50527cf46"
     },
     {
       "kind": "theorem",
@@ -335,7 +623,15 @@
         "section": "Inequalities",
         "snippet": "This inequality, known as the Cauchy–Schwarz inequality , plays a prominent role in Hilbert space theory"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.lintegral_mul_le_Lp_mul_Lq",
+        "module": "Mathlib.MeasureTheory.Integral.MeanInequalities",
+        "match_kind": "special_case"
+      },
+      "note": "Cauchy–Schwarz for integrals is the `p = q = 2` case of Hölder; no dedicated `integral`-form lemma.",
+      "provenance": "ai-agent1",
+      "id": "4bbdc27d794b"
     },
     {
       "kind": "theorem",
@@ -344,7 +640,15 @@
         "section": "Inequalities",
         "snippet": "Then the functions | f | p and | g | q are also integrable and the following Hölder's inequality holds"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.lintegral_mul_le_Lp_mul_Lq",
+        "module": "Mathlib.MeasureTheory.Integral.MeanInequalities",
+        "match_kind": "exact"
+      },
+      "note": "Hölder's inequality for `lintegral` with conjugate exponents `p, q`.",
+      "provenance": "ai-agent1",
+      "id": "fe228be3c798"
     },
     {
       "kind": "theorem",
@@ -353,7 +657,15 @@
         "section": "Inequalities",
         "snippet": "Then | f | p , | g | p and | f + g | p are also Riemann-integrable and the following Minkowski inequality holds"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.lintegral_Lp_add_le",
+        "module": "Mathlib.MeasureTheory.Integral.MeanInequalities",
+        "match_kind": "exact"
+      },
+      "note": "Minkowski's inequality for the `ℒp` seminorm of `f + g`.",
+      "provenance": "ai-agent1",
+      "id": "2c12f7057d7a"
     },
     {
       "kind": "definition",
@@ -362,6 +674,30 @@
         "section": "Conventions",
         "snippet": "Integrals can also be defined if a > b :"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "intervalIntegral.integral_symm",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`∫ x in a..b, f x = -∫ x in b..a, f x` is built into `intervalIntegral`.",
+      "provenance": "ai-agent1",
+      "id": "7216ccc774fc"
+    },
+    {
+      "kind": "proposition",
+      "label": "Integral over a degenerate interval is zero",
+      "anchor": {
+        "section": "Conventions",
+        "snippet": "the second says that an integral taken over a degenerate interval, or a point , should be zero"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "intervalIntegral.integral_same",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`intervalIntegral.integral_same : ∫ x in a..a, f x ∂μ = 0`.",
       "provenance": "ai-agent1"
     },
     {
@@ -371,7 +707,15 @@
         "section": "Conventions",
         "snippet": "the integrability of f on an interval [ a , b ] implies that f is integrable on any subinterval [ c , d ] , but in particular integrals have the property that if c is any element of [ a , b ]"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "intervalIntegral.integral_add_adjacent_intervals",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`∫ a..b + ∫ b..c = ∫ a..c` under interval integrability.",
+      "provenance": "ai-agent1",
+      "id": "4c5602884f0a"
     },
     {
       "kind": "theorem",
@@ -380,7 +724,15 @@
         "section": "Fundamental theorem of calculus",
         "snippet": "The fundamental theorem of calculus is the statement that differentiation and integration are inverse operations"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "intervalIntegral.integral_eq_sub_of_hasDerivAt",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus",
+        "match_kind": "exact"
+      },
+      "note": "FTC (Newton–Leibniz form) is proved in `FundThmCalculus`.",
+      "provenance": "ai-agent1",
+      "id": "66b5e694b347"
     },
     {
       "kind": "theorem",
@@ -389,7 +741,15 @@
         "section": "First theorem",
         "snippet": "Let f be a continuous real-valued function defined on a closed interval [ a , b ]"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "intervalIntegral.integral_hasDerivAt_right",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus",
+        "match_kind": "exact"
+      },
+      "note": "Derivative of `x ↦ ∫ t in a..x, f t` equals `f x` at points of continuity.",
+      "provenance": "ai-agent1",
+      "id": "a07324c01efc"
     },
     {
       "kind": "theorem",
@@ -398,7 +758,15 @@
         "section": "Second theorem",
         "snippet": "Let f be a real-valued function defined on a closed interval [ a , b ] that admits an antiderivative F"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "intervalIntegral.integral_eq_sub_of_hasDerivAt",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus",
+        "match_kind": "exact"
+      },
+      "note": "If `HasDerivAt F (f x) x` on `[a,b]` and `f` is integrable, then `∫ a..b, f = F b - F a`.",
+      "provenance": "ai-agent1",
+      "id": "18f5b9bfcf1f"
     },
     {
       "kind": "definition",
@@ -407,7 +775,15 @@
         "section": "Improper integrals",
         "snippet": "If the interval is unbounded, for instance at its upper end, then the improper integral is the limit as that endpoint goes to infinity"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.AECover.integral_tendsto_of_countably_generated",
+        "module": "Mathlib.MeasureTheory.Integral.IntegralEqImproper",
+        "match_kind": "exact"
+      },
+      "note": "`AECover` machinery identifies the limit of `∫ in Ioc a n, f` with the integral over the unbounded set.",
+      "provenance": "ai-agent1",
+      "id": "10a9c1d32b20"
     },
     {
       "kind": "definition",
@@ -416,7 +792,15 @@
         "section": "Improper integrals",
         "snippet": "If the integrand is only defined or finite on a half-open interval, for instance ( a , b ] , then again a limit may provide a finite result"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.AECover.integral_tendsto_of_countably_generated",
+        "module": "Mathlib.MeasureTheory.Integral.IntegralEqImproper",
+        "match_kind": "exact"
+      },
+      "note": "The same `AECover` framework handles improper integrals over half-open intervals.",
+      "provenance": "ai-agent1",
+      "id": "aac1b99c9385"
     },
     {
       "kind": "definition",
@@ -425,7 +809,15 @@
         "section": "Multiple integration",
         "snippet": "the double integral of a positive function of two variables represents the volume of the region between the surface defined by the function and the plane that contains its domain"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_prod",
+        "module": "Mathlib.MeasureTheory.Integral.Prod",
+        "match_kind": "exact"
+      },
+      "note": "Integration over a product measure realises double integrals; iterated form proved as `integral_prod`.",
+      "provenance": "ai-agent1",
+      "id": "0a23bd4eea53"
     },
     {
       "kind": "theorem",
@@ -434,7 +826,15 @@
         "section": "Multiple integration",
         "snippet": "Fubini's theorem states that this integral can be expressed as an equivalent iterated integral"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_prod",
+        "module": "Mathlib.MeasureTheory.Integral.Prod",
+        "match_kind": "exact"
+      },
+      "note": "`integral_prod` expresses `∫ z, f z ∂(μ.prod ν)` as the iterated integral.",
+      "provenance": "ai-agent1",
+      "id": "3f2694332b66"
     },
     {
       "kind": "definition",
@@ -443,7 +843,15 @@
         "section": "Line integrals and surface integrals",
         "snippet": "A line integral (sometimes called a path integral ) is an integral where the function to be integrated is evaluated along a curve"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No general line integral over a curve is defined in Mathlib; only `intervalIntegral` (over an interval) and `circleIntegral` (over a circle) exist.",
+      "provenance": "ai-agent1",
+      "id": "97b49efd2d0d"
     },
     {
       "kind": "definition",
@@ -452,7 +860,15 @@
         "section": "Line integrals and surface integrals",
         "snippet": "In the case of a closed curve it is also called a contour integral"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "circleIntegral",
+        "module": "Mathlib.MeasureTheory.Integral.CircleIntegral",
+        "match_kind": "special_case"
+      },
+      "note": "Only the circle-parameterised closed contour `circleIntegral` is defined; no general closed-curve contour integral.",
+      "provenance": "ai-agent1",
+      "id": "3078afa40d22"
     },
     {
       "kind": "example",
@@ -461,7 +877,15 @@
         "section": "Line integrals and surface integrals",
         "snippet": "For an object moving along a path C in a vector field F such as an electric field or gravitational field , the total work done by the field on the object is obtained by summing up the differential work"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is a physics illustration without a dedicated Mathlib statement.",
+      "provenance": "ai-agent1",
+      "id": "69ceae08f538"
     },
     {
       "kind": "definition",
@@ -470,7 +894,15 @@
         "section": "Line integrals and surface integrals",
         "snippet": "A surface integral generalizes double integrals to integration over a surface"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No surface-integral definition exists in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "62acbdb69af0"
     },
     {
       "kind": "example",
@@ -479,7 +911,15 @@
         "section": "Line integrals and surface integrals",
         "snippet": "For an example of applications of surface integrals, consider a vector field v on a surface S"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No notion of vector-field flux through a surface is formalized.",
+      "provenance": "ai-agent1",
+      "id": "0c310dee1057"
     },
     {
       "kind": "definition",
@@ -488,7 +928,15 @@
         "section": "Contour integrals",
         "snippet": "In complex analysis , the integrand is a complex-valued function of a complex variable z instead of a real function of a real variable x"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "circleIntegral",
+        "module": "Mathlib.MeasureTheory.Integral.CircleIntegral",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib formalizes `circleIntegral`; a generic complex contour integral is not separately defined.",
+      "provenance": "ai-agent1",
+      "id": "0512b1b3f624"
     },
     {
       "kind": "definition",
@@ -497,7 +945,15 @@
         "section": "Integrals of differential forms",
         "snippet": "a one-form is a weighted sum of the differentials of the coordinates"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousAlternatingMap",
+        "module": "Mathlib.Topology.Algebra.Module.Alternating.Basic",
+        "match_kind": null
+      },
+      "note": "Differential 1-forms are represented as fields valued in `E [⋀^Fin 1]→L[𝕜] F`; no dedicated `OneForm` abbreviation.",
+      "provenance": "ai-agent1",
+      "id": "c899c8639f86"
     },
     {
       "kind": "definition",
@@ -506,7 +962,15 @@
         "section": "Integrals of differential forms",
         "snippet": "A differential two-form is a sum of the form"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ContinuousAlternatingMap",
+        "module": "Mathlib.Topology.Algebra.Module.Alternating.Basic",
+        "match_kind": null
+      },
+      "note": "2-forms are encoded as fields valued in `E [⋀^Fin 2]→L[𝕜] F`; no dedicated `TwoForm` definition.",
+      "provenance": "ai-agent1",
+      "id": "7a73cff86e61"
     },
     {
       "kind": "theorem",
@@ -515,7 +979,15 @@
         "section": "Integrals of differential forms",
         "snippet": "Stokes' theorem simultaneously generalizes the three theorems of vector calculus: the divergence theorem , Green's theorem , and the Kelvin-Stokes theorem"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.integral_divergence_of_hasFDerivAt_off_countable",
+        "module": "Mathlib.MeasureTheory.Integral.DivergenceTheorem",
+        "match_kind": "special_case"
+      },
+      "note": "The divergence theorem on rectangles is proved; the general Stokes theorem on manifolds is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "04d2f75c4a31"
     },
     {
       "kind": "definition",
@@ -524,7 +996,15 @@
         "section": "Functional integrals",
         "snippet": "An integration that is performed not over a variable (or, in physics, over a space or time dimension), but over a space of functions , is referred to as a functional integral"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No path/functional integral formalism appears in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "05fdb4564f71"
     },
     {
       "kind": "example",
@@ -533,7 +1013,15 @@
         "section": "Applications",
         "snippet": "the integral under an entire probability density function must equal 1, which provides a test of whether a function with no negative values could be a density function"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.HasPDF",
+        "module": "Mathlib.Probability.Density.Basic",
+        "match_kind": null
+      },
+      "note": "`HasPDF` characterises densities, but `∫ pdf = 1` is not stated as a single named lemma.",
+      "provenance": "ai-agent1",
+      "id": "50a6745271df"
     },
     {
       "kind": "example",
@@ -542,7 +1030,15 @@
         "section": "Applications",
         "snippet": "The volume of a three-dimensional object such as a disc or washer can be computed by disc integration using the equation for the volume of a cylinder"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No disc-integration formula for volumes of revolution exists in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "b46624e1ebd2"
     },
     {
       "kind": "example",
@@ -551,7 +1047,15 @@
         "section": "Applications",
         "snippet": "in rectilinear motion , the displacement of an object over the time interval"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A physics example, not stated as a Mathlib lemma.",
+      "provenance": "ai-agent1",
+      "id": "60b0900647d1"
     },
     {
       "kind": "example",
@@ -560,7 +1064,15 @@
         "section": "Applications",
         "snippet": "The work done by a force"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A physics example, not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "b4a420ac044f"
     },
     {
       "kind": "proposition",
@@ -569,7 +1081,15 @@
         "section": "Analytical",
         "snippet": "find an antiderivative of f ; that is, a function F such that F ′ = f on the interval"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "intervalIntegral.integral_eq_sub_of_hasDerivAt",
+        "module": "Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus",
+        "match_kind": "exact"
+      },
+      "note": "Evaluating via an antiderivative is FTC-2.",
+      "provenance": "ai-agent1",
+      "id": "b6c766b4c09d"
     },
     {
       "kind": "definition",
@@ -578,7 +1098,15 @@
         "section": "Numerical",
         "snippet": "the trapezoidal rule , replaces the rectangles used in a Riemann sum with trapezoids"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No dedicated trapezoidal-rule definition exists in Mathlib (no `trapezoidal_integral` decl).",
+      "provenance": "ai-agent1",
+      "id": "493548a5f16c"
     },
     {
       "kind": "definition",
@@ -587,7 +1115,15 @@
         "section": "Numerical",
         "snippet": "Simpson's rule approximates the integrand by a piecewise quadratic function"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Simpson's rule is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "d179beccfb90"
     },
     {
       "kind": "definition",
@@ -596,7 +1132,15 @@
         "section": "Numerical",
         "snippet": "Riemann sums, the trapezoidal rule, and Simpson's rule are examples of a family of quadrature rules called the Newton–Cotes formulas"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Newton–Cotes quadrature is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "6bb0f98ee835"
     },
     {
       "kind": "definition",
@@ -605,7 +1149,15 @@
         "section": "Numerical",
         "snippet": "Romberg's method halves the step widths incrementally, giving trapezoid approximations"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Romberg integration is not in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "b5864cbea919"
     },
     {
       "kind": "definition",
@@ -614,7 +1166,15 @@
         "section": "Numerical",
         "snippet": "Gaussian quadrature evaluates the function at the roots of a set of orthogonal polynomials"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gaussian quadrature is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "9ce5709d0382"
     },
     {
       "kind": "proposition",
@@ -623,7 +1183,15 @@
         "section": "Numerical",
         "snippet": "An n -point Gaussian method is exact for polynomials of degree up to 2 n − 1"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement about Gaussian quadrature exactness exists in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "b1aca2ad8041"
     },
     {
       "kind": "proposition",
@@ -632,7 +1200,15 @@
         "section": "Integration by differentiation",
         "snippet": "Kempf, Jackson and Morales demonstrated mathematical relations that allow an integral to be calculated by means of differentiation"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This recent technique is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "811f089775f7"
     }
   ]
 }

@@ -320,11 +320,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Conservative.measure_mem_forall_ge_image_count_eq",
+        "decl": "MeasureTheory.Conservative.measure_mem_forall_ge_image_notMem_eq_zero",
         "module": "Mathlib.Dynamics.Ergodic.Conservative",
         "match_kind": "exact"
       },
-      "note": "Mathlib's `Mathlib.Dynamics.Ergodic.Conservative` contains both the measure-theoretic and topological versions of Poincaré recurrence.",
+      "note": "Mathlib's `Mathlib.Dynamics.Ergodic.Conservative` proves the measure-theoretic Poincaré recurrence theorem along with a topological version.",
       "provenance": "ai",
       "id": "e676d1ac9f2e"
     },
@@ -361,6 +361,54 @@
       "note": "Sharkovsky's theorem is not formalized in Mathlib.",
       "provenance": "ai",
       "id": "b62b42c90c0d"
+    },
+    {
+      "kind": "definition",
+      "label": "Lyapunov stability",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "Lyapunov stability"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Lyapunov stability is not formalized in Mathlib as a dynamical-systems notion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Structural stability",
+      "anchor": {
+        "section": "Overview",
+        "snippet": "or structural stability"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Structural stability is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Smale horseshoe",
+      "anchor": {
+        "section": "History",
+        "snippet": "His first contribution was the Smale horseshoe"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Smale horseshoe map is not formalized in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -488,14 +536,6 @@
         "section": "Formal definition",
         "snippet": "Assume that X is a non empty set with elements called states"
       },
-      "status": "formalized",
-      "mathlib": {
-        "decl": "Flow",
-        "module": "Mathlib.Dynamics.Flow",
-        "match_kind": "exact"
-      },
-      "note": "`Flow τ α` packages the state space, time monoid, and transformation, matching the formal definition.",
-      "provenance": "ai",
       "anchors": [
         {
           "section": "Formal definition",
@@ -506,6 +546,14 @@
           "value": "{\\displaystyle T:X\\to X}"
         }
       ],
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Flow",
+        "module": "Mathlib.Dynamics.Flow",
+        "match_kind": "exact"
+      },
+      "note": "`Flow τ α` packages the state space, time monoid, and transformation, matching the formal definition.",
+      "provenance": "ai",
       "id": "986046d1b5bb"
     },
     {
@@ -736,14 +784,6 @@
         "section": "Definition with monoids",
         "snippet": "A dynamical system"
       },
-      "status": "formalized",
-      "mathlib": {
-        "decl": "Flow.toAddAction",
-        "module": "Mathlib.Dynamics.Flow",
-        "match_kind": "exact"
-      },
-      "note": "`Flow` extends naturally to an `AddAction τ α` via `Flow.toAddAction`, matching the monoid-action definition.",
-      "provenance": "ai",
       "anchors": [
         {
           "section": "Definition with monoids",
@@ -766,6 +806,14 @@
           "value": "{\\displaystyle \\Phi (t_{2},\\Phi (t_{1},x))=\\Phi (t_{2}+t_{1},x),}"
         }
       ],
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Flow.toAddAction",
+        "module": "Mathlib.Dynamics.Flow",
+        "match_kind": "exact"
+      },
+      "note": "`Flow` extends naturally to an `AddAction τ α` via `Flow.toAddAction`, matching the monoid-action definition.",
+      "provenance": "ai",
       "id": "3fcde842d008"
     },
     {
@@ -792,14 +840,6 @@
         "section": "Definition with monoids",
         "snippet": "is called the flow through x and its graph is called the trajectory through x"
       },
-      "status": "formalized",
-      "mathlib": {
-        "decl": "Flow.orbit",
-        "module": "Mathlib.Dynamics.Flow",
-        "match_kind": "exact"
-      },
-      "note": "`Flow.orbit ϕ x` is `{ϕ t x : t ∈ τ}`, the set-theoretic flow/orbit through `x`.",
-      "provenance": "ai",
       "anchors": [
         {
           "section": "Definition with monoids",
@@ -822,6 +862,14 @@
           "value": "{\\displaystyle \\gamma _{x}\\equiv \\{\\Phi (t,x):t\\in I(x)\\}}"
         }
       ],
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Flow.orbit",
+        "module": "Mathlib.Dynamics.Flow",
+        "match_kind": "exact"
+      },
+      "note": "`Flow.orbit ϕ x` is `{ϕ t x : t ∈ τ}`, the set-theoretic flow/orbit through `x`.",
+      "provenance": "ai",
       "id": "099ad78a3cba"
     },
     {
@@ -831,14 +879,6 @@
         "section": "Definition with monoids",
         "snippet": "A subset S of the state space X is called Φ- invariant"
       },
-      "status": "formalized",
-      "mathlib": {
-        "decl": "IsInvariant",
-        "module": "Mathlib.Dynamics.Flow",
-        "match_kind": "exact"
-      },
-      "note": "`IsInvariant ϕ s` is defined as `∀ t, MapsTo (ϕ t) s s`, the standard Φ-invariance condition.",
-      "provenance": "ai",
       "anchors": [
         {
           "section": "Definition with monoids",
@@ -849,6 +889,14 @@
           "value": "{\\displaystyle \\Phi (t,x)\\in S.}"
         }
       ],
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsInvariant",
+        "module": "Mathlib.Dynamics.Flow",
+        "match_kind": "exact"
+      },
+      "note": "`IsInvariant ϕ s` is defined as `∀ t, MapsTo (ϕ t) s s`, the standard Φ-invariance condition.",
+      "provenance": "ai",
       "id": "533ef7cd89f4"
     },
     {
@@ -858,14 +906,6 @@
         "section": "Construction of dynamical systems",
         "snippet": "consider an initial value problem such as the following"
       },
-      "status": "not_formalized",
-      "mathlib": {
-        "decl": null,
-        "module": null,
-        "match_kind": null
-      },
-      "note": "Mathlib has ODE existence/uniqueness (Picard–Lindelöf) but no construction packaging the solution as a `Flow`.",
-      "provenance": "ai",
       "anchors": [
         {
           "section": "Construction of dynamical systems",
@@ -880,6 +920,14 @@
           "value": "{\\displaystyle {\\boldsymbol {x}}|_{t=0}={\\boldsymbol {x}}_{0}}"
         }
       ],
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has ODE existence/uniqueness (Picard–Lindelöf) but no construction packaging the solution as a `Flow`.",
+      "provenance": "ai",
       "id": "529f9eab0c30"
     },
     {
@@ -1008,14 +1056,6 @@
         "section": "Applied mathematics and physics",
         "snippet": "the starting point is typically a finite difference equation"
       },
-      "status": "not_formalized",
-      "mathlib": {
-        "decl": null,
-        "module": null,
-        "match_kind": null
-      },
-      "note": "A general finite-difference-equation framework for dynamical systems is not formalized in Mathlib.",
-      "provenance": "ai",
       "anchors": [
         {
           "section": "Applied mathematics and physics",
@@ -1026,6 +1066,14 @@
           "value": "{\\displaystyle y_{t+1}=ax_{t}+b}"
         }
       ],
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "A general finite-difference-equation framework for dynamical systems is not formalized in Mathlib.",
+      "provenance": "ai",
       "id": "a4b5f7d2adc5"
     },
     {
@@ -1103,14 +1151,6 @@
         "section": "Flows",
         "snippet": "For a flow , the vector field v( x ) is an affine function of the position in the phase space"
       },
-      "status": "not_formalized",
-      "mathlib": {
-        "decl": null,
-        "module": null,
-        "match_kind": null
-      },
-      "note": "Affine vector-field flows are not specifically defined in Mathlib.",
-      "provenance": "ai",
       "anchors": [
         {
           "section": "Flows",
@@ -1125,6 +1165,14 @@
           "value": "{\\displaystyle \\Phi ^{t}(x_{1})=x_{1}+bt.}"
         }
       ],
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Affine vector-field flows are not specifically defined in Mathlib.",
+      "provenance": "ai",
       "id": "1b194812cda3"
     },
     {
@@ -1134,14 +1182,6 @@
         "section": "Flows",
         "snippet": "When b is zero and A ≠ 0 the origin is an equilibrium (or singular) point of the flow"
       },
-      "status": "not_formalized",
-      "mathlib": {
-        "decl": null,
-        "module": null,
-        "match_kind": null
-      },
-      "note": "Equilibrium points and matrix-exponential solutions of linear flows are not packaged as dynamical-system statements in Mathlib.",
-      "provenance": "ai",
       "anchors": [
         {
           "section": "Flows",
@@ -1152,6 +1192,14 @@
           "value": "{\\displaystyle \\Phi ^{t}(x_{0})=e^{tA}x_{0}.}"
         }
       ],
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Equilibrium points and matrix-exponential solutions of linear flows are not packaged as dynamical-system statements in Mathlib.",
+      "provenance": "ai",
       "id": "d68fdba3b704"
     },
     {
@@ -1178,14 +1226,6 @@
         "section": "Maps",
         "snippet": "A discrete-time , affine dynamical system has the form of a matrix difference equation"
       },
-      "status": "not_formalized",
-      "mathlib": {
-        "decl": null,
-        "module": null,
-        "match_kind": null
-      },
-      "note": "Affine matrix-difference-equation dynamical systems are not formalized in Mathlib.",
-      "provenance": "ai",
       "anchors": [
         {
           "section": "Maps",
@@ -1196,6 +1236,14 @@
           "value": "{\\displaystyle x_{n+1}=Ax_{n}+b,}"
         }
       ],
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Affine matrix-difference-equation dynamical systems are not formalized in Mathlib.",
+      "provenance": "ai",
       "id": "cbb58d85b1ac"
     },
     {
@@ -1392,14 +1440,6 @@
         "section": "Ergodic systems",
         "snippet": "The volume is said to be computed by the Liouville measure"
       },
-      "status": "not_formalized",
-      "mathlib": {
-        "decl": null,
-        "module": null,
-        "match_kind": null
-      },
-      "note": "The Liouville measure on phase space and Hamiltonian phase-space invariance are not formalized in Mathlib.",
-      "provenance": "ai",
       "anchors": [
         {
           "section": "Ergodic systems",
@@ -1410,6 +1450,14 @@
           "value": "{\\displaystyle \\mathrm {vol} (A)=\\mathrm {vol} (\\Phi ^{t}(A)).}"
         }
       ],
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Liouville measure on phase space and Hamiltonian phase-space invariance are not formalized in Mathlib.",
+      "provenance": "ai",
       "id": "e9367f5e3d72"
     },
     {
@@ -1421,7 +1469,7 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Conservative.measure_mem_forall_ge_image_count_eq",
+        "decl": "MeasureTheory.Conservative.measure_mem_forall_ge_image_notMem_eq_zero",
         "module": "Mathlib.Dynamics.Ergodic.Conservative",
         "match_kind": "exact"
       },
@@ -1453,14 +1501,6 @@
         "section": "Ergodic systems",
         "snippet": "This introduces an operator U t , the transfer operator"
       },
-      "status": "not_formalized",
-      "mathlib": {
-        "decl": null,
-        "module": null,
-        "match_kind": null
-      },
-      "note": "The Koopman/transfer operator is not formalized in Mathlib.",
-      "provenance": "ai",
       "anchors": [
         {
           "section": "Ergodic systems",
@@ -1471,6 +1511,14 @@
           "value": "{\\displaystyle (U^{t}a)(x)=a(\\Phi ^{-t}(x)).}"
         }
       ],
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Koopman/transfer operator is not formalized in Mathlib.",
+      "provenance": "ai",
       "id": "f1f07fdadc10"
     },
     {
@@ -1531,14 +1579,6 @@
         "section": "Solutions of finite duration",
         "snippet": "Admits the finite duration solution"
       },
-      "status": "not_formalized",
-      "mathlib": {
-        "decl": null,
-        "module": null,
-        "match_kind": null
-      },
-      "note": "Specific finite-duration ODE example is not formalized in Mathlib.",
-      "provenance": "ai",
       "anchors": [
         {
           "section": "Solutions of finite duration",
@@ -1553,7 +1593,31 @@
           "value": "{\\displaystyle y(t)={\\frac {1}{4}}\\left(1-{\\frac {t}{2}}+\\left|1-{\\frac {t}{2}}\\right|\\right)^{2}}"
         }
       ],
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Specific finite-duration ODE example is not formalized in Mathlib.",
+      "provenance": "ai",
       "id": "68a8e736973c"
+    },
+    {
+      "kind": "theorem",
+      "label": "Picard–Lindelöf theorem",
+      "anchor": {
+        "section": "Solutions of finite duration",
+        "snippet": "This behavior cannot happen for Lipschitz continuous differential equations according to the proof of the Picard-Lindelof theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsPicardLindelof.exists_eq_forall_mem_Icc_eq_picard",
+        "module": "Mathlib.Analysis.ODE.PicardLindelof",
+        "match_kind": "exact"
+      },
+      "note": "The Picard–Lindelöf (Cauchy–Lipschitz) existence theorem is `IsPicardLindelof.exists_eq_forall_mem_Icc_eq_picard` in `Mathlib.Analysis.ODE.PicardLindelof`.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",

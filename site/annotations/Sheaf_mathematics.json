@@ -150,11 +150,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "TopCat.LocalPredicate.isSection",
+        "decl": "TopCat.isSection",
         "module": "Mathlib.Topology.Sheaves.LocalPredicate",
         "match_kind": "special_case"
       },
-      "note": "The local predicate `isSection p` produces the sheaf of sections of `p : T → X` via `subsheafToTypes`, but the construction is only set up for trivial fiber families and not the general `Y → X` étalé construction.",
+      "note": "The local predicate `TopCat.isSection p` produces the sheaf of sections of `p : T → X` via `subsheafToTypes`, but the construction is only set up for trivial fiber families and not the general `Y → X` étalé construction.",
       "provenance": "ai",
       "id": "2464fa146d0e"
     },
@@ -202,7 +202,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "smoothSheafCommRing",
-        "module": "Mathlib.Geometry.Manifold.Sheaf.LocallyRingedSpace",
+        "module": "Mathlib.Geometry.Manifold.Sheaf.Smooth",
         "match_kind": "special_case"
       },
       "note": "The structure sheaf of smooth functions on a manifold is formalized as `smoothSheafCommRing`, but differential-forms sheaves are not assembled as sheaves in Mathlib.",
@@ -296,10 +296,10 @@
     },
     {
       "kind": "proposition",
-      "label": "Iso/monomorphism check on open sets",
+      "label": "Iso/mono check via stalks",
       "anchor": {
-        "section": "Morphisms",
-        "snippet": "of sheaves on"
+        "section": "Stalks of a sheaf",
+        "snippet": "can be tested on the stalks"
       },
       "status": "formalized",
       "mathlib": {
@@ -307,8 +307,8 @@
         "module": "Mathlib.Topology.Sheaves.Stalks",
         "match_kind": "exact"
       },
-      "note": "`isIso_iff_stalkFunctor_map_iso` and `mono_iff_stalk_mono` reduce iso/mono-ness of a sheaf morphism to stalkwise checks.",
-      "provenance": "ai",
+      "note": "`isIso_iff_stalkFunctor_map_iso` and `mono_iff_stalk_mono` reduce iso/mono-ness of a sheaf morphism to stalkwise checks; re-anchored from the Morphisms section since the cited decls live in the stalks API.",
+      "provenance": "ai-moderated",
       "id": "21cb3976901b"
     },
     {
@@ -361,6 +361,22 @@
       "note": "`sheafify J P` (with adjunction unit `toSheafify`) and the functor `presheafToSheaf` realize the sheaf associated to a presheaf.",
       "provenance": "ai",
       "id": "cfbb733ff94b"
+    },
+    {
+      "kind": "definition",
+      "label": "Constant sheaf",
+      "anchor": {
+        "section": "Turning a presheaf into a sheaf",
+        "snippet": "the sheafification of the constant presheaf (see above) is called the constant sheaf"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.constantSheaf",
+        "module": "Mathlib.CategoryTheory.Sites.ConstantSheaf",
+        "match_kind": "exact"
+      },
+      "note": "`CategoryTheory.constantSheaf J D` is the dedicated functor sending an object to the sheafification of the constant presheaf, exactly the constant sheaf.",
+      "provenance": "ai"
     },
     {
       "kind": "proposition",
@@ -584,6 +600,22 @@
       "id": "6f7e837f2dfa"
     },
     {
+      "kind": "example",
+      "label": "Schemes as locally ringed spaces",
+      "anchor": {
+        "section": "Ringed spaces and sheaves of modules",
+        "snippet": "schemes , the foundational notion of spaces in algebraic geometry, are locally ringed spaces"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.Scheme",
+        "module": "Mathlib.AlgebraicGeometry.Scheme",
+        "match_kind": "exact"
+      },
+      "note": "`AlgebraicGeometry.Scheme` is defined as a `LocallyRingedSpace` that is locally isomorphic to `Spec` of a commutative ring.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Sheaf of modules",
       "anchor": {
@@ -703,6 +735,22 @@
       "id": "33d6c31d85cd"
     },
     {
+      "kind": "definition",
+      "label": "Sheaf cohomology as derived functor of global sections",
+      "anchor": {
+        "section": "Sheaf cohomology",
+        "snippet": "Grothendieck (1957) introduced them by defining sheaf cohomology as the derived functor"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.Sheaf.H",
+        "module": "Mathlib.CategoryTheory.Sites.SheafCohomology.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Sheaf.H F n` defines sheaf cohomology as the derived functor of the global sections (sheaf-to-section) functor on the category of abelian sheaves.",
+      "provenance": "ai"
+    },
+    {
       "kind": "theorem",
       "label": "Long exact sequence in sheaf cohomology",
       "anchor": {
@@ -735,6 +783,22 @@
       "note": "Mathlib does not formalize the de Rham complex as a resolution of the constant sheaf on a manifold.",
       "provenance": "ai",
       "id": "edd4851199df"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pullback-pushforward adjunction",
+      "anchor": {
+        "section": "Derived categories of sheaves",
+        "snippet": "which is the left adjoint of"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopCat.Sheaf.pullbackPushforwardAdjunction",
+        "module": "Mathlib.Topology.Sheaves.Functors",
+        "match_kind": "exact"
+      },
+      "note": "`pullbackPushforwardAdjunction` exhibits `pullback f ⊣ pushforward f` for sheaves along a continuous map `f : X → Y`.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",

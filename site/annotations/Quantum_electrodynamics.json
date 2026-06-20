@@ -151,10 +151,10 @@
       "status": "partial",
       "mathlib": {
         "decl": "norm_mul",
-        "module": "Mathlib.Analysis.Normed.Field.Basic",
-        "match_kind": null
+        "module": "Mathlib.Analysis.Normed.Ring.Basic",
+        "match_kind": "generalization"
       },
-      "note": "Amplitude arrows are complex numbers and their multiplicative-length rule is the verified multiplicativity of norm (`norm_mul`), but the physics framing is not formalized.",
+      "note": "Amplitude arrows are complex numbers whose multiplicative-length rule is the verified multiplicativity of norm (`norm_mul` in `Mathlib.Analysis.Normed.Ring.Basic`), but the physics framing is not formalized.",
       "provenance": "ai",
       "id": "b76a7af3e44c"
     },
@@ -220,7 +220,7 @@
       "mathlib": {
         "decl": "Circle",
         "module": "Mathlib.Analysis.Complex.Circle",
-        "match_kind": null
+        "match_kind": "generalization"
       },
       "note": "The symmetry group U(1) is formalized as the abelian group `Circle`, but the notion of a gauge theory is not.",
       "provenance": "ai",
@@ -273,7 +273,7 @@
         "module": null,
         "match_kind": null
       },
-      "note": "No spinor or spinor-field definitions exist in Mathlib.",
+      "note": "No spinor or spinor-field definitions exist in Mathlib (case-insensitive grep for `spinor` returned no files).",
       "provenance": "ai",
       "id": "2f597c8b8461"
     },
@@ -608,7 +608,7 @@
       "mathlib": {
         "decl": "FormalMultilinearSeries.radius",
         "module": "Mathlib.Analysis.Analytic.ConvergenceRadius",
-        "match_kind": null
+        "match_kind": "generalization"
       },
       "note": "Radius of convergence of a power series is formalized (`FormalMultilinearSeries.radius`), but Dyson's physical argument that the QED series has radius zero is not.",
       "provenance": "ai",
@@ -647,6 +647,86 @@
       "note": "Extension of electrodynamics to curved spacetime is not formalized in Mathlib.",
       "provenance": "ai",
       "id": "baf08ace63fe"
+    },
+    {
+      "kind": "definition",
+      "label": "Asymptotic series",
+      "anchor": {
+        "section": "Nonconvergence of series",
+        "snippet": "the series does not converge but is at best an asymptotic series"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Asymptotics.IsBigO",
+        "module": "Mathlib.Analysis.Asymptotics.Defs",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes asymptotic comparison (big-O/little-o via `Asymptotics.IsBigO`) but not the specific notion of an asymptotic (divergent) series expansion.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Lorenz gauge condition",
+      "anchor": {
+        "section": "Equation of motion for A μ",
+        "snippet": "if we impose the Lorenz gauge condition"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Lorenz gauge condition on the electromagnetic four-potential is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Time-ordering operator",
+      "anchor": {
+        "section": "Interaction picture",
+        "snippet": "where T is the time-ordering operator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The time-ordering operator used in defining the Dyson series is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Wave operator (d'Alembertian)",
+      "anchor": {
+        "section": "Equation of motion for A μ",
+        "snippet": "The square represents the wave operator"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The d'Alembertian wave operator on Minkowski space is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Minkowski space (flat spacetime)",
+      "anchor": {
+        "section": "QED action",
+        "snippet": "defined on Minkowski space (flat spacetime)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Minkowski spacetime as a pseudo-Riemannian manifold is not formalized in Mathlib (only Minkowski-inequality/embedding senses appear).",
+      "provenance": "ai"
     }
   ]
 }

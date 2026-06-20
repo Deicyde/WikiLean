@@ -1,0 +1,441 @@
+{
+  "slug": "Kullback-Leibler_divergence",
+  "wikipedia_title": "Kullback–Leibler divergence",
+  "display_title": "Kullback–Leibler divergence",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Kullback–Leibler divergence",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "Mathematically, it is defined as"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InformationTheory.klDiv",
+        "module": "Mathlib.InformationTheory.KullbackLeibler.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib defines `klDiv μ ν` for arbitrary measures via the Radon–Nikodym derivative and log-likelihood ratio, generalizing the Wikipedia lead's formula.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Non-negativity of KL divergence",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "KL divergence is always a non-negative real number"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InformationTheory.integral_llr_add_sub_measure_univ_nonneg",
+        "module": "Mathlib.InformationTheory.KullbackLeibler.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Nonnegativity of `klDiv` follows from its `ℝ≥0∞`-valued definition, with the integral form proved nonnegative by `integral_llr_add_sub_measure_univ_nonneg`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Relative entropy (discrete case)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "For discrete probability distributions P and Q defined on the same sample space"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InformationTheory.klDiv",
+        "module": "Mathlib.InformationTheory.KullbackLeibler.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib only provides the general measure-theoretic `klDiv`; no specialized discrete-sum formula `∑ p(x) log(p(x)/q(x))` is recorded.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Relative entropy (continuous case)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "For distributions P and Q of a continuous random variable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InformationTheory.klDiv",
+        "module": "Mathlib.InformationTheory.KullbackLeibler.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Subsumed by the general measure-theoretic `klDiv`; no dedicated density-version integral `∫ p(x) log(p(x)/q(x)) dx` lemma is stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Relative entropy (general measure case)",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "More generally, if P and Q are probability measures on a measurable space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InformationTheory.klDiv",
+        "module": "Mathlib.InformationTheory.KullbackLeibler.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`InformationTheory.klDiv μ ν` is exactly the general measure-theoretic Kullback–Leibler divergence via the Radon–Nikodym derivative.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Kullback's basic example",
+      "anchor": {
+        "section": "Basic example",
+        "snippet": "gives the following example"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No specific Kullback example computation is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Duality formula for variational inference (Donsker–Varadhan)",
+      "anchor": {
+        "type": "theorem_box",
+        "value": "Theorem [Duality Formula for Variational Inference]"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Donsker`/`Varadhan` in Mathlib returns no matches.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "KL divergence between two multivariate normals",
+      "anchor": {
+        "section": "Multivariate normal distributions",
+        "snippet": "Suppose that we have two multivariate normal distributions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `klDiv` lemma for multivariate Gaussians (no `klDiv_gaussian`-style decl found).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "KL divergence between diagonal normal and standard normal",
+      "anchor": {
+        "section": "Multivariate normal distributions",
+        "snippet": "A special case, and a common quantity in variational inference"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib decl computing the KL divergence between a diagonal normal and the standard normal.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "KL divergence between two univariate normals",
+      "anchor": {
+        "section": "Multivariate normal distributions",
+        "snippet": "For two univariate normal distributions p and q the above simplifies to"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Despite Mathlib having `gaussianReal`, no closed-form `klDiv` between two univariate normals is recorded.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "KL divergence between co-centered normals",
+      "anchor": {
+        "section": "Multivariate normal distributions",
+        "snippet": "In the case of co-centered normal distributions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib lemma for the KL divergence between co-centered multivariate normals.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "KL divergence between uniform distributions",
+      "anchor": {
+        "section": "Uniform distributions",
+        "snippet": "Consider two uniform distributions, with the support of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `klDiv` lemma for `uniformOn`/uniform distributions found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Exponential family",
+      "anchor": {
+        "section": "Exponential family",
+        "snippet": "The exponential family of distribution is given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `ExponentialFamily`/`exponentialFamily` returns no matches in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "KL divergence between two exponential-family distributions",
+      "anchor": {
+        "section": "Exponential family",
+        "snippet": "The KL divergence between two distributions"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no exponential family infrastructure, so no general formula for their KL divergence.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "KL divergence between two Poisson distributions",
+      "anchor": {
+        "section": "Exponential family",
+        "snippet": "for the Poisson distribution with mean"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "`Mathlib.Probability.Distributions.Poisson` has no KL divergence computation between Poissons.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "KL divergence between two unit-variance normals",
+      "anchor": {
+        "section": "Exponential family",
+        "snippet": "for a normal distribution with unit variance"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `klDiv` lemma for unit-variance normals exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "KL divergence between a normal and a Poisson",
+      "anchor": {
+        "section": "Exponential family",
+        "snippet": "As final example, the divergence between a normal distribution with unit variance"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No mixed normal/Poisson KL divergence example is recorded in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Gibbs' inequality (non-negativity)",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Relative entropy is always non-negative"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InformationTheory.integral_llr_add_sub_measure_univ_nonneg",
+        "module": "Mathlib.InformationTheory.KullbackLeibler.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Explicitly labeled `**Gibbs' inequality**` in the source, this lemma proves nonnegativity of the integral form of `klDiv`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Invariance under parameter transformations",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Relative entropy remains well-defined for continuous distributions, and furthermore is invariant under parameter transformations"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `klDiv_map` or measurable-equivalence-invariance lemma for `klDiv` was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Additivity for independent distributions",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "Relative entropy is additive for independent distributions"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "InformationTheory.klDiv_compProd_eq_add",
+        "module": "Mathlib.InformationTheory.KullbackLeibler.ChainRule",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib's chain rule for composition-products specializes to additivity for product (independent) measures, but no direct `klDiv (μ ⊗ ν) (μ' ⊗ ν')` decomposition is stated.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Convexity in the pair of probability measures",
+      "anchor": {
+        "section": "Properties",
+        "snippet": "is convex in the pair of probability measures"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `convexOn`/joint convexity lemma for `klDiv` was found via grep or loogle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Fisher information metric theorem",
+      "anchor": {
+        "section": "Fisher information metric theorem",
+        "snippet": "There is an associated theorem."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Fisher information metric infrastructure exists in Mathlib (grep returns no matches).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pinsker's inequality",
+      "anchor": {
+        "section": "Relation to metrics",
+        "snippet": "Pinsker's inequality entails that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Pinsker` in Mathlib returns no matches.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Quantum relative entropy",
+      "anchor": {
+        "section": "Quantum information theory",
+        "snippet": "For density matrices P and Q on a Hilbert space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No quantum relative entropy formalization exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Jeffreys divergence (symmetrised KL)",
+      "anchor": {
+        "section": "Symmetrised divergence",
+        "snippet": "Kullback & Leibler (1951) also considered the symmetrized function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Jeffrey` in Mathlib returns no matches.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Jensen–Shannon divergence",
+      "anchor": {
+        "section": "Symmetrised divergence",
+        "snippet": "gives the Jensen–Shannon divergence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `JensenShannon` in Mathlib returns no matches.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Bretagnolle–Huber bound",
+      "anchor": {
+        "section": "Relationship to other probability-distance measures",
+        "snippet": "an alternative bound can be used, due to Bretagnolle and Huber"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Bretagnolle` in Mathlib returns no matches.",
+      "provenance": "ai"
+    }
+  ]
+}

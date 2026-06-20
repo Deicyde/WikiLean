@@ -1,0 +1,89 @@
+{
+  "slug": "Stochastic",
+  "wikipedia_title": "Stochastic",
+  "display_title": "Stochastic",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Stochastic (property)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "is the property of being well-described by a random probability distribution"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The informal property of being random/probabilistic is not a single Mathlib declaration — Mathlib formalizes specific probabilistic structures (measures, kernels, processes) rather than a blanket 'stochastic' predicate.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Stochastic process (Khinchin)",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "the first mathematical definition of a stochastic process as a family of random variables indexed by the real line"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.IsKolmogorovProcess",
+        "module": "Mathlib.Probability.Process.Kolmogorov",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib treats stochastic processes informally as functions `T → Ω → E` and has predicates like `IsKolmogorovProcess` and `MeasureTheory.Filtration` over them, but no standalone `StochasticProcess` definition matching Khinchin's general formulation.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Stochastic matrix / Markov process",
+      "anchor": {
+        "section": "Mathematics",
+        "snippet": "a stochastic matrix , which describes a stochastic process known as a Markov process"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Matrix.rowStochastic",
+        "module": "Mathlib.LinearAlgebra.Matrix.Stochastic",
+        "match_kind": "exact"
+      },
+      "note": "Stochastic matrices are formalized as `Matrix.rowStochastic` (and `doublyStochastic`), and Markov kernels exist via `ProbabilityTheory.IsMarkovKernel`, but the link to a Markov process built from a stochastic matrix is not packaged as one declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Brownian motion as continuous-time stochastic process",
+      "anchor": {
+        "section": "Natural science",
+        "snippet": "One of the simplest continuous-time stochastic processes is Brownian motion"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.BrownianReal.projectiveFamily",
+        "module": "Mathlib.Probability.BrownianMotion.GaussianProjectiveFamily",
+        "match_kind": "special_case"
+      },
+      "note": "Mathlib has the finite-dimensional Gaussian projective family of real Brownian motion in `Mathlib.Probability.BrownianMotion`, but the continuous-time Brownian motion process itself is not yet constructed as a single decl.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Monte Carlo method",
+      "anchor": {
+        "section": "Physics",
+        "snippet": "The Monte Carlo method is a stochastic method"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib declaration contains 'MonteCarlo' or formalizes the Monte Carlo numerical method.",
+      "provenance": "ai"
+    }
+  ]
+}

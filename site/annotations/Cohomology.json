@@ -1,0 +1,697 @@
+{
+  "slug": "Cohomology",
+  "wikipedia_title": "Cohomology",
+  "display_title": "Cohomology",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "example",
+      "label": "de Rham cohomology of the circle",
+      "anchor": {
+        "section": "Example",
+        "snippet": "A simple example is the de Rham cohomology of the circle."
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no de Rham cohomology of manifolds (the only `deRham` hits are in `Mathlib.RingTheory.Perfectoid.BDeRham`, an unrelated p-adic period ring).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cochain complex and cohomology group",
+      "anchor": {
+        "section": "Cochains and coboundaries",
+        "snippet": "Cohomology is often expressed by a cochain complex"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CochainComplex",
+        "module": "Mathlib.Algebra.Homology.HomologicalComplex",
+        "match_kind": "exact"
+      },
+      "note": "`CochainComplex` is defined in `Mathlib.Algebra.Homology.HomologicalComplex` and `HomologicalComplex.homology` computes the cohomology groups.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cocycles, coboundaries, cohomology classes",
+      "anchor": {
+        "section": "Cochains and coboundaries",
+        "snippet": "are called cocycles"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CochainComplex.HomComplex.Cocycle",
+        "module": "Mathlib.Algebra.Homology.HomotopyCategory.HomComplex",
+        "match_kind": "exact"
+      },
+      "note": "Cocycles are defined as `CochainComplex.HomComplex.Cocycle`, with `HomologicalComplex.cycles`/`homology` providing the general cycles, boundaries, and cohomology-class machinery.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Singular cohomology",
+      "anchor": {
+        "section": "Singular cohomology",
+        "snippet": "the definition of singular cohomology starts with the singular chain complex"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "AlgebraicTopology.singularHomologyFunctor",
+        "module": "Mathlib.AlgebraicTopology.SingularHomology.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The singular chain complex and singular homology functor are formalized, but the dual cochain-complex/cohomology version is not exposed under a `SingularCohomology` name.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Homotopy invariance of cohomology",
+      "anchor": {
+        "section": "Singular cohomology",
+        "snippet": "Two homotopic maps"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopCat.Homotopy.congr_homologyMap_singularChainComplexFunctor",
+        "module": "Mathlib.AlgebraicTopology.SingularHomology.HomotopyInvariance",
+        "match_kind": "exact"
+      },
+      "note": "Homotopic continuous maps induce equal maps on singular homology, proved in the singular homology homotopy-invariance file.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Mayer–Vietoris long exact sequence",
+      "anchor": {
+        "section": "Singular cohomology",
+        "snippet": "The Mayer–Vietoris sequence is an important computational tool"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "CategoryTheory.GrothendieckTopology.MayerVietorisSquare.sequence_exact",
+        "module": "Mathlib.CategoryTheory.Sites.SheafCohomology.MayerVietoris",
+        "match_kind": "generalization"
+      },
+      "note": "Mayer–Vietoris exists for sheaf cohomology via Mayer–Vietoris squares, but the topological singular cohomology version is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Relative cohomology long exact sequence",
+      "anchor": {
+        "section": "Singular cohomology",
+        "snippet": "There are relative cohomology groups"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TopPair.HomologyPretheory",
+        "module": "Mathlib.AlgebraicTopology.EilenbergSteenrod",
+        "match_kind": "generalization"
+      },
+      "note": "The `HomologyPretheory` structure axiomatizes relative homology with boundary maps δ, but no concrete relative singular cohomology long exact sequence is proved.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Universal coefficient theorem",
+      "anchor": {
+        "section": "Singular cohomology",
+        "snippet": "The universal coefficient theorem describes cohomology in terms of homology"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `universalCoefficient`/UCT statement found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Vanishing of cohomology above dimension",
+      "anchor": {
+        "section": "Singular cohomology",
+        "snippet": "is a topological manifold or a CW complex"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalized statement about vanishing of H^i above the dimension of a manifold or CW complex was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Finite generation of cohomology for compact manifolds",
+      "anchor": {
+        "section": "Singular cohomology",
+        "snippet": "is a compact manifold (possibly with boundary)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no theorem asserting finite generation of singular cohomology of compact manifolds.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cup product",
+      "anchor": {
+        "section": "Singular cohomology",
+        "snippet": "there is a bilinear map , called the cup product"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep and loogle for `cup`/`cupProduct` found nothing related to cohomology cup products.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Graded-commutativity of cup product",
+      "anchor": {
+        "section": "Singular cohomology",
+        "snippet": "It is graded-commutative in the sense that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No cup product is formalized in Mathlib, hence no graded-commutativity lemma.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Pullback is a homomorphism of graded algebras",
+      "anchor": {
+        "section": "Singular cohomology",
+        "snippet": "For any continuous map"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a cohomology ring, the statement that f* is a graded-algebra map is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cup product as intersection of submanifolds",
+      "anchor": {
+        "section": "Singular cohomology",
+        "snippet": "the cup product describes the intersection of submanifolds"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of cup product as intersection of submanifolds in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Thom's pseudomanifold representation",
+      "anchor": {
+        "section": "Singular cohomology",
+        "snippet": "every integral cohomology class on a manifold can be represented by a"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Thom's pseudomanifold representability theorem is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "de Rham's theorem",
+      "anchor": {
+        "section": "Singular cohomology",
+        "snippet": "de Rham's theorem says that the singular cohomology"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib lacks de Rham cohomology of manifolds and hence the comparison with singular cohomology.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cohomology ring of a point",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The cohomology ring of a point is the ring"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No cohomology ring is formalized; only `singularHomologyFunctor` of disconnected/point spaces gives the group, not the ring structure.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cohomology ring of the sphere",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the cohomology ring of the sphere"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No formalization of H*(S^n) as a graded ring was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cohomology ring of the torus",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The cohomology ring of the torus"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cohomology rings are absent from Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Künneth formula",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "the Künneth formula gives that the cohomology ring of the product space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep for `Kunneth`/`Künneth` found no Mathlib formalization.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cohomology ring of real projective space",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The cohomology ring of real projective space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cohomology ring of RP^n is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cohomology ring of complex projective space",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The cohomology ring of complex projective space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cohomology ring of CP^n is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Cohomology ring of a closed oriented surface",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "The cohomology ring of the closed oriented surface"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cohomology ring of closed oriented surfaces is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Odd-degree classes square to zero (over 1/2-rings)",
+      "anchor": {
+        "section": "Examples",
+        "snippet": "graded-commutativity of the cohomology ring implies that"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Without a cohomology ring/cup product, this consequence of graded-commutativity is not present.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Cup product from the diagonal map",
+      "anchor": {
+        "section": "The diagonal",
+        "snippet": "The cup product on cohomology can be viewed as coming from the diagonal map"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No diagonal-map definition of cup product on topological cohomology is in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "External (cross) product",
+      "anchor": {
+        "section": "The diagonal",
+        "snippet": "there is an external product (or cross product ) cohomology class"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Only unrelated `crossProduct`/`externalProduct` definitions exist (linear algebra, monoidal categories); no cohomological cross product.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Poincaré duality (self-duality of cohomology ring)",
+      "anchor": {
+        "section": "Poincaré duality",
+        "snippet": "the cohomology ring of a closed oriented manifold is self-dual in a strong sense"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Poincaré duality theorem (no `Poincare`/`PoincareDuality` decl on manifolds).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Euler class of an oriented vector bundle",
+      "anchor": {
+        "section": "Characteristic classes",
+        "snippet": "An oriented real vector bundle"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `EulerClass`/`eulerClass` decl exists for oriented vector bundles in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Eilenberg–MacLane space",
+      "anchor": {
+        "section": "Eilenberg–MacLane spaces",
+        "snippet": "Such a space is called an Eilenberg–MacLane space"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep and loogle for `EilenbergMacLane` returned nothing.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Eilenberg–MacLane spaces classify cohomology",
+      "anchor": {
+        "section": "Eilenberg–MacLane spaces",
+        "snippet": "it is a classifying space for cohomology"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Eilenberg–MacLane spaces and their representability of cohomology are not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "First cohomology classifies principal A-bundles",
+      "anchor": {
+        "section": "Eilenberg–MacLane spaces",
+        "snippet": "There is a related description of the first cohomology"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No statement classifying principal bundles via H^1(X;A) was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cap product",
+      "anchor": {
+        "section": "Cap product",
+        "snippet": "the cap product is a bilinear map"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `capProduct`/`CapProduct` declaration exists in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fundamental class and Poincaré duality via cap product",
+      "anchor": {
+        "section": "Cap product",
+        "snippet": "A closed oriented manifold X of dimension n has a fundamental class"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `FundamentalClass` of a closed oriented manifold is formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Sheaf cohomology as right derived functors",
+      "anchor": {
+        "section": "Sheaf cohomology",
+        "snippet": "Grothendieck defined sheaf cohomology groups to be the right derived functors"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Sheaf.H",
+        "module": "Mathlib.CategoryTheory.Sites.SheafCohomology.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Sheaf.H F n` is defined as `Ext` from the constant sheaf ℤ to F, equivalent to the right-derived-functor definition for sites with enough injectives.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Sheaf cohomology as Ext",
+      "anchor": {
+        "section": "Sheaf cohomology",
+        "snippet": "Sheaf cohomology can be identified with a type of Ext group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.Sheaf.H",
+        "module": "Mathlib.CategoryTheory.Sites.SheafCohomology.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Sheaf.H` is by definition an `Ext`-group, so the identification is built in.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "l-adic cohomology",
+      "anchor": {
+        "section": "Cohomology of varieties",
+        "snippet": "This is defined as the projective limit"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "AlgebraicGeometry.Scheme.EllAdicCohomology",
+        "module": "Mathlib.AlgebraicGeometry.Sites.ElladicCohomology",
+        "match_kind": "exact"
+      },
+      "note": "Defined as pro-étale sheaf cohomology with coefficients in ℤ_ℓ, equivalent (mod the classical comparison) to the projective limit definition.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Comparison of Betti and l-adic dimensions",
+      "anchor": {
+        "section": "Cohomology of varieties",
+        "snippet": "then there is an equality of dimensions for the Betti cohomology"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Comparison between Betti and ℓ-adic cohomology dimensions is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Blowup long exact sequence",
+      "anchor": {
+        "section": "Cohomology of varieties",
+        "snippet": "Another useful computational tool is the blowup sequence"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No blowup long exact sequence in cohomology found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Eilenberg–Steenrod axioms",
+      "anchor": {
+        "section": "Axioms and generalized cohomology theories",
+        "snippet": "there is a list of properties known as the Eilenberg–Steenrod axioms"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TopPair.HomologyPretheory",
+        "module": "Mathlib.AlgebraicTopology.EilenbergSteenrod",
+        "match_kind": "generalization"
+      },
+      "note": "`HomologyPretheory` bundles the data of a (relative) homology theory with boundary maps and a homotopy-invariance typeclass `IsHomotopyInvariant`; the full axiom suite (exactness, excision, dimension) is not yet packaged.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generalized homology theory",
+      "anchor": {
+        "section": "Axioms and generalized cohomology theories",
+        "snippet": "a generalized homology theory is a sequence of functors"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "TopPair.HomologyPretheory",
+        "module": "Mathlib.AlgebraicTopology.EilenbergSteenrod",
+        "match_kind": "generalization"
+      },
+      "note": "`HomologyPretheory` is parametrized by a `ComplexShape` and so models the sequence-of-functors data of a generalized homology theory, though without the dimension axiom.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Generalized cohomology theory",
+      "anchor": {
+        "section": "Axioms and generalized cohomology theories",
+        "snippet": "a generalized cohomology theory is a sequence of contravariant functors"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The dual `CohomologyPretheory` (contravariant) is not present in Mathlib; only the covariant `HomologyPretheory` exists.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Brown representability for (co)homology theories",
+      "anchor": {
+        "section": "Axioms and generalized cohomology theories",
+        "snippet": "every generalized homology theory comes from a spectrum"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Brown representability is not formalized; no `brownRepresentability` decl was found.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Multiplicative cohomology theory",
+      "anchor": {
+        "section": "Axioms and generalized cohomology theories",
+        "snippet": "A cohomology theory E is said to be multiplicative"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Multiplicative (ring) structure on generalized cohomology theories is not formalized.",
+      "provenance": "ai"
+    }
+  ]
+}

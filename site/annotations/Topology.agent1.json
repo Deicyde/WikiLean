@@ -11,7 +11,15 @@
         "section": "(Lead)",
         "snippet": "A topological space is a set endowed with a structure, called a topology"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace",
+        "module": "Mathlib.Topology.Defs.Basic",
+        "match_kind": "exact"
+      },
+      "note": "The `TopologicalSpace` class endows a type with open sets satisfying the standard axioms.",
+      "provenance": "ai-agent1",
+      "id": "fda7a1a3c55c"
     },
     {
       "kind": "definition",
@@ -20,7 +28,15 @@
         "section": "(Lead)",
         "snippet": "A property that is invariant under such deformations is a topological property"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no decl capturing the meta-notion of a homeomorphism-invariant property as such.",
+      "provenance": "ai-agent1",
+      "id": "83b90cdbdc5a"
     },
     {
       "kind": "example",
@@ -29,7 +45,15 @@
         "section": "(Lead)",
         "snippet": "the dimension , which allows distinguishing between a line and a surface"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "smallInductiveDimension",
+        "module": "Mathlib.Topology.SmallInductiveDimension",
+        "match_kind": null
+      },
+      "note": "Dimension as a topological invariant is partially captured by `smallInductiveDimension`, but the general list of invariants is not a decl.",
+      "provenance": "ai-agent1",
+      "id": "d5a03cfa23c6"
     },
     {
       "kind": "theorem",
@@ -38,7 +62,15 @@
         "section": "Motivation",
         "snippet": "it was impossible to find a route through the town"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "SimpleGraph.Walk.IsEulerian",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Trails",
+        "match_kind": null
+      },
+      "note": "Mathlib has the `IsEulerian` infrastructure but the actual Königsberg theorem (`Konigsberg.not_isEulerian`) lives in Archive, not Mathlib/.",
+      "provenance": "ai-agent1",
+      "id": "cce32a36c57f"
     },
     {
       "kind": "theorem",
@@ -47,7 +79,15 @@
         "section": "Motivation",
         "snippet": "the hairy ball theorem of algebraic topology says that"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The hairy ball theorem appears only as an unproven title in docs/1000.yaml with no Mathlib decl.",
+      "provenance": "ai-agent1",
+      "id": "170ab9453491"
     },
     {
       "kind": "definition",
@@ -56,7 +96,15 @@
         "section": "Motivation",
         "snippet": "two spaces are homeomorphic if one can be deformed into the other without cutting or gluing"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Homeomorph",
+        "module": "Mathlib.Topology.Homeomorph.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Homeomorph` is a continuous equivalence with continuous inverse, the rigorous form of this idea.",
+      "provenance": "ai-agent1",
+      "id": "90653434dd85"
     },
     {
       "kind": "example",
@@ -65,7 +113,15 @@
         "section": "Motivation",
         "snippet": "a topologist cannot distinguish a coffee mug from a doughnut"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This informal illustration of a homeomorphism has no corresponding Mathlib declaration.",
+      "provenance": "ai-agent1",
+      "id": "edc9c8f68312"
     },
     {
       "kind": "definition",
@@ -74,7 +130,15 @@
         "section": "Motivation",
         "snippet": "two objects are homotopy equivalent if they both result from"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ContinuousMap.HomotopyEquiv",
+        "module": "Mathlib.Topology.Homotopy.Equiv",
+        "match_kind": "exact"
+      },
+      "note": "`ContinuousMap.HomotopyEquiv` is a pair of maps whose composites are homotopic to the identities.",
+      "provenance": "ai-agent1",
+      "id": "7b0e03acb547"
     },
     {
       "kind": "theorem",
@@ -83,6 +147,30 @@
         "section": "History",
         "snippet": "This led to his polyhedron formula"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The polyhedron formula V−E+F=2 appears only as an unproven title in docs/100.yaml with no decl.",
+      "provenance": "ai-agent1",
+      "id": "6353a9792ce3"
+    },
+    {
+      "kind": "definition",
+      "label": "Hausdorff space",
+      "anchor": {
+        "section": "History",
+        "snippet": "what is now called a Hausdorff space"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "T2Space",
+        "module": "Mathlib.Topology.Separation.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`T2Space` is the Mathlib formalization of the Hausdorff separation axiom (distinct points have disjoint neighborhoods).",
       "provenance": "ai-agent1"
     },
     {
@@ -92,7 +180,15 @@
         "section": "Topologies on sets",
         "snippet": "is called a topology on X if"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace",
+        "module": "Mathlib.Topology.Defs.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`TopologicalSpace` is exactly a collection of open sets closed under the topology axioms.",
+      "provenance": "ai-agent1",
+      "id": "7d7d3aee77ba"
     },
     {
       "kind": "definition",
@@ -101,7 +197,15 @@
         "section": "Topologies on sets",
         "snippet": "is called a topological space"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace",
+        "module": "Mathlib.Topology.Defs.Basic",
+        "match_kind": "exact"
+      },
+      "note": "A type with a `TopologicalSpace` instance is precisely the pair (X, τ).",
+      "provenance": "ai-agent1",
+      "id": "9b6aab475a14"
     },
     {
       "kind": "definition",
@@ -110,7 +214,15 @@
         "section": "Topologies on sets",
         "snippet": "are called open sets in X"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsOpen",
+        "module": "Mathlib.Topology.Defs.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsOpen s` is the predicate that `s` belongs to the topology.",
+      "provenance": "ai-agent1",
+      "id": "d1287808daf1"
     },
     {
       "kind": "definition",
@@ -119,7 +231,15 @@
         "section": "Topologies on sets",
         "snippet": "is said to be closed if its complement is in"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsClosed",
+        "module": "Mathlib.Topology.Defs.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsClosed s` is defined by `IsOpen sᶜ`, the complement being open.",
+      "provenance": "ai-agent1",
+      "id": "853ae8f28789"
     },
     {
       "kind": "definition",
@@ -128,7 +248,15 @@
         "section": "Topologies on sets",
         "snippet": "both (a clopen set"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsClopen",
+        "module": "Mathlib.Topology.Defs.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsClopen s` is defined as `IsClosed s ∧ IsOpen s`.",
+      "provenance": "ai-agent1",
+      "id": "d7d5bd8292d7"
     },
     {
       "kind": "definition",
@@ -137,7 +265,15 @@
         "section": "Topologies on sets",
         "snippet": "is called an open neighborhood of"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "TopologicalSpace.OpenNhds",
+        "module": "Mathlib.Topology.Category.TopCat.OpenNhds",
+        "match_kind": "exact"
+      },
+      "note": "`OpenNhds x` is the type of open sets containing the point `x`.",
+      "provenance": "ai-agent1",
+      "id": "37f7f2f8893b"
     },
     {
       "kind": "definition",
@@ -146,6 +282,30 @@
         "section": "Continuous functions and homeomorphisms",
         "snippet": "called continuous if the inverse image of any open set is open"
       },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Continuous",
+        "module": "Mathlib.Topology.Defs.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Continuous f` requires the preimage of every open set to be open.",
+      "provenance": "ai-agent1",
+      "id": "5f75f96dc64e"
+    },
+    {
+      "kind": "proposition",
+      "label": "Topological continuity agrees with ε-δ continuity on ℝ",
+      "anchor": {
+        "section": "Continuous functions and homeomorphisms",
+        "snippet": "this definition of continuous is equivalent to the definition of continuous in calculus"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.continuous_iff",
+        "module": "Mathlib.Topology.MetricSpace.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`Metric.continuous_iff` expresses topological continuity in a metric space as the standard ε-δ condition, recovering the calculus definition for ℝ → ℝ.",
       "provenance": "ai-agent1"
     },
     {
@@ -155,7 +315,15 @@
         "section": "Continuous functions and homeomorphisms",
         "snippet": "the function is called a homeomorphism and the domain of the function is said to be homeomorphic to the range"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Homeomorph",
+        "module": "Mathlib.Topology.Homeomorph.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Homeomorph` is a bijection that is continuous with continuous inverse.",
+      "provenance": "ai-agent1",
+      "id": "b49397d2e72d"
     },
     {
       "kind": "example",
@@ -164,7 +332,15 @@
         "section": "Continuous functions and homeomorphisms",
         "snippet": "The cube and the sphere are homeomorphic, as are the coffee cup and the doughnut"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib decl constructs a homeomorphism between a cube and a sphere.",
+      "provenance": "ai-agent1",
+      "id": "439047ac0afd"
     },
     {
       "kind": "proposition",
@@ -173,7 +349,15 @@
         "section": "Continuous functions and homeomorphisms",
         "snippet": "the sphere is not homeomorphic to the doughnut"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no result distinguishing the 2-sphere from the torus up to homeomorphism.",
+      "provenance": "ai-agent1",
+      "id": "4d283ce9e0b5"
     },
     {
       "kind": "definition",
@@ -182,7 +366,15 @@
         "section": "Manifolds",
         "snippet": "A manifold is a topological space that resembles Euclidean space near each point"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ChartedSpace",
+        "module": "Mathlib.Geometry.Manifold.ChartedSpace",
+        "match_kind": "generalization"
+      },
+      "note": "`ChartedSpace H M` formalizes a space locally modeled on `H`, generalizing the Euclidean model space.",
+      "provenance": "ai-agent1",
+      "id": "bd4e9515a4a2"
     },
     {
       "kind": "example",
@@ -191,7 +383,15 @@
         "section": "Manifolds",
         "snippet": "Lines and circles , but not figure eights , are one-dimensional manifolds"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This illustrative contrast of 1-manifolds versus a figure eight has no dedicated Mathlib decl.",
+      "provenance": "ai-agent1",
+      "id": "7f43f7923226"
     },
     {
       "kind": "definition",
@@ -200,7 +400,15 @@
         "section": "Manifolds",
         "snippet": "Two-dimensional manifolds are also called surfaces"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ChartedSpace",
+        "module": "Mathlib.Geometry.Manifold.ChartedSpace",
+        "match_kind": null
+      },
+      "note": "Surfaces are expressible as `ChartedSpace` over a 2-dimensional model, but there is no dedicated `Surface` definition.",
+      "provenance": "ai-agent1",
+      "id": "8a022ef36202"
     },
     {
       "kind": "example",
@@ -209,7 +417,15 @@
         "section": "Manifolds",
         "snippet": "Examples include the plane , the sphere , and the torus"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ChartedSpace",
+        "module": "Mathlib.Geometry.Manifold.ChartedSpace",
+        "match_kind": null
+      },
+      "note": "The sphere and plane are formalized as manifolds via `ChartedSpace`, but this list of surface examples is not itself a decl.",
+      "provenance": "ai-agent1",
+      "id": "d936608080fc"
     },
     {
       "kind": "definition",
@@ -218,7 +434,15 @@
         "section": "General topology",
         "snippet": "General topology is the branch of topology dealing with the basic set-theoretic definitions"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This names a subfield of mathematics rather than a formalizable statement.",
+      "provenance": "ai-agent1",
+      "id": "7eeeba6712e0"
     },
     {
       "kind": "definition",
@@ -227,7 +451,15 @@
         "section": "General topology",
         "snippet": "Compact sets are those that can be covered by finitely many sets of arbitrarily small size"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsCompact",
+        "module": "Mathlib.Topology.Defs.Filter",
+        "match_kind": "exact"
+      },
+      "note": "`IsCompact` formalizes compactness (every open cover has a finite subcover) via filters.",
+      "provenance": "ai-agent1",
+      "id": "bb0823c721f2"
     },
     {
       "kind": "definition",
@@ -236,7 +468,15 @@
         "section": "General topology",
         "snippet": "Connected sets are sets that cannot be divided into two pieces that are far apart"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "IsConnected",
+        "module": "Mathlib.Topology.Connected.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`IsConnected` captures that a nonempty set admits no separation into two disjoint open pieces.",
+      "provenance": "ai-agent1",
+      "id": "4923257e85a5"
     },
     {
       "kind": "definition",
@@ -245,7 +485,15 @@
         "section": "General topology",
         "snippet": "Metric spaces are an important class of topological spaces where the distance between any two points is defined by a function called a metric"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MetricSpace",
+        "module": "Mathlib.Topology.MetricSpace.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`MetricSpace` endows a type with a distance function satisfying the metric axioms.",
+      "provenance": "ai-agent1",
+      "id": "f7fdae01fb18"
     },
     {
       "kind": "definition",
@@ -254,7 +502,15 @@
         "section": "General topology",
         "snippet": "an open set is a union of open disks"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Metric.isOpen_iff",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
+        "match_kind": "special_case"
+      },
+      "note": "`Metric.isOpen_iff` characterizes open sets as those containing a ball around each point.",
+      "provenance": "ai-agent1",
+      "id": "9f85e8d89a29"
     },
     {
       "kind": "definition",
@@ -263,6 +519,30 @@
         "section": "Algebraic topology",
         "snippet": "Algebraic topology is a branch of mathematics that uses tools from algebra to study topological spaces"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This names a subfield rather than a formalizable statement.",
+      "provenance": "ai-agent1",
+      "id": "e7462fd8f0f1"
+    },
+    {
+      "kind": "definition",
+      "label": "Homotopy groups",
+      "anchor": {
+        "section": "Algebraic topology",
+        "snippet": "The most important of these invariants are homotopy groups"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "HomotopyGroup",
+        "module": "Mathlib.AlgebraicTopology.HomotopyGroup",
+        "match_kind": "exact"
+      },
+      "note": "`HomotopyGroup n X x` is the n-th homotopy group of a pointed space, formalized as the group of based homotopy classes of maps from the n-cube.",
       "provenance": "ai-agent1"
     },
     {
@@ -272,7 +552,15 @@
         "section": "Algebraic topology",
         "snippet": "any subgroup of a free group is again a free group"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "subgroupIsFreeOfIsFree",
+        "module": "Mathlib.GroupTheory.FreeGroup.NielsenSchreier",
+        "match_kind": "exact"
+      },
+      "note": "The Nielsen–Schreier theorem is the instance `subgroupIsFreeOfIsFree`.",
+      "provenance": "ai-agent1",
+      "id": "b94202303521"
     },
     {
       "kind": "definition",
@@ -281,7 +569,15 @@
         "section": "Differential topology",
         "snippet": "Differential topology is the field dealing with differentiable functions on differentiable manifolds"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This names a subfield rather than a formalizable statement.",
+      "provenance": "ai-agent1",
+      "id": "0ecf17fa9cb2"
     },
     {
       "kind": "definition",
@@ -290,7 +586,15 @@
         "section": "Geometric topology",
         "snippet": "Geometric topology is a branch of topology that primarily focuses on low-dimensional manifolds"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This names a subfield rather than a formalizable statement.",
+      "provenance": "ai-agent1",
+      "id": "d3dac8b49aa8"
     },
     {
       "kind": "theorem",
@@ -299,7 +603,15 @@
         "section": "Geometric topology",
         "snippet": "every surface admits a constant curvature metric"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The uniformization theorem appears only as an unproven title in docs/1000.yaml with no decl.",
+      "provenance": "ai-agent1",
+      "id": "b312b1f31cd5"
     },
     {
       "kind": "theorem",
@@ -308,7 +620,15 @@
         "section": "Geometric topology",
         "snippet": "every 3-manifold can be cut into pieces, each of which has one of eight possible geometries"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib declaration formalizes Thurston's geometrization theorem.",
+      "provenance": "ai-agent1",
+      "id": "22ceba129f96"
     },
     {
       "kind": "definition",
@@ -317,7 +637,15 @@
         "section": "Generalizations",
         "snippet": "In pointless topology one considers instead the lattice of open sets as the basic notion of the theory"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Order.Frame",
+        "module": "Mathlib.Order.CompleteBooleanAlgebra",
+        "match_kind": null
+      },
+      "note": "The lattice-of-opens abstraction is formalized as `Order.Frame` (locales), but pointless topology as a field is not a single decl.",
+      "provenance": "ai-agent1",
+      "id": "f356e44be830"
     },
     {
       "kind": "definition",
@@ -326,7 +654,15 @@
         "section": "Generalizations",
         "snippet": "Grothendieck topologies are structures defined on arbitrary categories that allow the definition of sheaves on those categories"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.GrothendieckTopology",
+        "module": "Mathlib.CategoryTheory.Sites.Grothendieck",
+        "match_kind": "exact"
+      },
+      "note": "`GrothendieckTopology` is defined as a structure assigning sieves to objects of a category.",
+      "provenance": "ai-agent1",
+      "id": "76f839dcf87d"
     },
     {
       "kind": "definition",
@@ -335,7 +671,15 @@
         "section": "Computer science",
         "snippet": "Topological data analysis uses techniques from algebraic topology to determine the large-scale structure of a set"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib declaration formalizes topological data analysis or persistent homology.",
+      "provenance": "ai-agent1",
+      "id": "bd7622f7c130"
     },
     {
       "kind": "definition",
@@ -344,7 +688,15 @@
         "section": "Physics",
         "snippet": "A topological quantum field theory (or topological field theory or TQFT) is a quantum field theory that computes topological invariants"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Mathlib declaration defines a topological quantum field theory.",
+      "provenance": "ai-agent1",
+      "id": "69c9e2a07b94"
     },
     {
       "kind": "definition",
@@ -353,6 +705,30 @@
         "section": "Robotics",
         "snippet": "The possible positions of a robot can be described by a manifold called configuration space"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no robotics configuration-space manifold definition (only an unrelated symbolic-dynamics usage of the term).",
+      "provenance": "ai-agent1",
+      "id": "3b6816b256b6"
+    },
+    {
+      "kind": "example",
+      "label": "Eulerian path in modular fiber art",
+      "anchor": {
+        "section": "Fiber art",
+        "snippet": "This process is an application of the Eulerian path"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SimpleGraph.Walk.IsEulerian",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Trails",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes Eulerian walks via `SimpleGraph.Walk.IsEulerian`; the fiber-art application is an informal use of this combinatorial notion.",
       "provenance": "ai-agent1"
     }
   ]

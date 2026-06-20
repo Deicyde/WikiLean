@@ -1,0 +1,489 @@
+{
+  "slug": "Entropy_information_theory",
+  "wikipedia_title": "Entropy (information theory)",
+  "display_title": "Entropy (information theory)",
+  "schema_version": 3,
+  "annotation_style": "theorem_article",
+  "annotations": [
+    {
+      "kind": "definition",
+      "label": "Shannon entropy of a discrete random variable (lead)",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the entropy of a random variable quantifies the average level of uncertainty"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.negMulLog",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.NegMulLog",
+        "match_kind": "invocation"
+      },
+      "note": "Mathlib provides the per-summand function `Real.negMulLog` (x ↦ -x log x) used to build Shannon entropy, but no general `H(X) = ∑ -p_i log p_i` for an arbitrary discrete random variable.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Information content / self-information",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "The information content , also called the surprisal or self-information, of an event"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `selfInformation`/`surprisal` declaration was found in Mathlib (loogle returns 0 hits).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Entropy of a biased coin",
+      "anchor": {
+        "section": "Introduction",
+        "snippet": "Consider a coin with probability p of landing on heads"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.binEntropy",
+        "module": "Mathlib.Analysis.SpecialFunctions.BinaryEntropy",
+        "match_kind": "exact"
+      },
+      "note": "`Real.binEntropy p` is documented as the Shannon entropy of a Bernoulli random variable with success probability `p`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Variable-length coding of A, B, C, D",
+      "anchor": {
+        "section": "Example",
+        "snippet": "consider the transmission of sequences comprising the 4 characters"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No variable-length/Huffman-style coding example is formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Shannon entropy Η of a discrete random variable",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "Shannon defined the entropy Η (Greek capital letter eta ) of a discrete random variable"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.negMulLog",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.NegMulLog",
+        "match_kind": "invocation"
+      },
+      "note": "Only the summand `Real.negMulLog` (x ↦ -x log x) is defined; the general sum `H(X) = -∑ p(x) log p(x)` over a discrete random variable is not packaged as a standalone declaration.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Convention 0 log_b 0 = 0",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "the value of the corresponding summand 0 log b (0) is taken to be 0"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.negMulLog_zero",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.NegMulLog",
+        "match_kind": "exact"
+      },
+      "note": "`Real.negMulLog_zero : Real.negMulLog 0 = 0` encodes the convention `0·log 0 = 0` used in entropy.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Conditional entropy",
+      "anchor": {
+        "section": "Definition",
+        "snippet": "One may also define the conditional entropy of two variables"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `conditionalEntropy` declaration exists in Mathlib (loogle returns 0 hits).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Surprisal of an event (measure theory)",
+      "anchor": {
+        "section": "Measure theory",
+        "snippet": "Let [MATH] be an event . The surprisal of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No measure-theoretic `surprisal` definition was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Expected surprisal",
+      "anchor": {
+        "section": "Measure theory",
+        "snippet": "The expected surprisal of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `expectedSurprisal`/measure-theoretic Shannon-entropy definition was located in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Entropy of a μ-almost partition",
+      "anchor": {
+        "section": "Measure theory",
+        "snippet": "almost partition is a set family"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `partitionEntropy` definition was found in Mathlib (loogle returns 0 hits).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Entropy of a sigma-algebra and a probability space",
+      "anchor": {
+        "section": "Measure theory",
+        "snippet": "Let [MATH] be a sigma-algebra on"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has topological/dynamical entropy (e.g. `Mathlib.Dynamics.TopologicalEntropy.*`) but no entropy of a sigma-algebra on a probability space.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Coin toss entropy (Bernoulli process)",
+      "anchor": {
+        "section": "Example (2)",
+        "snippet": "Consider tossing a coin with known, not necessarily fair, probabilities"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Real.binEntropy",
+        "module": "Mathlib.Analysis.SpecialFunctions.BinaryEntropy",
+        "match_kind": "exact"
+      },
+      "note": "`Real.binEntropy p = p · log p⁻¹ + (1-p) · log (1-p)⁻¹` is exactly the entropy of a (possibly biased) coin toss.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Shannon's four properties characterizing information",
+      "anchor": {
+        "section": "Characterization",
+        "snippet": "Shannon's solution of the fundamental properties of information"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The axiomatic characterization of Shannon's information measure is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Shannon's characterization: I(p) = -k log p",
+      "anchor": {
+        "section": "Characterization",
+        "snippet": "Shannon discovered that a suitable choice of"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Shannon's uniqueness theorem deriving I(p) = -k log p from the axioms is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Alternative axiomatic characterization (continuity, symmetry, maximum, increasing, additivity)",
+      "anchor": {
+        "section": "Alternative characterization",
+        "snippet": "Another characterization of entropy uses the following properties"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Khinchin-style axiomatic characterization of entropy is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Additivity consequence: entropy of certain outcome is zero",
+      "anchor": {
+        "section": "Discussion",
+        "snippet": "The rule of additivity has the following consequences"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.binEntropy_zero",
+        "module": "Mathlib.Analysis.SpecialFunctions.BinaryEntropy",
+        "match_kind": "special_case"
+      },
+      "note": "Only specialised cases like `Real.binEntropy_zero`/`binEntropy_one` (entropy = 0 for a sure outcome) appear; the general axiomatic-additivity argument is not formalized.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Aczél–Forte–Ng characterization via additivity and subadditivity",
+      "anchor": {
+        "section": "Alternative characterization via additivity and subadditivity",
+        "snippet": "Another succinct axiomatic characterization of Shannon entropy was given by"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Aczél–Forte–Ng characterization of Shannon entropy is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Aczél–Forte–Ng uniqueness",
+      "anchor": {
+        "section": "Discussion (2)",
+        "snippet": "It was shown that any function"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The uniqueness statement from Aczél–Forte–Ng is not in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "proposition",
+      "label": "Further properties of Shannon entropy",
+      "anchor": {
+        "section": "Further properties",
+        "snippet": "The Shannon entropy satisfies the following properties"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.strictConcave_binEntropy",
+        "module": "Mathlib.Analysis.SpecialFunctions.BinaryEntropy",
+        "match_kind": "special_case"
+      },
+      "note": "Concavity/nonnegativity/max-at-uniform-type properties are formalized only for `binEntropy`/`qaryEntropy` (e.g. `Real.strictConcave_binEntropy`, `Real.binEntropy_le_log_two`), not for general Shannon entropy.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Gibbs entropy",
+      "anchor": {
+        "section": "Relationship to thermodynamic entropy",
+        "snippet": "the most general formula for the thermodynamic entropy"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Gibbs entropy declaration was found in Mathlib (loogle returns 0 hits for `Gibbs`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "von Neumann entropy",
+      "anchor": {
+        "section": "Relationship to thermodynamic entropy",
+        "snippet": "the von Neumann entropy introduced by John von Neumann in 1927"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has `VonNeumannAlgebra` machinery but no von Neumann entropy `-Tr(ρ log ρ)` of a density operator.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Boltzmann's equation S = k_B log W",
+      "anchor": {
+        "section": "Relationship to thermodynamic entropy",
+        "snippet": "first made by Boltzmann and expressed by his equation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Boltzmann entropy declaration was found in Mathlib (loogle returns 0 hits for `Boltzmann`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Shannon's source coding theorem",
+      "anchor": {
+        "section": "Data compression",
+        "snippet": "Shannon's source coding theorem states a lossless compression scheme cannot compress messages"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Shannon's source coding theorem is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Differential entropy",
+      "anchor": {
+        "section": "Differential entropy",
+        "snippet": "This is the differential entropy (or continuous entropy)"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No `differentialEntropy` declaration was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Modified differential entropy (limiting density of discrete points)",
+      "anchor": {
+        "section": "Limiting density of discrete points",
+        "snippet": "a modified differential entropy may be written in proper form as"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Jaynes's limiting density of discrete points is not formalized in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Relative entropy (Kullback–Leibler divergence)",
+      "anchor": {
+        "section": "Relative entropy",
+        "snippet": "It is defined as the Kullback–Leibler divergence from the distribution to a reference measure"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "InformationTheory.klDiv",
+        "module": "Mathlib.InformationTheory.KullbackLeibler.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`InformationTheory.klDiv μ ν` is the Kullback–Leibler divergence between two measures, defined via the log-likelihood ratio `MeasureTheory.llr`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Efficiency / normalized entropy",
+      "anchor": {
+        "section": "Efficiency (normalized entropy)",
+        "snippet": "This deficiency in entropy can be expressed as a ratio called efficiency"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No normalized-entropy/efficiency definition was found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Loomis–Whitney inequality (entropy proof)",
+      "anchor": {
+        "section": "Loomis–Whitney inequality",
+        "snippet": "an alternative proof of the Loomis–Whitney inequality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Loomis–Whitney inequality (loogle returns 0 hits for `Loomis`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Shearer's inequality",
+      "anchor": {
+        "section": "Loomis–Whitney inequality",
+        "snippet": "The proof follows as a simple corollary of Shearer's inequality"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no Shearer entropy inequality (loogle returns 0 hits for `Shearer`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Entropy approximation to binomial coefficient",
+      "anchor": {
+        "section": "Approximation to binomial coefficient",
+        "snippet": "For integers 0 < k < n let q = k / n"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No bound `n^{-1} log C(n,k) ≈ H(k/n)` was found (loogle finds no decl combining `choose`/`binomial` with `entropy`).",
+      "provenance": "ai"
+    }
+  ]
+}

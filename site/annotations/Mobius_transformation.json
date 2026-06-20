@@ -20,16 +20,6 @@
       },
       "note": "The action of `GL (Fin 2) K` on `OnePoint K` (extended Riemann sphere) is defined as Möbius/fractional-linear transformations, generalizing the complex case.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "(Lead)",
-          "snippet": "a Möbius transformation of the complex plane is a rational function of the form"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f(z)={\\frac {az+b}{cz+d}}}"
-        }
-      ],
       "id": "52def74d1ecf"
     },
     {
@@ -166,16 +156,6 @@
       },
       "note": "`smul_some_eq_ite` gives the formula `g • k = (a*k+b)/(c*k+d)` for the action of `GL (Fin 2) K` on `OnePoint K`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition",
-          "snippet": "The general form of a Möbius transformation is given by"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f(z)={\\frac {az+b}{cz+d}},}"
-        }
-      ],
       "id": "a594be4c9bb5"
     },
     {
@@ -193,16 +173,6 @@
       },
       "note": "The case where the denominator vanishes is handled by the `if g 1 0 * k + g 1 1 = 0 then ∞` branch in `smul_some_eq_ite`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition",
-          "snippet": "this definition is extended to the whole Riemann sphere by defining"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}f\\left({\\frac {-d}{c}}\\right)&amp;=\\infty ,\\\\f(\\infty )&amp;={\\frac {a}{c}}.\\end{aligned}}}"
-        }
-      ],
       "id": "c2036d104512"
     },
     {
@@ -220,16 +190,6 @@
       },
       "note": "`smul_infty_eq_ite` says `g • ∞ = ∞` precisely when `g 1 0 = 0`, matching the c = 0 extension.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition",
-          "snippet": "If c = 0 , we define"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f(\\infty )=\\infty .}"
-        }
-      ],
       "id": "0cd7416a337a"
     },
     {
@@ -281,16 +241,6 @@
       },
       "note": "Mathlib's framework requires invertibility (`ad - bc ≠ 0`) via `GL (Fin 2) K`; the degenerate-constant case is excluded by construction rather than proven.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Definition",
-          "snippet": "the rational function defined above is a constant"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {az+b}{cz+d}}={\\frac {a}{c}}={\\frac {b}{d}},}"
-        }
-      ],
       "id": "749b317ccbfa"
     },
     {
@@ -342,32 +292,6 @@
       },
       "note": "`fixpointPolynomial g = c X^2 + (d-a) X - b` together with `fixpointPolynomial_aeval_eq_zero_iff` encodes the standard fixed-point quadratic.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Determining the fixed points",
-          "snippet": "The fixed points of the transformation"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f(z)={\\frac {az+b}{cz+d}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle c\\gamma ^{2}-(a-d)\\gamma -b=0\\ ,}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\gamma _{1,2}={\\frac {(a-d)\\pm {\\sqrt {(a-d)^{2}+4bc}}}{2c}}={\\frac {(a-d)\\pm {\\sqrt {\\Delta }}}{2c}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\Delta =(\\operatorname {tr} {\\mathfrak {H}})^{2}-4\\det {\\mathfrak {H}}=(a+d)^{2}-4(ad-bc),}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\mathfrak {H}}={\\begin{pmatrix}a&amp;b\\\\c&amp;d\\end{pmatrix}}}"
-        }
-      ],
       "id": "90c6ee8003f3"
     },
     {
@@ -385,16 +309,6 @@
       },
       "note": "Upper-triangular (c = 0) Möbius transformations are studied in `isParabolic_iff_of_upperTriangular`, but the explicit linearization \"transform becomes affine\" is not isolated as a lemma.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Determining the fixed points",
-          "snippet": "When c = 0 , the quadratic equation degenerates into a linear equation and the transform is linear"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\gamma =-{\\frac {b}{a-d}}.}"
-        }
-      ],
       "id": "21679a930f59"
     },
     {
@@ -412,16 +326,6 @@
       },
       "note": "For SL(2,ℝ) with c = 0, the action on ℍ is decomposed as scaling + translation; the general statement is not isolated.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Determining the fixed points",
-          "snippet": "In this case the transformation will be a simple transformation composed of translations"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle z\\mapsto \\alpha z+\\beta .}"
-        }
-      ],
       "id": "c23d1cd183dd"
     },
     {
@@ -439,16 +343,6 @@
       },
       "note": "`upperRightHom x = [[1,x],[0,1]]` bundles the translation Möbius subgroup as an `AddChar`, capturing this special case.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Determining the fixed points",
-          "snippet": "then both fixed points are at infinity, and the Möbius transformation corresponds to a pure translation"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle z\\mapsto z+\\beta .}"
-        }
-      ],
       "id": "1045915e877a"
     },
     {
@@ -466,16 +360,6 @@
       },
       "note": "No formalization in Mathlib of this topological argument.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Topological proof",
-          "snippet": "Topologically, the fact that (non-identity) Möbius transformations fix 2 points"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\chi ({\\hat {\\mathbb {C} }})=2.}"
-        }
-      ],
       "id": "a4b93ef5b57c"
     },
     {
@@ -544,20 +428,6 @@
       },
       "note": "No conjugacy normal-form theorem for non-parabolic Möbius transformations is present.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Normal form",
-          "snippet": "Every non-parabolic transformation is conjugate to a dilation/rotation"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle z\\mapsto kz}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle g(z)={\\frac {z-\\gamma _{1}}{z-\\gamma _{2}}}}"
-        }
-      ],
       "id": "4b66e8228f76"
     },
     {
@@ -575,16 +445,6 @@
       },
       "note": "The characteristic constant/multiplier of a Möbius transformation is not defined.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Normal form",
-          "snippet": "we can distinguish one of the multipliers"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\mathfrak {H}}(k;\\gamma _{1},\\gamma _{2})={\\mathfrak {H}}(1/k;\\gamma _{2},\\gamma _{1}).}"
-        }
-      ],
       "id": "9d76e4ed974b"
     },
     {
@@ -619,20 +479,6 @@
       },
       "note": "Parabolic matrices are characterized as scalar + nilpotent (`isParabolic_iff_exists`), giving the algebraic content, but conjugacy to a literal translation is not stated.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Normal form",
-          "snippet": "In the parabolic case there is only one fixed point"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle g(z)={\\frac {1}{z-\\gamma }}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle gfg^{-1}(z)=z+\\beta \\,.}"
-        }
-      ],
       "id": "12852f99645a"
     },
     {
@@ -650,16 +496,6 @@
       },
       "note": "Translation length is not defined in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Normal form",
-          "snippet": "Here, β is called the translation length"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {1}{f(z)-\\gamma }}={\\frac {1}{z-\\gamma }}+\\beta .}"
-        }
-      ],
       "id": "6c11b07b0a43"
     },
     {
@@ -694,16 +530,6 @@
       },
       "note": "Inverse pole is not defined.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Poles of the transformation",
-          "snippet": "is that point to which the point at infinity is transformed"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\gamma _{1}+\\gamma _{2}=z_{\\infty }+Z_{\\infty }.}"
-        }
-      ],
       "id": "b712175ffb22"
     },
     {
@@ -789,28 +615,6 @@
       },
       "note": "The explicit four-factor decomposition formula is not given.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Composition of simple transformations",
-          "snippet": "Then these functions can be composed"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f(z)={\\frac {az+b}{cz+d}},}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f=f_{4}\\circ f_{3}\\circ f_{2}\\circ f_{1}.}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {az+b}{cz+d}}={\\frac {a}{c}}+{\\frac {e}{z+{\\frac {d}{c}}}},}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle e={\\frac {bc-ad}{c^{2}}}.}"
-        }
-      ],
       "id": "a54deffb267f"
     },
     {
@@ -845,16 +649,6 @@
       },
       "note": "Existence of an inverse follows from the `MulAction` of the group `GL (Fin 2) K`; the explicit `(dz - b)/(-cz + a)` formula is not isolated.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Formula for the inverse transformation",
-          "snippet": "The existence of the inverse Möbius transformation and its explicit formula are easily derived"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle g_{1}\\circ g_{2}\\circ g_{3}\\circ g_{4}(z)=f^{-1}(z)={\\frac {dz-b}{-cz+a}}}"
-        }
-      ],
       "id": "73f96302f203"
     },
     {
@@ -883,11 +677,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "EuclideanGeometry.inversion_mapsTo_sphere",
+        "decl": "EuclideanGeometry.image_inversion_sphere_dist_center",
         "module": "Mathlib.Geometry.Euclidean.Inversion.ImageHyperplane",
         "match_kind": null
       },
-      "note": "Inversion-of-sphere statements exist, but no Möbius-level theorem that generalized circles map to generalized circles.",
+      "note": "The image of a sphere under Euclidean inversion is described, but no Möbius-level theorem that generalized circles map to generalized circles is stated.",
       "provenance": "ai",
       "id": "329967d9cd0d"
     },
@@ -906,16 +700,6 @@
       },
       "note": "Cross-ratio is not defined in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Cross-ratio preservation",
-          "snippet": "Cross-ratios are invariant under Möbius transformations"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {(z_{1}-z_{3})(z_{2}-z_{4})}{(z_{2}-z_{3})(z_{1}-z_{4})}}={\\frac {(w_{1}-w_{3})(w_{2}-w_{4})}{(w_{2}-w_{3})(w_{1}-w_{4})}}.}"
-        }
-      ],
       "id": "4481c6c5a2f1"
     },
     {
@@ -933,16 +717,6 @@
       },
       "note": "No cross-ratio definition or limit extension exists.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Cross-ratio preservation",
-          "snippet": "then the cross-ratio has to be defined by taking the appropriate limit"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\frac {(z_{1}-z_{3})}{(z_{2}-z_{3})}}.}"
-        }
-      ],
       "id": "f0f964e9e8e0"
     },
     {
@@ -1039,11 +813,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "OnePoint.instGLAction",
+        "decl": "OnePoint.equivProjectivization_smul",
         "module": "Mathlib.Topology.Compactification.OnePoint.ProjectiveLine",
         "match_kind": null
       },
-      "note": "`GL(2,K)` acts via Möbius formulas on `OnePoint K` (and scalars act trivially, so this descends to `PGL`), but the equivalence with the action on `ℙ K (Fin 2 → K)` is given via `equivProjectivization_smul`.",
+      "note": "`GL(2,K)` acts via Möbius formulas on `OnePoint K` (and scalars act trivially, so this descends to `PGL`); the equivalence with the action on `ℙ K (Fin 2 → K)` is given via `equivProjectivization_smul`.",
       "provenance": "ai",
       "id": "8ba22f7a66c5"
     },
@@ -1062,16 +836,6 @@
       },
       "note": "`equivProjectivization : OnePoint K ≃ ℙ K (Fin 2 → K)` realizes the identification for any division ring, hence for ℂ.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Correspondence between the complex projective line and the Riemann sphere",
-          "snippet": "the projective line CP 1 and the Riemann sphere are identified as follows"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle [z_{1}:z_{2}]\\ \\thicksim {\\frac {z_{1}}{z_{2}}}.}"
-        }
-      ],
       "id": "a34c72d70416"
     },
     {
@@ -1083,11 +847,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Projectivization.action",
+        "decl": "Projectivization.instMulAction",
         "module": "Mathlib.LinearAlgebra.Projectivization.Action",
         "match_kind": null
       },
-      "note": "The action of `GL n K` on `ℙ K (Fin n → K)` is defined via `Projectivization.Action`; passing to `PGL` would use `ProjGenLinGroup.mulActionOfGL`.",
+      "note": "The action of any group acting K-linearly (including GL n K) on `ℙ K V` is given by `Projectivization.instMulAction`; passing to PGL uses the `SL_mulAction_ker` result.",
       "provenance": "ai",
       "id": "d92e154c15af"
     },
@@ -1191,20 +955,6 @@
       },
       "note": "The canonical (z₁,z₂,z₃) ↦ (0,1,∞) Möbius map is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Mapping first to 0, 1, ∞",
-          "snippet": "It is easy to check that the Möbius transformation"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f_{1}(z)={\\frac {(z-z_{1})(z_{2}-z_{3})}{(z-z_{3})(z_{2}-z_{1})}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\mathfrak {H}}_{1}={\\begin{pmatrix}z_{2}-z_{3}&amp;-z_{1}(z_{2}-z_{3})\\\\z_{2}-z_{1}&amp;-z_{3}(z_{2}-z_{1})\\end{pmatrix}}}"
-        }
-      ],
       "id": "0db7ec6cfb14"
     },
     {
@@ -1239,28 +989,6 @@
       },
       "note": "This re-expression of `ad - bc = 1` as a hyperbola is not in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Explicit determinant formula",
-          "snippet": "is equivalent to the equation of a standard hyperbola"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle w={\\frac {az+b}{cz+d}}}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle cwz-az+dw-b=0}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{vmatrix}zw&amp;z&amp;w&amp;1\\\\z_{1}w_{1}&amp;z_{1}&amp;w_{1}&amp;1\\\\z_{2}w_{2}&amp;z_{2}&amp;w_{2}&amp;1\\\\z_{3}w_{3}&amp;z_{3}&amp;w_{3}&amp;1\\end{vmatrix}}\\,}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{aligned}a&amp;=z_{1}w_{1}(w_{2}-w_{3})+z_{2}w_{2}(w_{3}-w_{1})+z_{3}w_{3}(w_{1}-w_{2}),\\\\[5mu]b&amp;=z_{1}w_{1}(z_{2}w_{3}-z_{3}w_{2})+z_{2}w_{2}(z_{3}w_{1}-z_{1}w_{3})+z_{3}w_{3}(z_{1}w_{2}-z_{2}w_{1}),\\\\[5mu]c&amp;=w_{1}(z_{3}-z_{2})+w_{2}(z_{1}-z_{3})+w_{3}(z_{2}-z_{1}),\\\\[5mu]d&amp;=z_{1}w_{1}(z_{2}-z_{3})+z_{2}w_{2}(z_{3}-z_{1})+z_{3}w_{3}(z_{1}-z_{2})\\end{aligned}}}"
-        }
-      ],
       "id": "785aa696e716"
     },
     {
@@ -1276,7 +1004,7 @@
         "module": "Mathlib.Analysis.Complex.UpperHalfPlane.MoebiusAction",
         "match_kind": null
       },
-      "note": "SL(2,ℝ) (and PSL via `FaithfulSMul PGL(2,ℝ) ℍ`) acts on `ℍ`, but the explicit characterization as the upper-half-plane-preserving subgroup of the Möbius group is not stated.",
+      "note": "SL(2,ℝ) (and PSL via the faithful action) acts on `ℍ` via `UpperHalfPlane.SLAction`, but the explicit characterization as the upper-half-plane-preserving subgroup of the Möbius group is not stated.",
       "provenance": "ai",
       "id": "8e4382b7fd7f"
     },
@@ -1295,16 +1023,6 @@
       },
       "note": "Disk-preserving Möbius subgroup is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Subgroups of the Möbius group",
-          "snippet": "The subgroup of all Möbius transformations that map the open disk"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f(z)=e^{i\\phi }{\\frac {z+b}{{\\bar {b}}z+1}}}"
-        }
-      ],
       "id": "1a2c6ac1a837"
     },
     {
@@ -1322,16 +1040,6 @@
       },
       "note": "Cayley-transform isomorphism between disk- and half-plane-preserving subgroups is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Subgroups of the Möbius group",
-          "snippet": "Since both of the above subgroups serve as isometry groups"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f(z)={\\frac {z+i}{iz+1}}}"
-        }
-      ],
       "id": "6a1513375da7"
     },
     {
@@ -1349,16 +1057,6 @@
       },
       "note": "No maximal-compact-subgroup or PSU(2)≅SO(3) identification for the Möbius group.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Subgroups of the Möbius group",
-          "snippet": "A maximal compact subgroup of the Möbius group"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\mathcal {M}}_{0}:=\\left\\{z\\mapsto {\\frac {uz-{\\bar {v}}}{vz+{\\bar {u}}}}:|u|^{2}+|v|^{2}=1\\right\\},}"
-        }
-      ],
       "id": "d2cf71241065"
     },
     {
@@ -1387,11 +1085,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "ModularGroup",
-        "module": "Mathlib.NumberTheory.Modular",
+        "decl": "ModularGroup.SLOnGLPos",
+        "module": "Mathlib.Analysis.Complex.UpperHalfPlane.MoebiusAction",
         "match_kind": null
       },
-      "note": "The modular group action of SL(2,ℤ) on ℍ is formalized in `ModularGroup`, but PSL(2,ℤ) and the general theory of Fuchsian groups are not.",
+      "note": "The modular group action of SL(2,ℤ) on the upper half plane is formalized via `ModularGroup.SLOnGLPos`, but PSL(2,ℤ) and Fuchsian groups in general are not packaged.",
       "provenance": "ai",
       "id": "7015ebe65815"
     },
@@ -1425,18 +1123,8 @@
         "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.FinTwo",
         "match_kind": null
       },
-      "note": "Conjugation invariance of these classes is proved (`isParabolic_conj_iff`, `isElliptic_conj_iff`, `isHyperbolic_conj_iff`); the trace-based criterion is implicit via `discr_fin_two` but not packaged.",
+      "note": "Conjugation invariance of these classes is proved (`isParabolic_conj_iff`, `isElliptic_conj_iff`, `isHyperbolic_conj_iff`); the trace-based criterion is implicit via the discriminant but not packaged.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Classification",
-          "snippet": "The four types can be distinguished by looking at the trace"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\operatorname {tr} \\,{\\mathfrak {GHG}}^{-1}=\\operatorname {tr} \\,{\\mathfrak {H}},}"
-        }
-      ],
       "id": "6e2e11cc1f82"
     },
     {
@@ -1454,20 +1142,6 @@
       },
       "note": "`IsParabolic m := m ∉ Set.range (scalar _) ∧ m.discr = 0` matches the standard definition.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Parabolic transforms",
-          "snippet": "is said to be parabolic if"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\operatorname {tr} ^{2}{\\mathfrak {H}}=(a+d)^{2}=4}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{pmatrix}1&amp;1\\\\0&amp;1\\end{pmatrix}}}"
-        }
-      ],
       "id": "b7c44f977099"
     },
     {
@@ -1485,20 +1159,6 @@
       },
       "note": "`IsParabolic.smul_eq_self_iff` says the unique fixed point of a parabolic `g` on `OnePoint K` is `parabolicFixedPoint g`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Parabolic transforms",
-          "snippet": "A Möbius transform is parabolic if and only if it has exactly one fixed point"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\operatorname {tr} ^{2}{\\mathfrak {H}}=(a+d)^{2}=4}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{pmatrix}1&amp;1\\\\0&amp;1\\end{pmatrix}}}"
-        }
-      ],
       "id": "b42329f21a85"
     },
     {
@@ -1516,16 +1176,6 @@
       },
       "note": "`upperRightHom` provides a one-parameter subgroup of unipotent (translation-like) matrices, but no general theorem identifying the parabolic-with-given-fixed-point subgroup as unipotent.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Parabolic transforms",
-          "snippet": "The set of all parabolic Möbius transformations with a given fixed point"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\left\\{{\\begin{pmatrix}1&amp;b\\\\0&amp;1\\end{pmatrix}}\\mid b\\in \\mathbb {C} \\right\\};}"
-        }
-      ],
       "id": "fdd3e72a9e2e"
     },
     {
@@ -1543,16 +1193,6 @@
       },
       "note": "Characteristic constant / multiplier λ for non-parabolic transformations is not defined.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Characteristic constant",
-          "snippet": "All non-parabolic transformations have two fixed points and are defined by a matrix conjugate to"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{pmatrix}\\lambda &amp;0\\\\0&amp;\\lambda ^{-1}\\end{pmatrix}}}"
-        }
-      ],
       "id": "bf64b4eb974f"
     },
     {
@@ -1570,16 +1210,6 @@
       },
       "note": "`IsElliptic m := m.discr < 0` over an ordered ring matches the standard elliptic condition.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Elliptic transforms",
-          "snippet": "The transformation is said to be elliptic"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle 0\\leq \\operatorname {tr} ^{2}{\\mathfrak {H}}&lt;4.}"
-        }
-      ],
       "id": "8b1f51d74b8e"
     },
     {
@@ -1597,16 +1227,6 @@
       },
       "note": "`IsElliptic` is defined by discriminant sign; the eigenvalue-based characterization (|λ|=1, λ≠±1) is not stated.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Elliptic transforms",
-          "snippet": "A transform is elliptic if and only if"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{pmatrix}\\cos \\alpha &amp;-\\sin \\alpha \\\\\\sin \\alpha &amp;\\cos \\alpha \\end{pmatrix}}}"
-        }
-      ],
       "id": "5fc54e94f44a"
     },
     {
@@ -1624,16 +1244,6 @@
       },
       "note": "Circular transforms / anharmonic-group examples are not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Elliptic transforms",
-          "snippet": "is also denoted as a circular transform"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle {\\begin{pmatrix}0&amp;-1\\\\1&amp;0\\end{pmatrix}}.}"
-        }
-      ],
       "id": "39938a9f98a4"
     },
     {
@@ -1651,16 +1261,6 @@
       },
       "note": "`IsHyperbolic m := 0 < m.discr` matches the standard hyperbolic condition.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Hyperbolic transforms",
-          "snippet": "The transform is said to be hyperbolic"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\operatorname {tr} ^{2}{\\mathfrak {H}}&gt;4.}"
-        }
-      ],
       "id": "4ddc58efdfad"
     },
     {
@@ -1729,16 +1329,6 @@
       },
       "note": "Not formalized; depends on characteristic constant.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Geometric interpretation of the characteristic constant",
-          "snippet": "The characteristic constant can be expressed in terms of its logarithm"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle e^{\\rho +\\alpha i}=k.}"
-        }
-      ],
       "id": "951d19ad8918"
     },
     {
@@ -1926,16 +1516,6 @@
       },
       "note": "Higher-dimensional Möbius transformations are not defined in Mathlib.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Higher dimensions",
-          "snippet": "In higher dimensions, a Möbius transformation is a homeomorphism"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f(x)=b+{\\frac {\\alpha A(x-a)}{|x-a|^{\\varepsilon }}},}"
-        }
-      ],
       "id": "0acc606f6462"
     },
     {
@@ -1953,16 +1533,6 @@
       },
       "note": "Liouville's theorem in conformal geometry is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Higher dimensions",
-          "snippet": "Liouville's theorem in conformal geometry states that in dimension at least three"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle f(x)=b+{\\frac {\\alpha A(x-a)}{|x-a|^{\\varepsilon }}},}"
-        }
-      ],
       "id": "e50940bb583c"
     },
     {
@@ -2031,16 +1601,6 @@
       },
       "note": "Minkowski space with the (+−−−) quadratic form is not defined.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Lorentz transformation",
-          "snippet": "Minkowski space consists of the four-dimensional real coordinate space"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle Q(x_{0},x_{1},x_{2},x_{3})=x_{0}^{2}-x_{1}^{2}-x_{2}^{2}-x_{3}^{2}.}"
-        }
-      ],
       "id": "11ee6e07fec5"
     },
     {
@@ -2075,16 +1635,6 @@
       },
       "note": "This identification is not formalized.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Lorentz transformation",
-          "snippet": "the group of transformations SO + (1, 3) is identified with the group PSL(2, C )"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle X={\\begin{bmatrix}x_{0}+x_{1}&amp;x_{2}+ix_{3}\\\\x_{2}-ix_{3}&amp;x_{0}-x_{1}\\end{bmatrix}}.}"
-        }
-      ],
       "id": "71a8494311c9"
     },
     {

@@ -243,22 +243,6 @@
       "id": "7c36be19afc6"
     },
     {
-      "kind": "example",
-      "label": "Unit circle",
-      "anchor": {
-        "section": "Two dimensions",
-        "snippet": "the unit circle (with radius equal to the length unit, and center at the origin)"
-      },
-      "status": "formalized",
-      "mathlib": {
-        "decl": "Metric.sphere",
-        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
-        "match_kind": "invocation"
-      },
-      "note": "Metric.sphere 0 1 in EuclideanSpace ℝ (Fin 2) is the unit circle; the special unit-circle group is also formalized as Circle in Mathlib.Analysis.SpecialFunctions.Complex.Circle.",
-      "provenance": "ai-agent1"
-    },
-    {
       "kind": "definition",
       "label": "Quadrants",
       "anchor": {
@@ -497,6 +481,22 @@
       "id": "77fad381896a"
     },
     {
+      "kind": "theorem",
+      "label": "Pythagorean theorem (Cartesian form)",
+      "anchor": {
+        "section": "Distance between two points",
+        "snippet": "This is the Cartesian version of Pythagoras's theorem ."
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanGeometry.dist_sq_eq_dist_sq_add_dist_sq_iff_angle_eq_pi_div_two",
+        "module": "Mathlib.Geometry.Euclidean.Triangle",
+        "match_kind": "generalization"
+      },
+      "note": "The Pythagorean theorem in Euclidean geometry is formalized; the Cartesian distance formula is its coordinate expression via EuclideanSpace.dist_eq.",
+      "provenance": "ai-agent1"
+    },
+    {
       "kind": "definition",
       "label": "Euclidean transformations",
       "anchor": {
@@ -583,7 +583,7 @@
     },
     {
       "kind": "proposition",
-      "label": "Reflection across line through origin",
+      "label": "Reflection across line through origin at angle",
       "anchor": {
         "section": "Reflection",
         "snippet": "reflection across a line through the origin making an angle"
@@ -594,7 +594,7 @@
         "module": "Mathlib.Analysis.InnerProductSpace.Projection.Reflection",
         "match_kind": "generalization"
       },
-      "note": "Mathlib's `reflection` defines reflection across any subspace (so across a line through the origin), but the explicit (cos 2θ, sin 2θ) coordinate formula is not stated as a lemma.",
+      "note": "Mathlib's reflection in a 1-dim subspace covers this geometrically; the explicit (cos 2θ, sin 2θ; sin 2θ, -cos 2θ) coordinate formula is not stated as a lemma.",
       "provenance": "ai-agent1"
     },
     {
@@ -1018,18 +1018,18 @@
     },
     {
       "kind": "definition",
-      "label": "Quaternion identification for 3D",
+      "label": "Identification with quaternions (3D)",
       "anchor": {
         "section": "Representing a vector in the standard basis",
-        "snippet": "In a three-dimensional cartesian space a similar identification can be made with a subset of the quaternions ."
+        "snippet": "In a three-dimensional cartesian space a similar identification can be made with a subset of the quaternions"
       },
-      "status": "formalized",
+      "status": "partial",
       "mathlib": {
-        "decl": "Quaternion.imK",
+        "decl": "Quaternion.im",
         "module": "Mathlib.Algebra.Quaternion",
         "match_kind": "generalization"
       },
-      "note": "Mathlib defines Quaternion ℝ with imI/imJ/imK components; the pure-imaginary quaternions ℝ³ ↪ ℍ give the identification, though it is not stated as a named equivalence.",
+      "note": "The pure-imaginary quaternions (Quaternion.im) form the 3D subspace identified with ℝ³; multiplication restricted there gives the cross-product/scalar-product decomposition.",
       "provenance": "ai-agent1"
     }
   ]

@@ -66,7 +66,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "AddTorsor",
-        "module": "Mathlib.LinearAlgebra.AffineSpace.Defs",
+        "module": "Mathlib.Algebra.AddTorsor.Defs",
         "match_kind": "generalization"
       },
       "note": "Mathlib models a Euclidean affine space as a `NormedAddTorsor V P` with `V` a finite-dimensional real inner product space (notation `AffineSpace`).",
@@ -117,10 +117,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "VAdd.vadd",
-        "module": "Mathlib.Algebra.AddTorsor.Defs",
+        "module": "Mathlib.Algebra.Notation.Defs",
         "match_kind": "exact"
       },
-      "note": "The notation `v +ᵥ P` (or `P + v` after swapping) is the `VAdd` action used in every `AddTorsor`.",
+      "note": "The notation `v +ᵥ P` is the `VAdd` action used in every `AddTorsor`.",
       "provenance": "ai",
       "id": "0a7e279f7c42"
     },
@@ -150,8 +150,8 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "AddGroup.toAddTorsor",
-        "module": "Mathlib.Algebra.AddTorsor.Defs",
+        "decl": "AddGroup.instAddTorsor",
+        "module": "Mathlib.Algebra.Torsor.Defs",
         "match_kind": "exact"
       },
       "note": "Any additive group is canonically an `AddTorsor` over itself, so a Euclidean vector space carries the affine structure tautologically.",
@@ -287,12 +287,28 @@
       "status": "partial",
       "mathlib": {
         "decl": "affineSpan_pair_le_of_mem_of_mem",
-        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Basic",
+        "module": "Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Defs",
         "match_kind": "invocation"
       },
       "note": "The `affineSpan` of two points is the unique 1-dim flat containing them, but the uniqueness statement is not packaged as a named lemma.",
       "provenance": "ai",
       "id": "0a27977990e0"
+    },
+    {
+      "kind": "proposition",
+      "label": "Two distinct lines intersect in at most one point",
+      "anchor": {
+        "section": "Lines and segments",
+        "snippet": "two distinct lines intersect in at most one point"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Corollary of line-through-two-points uniqueness; no dedicated lemma found in Mathlib's affine API.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -457,7 +473,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "dist_triangle",
-        "module": "Mathlib.Topology.MetricSpace.Defs",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
         "match_kind": "exact"
       },
       "note": "`dist_triangle` is the metric-space triangle inequality, applicable to every Euclidean space.",
@@ -490,7 +506,7 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "PiLp.instCompleteSpace",
+        "decl": "PiLp.completeSpace",
         "module": "Mathlib.Analysis.Normed.Lp.PiLp",
         "match_kind": "generalization"
       },
@@ -507,11 +523,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "inner_eq_zero_iff_angle_eq_pi_div_two",
+        "decl": "InnerProductGeometry.inner_eq_zero_iff_angle_eq_pi_div_two",
         "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.Basic",
         "match_kind": "exact"
       },
-      "note": "Orthogonality is just `⟪x, y⟫ = 0`; the equivalence with `angle = π/2` is `inner_eq_zero_iff_angle_eq_pi_div_two`.",
+      "note": "Orthogonality is just `⟪x, y⟫ = 0`; the equivalence with `angle = π/2` is `InnerProductGeometry.inner_eq_zero_iff_angle_eq_pi_div_two`.",
       "provenance": "ai",
       "id": "3b57ff65009f"
     },
@@ -576,7 +592,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "EuclideanGeometry.dist_sq_eq_dist_sq_add_dist_sq_iff_angle_eq_pi_div_two",
-        "module": "Mathlib.Geometry.Euclidean.Triangle",
+        "module": "Mathlib.Geometry.Euclidean.Angle.Unoriented.RightAngle",
         "match_kind": "exact"
       },
       "note": "Listed in `docs/100.yaml` as the formalization of the Pythagorean theorem; vector form is `norm_add_sq_real` together with `inner = 0`.",
@@ -762,11 +778,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Basis.repr",
+        "decl": "Module.Basis.repr",
         "module": "Mathlib.LinearAlgebra.Basis.Defs",
         "match_kind": "generalization"
       },
-      "note": "Skew/affine coordinates are realised via `Basis.repr` after picking an origin; not packaged separately.",
+      "note": "Skew/affine coordinates are realised via `Module.Basis.repr` after picking an origin; not packaged separately.",
       "provenance": "ai",
       "id": "8d714073842f"
     },
@@ -805,6 +821,22 @@
       "id": "e40992068410"
     },
     {
+      "kind": "example",
+      "label": "Polar coordinate system",
+      "anchor": {
+        "section": "Other coordinates",
+        "snippet": "The polar coordinate system (dimension 2) and the spherical and cylindrical coordinate systems (dimension 3) are defined this way"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "polarCoord",
+        "module": "Mathlib.Analysis.SpecialFunctions.PolarCoord",
+        "match_kind": "exact"
+      },
+      "note": "`polarCoord` is an `OpenPartialHomeomorph` between `ℝ²` and `(0,∞) × (-π, π)`; spherical/cylindrical coordinates are not packaged.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Isometry between metric spaces",
       "anchor": {
@@ -814,7 +846,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "IsometryEquiv",
-        "module": "Mathlib.Topology.MetricSpace.IsometricSMul",
+        "module": "Mathlib.Topology.MetricSpace.Isometry",
         "match_kind": "exact"
       },
       "note": "`IsometryEquiv` is the type of distance-preserving bijections (`Isometry` for the map alone).",
@@ -831,7 +863,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "LinearIsometry.inner_map_map",
-        "module": "Mathlib.Analysis.InnerProductSpace.Basic",
+        "module": "Mathlib.Analysis.InnerProductSpace.LinearMap",
         "match_kind": "invocation"
       },
       "note": "An origin-preserving isometry between real inner-product spaces is linear (Mazur–Ulam) and `LinearIsometry.inner_map_map` then gives preservation of inner products.",
@@ -848,7 +880,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "AffineMap.ofMapMidpoint",
-        "module": "Mathlib.Analysis.Normed.Affine.MazurUlam",
+        "module": "Mathlib.Analysis.Normed.Affine.AddTorsor",
         "match_kind": "invocation"
       },
       "note": "Mazur–Ulam (in `MazurUlam.lean`) shows isometries of normed real vector spaces are affine; combined with preservation of `0` it gives linearity.",
@@ -865,7 +897,7 @@
       "status": "partial",
       "mathlib": {
         "decl": "LinearEquiv.finrank_eq",
-        "module": "Mathlib.LinearAlgebra.FiniteDimensional.Defs",
+        "module": "Mathlib.LinearAlgebra.Dimension.Finrank",
         "match_kind": "invocation"
       },
       "note": "Follows from `LinearEquiv.finrank_eq` applied to the linear part of an isometry, but not stated as a separate named lemma for Euclidean spaces.",
@@ -1111,6 +1143,22 @@
       "id": "d47b0d5c98f6"
     },
     {
+      "kind": "proposition",
+      "label": "Euclidean topology equals product topology",
+      "anchor": {
+        "section": "Topology",
+        "snippet": "this topology is also the product topology"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "EuclideanSpace.equiv",
+        "module": "Mathlib.Analysis.InnerProductSpace.PiL2",
+        "match_kind": "invocation"
+      },
+      "note": "`EuclideanSpace.equiv` is a continuous linear equivalence between `EuclideanSpace 𝕜 ι` and `ι → 𝕜`, so the `PiLp 2` topology agrees with the product topology.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Open sets via open balls",
       "anchor": {
@@ -1120,7 +1168,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Metric.isOpen_iff",
-        "module": "Mathlib.Topology.MetricSpace.Defs",
+        "module": "Mathlib.Topology.MetricSpace.Pseudo.Defs",
         "match_kind": "exact"
       },
       "note": "`Metric.isOpen_iff` characterises open sets in any metric space by containing an open ball around each point.",
@@ -1204,11 +1252,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "QuadraticForm.Nondegenerate",
-        "module": "Mathlib.LinearAlgebra.QuadraticForm.Basic",
+        "decl": "QuadraticMap.Nondegenerate",
+        "module": "Mathlib.LinearAlgebra.QuadraticForm.Radical",
         "match_kind": "generalization"
       },
-      "note": "Non-degenerate quadratic forms exist in Mathlib (`QuadraticForm.Nondegenerate`), but no named `PseudoEuclideanSpace` structure was found.",
+      "note": "Non-degenerate quadratic forms exist in Mathlib (`QuadraticMap.Nondegenerate`), but no named `PseudoEuclideanSpace` structure was found.",
       "provenance": "ai",
       "id": "4b867176565a"
     },

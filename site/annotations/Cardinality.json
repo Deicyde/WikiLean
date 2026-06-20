@@ -228,6 +228,54 @@
     },
     {
       "kind": "definition",
+      "label": "Identity function (witness of reflexivity)",
+      "anchor": {
+        "section": "Equivalence",
+        "snippet": "the function that maps each element to itself is a bijection from"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.refl",
+        "module": "Mathlib.Logic.Equiv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv.refl α : α ≃ α` is the identity equivalence, witnessing reflexivity of equinumerosity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Inverse of a bijection (witness of symmetry)",
+      "anchor": {
+        "section": "Equivalence",
+        "snippet": "has an inverse function"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.symm",
+        "module": "Mathlib.Logic.Equiv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv.symm : (α ≃ β) → (β ≃ α)` inverts a bijection, witnessing symmetry of equinumerosity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Composition of bijections (witness of transitivity)",
+      "anchor": {
+        "section": "Equivalence",
+        "snippet": "follows from the composition of functions"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Equiv.trans",
+        "module": "Mathlib.Logic.Equiv.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`Equiv.trans : (α ≃ β) → (β ≃ γ) → (α ≃ γ)` composes bijections, witnessing transitivity.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
       "label": "Cardinal inequality (≤)",
       "anchor": {
         "section": "Inequality",
@@ -303,11 +351,11 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "schroeder_bernstein",
+        "decl": "Function.Embedding.schroeder_bernstein",
         "module": "Mathlib.SetTheory.Cardinal.SchroederBernstein",
         "match_kind": "exact"
       },
-      "note": "`schroeder_bernstein` gives a bijection from mutual injections, matching the theorem.",
+      "note": "`Function.Embedding.schroeder_bernstein` gives a bijection from mutual injections, matching the theorem.",
       "provenance": "ai",
       "id": "6a73bcb89fa1"
     },
@@ -440,7 +488,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Cardinal.mkRat",
-        "module": "Mathlib.Data.Rat.Cardinal",
+        "module": "Mathlib.SetTheory.Cardinal.Rat",
         "match_kind": "exact"
       },
       "note": "`Cardinal.mkRat : #ℚ = ℵ₀` states the rationals are countably infinite.",
@@ -1213,6 +1261,22 @@
       "id": "4aeb511645bb"
     },
     {
+      "kind": "theorem",
+      "label": "Burali-Forti paradox (ordinals form a proper class)",
+      "anchor": {
+        "section": "Set of all cardinal numbers",
+        "snippet": "related to the Burali-Forti paradox"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "not_small_ordinal",
+        "module": "Mathlib.SetTheory.Ordinal.Family",
+        "match_kind": "exact"
+      },
+      "note": "`not_small_ordinal : ¬ Small.{u} Ordinal` is the type-theoretic Burali-Forti paradox.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Continuum (real numbers)",
       "anchor": {
@@ -1650,7 +1714,7 @@
         "module": "Mathlib.SetTheory.ZFC.Class",
         "match_kind": "invocation"
       },
-      "note": "The universal class `Class.univ` exists, and `not_small_cardinal`/non-smallness of `Ordinal` express that cardinals and ordinals form proper classes.",
+      "note": "The universal class `Class.univ` exists, and `not_small_cardinal`/`not_small_ordinal` express that cardinals and ordinals form proper classes.",
       "provenance": "ai",
       "id": "160f13c213b5"
     },

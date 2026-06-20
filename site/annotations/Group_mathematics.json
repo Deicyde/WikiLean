@@ -18,7 +18,7 @@
         "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "exact"
       },
-      "note": "The `Group` typeclass in Mathlib captures exactly the informal notion of a set with a binary operation satisfying the group axioms.",
+      "note": "The `Group` typeclass in Mathlib captures the informal notion of a set with an associative binary operation, identity, and inverses.",
       "provenance": "ai",
       "id": "47f79580c97e"
     },
@@ -31,22 +31,12 @@
       },
       "status": "formalized",
       "mathlib": {
-        "decl": "Int.instCommGroup",
-        "module": "Mathlib.Data.Int.Defs",
+        "decl": "Int.instAddCommGroup",
+        "module": "Mathlib.Algebra.Group.Int.Defs",
         "match_kind": "invocation"
       },
-      "note": "Mathlib equips `ℤ` with an `AddCommGroup` (and hence `AddGroup`) instance.",
+      "note": "Mathlib equips `ℤ` with `Int.instAddCommGroup`, giving the standard additive group structure (the previously cited `Int.instCommGroup` does not exist).",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "First example: the integers",
-          "snippet": "One of the more familiar groups is the set of integers"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\mathbb {Z} =\\{\\ldots ,-4,-3,-2,-1,0,1,2,3,4,\\ldots \\}}"
-        }
-      ],
       "id": "5ae3bce6d4bb"
     },
     {
@@ -62,7 +52,7 @@
         "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "exact"
       },
-      "note": "`class Group (G : Type u) extends DivInvMonoid G` is the direct formalization at `Mathlib/Algebra/Group/Defs.lean:1192`.",
+      "note": "`class Group (G : Type u) extends DivInvMonoid G` in `Mathlib/Algebra/Group/Defs.lean` is the direct formalization.",
       "provenance": "ai",
       "id": "238f9ad5f3b9"
     },
@@ -113,7 +103,7 @@
         "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "exact"
       },
-      "note": "`class CommGroup extends Group, CommMonoid` at `Mathlib/Algebra/Group/Defs.lean:1275` (additive variant `AddCommGroup`).",
+      "note": "`class CommGroup extends Group, CommMonoid` (additive variant `AddCommGroup`).",
       "provenance": "ai",
       "id": "9018b154f420"
     },
@@ -181,7 +171,7 @@
         "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "exact"
       },
-      "note": "`left_inv_eq_right_inv` (and `inv_eq_of_mul_eq_one_right`) show any left/right inverse equals the canonical inverse.",
+      "note": "`left_inv_eq_right_inv` shows any left inverse equals any right inverse, giving uniqueness of inverses.",
       "provenance": "ai",
       "id": "bb7f20d1f8cf"
     },
@@ -300,7 +290,7 @@
         "module": "Mathlib.Algebra.Group.Subgroup.Defs",
         "match_kind": "exact"
       },
-      "note": "`structure Subgroup (G : Type*) [Group G] extends Submonoid G` at `Mathlib/Algebra/Group/Subgroup/Defs.lean:295`.",
+      "note": "`structure Subgroup (G : Type*) [Group G] extends Submonoid G` in `Mathlib/Algebra/Group/Subgroup/Defs.lean`.",
       "provenance": "ai",
       "id": "04e81c4f24a4"
     },
@@ -351,7 +341,7 @@
         "module": "Mathlib.Algebra.Group.Subgroup.Defs",
         "match_kind": "exact"
       },
-      "note": "`Subgroup.Normal` is defined at line 605, and cosets are formalized via `QuotientGroup.leftRel` in `Mathlib.GroupTheory.Coset.Basic`.",
+      "note": "`Subgroup.Normal` formalizes normal subgroups; cosets are formalized via `QuotientGroup.leftRel` in `Mathlib.GroupTheory.Coset.Defs`.",
       "provenance": "ai",
       "id": "dde8c01bbe13"
     },
@@ -365,7 +355,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "QuotientGroup.leftRel",
-        "module": "Mathlib.GroupTheory.Coset.Basic",
+        "module": "Mathlib.GroupTheory.Coset.Defs",
         "match_kind": "exact"
       },
       "note": "`QuotientGroup.leftRel H` is the setoid whose equivalence classes are the left cosets of H, yielding the partition.",
@@ -385,18 +375,8 @@
         "module": "Mathlib.GroupTheory.QuotientGroup.Defs",
         "match_kind": "exact"
       },
-      "note": "`G ⧸ N` with `[N.Normal]` carries a `Group` instance built via `QuotientGroup.con N`.",
+      "note": "`G ⧸ N` with `[N.Normal]` carries a `Group` instance built via `QuotientGroup.Quotient.group`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Quotient groups",
-          "snippet": "is called a quotient group or factor group"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle G/N=\\{gN\\mid g\\in G\\}}"
-        }
-      ],
       "id": "3784300d51a5"
     },
     {
@@ -494,10 +474,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Rat.instField",
-        "module": "Mathlib.Data.Rat.Defs",
+        "module": "Mathlib.Algebra.Field.Rat",
         "match_kind": "invocation"
       },
-      "note": "`ℚ` is a `Field`, so `ℚˣ` is a `CommGroup` under multiplication via the standard `Units` construction.",
+      "note": "`ℚ` is a `Field` (via `Rat.instField`), so `ℚˣ` is a `CommGroup` under multiplication via the standard `Units` construction.",
       "provenance": "ai",
       "id": "6a1d968abc84"
     },
@@ -511,10 +491,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "ZMod",
-        "module": "Mathlib.Data.ZMod.Basic",
+        "module": "Mathlib.Data.ZMod.Defs",
         "match_kind": "exact"
       },
-      "note": "`ZMod n` is the additive group ℤ/nℤ, with `quotientZMultiplesNatEquivZMod` showing `ℤ ⧸ ⟨n⟩ ≃+ ZMod n`.",
+      "note": "`ZMod n` is the additive group ℤ/nℤ, with `Int.quotientZMultiplesNatEquivZMod` showing `ℤ ⧸ ⟨n⟩ ≃+ ZMod n`.",
       "provenance": "ai",
       "id": "3c8746444a82"
     },
@@ -528,21 +508,11 @@
       "status": "formalized",
       "mathlib": {
         "decl": "ZMod.unitsEquivCoprime",
-        "module": "Mathlib.Data.ZMod.Units",
+        "module": "Mathlib.Data.ZMod.Basic",
         "match_kind": "invocation"
       },
-      "note": "`(ZMod p)ˣ` is the unit group; cardinality and structure are developed in `Mathlib.Data.ZMod.Units`.",
+      "note": "`(ZMod p)ˣ` is the unit group; `ZMod.unitsEquivCoprime` characterises units as coprime residues.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Modular arithmetic",
-          "snippet": "there is also the multiplicative group of integers modulo"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle a\\cdot b\\equiv 1{\\pmod {p}},}"
-        }
-      ],
       "id": "c447fb1806d9"
     },
     {
@@ -558,22 +528,8 @@
         "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "exact"
       },
-      "note": "`class IsCyclic (G : Type u) [Pow G ℤ] : Prop` at `Mathlib/Algebra/Group/Defs.lean:1028` asserts every element is a power of a generator.",
+      "note": "`class IsCyclic` in `Mathlib.Algebra.Group.Defs` asserts every element is a power of a generator.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Cyclic groups",
-          "snippet": "A cyclic group is a group all of whose elements are powers of a particular element"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\dots ,a^{-3},a^{-2},a^{-1},a^{0},a,a^{2},a^{3},\\dots ,}"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\dots ,(-a)+(-a),-a,0,a,a+a,\\dots .}"
-        }
-      ],
       "id": "1d967083eed1"
     },
     {
@@ -589,7 +545,7 @@
         "module": "Mathlib.RingTheory.RootsOfUnity.Basic",
         "match_kind": "exact"
       },
-      "note": "`rootsOfUnity n M` is the subgroup of `Mˣ` of n-th roots of unity; `rootsOfUnity.isCyclic` proves cyclicity over an integral domain.",
+      "note": "`rootsOfUnity n M` is the subgroup of `Mˣ` of n-th roots of unity, with cyclicity proved over integral domains.",
       "provenance": "ai",
       "id": "103264566d1e"
     },
@@ -606,7 +562,7 @@
         "module": "Mathlib.GroupTheory.SpecificGroups.Cyclic",
         "match_kind": "exact"
       },
-      "note": "`intCyclicMulEquiv : Multiplicative ℤ ≃* G` (and additive variant `intCyclicAddEquiv`) realize the isomorphism for any infinite cyclic group.",
+      "note": "`intCyclicMulEquiv : Multiplicative ℤ ≃* G` realises the isomorphism for any infinite cyclic group.",
       "provenance": "ai",
       "id": "0befe35c6471"
     },
@@ -623,7 +579,7 @@
         "module": "Mathlib.Algebra.Group.Action.Defs",
         "match_kind": "exact"
       },
-      "note": "`class MulAction (α β) [Monoid α]` formalizes group/monoid actions; specialized to a group it is the standard notion.",
+      "note": "`class MulAction (α β) [Monoid α]` formalizes group/monoid actions; specialised to a group it is the standard notion.",
       "provenance": "ai",
       "id": "fe168c28c5be"
     },
@@ -676,16 +632,6 @@
       },
       "note": "`Polynomial.Gal p` defines the Galois group of any polynomial; no decl specifically computes the quadratic case.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Galois groups",
-          "snippet": "the solutions of the quadratic equation"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle x={\\frac {-b\\pm {\\sqrt {b^{2}-4ac}}}{2a}}.}"
-        }
-      ],
       "id": "73d712656d9e"
     },
     {
@@ -735,7 +681,7 @@
         "module": "Mathlib.Algebra.Group.Action.End",
         "match_kind": null
       },
-      "note": "`MulAction.toPermHom G G : G →* Equiv.Perm G` gives the Cayley embedding, but I did not find a named lemma asserting injectivity as 'Cayley's theorem'.",
+      "note": "`MulAction.toPermHom G G : G →* Equiv.Perm G` provides the Cayley embedding, but no named lemma asserting injectivity as 'Cayley's theorem' was located.",
       "provenance": "ai",
       "id": "5167e2a5f751"
     },
@@ -752,18 +698,8 @@
         "module": "Mathlib.GroupTheory.OrderOfElement",
         "match_kind": "exact"
       },
-      "note": "`orderOf x` is defined at `Mathlib/GroupTheory/OrderOfElement.lean:180` as the smallest positive n with `x^n = 1`.",
+      "note": "`orderOf x` is the smallest positive n with `x^n = 1` (or 0 if none), defined in `Mathlib.GroupTheory.OrderOfElement`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Finite groups",
-          "snippet": "The order of an element"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\underbrace {a\\cdots a} _{n{\\text{ factors}}},}"
-        }
-      ],
       "id": "d7075726d1d3"
     },
     {
@@ -776,10 +712,10 @@
       "status": "formalized",
       "mathlib": {
         "decl": "Subgroup.card_subgroup_dvd_card",
-        "module": "Mathlib.GroupTheory.Index",
+        "module": "Mathlib.GroupTheory.Coset.Card",
         "match_kind": "exact"
       },
-      "note": "`card_subgroup_dvd_card` states |H| divides |G| for a subgroup H of a finite group G.",
+      "note": "`Subgroup.card_subgroup_dvd_card` states |H| divides |G| for a subgroup H of a finite group G.",
       "provenance": "ai",
       "id": "e71719ffaea1"
     },
@@ -810,7 +746,7 @@
       "status": "formalized",
       "mathlib": {
         "decl": "isCyclic_of_prime_card",
-        "module": "Mathlib.GroupTheory.SpecificGroups.Cyclic",
+        "module": "Mathlib.GroupTheory.SpecificGroups.Cyclic.Basic",
         "match_kind": "exact"
       },
       "note": "`isCyclic_of_prime_card` proves `IsCyclic G` whenever `Nat.card G` is prime.",
@@ -830,7 +766,7 @@
         "module": "Mathlib.GroupTheory.Subgroup.Simple",
         "match_kind": "exact"
       },
-      "note": "`class IsSimpleGroup : Prop extends Nontrivial G` at `Mathlib/GroupTheory/Subgroup/Simple.lean:38`.",
+      "note": "`class IsSimpleGroup : Prop extends Nontrivial G` characterises simple groups via their normal-subgroup lattice.",
       "provenance": "ai",
       "id": "a3a7f3e45d23"
     },
@@ -912,21 +848,11 @@
       "status": "partial",
       "mathlib": {
         "decl": "Matrix.GeneralLinearGroup",
-        "module": "Mathlib.LinearAlgebra.GeneralLinearGroup.Basic",
+        "module": "Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs",
         "match_kind": null
       },
-      "note": "GLₙ is defined and the smooth-manifold/Lie-group instance machinery exists, but I did not locate an explicit `LieGroup` instance on `GL n ℝ`.",
+      "note": "GLₙ is defined and the smooth-manifold/Lie-group machinery exists, but I did not locate an explicit `LieGroup` instance on `GL n ℝ`.",
       "provenance": "ai",
-      "anchors": [
-        {
-          "section": "Lie groups",
-          "snippet": "A standard example is the general linear group introduced above"
-        },
-        {
-          "type": "math_alttext",
-          "value": "{\\displaystyle \\det(A)\\neq 0,}"
-        }
-      ],
       "id": "22ac1fcdd5cc"
     },
     {
@@ -942,7 +868,7 @@
         "module": "Mathlib.Algebra.Group.Defs",
         "match_kind": "exact"
       },
-      "note": "`class Monoid extends Semigroup, MulOneClass` at `Mathlib/Algebra/Group/Defs.lean:652`.",
+      "note": "`class Monoid extends Semigroup, MulOneClass` formalises monoids in `Mathlib.Algebra.Group.Defs`.",
       "provenance": "ai",
       "id": "7ff9b735fd7a"
     },
@@ -979,6 +905,214 @@
       "note": "No n-ary (polyadic) group structure was found in Mathlib.",
       "provenance": "ai",
       "id": "a0e7f91c951d"
+    },
+    {
+      "kind": "definition",
+      "label": "Associativity",
+      "anchor": {
+        "section": "First example: the integers",
+        "snippet": "This property is known as associativity"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Semigroup",
+        "module": "Mathlib.Algebra.Group.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Associativity of the group operation is captured by the `Semigroup` typeclass (axiom `mul_assoc`), which every `Group` extends.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Category of groups",
+      "anchor": {
+        "section": "Group homomorphisms",
+        "snippet": "form a category , the category of groups"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "GrpCat",
+        "module": "Mathlib.Algebra.Category.Grp.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`GrpCat` is the bundled category of groups with group homomorphisms; `AddGrpCat` is the additive analogue (the previously cited `Grp` is not the correct name).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Identity homomorphism",
+      "anchor": {
+        "section": "Group homomorphisms",
+        "snippet": "The identity homomorphism of a group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "MonoidHom.id",
+        "module": "Mathlib.Algebra.Group.Hom.Defs",
+        "match_kind": "exact"
+      },
+      "note": "`MonoidHom.id G : G →* G` is the identity group homomorphism.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Free group",
+      "anchor": {
+        "section": "Presentations",
+        "snippet": "Every group is isomorphic to a quotient of a free group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FreeGroup",
+        "module": "Mathlib.GroupTheory.FreeGroup.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`FreeGroup α` is the free group on the generators α, constructed as reduced words.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Cayley graph",
+      "anchor": {
+        "section": "Presentations",
+        "snippet": "the Cayley graph"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "SimpleGraph.mulCayley",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Cayley",
+        "match_kind": "exact"
+      },
+      "note": "`SimpleGraph.mulCayley s` is the Cayley graph induced by a generating set `s` (with `SimpleGraph.addCayley` for the additive version).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Fundamental group",
+      "anchor": {
+        "section": "Examples and applications",
+        "snippet": "introducing the fundamental group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "FundamentalGroup",
+        "module": "Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup",
+        "match_kind": "exact"
+      },
+      "note": "`FundamentalGroup X x` is the fundamental group of `X` based at `x`, derived from the fundamental groupoid.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Center of a group",
+      "anchor": {
+        "section": "Cyclic groups",
+        "snippet": "such as center and commutator"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Subgroup.center",
+        "module": "Mathlib.GroupTheory.Subgroup.Center",
+        "match_kind": "exact"
+      },
+      "note": "`Subgroup.center G` is the subgroup of elements commuting with all of G.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Commutator subgroup",
+      "anchor": {
+        "section": "Cyclic groups",
+        "snippet": "such as center and commutator"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "commutator",
+        "module": "Mathlib.GroupTheory.Commutator.Basic",
+        "match_kind": "exact"
+      },
+      "note": "`commutator G` is the subgroup generated by all commutators `[g,h] = g h g⁻¹ h⁻¹`.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Sylow theorems",
+      "anchor": {
+        "section": "Finite groups",
+        "snippet": "The Sylow theorems give a partial converse"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Sylow",
+        "module": "Mathlib.GroupTheory.Sylow",
+        "match_kind": "exact"
+      },
+      "note": "`Sylow p G` and accompanying lemmas like `Sylow.exists_subgroup_card_pow_prime` formalize the existence/conjugacy/count Sylow theorems.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "theorem",
+      "label": "Jordan–Hölder theorem",
+      "anchor": {
+        "section": "Simple groups",
+        "snippet": "in a sense made precise by the Jordan–Hölder theorem"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CompositionSeries.jordan_holder",
+        "module": "Mathlib.Order.JordanHolder",
+        "match_kind": "exact"
+      },
+      "note": "`CompositionSeries.jordan_holder` proves uniqueness (up to permutation) of composition factors for any composition series.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Grothendieck group",
+      "anchor": {
+        "section": "Generalizations",
+        "snippet": "Grothendieck group"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Localization",
+        "module": "Mathlib.GroupTheory.MonoidLocalization.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "The Grothendieck-group construction can be obtained as `Localization` of a commutative monoid (no dedicated `GroupCompletion` decl exists).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Special orthogonal group SO(n)",
+      "anchor": {
+        "section": "General linear group and representation theory",
+        "snippet": "Another important matrix group is the special orthogonal group"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Matrix.specialOrthogonalGroup",
+        "module": "Mathlib.LinearAlgebra.UnitaryGroup",
+        "match_kind": "exact"
+      },
+      "note": "`Matrix.specialOrthogonalGroup n R` is the subgroup of orthogonal matrices of determinant 1 (the orthogonal group itself is `Matrix.orthogonalGroup`).",
+      "provenance": "ai"
+    },
+    {
+      "kind": "definition",
+      "label": "Group object in a category",
+      "anchor": {
+        "section": "Groups with additional structure",
+        "snippet": "the notion of group object in a category"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "CategoryTheory.GrpObj",
+        "module": "Mathlib.CategoryTheory.Monoidal.Grp",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib formalizes group objects in a cartesian monoidal category as the `CategoryTheory.GrpObj` typeclass (with bundled category `CategoryTheory.Grp`); `CategoryTheory.GroupObject` is not a real name.",
+      "provenance": "ai"
     }
   ]
 }

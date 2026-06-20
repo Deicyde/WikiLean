@@ -11,6 +11,30 @@
         "section": "(Lead)",
         "snippet": "is a method of estimating the parameters of an assumed probability distribution"
       },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib has no notion of maximum likelihood estimation or parameter estimators.",
+      "provenance": "ai-agent1",
+      "id": "e2226c7675ff"
+    },
+    {
+      "kind": "proposition",
+      "label": "OLS maximizes the likelihood under Gaussian errors",
+      "anchor": {
+        "section": "(Lead)",
+        "snippet": "the ordinary least squares estimator for a linear regression model maximizes the likelihood when the random errors are assumed to have normal distributions with the same variance"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither OLS nor its equivalence with MLE under homoscedastic Gaussian errors is formalized in Mathlib.",
       "provenance": "ai-agent1"
     },
     {
@@ -20,7 +44,29 @@
         "section": "Principles",
         "snippet": "which is called the likelihood function"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No likelihood function L(θ;x) is defined in Mathlib; only densities/Radon-Nikodym derivatives exist.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Principles",
+          "snippet": "which is called the likelihood function"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathcal {L}}_{n}(\\theta )={\\mathcal {L}}_{n}(\\theta ;\\mathbf {y} )=f_{n}(\\mathbf {y} ;\\theta )\\;,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f_{n}(\\mathbf {y} ;\\theta )=\\prod _{k=1}^{n}\\,f_{k}^{\\mathsf {univar}}(y_{k};\\theta )~.}"
+        }
+      ],
+      "id": "be3fea203cf0"
     },
     {
       "kind": "proposition",
@@ -29,7 +75,29 @@
         "section": "Principles",
         "snippet": "will be the product of univariate density functions"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.indepFun_iff_map_prod_eq_prod_map_map",
+        "module": "Mathlib.Probability.Independence.Basic",
+        "match_kind": null
+      },
+      "note": "Mathlib characterizes independence by joint law factoring as a product of marginals, but not the likelihood-as-product statement.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Principles",
+          "snippet": "will be the product of univariate density functions"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\mathcal {L}}_{n}(\\theta )={\\mathcal {L}}_{n}(\\theta ;\\mathbf {y} )=f_{n}(\\mathbf {y} ;\\theta )\\;,}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle f_{n}(\\mathbf {y} ;\\theta )=\\prod _{k=1}^{n}\\,f_{k}^{\\mathsf {univar}}(y_{k};\\theta )~.}"
+        }
+      ],
+      "id": "6cfda0ee4e3b"
     },
     {
       "kind": "definition",
@@ -38,7 +106,25 @@
         "section": "Principles",
         "snippet": "to find the values of the model parameters that maximize the likelihood function over the parameter space"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No argmax-of-likelihood construction exists in Mathlib.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Principles",
+          "snippet": "to find the values of the model parameters that maximize the likelihood function over the parameter space"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\hat {\\theta }}={\\underset {\\theta \\in \\Theta }{\\operatorname {arg\\;max} }}\\,{\\mathcal {L}}_{n}(\\theta \\,;\\mathbf {y} )~.}"
+        }
+      ],
+      "id": "bf24d9f3d3ea"
     },
     {
       "kind": "definition",
@@ -47,7 +133,15 @@
         "section": "Principles",
         "snippet": "is called the maximum likelihood estimate"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No maximum likelihood estimate is defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "8258a1a27fb2"
     },
     {
       "kind": "definition",
@@ -56,7 +150,15 @@
         "section": "Principles",
         "snippet": "then it is called the maximum likelihood estimator"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No maximum likelihood estimator (as a measurable function of data) is defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "921ac12c12a1"
     },
     {
       "kind": "proposition",
@@ -65,7 +167,15 @@
         "section": "Principles",
         "snippet": "A sufficient but not necessary condition for its existence is for the likelihood function to be continuous over a parameter space"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsCompact.exists_isMaxOn",
+        "module": "Mathlib.Topology.Order.Compact",
+        "match_kind": "generalization"
+      },
+      "note": "The underlying extreme value theorem (a continuous function on a compact set attains its max) is formalized, but not its MLE-existence application.",
+      "provenance": "ai-agent1",
+      "id": "9a3f7195adde"
     },
     {
       "kind": "definition",
@@ -74,6 +184,44 @@
         "section": "Principles",
         "snippet": "called the log-likelihood"
       },
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.llr",
+        "module": "Mathlib.MeasureTheory.Measure.LogLikelihoodRatio",
+        "match_kind": null
+      },
+      "note": "Mathlib defines the log-likelihood ratio (log of the Radon-Nikodym derivative), a closely related object but not the log-likelihood of a parameter.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Principles",
+          "snippet": "called the log-likelihood"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\ell (\\theta \\,;\\mathbf {y} )=\\ln {\\mathcal {L}}_{n}(\\theta \\,;\\mathbf {y} )~.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {\\partial \\ell }{\\partial \\theta _{1}}}=0,\\quad {\\frac {\\partial \\ell }{\\partial \\theta _{2}}}=0,\\quad \\ldots ,\\quad {\\frac {\\partial \\ell }{\\partial \\theta _{k}}}=0~,}"
+        }
+      ],
+      "id": "2119eb3c9fe1"
+    },
+    {
+      "kind": "proposition",
+      "label": "Log preserves the argmax of the likelihood",
+      "anchor": {
+        "section": "Principles",
+        "snippet": "Since the logarithm is a monotonic function"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "Real.log_lt_log_iff",
+        "module": "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Strict monotonicity of log on the positive reals is formalized; the corresponding argmax-preservation for the likelihood is not stated.",
       "provenance": "ai-agent1"
     },
     {
@@ -83,7 +231,29 @@
         "section": "Principles",
         "snippet": "known as the likelihood equations"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsLocalExtr.fderiv_eq_zero",
+        "module": "Mathlib.Analysis.Calculus.LocalExtr.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib has Fermat's interior-extremum theorem (gradient vanishes at a local extremum), the general form of the first-order likelihood equations.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Principles",
+          "snippet": "known as the likelihood equations"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\ell (\\theta \\,;\\mathbf {y} )=\\ln {\\mathcal {L}}_{n}(\\theta \\,;\\mathbf {y} )~.}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {\\partial \\ell }{\\partial \\theta _{1}}}=0,\\quad {\\frac {\\partial \\ell }{\\partial \\theta _{2}}}=0,\\quad \\ldots ,\\quad {\\frac {\\partial \\ell }{\\partial \\theta _{k}}}=0~,}"
+        }
+      ],
+      "id": "e5bf66cce0ad"
     },
     {
       "kind": "proposition",
@@ -92,7 +262,15 @@
         "section": "Principles",
         "snippet": "as this indicates local concavity"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "isLocalMin_of_deriv_deriv_pos",
+        "module": "Mathlib.Analysis.Calculus.DerivativeTest",
+        "match_kind": null
+      },
+      "note": "Mathlib has the one-dimensional second-derivative test, but not the multivariate negative-definite-Hessian criterion.",
+      "provenance": "ai-agent1",
+      "id": "4ae498a19832"
     },
     {
       "kind": "definition",
@@ -101,7 +279,15 @@
         "section": "Restricted parameter space",
         "snippet": "means to find the maximum of the likelihood function subject to the constraint"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsLocalExtrOn.exists_multipliers_of_hasStrictFDerivAt",
+        "module": "Mathlib.Analysis.Calculus.LagrangeMultipliers",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes constrained extrema via the Lagrange multipliers theorem, but not its MLE specialization.",
+      "provenance": "ai-agent1",
+      "id": "38280109bcae"
     },
     {
       "kind": "proposition",
@@ -110,7 +296,25 @@
         "section": "Restricted parameter space",
         "snippet": "leads to the restricted likelihood equations"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "IsLocalExtrOn.exists_multipliers_of_hasStrictFDerivAt",
+        "module": "Mathlib.Analysis.Calculus.LagrangeMultipliers",
+        "match_kind": "generalization"
+      },
+      "note": "The Lagrange multiplier theorem yielding stationarity of a Lagrangian is formalized, but not the restricted likelihood equations specifically.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Restricted parameter space",
+          "snippet": "leads to the restricted likelihood equations"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\frac {\\partial \\ell }{\\partial \\theta }}-{\\frac {\\partial h(\\theta )^{\\mathsf {T}}}{\\partial \\theta }}\\lambda =0}"
+        }
+      ],
+      "id": "d479ddb5ca6b"
     },
     {
       "kind": "definition",
@@ -119,7 +323,15 @@
         "section": "Restricted parameter space",
         "snippet": "known as the Lagrange multiplier test"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The score/Lagrange-multiplier statistical hypothesis test is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "66940f0ead81"
     },
     {
       "kind": "definition",
@@ -128,7 +340,15 @@
         "section": "Nonparametric maximum likelihood estimation",
         "snippet": "can be performed using the empirical likelihood"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Empirical likelihood and nonparametric MLE are absent from Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "a4c98a39af68"
     },
     {
       "kind": "definition",
@@ -137,7 +357,25 @@
         "section": "Properties",
         "snippet": "is an extremum estimator obtained by maximizing"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The framework of extremum estimators is not present in Mathlib.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Properties",
+          "snippet": "is an extremum estimator obtained by maximizing"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\widehat {\\ell \\,}}(\\theta \\,;x)=\\sum _{i=1}^{n}\\ln f(x_{i}\\mid \\theta ),}"
+        }
+      ],
+      "id": "a5103e50ca36"
     },
     {
       "kind": "proposition",
@@ -146,7 +384,15 @@
         "section": "Properties",
         "snippet": "maximum likelihood estimation possesses a number of attractive limiting properties"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No asymptotic theory of MLEs is formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "27f476471a35"
     },
     {
       "kind": "theorem",
@@ -155,7 +401,15 @@
         "section": "Consistency",
         "snippet": "the maximum likelihood estimator is consistent"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "MLE consistency is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "59bc66189b02"
     },
     {
       "kind": "proposition",
@@ -164,7 +418,15 @@
         "section": "Consistency",
         "snippet": "converges in probability to its true value"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "MeasureTheory.TendstoInMeasure",
+        "module": "Mathlib.MeasureTheory.Function.ConvergenceInMeasure",
+        "match_kind": null
+      },
+      "note": "Convergence in probability (in measure) is defined in Mathlib, but its application to MLE consistency is not.",
+      "provenance": "ai-agent1",
+      "id": "fb663176d18a"
     },
     {
       "kind": "proposition",
@@ -173,7 +435,15 @@
         "section": "Consistency",
         "snippet": "the estimator converges almost surely"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.strong_law_ae",
+        "module": "Mathlib.Probability.StrongLaw",
+        "match_kind": null
+      },
+      "note": "Almost-sure convergence and the strong law of large numbers exist, but no almost-sure MLE consistency result.",
+      "provenance": "ai-agent1",
+      "id": "963847d4ba8a"
     },
     {
       "kind": "proposition",
@@ -182,7 +452,25 @@
         "section": "Consistency",
         "snippet": "different parameter values θ correspond to different distributions within the model"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Model identifiability (injectivity of the parameter-to-distribution map) is not formalized as an MLE condition.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Consistency",
+          "snippet": "different parameter values θ correspond to different distributions within the model"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\theta \\neq \\theta _{0}\\quad \\Leftrightarrow \\quad f(\\cdot \\mid \\theta )\\neq f(\\cdot \\mid \\theta _{0}).}"
+        }
+      ],
+      "id": "45808718085a"
     },
     {
       "kind": "proposition",
@@ -191,7 +479,15 @@
         "section": "Consistency",
         "snippet": "the parameter space Θ of the model is compact"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Compactness exists as a general concept but not as a stated MLE-consistency hypothesis.",
+      "provenance": "ai-agent1",
+      "id": "f05510d8024d"
     },
     {
       "kind": "proposition",
@@ -200,7 +496,25 @@
         "section": "Consistency",
         "snippet": "is continuous in θ for almost all values of x"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Continuity is a general Mathlib concept but this MLE-consistency regularity condition is not stated.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Consistency",
+          "snippet": "is continuous in θ for almost all values of x"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {\\mathbb {P} } {\\Bigl [}\\;\\ln f(x\\mid \\theta )\\;\\in \\;C^{0}(\\Theta )\\;{\\Bigr ]}=1.}"
+        }
+      ],
+      "id": "9a6cd8c7ddc7"
     },
     {
       "kind": "proposition",
@@ -209,7 +523,29 @@
         "section": "Consistency",
         "snippet": "there exists D ( x ) integrable with respect to the distribution"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Integrable dominating functions exist generally, but this MLE dominance condition is not formalized.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Consistency",
+          "snippet": "there exists D ( x ) integrable with respect to the distribution"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\Bigl |}\\ln f(x\\mid \\theta ){\\Bigr |}&lt;D(x)\\quad {\\text{ for all }}\\theta \\in \\Theta .}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\sup _{\\theta \\in \\Theta }\\left|{\\widehat {\\ell \\,}}(\\theta \\mid x)-\\ell (\\theta )\\,\\right|\\ \\xrightarrow {\\text{p}} \\ 0.}"
+        }
+      ],
+      "id": "2cf29dd57a9a"
     },
     {
       "kind": "theorem",
@@ -218,7 +554,25 @@
         "section": "Consistency",
         "snippet": "the maximum likelihood estimator converges in distribution to a normal distribution"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.tendstoInDistribution_inv_sqrt_mul_sum",
+        "module": "Mathlib.Probability.CentralLimitTheorem",
+        "match_kind": null
+      },
+      "note": "The 1D central limit theorem (convergence in distribution to a Gaussian) is formalized, but not the asymptotic normality of the MLE.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Consistency",
+          "snippet": "the maximum likelihood estimator converges in distribution to a normal distribution"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\sqrt {n}}\\left({\\widehat {\\theta \\,}}_{\\mathrm {mle} }-\\theta _{0}\\right)\\ \\xrightarrow {d} \\ {\\mathcal {N}}\\left(0,\\,I^{-1}\\right)}"
+        }
+      ],
+      "id": "411f0edbed1b"
     },
     {
       "kind": "proposition",
@@ -227,7 +581,15 @@
         "section": "Functional invariance",
         "snippet": "is any transformation of"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Functional invariance of the MLE is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "9328f61b6f1d"
     },
     {
       "kind": "definition",
@@ -236,7 +598,15 @@
         "section": "Functional invariance",
         "snippet": "It maximizes the so-called profile likelihood"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Profile likelihood is not defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "b0e453a560c2"
     },
     {
       "kind": "proposition",
@@ -245,7 +615,15 @@
         "section": "Functional invariance",
         "snippet": "The MLE is also equivariant with respect to certain transformations of the data"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "MLE equivariance under data transformations is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "293f262a114c"
     },
     {
       "kind": "example",
@@ -254,7 +632,15 @@
         "section": "Functional invariance",
         "snippet": "the MLE parameters of the log-normal distribution are the same as those of the normal distribution fitted to the logarithm of the data"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This log-normal MLE example is not formalized (no MLE, and no log-normal distribution).",
+      "provenance": "ai-agent1",
+      "id": "0caf3e653bad"
     },
     {
       "kind": "theorem",
@@ -263,7 +649,15 @@
         "section": "Efficiency",
         "snippet": "asymptotically efficient, meaning that it reaches the Cramér–Rao bound"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither Fisher information nor the Cramér–Rao bound appears in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "3b59a0600872"
     },
     {
       "kind": "proposition",
@@ -272,7 +666,15 @@
         "section": "Efficiency",
         "snippet": "the bias of the maximum likelihood estimator is equal to zero up to the order"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Higher-order bias expansions of the MLE are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "2731e2ea0caf"
     },
     {
       "kind": "proposition",
@@ -281,7 +683,15 @@
         "section": "Second-order efficiency after correction for bias",
         "snippet": "θ mle has bias of order"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "MLE bias-order results are not formalized.",
+      "provenance": "ai-agent1",
+      "id": "1440a3f271fd"
     },
     {
       "kind": "definition",
@@ -290,7 +700,25 @@
         "section": "Second-order efficiency after correction for bias",
         "snippet": "is called the bias-corrected maximum likelihood estimator"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Bias-corrected MLEs are not defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Second-order efficiency after correction for bias",
+          "snippet": "is called the bias-corrected maximum likelihood estimator"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\widehat {\\theta \\,}}_{\\text{mle}}^{*}={\\widehat {\\theta \\,}}_{\\text{mle}}-{\\widehat {b\\,}}~.}"
+        }
+      ],
+      "id": "ef627a2da7c7"
     },
     {
       "kind": "proposition",
@@ -299,7 +727,15 @@
         "section": "Second-order efficiency after correction for bias",
         "snippet": "This bias-corrected estimator is second-order efficient"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Second-order efficiency is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "5452ccfb387c"
     },
     {
       "kind": "proposition",
@@ -308,7 +744,15 @@
         "section": "Relation to Bayesian inference",
         "snippet": "coincides with the most probable Bayesian estimator given a uniform prior distribution on the parameters"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither MAP estimation nor its equivalence with the MLE under a uniform prior is formalized.",
+      "provenance": "ai-agent1",
+      "id": "660077f200a9"
     },
     {
       "kind": "definition",
@@ -317,7 +761,15 @@
         "section": "Application of maximum-likelihood estimation in Bayes decision theory",
         "snippet": "the Bayes Decision Rule is stated as"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.bayesRisk",
+        "module": "Mathlib.Probability.Decision.Risk.Defs",
+        "match_kind": null
+      },
+      "note": "Mathlib formalizes Bayes risk in statistical decision theory, but not the Bayes decision rule itself as a stated optimal rule.",
+      "provenance": "ai-agent1",
+      "id": "809748a62b81"
     },
     {
       "kind": "proposition",
@@ -326,7 +778,29 @@
         "section": "Application of maximum-likelihood estimation in Bayes decision theory",
         "snippet": "the Bayes Decision rule can be reformulated as"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The reformulation of the Bayes rule under 0-1 loss (the MAP classifier) is not formalized.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Application of maximum-likelihood estimation in Bayes decision theory",
+          "snippet": "the Bayes Decision rule can be reformulated as"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\operatorname {\\mathbb {P} } (w_{i}\\mid x)={\\frac {\\operatorname {\\mathbb {P} } (x\\mid w_{i})\\operatorname {\\mathbb {P} } (w_{i})}{\\operatorname {\\mathbb {P} } (x)}},}"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle h_{\\text{Bayes}}={\\underset {w}{\\operatorname {arg\\;max} }}\\,{\\bigl [}\\,\\operatorname {\\mathbb {P} } (x\\mid w)\\,\\operatorname {\\mathbb {P} } (w)\\,{\\bigr ]}\\;,}"
+        }
+      ],
+      "id": "48a61fe7ef26"
     },
     {
       "kind": "proposition",
@@ -335,7 +809,15 @@
         "section": "Relation to minimizing Kullback–Leibler divergence and cross entropy",
         "snippet": "that maximizes the likelihood is asymptotically equivalent to finding the"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "InformationTheory.klDiv",
+        "module": "Mathlib.InformationTheory.KullbackLeibler.Basic",
+        "match_kind": null
+      },
+      "note": "KL divergence is defined in Mathlib, but the asymptotic equivalence of MLE with KL minimization is not.",
+      "provenance": "ai-agent1",
+      "id": "f5196aec2dbf"
     },
     {
       "kind": "proposition",
@@ -344,7 +826,15 @@
         "section": "Relation to minimizing Kullback–Leibler divergence and cross entropy",
         "snippet": "the MLE is also asymptotically minimizing cross entropy"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Cross entropy is not defined in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "5cb156e6d5c6"
     },
     {
       "kind": "proposition",
@@ -353,7 +843,15 @@
         "section": "Prediction bias",
         "snippet": "maximum likelihood prediction fails to propagate the uncertainty around the maximum likelihood parameter estimates into the prediction"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Prediction bias of MLE-based prediction is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "9f5590170496"
     },
     {
       "kind": "example",
@@ -362,7 +860,15 @@
         "section": "Discrete uniform distribution",
         "snippet": "of n is the number m on the drawn ticket"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The uniform distribution exists in Mathlib but this MLE example is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "07e40ac2f878"
     },
     {
       "kind": "example",
@@ -371,7 +877,15 @@
         "section": "Discrete distribution, finite parameter space",
         "snippet": "and so this is the maximum likelihood estimate for p"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This finite-parameter MLE example for a coin is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "5012e90bfc9b"
     },
     {
       "kind": "example",
@@ -380,7 +894,15 @@
         "section": "Discrete distribution, continuous parameter space",
         "snippet": "Thus the maximum likelihood estimator for p is"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Bernoulli/binomial distribution exists, but the MLE p̂ = x̄ is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "eb241796762b"
     },
     {
       "kind": "example",
@@ -389,7 +911,15 @@
         "section": "Discrete distribution, continuous parameter space",
         "snippet": "which is the maximum likelihood estimator for any sequence of n Bernoulli trials resulting in s 'successes'"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The MLE p̂ = s/n for Bernoulli trials is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "4e79e802f859"
     },
     {
       "kind": "example",
@@ -398,7 +928,15 @@
         "section": "Continuous distribution, continuous parameter space",
         "snippet": "Formally we say that the maximum likelihood estimator for"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The Gaussian distribution is formalized but its MLE example is not.",
+      "provenance": "ai-agent1",
+      "id": "f604ff140827"
     },
     {
       "kind": "proposition",
@@ -407,7 +945,15 @@
         "section": "Continuous distribution, continuous parameter space",
         "snippet": "which means that the maximum likelihood estimator"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Unbiasedness of the sample-mean MLE is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "263a741aebb4"
     },
     {
       "kind": "proposition",
@@ -416,7 +962,15 @@
         "section": "Continuous distribution, continuous parameter space",
         "snippet": "This means that the estimator"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The bias of the sample-variance MLE is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "9c9266a17bb6"
     },
     {
       "kind": "proposition",
@@ -425,7 +979,15 @@
         "section": "Continuous distribution, continuous parameter space",
         "snippet": "The normal log-likelihood at its maximum takes a particularly simple form"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The closed form of the normal log-likelihood at its maximum is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "8d54b119c3c1"
     },
     {
       "kind": "definition",
@@ -434,7 +996,15 @@
         "section": "Non-independent variables",
         "snippet": "are independent only if their joint probability density function is the product of the individual probability density functions"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.indepFun_iff_map_prod_eq_prod_map_map",
+        "module": "Mathlib.Probability.Independence.Basic",
+        "match_kind": "generalization"
+      },
+      "note": "Mathlib characterizes independence by the joint law factoring as a product of marginal laws (the measure-level analogue of the density factorization).",
+      "provenance": "ai-agent1",
+      "id": "835e8fcfd7ec"
     },
     {
       "kind": "definition",
@@ -443,7 +1013,15 @@
         "section": "Non-independent variables",
         "snippet": "then follows a multivariate normal distribution given by"
       },
-      "provenance": "ai-agent1"
+      "status": "formalized",
+      "mathlib": {
+        "decl": "ProbabilityTheory.multivariateGaussian",
+        "module": "Mathlib.Probability.Distributions.Gaussian.Multivariate",
+        "match_kind": "generalization"
+      },
+      "note": "The multivariate Gaussian distribution with mean and covariance is defined in Mathlib for general finite dimension.",
+      "provenance": "ai-agent1",
+      "id": "88d68edea610"
     },
     {
       "kind": "definition",
@@ -452,7 +1030,15 @@
         "section": "Non-independent variables",
         "snippet": "In the bivariate case, the joint probability density function is given by"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "ProbabilityTheory.multivariateGaussian",
+        "module": "Mathlib.Probability.Distributions.Gaussian.Multivariate",
+        "match_kind": "special_case"
+      },
+      "note": "The bivariate normal is the 2-dimensional case of the formalized multivariate Gaussian, but the explicit ρ-parametrized density is not separately stated.",
+      "provenance": "ai-agent1",
+      "id": "9aebdebf3b24"
     },
     {
       "kind": "example",
@@ -461,7 +1047,15 @@
         "section": "Example",
         "snippet": "is called the multinomial and has the form"
       },
-      "provenance": "ai-agent1"
+      "status": "partial",
+      "mathlib": {
+        "decl": "Nat.multinomial",
+        "module": "Mathlib.Data.Nat.Choose.Multinomial",
+        "match_kind": null
+      },
+      "note": "The multinomial coefficient is formalized, but the multinomial probability distribution itself is not.",
+      "provenance": "ai-agent1",
+      "id": "985508bc50c1"
     },
     {
       "kind": "example",
@@ -470,7 +1064,15 @@
         "section": "Example",
         "snippet": "the most natural estimate is derived"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This worked multinomial MLE example via Lagrange multipliers is not formalized.",
+      "provenance": "ai-agent1",
+      "id": "38ecac32d3a7"
     },
     {
       "kind": "proposition",
@@ -479,7 +1081,25 @@
         "section": "Iterative procedures",
         "snippet": "cannot be solved explicitly for an estimator"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "This is an informal observation with no formal counterpart in Mathlib.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Iterative procedures",
+          "snippet": "cannot be solved explicitly for an estimator"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\widehat {\\theta }}_{r+1}={\\widehat {\\theta }}_{r}+\\eta _{r}\\mathbf {d} _{r}\\left({\\widehat {\\theta }}\\right)}"
+        }
+      ],
+      "id": "354db22f05ff"
     },
     {
       "kind": "definition",
@@ -488,7 +1108,25 @@
         "section": "Iterative procedures",
         "snippet": "algorithms based on an updating formula of the form"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Generic numerical optimization update schemes are not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Iterative procedures",
+          "snippet": "algorithms based on an updating formula of the form"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle {\\widehat {\\theta }}_{r+1}={\\widehat {\\theta }}_{r}+\\eta _{r}\\mathbf {d} _{r}\\left({\\widehat {\\theta }}\\right)}"
+        }
+      ],
+      "id": "89ff0c6230ab"
     },
     {
       "kind": "definition",
@@ -497,7 +1135,15 @@
         "section": "Gradient descent method",
         "snippet": "Gradient descent method requires to calculate the gradient at the r -th iteration"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Gradient descent is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "17f8e308b6fe"
     },
     {
       "kind": "definition",
@@ -506,7 +1152,15 @@
         "section": "Newton–Raphson method",
         "snippet": "is the inverse of the Hessian matrix of the log-likelihood function"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Mathlib's Newton map is for polynomial root-finding over rings, not the inverse-Hessian optimization step.",
+      "provenance": "ai-agent1",
+      "id": "689ae91df16d"
     },
     {
       "kind": "definition",
@@ -515,7 +1169,15 @@
         "section": "Newton–Raphson method",
         "snippet": "approximates the Hessian with the outer product of the expected gradient"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The BHHH algorithm is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "fdf53aad4336"
     },
     {
       "kind": "definition",
@@ -524,7 +1186,15 @@
         "section": "Quasi-Newton methods",
         "snippet": "use more elaborate secant updates to give approximation of Hessian matrix"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Quasi-Newton secant updates are not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "e689a65d7050"
     },
     {
       "kind": "definition",
@@ -533,7 +1203,25 @@
         "section": "Davidon–Fletcher–Powell formula",
         "snippet": "DFP formula finds a solution that is symmetric, positive-definite and closest to the current approximate value of second-order derivative"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The DFP formula is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "anchors": [
+        {
+          "section": "Davidon–Fletcher–Powell formula",
+          "snippet": "DFP formula finds a solution that is symmetric, positive-definite and closest to the current approximate value of second-order derivative"
+        },
+        {
+          "type": "math_alttext",
+          "value": "{\\displaystyle \\mathbf {H} _{k+1}=\\left(I-\\gamma _{k}y_{k}s_{k}^{\\mathsf {T}}\\right)\\mathbf {H} _{k}\\left(I-\\gamma _{k}s_{k}y_{k}^{\\mathsf {T}}\\right)+\\gamma _{k}y_{k}y_{k}^{\\mathsf {T}},}"
+        }
+      ],
+      "id": "aa8d46f60092"
     },
     {
       "kind": "definition",
@@ -542,7 +1230,15 @@
         "section": "Broyden–Fletcher–Goldfarb–Shanno algorithm",
         "snippet": "BFGS also gives a solution that is symmetric and positive-definite"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The BFGS algorithm is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "69408a54caea"
     },
     {
       "kind": "proposition",
@@ -551,7 +1247,15 @@
         "section": "Broyden–Fletcher–Goldfarb–Shanno algorithm",
         "snippet": "BFGS method is not guaranteed to converge unless the function has a quadratic Taylor expansion near an optimum"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "BFGS convergence results are not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "c4a991be8bb1"
     },
     {
       "kind": "definition",
@@ -560,7 +1264,15 @@
         "section": "Fisher's scoring",
         "snippet": "to replace the Hessian with the Fisher information matrix"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Fisher scoring is not formalized; Mathlib has no Fisher information matrix.",
+      "provenance": "ai-agent1",
+      "id": "ec2e269d073f"
     },
     {
       "kind": "proposition",
@@ -569,7 +1281,15 @@
         "section": "Fisher's scoring",
         "snippet": "may converge to a stationary point that is not necessarily a local or global maximum"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Convergence behavior of quasi-Newton iterations is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "6a79c5ec13fc"
     },
     {
       "kind": "theorem",
@@ -578,7 +1298,15 @@
         "section": "History",
         "snippet": "now called Wilks' theorem"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Wilks' theorem is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "e6d65116adab"
     },
     {
       "kind": "theorem",
@@ -587,7 +1315,15 @@
         "section": "History",
         "snippet": "is asymptotically χ 2 -distributed"
       },
-      "provenance": "ai-agent1"
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The asymptotic chi-squared distribution of the likelihood-ratio statistic is not formalized in Mathlib.",
+      "provenance": "ai-agent1",
+      "id": "de6cd2d127b8"
     }
   ]
 }

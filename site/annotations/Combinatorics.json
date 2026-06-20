@@ -91,6 +91,54 @@
       "id": "e3f039671d0f"
     },
     {
+      "kind": "example",
+      "label": "Pascal's triangle / arithmetical triangle",
+      "anchor": {
+        "section": "History",
+        "snippet": "would eventually become known as Pascal's triangle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.choose_succ_succ",
+        "module": "Mathlib.Data.Nat.Choose.Basic",
+        "match_kind": "invocation"
+      },
+      "note": "Pascal's rule `choose (n+1) (k+1) = choose n k + choose n (k+1)` underlies the triangle.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Hamiltonian cycles in Cayley graphs",
+      "anchor": {
+        "section": "History",
+        "snippet": "what is now known as Hamiltonian cycles in certain Cayley graphs on permutations"
+      },
+      "status": "partial",
+      "mathlib": {
+        "decl": "SimpleGraph.Walk.IsHamiltonianCycle",
+        "module": "Mathlib.Combinatorics.SimpleGraph.Hamiltonian",
+        "match_kind": "invocation"
+      },
+      "note": "Hamiltonian cycles are formalized as `SimpleGraph.Walk.IsHamiltonianCycle`; the Cayley-graph-on-permutations specialization is not.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Four color theorem",
+      "anchor": {
+        "section": "History",
+        "snippet": "especially in connection with the four color problem"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "The four color theorem is not formalized in Mathlib (Gonthier's Coq proof is separate).",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Enumerative combinatorics",
       "anchor": {
@@ -106,6 +154,22 @@
       "note": "Subfield description; Mathlib has `Mathlib/Combinatorics/Enumerative/` but no formal definition of the area.",
       "provenance": "ai",
       "id": "b84c8df2e6d4"
+    },
+    {
+      "kind": "example",
+      "label": "Fibonacci numbers",
+      "anchor": {
+        "section": "Enumerative combinatorics",
+        "snippet": "Fibonacci numbers is the basic example of a problem in enumerative combinatorics"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Nat.fib",
+        "module": "Mathlib.Data.Nat.Fib.Basic",
+        "match_kind": "exact"
+      },
+      "note": "Fibonacci numbers are defined as `Nat.fib` in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "example",
@@ -176,6 +240,22 @@
       "id": "ec8938b45482"
     },
     {
+      "kind": "example",
+      "label": "Tutte polynomial",
+      "anchor": {
+        "section": "Graph theory",
+        "snippet": "does the Tutte polynomial T G ( x , y ) have a combinatorial interpretation"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "No Tutte polynomial declaration found in Mathlib.",
+      "provenance": "ai"
+    },
+    {
       "kind": "definition",
       "label": "Design theory",
       "anchor": {
@@ -218,11 +298,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Configuration",
+        "decl": "Configuration.Nondegenerate",
         "module": "Mathlib.Combinatorics.Configuration",
         "match_kind": "invocation"
       },
-      "note": "`Mathlib/Combinatorics/Configuration.lean` covers projective-plane-style finite incidence configurations, but the field is not defined as such.",
+      "note": "`Mathlib/Combinatorics/Configuration.lean` covers projective-plane-style finite incidence configurations via `Configuration.Nondegenerate`, but the field is not defined as such.",
       "provenance": "ai",
       "id": "e67bea3c51a7"
     },
@@ -236,12 +316,44 @@
       "status": "partial",
       "mathlib": {
         "decl": "PartialOrder",
-        "module": "Mathlib.Order.Defs",
+        "module": "Mathlib.Order.Defs.PartialOrder",
         "match_kind": "invocation"
       },
       "note": "Partial orders are extensively formalized under `Mathlib/Order/`, though the subfield itself is not a formal object.",
       "provenance": "ai",
       "id": "c0ea7396a36e"
+    },
+    {
+      "kind": "example",
+      "label": "Lattices",
+      "anchor": {
+        "section": "Order theory",
+        "snippet": "Notable classes and examples of partial orders include lattices and Boolean algebras"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Lattice",
+        "module": "Mathlib.Order.Lattice",
+        "match_kind": "exact"
+      },
+      "note": "Lattices are formalized as the `Lattice` typeclass with extensive API.",
+      "provenance": "ai"
+    },
+    {
+      "kind": "example",
+      "label": "Boolean algebras",
+      "anchor": {
+        "section": "Order theory",
+        "snippet": "lattices and Boolean algebras"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "BooleanAlgebra",
+        "module": "Mathlib.Order.BooleanAlgebra.Defs",
+        "match_kind": "exact"
+      },
+      "note": "Boolean algebras are formalized as the `BooleanAlgebra` typeclass.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -327,6 +439,22 @@
       "note": "The Hales–Jewett theorem (a Ramsey-type result) is formalized, but Ramsey's theorem itself is not stated directly.",
       "provenance": "ai",
       "id": "259ed965a5dc"
+    },
+    {
+      "kind": "theorem",
+      "label": "Pigeonhole principle",
+      "anchor": {
+        "section": "Extremal combinatorics",
+        "snippet": "It is an advanced generalization of the pigeonhole principle"
+      },
+      "status": "formalized",
+      "mathlib": {
+        "decl": "Finset.exists_ne_map_eq_of_card_lt_of_maps_to",
+        "module": "Mathlib.Data.Finset.Card",
+        "match_kind": "exact"
+      },
+      "note": "The pigeonhole principle is formalized as `Finset.exists_ne_map_eq_of_card_lt_of_maps_to`.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -473,11 +601,11 @@
       },
       "status": "partial",
       "mathlib": {
-        "decl": "Finset.CauchyDavenport",
+        "decl": "ZMod.cauchy_davenport",
         "module": "Mathlib.Combinatorics.Additive.CauchyDavenport",
         "match_kind": "invocation"
       },
-      "note": "Many additive number theory results are in `Mathlib/Combinatorics/Additive/`, but the subfield itself has no formal definition.",
+      "note": "Many additive number theory results are in `Mathlib/Combinatorics/Additive/` (e.g. `ZMod.cauchy_davenport`), but the subfield itself has no formal definition.",
       "provenance": "ai",
       "id": "d7d8ed7ee9b9"
     },
@@ -497,6 +625,22 @@
       "note": "Subfield description; no formal definition in Mathlib.",
       "provenance": "ai",
       "id": "974a1892b575"
+    },
+    {
+      "kind": "example",
+      "label": "Martin's axiom",
+      "anchor": {
+        "section": "Infinitary combinatorics",
+        "snippet": "extensions of Ramsey's theorem , and Martin's axiom"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Grep finds no `MartinAxiom` declaration in Mathlib.",
+      "provenance": "ai"
     },
     {
       "kind": "definition",
@@ -582,6 +726,22 @@
       "note": "Grep for `Ising` returns no hits in Mathlib.",
       "provenance": "ai",
       "id": "35041bde31ed"
+    },
+    {
+      "kind": "example",
+      "label": "Potts model and chromatic/Tutte polynomials",
+      "anchor": {
+        "section": "Combinatorics and physics",
+        "snippet": "a connection between the Potts model on one hand, and the chromatic and Tutte polynomials on the other hand"
+      },
+      "status": "not_formalized",
+      "mathlib": {
+        "decl": null,
+        "module": null,
+        "match_kind": null
+      },
+      "note": "Neither the Potts model nor the chromatic/Tutte polynomial connection is formalized in Mathlib.",
+      "provenance": "ai"
     }
   ]
 }
