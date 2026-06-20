@@ -37,6 +37,7 @@ wikifunctions/
 ├── build_join.py                   ← step 1: measure the addressable set
 ├── build_specs.py                  ← step 2: enrich with each function's Wikifunctions interface
 ├── WikifunctionsSpecs.lean         ← the Lean spec corpus (builds green vs Mathlib, zero sorry)
+├── WikifunctionsEval.lean          ← verified composite-evaluator PoC: proves Z13701's composite correct
 ├── WIKIFUNCTIONS_SPECS.md          ← human-readable report (per-function table, faithfulness, pilots)
 └── data/
     ├── wikifunctions_universe.jsonl      ← all 1,904 Wikidata items with a wikifunctions sitelink (QID→ZID)
@@ -70,14 +71,34 @@ cp wikifunctions/WikifunctionsSpecs.lean <mathlib4>/Scratch.lean
 cd <mathlib4> && lake env lean Scratch.lean   # exit 0, no errors/warnings
 ```
 
+## Verified composite evaluator (PoC)
+
+`WikifunctionsEval.lean` is the first "verified for real" result. It gives a small **deep
+embedding** of the Wikifunctions composition language — the `Z7` call / `Z18` argument-reference
+model that composite implementations (`Z14K2`) are built from — with a total evaluator
+(`eval`/`evalArgs`, mutual structural recursion). It then proves that `Z13701`'s real composite
+implementation `Z13702 = equals(gcd(K₁,K₂), 1)` evaluates to exactly Mathlib's `Nat.Coprime`:
+
+```
+theorem coprimeComposite_correct (a b : Nat) :
+    eval [.nat a, .nat b] coprimeComposite = some (.bool (decide (Nat.Coprime a b)))
+```
+
+The composite **inherits** correctness from (i) the leaf semantics (`gcd ↦ Nat.gcd`,
+`natEq ↦ decidable equality), each its own Mathlib spec, and (ii) the evaluator — the
+compositional verification story. Builds green; `#print axioms` reports only `[propext]` (no
+`sorry`, no `Classical.choice`, no `native_decide`). The executable `#eval`s reproduce
+Wikifunctions' own testers (e.g. `coprime(64,99) = true` is tester `Z13703`).
+
 ## Status
 
 25 addressable functions (of 1,904 Wikifunctions linked to Wikidata): **15 composite_provable
-· 9 oracle_testable · 1 spec_only**. The Lean file builds green with zero `sorry` and no axiom
+· 9 oracle_testable · 1 spec_only**. The Lean files build green with zero `sorry` and no axiom
 cheats. A notable cross-check: only 9/25 of WikiLean's AI-generated mappings were faithful for
 spec purposes as originally tagged (many pointed at a *typeclass* rather than the operation);
 the review pass corrected each to a computable oracle. See
 [WIKIFUNCTIONS_SPECS.md](WIKIFUNCTIONS_SPECS.md).
 
-**Next:** a Tier-2 differential harness — run these oracles against the live Wikifunctions
-evaluator API (pilot: coprime `Z13701`).
+**Next:** (a) generalize the evaluator embedding to the other 21 composite functions (each leaf
+gets a Mathlib-backed spec, composites verify by reduction); (b) a Tier-2 differential harness —
+run these oracles against the live Wikifunctions evaluator API (pilot: coprime `Z13701`).
