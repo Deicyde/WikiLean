@@ -160,6 +160,24 @@ def tick(mathlib, dry, no_open=False):
         st["settled_pr"] = pr; STATE.write_text(json.dumps(st, indent=1))
 
 
+def decide():
+    """Cheap, GitHub-only verdict — would this tick ACT (open/settle/self-heal)
+    or WAIT? Mirrors tick()'s branch logic but touches no filesystem/mathlib, so
+    CI can run it first and skip the heavy elan/lake/claude/clone setup on the
+    (vast majority) no-op ticks. Returns 'act' | 'wait'."""
+    st = json.loads(STATE.read_text()) if STATE.exists() else {}
+    pr = st.get("current_pr")
+    if not pr:
+        return "act"                                   # open the first batch
+    if settle.is_merged(pr, REPO):
+        return "act"                                   # merged -> open next
+    if gh_state(pr) != "OPEN":
+        return "wait"                                  # closed-not-merged -> manual
+    if st.get("settled_pr") == pr:                     # settled -> only the CI self-heal acts
+        return "act" if (st.get("retriggered_pr") != pr and ci_cache_flake(pr, REPO)) else "wait"
+    return "act" if settle.classify(pr, REPO)["gate"] else "wait"   # gate met -> settle
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--mathlib", type=Path, required=True)
@@ -167,7 +185,12 @@ def main():
     ap.add_argument("--watch", type=int, default=0, help="poll every N seconds (0 = one tick)")
     ap.add_argument("--no-open", action="store_true",
                     help="on merge, alert instead of auto-opening the next batch (supervise the first open)")
+    ap.add_argument("--decide", action="store_true",
+                    help="print POLL_DECISION=act|wait (gh-only, no mathlib) and exit; CI gate")
     args = ap.parse_args()
+    if args.decide:
+        print(f"POLL_DECISION={decide()}")
+        return
     dry = not args.apply
     while True:
         tick(args.mathlib, dry, args.no_open)

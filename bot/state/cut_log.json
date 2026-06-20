@@ -1,0 +1,74 @@
+[
+ {
+  "qid": "Q831672",
+  "file": "Mathlib/Combinatorics/SimpleGraph/Acyclic.lean",
+  "notes": [],
+  "triage": {
+   "decision": "cut",
+   "suggested_decl": "SimpleGraph.Connected.exists_isTree_le",
+   "confirmed_exists": false,
+   "fix_hint": "No spanning-tree existence lemma by that name; only SimpleGraph.IsTree (a tree predicate) exists, which is the wrong concept (tree vs spanning tree).",
+   "reason": "Suggested declaration SimpleGraph.Connected.exists_isTree_le does not exist in Mathlib (apply: 'decl head not found')."
+  }
+ },
+ {
+  "qid": "Q1783179",
+  "file": "Mathlib/LinearAlgebra/UnitaryGroup.lean",
+  "notes": [
+   {
+    "login": "jcommelin",
+    "status": "reject",
+    "text": "In fact, there are two (isomorphic) ways to approach orthogonal groups. Via matrices (which is what the Lean snippet is about) and via Euclidean spaces, or more generally spaces with a symmetric bilinear form (which is what the wikidata QID is about. I'm not sure what the status of the latter approach is in Mathlib, but it would be best to tag that. Or maybe both."
+   }
+  ],
+  "triage": {
+   "decision": "cut",
+   "suggested_decl": "",
+   "confirmed_exists": false,
+   "fix_hint": "Drop; only Matrix.orthogonalGroup and BilinForm.orthogonal (a subspace) exist.",
+   "reason": "No orthogonal-group-via-bilinear/quadratic-form in Mathlib."
+  }
+ },
+ {
+  "qid": "Q374195",
+  "file": "Mathlib/Dynamics/Newton.lean",
+  "verdicts": {
+   "Deicyde": "reject"
+  },
+  "reason": "objection (reject/revise)",
+  "notes": [
+   {
+    "login": "Deicyde",
+    "status": "reject",
+    "text": "This is just the map itself, but says nothing about the iteration behavior / method of finding roots. We want something more like Wikipedia's \"Proof of quadratic convergence for Newton's iterative method\""
+   }
+  ],
+  "triage": {
+   "decision": "cut",
+   "reason": "Reviewer wants the quadratic-convergence theorem for Newton's method, not the map itself; Mathlib's Dynamics/Newton.lean defines the iteration map but does not contain a clean convergence theorem suitable as the Q374195 target.",
+   "suggested_decl": "",
+   "fix_hint": ""
+  }
+ },
+ {
+  "qid": "Q11210",
+  "file": "Mathlib/LinearAlgebra/Basis/Defs.lean",
+  "verdicts": {
+   "Deicyde": "reject"
+  },
+  "reason": "objection (reject/revise)",
+  "notes": [
+   {
+    "login": "Deicyde",
+    "status": "reject",
+    "text": "This does not cover polar/spherical/hyperbolic coordinate systems as discussed in the Wikipedia article. \"Coordinate system\" is a much more general concept. Instead, we should tag `Basis` with Q189569 (Basis)"
+   }
+  ],
+  "triage": {
+   "decision": "cut",
+   "reason": "Q11210 (Coordinate system) is too general for any single Mathlib declaration; reviewer's suggested retarget (Basis \u2194 Q189569) is a different QID and belongs in a fresh tag, not a fix to this one.",
+   "suggested_decl": "",
+   "fix_hint": ""
+  }
+ }
+]
