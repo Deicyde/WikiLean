@@ -124,6 +124,8 @@ def apply_all(approved: dict, mathlib: Path) -> list[dict]:
     results = []
     for t in approved["tags"]:
         p = mathlib / t["file"]
+        if not p.exists():  # defensive: untaggable file (e.g. Lean core) — never crash
+            results.append({**t, "ok": False, "msg": "file not in mathlib tree (skipped)"}); continue
         lines = p.read_text(encoding="utf-8").splitlines()
         idx = find_decl_line(lines, t["decl"])
         if idx is None:
@@ -276,6 +278,20 @@ def main():
     args = ap.parse_args()
 
     approved = json.loads(args.approved.read_text(encoding="utf-8"))
+
+    # Lean *core* decls (Rat, Dvd.dvd, HPow.hPow, …) live in Init/… inside the
+    # toolchain, NOT the mathlib repo, so they can't carry an @[wikidata] attribute
+    # from here — and apply_all would FileNotFoundError on the read, aborting the
+    # WHOLE batch. Drop any tag whose file isn't present in the checkout, up front,
+    # so it's excluded from apply, build, and the PR alike.
+    keep, drop = [], []
+    for t in approved["tags"]:
+        (keep if (args.mathlib / t["file"]).exists() else drop).append(t)
+    if drop:
+        print(f"  dropping {len(drop)} untaggable tag(s) — file not in mathlib tree:")
+        for t in drop:
+            print(f"    - {t['qid']:10s} {t['decl']:28s} ({t['file']})")
+        approved["tags"] = keep
 
     if args.apply or args.all:
         print(f"=== apply {len(approved['tags'])} tags ===")
