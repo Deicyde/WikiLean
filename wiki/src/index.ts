@@ -371,7 +371,7 @@ type WriteBatch = [BatchItem<"sqlite">, ...BatchItem<"sqlite">[]];
 // longer copies index.html/sitemap.xml into wiki/public/ — the asset layer
 // runs BEFORE the Worker and would otherwise shadow these paths.
 app.get("/", async (c) => {
-  const cacheKey = "page:home:v2";
+  const cacheKey = "page:home:v3";  // v3: dark-mode theme script + toggle
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const db = drizzle(c.env.DB);
@@ -412,7 +412,7 @@ app.get("/sitemap.xml", async (c) => {
 // is KV-cached with a long TTL; bump the cache key suffix when the page or the
 // embedded data changes.
 app.get("/wikifunctions", async (c) => {
-  const cacheKey = "page:wikifunctions:v1";
+  const cacheKey = "page:wikifunctions:v2";  // v2: dark-mode theme script + toggle
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const html = wikifunctionsPage();
@@ -426,7 +426,7 @@ app.get("/wikifunctions", async (c) => {
 // cache pattern; bump the suffix when the page copy changes. Registered before
 // the /:slug catch-all (which only matches a single path segment anyway).
 app.get("/wikifunctions/verify", async (c) => {
-  const cacheKey = "page:wikifunctions-verify:v1";
+  const cacheKey = "page:wikifunctions-verify:v2";  // v2: dark-mode theme script + toggle
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const html = wikifunctionsVerifyPage();
@@ -440,7 +440,7 @@ app.get("/wikifunctions/verify", async (c) => {
 // Annotation blobs are never parsed here. KV-cached with TTL-only
 // invalidation (a write can be up to 5 minutes stale — fine for a dashboard).
 app.get("/stats", async (c) => {
-  const cacheKey = "page:stats:v1";
+  const cacheKey = "page:stats:v2";  // v2: dark-mode theme script + toggle
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const db = drizzle(c.env.DB);
