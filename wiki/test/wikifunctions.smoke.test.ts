@@ -24,4 +24,16 @@ describe("wikifunctions tracker page", () => {
     expect(html).toContain("builds green against Mathlib");
     expect(html).toContain('<a href="/wikifunctions">Wikifunctions</a>');
   });
+  it("carries the site-wide dark-mode pattern (no-FOUC script, toggle, dark CSS)", () => {
+    // No-FOUC theme bootstrap reads the persisted theme / OS preference.
+    expect(html).toContain('localStorage.getItem("wl-theme")');
+    expect(html).toContain("prefers-color-scheme: dark");
+    expect(html).toContain("document.documentElement.dataset.theme=t");
+    // The toggle button.
+    expect(html).toContain('id="wl-theme-toggle"');
+    expect(html).toContain('class="wl-theme-toggle"');
+    // At least one dark-theme rule, and the shared dark palette anchor color.
+    expect(html).toContain('[data-theme="dark"]');
+    expect(html).toContain("--paper:#1a1816");
+  });
 });

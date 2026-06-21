@@ -137,6 +137,14 @@ export function wikifunctionsPage(): string {
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Wikifunctions formalization — WikiLean">
 <meta name="twitter:description" content="25 Wikifunctions pinned to a computable Mathlib oracle and a verified Lean spec.">
+<script>
+/* Set the theme attr BEFORE the stylesheet parses so dark mode applies on first
+   paint (no flash). Priority: localStorage > OS preference > light default. The
+   toggle in the header (script at the bottom of body) flips dark/light. */
+(function(){try{var s=localStorage.getItem("wl-theme");
+var t=s==="dark"||s==="light"?s:(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
+document.documentElement.dataset.theme=t;}catch(e){}})();
+</script>
 <style>
 :root {
   --paper:#f7f4ee; --surface:#fffdf9; --ink:#1f1d1a; --muted:#5f594e;
@@ -146,6 +154,30 @@ export function wikifunctionsPage(): string {
   --serif:Charter,'Bitstream Charter','Iowan Old Style',Georgia,'Times New Roman',serif;
   --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
 }
+/* Dark mode — remap the warm-light token palette to the shared dark scheme
+   (matches pages.ts / style.css). One override block recolors everything that
+   uses the vars; the few hardcoded colors below get explicit dark overrides. */
+[data-theme="dark"] :root {
+  --paper:#1a1816; --surface:#232020; --ink:#ebe5d8; --muted:#9a9081;
+  --line:#3a3530; --line-strong:#4d4742; --accent:#6e9adf; --accent-dark:#8fb4e8;
+  --green:#8fd4ad; --yellow:#e2bf78; --red:#f08e85;
+}
+/* Hardcoded-color overrides for dark mode (inline code, tier tags, chips,
+   row-hover tints) so they stay legible on the dark surface. */
+[data-theme="dark"] .lede code { background:#2e2a2f; }
+[data-theme="dark"] .tt-composite_provable { color:#8fd4ad; border-color:#2f5b44; background:rgba(76,169,122,.16); }
+[data-theme="dark"] .tt-oracle_testable { color:#6e9adf; border-color:#33486a; background:rgba(110,154,223,.16); }
+[data-theme="dark"] .tt-spec_only { color:#e2bf78; border-color:#5c4f31; background:rgba(212,160,66,.16); }
+[data-theme="dark"] .fn-table tbody tr:hover { background:rgba(110,154,223,.08); }
+[data-theme="dark"] .chip.ok { color:#8fd4ad; background:rgba(76,169,122,.16); border-color:#2f5b44; }
+[data-theme="dark"] .chip.warn { color:#f08e85; background:rgba(226,104,95,.16); border-color:#6a3a36; }
+[data-theme="dark"] .chip.info { color:#e2bf78; background:rgba(212,160,66,.16); border-color:#5c4f31; }
+[data-theme="dark"] .crosscheck code { background:#2e2a2f; }
+/* Theme-toggle button (matches the article-page version in style.css). */
+.wl-theme-toggle { background:transparent; border:1px solid var(--line-strong); color:var(--muted);
+  border-radius:50%; width:28px; height:28px; padding:0; line-height:1; font-size:14px; cursor:pointer;
+  display:inline-flex; align-items:center; justify-content:center; }
+.wl-theme-toggle:hover { color:var(--ink); border-color:var(--accent); }
 * { box-sizing:border-box; }
 html { scroll-behavior:smooth; }
 body { margin:0; background:var(--paper); color:var(--ink); line-height:1.55;
@@ -264,6 +296,7 @@ footer a:hover { text-decoration:underline; }
     <a href="/article-graph">Article graph</a>
     <a href="/graph">Concept graph</a>
     <a href="/about">About &amp; method</a>
+    <button id="wl-theme-toggle" class="wl-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌓</button>
   </nav>
 </header>
 <main class="wrap">
@@ -349,6 +382,13 @@ ${sections}
       a project by <a href="https://jackmccarthy.org">Jack McCarthy</a></p>
   </footer>
 </main>
+<script>
+/* Theme toggle — flips dark/light and persists in localStorage. */
+(function(){var b=document.getElementById("wl-theme-toggle");if(!b)return;
+b.addEventListener("click",function(){var r=document.documentElement;
+var n=r.dataset.theme==="dark"?"light":"dark";r.dataset.theme=n;
+try{localStorage.setItem("wl-theme",n);}catch(e){}});})();
+</script>
 </body>
 </html>
 `;

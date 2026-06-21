@@ -137,11 +137,23 @@ export function renderArticlePage(input: PageInput): string {
 <meta property="og:description" content="${descEsc}">
 <meta property="og:url" content="${canonical}">
 <meta name="twitter:card" content="summary">
-<link rel="stylesheet" href="/assets/style.css?v=7">
+<script>
+/* Set the theme attr BEFORE the stylesheet parses so dark mode applies on
+   first paint (no flash of light content). Priority: localStorage > OS
+   preference > light default. The toggle in the header (script at the
+   bottom of body) flips between "dark" / "light" and persists in
+   localStorage. */
+(function(){try{var s=localStorage.getItem("wl-theme");
+var t=s==="dark"||s==="light"?s:(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
+document.documentElement.dataset.theme=t;}catch(e){}})();
+</script>
+<link rel="stylesheet" href="/assets/style.css?v=8">
 <style>
-.wl-attribution { max-width: 1000px; margin: 24px auto 40px; padding: 12px 16px 0; border-top: 1px solid #d8d0bd; color: #5f594e; font-size: 12px; line-height: 1.5; }
+/* Use the article-stylesheet's tokens so the attribution footer recolors in
+   dark mode along with the rest of the chrome. */
+.wl-attribution { max-width: 1000px; margin: 24px auto 40px; padding: 12px 16px 0; border-top: 1px solid var(--line-strong); color: var(--muted); font-size: 12px; line-height: 1.5; }
 .wl-attribution p { margin: 4px 0; }
-.wl-attribution a { color: #1a4b8c; text-decoration: none; }
+.wl-attribution a { color: var(--accent); text-decoration: none; }
 .wl-attribution a:hover { text-decoration: underline; }
 </style>
 </head>
@@ -155,6 +167,7 @@ export function renderArticlePage(input: PageInput): string {
       <a class="wl-navlink" href="/about">About</a>
       <a class="wl-navlink" href="/${encodeURIComponent(slug)}/history">History</a>
       <a class="wl-wikilink" href="https://en.wikipedia.org/wiki/${wpLink}" target="_blank" rel="noopener">view on Wikipedia ↗</a>
+      <button id="wl-theme-toggle" class="wl-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌓</button>
     </span>
   </div>
   <div class="wl-controls">
@@ -182,6 +195,14 @@ ${body}
 <div id="wl-tooltip" hidden></div>
 <script>
 window.__WL_ANNOTATIONS__ = ${data};
+</script>
+<script>
+/* Theme toggle. Flips between explicit "dark" / "light" and persists in
+   localStorage so the choice survives across articles. */
+(function(){var b=document.getElementById("wl-theme-toggle");if(!b)return;
+b.addEventListener("click",function(){var r=document.documentElement;
+var n=r.dataset.theme==="dark"?"light":"dark";r.dataset.theme=n;
+try{localStorage.setItem("wl-theme",n);}catch(e){}});})();
 </script>
 <script src="/assets/script.js?v=7"></script>
 </body>

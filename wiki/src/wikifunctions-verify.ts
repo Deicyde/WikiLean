@@ -60,6 +60,14 @@ export function wikifunctionsVerifyPage(): string {
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="How we verify Wikifunctions — WikiLean">
 <meta name="twitter:description" content="The deployed Python, proved equal to its Mathlib spec for all inputs — and cross-checked against real CPython.">
+<script>
+/* Set the theme attr BEFORE the stylesheet parses so dark mode applies on first
+   paint (no flash). Priority: localStorage > OS preference > light default. The
+   toggle in the header (script at the bottom of body) flips dark/light. */
+(function(){try{var s=localStorage.getItem("wl-theme");
+var t=s==="dark"||s==="light"?s:(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
+document.documentElement.dataset.theme=t;}catch(e){}})();
+</script>
 <style>
 :root {
   --paper:#f7f4ee; --surface:#fffdf9; --ink:#1f1d1a; --muted:#5f594e;
@@ -69,6 +77,26 @@ export function wikifunctionsVerifyPage(): string {
   --serif:Charter,'Bitstream Charter','Iowan Old Style',Georgia,'Times New Roman',serif;
   --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
 }
+/* Dark mode — remap the warm-light token palette to the shared dark scheme
+   (matches pages.ts / style.css). One override block recolors everything that
+   uses the vars; the few hardcoded colors below get explicit dark overrides. */
+[data-theme="dark"] :root {
+  --paper:#1a1816; --surface:#232020; --ink:#ebe5d8; --muted:#9a9081;
+  --line:#3a3530; --line-strong:#4d4742; --accent:#6e9adf; --accent-dark:#8fb4e8;
+  --green:#8fd4ad; --yellow:#e2bf78; --red:#f08e85;
+}
+/* Hardcoded-color overrides for dark mode (inline code chips, the Lean-line and
+   results/bounds inline-code backgrounds, the ZID badge) — kept legible on the
+   dark surface. */
+[data-theme="dark"] .lede code, [data-theme="dark"] .prose code,
+[data-theme="dark"] .lean-line, [data-theme="dark"] .results code,
+[data-theme="dark"] .bounds code { background:#2e2a2f; }
+[data-theme="dark"] .zid-badge { color:#6e9adf; background:rgba(110,154,223,.16); border-color:#33486a; }
+/* Theme-toggle button (matches the article-page version in style.css). */
+.wl-theme-toggle { background:transparent; border:1px solid var(--line-strong); color:var(--muted);
+  border-radius:50%; width:28px; height:28px; padding:0; line-height:1; font-size:14px; cursor:pointer;
+  display:inline-flex; align-items:center; justify-content:center; }
+.wl-theme-toggle:hover { color:var(--ink); border-color:var(--accent); }
 * { box-sizing:border-box; }
 html { scroll-behavior:smooth; }
 body { margin:0; background:var(--paper); color:var(--ink); line-height:1.55;
@@ -184,6 +212,7 @@ footer a:hover { text-decoration:underline; }
     <a href="/article-graph">Article graph</a>
     <a href="/graph">Concept graph</a>
     <a href="/about">About &amp; method</a>
+    <button id="wl-theme-toggle" class="wl-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌓</button>
   </nav>
 </header>
 <main class="wrap">
@@ -331,6 +360,13 @@ lake build Wikifunctions.Python.Z13701 Wikifunctions.Python.Z13667</pre>
       a project by <a href="https://jackmccarthy.org">Jack McCarthy</a></p>
   </footer>
 </main>
+<script>
+/* Theme toggle — flips dark/light and persists in localStorage. */
+(function(){var b=document.getElementById("wl-theme-toggle");if(!b)return;
+b.addEventListener("click",function(){var r=document.documentElement;
+var n=r.dataset.theme==="dark"?"light":"dark";r.dataset.theme=n;
+try{localStorage.setItem("wl-theme",n);}catch(e){}});})();
+</script>
 </body>
 </html>
 `;

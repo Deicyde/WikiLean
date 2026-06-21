@@ -109,7 +109,9 @@ async function renderArticleBase(env: Env, row: ArticleRow): Promise<string> {
   // so a span sentence-wrap is fine even when it contains a display equation.
   // Editing the snippet actually tightens the highlight box, and the next
   // sentence in the same <p> stays unannotated.
-  const cacheKey = `render:v13:${slug}:${row.version}`;
+  // v14: dark mode — page template carries the no-FOUC theme script + 🌓
+  // toggle button; cached HTML must reflect those + style.css?v=8.
+  const cacheKey = `render:v14:${slug}:${row.version}`;
   const cached = await env.RENDER_CACHE.get(cacheKey);
   if (cached) return cached;
 

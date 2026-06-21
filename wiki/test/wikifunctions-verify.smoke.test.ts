@@ -38,4 +38,13 @@ describe("wikifunctions verify explainer page", () => {
     expect(html).toContain('<a href="/wikifunctions">');
     expect(html).toContain('<a href="/wikifunctions/verify">How we verify</a>');
   });
+  it("carries the site-wide dark-mode pattern (no-FOUC script, toggle, dark CSS)", () => {
+    expect(html).toContain('localStorage.getItem("wl-theme")');
+    expect(html).toContain("prefers-color-scheme: dark");
+    expect(html).toContain("document.documentElement.dataset.theme=t");
+    expect(html).toContain('id="wl-theme-toggle"');
+    expect(html).toContain('class="wl-theme-toggle"');
+    expect(html).toContain('[data-theme="dark"]');
+    expect(html).toContain("--paper:#1a1816");
+  });
 });
