@@ -186,7 +186,16 @@ def main():
             run(["git", "checkout", "--", *[str(p) for p in edits]], cwd=args.mathlib, check=False)
             sys.exit(1)
         print("  build OK")
-    run(["git", "add", "-A"], cwd=args.mathlib)
+    # Stage ONLY the files we edited — NEVER `git add -A`: this checkout may be shared
+    # with other projects, and -A would sweep their in-progress files into our commit
+    # (exactly how a foreign file leaked into #40747).
+    run(["git", "add", "--", *[str(p) for p in edits]], cwd=args.mathlib)
+    # Leak guard: the staged trim must be modifications of our files only — no new,
+    # deleted, or renamed files may have crept in.
+    ns = run(["git", "diff", "--cached", "--name-status"], cwd=args.mathlib).stdout.strip().splitlines()
+    nonmod = [l for l in ns if l and not l.startswith("M\t")]
+    if nonmod:
+        sys.exit("LEAK GUARD: trim staged new/deleted/renamed file(s) — refusing to push:\n  " + "\n  ".join(nonmod))
     run(["git", "commit", "-m", "doc: drop recycled @[wikidata] tags pending re-review"], cwd=args.mathlib)
     run(["git", "push", "origin", args.branch], cwd=args.mathlib)  # fast-forward, no force
     print("pushed — PR now reflects the green-only set.")
