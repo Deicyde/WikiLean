@@ -992,6 +992,13 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
   });
 
   // Step 1: redirect to GitHub to authorize the review app (scope public_repo).
+  // TODO(security, see docs/ROADMAP.md P3): public_repo grants write to ALL of the
+  // reviewer's public repos — far broader than we need (we only post PR comments),
+  // and leanprover-community's OAuth-App restrictions 403 it regardless. Migrate to
+  // a GitHub App with "Pull requests: write" + user-to-server tokens (still posts as
+  // the reviewer, so the maintainer-by-author gate survives). Note: a GitHub App must
+  // be INSTALLED on the target org to write there — doesn't bypass org approval, just
+  // makes the ask least-privilege. Copy review is the no-approval fallback meanwhile.
   app.get("/review/auth/start", (c) => {
     const cid = c.env.REVIEW_GITHUB_CLIENT_ID;
     if (!cid || !c.env.REVIEW_GITHUB_CLIENT_SECRET) {
