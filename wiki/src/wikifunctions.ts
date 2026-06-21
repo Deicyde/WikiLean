@@ -170,6 +170,9 @@ h1 { font-family:var(--serif); font-size:2.4rem; line-height:1.12; letter-spacin
 .lede a:hover { text-decoration:underline; }
 .lede code { font-family:var(--mono); font-size:.86em; background:#efe9dc;
   padding:1px 5px; border-radius:4px; }
+.verify-pointer { font-size:.92rem; margin:0 0 18px; color:var(--muted); }
+.verify-pointer a { color:var(--accent); text-decoration:none; font-weight:600; }
+.verify-pointer a:hover { text-decoration:underline; }
 .stats { display:flex; gap:16px 40px; flex-wrap:wrap; margin:30px 0 6px; }
 .stat-num { display:block; font-family:var(--serif); font-weight:700; font-size:1.8rem;
   line-height:1.15; font-variant-numeric:tabular-nums; }
@@ -257,6 +260,7 @@ footer a:hover { text-decoration:underline; }
   <nav class="wl-nav" aria-label="Site">
     <a href="/concepts">Concepts</a>
     <a href="/wikifunctions">Wikifunctions</a>
+    <a href="/wikifunctions/verify">How we verify</a>
     <a href="/article-graph">Article graph</a>
     <a href="/graph">Concept graph</a>
     <a href="/about">About &amp; method</a>
@@ -267,6 +271,8 @@ footer a:hover { text-decoration:underline; }
     <h1>Wikifunctions formalization</h1>
     <p class="tagline">Giving <a href="https://www.wikifunctions.org">Wikifunctions</a>&#x27; executable
       functions the formal specification they lack — borrowed from Mathlib.</p>
+    <p class="verify-pointer">&rarr; <a href="/wikifunctions/verify">How these are verified</a> &mdash;
+      the deployed code, proved equal to its Mathlib spec.</p>
     <p class="lede">
       WikiLean joins each Wikidata mathematics concept to two things: an <a
       href="https://leanprover-community.github.io/mathlib4_docs/">Mathlib</a> formalization, and a
