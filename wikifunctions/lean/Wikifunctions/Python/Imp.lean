@@ -4,11 +4,24 @@
 Shared operational-semantics core for verifying Wikifunctions' **native
 (imperative) Python** implementations against Mathlib specifications. It defines:
 
-* a variable store `State := String → Nat`;
+* a variable store `State := List (String × Nat)` (a strict association list,
+  first match wins, default `0` — see the note on execution cost below);
 * expressions `Expr` (variable / nat literal / `%`), boolean conditions `Cond`
   (`e != 0`), and statements `Stmt` (a *parallel* assignment, a `while` loop, and
   sequencing); and
 * a fuel-interpreter operational semantics `Stmt.run`.
+
+## Why an association list (not `String → Nat`)
+
+A function store `State := String → Nat` with
+`set s x v := fun y => if y = x then v else s y` builds a *lazy closure chain*:
+each `set` captures the previous store unforced. Because a loop body reads several
+variables per step, forcing the final value re-evaluates the chain repeatedly, so
+`#eval`/native execution becomes **exponential** in the number of loop steps
+(`runProgram 588072 952796`, ~22 Euclid steps, did not return in 200s). A strict
+association list — `set s x v := (x, v) :: s` — does *no* deferred work: reading a
+variable is a single linear scan, so execution is polynomial (≈ `O(steps²)`). The
+denotational meaning is identical; only the representation changed.
 
 Per-function proofs (e.g. `Wikifunctions/Python/Z13701.lean`) `import` this module
 and reason about one specific program built from these constructors.
@@ -26,12 +39,31 @@ CPython implementation against the same Mathlib oracle (e.g. via lean.py).
 
 namespace Wikifunctions.Python
 
-/-- Program variables are named by strings: a faithful `String → Nat` variable store. -/
-abbrev State := String → Nat
+/-- Program variables are named by strings. A **strict** variable store: a plain
+association list, where the first binding for a name wins and an unbound name reads
+as `0`. Using a `def` (not `abbrev`) keeps `s.get`/`s.set` dot-notation pointed at
+`State.get`/`State.set` rather than `List`'s own API. -/
+def State := List (String × Nat)
 
-/-- Update one variable in a state. -/
+/-- Read a variable: first matching binding wins, default `0`. A single strict
+linear scan — no deferred closure work. -/
+def State.get : State → String → Nat
+  | [],            _ => 0
+  | (y, v) :: rest, x => if x = y then v else State.get rest x
+
+/-- Update one variable by strictly consing a new binding (which shadows any older
+one for the same name). No lazy closure chain is built, so forcing a value costs a
+single scan rather than re-evaluating every prior update. -/
 def State.set (s : State) (x : String) (v : Nat) : State :=
-  fun y => if y = x then v else s y
+  (x, v) :: s
+
+@[simp] theorem State.get_set_self (s : State) (x : String) (v : Nat) :
+    (s.set x v).get x = v := by
+  simp [State.set, State.get]
+
+@[simp] theorem State.get_set_ne (s : State) {x y : String} (h : y ≠ x) (v : Nat) :
+    (s.set x v).get y = s.get y := by
+  simp [State.set, State.get, h]
 
 /-- Expressions of the imperative Python subset. -/
 inductive Expr where
@@ -60,7 +92,7 @@ inductive Stmt where
 
 /-- Expression evaluation. -/
 def Expr.eval (s : State) : Expr → Nat
-  | .var x => s x
+  | .var x => s.get x
   | .lit n => n
   | .add e₁ e₂ => (e₁.eval s) + (e₂.eval s)
   | .mul e₁ e₂ => (e₁.eval s) * (e₂.eval s)

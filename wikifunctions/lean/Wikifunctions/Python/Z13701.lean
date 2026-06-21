@@ -56,66 +56,66 @@ def loop : Stmt :=
 
 /-- The initial state `{Z13701K1 := a, Z13701K2 := b}` (all other variables `0`). -/
 def initState (a b : Nat) : State :=
-  (State.set (fun _ => 0) varA a).set varB b
+  (State.set ([] : State) varA a).set varB b
 
 /-- The two program variable names are distinct. -/
 theorem varA_ne_varB : varA ≠ varB := by decide
 
-@[simp] theorem initState_a (a b : Nat) : initState a b varA = a := by
-  simp [initState, State.set, varA_ne_varB]
+@[simp] theorem initState_a (a b : Nat) : (initState a b).get varA = a := by
+  simp [initState, State.get_set_ne, varA_ne_varB]
 
-@[simp] theorem initState_b (a b : Nat) : initState a b varB = b := by
-  simp [initState, State.set]
+@[simp] theorem initState_b (a b : Nat) : (initState a b).get varB = b := by
+  simp [initState]
 
 /-- The loop body sets `Z13701K1` to the *old* value of `Z13701K2`. -/
 theorem body_a (s : State) :
-    (doPassign s varA varB (.var varB) (.mod (.var varA) (.var varB))) varA
-      = s varB := by
-  simp [doPassign, State.set, varA_ne_varB, Expr.eval]
+    (doPassign s varA varB (.var varB) (.mod (.var varA) (.var varB))).get varA
+      = s.get varB := by
+  simp [doPassign, State.get_set_ne, varA_ne_varB, Expr.eval]
 
 /-- The loop body sets `Z13701K2` to `Z13701K1 % Z13701K2`, using the *old* values
 (this is the content of the simultaneous assignment). -/
 theorem body_b (s : State) :
-    (doPassign s varA varB (.var varB) (.mod (.var varA) (.var varB))) varB
-      = s varA % s varB := by
-  simp [doPassign, State.set, Expr.eval]
+    (doPassign s varA varB (.var varB) (.mod (.var varA) (.var varB))).get varB
+      = s.get varA % s.get varB := by
+  simp [doPassign, Expr.eval]
 
 /-- **The Euclidean invariant.** The loop body preserves `gcd Z13701K1 Z13701K2`:
 after `a, b = b, a % b` we have `gcd b (a % b) = gcd a b`. Proved via `Nat.gcd_rec`. -/
 theorem gcd_body (s : State) :
     Nat.gcd
-      ((doPassign s varA varB (.var varB) (.mod (.var varA) (.var varB))) varA)
-      ((doPassign s varA varB (.var varB) (.mod (.var varA) (.var varB))) varB)
-      = Nat.gcd (s varA) (s varB) := by
+      ((doPassign s varA varB (.var varB) (.mod (.var varA) (.var varB))).get varA)
+      ((doPassign s varA varB (.var varB) (.mod (.var varA) (.var varB))).get varB)
+      = Nat.gcd (s.get varA) (s.get varB) := by
   rw [body_a, body_b]
-  rw [Nat.gcd_comm (s varA) (s varB)]
-  conv_rhs => rw [Nat.gcd_rec (s varB) (s varA)]
-  rw [Nat.gcd_comm (s varA % s varB) (s varB)]
+  rw [Nat.gcd_comm (s.get varA) (s.get varB)]
+  conv_rhs => rw [Nat.gcd_rec (s.get varB) (s.get varA)]
+  rw [Nat.gcd_comm (s.get varA % s.get varB) (s.get varB)]
 
 /-- **Loop correctness and termination.** With strictly more fuel than the current
 value of `Z13701K2`, the loop terminates, and the final `Z13701K1` is `gcd a b`.
 Proved by induction on the fuel; the recursive call is justified because `Z13701K2`
 strictly decreases (`Nat.mod_lt`). -/
 theorem loop_correct (fuel : Nat) :
-    ∀ s : State, s varB < fuel →
+    ∀ s : State, s.get varB < fuel →
       ∃ t : State, loop.run fuel s = some t ∧
-        t varA = Nat.gcd (s varA) (s varB) := by
+        t.get varA = Nat.gcd (s.get varA) (s.get varB) := by
   induction fuel with
   | zero => intro s hb; exact absurd hb (Nat.not_lt_zero _)
   | succ n ih =>
     intro s hb
-    by_cases hc : s varB = 0
+    by_cases hc : s.get varB = 0
     · refine ⟨s, ?_, ?_⟩
       · simp only [loop, Stmt.run, Cond.eval, Expr.eval, hc]
         simp
       · rw [hc, Nat.gcd_zero_right]
-    · have hpos : 0 < s varB := Nat.pos_of_ne_zero hc
+    · have hpos : 0 < s.get varB := Nat.pos_of_ne_zero hc
       set s' := doPassign s varA varB (.var varB) (.mod (.var varA) (.var varB))
         with hs'
-      have hb' : s' varB < n := by
-        have hsb : s' varB = s varA % s varB := by rw [hs']; exact body_b s
+      have hb' : s'.get varB < n := by
+        have hsb : s'.get varB = s.get varA % s.get varB := by rw [hs']; exact body_b s
         rw [hsb]
-        have hmod : s varA % s varB < s varB := Nat.mod_lt _ hpos
+        have hmod : s.get varA % s.get varB < s.get varB := Nat.mod_lt _ hpos
         omega
       obtain ⟨t, hrun, hta⟩ := ih s' hb'
       refine ⟨t, ?_, ?_⟩
@@ -136,7 +136,7 @@ theorem loop_correct (fuel : Nat) :
 def runProgram (a b : Nat) : Option Bool :=
   match loop.run (b + 1) (initState a b) with
   | none => none
-  | some t => some (t varA == 1)
+  | some t => some (State.get t varA == 1)
 
 /-- **Main theorem.** For all `a b : ℕ`, the embedded Python program terminates and its
 boolean result equals `decide (Nat.Coprime a b)`, with `Nat.Coprime` being Mathlib's. -/

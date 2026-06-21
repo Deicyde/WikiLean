@@ -53,34 +53,34 @@ theorem facK_ne_facN : facK ≠ facN := by decide
 
 /-! ### Initial-state read lemmas -/
 
-@[simp] theorem facInit_facI (n : Nat) : facInit n facI = 1 := by
-  simp [facInit, State.set]
+@[simp] theorem facInit_facI (n : Nat) : (facInit n).get facI = 1 := by
+  simp [facInit]
 
-@[simp] theorem facInit_facK (n : Nat) : facInit n facK = 1 := by
-  simp [facInit, State.set, facK_ne_facI]
+@[simp] theorem facInit_facK (n : Nat) : (facInit n).get facK = 1 := by
+  simp [facInit, State.get_set_ne, facK_ne_facI]
 
-@[simp] theorem facInit_facN (n : Nat) : facInit n facN = n := by
-  simp [facInit, State.set, facK_ne_facN.symm, facI_ne_facN.symm]
+@[simp] theorem facInit_facN (n : Nat) : (facInit n).get facN = n := by
+  simp [facInit, State.get_set_ne, facK_ne_facN.symm, facI_ne_facN.symm]
 
 /-! ### Loop-body read lemmas -/
 
 /-- The loop body sets `k` to `(old k) * (old i)` (using the *old* values). -/
 theorem body_facK (s : State) :
-    (doPassign s facK facI (.mul (.var facK) (.var facI)) (.add (.var facI) (.lit 1))) facK
-      = s facK * s facI := by
-  simp [doPassign, State.set, facK_ne_facI, Expr.eval]
+    (doPassign s facK facI (.mul (.var facK) (.var facI)) (.add (.var facI) (.lit 1))).get facK
+      = s.get facK * s.get facI := by
+  simp [doPassign, State.get_set_ne, facK_ne_facI, Expr.eval]
 
 /-- The loop body sets `i` to `(old i) + 1`. -/
 theorem body_facI (s : State) :
-    (doPassign s facK facI (.mul (.var facK) (.var facI)) (.add (.var facI) (.lit 1))) facI
-      = s facI + 1 := by
-  simp [doPassign, State.set, Expr.eval]
+    (doPassign s facK facI (.mul (.var facK) (.var facI)) (.add (.var facI) (.lit 1))).get facI
+      = s.get facI + 1 := by
+  simp [doPassign, Expr.eval]
 
 /-- The loop body leaves `Z13667K1` (the input `n`) unchanged. -/
 theorem body_facN (s : State) :
-    (doPassign s facK facI (.mul (.var facK) (.var facI)) (.add (.var facI) (.lit 1))) facN
-      = s facN := by
-  simp [doPassign, State.set, facI_ne_facN.symm, facK_ne_facN.symm, Expr.eval]
+    (doPassign s facK facI (.mul (.var facK) (.var facI)) (.add (.var facI) (.lit 1))).get facN
+      = s.get facN := by
+  simp [doPassign, State.get_set_ne, facI_ne_facN.symm, facK_ne_facN.symm, Expr.eval]
 
 /-! ### Loop correctness and termination -/
 
@@ -90,32 +90,32 @@ state, together with the fuel bound `n + 1 - s facI < fuel`, the loop terminates
 and the final `k` is `n!`. Proved by induction on the fuel; the recursive call is
 justified because `n + 1 - i` strictly decreases each step. -/
 theorem facLoop_correct (n : Nat) (fuel : Nat) :
-    ∀ s : State, s facN = n → 1 ≤ s facI → s facI ≤ n + 1 →
-      s facK = Nat.factorial (s facI - 1) → n + 1 - s facI < fuel →
-      ∃ t : State, facLoop.run fuel s = some t ∧ t facK = Nat.factorial n := by
+    ∀ s : State, s.get facN = n → 1 ≤ s.get facI → s.get facI ≤ n + 1 →
+      s.get facK = Nat.factorial (s.get facI - 1) → n + 1 - s.get facI < fuel →
+      ∃ t : State, facLoop.run fuel s = some t ∧ t.get facK = Nat.factorial n := by
   induction fuel with
   | zero => intro s _ _ _ _ hfuel; exact absurd hfuel (Nat.not_lt_zero _)
   | succ m ih =>
     intro s hN hI1 hIn hK hfuel
-    by_cases hc : s facI ≤ n
+    by_cases hc : s.get facI ≤ n
     · -- Loop continues: take one body step.
       set s' := doPassign s facK facI (.mul (.var facK) (.var facI))
         (.add (.var facI) (.lit 1)) with hs'
-      have hN' : s' facN = n := by rw [hs', body_facN]; exact hN
-      have hI' : s' facI = s facI + 1 := by rw [hs', body_facI]
-      have hI1' : 1 ≤ s' facI := by rw [hI']; omega
-      have hIn' : s' facI ≤ n + 1 := by rw [hI']; omega
-      have hKstep : s' facK = s facK * s facI := by rw [hs', body_facK]
-      have hK' : s' facK = Nat.factorial (s' facI - 1) := by
+      have hN' : s'.get facN = n := by rw [hs', body_facN]; exact hN
+      have hI' : s'.get facI = s.get facI + 1 := by rw [hs', body_facI]
+      have hI1' : 1 ≤ s'.get facI := by rw [hI']; omega
+      have hIn' : s'.get facI ≤ n + 1 := by rw [hI']; omega
+      have hKstep : s'.get facK = s.get facK * s.get facI := by rw [hs', body_facK]
+      have hK' : s'.get facK = Nat.factorial (s'.get facI - 1) := by
         rw [hKstep, hK, hI']
-        rw [show s facI + 1 - 1 = s facI from by omega]
-        have hstep : s facI - 1 + 1 = s facI := by omega
+        rw [show s.get facI + 1 - 1 = s.get facI from by omega]
+        have hstep : s.get facI - 1 + 1 = s.get facI := by omega
         rw [Nat.mul_comm]
-        calc s facI * Nat.factorial (s facI - 1)
-            = (s facI - 1 + 1) * Nat.factorial (s facI - 1) := by rw [hstep]
-          _ = Nat.factorial (s facI - 1 + 1) := (Nat.factorial_succ _).symm
-          _ = Nat.factorial (s facI) := by rw [hstep]
-      have hfuel' : n + 1 - s' facI < m := by rw [hI']; omega
+        calc s.get facI * Nat.factorial (s.get facI - 1)
+            = (s.get facI - 1 + 1) * Nat.factorial (s.get facI - 1) := by rw [hstep]
+          _ = Nat.factorial (s.get facI - 1 + 1) := (Nat.factorial_succ _).symm
+          _ = Nat.factorial (s.get facI) := by rw [hstep]
+      have hfuel' : n + 1 - s'.get facI < m := by rw [hI']; omega
       obtain ⟨t, hrun, htK⟩ := ih s' hN' hI1' hIn' hK' hfuel'
       refine ⟨t, ?_, htK⟩
       have hcond : (Cond.le (.var facI) (.var facN)).eval s = true := by
@@ -129,7 +129,7 @@ theorem facLoop_correct (n : Nat) (fuel : Nat) :
       rw [← hs']
       exact hrun
     · -- Loop exits: i = n + 1, so k = n!.
-      have hIeq : s facI = n + 1 := by omega
+      have hIeq : s.get facI = n + 1 := by omega
       refine ⟨s, ?_, ?_⟩
       · have hcond : (Cond.le (.var facI) (.var facN)).eval s = false := by
           simp [Cond.eval, Expr.eval, hN, hc]

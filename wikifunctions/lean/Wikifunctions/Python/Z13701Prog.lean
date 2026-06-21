@@ -36,13 +36,13 @@ def loop : Stmt :=
 
 /-- The initial state `{Z13701K1 := a, Z13701K2 := b}` (all other variables `0`). -/
 def initState (a b : Nat) : State :=
-  (State.set (fun _ => 0) varA a).set varB b
+  (State.set ([] : State) varA a).set varB b
 
 /-- The full program: run the loop with sufficient fuel (`b + 1`), then return
 `Z13701K1 == 1`. This is exactly `def Z13701(a, b): ...; return Z13701K1 == 1`. -/
 def runProgram (a b : Nat) : Option Bool :=
   match loop.run (b + 1) (initState a b) with
   | none => none
-  | some t => some (t varA == 1)
+  | some t => some (State.get t varA == 1)
 
 end Wikifunctions.Python
