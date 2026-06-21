@@ -34,6 +34,7 @@ import {
 } from "./pages.js";
 import { homePage, sitemapXml } from "./home.js";
 import { wikifunctionsPage } from "./wikifunctions.js";
+import { wikifunctionsVerifyPage } from "./wikifunctions-verify.js";
 import { registerReviewRoutes } from "./review.js";
 import { registerQueueRoutes } from "./queue.js";
 import type { Annotation } from "./engine/types.js";
@@ -67,6 +68,7 @@ const RESERVED = new Set([
   "flags",
   "stats",
   "wikifunctions",
+  "wikifunctions/verify",
   "login",
   "logout",
   "graph",
@@ -412,6 +414,20 @@ app.get("/wikifunctions", async (c) => {
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const html = wikifunctionsPage();
+  await c.env.RENDER_CACHE.put(cacheKey, html, { expirationTtl: 3600 });
+  return c.html(html);
+});
+
+// ---- /wikifunctions/verify — verification-methodology explainer (static) ----
+// Sibling of /wikifunctions: how the Wikifunctions↔Mathlib proofs work (three
+// layers of assurance + two worked examples). Pure-function output, same KV
+// cache pattern; bump the suffix when the page copy changes. Registered before
+// the /:slug catch-all (which only matches a single path segment anyway).
+app.get("/wikifunctions/verify", async (c) => {
+  const cacheKey = "page:wikifunctions-verify:v1";
+  const cached = await c.env.RENDER_CACHE.get(cacheKey);
+  if (cached) return c.html(cached);
+  const html = wikifunctionsVerifyPage();
   await c.env.RENDER_CACHE.put(cacheKey, html, { expirationTtl: 3600 });
   return c.html(html);
 });
