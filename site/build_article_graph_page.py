@@ -167,6 +167,7 @@ HTML = """<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>WikiLean — Article graph</title>
 <meta name="description" content="Wikipedia mathematics articles clustered by shared Mathlib formalizations: edges connect articles that annotate the same Lean declarations.">
+<script>(function(){try{var s=localStorage.getItem("wl-theme");var t=s==="dark"||s==="light"?s:(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;}catch(e){}})();</script>
 <style>
 * { box-sizing:border-box; }
 html, body { height:100%; }
@@ -175,10 +176,14 @@ body { margin:0; background:#fafbfc; color:#1f2328;
 .wl-header { background:#fff; border-bottom:1px solid #d0d7de; padding:14px 28px;
   display:flex; align-items:center; justify-content:space-between; }
 .wl-brand { font-weight:700; color:#0969da; font-size:18px; text-decoration:none; }
-.wl-nav { display:flex; gap:18px; }
+.wl-nav { display:flex; gap:18px; align-items:center; }
 .wl-navlink { color:#0969da; text-decoration:none; font-size:.9rem; }
 .wl-navlink:hover { text-decoration:underline; }
 .wl-navlink.active { color:#1f2328; }
+.wl-theme-toggle { background:transparent; border:1px solid #d0d7de; color:#57606a;
+  border-radius:50%; width:28px; height:28px; padding:0; line-height:1; font-size:14px;
+  cursor:pointer; display:inline-flex; align-items:center; justify-content:center; margin-left:10px; }
+[data-theme="dark"] .wl-theme-toggle { color:#9a9081; border-color:#4d4742; }
 
 #app { display:grid; grid-template-columns: 260px 1fr 320px; grid-template-rows: 1fr;
   height: calc(100vh - 53px); min-height:0; }
@@ -235,6 +240,45 @@ label.row .swatch { display:inline-block; width:14px; height:4px; border-radius:
 .declist a { color:#1f2328; }
 .declist a:hover code { background:#e0e6ed; }
 .declist .mod { font-size:.74rem; color:#57606a; margin-left:4px; }
+
+/* Dark mode — shared palette (bg #1a1816, surface #232020, text #ebe5d8,
+   muted #9a9081, accent #6e9adf, borders #4d4742). Namespace node colors and
+   the canvas bg/labels read fine on dark or are handled in JS via dataset.theme. */
+[data-theme="dark"] body { background:#1a1816; color:#ebe5d8; }
+[data-theme="dark"] .wl-header { background:#232020; border-bottom-color:#4d4742; }
+[data-theme="dark"] .wl-brand { color:#6e9adf; }
+[data-theme="dark"] .wl-navlink { color:#6e9adf; }
+[data-theme="dark"] .wl-navlink.active { color:#ebe5d8; }
+[data-theme="dark"] aside { background:#232020; color:#ebe5d8; }
+[data-theme="dark"] #side { border-right-color:#4d4742; }
+[data-theme="dark"] #info { border-left-color:#4d4742; }
+[data-theme="dark"] canvas { background:#1a1816; }
+[data-theme="dark"] h2 { color:#9a9081; }
+[data-theme="dark"] input[type="text"] { background:#1a1816; color:#ebe5d8; border-color:#4d4742; }
+[data-theme="dark"] input[type="text"]:focus { border-color:#6e9adf; box-shadow:0 0 0 2px rgba(110,154,223,.25); }
+[data-theme="dark"] .hint-right { color:#9a9081; }
+[data-theme="dark"] .hint-right b { color:#ebe5d8; }
+[data-theme="dark"] .slider-row { color:#9a9081; }
+[data-theme="dark"] .slider-row b { color:#ebe5d8; }
+[data-theme="dark"] .stat .v { color:#9a9081; }
+[data-theme="dark"] .legend .nm { color:#ebe5d8; }
+[data-theme="dark"] .legend .ct { color:#9a9081; }
+[data-theme="dark"] .hint { color:#9a9081; }
+[data-theme="dark"] #info h3 a { color:#ebe5d8; }
+[data-theme="dark"] #info .slug { color:#9a9081; }
+[data-theme="dark"] #info .bar { background:#34302c; }
+[data-theme="dark"] #info .field b { color:#9a9081; }
+[data-theme="dark"] #info a { color:#6e9adf; }
+[data-theme="dark"] #info ul { color:#ebe5d8; }
+[data-theme="dark"] #info .links { border-top-color:#4d4742; }
+[data-theme="dark"] .empty { color:#9a9081; }
+[data-theme="dark"] .chip { background:#2c2926; border-color:#4d4742; }
+[data-theme="dark"] .chip a { color:#ebe5d8; }
+[data-theme="dark"] .chip a.rm { color:#9a9081; }
+[data-theme="dark"] .declist code { background:#2c2926; color:#ebe5d8; }
+[data-theme="dark"] .declist a { color:#ebe5d8; }
+[data-theme="dark"] .declist a:hover code { background:#34302c; }
+[data-theme="dark"] .declist .mod { color:#9a9081; }
 </style>
 </head>
 <body>
@@ -245,6 +289,7 @@ label.row .swatch { display:inline-block; width:14px; height:4px; border-radius:
     <a class="wl-navlink active" href="/article-graph">Article graph</a>
     <a class="wl-navlink" href="/graph">Concept graph</a>
     <a class="wl-navlink" href="/about">About &amp; method</a>
+    <button id="wl-theme-toggle" class="wl-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">\U0001f313</button>
   </nav>
 </header>
 <div id="app">
@@ -488,7 +533,7 @@ const NS_OTHER = '#8c959f';
 
     // Label only for the primary (most recently picked) node.
     if (primary) {
-      ctx.fillStyle = '#1f2328';
+      ctx.fillStyle = document.documentElement.dataset.theme === 'dark' ? '#ebe5d8' : '#1f2328';
       ctx.font = (12 * inv) + 'px -apple-system, sans-serif';
       ctx.textBaseline = 'middle';
       ctx.fillText(' ' + (primary.title || primary.slug),
@@ -807,6 +852,17 @@ const NS_OTHER = '#8c959f';
 
   resize();
   window.addEventListener('resize', resize);
+
+  // Theme toggle — flip dataset.theme, persist, and redraw so the canvas
+  // node-label ink updates without a reload.
+  const themeBtn = document.getElementById('wl-theme-toggle');
+  if (themeBtn) themeBtn.addEventListener('click', () => {
+    const r = document.documentElement;
+    const n = r.dataset.theme === 'dark' ? 'light' : 'dark';
+    r.dataset.theme = n;
+    try { localStorage.setItem('wl-theme', n); } catch (e) {}
+    scheduleDraw();
+  });
 })();
 </script>
 </body>

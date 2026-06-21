@@ -29,7 +29,12 @@ for (const f of fromWiki) {
 // (src/home.ts via GET / and GET /sitemap.xml) — copying them here would let
 // the asset layer shadow the Worker routes; the lead deletes the stale
 // copies already in wiki/public/.
-const shellFiles = ["concepts.html", "about.html", "404.html", "robots.txt", "wikilean.ttl"];
+const shellFiles = [
+  "concepts.html", "about.html", "404.html", "robots.txt", "wikilean.ttl",
+  // Visualization pages served from ASSETS (reserved routes /graph, /article-graph).
+  "graph.html", "graph_data.json",
+  "article-graph.html", "article-graph-data.json",
+];
 for (const f of shellFiles) {
   const src = resolve(site, "out", f);
   if (existsSync(src)) copyFileSync(src, resolve(pub, f));
