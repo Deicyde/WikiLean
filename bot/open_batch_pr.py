@@ -208,12 +208,52 @@ def fork_owner(mathlib: Path) -> str | None:
     return m.group(1) if m else None
 
 
+CROSSREF_IMPORT = "public import Mathlib.Tactic.CrossRefAttribute"
+
+def assert_only_wikidata_changes(mathlib: Path, tagged_files: set):
+    """LEAK GUARD. Refuse to open unless the STAGED diff is exactly @[wikidata]
+    attributes (standalone or stacked into an existing @[...]) + the CrossRefAttribute
+    import, on EXISTING tagged files — nothing else. A foreign file from another
+    project sharing this checkout leaked into #40747 via `git add -A`; this aborts the
+    open rather than ship anything we didn't author."""
+    ns = run(["git", "diff", "--cached", "--name-status"], cwd=mathlib).stdout.strip().splitlines()
+    nonmod = [l for l in ns if l and not l.startswith("M\t")]
+    if nonmod:
+        sys.exit("LEAK GUARD: staged new/deleted/renamed file(s) — refusing to open:\n  " + "\n  ".join(nonmod))
+    extra = {l.split("\t", 1)[1] for l in ns if "\t" in l} - tagged_files
+    if extra:
+        sys.exit("LEAK GUARD: staged file(s) outside the tagged set — refusing to open:\n  " + "\n  ".join(sorted(extra)))
+    diff = run(["git", "diff", "--cached", "--unified=0"], cwd=mathlib).stdout.splitlines()
+    added   = [l[1:] for l in diff if l.startswith("+") and not l.startswith("+++")]
+    removed = [l[1:] for l in diff if l.startswith("-") and not l.startswith("---")]
+    bad = [a for a in added if "wikidata " not in a and a.strip() != CROSSREF_IMPORT]
+    if bad:
+        sys.exit("LEAK GUARD: staged addition(s) that aren't @[wikidata] tags / the import:\n  "
+                 + "\n  ".join(repr(a) for a in bad[:10]))
+    # Removals happen ONLY when stacking wikidata into an existing @[...] line: each is
+    # an attribute line, one per stacked addition. Anything else is a foreign edit.
+    stacked = [a for a in added if ", wikidata Q" in a]
+    bad_rm = [r for r in removed if not r.strip().startswith("@[")]
+    if bad_rm or len(removed) != len(stacked):
+        sys.exit(f"LEAK GUARD: unexpected removals (got {len(removed)}, expected {len(stacked)} stacked):\n  "
+                 + "\n  ".join(repr(r) for r in (bad_rm or removed)[:10]))
+    print(f"[leak-guard] clean: {len(added)} staged addition(s) across {len(ns)} file(s), {len(stacked)} stacked; no foreign files.")
+
 def open_pr(approved: dict, mathlib: Path, repo: str, base: str):
     branch = approved["branch"]
     title  = approved["title"]
+    files  = sorted({t["file"] for t in approved["tags"]})
+    print(f"[git] create branch: git checkout -B {branch}")
+    if run(["git", "checkout", "-B", branch], cwd=mathlib).returncode != 0:
+        sys.exit("git checkout failed")
+    # Stage ONLY the tagged files — NEVER `git add -A`: this checkout may be shared with
+    # other projects, and -A would sweep their in-progress files into our commit (exactly
+    # how a foreign file leaked into #40747).
+    print(f"[git] stage {len(files)} tagged file(s) (explicit paths, not -A)")
+    if run(["git", "add", "--", *files], cwd=mathlib).returncode != 0:
+        sys.exit("git add failed")
+    assert_only_wikidata_changes(mathlib, set(files))
     for desc, cmd in [
-        ("create branch", ["git", "checkout", "-B", branch]),
-        ("stage",         ["git", "add", "-A"]),
         ("commit",        ["git", "commit", "-m", title]),
         ("push",          ["git", "push", "-u", "origin", branch, "--force-with-lease"]),
     ]:
