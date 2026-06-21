@@ -947,6 +947,18 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
     // tag so a reviewer can still change their mind (revise→approve) or add a
     // note — we only skip a true no-op (same status, no new note).
     const myLogin = await ghLogin(token);
+    // POSTING CREDENTIAL (option A). A configured personal PAT (REVIEW_POSTING_PAT)
+    // is exempt from the org's OAuth-App restriction, so it posts to mathlib with no
+    // App install — but ONLY for its OWNER: you must be connected AS the PAT account.
+    // That gate is load-bearing (this endpoint is public) — it stops anyone else from
+    // posting through your token. Everyone else keeps their own token (posts as
+    // themselves; 403s cleanly until the App is installed for them). The comment
+    // author is always myLogin, since the PAT is used only when owner == connectee.
+    let postToken = token;
+    if (c.env.REVIEW_POSTING_PAT && myLogin) {
+      const patLogin = await ghLogin(c.env.REVIEW_POSTING_PAT);
+      if (patLogin && patLogin.toLowerCase() === myLogin.toLowerCase()) postToken = c.env.REVIEW_POSTING_PAT;
+    }
     const myLatest = new Map<string, { status: string; at: string }>();
     for (const d of payload.decls) {
       for (const cm of d.comments) {
@@ -989,7 +1001,7 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
       const commentBody = buildReviewCommentBody(qid, status, notes, prior);
       const r = await fetch(`${GH_API}/repos/${owner}/${repo}/pulls/${pr}/comments`, {
         method: "POST",
-        headers: { ...ghHeaders(token), "Content-Type": "application/json" },
+        headers: { ...ghHeaders(postToken), "Content-Type": "application/json" },
         body: JSON.stringify({
           body: commentBody,
           commit_id: payload.head_sha,
@@ -1019,7 +1031,7 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
         `. <!-- wikilean-review-summary -->`;
       await fetch(`${GH_API}/repos/${owner}/${repo}/issues/${pr}/comments`, {
         method: "POST",
-        headers: { ...ghHeaders(token), "Content-Type": "application/json" },
+        headers: { ...ghHeaders(postToken), "Content-Type": "application/json" },
         body: JSON.stringify({ body: summary }),
       }).catch(() => {});
     }

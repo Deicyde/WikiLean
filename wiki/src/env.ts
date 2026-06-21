@@ -47,4 +47,10 @@ export interface Env {
   REVIEW_GITHUB_CLIENT_ID?: string;
   REVIEW_GITHUB_CLIENT_SECRET?: string;
   REVIEW_GITHUB_APP_SLUG?: string;
+  // Personal-token posting (option A): a classic PAT (public_repo) that posts the
+  // PR comments so they land WITHOUT the org installing the App — classic PATs are
+  // exempt from OAuth-App restrictions. SECURITY: used ONLY for its owner — the
+  // submitter must be connected AS the PAT account — so this public endpoint can't
+  // post through it on anyone else's behalf. Comments appear from the PAT owner.
+  REVIEW_POSTING_PAT?: string;
 }
