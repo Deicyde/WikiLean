@@ -284,6 +284,7 @@ into `wiki/public/assets/`. Edit sources, then run build-public, never edit
 | Re-anchoring stages 1-2 (fuzzy + AI semantic) | Anchor-rot telemetry shows stage-0 clears <90% |
 | WikiProject CS corpus ingestion, Agent 2 multi-checkout, library picker UI | With schema v4 trigger |
 | physlib evaluation (its "informal definition" stubs must NOT count as formalized — needs a distinct match_kind) | When physlib registration is proposed |
+| **/review posting: replace the `public_repo` OAuth App with a least-privilege GitHub App.** Today the review OAuth app holds `public_repo` = write to ALL the reviewer's public repos (over-broad), and is blocked anyway by leanprover-community's OAuth-App access restrictions. A GitHub App can request **Pull requests: write only**, and **user-to-server** tokens still post *as the reviewer* (preserving attribution + settle.py's maintainer-by-author gate). CAVEAT (researched 2026-06-20): GitHub Apps do NOT bypass org approval — writing to leanprover-community still needs the app *installed* on that org (owner action). So this doesn't make the button work unilaterally; it makes the ask least-privilege + revocable per-repo instead of "write to all your public repos." Copy review stays the no-approval fallback. | A leanprover-community owner will install an app, OR before opening /review to reviewers beyond Jack + maintainers |
 
 ## Standing risks & invariants (check before touching these areas)
 
