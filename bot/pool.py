@@ -126,6 +126,9 @@ def candidates(n=25, exclude=(), require_high=True, p31_filter=True):
         c = cat[q]
         if require_high and c.get("confidence") != "high":
             continue
+        if not (c.get("file") or "").startswith("Mathlib/"):
+            continue                          # untaggable: Lean core / non-library decl
+                                              # (Rat, Dvd.dvd, HPow.hPow → Init/… in the toolchain)
         tq = c["tag_qid"]                      # the QID we actually tag (tightest)
         if tq in excl or tq in seen_tag:       # already tagged / in-flight / duplicate concept
             continue
