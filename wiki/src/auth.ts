@@ -140,13 +140,26 @@ function loginPageHtml(returnTo: string, providers: string[]): string {
     .join("");
   return `<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1"><title>WikiLean · Sign in</title>
+<script>(function(){try{var s=localStorage.getItem("wl-theme");var t=s==="dark"||s==="light"?s:(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;}catch(e){}})();</script>
 <style>body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f7f4ee;color:#1f1d1a;display:grid;place-items:center;min-height:100vh;margin:0}
-.box{background:#fffdf9;border:1px solid #d8d0bd;border-radius:12px;padding:32px;max-width:340px;text-align:center}
+.box{background:#fffdf9;border:1px solid #d8d0bd;border-radius:12px;padding:32px;max-width:340px;text-align:center;position:relative}
 h1{font-size:1.2rem;margin:0 0 6px}p{color:#5f594e;font-size:.9rem;margin:0 0 18px}
 .prov{display:block;width:100%;margin:8px 0;padding:11px;border:1px solid #1a4b8c;border-radius:8px;background:#1a4b8c;color:#fff;font:inherit;font-weight:600;cursor:pointer}
 .prov:hover{background:#163e74;border-color:#163e74}a{color:#1a4b8c}
-:focus-visible{outline:2px solid #1a4b8c;outline-offset:2px}</style></head>
-<body><div class="box"><h1>Sign in to edit WikiLean</h1>
+:focus-visible{outline:2px solid #1a4b8c;outline-offset:2px}
+.wl-theme-toggle{position:absolute;top:10px;right:10px;background:transparent;border:1px solid #d8d0bd;color:#5f594e;border-radius:50%;width:28px;height:28px;padding:0;line-height:1;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+.wl-theme-toggle:hover{color:#1f1d1a;border-color:#1a4b8c}
+/* Dark mode — mirrors the shared scheme (pages.ts / style.css). */
+[data-theme="dark"] body{background:#1a1816;color:#ebe5d8}
+[data-theme="dark"] .box{background:#232020;border-color:#4d4742}
+[data-theme="dark"] p{color:#9a9081}
+[data-theme="dark"] .prov{background:#6e9adf;border-color:#6e9adf;color:#1a1816}
+[data-theme="dark"] .prov:hover{background:#8fb4e8;border-color:#8fb4e8}
+[data-theme="dark"] a{color:#6e9adf}
+[data-theme="dark"] :focus-visible{outline-color:#6e9adf}
+[data-theme="dark"] .wl-theme-toggle{color:#9a9081;border-color:#4d4742}
+[data-theme="dark"] .wl-theme-toggle:hover{color:#ebe5d8;border-color:#6e9adf}</style></head>
+<body><div class="box"><button id="wl-theme-toggle" class="wl-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌓</button><h1>Sign in to edit WikiLean</h1>
 <p>Editing annotations requires an account. Reading is open to everyone.</p>
 ${buttons || "<p>No login providers are configured.</p>"}
 <p style="margin-top:16px"><a href="${htmlEscape(returnTo, true)}">← back</a></p></div>
@@ -160,7 +173,9 @@ document.querySelectorAll(".prov").forEach(function(b){b.addEventListener("click
       if(res&&res.url){location.href=res.url}else{alert("sign-in failed");b.disabled=false;b.textContent="Continue";}})
     .catch(function(e){alert("sign-in failed: "+e);b.disabled=false;});
 });});
-</script></body></html>`;
+</script>
+<script>(function(){var b=document.getElementById("wl-theme-toggle");if(!b)return;b.addEventListener("click",function(){var r=document.documentElement;var n=r.dataset.theme==="dark"?"light":"dark";r.dataset.theme=n;try{localStorage.setItem("wl-theme",n);}catch(e){}});})();</script>
+</body></html>`;
 }
 
 export function registerAuthRoutes(app: Hono<{ Bindings: Env }>): void {
@@ -206,7 +221,9 @@ export function registerAuthRoutes(app: Hono<{ Bindings: Env }>): void {
       // Styled to the warm palette so the flash page matches the site (W3 fix #6c).
       return c.html(
         `<!doctype html><meta charset="utf-8"><title>Signing out…</title>` +
-          `<style>body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f7f4ee;color:#5f594e;display:grid;place-items:center;min-height:100vh;margin:0}</style>` +
+          `<script>(function(){try{var s=localStorage.getItem("wl-theme");var t=s==="dark"||s==="light"?s:(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;}catch(e){}})();</script>` +
+          `<style>body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f7f4ee;color:#5f594e;display:grid;place-items:center;min-height:100vh;margin:0}` +
+          `[data-theme="dark"] body{background:#1a1816;color:#9a9081}</style>` +
           `<script>fetch("/api/auth/sign-out",{method:"POST"}).then(function(){location.href=${JSON.stringify(ret)}}).catch(function(){location.href=${JSON.stringify(ret)}});</script>` +
           `Signing out…`,
       );

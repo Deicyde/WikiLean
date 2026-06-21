@@ -165,6 +165,57 @@ h2.wl-stats-h{font-family:Charter,'Bitstream Charter','Iowan Old Style',Georgia,
 .wl-profile-stats b{color:#1f1d1a}
 .wl-watch-list{padding-left:1.2em;margin:8px 0 8px;columns:2;column-gap:36px}
 .wl-watch-list li{margin:3px 0;break-inside:avoid}
+
+/* Theme-toggle button (matches the article-page version in style.css). */
+.wl-theme-toggle{background:transparent;border:1px solid #d8d0bd;color:#5f594e;border-radius:50%;width:28px;height:28px;padding:0;line-height:1;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;margin-left:10px}
+.wl-theme-toggle:hover{color:#1f1d1a;border-color:#1a4b8c}
+
+/* ---- Dark mode for the chrome pages. Additive [data-theme="dark"] rules
+   override the warm-paper defaults above without touching the existing
+   selectors — same approach as style.css's article-page dark block. */
+[data-theme="dark"] body{background:#1a1816;color:#ebe5d8}
+[data-theme="dark"] :focus-visible{outline-color:#6e9adf}
+[data-theme="dark"] .wl-brand{color:#ebe5d8}
+[data-theme="dark"] .wl-brand:hover{color:#6e9adf}
+[data-theme="dark"] .wl-navlink{color:#6e9adf}
+[data-theme="dark"] .lead{color:#9a9081}
+[data-theme="dark"] table{background:#232020;border-color:#4d4742}
+[data-theme="dark"] th,[data-theme="dark"] td{border-bottom-color:#3a3530}
+[data-theme="dark"] th{background:#2a2725;color:#9a9081}
+[data-theme="dark"] a{color:#6e9adf}
+[data-theme="dark"] .muted{color:#8a8278}
+[data-theme="dark"] button.revert{background:#232020;color:#ebe5d8;border-color:#4d4742}
+[data-theme="dark"] button.revert:hover{color:#6e9adf;border-color:#6e9adf}
+[data-theme="dark"] .wl-fr-wrong_decl{background:rgba(226,104,95,.18);color:#f08e85}
+[data-theme="dark"] .wl-fr-wrong_status{background:rgba(212,160,66,.20);color:#e2bf78}
+[data-theme="dark"] .wl-fr-irrelevant{background:#2e2a2f;color:#9a9081}
+[data-theme="dark"] .wl-fr-missing_formalization{background:rgba(110,154,223,.16);color:#6e9adf}
+[data-theme="dark"] .wl-fr-other{background:#2e2a2f;color:#9a9081}
+[data-theme="dark"] .wl-diff-card{background:#232020;border-color:#4d4742}
+[data-theme="dark"] .wl-diff-add{border-left-color:#4ca97a}
+[data-theme="dark"] .wl-diff-delete{border-left-color:#e2685f}
+[data-theme="dark"] .wl-diff-modify{border-left-color:#d4a042}
+[data-theme="dark"] .wl-diff-add .wl-diff-type{color:#8fd4ad}
+[data-theme="dark"] .wl-diff-delete .wl-diff-type{color:#f08e85}
+[data-theme="dark"] .wl-diff-modify .wl-diff-type{color:#e2bf78}
+[data-theme="dark"] .wl-kind{background:#2e2a2f;color:#9a9081}
+[data-theme="dark"] .wl-kind-edit{background:rgba(110,154,223,.16);color:#6e9adf}
+[data-theme="dark"] .wl-kind-revert{background:rgba(226,104,95,.18);color:#f08e85}
+[data-theme="dark"] .wl-kind-pipeline{background:rgba(76,169,122,.18);color:#8fd4ad}
+[data-theme="dark"] .wl-kind-contribution{background:rgba(212,160,66,.20);color:#e2bf78}
+[data-theme="dark"] .wl-unpatrolled{color:#d4a042}
+[data-theme="dark"] .wl-patrolled{color:#8fd4ad}
+[data-theme="dark"] .wl-filterbar{color:#9a9081}
+[data-theme="dark"] .wl-filterbar a.active{color:#ebe5d8}
+[data-theme="dark"] .wl-rq{background:rgba(110,154,223,.14);color:#6e9adf}
+[data-theme="dark"] .wl-stats-foot{color:#9a9081}
+[data-theme="dark"] .wl-avatar{background:#2e2a2f}
+[data-theme="dark"] .wl-avatar-fallback{color:#9a9081}
+[data-theme="dark"] .wl-role{background:rgba(110,154,223,.16);color:#6e9adf}
+[data-theme="dark"] .wl-profile-stats{color:#9a9081}
+[data-theme="dark"] .wl-profile-stats b{color:#ebe5d8}
+[data-theme="dark"] .wl-theme-toggle{color:#9a9081;border-color:#4d4742}
+[data-theme="dark"] .wl-theme-toggle:hover{color:#ebe5d8;border-color:#6e9adf}
 `;
 
 function shell(title: string, bodyInner: string, extraScript = ""): string {
@@ -175,13 +226,15 @@ function shell(title: string, bodyInner: string, extraScript = ""): string {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>WikiLean · ${htmlEscape(title, false)}</title>
 <meta name="robots" content="noindex">
+<script>(function(){try{var s=localStorage.getItem("wl-theme");var t=s==="dark"||s==="light"?s:(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;}catch(e){}})();</script>
 <style>${SHELL_CSS}</style>
 </head>
 <body>
-<header class="wl-header"><a class="wl-brand" href="/">WikiLean</a><span><a class="wl-navlink" href="/recent-changes">Recent changes</a> · <a class="wl-navlink" href="/flags">Flags</a> · <a class="wl-navlink" href="/stats">Stats</a> · <a class="wl-navlink" href="/about">About</a></span></header>
+<header class="wl-header"><a class="wl-brand" href="/">WikiLean</a><span><a class="wl-navlink" href="/recent-changes">Recent changes</a> · <a class="wl-navlink" href="/flags">Flags</a> · <a class="wl-navlink" href="/stats">Stats</a> · <a class="wl-navlink" href="/about">About</a><button id="wl-theme-toggle" class="wl-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌓</button></span></header>
 <div class="wrap">
 ${bodyInner}
 </div>
+<script>(function(){var b=document.getElementById("wl-theme-toggle");if(!b)return;b.addEventListener("click",function(){var r=document.documentElement;var n=r.dataset.theme==="dark"?"light":"dark";r.dataset.theme=n;try{localStorage.setItem("wl-theme",n);}catch(e){}});})();</script>
 ${extraScript}
 </body>
 </html>`;

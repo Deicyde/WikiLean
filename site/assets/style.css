@@ -344,3 +344,110 @@ body.show-dim .anno .mwe-math-element-block            { opacity: 1; }
   /* iOS zooms the whole page when a focused input's font-size is < 16px. */
   #wl-tooltip .tt-flag-comment { font-size: 16px; }
 }
+
+/* ---------- Dark mode ---------------------------------------------------- */
+/* Same warm-academic palette tones, just inverted: paper → near-black warm
+   ink, ink → warm off-white. Status colors retuned to higher chroma so they
+   stay legible on dark. Triggered by either an explicit user toggle
+   ([data-theme="dark"]) or — when the user hasn't picked manually — the OS
+   preference (:root:not([data-theme]) inside @media (prefers-color-scheme:
+   dark)). [data-theme="light"] explicitly opts out of dark on a dark-OS. */
+
+[data-theme="dark"] {
+  --paper:           #1a1816;
+  --surface:         #232020;
+  --ink:             #ebe5d8;
+  --muted:           #9a9081;
+  --line:            #3a3530;
+  --line-strong:     #4d4742;
+  --accent:          #6e9adf;
+  --c-formalized:        #4ca97a;
+  --c-formalized-bg:     rgba(76, 169, 122, 0.20);
+  --c-formalized-ink:    #8fd4ad;
+  --c-partial:           #d4a042;
+  --c-partial-bg:        rgba(212, 160, 66, 0.22);
+  --c-partial-ink:       #e2bf78;
+  --c-not_formalized:    #e2685f;
+  --c-not_formalized-bg: rgba(226, 104, 95, 0.20);
+  --c-not_formalized-ink:#f08e85;
+  --c-untouched:         #6e6660;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --paper:           #1a1816;
+    --surface:         #232020;
+    --ink:             #ebe5d8;
+    --muted:           #9a9081;
+    --line:            #3a3530;
+    --line-strong:     #4d4742;
+    --accent:          #6e9adf;
+    --c-formalized:        #4ca97a;
+    --c-formalized-bg:     rgba(76, 169, 122, 0.20);
+    --c-formalized-ink:    #8fd4ad;
+    --c-partial:           #d4a042;
+    --c-partial-bg:        rgba(212, 160, 66, 0.22);
+    --c-partial-ink:       #e2bf78;
+    --c-not_formalized:    #e2685f;
+    --c-not_formalized-bg: rgba(226, 104, 95, 0.20);
+    --c-not_formalized-ink:#f08e85;
+    --c-untouched:         #6e6660;
+  }
+}
+
+/* Theme-toggle button in the article header. currentColor + bordered circle
+   so it reads as a small icon without competing with the nav links. */
+.wl-theme-toggle {
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  color: var(--muted);
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  line-height: 1;
+  font-size: 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.wl-theme-toggle:hover {
+  color: var(--ink);
+  border-color: var(--accent);
+}
+
+/* Wikipedia content sits inside .wl-article-body with its own colors hard-
+   coded in MediaWiki's output (white infoboxes, light table cells, framed
+   thumbs). Force them onto our surface tone so dark mode doesn't look like
+   bright cards floating in a dark page. */
+[data-theme="dark"] .wl-article-body .infobox,
+[data-theme="dark"] .wl-article-body .infobox-table,
+[data-theme="dark"] .wl-article-body .sidebar,
+[data-theme="dark"] .wl-article-body table.wikitable,
+[data-theme="dark"] .wl-article-body table.toccolours,
+[data-theme="dark"] .wl-article-body .navbox,
+[data-theme="dark"] .wl-article-body .thumb,
+[data-theme="dark"] .wl-article-body .thumbinner {
+  background-color: var(--surface) !important;
+  color: var(--ink) !important;
+  border-color: var(--line-strong) !important;
+}
+[data-theme="dark"] .wl-article-body .infobox td,
+[data-theme="dark"] .wl-article-body .infobox th,
+[data-theme="dark"] .wl-article-body .sidebar td,
+[data-theme="dark"] .wl-article-body .sidebar th,
+[data-theme="dark"] .wl-article-body table.wikitable td,
+[data-theme="dark"] .wl-article-body table.wikitable th,
+[data-theme="dark"] .wl-article-body .thumbcaption {
+  background-color: transparent !important;
+  color: var(--ink) !important;
+  border-color: var(--line) !important;
+}
+[data-theme="dark"] .wl-article-body .toc,
+[data-theme="dark"] .wl-article-body .reflist {
+  background-color: var(--surface) !important;
+  border-color: var(--line-strong) !important;
+}
+/* Math SVG fallbacks (currentColor-based) inherit color so they read on dark;
+   MathML is already on. */
