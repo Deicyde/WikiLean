@@ -20,6 +20,15 @@ open LeanPy.Python
 def z13701Src : String :=
   "def Z13701(a, b):\n    while b != 0:\n        a, b = b, a % b\n    return a == 1\n"
 
+/-- The exact deployed Wikifunctions Python for Z13667 factorial (impl Z13668). -/
+def z13667Src : String :=
+  "def Z13667(n):\n    k = 1\n    for i in range(1, n + 1):\n        k *= i\n    return k\n"
+
+/-- Factorial spec in core Lean (definitionally Mathlib's `Nat.factorial`). -/
+def fact : Nat → Nat
+  | 0 => 1
+  | n + 1 => (n + 1) * fact n
+
 def main : IO Unit := do
   init ()
   exec z13701Src
@@ -45,3 +54,16 @@ def main : IO Unit := do
     check a b
   IO.println s!"tested {← tested.get} cases, {← mismatches.get} mismatches \
 (real CPython Z13701 vs Nat.gcd a b == 1)"
+  -- (b) Factorial Z13667: real CPython vs `fact` (= Nat.factorial). n ≤ 20 fits int64.
+  exec z13667Src
+  let fac ← eval "Z13667"
+  let facMis ← IO.mkRef (0 : Nat)
+  for n in [0:21] do
+    let r ← fac.call #[← Py.ofInt (n : Int)]
+    let py ← r.toInt
+    let spec := (fact n : Int)
+    if py != spec then
+      facMis.modify (· + 1)
+      IO.println s!"FACT MISMATCH n={n}  python={py}  spec={spec}"
+  IO.println s!"factorial: tested 21 cases (n=0..20), {← facMis.get} mismatches \
+(real CPython Z13667 vs Nat.factorial)"
