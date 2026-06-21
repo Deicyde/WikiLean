@@ -7,3 +7,10 @@ path = "../../../mathlib4"
 
 [[lean_lib]]
 name = "Wikifunctions"
+
+# Native executable for the differential test (Mathlib-free: imports only
+# Wikifunctions.Python.Z13701Prog). Compiled so it runs fast even under heavy
+# system load, unlike interpreted `lean --run`.
+[[lean_exe]]
+name = "diffdriver"
+root = "DiffDriver"
