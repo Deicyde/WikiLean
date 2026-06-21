@@ -39,13 +39,13 @@ def facLoop : Stmt :=
 
 /-- Initial state `{Z13667K1 := n, k := 1, i := 1}`. -/
 def facInit (n : Nat) : State :=
-  ((State.set (fun _ => 0) facN n).set facK 1).set facI 1
+  ((State.set ([] : State) facN n).set facK 1).set facI 1
 
 /-- The full program: run the loop with sufficient fuel (`n + 1`), then return `k`.
 This is exactly `def Z13667(n): k=1; for i in range(1,n+1): k*=i; return k`. -/
 def runFac (n : Nat) : Option Nat :=
   match facLoop.run (n + 1) (facInit n) with
   | none => none
-  | some t => some (t facK)
+  | some t => some (State.get t facK)
 
 end Wikifunctions.Python
