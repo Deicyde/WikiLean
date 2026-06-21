@@ -25,9 +25,17 @@ CANDS = HERE / "state" / "pool_candidates.json"
 REPO = "leanprover-community/mathlib4"
 
 
-def sh(cmd, **kw):
+def sh(cmd, check=False, **kw):
     print("    $", " ".join(str(c) for c in cmd))
-    return subprocess.run(cmd, text=True, **kw)
+    r = subprocess.run(cmd, text=True, **kw)
+    # check=True for steps where failure means the tick didn't accomplish its job
+    # (open a batch, trim a settle). Exit non-zero so the WORKFLOW step fails loudly
+    # instead of reporting 'success' while nothing advanced. Best-effort steps
+    # (triage/harvest/pr_table/publish/finalize) stay unchecked — they may stumble.
+    if check and r.returncode != 0:
+        name = Path(str(cmd[1])).name if len(cmd) > 1 else str(cmd[0])
+        sys.exit(f"  ✗ {name} failed (exit {r.returncode}) — failing the tick")
+    return r
 
 
 def gh_state(pr):
@@ -57,7 +65,7 @@ def do_settle(pr, branch, mathlib, cls, dry):
         print(f"    would: split --recycle {qids}; triage (LLM); publish /queue; pr_table --post; ready comment")
         return
     sh([sys.executable, str(HERE / "split.py"), "--mathlib", str(mathlib), "--branch", branch,
-        "--recycle", qids, "--apply", "--no-build"])
+        "--recycle", qids, "--apply", "--no-build"], check=True)
     sh([sys.executable, str(HERE / "triage.py"), "--out-queue", str(QUEUE)], input=json.dumps(recycle))
     # Feedback loop (deterministic, idempotent): harvest every reviewer
     # reject/revise (corrections, with the narrower QID they named) + approve
@@ -83,7 +91,10 @@ def do_settle(pr, branch, mathlib, cls, dry):
 
 def do_open(mathlib, dry):
     print("  OPEN next batch (open_batch.py)")
-    sh([sys.executable, str(HERE / "open_batch.py"), "--mathlib", str(mathlib)] + ([] if dry else ["--apply"]))
+    # check=True: a failed open (open_batch.py already sys.exit(1)s on a crash/build
+    # fail) must FAIL the tick — not silently report success while current_pr never
+    # advances (the bug that masked the Lean-core FileNotFoundError).
+    sh([sys.executable, str(HERE / "open_batch.py"), "--mathlib", str(mathlib)] + ([] if dry else ["--apply"]), check=True)
 
 
 def ci_cache_flake(pr, repo):
