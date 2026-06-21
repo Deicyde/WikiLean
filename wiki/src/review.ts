@@ -35,17 +35,61 @@ function reviewBaseUrl(c: Ctx): string {
   return (c.env.BETTER_AUTH_URL || new URL(c.req.url).origin).replace(/\/$/, "");
 }
 
-// The connected reviewer's GitHub token + login, from the cookie→KV mapping.
-async function reviewToken(c: Ctx): Promise<{ token?: string; login?: string }> {
+// A connected reviewer's stashed GitHub credentials. The review app is a GitHub
+// App: user access tokens may expire (~8h) and carry a refresh token (~6mo). A
+// plain OAuth app instead returns a long-lived token (refresh_token/expires_at
+// absent) — both shapes are handled, so swapping the app type needs no migration.
+type ReviewTok = { token?: string; login?: string; refresh_token?: string; expires_at?: number };
+
+// Exchange a `code` (callback) or a `refresh_token` for a user access token.
+// SAME endpoint for OAuth apps and GitHub Apps — a GitHub App additionally returns
+// refresh_token + expires_in when "expire user authorization tokens" is on. {} on fail.
+async function ghTokenExchange(c: Ctx, params: Record<string, string>): Promise<ReviewTok> {
+  try {
+    const r = await fetch(GH_OAUTH_TOKEN, {
+      method: "POST",
+      headers: { Accept: "application/json", "Content-Type": "application/json", "User-Agent": UA },
+      body: JSON.stringify({
+        client_id: c.env.REVIEW_GITHUB_CLIENT_ID,
+        client_secret: c.env.REVIEW_GITHUB_CLIENT_SECRET,
+        ...params,
+      }),
+    });
+    const d = (await r.json()) as { access_token?: string; refresh_token?: string; expires_in?: number };
+    if (!d.access_token) return {};
+    return {
+      token: d.access_token,
+      refresh_token: d.refresh_token,
+      expires_at: d.expires_in ? Date.now() + d.expires_in * 1000 : undefined,
+    };
+  } catch {
+    return {};
+  }
+}
+
+// The connected reviewer's GitHub token + login, from the cookie→KV mapping. If
+// the (GitHub App) access token is at/near expiry and we hold a refresh token,
+// transparently mint a fresh one and re-stash on a rolling TTL so an active
+// reviewer never has to re-connect mid-session.
+async function reviewToken(c: Ctx): Promise<ReviewTok> {
   const id = getCookie(c, REVIEW_COOKIE);
   if (!id) return {};
   const raw = await c.env.RENDER_CACHE.get(`reviewtok:${id}`);
   if (!raw) return {};
+  let tok: ReviewTok;
   try {
-    return JSON.parse(raw) as { token?: string; login?: string };
+    tok = JSON.parse(raw) as ReviewTok;
   } catch {
     return {};
   }
+  if (tok.refresh_token && tok.expires_at && Date.now() > tok.expires_at - 60_000) {
+    const fresh = await ghTokenExchange(c, { grant_type: "refresh_token", refresh_token: tok.refresh_token });
+    if (fresh.token) {
+      tok = { token: fresh.token, login: tok.login, refresh_token: fresh.refresh_token ?? tok.refresh_token, expires_at: fresh.expires_at };
+      await c.env.RENDER_CACHE.put(`reviewtok:${id}`, JSON.stringify(tok), { expirationTtl: REVIEW_TOK_TTL });
+    }
+  }
+  return tok;
 }
 
 type Ctx = Context<{ Bindings: Env }>;
@@ -979,7 +1023,13 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
         body: JSON.stringify({ body: summary }),
       }).catch(() => {});
     }
-    return c.json({ ok: true, posted, changed, results });
+    // When a post is blocked because the GitHub App isn't installed on the org
+    // ("Resource not accessible by integration"), the client points the reviewer
+    // at the install page — the one owner action that unblocks in-app posting.
+    const installUrl = c.env.REVIEW_GITHUB_APP_SLUG
+      ? `https://github.com/apps/${c.env.REVIEW_GITHUB_APP_SLUG}/installations/new`
+      : undefined;
+    return c.json({ ok: true, posted, changed, results, installUrl });
   });
 
   // ---- dedicated review-posting OAuth flow (separate GitHub app) ----
@@ -991,14 +1041,14 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
     return c.json({ configured, connected: !!login, login: login ?? null });
   });
 
-  // Step 1: redirect to GitHub to authorize the review app (scope public_repo).
-  // TODO(security, see docs/ROADMAP.md P3): public_repo grants write to ALL of the
-  // reviewer's public repos — far broader than we need (we only post PR comments),
-  // and leanprover-community's OAuth-App restrictions 403 it regardless. Migrate to
-  // a GitHub App with "Pull requests: write" + user-to-server tokens (still posts as
-  // the reviewer, so the maintainer-by-author gate survives). Note: a GitHub App must
-  // be INSTALLED on the target org to write there — doesn't bypass org approval, just
-  // makes the ask least-privilege. Copy review is the no-approval fallback meanwhile.
+  // Step 1: redirect to GitHub to authorize the review GitHub App (user-to-server).
+  // MIGRATED from a public_repo OAuth app to a GitHub App (docs/ROADMAP.md P3): NO
+  // `scope` param — a GitHub App derives permissions from its own config ("Pull
+  // requests: write"), so authorizing grants ONLY PR-comment write, never the old
+  // public_repo write-to-all. User-to-server tokens still post AS the reviewer, so
+  // settle.py's maintainer-by-author gate survives. Posting to an org additionally
+  // needs the App INSTALLED there (owner action — see installUrl in POST results);
+  // until then Copy review is the no-approval fallback.
   app.get("/review/auth/start", (c) => {
     const cid = c.env.REVIEW_GITHUB_CLIENT_ID;
     if (!cid || !c.env.REVIEW_GITHUB_CLIENT_SECRET) {
@@ -1017,8 +1067,12 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
     const u = new URL(GH_OAUTH_AUTHORIZE);
     u.searchParams.set("client_id", cid);
     u.searchParams.set("redirect_uri", reviewBaseUrl(c) + "/review/auth/callback");
-    u.searchParams.set("scope", "public_repo");
     u.searchParams.set("state", state);
+    // GitHub App client IDs start with "Iv" (Iv1./Iv23…) and take NO scope — perms
+    // come from the App config. A legacy/"Ov23…" OAuth-app ID still needs public_repo.
+    // Sniffing the prefix keeps the migration zero-downtime: correct for whichever
+    // app is configured, so swapping the secret to the GitHub App needs no code change.
+    if (!cid.startsWith("Iv")) u.searchParams.set("scope", "public_repo");
     return c.redirect(u.toString());
   });
 
@@ -1032,28 +1086,15 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
     if (!code || !state || !savedState || state !== savedState) {
       return c.text("Invalid OAuth state — try connecting again.", 400);
     }
-    let accessToken: string | undefined;
-    try {
-      const r = await fetch(GH_OAUTH_TOKEN, {
-        method: "POST",
-        headers: { Accept: "application/json", "Content-Type": "application/json", "User-Agent": UA },
-        body: JSON.stringify({
-          client_id: c.env.REVIEW_GITHUB_CLIENT_ID,
-          client_secret: c.env.REVIEW_GITHUB_CLIENT_SECRET,
-          code,
-          redirect_uri: reviewBaseUrl(c) + "/review/auth/callback",
-        }),
-      });
-      accessToken = ((await r.json()) as { access_token?: string }).access_token;
-    } catch {
-      /* fall through */
-    }
-    if (!accessToken) return c.text("GitHub token exchange failed — try again.", 502);
-    const login = await ghLogin(accessToken);
+    // Same token endpoint for OAuth apps and GitHub Apps; ghTokenExchange also
+    // captures refresh_token + expires_at when the App expires user tokens.
+    const ex = await ghTokenExchange(c, { code, redirect_uri: reviewBaseUrl(c) + "/review/auth/callback" });
+    if (!ex.token) return c.text("GitHub token exchange failed — try again.", 502);
+    const login = await ghLogin(ex.token);
     const id = crypto.randomUUID();
     await c.env.RENDER_CACHE.put(
       `reviewtok:${id}`,
-      JSON.stringify({ token: accessToken, login }),
+      JSON.stringify({ token: ex.token, login, refresh_token: ex.refresh_token, expires_at: ex.expires_at }),
       { expirationTtl: REVIEW_TOK_TTL },
     );
     setCookie(c, REVIEW_COOKIE, id, {
@@ -1720,21 +1761,23 @@ async function submitToGitHub(){
     res.filter(x=>x.posted).forEach(x=>{ delete STATE[x.qid]; }); save();
     const skipped = res.filter(x=>x.skipped).length;
     const errs = res.filter(x=>x.error);
-    // leanprover-community restricts third-party OAuth Apps, so every in-app post
-    // 403s identically and unactionably. Collapse those into ONE nudge to Copy
-    // review (which pastes as YOU in the browser — not subject to the OAuth-App
-    // policy), instead of listing the same wall of text per tag.
-    const ORG = /appear to have the correct authorization|OAuth App access restrictions|organization has enabled/;
-    const blocked = errs.filter(e=>ORG.test(e.error||""));
-    const other = errs.filter(e=>!ORG.test(e.error||""));
+    // Org-side blocks are identical and unactionable per tag, so collapse them into
+    // ONE nudge. Two shapes: the legacy OAuth-App restriction, and the GitHub App
+    // not being installed on the org ("Resource not accessible by integration").
+    // Both unblock via Copy review (pastes as YOU in-browser) — and, for the App,
+    // by an org owner installing it (installUrl).
+    const BLOCKED = /appear to have the correct authorization|OAuth App access restrictions|organization has enabled|Resource not accessible by integration/;
+    const blocked = errs.filter(e=>BLOCKED.test(e.error||""));
+    const other = errs.filter(e=>!BLOCKED.test(e.error||""));
     const parts = ["Posted "+j.posted+" comment"+(j.posted===1?"":"s")+
       (j.changed?(" ("+j.changed+" status change"+(j.changed===1?"":"s")+")"):"")];
     if(skipped) parts.push(skipped+" skipped (not in this PR)");
     if(other.length) parts.push(other.length+" failed — "+other.map(e=>e.qid+": "+e.error).join("; "));
     let msg = parts.join(" · ");
     if(blocked.length){
-      msg += " · ⚠️ "+blocked.length+" couldn’t post: GitHub blocks the WikiLean review app for the "
-        + "leanprover-community org. Click “📋 Copy review” and paste it as a PR comment — it posts as you.";
+      msg += " · ⚠️ "+blocked.length+" couldn’t post: this org hasn’t enabled in-app posting. "
+        + "Click “📋 Copy review” and paste it as a PR comment — it posts as you."
+        + (j.installUrl ? " (Or an org owner can install the app: "+j.installUrl+")" : "");
     }
     if(j.posted>0){
       note.innerHTML = "✓ "+msg+' — see <a href="'+prUrl()+'" target="_blank" rel="noopener">the PR ↗</a>. Reloading…';

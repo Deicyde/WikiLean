@@ -35,11 +35,16 @@ export interface Env {
   // still uses the logged-in reviewer's own OAuth token.
   GITHUB_API_TOKEN?: string;
 
-  // Dedicated GitHub OAuth app for the /review tool's POSTING flow only — kept
-  // SEPARATE from the wiki login (GITHUB_CLIENT_ID above stays identity-only).
-  // This app requests `public_repo` so an opted-in reviewer can post inline PR
-  // comments in-app; only reviewers who click "Connect GitHub" ever grant it.
-  // Register a GitHub OAuth app with callback {BETTER_AUTH_URL}/review/auth/callback.
+  // Dedicated GitHub *App* for the /review tool's POSTING flow only — kept SEPARATE
+  // from the wiki login (GITHUB_CLIENT_ID above stays identity-only). Register a
+  // GitHub App (NOT an OAuth app) with: permission "Pull requests: Read & write" +
+  // "Issues: Read & write" (the top-level summary is an issue comment); user
+  // authorization callback {BETTER_AUTH_URL}/review/auth/callback; "Request user
+  // authorization (OAuth) during installation" optional. CLIENT_ID/SECRET are the
+  // App's. A reviewer who clicks "Connect GitHub" grants ONLY PR-comment write (via
+  // a user-to-server token), never public_repo. To post into an org the App must be
+  // INSTALLED there; APP_SLUG builds the install URL shown when a post is blocked.
   REVIEW_GITHUB_CLIENT_ID?: string;
   REVIEW_GITHUB_CLIENT_SECRET?: string;
+  REVIEW_GITHUB_APP_SLUG?: string;
 }
