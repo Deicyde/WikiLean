@@ -24,6 +24,7 @@ HTML = """<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>WikiLean — Concept graph</title>
 <meta name="description" content="Side-by-side dependency graph for Wikipedia mathematics concepts: edges from Mathlib's formal dependency graph overlaid on edges from Wikidata's typed relations.">
+<script>(function(){try{var s=localStorage.getItem("wl-theme");var t=s==="dark"||s==="light"?s:(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;}catch(e){}})();</script>
 <style>
 * { box-sizing:border-box; }
 html, body { height:100%; }
@@ -32,10 +33,14 @@ body { margin:0; background:#fafbfc; color:#1f2328;
 .wl-header { background:#fff; border-bottom:1px solid #d0d7de; padding:14px 28px;
   display:flex; align-items:center; justify-content:space-between; }
 .wl-brand { font-weight:700; color:#0969da; font-size:18px; text-decoration:none; }
-.wl-nav { display:flex; gap:18px; }
+.wl-nav { display:flex; gap:18px; align-items:center; }
 .wl-navlink { color:#0969da; text-decoration:none; font-size:.9rem; }
 .wl-navlink:hover { text-decoration:underline; }
 .wl-navlink.active { color:#1f2328; }
+.wl-theme-toggle { background:transparent; border:1px solid #d0d7de; color:#57606a;
+  border-radius:50%; width:28px; height:28px; padding:0; line-height:1; font-size:14px;
+  cursor:pointer; display:inline-flex; align-items:center; justify-content:center; margin-left:10px; }
+[data-theme="dark"] .wl-theme-toggle { color:#9a9081; border-color:#4d4742; }
 
 #app {
   display:grid; grid-template-columns: 260px 1fr 320px;
@@ -67,6 +72,31 @@ input[type="text"]:focus { outline:none; border-color:#0969da; box-shadow:0 0 0 
 #info .field b { color:#57606a; font-weight:600; }
 #info .links { display:flex; flex-direction:column; gap:4px; margin-top:14px; padding-top:14px; border-top:1px solid #d0d7de; }
 .empty { color:#8c959f; font-style:italic; }
+
+/* Dark mode — shared palette (bg #1a1816, surface #232020, text #ebe5d8,
+   muted #9a9081, accent #6e9adf, borders #4d4742). Canvas bg + node/label
+   colors that read poorly on dark are also handled in JS via dataset.theme. */
+[data-theme="dark"] body { background:#1a1816; color:#ebe5d8; }
+[data-theme="dark"] .wl-header { background:#232020; border-bottom-color:#4d4742; }
+[data-theme="dark"] .wl-brand { color:#6e9adf; }
+[data-theme="dark"] .wl-navlink { color:#6e9adf; }
+[data-theme="dark"] .wl-navlink.active { color:#ebe5d8; }
+[data-theme="dark"] aside { background:#232020; color:#ebe5d8; }
+[data-theme="dark"] #side { border-right-color:#4d4742; }
+[data-theme="dark"] #info { border-left-color:#4d4742; }
+[data-theme="dark"] canvas { background:#1a1816; }
+[data-theme="dark"] h2 { color:#9a9081; }
+[data-theme="dark"] input[type="text"] { background:#1a1816; color:#ebe5d8; border-color:#4d4742; }
+[data-theme="dark"] input[type="text"]:focus { border-color:#6e9adf; box-shadow:0 0 0 2px rgba(110,154,223,.25); }
+[data-theme="dark"] .stat .v { color:#9a9081; }
+[data-theme="dark"] .hint { color:#9a9081; }
+[data-theme="dark"] #info h3 { color:#ebe5d8; }
+[data-theme="dark"] #info .qid { color:#9a9081; }
+[data-theme="dark"] #info code { background:#2c2926; color:#ebe5d8; }
+[data-theme="dark"] #info a { color:#6e9adf; }
+[data-theme="dark"] #info .field b { color:#9a9081; }
+[data-theme="dark"] #info .links { border-top-color:#4d4742; }
+[data-theme="dark"] .empty { color:#9a9081; }
 </style>
 </head>
 <body>
@@ -77,6 +107,7 @@ input[type="text"]:focus { outline:none; border-color:#0969da; box-shadow:0 0 0 
     <a class="wl-navlink" href="/article-graph">Article graph</a>
     <a class="wl-navlink active" href="/graph">Concept graph</a>
     <a class="wl-navlink" href="/about">About &amp; method</a>
+    <button id="wl-theme-toggle" class="wl-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">\U0001f313</button>
   </nav>
 </header>
 <div id="app">
@@ -104,6 +135,7 @@ input[type="text"]:focus { outline:none; border-color:#0969da; box-shadow:0 0 0 
 </div>
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 <script>
+const isDark = () => document.documentElement.dataset.theme === 'dark';
 const COLORS = {
   mathlib: '#2e6fab',
   wikidata: '#c78420',
@@ -113,6 +145,10 @@ const COLORS = {
   nodeUnformalized: '#d0d7de',
   nodeDefault: '#57606a',
 };
+// On dark, lift the muted node colors and the node-label ink so they stay legible.
+function nodeUnformalizedColor() { return isDark() ? '#4d4742' : COLORS.nodeUnformalized; }
+function nodeDefaultColor() { return isDark() ? '#9a9081' : COLORS.nodeDefault; }
+function labelColor() { return isDark() ? '#ebe5d8' : '#1f2328'; }
 
 (async () => {
   const data = await (await fetch('graph_data.json')).json();
@@ -171,8 +207,8 @@ const COLORS = {
   function nodeColor(n, matched) {
     if (matched) return COLORS.highlight;
     if (n.status === 'formalized') return COLORS.nodeFormalized;
-    if (!n.primary_decl) return COLORS.nodeUnformalized;
-    return COLORS.nodeDefault;
+    if (!n.primary_decl) return nodeUnformalizedColor();
+    return nodeDefaultColor();
   }
   function matchesSearch(n) {
     return searchTerm && (n.label || '').toLowerCase().includes(searchTerm);
@@ -244,7 +280,7 @@ const COLORS = {
     }
 
     if (highlighted) {
-      ctx.fillStyle = '#1f2328';
+      ctx.fillStyle = labelColor();
       ctx.font = (12 * inv) + 'px -apple-system, sans-serif';
       ctx.textBaseline = 'middle';
       ctx.fillText(' ' + (highlighted.label || highlighted.id), highlighted.x + 7 * inv, highlighted.y);
@@ -345,6 +381,17 @@ const COLORS = {
 
   resize();
   window.addEventListener('resize', resize);
+
+  // Theme toggle — flip dataset.theme, persist, and redraw the canvas so its
+  // theme-dependent node/label colors update without a reload.
+  const themeBtn = document.getElementById('wl-theme-toggle');
+  if (themeBtn) themeBtn.addEventListener('click', () => {
+    const r = document.documentElement;
+    const n = r.dataset.theme === 'dark' ? 'light' : 'dark';
+    r.dataset.theme = n;
+    try { localStorage.setItem('wl-theme', n); } catch (e) {}
+    scheduleDraw();
+  });
 })();
 </script>
 </body>

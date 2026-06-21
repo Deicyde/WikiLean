@@ -149,7 +149,50 @@ a:hover { text-decoration:underline; }
 .stats b { color:#1f1d1a; }
 footer { margin-top:48px; padding-top:20px; border-top:1px solid #d8d0bd;
   font-size:.82rem; color:#5f594e; }
+.wl-theme-toggle { background:transparent; border:1px solid #d8d0bd; color:#5f594e;
+  border-radius:50%; width:28px; height:28px; padding:0; line-height:1; font-size:14px;
+  cursor:pointer; display:inline-flex; align-items:center; justify-content:center; margin-left:10px; }
+[data-theme="dark"] .wl-theme-toggle { color:#9a9081; border-color:#4d4742; }
+
+/* Dark mode — shared palette across the site (bg #1a1816, surface #232020,
+   text #ebe5d8, muted #9a9081, accent #6e9adf, borders #4d4742). */
+[data-theme="dark"] body { background:#1a1816; color:#ebe5d8; }
+[data-theme="dark"] :focus-visible { outline-color:#6e9adf; }
+[data-theme="dark"] .wl-header { background:#232020; border-bottom-color:#4d4742; }
+[data-theme="dark"] .wl-brand { color:#ebe5d8; }
+[data-theme="dark"] .wl-brand:hover { color:#8fb4e8; }
+[data-theme="dark"] .wl-navlink { color:#6e9adf; }
+[data-theme="dark"] .wl-navlink.active { color:#ebe5d8; }
+[data-theme="dark"] h1, [data-theme="dark"] h2 { color:#ebe5d8; }
+[data-theme="dark"] p, [data-theme="dark"] li { color:#ebe5d8; }
+[data-theme="dark"] a { color:#6e9adf; }
+[data-theme="dark"] a:hover { color:#8fb4e8; }
+[data-theme="dark"] .lead { color:#9a9081; }
+[data-theme="dark"] .stats { color:#9a9081; }
+[data-theme="dark"] .stats b { color:#ebe5d8; }
+[data-theme="dark"] code { background:#2c2926; color:#ebe5d8; }
+[data-theme="dark"] footer { border-top-color:#4d4742; color:#9a9081; }
 """
+
+# Run before any stylesheet so the theme is set before first paint (no flash).
+NO_FOUC = (
+    '<script>(function(){try{var s=localStorage.getItem("wl-theme");'
+    'var t=s==="dark"||s==="light"?s:(window.matchMedia&&'
+    'window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");'
+    'document.documentElement.dataset.theme=t;}catch(e){}})();</script>'
+)
+
+THEME_TOGGLE_BTN = (
+    '<button id="wl-theme-toggle" class="wl-theme-toggle" type="button" '
+    'aria-label="Toggle dark mode" title="Toggle dark mode">\U0001f313</button>'
+)
+
+THEME_TOGGLE_SCRIPT = (
+    '<script>(function(){var b=document.getElementById("wl-theme-toggle");'
+    'if(!b)return;b.addEventListener("click",function(){var r=document.documentElement;'
+    'var n=r.dataset.theme==="dark"?"light":"dark";r.dataset.theme=n;'
+    'try{localStorage.setItem("wl-theme",n);}catch(e){}});})();</script>'
+)
 
 ABOUT_TEMPLATE = (
     """<!doctype html>
@@ -160,6 +203,7 @@ ABOUT_TEMPLATE = (
 <title>WikiLean — About &amp; method</title>
 <meta name="description" content="How WikiLean maps Wikipedia mathematics to Lean/Mathlib4 formalizations: methodology, what the formalized / partial / not-formalized statuses mean, and limitations.">
 <link rel="canonical" href="%BASE%/about">
+%NOFOUC%
 <style>%CSS%</style>
 </head>
 <body>
@@ -170,6 +214,7 @@ ABOUT_TEMPLATE = (
     <a class="wl-navlink" href="/article-graph">Article graph</a>
     <a class="wl-navlink" href="/graph">Concept graph</a>
     <a class="wl-navlink active" href="/about">About &amp; method</a>
+    %TOGGLE_BTN%
   </nav>
 </header>
 <div class="wrap">
@@ -253,10 +298,14 @@ ABOUT_TEMPLATE = (
     a project by <a href="https://jackmccarthy.org">Jack McCarthy</a>
   </footer>
 </div>
+%TOGGLE_SCRIPT%
 </body>
 </html>
 """
     .replace("%CSS%", SHARED_CSS)
+    .replace("%NOFOUC%", NO_FOUC)
+    .replace("%TOGGLE_BTN%", THEME_TOGGLE_BTN)
+    .replace("%TOGGLE_SCRIPT%", THEME_TOGGLE_SCRIPT)
     .replace("%BASE%", BASE_URL)
 )
 
@@ -268,10 +317,13 @@ NOT_FOUND_TEMPLATE = (
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>WikiLean — Page not found</title>
 <meta name="robots" content="noindex">
+%NOFOUC%
 <style>%CSS%
 .nf { text-align:center; padding:72px 0; }
 .nf .code { font-size:3rem; font-weight:700; color:#1a4b8c; margin:0; }
 .nf p { color:#5f594e; }
+[data-theme="dark"] .nf .code { color:#6e9adf; }
+[data-theme="dark"] .nf p { color:#9a9081; }
 </style>
 </head>
 <body>
@@ -282,6 +334,7 @@ NOT_FOUND_TEMPLATE = (
     <a class="wl-navlink" href="/article-graph">Article graph</a>
     <a class="wl-navlink" href="/graph">Concept graph</a>
     <a class="wl-navlink" href="/about">About &amp; method</a>
+    %TOGGLE_BTN%
   </nav>
 </header>
 <div class="wrap">
@@ -291,10 +344,14 @@ NOT_FOUND_TEMPLATE = (
     <p><a href="/">Browse all articles</a> &middot; <a href="/concepts">Concepts</a> &middot; <a href="/article-graph">Article graph</a> &middot; <a href="/graph">Concept graph</a></p>
   </div>
 </div>
+%TOGGLE_SCRIPT%
 </body>
 </html>
 """
     .replace("%CSS%", SHARED_CSS)
+    .replace("%NOFOUC%", NO_FOUC)
+    .replace("%TOGGLE_BTN%", THEME_TOGGLE_BTN)
+    .replace("%TOGGLE_SCRIPT%", THEME_TOGGLE_SCRIPT)
 )
 
 

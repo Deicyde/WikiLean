@@ -23,6 +23,26 @@ OUT = HERE / "out" / "concepts.html"
 
 IMP_ORDER = {"Top": 0, "High": 1, "Mid": 2, "Low": 3, None: 4}
 
+# Dark-mode chrome shared with the rest of the site. These are injected via
+# .format() placeholders so their { } don't need to be doubled like the
+# inline page CSS/JS that lives in the format template.
+NO_FOUC = (
+    '<script>(function(){try{var s=localStorage.getItem("wl-theme");'
+    'var t=s==="dark"||s==="light"?s:(window.matchMedia&&'
+    'window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");'
+    'document.documentElement.dataset.theme=t;}catch(e){}})();</script>'
+)
+THEME_TOGGLE_BTN = (
+    '<button id="wl-theme-toggle" class="wl-theme-toggle" type="button" '
+    'aria-label="Toggle dark mode" title="Toggle dark mode">\U0001f313</button>'
+)
+THEME_TOGGLE_SCRIPT = (
+    '<script>(function(){var b=document.getElementById("wl-theme-toggle");'
+    'if(!b)return;b.addEventListener("click",function(){var r=document.documentElement;'
+    'var n=r.dataset.theme==="dark"?"light":"dark";r.dataset.theme=n;'
+    'try{localStorage.setItem("wl-theme",n);}catch(e){}});})();</script>'
+)
+
 
 def load_rows() -> list[dict]:
     rows = []
@@ -52,12 +72,14 @@ PAGE = """<!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>WikiLean · Mathlib coverage</title>
+{nofouc}
 <style>
 :root {{ --green:#2da44e; --red:#cf222e; --amber:#d29922; }}
 body {{ font:14px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; margin:0;
   background:#fafbfc; color:#1f2328; }}
 header {{ background:#fff; border-bottom:1px solid #d0d7de; padding:16px 28px; }}
 h1 {{ font-size:18px; margin:0 0 10px; }}
+.hrow {{ display:flex; align-items:center; justify-content:space-between; gap:12px; }}
 .stats {{ display:flex; gap:18px; flex-wrap:wrap; font-size:13px; }}
 .stat b {{ font-size:18px; display:block; }}
 .stat.green b {{ color:var(--green); }} .stat.red b {{ color:var(--red); }}
@@ -77,10 +99,36 @@ code {{ background:#eef1f4; padding:1px 5px; border-radius:3px; font-size:12px; 
 a {{ color:#0969da; text-decoration:none; }} a:hover {{ text-decoration:underline; }}
 .muted {{ color:#888; }}
 #count {{ margin-top:8px; font-size:12px; color:#57606a; }}
+.wl-theme-toggle {{ background:transparent; border:1px solid #d0d7de; color:#57606a;
+  border-radius:50%; width:28px; height:28px; padding:0; line-height:1; font-size:14px;
+  cursor:pointer; display:inline-flex; align-items:center; justify-content:center; margin-left:10px; flex:none; }}
+[data-theme="dark"] .wl-theme-toggle {{ color:#9a9081; border-color:#4d4742; }}
+
+/* Dark mode — shared palette (bg #1a1816, surface #232020, text #ebe5d8,
+   muted #9a9081, accent #6e9adf, borders #4d4742). */
+[data-theme="dark"] body {{ background:#1a1816; color:#ebe5d8; }}
+[data-theme="dark"] header {{ background:#232020; border-bottom-color:#4d4742; }}
+[data-theme="dark"] h1 {{ color:#ebe5d8; }}
+[data-theme="dark"] .controls input, [data-theme="dark"] .controls select {{
+  background:#1a1816; color:#ebe5d8; border-color:#4d4742; }}
+[data-theme="dark"] th {{ background:#2c2926; color:#ebe5d8; }}
+[data-theme="dark"] th:hover {{ background:#34302c; }}
+[data-theme="dark"] th, [data-theme="dark"] td {{ border-bottom-color:#34302c; }}
+[data-theme="dark"] tr:hover td {{ background:#232020; }}
+[data-theme="dark"] code {{ background:#2c2926; color:#ebe5d8; }}
+[data-theme="dark"] a {{ color:#6e9adf; }}
+[data-theme="dark"] a:hover {{ color:#8fb4e8; }}
+[data-theme="dark"] .muted {{ color:#9a9081; }}
+[data-theme="dark"] #count {{ color:#9a9081; }}
+[data-theme="dark"] .pill.formalized {{ background:rgba(45,164,78,.18); }}
+[data-theme="dark"] .pill.not_formalized {{ background:rgba(207,34,46,.18); }}
 </style></head>
 <body>
 <header>
-  <h1>WikiLean · Mathlib coverage of WikiProject Mathematics concepts</h1>
+  <div class="hrow">
+    <h1>WikiLean · Mathlib coverage of WikiProject Mathematics concepts</h1>
+    {toggle_btn}
+  </div>
   <div class="stats">
     <div class="stat"><b>{total}</b>concepts</div>
     <div class="stat green"><b>{n_form}</b>formalized ({pct_form}%)</div>
@@ -161,6 +209,7 @@ document.querySelectorAll("th").forEach(th => th.addEventListener("click", () =>
 ["q","f-status","f-imp"].forEach(id => document.getElementById(id).addEventListener("input", render));
 render();
 </script>
+{toggle_script}
 </body></html>
 """
 
@@ -178,6 +227,7 @@ def main() -> int:
         n_top_high=len(th), n_top_high_form=n_th_form,
         pct_th=round(100 * n_th_form / len(th)) if th else 0,
         data=json.dumps(rows, ensure_ascii=False).replace("</", "<\\/"),
+        nofouc=NO_FOUC, toggle_btn=THEME_TOGGLE_BTN, toggle_script=THEME_TOGGLE_SCRIPT,
     ), encoding="utf-8")
     print(f"wrote {OUT}  ({total} concepts: {n_form} formalized, {total - n_form} not)")
     return 0
