@@ -37,12 +37,16 @@ def State.set (s : State) (x : String) (v : Nat) : State :=
 inductive Expr where
   | var (x : String)        -- a variable reference
   | lit (n : Nat)           -- a nat literal
+  | add (e₁ e₂ : Expr)      -- the `+` operator
+  | mul (e₁ e₂ : Expr)      -- the `*` operator
   | mod (e₁ e₂ : Expr)      -- the `%` operator
   deriving Repr
 
-/-- Boolean conditions. Only `e != 0` is needed so far (`while … != 0`). -/
+/-- Boolean conditions: `e != 0` (used by `while … != 0`) and `e₁ <= e₂`
+    (used by a `for i in range(...)` desugared to `while i <= n`). -/
 inductive Cond where
   | ne0 (e : Expr)          -- `e != 0`
+  | le (e₁ e₂ : Expr)       -- `e₁ <= e₂`
   deriving Repr
 
 /-- Statements: a *parallel* (simultaneous) assignment, a `while` loop, and sequencing. -/
@@ -58,11 +62,14 @@ inductive Stmt where
 def Expr.eval (s : State) : Expr → Nat
   | .var x => s x
   | .lit n => n
+  | .add e₁ e₂ => (e₁.eval s) + (e₂.eval s)
+  | .mul e₁ e₂ => (e₁.eval s) * (e₂.eval s)
   | .mod e₁ e₂ => (e₁.eval s) % (e₂.eval s)
 
-/-- Condition evaluation: `e != 0` is `e.eval s ≠ 0`. -/
+/-- Condition evaluation. -/
 def Cond.eval (s : State) : Cond → Bool
   | .ne0 e => e.eval s ≠ 0
+  | .le e₁ e₂ => e₁.eval s ≤ e₂.eval s
 
 /-- Semantics of the parallel assignment `x₁, x₂ = e₁, e₂`: both right-hand sides
 are evaluated in the *current* state `s`, then both targets are updated
