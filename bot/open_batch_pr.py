@@ -26,7 +26,7 @@ Usage:
       --repo Deicyde/mathlib4 --all
 """
 from __future__ import annotations
-import argparse, json, re, subprocess, sys
+import argparse, json, re, subprocess, sys, time
 from pathlib import Path
 
 # --- decl targeting -------------------------------------------------------
@@ -277,11 +277,26 @@ def open_pr(approved: dict, mathlib: Path, repo: str, base: str):
     print((r.stdout + r.stderr).strip())
     if r.returncode != 0:
         sys.exit(1)
-    # Now that the PR exists, fill the reviewer-UI link with its number.
+    # Fill the reviewer-UI link now that the PR number is known. Editing the body
+    # IMMEDIATELY after create races GitHub — the PR isn't editable for ~1-2s and the
+    # edit silently 404s (run() doesn't check rc), which left #40861's body with a
+    # blank `?pr=`. Retry with a short backoff and VERIFY, warning loudly if it never
+    # takes (a blank link is bad reviewer UX, but shouldn't abort an otherwise-good PR).
     m = re.search(r"/pull/(\d+)", r.stdout)
-    if m:
-        run(["gh", "pr", "edit", m.group(1), "--repo", repo,
-             "--body", PR_BODY_TMPL.format(n=n, pr=m.group(1))], cwd=mathlib)
+    if not m:
+        print("[gh] WARNING: couldn't parse the new PR number — reviewer-UI link left blank")
+        return
+    prn = m.group(1)
+    body = PR_BODY_TMPL.format(n=n, pr=prn)
+    for attempt in range(1, 5):
+        er = run(["gh", "pr", "edit", prn, "--repo", repo, "--body", body], cwd=mathlib)
+        if er.returncode == 0:
+            print(f"[gh] filled reviewer-UI link (?pr={prn})")
+            return
+        print(f"[gh] pr edit attempt {attempt} failed (rc={er.returncode}): "
+              f"{(er.stderr or er.stdout).strip()[:150]}")
+        time.sleep(3)
+    print(f"[gh] WARNING: could not fill the reviewer-UI link after retries — body keeps blank ?pr=")
 
 # --- LLM-generated disclosure + label -------------------------------------
 
