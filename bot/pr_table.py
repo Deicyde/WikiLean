@@ -62,13 +62,21 @@ MARKER = "<!-- wikilean-tag-table -->"
 
 
 def post(pr, repo, body):
-    """Idempotent: update the existing wikilean-tag-table comment, else create it."""
-    ids = subprocess.run(
+    """Idempotent: update the existing wikilean-tag-table comment, else create it.
+    Skips the PATCH when the rendered body is unchanged, so a periodic refresh that
+    finds no new reviews doesn't churn the comment's 'edited' timestamp."""
+    existing = subprocess.run(
         ["gh", "api", f"repos/{repo}/issues/{pr}/comments", "--paginate",
-         "--jq", f'.[] | select(.body | contains("{MARKER}")) | .id'],
-        capture_output=True, text=True).stdout.split()
-    if ids:
-        cmd = ["gh", "api", "--method", "PATCH", f"repos/{repo}/issues/comments/{ids[0]}"]
+         "--jq", f'.[] | select(.body | contains("{MARKER}")) | {{id, body}}'],
+        capture_output=True, text=True).stdout.strip()
+    cid, cur = None, ""
+    if existing:
+        o = json.loads(existing.splitlines()[0]); cid, cur = o.get("id"), o.get("body") or ""
+    norm = lambda s: (s or "").replace("\r\n", "\n").strip()
+    if cid is not None:
+        if norm(cur) == norm(body):
+            return "unchanged", 0, ""
+        cmd = ["gh", "api", "--method", "PATCH", f"repos/{repo}/issues/comments/{cid}"]
         action = "updated"
     else:
         cmd = ["gh", "api", "--method", "POST", f"repos/{repo}/issues/{pr}/comments"]

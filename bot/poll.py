@@ -204,6 +204,20 @@ def decide():
     return "act" if settle.classify(pr, REPO)["gate"] else "wait"   # gate met -> settle
 
 
+def refresh_table():
+    """Cheap (no mathlib/lean): re-post the current OPEN, un-settled PR's tag table so
+    its Reviews column reflects verdicts that landed since it was opened — pr_table
+    skips the write when nothing changed, so this is safe to run every tick. Settled
+    PRs already carry the green-only table (re-posted by the settle), so leave them be.
+    Fixes the table going stale between open and settle (it only refreshed at those
+    two points, so a reviewer's verdicts never appeared until the gate was met)."""
+    st = json.loads(STATE.read_text()) if STATE.exists() else {}
+    pr = st.get("current_pr")
+    if not pr or gh_state(pr) != "OPEN" or st.get("settled_pr") == pr:
+        return
+    sh([sys.executable, str(HERE / "pr_table.py"), str(pr), "--repo", REPO, "--post", "--fresh"])
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--mathlib", type=Path, required=True)
@@ -213,9 +227,14 @@ def main():
                     help="on merge, alert instead of auto-opening the next batch (supervise the first open)")
     ap.add_argument("--decide", action="store_true",
                     help="print POLL_DECISION=act|wait (gh-only, no mathlib) and exit; CI gate")
+    ap.add_argument("--refresh-table", action="store_true",
+                    help="cheap: re-post the current OPEN PR's tag table to reflect new reviews, then exit")
     args = ap.parse_args()
     if args.decide:
         print(f"POLL_DECISION={decide()}")
+        return
+    if args.refresh_table:
+        refresh_table()
         return
     dry = not args.apply
     while True:
