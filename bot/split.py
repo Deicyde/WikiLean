@@ -165,7 +165,12 @@ def main():
     # than amend+force-push (which would clobber that merge — and a stale lease
     # would reject it anyway).
     run(["git", "fetch", "origin", args.branch], cwd=args.mathlib)
-    run(["git", "reset", "--hard", f"origin/{args.branch}"], cwd=args.mathlib)
+    # checkout -B (NOT reset --hard): on a fresh Actions clone the working dir is on
+    # `master` with NO local branch by this name, so a later `git push origin <branch>`
+    # dies with "src refspec … does not match any". -B creates/points the local branch
+    # at the fetched tip, giving the push a source ref. (On the laptop the branch was
+    # already checked out from the open, so reset --hard happened to work.)
+    run(["git", "checkout", "-B", args.branch, "FETCH_HEAD"], cwd=args.mathlib)
     # Freshen against current master BEFORE trimming so the build-cache-verify
     # passes (a stale merged-master leaves core-file oleans uncached).
     print("  freshened against upstream/master" if freshen_master(args.mathlib)
