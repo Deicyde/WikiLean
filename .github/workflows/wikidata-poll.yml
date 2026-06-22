@@ -133,3 +133,12 @@ jobs:
             git commit -m "bot: advance @[wikidata] poll state [skip ci]"
             git push
           fi
+
+      # ---- keep the tag table's Reviews column current between open & settle ----
+      # Cheap (gh + /api/review only, no lean/mathlib): re-post the OPEN PR's table so
+      # reviewers' verdicts appear as they land, not just at open/settle. pr_table is
+      # idempotent and skips the write when unchanged, so this runs every tick — incl.
+      # the no-op waits, which is exactly when reviews trickle in.
+      - name: Refresh tag table
+        if: always()
+        run: python3 bot/poll.py --mathlib /tmp/unused --refresh-table
