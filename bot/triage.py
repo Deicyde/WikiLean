@@ -33,7 +33,16 @@ def verify(d):
     if decl:
         r = subprocess.run(["python3", str(MATHLIB_SEARCH), "decl", decl, "--live"],
                            capture_output=True, text=True)
-        d["decl_exists"] = (r.returncode == 0 and "EXISTS" in r.stdout)
+        # Tri-state. Only a PROVEN absence (rc 1 = clean "not found") may auto-cut; a
+        # transport flake (rc 2 = ApiError, common on the stateless runner's cold cache)
+        # leaves it UNVERIFIED so we keep the requeue — never permanently cut a good
+        # retarget into cut_log over a transient network blip.
+        if r.returncode == 0 and "EXISTS" in r.stdout:
+            d["decl_exists"] = True
+        elif r.returncode == 1:
+            d["decl_exists"] = False
+        else:
+            d["decl_exists"] = None
     if qid:
         r = subprocess.run(["python3", str(WIKIDATA_SEARCH), "entity", qid],
                            capture_output=True, text=True)

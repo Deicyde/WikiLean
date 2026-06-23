@@ -259,6 +259,11 @@ def open_pr(approved: dict, mathlib: Path, repo: str, base: str):
     if run(["git", "add", "--", *files], cwd=mathlib).returncode != 0:
         sys.exit("git add failed")
     assert_only_wikidata_changes(mathlib, set(files))
+    # Empty staged diff = every tag skipped (decls missing / already tagged on master /
+    # pool drained). Exit cleanly instead of letting `gh pr create` fail later with the
+    # cryptic "No commits between …".
+    if run(["git", "diff", "--cached", "--quiet"], cwd=mathlib).returncode == 0:
+        sys.exit("no @[wikidata] tags applied (decls missing / already on master / pool drained) — nothing to open")
     for desc, cmd in [
         ("commit",        ["git", "commit", "-m", title]),
         ("push",          ["git", "push", "-u", "origin", branch, "--force-with-lease"]),
