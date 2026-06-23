@@ -89,6 +89,53 @@ def do_settle(pr, branch, mathlib, cls, dry):
     sh([sys.executable, str(HERE / "publish_queue.py"), "--recycle", str(QUEUE), "--candidates", str(CANDS)])
 
 
+def pr_conflicting(pr):
+    return subprocess.run(["gh", "pr", "view", str(pr), "--repo", REPO, "--json", "mergeable", "--jq", ".mergeable"],
+                          capture_output=True, text=True).stdout.strip() == "CONFLICTING"
+
+
+def master_tip():
+    return subprocess.run(["gh", "api", f"repos/{REPO}/commits/master", "--jq", ".sha"],
+                          capture_output=True, text=True).stdout.strip()
+
+
+def resolve_conflicts(pr, branch, mathlib, dry):
+    """Auto-resolve a settled PR that CONFLICTS with master: RE-DERIVE the branch off
+    FRESH master and re-apply its green tags, then force-push. @[wikidata] tags are
+    purely ADDITIVE, so rebuilding on master is conflict-proof — text-merging master in
+    (freshen_master) is what kept hitting unresolvable conflicts on doc-attr PRs."""
+    cls = settle.classify(pr, REPO)
+    bn = json.loads(STATE.read_text()).get("batch_num")
+    approved = json.loads((HERE / "state" / f"batch{bn}_approved.json").read_text())
+    # The green set = tags CURRENTLY on the PR (post-trim the recycled are already gone,
+    # so classify(pr).recycle is empty — reconstruct from classify.green, not approved
+    # minus recycled, which would wrongly re-add the trimmed tags). decl/file from approved.
+    green_qids = {g["qid"] for g in cls["green"]}
+    green = {"branch": branch, "title": approved.get("title", "doc: add wikidata attributes"),
+             "tags": [t for t in approved["tags"] if t["qid"] in green_qids]}
+    print(f"  RESOLVE-CONFLICT #{pr}: rebuild off fresh master with {len(green['tags'])} green tags")
+    if dry:
+        return
+    gpath = HERE / "state" / "reapply_green.json"
+    gpath.write_text(json.dumps(green, indent=1))
+    sh(["git", "-C", str(mathlib), "fetch", "origin", branch], check=True)       # --force-with-lease base
+    sh(["git", "-C", str(mathlib), "fetch", "upstream", "master"], check=True)   # FETCH_HEAD = current master
+    rebuilt = subprocess.run(["git", "-C", str(mathlib), "rev-parse", "FETCH_HEAD"],
+                             capture_output=True, text=True).stdout.strip()
+    # Record the master we rebuild ONTO *before* the fallible build/push, so a failed
+    # rebuild doesn't re-loop every tick at the same master — it retries only when master
+    # actually advances. This (not a success-only write in tick) is the real loop-guard.
+    stt = json.loads(STATE.read_text()); stt["conflict_sha"] = rebuilt; stt.pop("retriggered_pr", None)
+    STATE.write_text(json.dumps(stt, indent=1))
+    sh(["git", "-C", str(mathlib), "checkout", "-B", branch, "FETCH_HEAD"], check=True)
+    cg = sh(["lake", "exe", "cache", "get"], cwd=str(mathlib))
+    if cg.returncode != 0:
+        sys.exit("lake exe cache get failed in resolve — not cold-building; retry next tick")
+    sh([sys.executable, str(HERE / "open_batch_pr.py"), "--approved", str(gpath),
+        "--mathlib", str(mathlib), "--repo", REPO, "--base", "master",
+        "--apply", "--check", "--build", "--reapply"], check=True)
+
+
 def do_open(mathlib, dry):
     print("  OPEN next batch (open_batch.py)")
     # check=True: a failed open (open_batch.py already sys.exit(1)s on a crash/build
@@ -155,6 +202,15 @@ def tick(mathlib, dry, no_open=False):
                 st["settled_pr"] = pr; st.pop("retriggered_pr", None)  # fresh commit → CI re-runs
                 STATE.write_text(json.dumps(st, indent=1))
             return
+        # Before the CI self-heal: auto-resolve a master conflict. An additive
+        # @[wikidata] PR that fell behind master is RE-DERIVED off fresh master
+        # (conflict-proof — text-merging master in is what kept conflicting) and
+        # force-pushed. Guarded by the master tip we last rebuilt onto so a
+        # non-resolving rebuild can't loop.
+        if pr_conflicting(pr) and st.get("conflict_sha") != master_tip():
+            print(f"  #{pr} CONFLICTING with master — rebuilding off fresh master")
+            resolve_conflicts(pr, branch, mathlib, dry)   # records conflict_sha itself (loop-guard)
+            return
         # No new trims — self-heal the fork-CI cache-verify failure (Post-Build
         # 'target is out-of-date'): the proven fix is merging current master into
         # the branch — a stale merged-master leaves core-file oleans uncached —
@@ -200,6 +256,8 @@ def decide():
         cls = settle.classify(pr, REPO)
         if cls["gate"] and cls["recycle"]:
             return "act"                               # a tag was rejected after the settle -> re-trim
+        if pr_conflicting(pr) and st.get("conflict_sha") != master_tip():
+            return "act"                               # PR conflicts with master -> rebuild off master
         return "act" if (st.get("retriggered_pr") != pr and ci_cache_flake(pr, REPO)) else "wait"
     return "act" if settle.classify(pr, REPO)["gate"] else "wait"   # gate met -> settle
 
