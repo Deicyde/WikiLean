@@ -245,7 +245,7 @@ def assert_only_wikidata_changes(mathlib: Path, tagged_files: set):
                  + "\n  ".join(repr(r) for r in (bad_rm or removed)[:10]))
     print(f"[leak-guard] clean: {len(added)} staged addition(s) across {len(ns)} file(s), {len(stacked)} stacked; no foreign files.")
 
-def open_pr(approved: dict, mathlib: Path, repo: str, base: str):
+def open_pr(approved: dict, mathlib: Path, repo: str, base: str, create: bool = True):
     branch = approved["branch"]
     title  = approved["title"]
     files  = sorted({t["file"] for t in approved["tags"]})
@@ -273,6 +273,9 @@ def open_pr(approved: dict, mathlib: Path, repo: str, base: str):
         if r.returncode != 0 and desc != "commit":
             print(r.stdout + r.stderr); sys.exit(1)
         print((r.stdout + r.stderr).strip()[:400])
+    if not create:  # --reapply: rebuilt branch is force-pushed; the PR already exists
+        print(f"[git] force-pushed rebuilt {branch} (--reapply, no PR create)")
+        return
     fo = fork_owner(mathlib) or repo.split('/')[0]
     n = len(approved["tags"])
     print(f"[gh] pr create (head {fo}:{branch} -> {repo}:{base})")
@@ -336,6 +339,8 @@ def main():
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--build", action="store_true")
     ap.add_argument("--open-pr", dest="open_pr", action="store_true")
+    ap.add_argument("--reapply", action="store_true",
+                    help="rebuild: force-push the re-applied (off fresh master) branch WITHOUT creating a PR")
     ap.add_argument("--llm-label", dest="llm_label", action="store_true",
                     help="add the LLM-generated label + post the disclosure comment")
     ap.add_argument("--pr", type=int, default=None,
@@ -361,9 +366,19 @@ def main():
 
     if args.apply or args.all:
         print(f"=== apply {len(approved['tags'])} tags ===")
-        for r in apply_all(approved, args.mathlib):
+        results = apply_all(approved, args.mathlib)
+        for r in results:
             flag = "ok " if r["ok"] else "ERR"
             print(f"  [{flag}] {r['qid']:10s} {r['decl']:30s} {r['msg']}")
+        if args.reapply:
+            # Rebuilding an ALREADY-APPROVED PR off fresh master: every green tag must
+            # still apply. If a decl was renamed/removed upstream, refuse to silently
+            # ship a smaller PR (dropping a human-approved tag) — fail loudly instead.
+            dropped = [r for r in results if not r["ok"]]
+            if dropped:
+                sys.exit("REAPPLY: %d approved tag(s) no longer apply on master (decl moved?) — "
+                         "refusing to drop: %s" % (len(dropped),
+                         ", ".join(f"{r['qid']}({r['decl']})" for r in dropped)))
     if args.check or args.all:
         print("\n=== git diff --stat ===")
         print(run(["git", "diff", "--stat"], cwd=args.mathlib).stdout)
@@ -372,6 +387,8 @@ def main():
             print("BUILD FAILED — not opening PR"); sys.exit(1)
     if args.open_pr or args.all:
         open_pr(approved, args.mathlib, args.repo, args.base)
+    if args.reapply:
+        open_pr(approved, args.mathlib, args.repo, args.base, create=False)
     if args.llm_label or args.all:
         n = _pr_number(args)
         if n:
